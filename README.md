@@ -43,6 +43,21 @@ dotnet run --project src/XTranslatorAi.App -c Release
 3) `Start`로 번역 시작  
 4) `Export XML`로 저장  
 
+## GitHub 릴리즈 자동 EXE 첨부
+
+- 워크플로: `.github/workflows/release-win-x64-singlefile.yml`
+- 트리거:
+  - GitHub Release를 `Published`하면 자동 실행
+  - `workflow_dispatch`로 특정 태그를 수동 재업로드 가능
+- 업로드 자산:
+  - `TulliusTranslator.exe` (win-x64 단일 파일)
+  - `TulliusTranslator.exe.sha256`
+
+수동 재실행 예시(기존 태그 자산 덮어쓰기):
+```bash
+gh workflow run release-win-x64-singlefile.yml -f tag=v0.1.0
+```
+
 ## Python CLI
 
 앱만 사용할 예정이면 이 섹션은 건너뛰어도 됩니다.
