@@ -1,0 +1,118 @@
+<UserControl x:Class="XTranslatorAi.App.Views.ProjectGlossaryTabView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+    <Grid Margin="0,10,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
+            <TextBlock Text="Category:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBox Text="{Binding GlossaryCategory}" Width="180" Style="{StaticResource XT.ToolbarTextBox}" Margin="0,0,12,0" />
+
+            <TextBlock Text="Source:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBox Text="{Binding GlossarySourceTerm}" Width="220" Style="{StaticResource XT.ToolbarTextBox}" />
+            <TextBlock Text="Target:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBox Text="{Binding GlossaryTargetTerm}" Width="220" Style="{StaticResource XT.ToolbarTextBox}" />
+
+            <TextBlock Text="Match:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <ComboBox ItemsSource="{Binding GlossaryMatchModeValues}"
+                      SelectedItem="{Binding GlossaryMatchMode}"
+                      Width="160"
+                      Margin="0,0,12,0"
+                      Style="{StaticResource XT.ToolbarComboBox}" />
+            <TextBlock Text="Force:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <ComboBox ItemsSource="{Binding GlossaryForceModeValues}"
+                      SelectedItem="{Binding GlossaryForceMode}"
+                      Width="160"
+                      Margin="0,0,12,0"
+                      Style="{StaticResource XT.ToolbarComboBox}" />
+            <TextBlock Text="Priority:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBox Text="{Binding GlossaryPriority}" Width="60" Style="{StaticResource XT.ToolbarTextBox}" TextAlignment="Center" />
+
+            <Button Content="Add" Command="{Binding AddGlossaryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Save" Command="{Binding SaveGlossaryChangesCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Delete" Command="{Binding DeleteGlossaryEntryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Import File" Command="{Binding ImportGlossaryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Export File" Command="{Binding ExportGlossaryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Open Folder" Command="{Binding OpenGlossaryFolderCommand}" Style="{StaticResource XT.ToolbarButton}" />
+        </WrapPanel>
+
+        <WrapPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
+            <TextBlock Text="Filter:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <ComboBox ItemsSource="{Binding GlossaryCategoryFilterValues}"
+                      SelectedItem="{Binding GlossaryFilterCategory}"
+                      Width="220"
+                      Margin="0,0,12,0"
+                      Style="{StaticResource XT.ToolbarComboBox}" />
+            <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBox Text="{Binding GlossaryFilterText, UpdateSourceTrigger=PropertyChanged}"
+                     Width="260"
+                     Style="{StaticResource XT.ToolbarTextBox}" />
+        </WrapPanel>
+
+        <DataGrid Grid.Row="2"
+                  ItemsSource="{Binding GlossaryView}"
+                  SelectedItem="{Binding SelectedGlossaryEntry}"
+                  Style="{StaticResource XT.DataGrid}"
+                  ColumnHeaderStyle="{StaticResource XT.DataGridColumnHeader}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  AlternationCount="2"
+                  EnableRowVirtualization="True"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling">
+            <DataGrid.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding DeleteGlossaryEntryCommand}" />
+            </DataGrid.InputBindings>
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Header="On" Binding="{Binding Enabled, UpdateSourceTrigger=PropertyChanged}" Width="60" />
+                <DataGridTextColumn Header="Category" Binding="{Binding Category, UpdateSourceTrigger=PropertyChanged}" Width="180" />
+                <DataGridTextColumn Header="Source" Binding="{Binding SourceTerm, UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                <DataGridTextColumn Header="Target" Binding="{Binding TargetTerm, UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                <DataGridTemplateColumn Header="MatchMode" Width="140">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding MatchMode}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding DataContext.GlossaryMatchModeValues, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                      SelectedItem="{Binding MatchMode, UpdateSourceTrigger=PropertyChanged}"
+                                      Style="{StaticResource XT.ToolbarComboBox}"
+                                      Margin="0" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="ForceMode" Width="140">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ForceMode}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding DataContext.GlossaryForceModeValues, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                      SelectedItem="{Binding ForceMode, UpdateSourceTrigger=PropertyChanged}"
+                                      Style="{StaticResource XT.ToolbarComboBox}"
+                                      Margin="0" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Priority" Binding="{Binding Priority, UpdateSourceTrigger=PropertyChanged}" Width="90" />
+                <DataGridTextColumn Header="Note" Binding="{Binding Note, UpdateSourceTrigger=PropertyChanged}" Width="260" />
+                <DataGridCheckBoxColumn Header="Dirty" Binding="{Binding IsDirty}" IsReadOnly="True" Width="70" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

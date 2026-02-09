@@ -1,0 +1,130 @@
+{
+  "project_name": "Skyrim_Translator_v6",
+  "root": ".",
+  "exclude_dirs": [
+    "node_modules",
+    ".git",
+    ".vibe",
+    "dist",
+    "build",
+    "out",
+    "coverage",
+    "bin",
+    "obj",
+    "artifacts",
+    ".tmp",
+    "__pycache__"
+  ],
+  "include_globs": [
+    "src/**/*.cs",
+    "src/**/*.xaml",
+    "tests/**/*.cs",
+    "tools/**/*.cs",
+    "**/*.csproj",
+    "**/*.sln",
+    "**/*.md"
+  ],
+  "critical_tags": [
+    "@critical",
+    "CRITICAL:"
+  ],
+  "context": {
+    "latest_file": ".vibe/context/LATEST_CONTEXT.md",
+    "max_recent_files": 12
+  },
+  "quality_gates": {
+    "cycle_block": true,
+    "dotnet_build_block_on_increase": true,
+    "complexity_warn_threshold": 15,
+    "max_method_lines_warn": 50,
+    "max_nesting_warn": 4,
+    "max_params_warn": 5,
+    "indexer_fast_skip": true,
+    "fts_files_max_bytes": 2000000,
+    "typecheck_cmd": [
+      "dotnet",
+      "build",
+      "XTranslatorAi.sln",
+      "-c",
+      "Release"
+    ],
+    "typecheck_when_any_glob": [
+      "**/*.cs",
+      "**/*.csproj",
+      "**/*.fsproj",
+      "**/*.vbproj",
+      "**/*.sln",
+      "Directory.Build.props",
+      "Directory.Build.targets",
+      "global.json"
+    ]
+  },
+  "architecture": {
+    "enabled": true,
+    "rules": [
+      {
+        "name": "core_no_app_dependency",
+        "from_globs": [
+          "src/XTranslatorAi.Core/**"
+        ],
+        "to_globs": [
+          "src/XTranslatorAi.App/**"
+        ],
+        "kinds": [
+          "cs_using",
+          "csproj_ref"
+        ],
+        "reason": "Core layer must remain independent from WPF app layer."
+      },
+      {
+        "name": "tests_no_app_dependency",
+        "from_globs": [
+          "tests/**"
+        ],
+        "to_globs": [
+          "src/XTranslatorAi.App/**"
+        ],
+        "kinds": [
+          "cs_using",
+          "csproj_ref"
+        ],
+        "reason": "Current test suite intentionally validates Core behavior only."
+      },
+      {
+        "name": "tabs_no_service_shortcuts",
+        "from_globs": [
+          "src/XTranslatorAi.App/ViewModels/Tabs/**"
+        ],
+        "to_globs": [
+          "src/XTranslatorAi.App/Services/**"
+        ],
+        "kinds": [
+          "cs_using"
+        ],
+        "reason": "Tab VMs should stay thin adapters and avoid directly coupling to service internals."
+      }
+    ]
+  },
+  "placeholders": {
+    "enabled": true,
+    "target_lang": "korean",
+    "bad_unit_words_ko": [
+      "초",
+      "분",
+      "시간",
+      "포인트",
+      "%",
+      "동안",
+      "초당"
+    ]
+  },
+  "profiling": {
+    "enabled_by_default": false,
+    "mode": "dotnet",
+    "entry": null
+  },
+  "checks": {
+    "doctor": [],
+    "precommit": []
+  }
+}

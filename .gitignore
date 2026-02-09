@@ -1,0 +1,24 @@
+**/bin/
+**/obj/
+.vs/
+.idea/
+.cursor/
+
+__pycache__/
+*.pyc
+
+.vibe/db/
+.vibe/reports/
+.vibe/locks/
+.vibe/context/LATEST_CONTEXT.md
+
+*.stproj.sqlite
+*.bak
+*.tmp
+*.gemini_cache.jsonl
+
+# vibe-kit
+.vibekit.auto
+
+# build outputs
+artifacts/

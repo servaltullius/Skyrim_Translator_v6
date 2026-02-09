@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\XTranslatorAi.Core\XTranslatorAi.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>TulliusTranslator</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\메타프롬프트.md" />
+    <EmbeddedResource Include="Assets\메타프롬프트_폴아웃.md" />
+    <EmbeddedResource Include="Assets\메타프롬프트_스타필드.md" />
+    <EmbeddedResource Include="Assets\기본용어집.md" />
+    <EmbeddedResource Include="Assets\기본용어집_폴아웃.md" />
+    <EmbeddedResource Include="Assets\기본용어집_스타필드.md" />
+  </ItemGroup>
+
+</Project>

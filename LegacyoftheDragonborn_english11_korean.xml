@@ -1,0 +1,1189 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SSTXMLRessources>
+  <Params>
+    <Addon>LegacyoftheDragonborn.esm</Addon>
+    <Source>english</Source>
+    <Dest>korean</Dest>
+    <Version>2</Version>
+  </Params>
+  <Content>
+    <String List="0" Partial="1">
+      <EDID>DBM_BOOKACTParagonsBook</EDID>
+      <REC>ACTI:FULL</REC>
+      <Source>The Legacy of Dwemer Paragons</Source>
+      <Dest>The Legacy of Dwemer Paragons</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DBM_MAASE_DwemerPrimer2</EDID>
+      <REC>BOOK:FULL</REC>
+      <Source>The Legacy of Dwemer Paragons</Source>
+      <Dest>The Legacy of Dwemer Paragons</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DBM_DialogueQuest</EDID>
+      <REC>QUST:FULL</REC>
+      <Source>Legacy of the Dragonborn NPC dialogue</Source>
+      <Dest>Legacy of the Dragonborn NPC dialogue</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DBM_MuchAdoAboutSnowElves</EDID>
+      <REC id="8" idMax="34">QUST:NNAM</REC>
+      <Source>Find Calcelmo&apos;s book Legacy of the Dwemer Paragons</Source>
+      <Dest>Find Calcelmo&apos;s book Legacy of the Dwemer Paragons</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DBM_SpearofthSnowPrinceQuest</EDID>
+      <REC>QUST:FULL</REC>
+      <Source>Legacy of the Snow Prince</Source>
+      <Dest>Legacy of the Snow Prince</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DBM_QPlaqueShatteredLegacyMSG</EDID>
+      <REC>MESG:FULL</REC>
+      <Source>Legacy of the Dragonborn</Source>
+      <Dest>Legacy of the Dragonborn</Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>Book3ValuableGreatHarbingers</EDID>
+      <REC>BOOK:DESC</REC>
+      <Source>[pagebreak]
+&lt;p align=&quot;center&quot;&gt;
+
+
+Great Harbingers of the Companions
+
+
+
+
+
+&lt;/p&gt;
+
+
+
+[pagebreak]
+&lt;p align=&quot;left&quot;&gt;
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/T_letter.png&apos;&gt;his history is recorded by Swyk the Long-Sighted, of the Circle of Jorrvaskr in the 3rd era. While I am not gifted with a sharp gift of words, I have learned the stories of the Companions before me, and set to record them that they might not be lost when I am. Hereafter is the list of notable Harbingers of the Companions, those who lead us through the darkness to glories in Sovngarde. 
+
+[pagebreak]
+Notes on the Harbinger: the Companions have never had a true leader since Ysgramor -- none have been mighty enough to corral the great hearts that beat within Jorrvaskr. While others like mages and thieves need the blessings of their hierarchy to know how to dress, we Companions are capable of leading our own destinies to glory. The Harbinger advises, resolves disputes, and helps to clarify when questions arise of the nature of honor. In the thousands of years the Companions have held at Jorrvaskr, there have been Harbingers both terrible and brilliant, those known for their arm, those for their hearts, and those for their minds. Here are listed some of the most gloried Harbingers, who inspire song and deed. 
+
+[pagebreak]
+Ysgramor: the first Harbinger, the first Man, the bringer of Words, and the one who first bound the Companions to honor in that far off land of long ago. Better people have written of him, so I will not attempt to meet their words. 
+
+Jeek of the River: Captain of the Jorrvaskr during the Return, discoverer of the Skyforge, founder of Whiterun, and keeper of the original oath of the Companions, now lost to time. While other crews sought glory in conquest, his was the first to settle and serve as protector for the less war-gifted in the land as they came behind.
+
+Mryfwiil the Withdrawn: Several hundred years after the death of Ysgramor, the Companions as we now know them were soldiers for hire, little better than mercenaries. Our services could be purchased for the fighting of wars, but the commitment to individual honor meant that often Shield-Brothers would be forced to face each other on the field of battle. The bonds of honor which bind the Companions threatened to break, until Mryfwiil, in his wisdom, decreed that we would no longer be party to any war or political conflict of any kind. Because of his steady hand, the Companions today are known as impartial arbiters of honor, in addition to their glories on the field of battle.
+
+Cirroc the Lofty: The first Harbinger to not be of ancestral Atmoran blood. This was around the time that the Nords began to think of themselves as such, and there were great disputes about purity and the legacy of Ysgramor. Cirroc first came to Jorrvaskr as a servant, but the Redguard quickly proved his mettle when treated disrespectfully by one of the less honor-bound warriors of the time. Granted the stature of an honorary Companion after saving the life of Harbinger Tulvar the Unmentioned, he became known as the most capable of Shield-Brothers in the hall, with speed and cunning surpassing any of the old Atmoran stock. His time as Harbinger was short-lived, but it is said that his field knowledge of bladework continues to pass to every new Companion through their training. 
+
+Henantier the Outsider: The first elven Harbinger. Like Cirroc before him, he was initially subject to ridicule when arriving at Jorrvaskr, for this was the time (near the closing of the first era) when elves were not permitted to be full Companions, and few were even allowed to see the inside of the hall. Henantier was humble in the daylight hours, performing any task asked of him. At night, he trained fiercely in the outside yard, allowing himself only minutes of sleep before resuming his servant duties the next day. So he toiled through several Harbingers, never resting, never complaining, and always keeping his mind and body sharp. Given his long life, he came to be trusted by the new Companions as the one who helped them learn the ways of honor. 
+
+When one such pupil had aged into an old man and become Harbinger himself, Henantier was the one at his deathbed. With all Companions assembled, he named Henantier as his successor, saying &quot;even an elf can be born with the heart of a Nord sometimes.&quot; There were some number of Companions who laid down their weapons that day, but those who remained knew the truth of honor, and it is their legacy we continue to bear. 
+
+Macke of the Piercing Eyes: A Harbinger known for her great beauty, but any who underestimated her on account of it would never make the mistake again. Was said to have once stared down half an opposing army, then slaughtered the remainder single-handedly. Her disappearance in her 8th year as Harbinger has never been explained, though many slanderous lies claim to make accountings for it. 
+
+Kyrnil Long-Nose: After the dark periods in the late second era, when a string of false and dishonorable Harbingers laid claim to Jorrvaskr, it was Kyrnil Long-Nose who gathered the true hearts of the Companions in the wilds and stormed Jorrvaskr itself, killing the usurpers and returning honor through blood, in the old ways. He began the tradition of trusted advisors called the Circle (after our great lord Ysgramor&apos;s council of captains) who would serve as examples to the younger, newer Companions. 
+
+By ensuring that the notions of honor can have an unbroken string of tradition, he steadied the course of the Companions and restored our destinies to that of Ysgramor&apos;s, pressing ever onwards to Sovngarde. </Source>
+      <Dest>[pagebreak]
+&lt;p align=&quot;center&quot;&gt;
+
+
+Great Harbingers of the Companions
+
+
+
+
+
+&lt;/p&gt;
+
+
+
+[pagebreak]
+&lt;p align=&quot;left&quot;&gt;
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/T_letter.png&apos;&gt;his history is recorded by Swyk the Long-Sighted, of the Circle of Jorrvaskr in the 3rd era. While I am not gifted with a sharp gift of words, I have learned the stories of the Companions before me, and set to record them that they might not be lost when I am. Hereafter is the list of notable Harbingers of the Companions, those who lead us through the darkness to glories in Sovngarde. 
+
+[pagebreak]
+Notes on the Harbinger: the Companions have never had a true leader since Ysgramor -- none have been mighty enough to corral the great hearts that beat within Jorrvaskr. While others like mages and thieves need the blessings of their hierarchy to know how to dress, we Companions are capable of leading our own destinies to glory. The Harbinger advises, resolves disputes, and helps to clarify when questions arise of the nature of honor. In the thousands of years the Companions have held at Jorrvaskr, there have been Harbingers both terrible and brilliant, those known for their arm, those for their hearts, and those for their minds. Here are listed some of the most gloried Harbingers, who inspire song and deed. 
+
+[pagebreak]
+Ysgramor: the first Harbinger, the first Man, the bringer of Words, and the one who first bound the Companions to honor in that far off land of long ago. Better people have written of him, so I will not attempt to meet their words. 
+
+Jeek of the River: Captain of the Jorrvaskr during the Return, discoverer of the Skyforge, founder of Whiterun, and keeper of the original oath of the Companions, now lost to time. While other crews sought glory in conquest, his was the first to settle and serve as protector for the less war-gifted in the land as they came behind.
+
+Mryfwiil the Withdrawn: Several hundred years after the death of Ysgramor, the Companions as we now know them were soldiers for hire, little better than mercenaries. Our services could be purchased for the fighting of wars, but the commitment to individual honor meant that often Shield-Brothers would be forced to face each other on the field of battle. The bonds of honor which bind the Companions threatened to break, until Mryfwiil, in his wisdom, decreed that we would no longer be party to any war or political conflict of any kind. Because of his steady hand, the Companions today are known as impartial arbiters of honor, in addition to their glories on the field of battle.
+
+Cirroc the Lofty: The first Harbinger to not be of ancestral Atmoran blood. This was around the time that the Nords began to think of themselves as such, and there were great disputes about purity and the legacy of Ysgramor. Cirroc first came to Jorrvaskr as a servant, but the Redguard quickly proved his mettle when treated disrespectfully by one of the less honor-bound warriors of the time. Granted the stature of an honorary Companion after saving the life of Harbinger Tulvar the Unmentioned, he became known as the most capable of Shield-Brothers in the hall, with speed and cunning surpassing any of the old Atmoran stock. His time as Harbinger was short-lived, but it is said that his field knowledge of bladework continues to pass to every new Companion through their training. 
+
+Henantier the Outsider: The first elven Harbinger. Like Cirroc before him, he was initially subject to ridicule when arriving at Jorrvaskr, for this was the time (near the closing of the first era) when elves were not permitted to be full Companions, and few were even allowed to see the inside of the hall. Henantier was humble in the daylight hours, performing any task asked of him. At night, he trained fiercely in the outside yard, allowing himself only minutes of sleep before resuming his servant duties the next day. So he toiled through several Harbingers, never resting, never complaining, and always keeping his mind and body sharp. Given his long life, he came to be trusted by the new Companions as the one who helped them learn the ways of honor. 
+
+When one such pupil had aged into an old man and become Harbinger himself, Henantier was the one at his deathbed. With all Companions assembled, he named Henantier as his successor, saying &quot;even an elf can be born with the heart of a Nord sometimes.&quot; There were some number of Companions who laid down their weapons that day, but those who remained knew the truth of honor, and it is their legacy we continue to bear. 
+
+Macke of the Piercing Eyes: A Harbinger known for her great beauty, but any who underestimated her on account of it would never make the mistake again. Was said to have once stared down half an opposing army, then slaughtered the remainder single-handedly. Her disappearance in her 8th year as Harbinger has never been explained, though many slanderous lies claim to make accountings for it. 
+
+Kyrnil Long-Nose: After the dark periods in the late second era, when a string of false and dishonorable Harbingers laid claim to Jorrvaskr, it was Kyrnil Long-Nose who gathered the true hearts of the Companions in the wilds and stormed Jorrvaskr itself, killing the usurpers and returning honor through blood, in the old ways. He began the tradition of trusted advisors called the Circle (after our great lord Ysgramor&apos;s council of captains) who would serve as examples to the younger, newer Companions. 
+
+By ensuring that the notions of honor can have an unbroken string of tradition, he steadied the course of the Companions and restored our destinies to that of Ysgramor&apos;s, pressing ever onwards to Sovngarde. </Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DBM_ArkaynJournal</EDID>
+      <REC>BOOK:DESC</REC>
+      <Source>&lt;font face=&quot;$HandwrittenFont&quot;&gt;
+
+Confound it! Of all the damned tools to have within my reach, it ends up being my journal and quill pen. Meanwhile my tool bag lies on a ledge mere inches beyond my reach containing a dagger that would allow me to potentially cut my pinned hand off and have a chance of surviving. But no, I had to be stupid about it, I said I would be able to climb better without a dagger strapped to my belt and that an explorer&apos;s greatest tool is the legacy of his work within his journal. How stupid I feel. Now writing seems to be the only thing I have left that keeps me sane enough and prevents me from screaming for help and alerting all the Falmer that are swarming all over this place. It&apos;s a miracle they didn&apos;t hear me fall and the rock shift before crushing my hand between it and the chasm. I hope you are happy Marcus, I really do, because I&apos;m certain I am going to die in here, and for what? A few dig sites and the promise of a relic that ended up not even being here. Thanks a lot...
+
+
+&lt;/font&gt;</Source>
+      <Dest>&lt;font face=&quot;$HandwrittenFont&quot;&gt;
+
+Confound it! Of all the damned tools to have within my reach, it ends up being my journal and quill pen. Meanwhile my tool bag lies on a ledge mere inches beyond my reach containing a dagger that would allow me to potentially cut my pinned hand off and have a chance of surviving. But no, I had to be stupid about it, I said I would be able to climb better without a dagger strapped to my belt and that an explorer&apos;s greatest tool is the legacy of his work within his journal. How stupid I feel. Now writing seems to be the only thing I have left that keeps me sane enough and prevents me from screaming for help and alerting all the Falmer that are swarming all over this place. It&apos;s a miracle they didn&apos;t hear me fall and the rock shift before crushing my hand between it and the chasm. I hope you are happy Marcus, I really do, because I&apos;m certain I am going to die in here, and for what? A few dig sites and the promise of a relic that ended up not even being here. Thanks a lot...
+
+
+&lt;/font&gt;</Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DBM_KOTN_Note</EDID>
+      <REC>BOOK:DESC</REC>
+      <Source>&lt;font face=&quot;$HandwrittenFont&quot;&gt;
+We have been set upon at every turn, but thus far we have been able to thwart the Thalmor efforts of obtaining the relics of the Divine Crusader. As far as I know my brothers have all fallen at their hand but something tells me that they achieved our goal and the relics are safe at least. 
+
+Should the Thalmor happen upon any of the chests, there is no power short of the Divines which can open them, aside from the ring I bear, that is. I will keep it safely locked away here and hold the banner as long as possible but I fear that the elements will overcome me before help arrives and even before the Thalmor could find me. My only hope is that whoever discovers this ring will safeguard it, for it is the key to the legacy of Pelinal Whitestrake and the Order of the Nine.
+
+Divines protect me...
+&lt;/font&gt;</Source>
+      <Dest>&lt;font face=&quot;$HandwrittenFont&quot;&gt;
+We have been set upon at every turn, but thus far we have been able to thwart the Thalmor efforts of obtaining the relics of the Divine Crusader. As far as I know my brothers have all fallen at their hand but something tells me that they achieved our goal and the relics are safe at least. 
+
+Should the Thalmor happen upon any of the chests, there is no power short of the Divines which can open them, aside from the ring I bear, that is. I will keep it safely locked away here and hold the banner as long as possible but I fear that the elements will overcome me before help arrives and even before the Thalmor could find me. My only hope is that whoever discovers this ring will safeguard it, for it is the key to the legacy of Pelinal Whitestrake and the Order of the Nine.
+
+Divines protect me...
+&lt;/font&gt;</Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>Book2CommonAMinorMaze</EDID>
+      <REC>BOOK:DESC</REC>
+      <Source>[pagebreak]
+&lt;p align=&apos;center&apos;&gt;
+
+
+A Minor Maze:
+Shalidor &amp; Labyrinthian
+
+
+&lt;img src=&apos;img://textures/Interface/Books/LabyrinthDrawing.png&apos; height=&apos;200&apos; width=&apos;131&apos;&gt;&lt;/p&gt;
+[pagebreak]
+&lt;p align=&apos;left&apos;&gt;
+Labyrinthian&apos;s modern notoriety was gained in the early part of the Third Era. Part of the Staff of Chaos was recovered from the Labyrinthian, which became instrumental in the overthrow of Jagar Tharn, ending the Imperial Simulacrum. The site has since become embedded in the minds of all subjects of the Empire, and the ruins are occasionally visited by Loyalist pilgrims, re-tracing the steps of the Eternal Champion.
+
+The namesake of Labyrinthian is somewhat less commonly known, however.
+
+The foreboding ruins were originally built as a temple to the Dragons. This grew into Bromjunaar, a great city of that era. Bromjunaar is believed by some to have been the capital of Skyrim at the height of the Dragon Cult&apos;s influence there. Little historical record exists to verify or refute this, but it is known that the highest ranking Priests of the Cult met at Labyrinthian to discuss matters of ruling.
+[pagebreak]
+Bromjunaar crumbled, however, along with the rest of the Dragon Cult, and the site lay abandoned for many years, a deteriorating reminder of those benighted days for the Nords. Not until the days of Shalidor would the ruins come into use again.
+
+Shalidor the Archmage was famous for his exploits in the First Era. Various tales tell of him battling Dwemer legions single-handedly, building the city of Winterhold with a whispered spell, stealing the secret of life from Akatosh, or constructing Labyrinthian himself. 
+
+While many Shalidor legends are hyperbole or outright fabrication, we can discover some truth behind his involvement with Labyrinthian.
+
+Shalidor stood at the forefront of a movement to enact higher standards among mages, and to discourage spell-use among the common castes. This effort is dubiously credited with the original organization and formation of the schools of magic and the foundation of the College at Winterhold.
+
+Consistent with this mentality, Shalidor constructed his Labyrinth deep within the ruins of Bromjunaar to test new Archmages. While navigating the destroyed city itself was not explicitly a part of the test, many candidates did not survive the journey. Shalidor valued both academic knowledge as well as practical skill, and simply getting to the Labyrinth required the latter.
+[pagebreak]
+
+&lt;img src=&apos;img://textures/Interface/Books/LabyrinthDrawing.png&apos; height=&apos;400&apos; width=&apos;262&apos;&gt;
+[pagebreak]
+Shalidor&apos;s Labyrinthian is actually two intersecting mazes, in an hourglass pattern. One maze could not be completed without exiting the other first, which makes the only existing instruction for the test especially mysterious:&lt;/p&gt;&lt;p align=&apos;center&apos;&gt;
+&lt;i&gt;Enter Twice - Exit Only Once
+Alteration will lead 
+you to Destruction
+Only Illusion shows the 
+way to Restoration
+Conjure not, but 
+be conjured instead&lt;/i&gt;&lt;/p&gt;
+&lt;p align=&apos;left&apos;&gt;We can only guess at what the solution to the test may have been, as Labyrinthian became notorious not only for the number of potential archmages who died there, but for the intense secrecy of those who succeeded.
+
+Labyrinthian eventually ceased to be used, and is regarded as a symbol of a more brutal age by modern institutions for magical studies. The ruins lay empty again, overrun with wild animals and avoided by travelers. The long history and legacy of this place, however, seems as likely to be erased from our minds as the ruins themselves are likely to sink into the sea.
+&lt;/p&gt;</Source>
+      <Dest>[pagebreak]
+&lt;p align=&apos;center&apos;&gt;
+
+
+A Minor Maze:
+Shalidor &amp; Labyrinthian
+
+
+&lt;img src=&apos;img://textures/Interface/Books/LabyrinthDrawing.png&apos; height=&apos;200&apos; width=&apos;131&apos;&gt;&lt;/p&gt;
+[pagebreak]
+&lt;p align=&apos;left&apos;&gt;
+Labyrinthian&apos;s modern notoriety was gained in the early part of the Third Era. Part of the Staff of Chaos was recovered from the Labyrinthian, which became instrumental in the overthrow of Jagar Tharn, ending the Imperial Simulacrum. The site has since become embedded in the minds of all subjects of the Empire, and the ruins are occasionally visited by Loyalist pilgrims, re-tracing the steps of the Eternal Champion.
+
+The namesake of Labyrinthian is somewhat less commonly known, however.
+
+The foreboding ruins were originally built as a temple to the Dragons. This grew into Bromjunaar, a great city of that era. Bromjunaar is believed by some to have been the capital of Skyrim at the height of the Dragon Cult&apos;s influence there. Little historical record exists to verify or refute this, but it is known that the highest ranking Priests of the Cult met at Labyrinthian to discuss matters of ruling.
+[pagebreak]
+Bromjunaar crumbled, however, along with the rest of the Dragon Cult, and the site lay abandoned for many years, a deteriorating reminder of those benighted days for the Nords. Not until the days of Shalidor would the ruins come into use again.
+
+Shalidor the Archmage was famous for his exploits in the First Era. Various tales tell of him battling Dwemer legions single-handedly, building the city of Winterhold with a whispered spell, stealing the secret of life from Akatosh, or constructing Labyrinthian himself. 
+
+While many Shalidor legends are hyperbole or outright fabrication, we can discover some truth behind his involvement with Labyrinthian.
+
+Shalidor stood at the forefront of a movement to enact higher standards among mages, and to discourage spell-use among the common castes. This effort is dubiously credited with the original organization and formation of the schools of magic and the foundation of the College at Winterhold.
+
+Consistent with this mentality, Shalidor constructed his Labyrinth deep within the ruins of Bromjunaar to test new Archmages. While navigating the destroyed city itself was not explicitly a part of the test, many candidates did not survive the journey. Shalidor valued both academic knowledge as well as practical skill, and simply getting to the Labyrinth required the latter.
+[pagebreak]
+
+&lt;img src=&apos;img://textures/Interface/Books/LabyrinthDrawing.png&apos; height=&apos;400&apos; width=&apos;262&apos;&gt;
+[pagebreak]
+Shalidor&apos;s Labyrinthian is actually two intersecting mazes, in an hourglass pattern. One maze could not be completed without exiting the other first, which makes the only existing instruction for the test especially mysterious:&lt;/p&gt;&lt;p align=&apos;center&apos;&gt;
+&lt;i&gt;Enter Twice - Exit Only Once
+Alteration will lead 
+you to Destruction
+Only Illusion shows the 
+way to Restoration
+Conjure not, but 
+be conjured instead&lt;/i&gt;&lt;/p&gt;
+&lt;p align=&apos;left&apos;&gt;We can only guess at what the solution to the test may have been, as Labyrinthian became notorious not only for the number of potential archmages who died there, but for the intense secrecy of those who succeeded.
+
+Labyrinthian eventually ceased to be used, and is regarded as a symbol of a more brutal age by modern institutions for magical studies. The ruins lay empty again, overrun with wild animals and avoided by travelers. The long history and legacy of this place, however, seems as likely to be erased from our minds as the ruins themselves are likely to sink into the sea.
+&lt;/p&gt;</Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DLC2Book1CheapPoisonSong5</EDID>
+      <REC>BOOK:DESC</REC>
+      <Source>[pagebreak]
+&lt;p align=&quot;center&quot;&gt;
+
+
+The Poison Song
+Book V
+
+By
+Bristin Xel
+&lt;/p&gt;
+
+
+[pagebreak]
+&lt;p align=&quot;left&quot;&gt;
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/F_letter.png&apos;&gt;or two days, the House healers attended Tay in his bed, and Baynarah sat by his side, holding his hand. He was feverish, neither asleep nor awake, screaming at invisible phantoms. The healers complimented the young man&apos;s fortitude. Bodies had washed ashore on the island of Gorne several times, many during the War, but never once had they seen one that lived afterwards.
+ 
+
+Aunt Ulliah came in several times to bring Baynarah food: &quot;You must be careful, dear, or when he&apos;s all well, he&apos;ll have to attend you on your sickbed.&quot;
+ 
+
+Tay&apos;s fever broke, and at last he was able to open his eyes and see the young woman with whom he had spent seventeen years, all but the first year of his life. She smiled at him, and called for food. In silence, she helped him eat.
+ 
+
+&quot;I knew you wouldn&apos;t die, cousin,&quot; she whispered fondly. 
+
+
+&quot;I hoped to, but somehow I knew I wouldn&apos;t either,&quot; he groaned. &quot;Baynarah, do you remember all those nightmares I told you about? They&apos;re all true.&quot;
+ 
+
+&quot;We can talk about it when you&apos;ve rested some more.&quot; 
+
+
+&quot;No,&quot; he croaked. &quot;I must tell you everything now, so you&apos;ll know what kind of a monster you call your dear cousin Tay. If there was some way you could have known before, you might not have been so eager to see me well again.&quot;
+ 
+
+A tear rolled Baynarah&apos;s cheek. She had grown into a beauty, even in the few months he had been away in Mournhold. &quot;How can you think I would stop loving you, no matter what you&apos;ve done?&quot;
+ 
+
+&quot;I saw my old nursemaid Edebah, and spoke to her.&quot; 
+
+
+&quot;Oh,&quot; Baynarah had feared this moment. &quot;Tay, I don&apos;t know what she told you, but it was all my fault. You remember when Kena Grafisi taught us about the House Dagoth, and its corruption. That night, I saw your nursemaid making some kind of altar out on the north lawn, using the symbol of the Sixth House. She must have been doing it for years, but I never knew what it meant. I told Uncle Triffith, and he sent her away. I&apos;ve wanted to tell you so many times now, but I was afraid to. She was so devoted to you.&quot;
+ 
+
+Tay smiled. &quot;And didn&apos;t it frighten you even more to wonder if there was any connection between her devotion to me, and her devotion to the accursed House? I know you, Baynarah. You&apos;re not one of those women who doesn&apos;t choose to use her mind.&quot;
+ 
+
+&quot;Tay, I don&apos;t know what she told you, but I think she was very troubled, and whatever she thought about you and the Sixth House was wrong. You have to remember that. The ramblings of one madwoman are proof of nothing.&quot;
+ 
+
+&quot;There&apos;s more,&quot; Tay sighed, and held up his hand. For a moment he blinked, and then turned to Baynarah angrily. &quot;What happened to my ring? If you saw it, you must have known already that everything I&apos;m saying to you is true.&quot;
+ 
+
+&quot;I threw the filthy thing away,&quot; Baynarah stood up. &quot;Tay, I&apos;m going to let you rest now.&quot;
+ 
+
+&quot;I am the heir of House Dagoth,&quot; Tay was wild-eyed, almost screaming. &quot;Raised after the War as House Indoril, but driven by the Song of my ancestors. When we were young, I killed Vaster because the Song told me he had stolen my inheritance. When Edebah told me who I was and gave me this ring, I killed her and burned her house to the ground, because the Song told me she had served her purpose. When I returned to Kalkorith&apos;s house, my love was there, telling me that she was of the House Dagoth too, and my sister. I fled, and when Kalkorith tried to stop me, I slew him, because the Song told me he was an enemy.&quot;
+ 
+
+&quot;Tay, stop,&quot; Baynarah sobbed. &quot;I don&apos;t believe a word of it. You&apos;ve been feverish...&quot;
+ 
+
+&quot;Not Tay,&quot; he shook his head, breathing heavily. &quot;The name my parents gave me was Dagoth-Tython.&quot;
+ 
+
+&quot;You can&apos;t have killed Edebah, you loved her. And Vaster and Kalkorith? They were our cousins!&quot;
+ 
+
+&quot;They were not my true cousins,&quot; Tay said coldly. &quot;The Song told me they were my foes. Just as it&apos;s telling me now that you&apos;re my foe, but I won&apos;t listen. And I&apos;ll keep from listening... as long as I can.&quot;
+ 
+
+Baynarah fled from the room, slamming the door behind her. She took a key from the her startled maid Hillima, and secured the lock.
+ 
+
+&quot;Serjo Indoril-Baynarah,&quot; Hillima whispered, with great sympathy. &quot;Is all well with your cousin, Serjo Indoril-Tay?&quot;
+ 
+
+&quot;He&apos;ll be perfectly fine once he rests,&quot; Baynarah recovered her dignity, wiping the tears from her face. &quot;No one is to disturb him under any circumstances. I&apos;ll take the key with me. Now I have much work to do. I don&apos;t suppose anyone&apos;s spoken to the fishermen about restocking Sandil House&apos;s supplies?&quot;
+ 
+
+&quot;I don&apos;t know, serjo,&quot; said the maid. &quot;I don&apos;t think so.&quot; 
+
+
+Baynarah marched down to the docks, and relieved her troubled heart the only way she knew how, by concentrating on small things. Tay&apos;s words never left her, but she found temporary comfort talking to the fishermen about their haul, helping determine how much should be smoked, how much should be sent to the village, how much should be delivered fresh to the House larder.
+ 
+
+Her aunt Ulliah joined the discussion, oblivious to Baynarah&apos;s well-disguised agony. Together, they discussed how many provisions Uncle Triffith and his commanders had devoured during their weeks on the island, when they would be expected to return, and how best to prepare. One of the fishermen on the docks called out, interrupting.
+ 
+
+&quot;A boat is coming!&quot; 
+
+
+Ulliah and Baynarah greeted the visitor as she arrived. It was a young woman dressed in the robes of a Temple priestess. As she docked her small boat, Baynarah marveled at how beautiful she was, and strangely familiar.
+ 
+
+&quot;Welcome to Gorne,&quot; said Baynarah. &quot;I am Indoril-Baynarah and this is my aunt Indoril-Ulliah. Have we met before?&quot;
+ 
+
+&quot;I don&apos;t believe so, serjo,&quot; the woman bowed. &quot;I was sent by the Temple to inquire whether word had come from your cousin, Indoril-Tay. He has been missing from his classes for some days now, and the priests have become concerned.&quot;
+ 
+
+&quot;Oh, we should have sent word,&quot; Ulliah fretted. &quot;He came here a few days ago, half-drowned. He&apos;s better now. Let us escort you up to the house.&quot;
+ 
+
+&quot;Tay&apos;s resting now, and I asked that he not be disturbed,&quot; Baynarah stammered. &quot;Actually, I know it&apos;s dreadful manners, but I need to talk to my aunt for a moment. Would it be too terrible if I asked you to wait for us at the house? You have only to follow the path up the hill and across the lawn.&quot;
+ 
+
+The priestess bowed again humbly, and began the walk. Ulliah was scandalized. 
+
+
+&quot;You know better than to treat a representative of the Temple that way,&quot; she snapped. &quot;You can&apos;t be so exhausted from tending your cousin to have lost all sense of civility.&quot;
+ 
+
+&quot;Aunt Ulliah,&quot; Baynarah whispered, drawing the woman away from the ears of the fishermen. &quot;Is Tay truly my cousin? He believes himself to be... of the House Dagoth.&quot;
+ 
+
+Ulliah took a moment to respond. &quot;It&apos;s true. You were just a baby yourself during the War, so you couldn&apos;t know what it was like. There was not a part of Morrowind that wasn&apos;t ravaged. There was even a battle here on the island. Do you remember that burned pile of wreckage you and Tay and poor little Vaster discovered so many years ago? That was the remains. And after the War, when that accursed House was finally defeated, we saw the little innocents, the orphans whose only crime had been born to wicked parents. I admit there were some in our armies, the combined forces of the Houses, who would have had them all slaughtered to annihilate the legacy of Dagoth. In the end, compassion prevailed, and the children of the Sixth House were adopted into the other five. And so we thought that we had won the war and the peace.&quot;
+ 
+
+&quot;By the Mother, Lord, and Wizard, if all that Tay believes is true, then there is no peace,&quot; Baynarah trembled. &quot;He claims that the Song of his ancestors called to him, and forced him to slay three people, two of them our Housemen. Cousin Kalkorith and... when he was a little boy... Vaster.&quot;
+ 
+
+Ulliah held her hands over her tearful face and could not speak. 
+
+
+&quot;And it is only beginning,&quot; said Baynara. &quot;The Song still calls to him. He said there were others who knew, who would help him raise up the Sixth House. His sister...&quot;
+ 
+
+&quot;It must be an evil fantasy,&quot; Ulliah murmured. She noticed that Baynarah&apos;s gaze was now upon the path leading from the docks towards the house. &quot;Niece, what are you thinking?&quot;
+ 
+
+&quot;Did that priestess give us her name?&quot; 
+
+
+The two women ran up the path, calling for guards. The fishermen, who had never seen the mistresses of the house so undone, looked briefly at one another and then followed quickly behind, pulling out their hooks and blades.
+ 
+
+The front gate to Sandil House stood wide open, the first of the corpses lying close within. It was now an abattoir, painted fresh with blood. There was Aner, Uncle Triffith&apos;s valet, gutted but still seated at the foyer table where he had been enjoying his afternoon glass of flin. Leryne, one of the chambermaids, had been decapitated while carrying some once-clean linens up the stairs. The bodies of guards and servants sprawled about the hall like blown leaves. At the top of the stairs, Baynarah had to hold back a sob when she saw Hillima. She lay like a broken doll, slain as she tried to pull herself out onto the narrow window ledge.
+ 
+
+No one spoke, not Baynarah, nor Aunt Ulliah, nor the fishermen, as they walked slowly through the blood-drenched house. They passed Tay&apos;s sick-room, its door broken open, and no one within. When they heard the sound of footsteps in Baynarah&apos;s room down the hall, they approached slowly, cautiously, with great dread.
+ 
+
+The priestess from the docks was standing by the bed. In her hand was the silver ring Baynarah had taken from Tay&apos;s finger. In her other hand was a long, curved blade, splashed like her once pristine gown, with gore. She smiled prettily and bowed when she saw she was no longer alone.
+ 
+
+&quot;Acra, I should have recognized you by Tay&apos;s description in his letters,&quot; Baynarah said in her steadiest voice. &quot;Where is my cousin?&quot;
+ 
+
+&quot;I prefer to call myself Dagoth-Acra,&quot; she replied. &quot;Your false cousin, my true brother, has already gone to fulfill his destiny. I&apos;m sorry you were not here so he could give you a more permanent farewell.&quot;
+ 
+
+Baynarah&apos;s face twisted in fury. She motioned for the fishermen, who advanced with their weaponry. &quot;Tear her apart.&quot;
+ 
+
+&quot;The Sixth House will rise again, and Dagoth-Tython will lead us!&quot; Acra laughed. Her words were still echoing as she gave the sign of Recall and vanished like a ghost.
+ </Source>
+      <Dest>[pagebreak]
+&lt;p align=&quot;center&quot;&gt;
+
+
+The Poison Song
+Book V
+
+By
+Bristin Xel
+&lt;/p&gt;
+
+
+[pagebreak]
+&lt;p align=&quot;left&quot;&gt;
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/F_letter.png&apos;&gt;or two days, the House healers attended Tay in his bed, and Baynarah sat by his side, holding his hand. He was feverish, neither asleep nor awake, screaming at invisible phantoms. The healers complimented the young man&apos;s fortitude. Bodies had washed ashore on the island of Gorne several times, many during the War, but never once had they seen one that lived afterwards.
+ 
+
+Aunt Ulliah came in several times to bring Baynarah food: &quot;You must be careful, dear, or when he&apos;s all well, he&apos;ll have to attend you on your sickbed.&quot;
+ 
+
+Tay&apos;s fever broke, and at last he was able to open his eyes and see the young woman with whom he had spent seventeen years, all but the first year of his life. She smiled at him, and called for food. In silence, she helped him eat.
+ 
+
+&quot;I knew you wouldn&apos;t die, cousin,&quot; she whispered fondly. 
+
+
+&quot;I hoped to, but somehow I knew I wouldn&apos;t either,&quot; he groaned. &quot;Baynarah, do you remember all those nightmares I told you about? They&apos;re all true.&quot;
+ 
+
+&quot;We can talk about it when you&apos;ve rested some more.&quot; 
+
+
+&quot;No,&quot; he croaked. &quot;I must tell you everything now, so you&apos;ll know what kind of a monster you call your dear cousin Tay. If there was some way you could have known before, you might not have been so eager to see me well again.&quot;
+ 
+
+A tear rolled Baynarah&apos;s cheek. She had grown into a beauty, even in the few months he had been away in Mournhold. &quot;How can you think I would stop loving you, no matter what you&apos;ve done?&quot;
+ 
+
+&quot;I saw my old nursemaid Edebah, and spoke to her.&quot; 
+
+
+&quot;Oh,&quot; Baynarah had feared this moment. &quot;Tay, I don&apos;t know what she told you, but it was all my fault. You remember when Kena Grafisi taught us about the House Dagoth, and its corruption. That night, I saw your nursemaid making some kind of altar out on the north lawn, using the symbol of the Sixth House. She must have been doing it for years, but I never knew what it meant. I told Uncle Triffith, and he sent her away. I&apos;ve wanted to tell you so many times now, but I was afraid to. She was so devoted to you.&quot;
+ 
+
+Tay smiled. &quot;And didn&apos;t it frighten you even more to wonder if there was any connection between her devotion to me, and her devotion to the accursed House? I know you, Baynarah. You&apos;re not one of those women who doesn&apos;t choose to use her mind.&quot;
+ 
+
+&quot;Tay, I don&apos;t know what she told you, but I think she was very troubled, and whatever she thought about you and the Sixth House was wrong. You have to remember that. The ramblings of one madwoman are proof of nothing.&quot;
+ 
+
+&quot;There&apos;s more,&quot; Tay sighed, and held up his hand. For a moment he blinked, and then turned to Baynarah angrily. &quot;What happened to my ring? If you saw it, you must have known already that everything I&apos;m saying to you is true.&quot;
+ 
+
+&quot;I threw the filthy thing away,&quot; Baynarah stood up. &quot;Tay, I&apos;m going to let you rest now.&quot;
+ 
+
+&quot;I am the heir of House Dagoth,&quot; Tay was wild-eyed, almost screaming. &quot;Raised after the War as House Indoril, but driven by the Song of my ancestors. When we were young, I killed Vaster because the Song told me he had stolen my inheritance. When Edebah told me who I was and gave me this ring, I killed her and burned her house to the ground, because the Song told me she had served her purpose. When I returned to Kalkorith&apos;s house, my love was there, telling me that she was of the House Dagoth too, and my sister. I fled, and when Kalkorith tried to stop me, I slew him, because the Song told me he was an enemy.&quot;
+ 
+
+&quot;Tay, stop,&quot; Baynarah sobbed. &quot;I don&apos;t believe a word of it. You&apos;ve been feverish...&quot;
+ 
+
+&quot;Not Tay,&quot; he shook his head, breathing heavily. &quot;The name my parents gave me was Dagoth-Tython.&quot;
+ 
+
+&quot;You can&apos;t have killed Edebah, you loved her. And Vaster and Kalkorith? They were our cousins!&quot;
+ 
+
+&quot;They were not my true cousins,&quot; Tay said coldly. &quot;The Song told me they were my foes. Just as it&apos;s telling me now that you&apos;re my foe, but I won&apos;t listen. And I&apos;ll keep from listening... as long as I can.&quot;
+ 
+
+Baynarah fled from the room, slamming the door behind her. She took a key from the her startled maid Hillima, and secured the lock.
+ 
+
+&quot;Serjo Indoril-Baynarah,&quot; Hillima whispered, with great sympathy. &quot;Is all well with your cousin, Serjo Indoril-Tay?&quot;
+ 
+
+&quot;He&apos;ll be perfectly fine once he rests,&quot; Baynarah recovered her dignity, wiping the tears from her face. &quot;No one is to disturb him under any circumstances. I&apos;ll take the key with me. Now I have much work to do. I don&apos;t suppose anyone&apos;s spoken to the fishermen about restocking Sandil House&apos;s supplies?&quot;
+ 
+
+&quot;I don&apos;t know, serjo,&quot; said the maid. &quot;I don&apos;t think so.&quot; 
+
+
+Baynarah marched down to the docks, and relieved her troubled heart the only way she knew how, by concentrating on small things. Tay&apos;s words never left her, but she found temporary comfort talking to the fishermen about their haul, helping determine how much should be smoked, how much should be sent to the village, how much should be delivered fresh to the House larder.
+ 
+
+Her aunt Ulliah joined the discussion, oblivious to Baynarah&apos;s well-disguised agony. Together, they discussed how many provisions Uncle Triffith and his commanders had devoured during their weeks on the island, when they would be expected to return, and how best to prepare. One of the fishermen on the docks called out, interrupting.
+ 
+
+&quot;A boat is coming!&quot; 
+
+
+Ulliah and Baynarah greeted the visitor as she arrived. It was a young woman dressed in the robes of a Temple priestess. As she docked her small boat, Baynarah marveled at how beautiful she was, and strangely familiar.
+ 
+
+&quot;Welcome to Gorne,&quot; said Baynarah. &quot;I am Indoril-Baynarah and this is my aunt Indoril-Ulliah. Have we met before?&quot;
+ 
+
+&quot;I don&apos;t believe so, serjo,&quot; the woman bowed. &quot;I was sent by the Temple to inquire whether word had come from your cousin, Indoril-Tay. He has been missing from his classes for some days now, and the priests have become concerned.&quot;
+ 
+
+&quot;Oh, we should have sent word,&quot; Ulliah fretted. &quot;He came here a few days ago, half-drowned. He&apos;s better now. Let us escort you up to the house.&quot;
+ 
+
+&quot;Tay&apos;s resting now, and I asked that he not be disturbed,&quot; Baynarah stammered. &quot;Actually, I know it&apos;s dreadful manners, but I need to talk to my aunt for a moment. Would it be too terrible if I asked you to wait for us at the house? You have only to follow the path up the hill and across the lawn.&quot;
+ 
+
+The priestess bowed again humbly, and began the walk. Ulliah was scandalized. 
+
+
+&quot;You know better than to treat a representative of the Temple that way,&quot; she snapped. &quot;You can&apos;t be so exhausted from tending your cousin to have lost all sense of civility.&quot;
+ 
+
+&quot;Aunt Ulliah,&quot; Baynarah whispered, drawing the woman away from the ears of the fishermen. &quot;Is Tay truly my cousin? He believes himself to be... of the House Dagoth.&quot;
+ 
+
+Ulliah took a moment to respond. &quot;It&apos;s true. You were just a baby yourself during the War, so you couldn&apos;t know what it was like. There was not a part of Morrowind that wasn&apos;t ravaged. There was even a battle here on the island. Do you remember that burned pile of wreckage you and Tay and poor little Vaster discovered so many years ago? That was the remains. And after the War, when that accursed House was finally defeated, we saw the little innocents, the orphans whose only crime had been born to wicked parents. I admit there were some in our armies, the combined forces of the Houses, who would have had them all slaughtered to annihilate the legacy of Dagoth. In the end, compassion prevailed, and the children of the Sixth House were adopted into the other five. And so we thought that we had won the war and the peace.&quot;
+ 
+
+&quot;By the Mother, Lord, and Wizard, if all that Tay believes is true, then there is no peace,&quot; Baynarah trembled. &quot;He claims that the Song of his ancestors called to him, and forced him to slay three people, two of them our Housemen. Cousin Kalkorith and... when he was a little boy... Vaster.&quot;
+ 
+
+Ulliah held her hands over her tearful face and could not speak. 
+
+
+&quot;And it is only beginning,&quot; said Baynara. &quot;The Song still calls to him. He said there were others who knew, who would help him raise up the Sixth House. His sister...&quot;
+ 
+
+&quot;It must be an evil fantasy,&quot; Ulliah murmured. She noticed that Baynarah&apos;s gaze was now upon the path leading from the docks towards the house. &quot;Niece, what are you thinking?&quot;
+ 
+
+&quot;Did that priestess give us her name?&quot; 
+
+
+The two women ran up the path, calling for guards. The fishermen, who had never seen the mistresses of the house so undone, looked briefly at one another and then followed quickly behind, pulling out their hooks and blades.
+ 
+
+The front gate to Sandil House stood wide open, the first of the corpses lying close within. It was now an abattoir, painted fresh with blood. There was Aner, Uncle Triffith&apos;s valet, gutted but still seated at the foyer table where he had been enjoying his afternoon glass of flin. Leryne, one of the chambermaids, had been decapitated while carrying some once-clean linens up the stairs. The bodies of guards and servants sprawled about the hall like blown leaves. At the top of the stairs, Baynarah had to hold back a sob when she saw Hillima. She lay like a broken doll, slain as she tried to pull herself out onto the narrow window ledge.
+ 
+
+No one spoke, not Baynarah, nor Aunt Ulliah, nor the fishermen, as they walked slowly through the blood-drenched house. They passed Tay&apos;s sick-room, its door broken open, and no one within. When they heard the sound of footsteps in Baynarah&apos;s room down the hall, they approached slowly, cautiously, with great dread.
+ 
+
+The priestess from the docks was standing by the bed. In her hand was the silver ring Baynarah had taken from Tay&apos;s finger. In her other hand was a long, curved blade, splashed like her once pristine gown, with gore. She smiled prettily and bowed when she saw she was no longer alone.
+ 
+
+&quot;Acra, I should have recognized you by Tay&apos;s description in his letters,&quot; Baynarah said in her steadiest voice. &quot;Where is my cousin?&quot;
+ 
+
+&quot;I prefer to call myself Dagoth-Acra,&quot; she replied. &quot;Your false cousin, my true brother, has already gone to fulfill his destiny. I&apos;m sorry you were not here so he could give you a more permanent farewell.&quot;
+ 
+
+Baynarah&apos;s face twisted in fury. She motioned for the fishermen, who advanced with their weaponry. &quot;Tear her apart.&quot;
+ 
+
+&quot;The Sixth House will rise again, and Dagoth-Tython will lead us!&quot; Acra laughed. Her words were still echoing as she gave the sign of Recall and vanished like a ghost.
+ </Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DBM_MAASE_GodBook</EDID>
+      <REC>BOOK:DESC</REC>
+      <Source>[pagebreak]
+&lt;p align=&quot;center&quot;&gt;
+
+
+Encyclopaedia Bretonica &apos;The Gods&apos;
+Volume 9: X - Z
+
+
+[pagebreak]
+&lt;p align=&quot;left&quot;&gt;
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/X_letter.png&apos;&gt;arxes:
+God of ancestry and secretive knowledge. Once the scribe to Auri-El Time Dragon (see E.B. &apos;The Gods&apos; Volume 1) and husband to Oghma (see E.B. &apos;The Gods&apos; Volume 5) who he allegedly created out of his favorite historical moment.
+
+[pagebreak]
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/X_letter.png&apos;&gt;rib:
+One of the few known gods to have been recognized by the otherwise greater-power-disdaining Dwemer race, Xrib required sacrifices in his name in order to obtain his favors. The form said favors took is as yet undiscovered. An altar to Xrib, littered with the bones of former sacrifices, sits atop a mountain in Northeastern Skyrim. 
+&lt;font face=&quot;$HandwrittenFont&quot;&gt;
+[Scribbled into the margins here is the following] A Dwemer god! What kind of &apos;research&apos; went into the making of this ridiculous series? Kind reader, let me direct you to &apos;The Legacy of Dwemer Paragons&apos; by Hyminae Whippet. There you will discover the truth of who Xrib really was. Calcelmo, Dwemer Scholar.
+&lt;font face=&quot;$SkyrimBooks&quot;&gt;
+
+[pagebreak]
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/Y_letter.png&apos;&gt;&apos;ffre:
+Bosmer god of the forest or woodland, and the current time or &apos;now&apos;. He supposedly nurtured mortal men and mer (The Bosmer, particularly) by teaching them about the world, thus gaining the additional title of &apos;The Storyteller&apos;.
+
+[pagebreak]
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/Y_letter.png&apos;&gt;smir:
+The Nordic aspect of the god Talos, said to have been able to hear the prophecy of the Greybeards. The knowledge of the prophecy gave him the countenance of a Dragon. Or perhaps he was just eaten by one. Hard to say, really.
+
+[pagebreak]
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/Z_letter.png&apos;&gt;eht:
+Yokudan god of farming and agriculture. Apparently he made the mistake of angering his father, the Yokudan version of an All-Father, which makes farming especially hard on Yokudans.
+
+[pagebreak]
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/Z_letter.png&apos;&gt;&apos;en, Zenithar:
+One of the Nine Divines, the god of commerce, work, merchants and nobility.
+
+</Source>
+      <Dest>[pagebreak]
+&lt;p align=&quot;center&quot;&gt;
+
+
+Encyclopaedia Bretonica &apos;The Gods&apos;
+Volume 9: X - Z
+
+
+[pagebreak]
+&lt;p align=&quot;left&quot;&gt;
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/X_letter.png&apos;&gt;arxes:
+God of ancestry and secretive knowledge. Once the scribe to Auri-El Time Dragon (see E.B. &apos;The Gods&apos; Volume 1) and husband to Oghma (see E.B. &apos;The Gods&apos; Volume 5) who he allegedly created out of his favorite historical moment.
+
+[pagebreak]
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/X_letter.png&apos;&gt;rib:
+One of the few known gods to have been recognized by the otherwise greater-power-disdaining Dwemer race, Xrib required sacrifices in his name in order to obtain his favors. The form said favors took is as yet undiscovered. An altar to Xrib, littered with the bones of former sacrifices, sits atop a mountain in Northeastern Skyrim. 
+&lt;font face=&quot;$HandwrittenFont&quot;&gt;
+[Scribbled into the margins here is the following] A Dwemer god! What kind of &apos;research&apos; went into the making of this ridiculous series? Kind reader, let me direct you to &apos;The Legacy of Dwemer Paragons&apos; by Hyminae Whippet. There you will discover the truth of who Xrib really was. Calcelmo, Dwemer Scholar.
+&lt;font face=&quot;$SkyrimBooks&quot;&gt;
+
+[pagebreak]
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/Y_letter.png&apos;&gt;&apos;ffre:
+Bosmer god of the forest or woodland, and the current time or &apos;now&apos;. He supposedly nurtured mortal men and mer (The Bosmer, particularly) by teaching them about the world, thus gaining the additional title of &apos;The Storyteller&apos;.
+
+[pagebreak]
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/Y_letter.png&apos;&gt;smir:
+The Nordic aspect of the god Talos, said to have been able to hear the prophecy of the Greybeards. The knowledge of the prophecy gave him the countenance of a Dragon. Or perhaps he was just eaten by one. Hard to say, really.
+
+[pagebreak]
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/Z_letter.png&apos;&gt;eht:
+Yokudan god of farming and agriculture. Apparently he made the mistake of angering his father, the Yokudan version of an All-Father, which makes farming especially hard on Yokudans.
+
+[pagebreak]
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/Z_letter.png&apos;&gt;&apos;en, Zenithar:
+One of the Nine Divines, the god of commerce, work, merchants and nobility.
+
+</Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DBM_MAASE_DwemerPrimer2</EDID>
+      <REC>BOOK:DESC</REC>
+      <Source>[pagebreak]
+&lt;p align=&quot;center&quot;&gt;
+
+
+&lt;b&gt;The Legacy of Dwemer Paragons&lt;/b&gt;
+
+By
+Hyminae Whippet
+&lt;/p&gt;
+
+[pagebreak]
+&lt;p align=&quot;left&quot;&gt;
+You find the the following relevant entry earmarked near the back of the book:
+
+[pagebreak]
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/X_letter.png&apos;&gt;rib earned the title of Paragon by being the primary inventor of the science behind the creation of Automatons. He was the researcher who first discovered the way to breathe life into the constructs that changed Dwemer society forever. This breakthrough led to the bulk of the Dwemer peoples leading lives of relative leisure. They were able to focus on other pursuits, such as the continued advancement of Dwemer engineering.
+
+My research indicates that Xrib&apos;s university was most likely located in North-eastern Skyrim, possibly underneath the very mountain where a monument to his [her?] &apos;godhood&apos; can be found.  
+</Source>
+      <Dest>[pagebreak]
+&lt;p align=&quot;center&quot;&gt;
+
+
+&lt;b&gt;The Legacy of Dwemer Paragons&lt;/b&gt;
+
+By
+Hyminae Whippet
+&lt;/p&gt;
+
+[pagebreak]
+&lt;p align=&quot;left&quot;&gt;
+You find the the following relevant entry earmarked near the back of the book:
+
+[pagebreak]
+&lt;img src=&apos;img://Textures/Interface/Books/Illuminated_Letters/X_letter.png&apos;&gt;rib earned the title of Paragon by being the primary inventor of the science behind the creation of Automatons. He was the researcher who first discovered the way to breathe life into the constructs that changed Dwemer society forever. This breakthrough led to the bulk of the Dwemer peoples leading lives of relative leisure. They were able to focus on other pursuits, such as the continued advancement of Dwemer engineering.
+
+My research indicates that Xrib&apos;s university was most likely located in North-eastern Skyrim, possibly underneath the very mountain where a monument to his [her?] &apos;godhood&apos; can be found.  
+</Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DBM_GuideBook</EDID>
+      <REC>BOOK:DESC</REC>
+      <Source>[pagebreak]
+&lt;p align=&quot;center&quot;&gt;
+&lt;font face=&apos;$Handwrittenbold&apos;&gt;&lt;font size=&apos;25&apos;&gt;
+
+Dragonborn Gallery
+Curator&apos;s Museum Guide
+
+Current display count: &lt;Global=DBM_DisplayCount&gt;&lt;/font&gt;
+
+&lt;/p&gt;
+
+[pagebreak]
+&lt;p align=&quot;left&quot;&gt;
+This guide outlines the specifics of utilizing all the functions of this museum. It can also be used to quickly find your way to specific areas of the museum without having to wander around, or to locate the Curator. Simply read the Curator&apos;s Guide again to transport to a chosen area of the museum or select &quot;Find Curator&quot; to locate Auryen in the museum. It will mark him with a quest marker until you interact with him again. The transportation feature can only be used in museum related areas, guildhouse and the safehouse. If the book is lost somehow, it will respawn by the front door of the museum. Also note that fast travel (if enabled) is available from any space inside the museum and safehouse.
+&lt;p&gt;
+&lt;b&gt;Displays:&lt;/b&gt;
+You can place any unique item which has a display in its designated location by clicking on the display while the item is in your inventory. Click again to remove it. Displays will ignore all equipped and favorited items. All items put on display are stored inside the museum&apos;s Display Safe located in the museum office behind the Hermaeus Mora painting.The safe is for EMERGENCY USE ONLY. If you need to retrieve an item, simply take it from its display manually. There are several displays in the museum which appear to be vacant of a display activator; these displays will become available when the relic for it is in your inventory as you enter the area with the display. These are for relics which have variant versions such as Red Eagle&apos;s Sword or Azura&apos;s Star.
+&lt;p&gt;
+&lt;b&gt;Supported mods:&lt;/b&gt;
+Legacy offers patches for a variety of mods which range from simply conflict resolutions to museum displays. These patches are ESL flagged ESP files which do not take space in your load order. Download the FOMOD installer for our patches and run it after your full mod list is installed and activated to ensure all patches you need are installed. Come see the Legacy Nexus page for instructions on creating official supported patches for other mods. Using our official system will fully integrate your displays into the museum, complete with prep station and MCM checklist support.
+&lt;p&gt;
+&lt;b&gt;Museum Event Pacing:&lt;/b&gt;
+Most of Legacy&apos;s quests and features are handled by your display count. Certain quests become available as your display count increases and patrons will visit the museum and leave you donations in the box by the front door starting at 50 displays. They donate randomly each day based on total display count. This pace can be slowed through the MCM configuration menu until you reach 50 displays and will let you pick longer waits between events/rewards if you have a larger load order with more items to find.
+&lt;p&gt;
+&lt;b&gt;Prep Station:&lt;/b&gt;
+In the museum office you will find a prep station for displays. When used, all items from your inventory which are not already on display and NOT equipped, favorited, or added to the exclusion list (see safehouse features that follows), will be placed in the museum safe and the display enabled. There is one prep station which handles all displays. While the prep stations are processing the item lists, displays cannot be placed or removed manually and the safe cannot be emptied. This process generally takes between a few seconds to a couple of minutes depending on how many items from the different galleries you have with you at the time. Displays will generally prefer accepting replicas of items first, but the prep station can be configured in a number of ways to accept them first, last, only or never in addition to some other useful configurable functions.
+&lt;p&gt;
+&lt;b&gt;Centralized Storage:&lt;/b&gt;
+The museum office, Gallery of Natural Science, Airship, guildhouse, guild field stations and all excavation base camps have access to a centralized stack of crates that provide menu based access to all storage inside the safehouse. There is also an optional spell you can activate in the MCM menu which allows remote access to this feature.
+&lt;p&gt;
+&lt;b&gt;Jewelry:&lt;/b&gt;
+A jewelry case in the upper hall of heroes can have items displayed via the prep station, or by simply adding items into the cabinet at the base. These models will update dynamically to match any model replacer that affects unique jewelry. All displays disappear and refresh with any jewelry that is present in the case.
+&lt;p&gt;
+&lt;b&gt;Book Sets:&lt;b&gt;
+Special book cases are in place to accept and display book sets. Using the prep station will display 1 copy of each book automatically, or the shelf can be activated to either remove all of that set or place any missing books of that set you may have onto the shelf.
+&lt;p&gt;
+&lt;b&gt;Book Sorting:&lt;/b&gt;
+After placing books in the Book Return on the lower floor of the library, activate the card catalog sorter next to it. All displayable books will be removed and displayed and the remaining books will be sorted alphabetically (Alphabetical, Numerical, Spells, Skill Books, Notes, Journals, etc). 
+
+Please note that skill books which have been read are sorted alphabetically and are no longer recognized by the game as being a skill book and hence do not sort to the skill books case.
+&lt;p&gt;
+&lt;b&gt;Library Reader Function:&lt;/b&gt;
+After sorting books, use the left card catalog to update the book list. All books stored or displayed in the library can be read simply by sitting in any of the chairs of the library. Your inventory will then be populated with all books from the book list and upon standing once again, the books will be removed.
+&lt;p&gt;
+&lt;b&gt;Shipment Crates:&lt;/b&gt;
+The museum office has a large delivery crate which can receive items from shipment crates placed in various places across Skyrim. By default each of the Carriage drivers have a museum shipment crate which you can place any item in to have it delivered to the museum for you. Once activated, the contents will be delivered 5 hours later. You can also configure additional crates at vanilla player homes or near Inns. Additionally you can craft additional shipment crates to place anywhere you like (one is provided for free when using the shipment planner in the office for the first time). These crates share a central out box. Simply drop the crate, Select drag it where you like and when satisfied, wait a few seconds for the prompt to lock it in place. If you don&apos;t like it simply pick it back up before the prompt or select &apos;No&apos;. Once locked in place, you can remove it by activating the crate while sneaking.
+&lt;p&gt;
+&lt;b&gt;Scribe&apos;s Desk:&lt;/b&gt;
+Auryen&apos;s desk in his office can be used to make copies of quest books previously found so that you can have an extra on display. It&apos;s best to turn the book in first to ensure the quest does not bug, then make a copy. The station can also make paper rolls which are needed, by breaking down ruined books. A supply cabinet is also kept stocked behind the desk.
+&lt;p&gt;
+&lt;b&gt;Printing Press:&lt;/b&gt;
+This station is a variation of the scribe&apos;s desk in the museum office which can be used to copy specific quest books for display. It&apos;s recommended that you wait until after you turn in the original as the prepstation and display may take the quest specific instance of the book rather than the copy. The system will track what quest items have come through your inventory and make the copy recipe available for the books at that time and the original is not required at the time you make it.
+&lt;p&gt;
+&lt;b&gt;Mannequin Configuration:&lt;/b&gt;
+Two mini mannequins in the museum office can be activated to swap the mannequins in the Armory from being set with half male mannequins and half female mannequins, or can be set to all male. Use the all male option if you prefer using a mannequin replacer mod. Make sure to empty the mannequins before swapping their state or items will be lost.
+&lt;p&gt;
+&lt;b&gt;Paintings:&lt;/b&gt;
+Paintings which are acquired throughout Skyrim can be manually placed in any of the painting locations in the museum. Using the museum safe to empty all displays will also remove the paintings. There is also a painting display tool next to the museum prep station in the curator&apos;s office which will display any paintings you possess, including any optionally enabled painting displays.
+&lt;p&gt;
+&lt;b&gt;Quest Item Displays and Replicas:&lt;/b&gt;
+Quest items which are turned in and not obtainable again cannot typically be displayed. Instead a replica workstation is in the office and safehouse workshop which allows construction of replicas to be used for display. Quest items you retain after the quest can be displayed manually but will typically not sort via the prep station to avoid accidentally removing a needed item during the quest. To make replica items, you simply have to have acquired the item during play but do not have to currently have it in hand to make a replica like when making replicas of general items (requires Legacy to be loaded when item was found). Once a replica has been crafted, the option is removed and further copies can be made only if the MCM option is set to allow crafting duplicates. The replica station will also create replicas of most items as long as you have them in your inventory and the item is not on display. This will allow you to display a replica and use the original if you wish. Replicas do not have tempering recipes and are generally weaker and unenchanted. These replicas are not meant to be useable unenchanted versions.
+&lt;p&gt;
+&lt;b&gt;Quest Achievement Exhibits:&lt;/b&gt;
+Upon completing major quest lines such as guild quests, main quests etc, an exhibit in the museum will permanently enable when entering the room. If these displays do not enable properly because of a mod conflict, you can enable them using the MCM configuration menu; Display management section.
+&lt;p&gt;
+&lt;b&gt;Exploration Exhibits:&lt;/b&gt;
+When exploring Dwemer ruins, Nordic ruins, or Snow Elf ruins, various displays will enable automatically in the Hall of Lost Empires or in the Cultural exhibits in the lower hallway of the hall of heroes. Alternately, if these displays are not working for you, you may enable them in the MCM configuration menu.
+&lt;p&gt;
+&lt;b&gt;Doomstone and Shrine displays:&lt;/b&gt;
+These displays will enable when receiving a blessing from the corresponding stone or shrine. Doomstones do not need to have their blessing accepted, the stones just have to be activated to  get the display.
+&lt;p&gt;
+&lt;b&gt;Natural Science Displays:&lt;/b&gt;
+Many fauna displays can be built in the natural science hall which requires materials to build. Simply click on the plagues around the hall while you have the indicated ingredients in your inventory or inside of proper storage in order to build the displays. These do not build by storing or sorting items and only appear when manually built.
+
+The natural science room also contains a hatchery for spawning fish in the aquarium as well as several planters for growing flora.
+&lt;p&gt;
+&lt;b&gt;Customizable Museum Displays:&lt;/b&gt;
+Using this guide book will allow you to toggle on and off a number of golden gallery control icons in various places of the museum. Activating these icons will let you customize a number of pre-set displays and features such as mannequins, weapon racks, benches and planters, statues, water features, paintings, tapestries and more. Once you are done customizing the displays simply deactivate the icons again. When enabling weapon racks or mannequins it may be necessary to step out of the cell and come back in order for full functionality to be available.
+&lt;p&gt;
+&lt;b&gt;MCM Menu custom features:&lt;/b&gt;
+If using SkyUI, Legacy of the Dragonborn has a useful MCM menu with a variety of custom tools such as holiday decoration options, light level settings, visitor configuration options and much more.
+&lt;p&gt;
+&lt;b&gt;Museum Visitors:&lt;/b&gt;
+In addition to new custom NPCs that visit regularly, there is a chance that a few visitors from the base game will show up to take in the sights. While visiting, non-legacy visitors will have their dialogue disabled to avoid potential mechanical issues. When leaving the museum area, these vanilla NPCs will be returned to their normal locations. There is also mod added NPC support both through patch implementation and also through using leaflets.
+&lt;p&gt;
+&lt;b&gt;Museum Leaflets:&lt;/b&gt;
+Available by the front door of the museum as well as in the office and craftable at the scribe desk/printing press, these fliers will give a dialogue option when carried to allow you to give a flier to most NPCs. This will add the NPC to a list of possible random visitors. Some NPCs such as Ulfric and all civil war officers have been put on an exclusion list for obvious reasons and cannot be given a leaflet.
+&lt;p&gt;
+&lt;b&gt;Museum Spoils Chest:&lt;/b&gt;
+This chest functions like a faction chest where you can get random useful (or useless) items ocassionally. This chest will also get additional reward items added to it after quests for the museum are completed. The chest DOES reset periodically, so use it or lose it. The chest will also ocassionally have items needed for displays such as rare coins, shells, fate cards, etc.
+
+[pagebreak]
+&lt;font size=&apos;20&apos;&gt;Safehouse Features&lt;/font&gt;
+&lt;p&gt;
+&lt;b&gt;Supply Sorting:&lt;/b&gt;
+Inside the safehouse workshop you will find a chest overflowing with goods. Activate this chest and all crafting materials, scrolls, potions, soul gems and more will be sorted into their proper storage containers. You can configure which items you wish to have sorted or not in the MCM configuration menu, or by utilizing the supply sorting planning station above the sorter. When an object is visible in the shelf, that variety of item will be sorted, if it&apos;s not, it will be ignored. Simply click to toggle these item categories off and on.
+&lt;p&gt;
+Storage containers are also learning containers. So if there are any mod added items you would like sorted at the press of a button as well, simply place them manually into the container and they will be recorded to the sort lists. If you ever wish to reset a sort list to default, simply use the Supply Planner book on the stand next to the Supply Sorter and choose which list to reset. The MCM menu also has an option for this.
+&lt;p&gt;
+&lt;b&gt;Dynamic Storage Displays:&lt;/b&gt;
+Any items placed inside the raw or cooked food containers, the liquor cabinet or the dishes hutches will display throughout the safehouse on the tables, counters
+and shelves around the area. Grabbing these items will also give you back one of that item from the container and disable the display if the container has none left.
+&lt;p&gt;
+&lt;b&gt;Craftloot System:&lt;/b&gt;
+By default the craftloot system is disabled but can be turned on by activating the craftloot toggle book to the left as you enter the workshop area. While it is enabled, using any craft station in the safehouse will loot any supply item that currently is set to sort in the MCM menu which is common for that station to utilize. When used, the station will first give you all supply crafting items and then enter into crafting like normal. After the station is left, the items will return to storage. If the system starts to cause issues due to an excessive number of stored items, either thin your supplies or disable the craftloot system to avoid problems. The MCM menu also offers a universal option to utilize craftloot with ANY crafting station in the game but could prove problematic on heavily scripted load orders so use with caution.
+&lt;p&gt;
+&lt;b&gt;Sorting Exclusion List:&lt;/b&gt;
+The museum prep station will ignore any items equipped or favorited but also will ignore items on the exclude list. Any items you place inside the &quot;Exclude from sorting&quot; knapsack near the supply sorting area will be recorded to a list after the container is closed. This list will ignore all rules and these items will always remain in your inventory unless manually displayed or stored. The supply sorter, craftloot system and prep station will ignore these items. Simply remove all items after you have exited the container.
+&lt;p&gt;
+Soul Gem Transmorgrifier:
+This station allows you to combine smaller soul gems into larger ones as well as to craft petty gems out of 5 identical fragments. The station will work to combine empty as well as filled soul gems.
+&lt;p&gt;
+Disenchanter:
+The disenchanter will do what it sounds like: clear enchantments. However it should ONLY be used on items you enchanted yourself otherwise it purges the enchantment from ALL copies of that item past present and future. They will reset on game reload however. The disenchanter will also clear any tempering improvements made to a weapon as well as the enchantments.
+&lt;p&gt;
+Soul Extractor:
+This station will take the living essence within enchanted items and break it down back into soul gems, destroying the item in the process. This only applies to weapons which have a specific charge to determine which size of gems it will yeild. 
+&lt;p&gt;
+&lt;b&gt;Sorting Chest:&lt;/b&gt;
+The sorting chest is a universal master sorter for the entire safehouse. The ONLY thing it will not do is display unique items. Any item placed into the sorting chest will go to a number of storage containers throughout the safehouse and museum. Gold will go to the secret treasury, food to the kitchen, books to the museum library book return, scrolls to the scroll storage, liquor to the wine cellar, weapons to their appropriate racks in the safehouse and much more. Any item that does not sort will remain in the container. The only items that don&apos;t sort are typically mod added items that have no keywords or are not on sorting lists. Manual placement of these items into learning containers will program them to the appropriate list for future sorting.
+&lt;p&gt;
+&lt;b&gt;Treasury Room:&lt;/b&gt;
+The hidden treasury room has a ledger which is used to store gold. When you store gold inside the ledger, the treasury room will fill with more and more loot displays. Continue adding up to 2 million gold to have the treasury fully filled. The system also identifies the gold value of gold ingots, silver ingots, gems and a number of mod supported items such as Coins of Tamriel mod and More Interesting Loot treasure. There is also a pedestal for King Orgnum&apos;s Coffer which will automatically use the coffer&apos;s daily gold gain ability and add it to your treasury as long as it remains on display there.
+&lt;p&gt;
+&lt;b&gt;Closet System:&lt;/b&gt;
+The safehouse offers a quick store, quick equip outfit system. Store your outfit in one of the several categorized drawers. Then activate the change outfit activator to select which outfit you wish to wear. All items will be added to your inventory and equipped.
+&lt;P&gt;
+&lt;b&gt;Sell Cart:&lt;/b&gt;
+After 100 displays are in place, you will have the option to have Auryen start to empty the sell cart in the safehouse and sell the items for you. You will get 30% of the value of items sold initially and over time, it grows to 50%. The cart will sell a random number of stacks of items each day which is configurable in the MCM menu. The sell cart will calculate the gold value of pre-enchanted gear, but because of limitations of the system, will only count base value of enchanted items you have created.
+&lt;p&gt;
+&lt;b&gt;Furniture Upgrade:&lt;/b&gt;
+Furniture sets can be purchased from bits and pieces in Solitude. There are 4 addons which can be purchased included an expanded balcony greenhouse garden, front patio sitting area, kids room and follower room. Each are set up as soon as you make the purchase.
+&lt;p&gt;
+[pagebreak]
+&lt;font size=&apos;20&apos;&gt;Explorers Society&lt;/font&gt;
+&lt;p&gt;
+The Explorers Society is a player established guild that is begun along with Auryen and unlocks a number of new interesting features, NPCs and quests.
+&lt;p&gt;
+Explorer Relics:
+A number of unique items can be found which bolster your relic hunting skills and abilities by helping to track relics, dig sites, improve fragment drop rates and give other special bonuses. These relics can be used or displayed in the trophy case of the Explorers Guild house.
+&lt;p&gt;
+Archaeology:
+Find excavation sites in or near all Nordic, Dwemer and Falmer ruins. You will gain a few fragments which you should bring to the archaeology station in the guildhouse, workshop or museum office. A number of fragments can be assembled to create artifacts which can be displayed in the Hall of Heroes reception area. Many of these items also have special abilities you may want to utilize. As you gather fragments and assemble relics, you will gain skill in an Archaeology skill that will allow you to create more elaborate items and unique relics. By default the crafting menu will hide any artifact recipes you have already placed on display. The MCM menu has an option to turn this feature off if you wish to make duplicates of anything.
+&lt;p&gt;
+Archaeology Perks:
+Legacy offers three brand new perk trees for archaeology! These perk trees operate 100% apart from the menu skill tree and therefore will not conflict in any way. The trees are accessible only at the Explorers Guild house or in the MCM menu where you can select the perks you desire.
+&lt;p&gt;
+Excavation Perks (pickaxe tree):
+Excavator RK1: 1 extra fragment from excavation sites and 20% chance of 1 extra keystone.
+Excavator RK2: 2 extra fragments from excavation sites and 25% chance of 1 extra keystone.
+Excavator RK1: 3 extra fragments from excavation sites and 30% chance of 1 extra keystone.
+Relic Hunter: Gives Locate Relic Power which targets a nearby relic.
+Surveyor: Gives Survey Dig Site Power which targets a nearby excavation site.
+&lt;p&gt;
+Expedition Perks (torch tree):
+Pack it in RK1: Increase carry capacity by 50.
+Pack it in RK2: Increase carry capacity by 75.
+Pack it in RK3: Increase carry capacity by 100.
+Scrapper: 50% bonus to blocking with torches and 25% bonus damage with pickaxes.
+&lt;p&gt;
+Academia Perks (compass rose tree):
+Supporter Branch-Benefactor: Sell prices on your items is increased by 10%.
+Quartermaster: Provides more gold and inventory to the Explorers Society Quartermaster shop.
+Dwemer Branch-Dwarven Specialization: Resist shock 10%, increased critical chance and damage to Automatons by 15%.
+Salvager: Automatons drop increased loot and the possibility of fragments.
+Artificer: You can spend 1 filled greater soul gem to rebuild a fallen Automaton as a follower.
+&lt;p&gt;
+Nordic Branch-Nordic Specialization: Resist Fire 10%, increased critical chance and damage to Undead by 15%.
+Exhume: Find increased gems, gold and possible fragments from Draugr, urns and burial remains.
+Walk Amongst the Dead: Provides a power that allows caster to move unabated amongst the undead.
+&lt;p&gt;
+Falmer and Snow Elf Branch-Falmer Specialization: Resist Poison 10%, increased critical chance and damage to Falmer and Charurus by 15%.
+Scavenger: Yield more resources and possible fragments from Charurus and Falmer.
+Tamer&apos;s Hand: You have a chance to tame 1 Charurus at a time by interacting with it.
+&lt;p&gt;
+Additional Member Features:
+In addition to being able to recruit an explorer member as a follower, most have their own special functions. Additionally, when used as followers, the explorers will gather items on their own (not from the area but from a random roll list).
+&lt;p&gt;
+Latoria: offers free explorer signet rings once every 24 hours and gives you a special unique version called Wanderlust. Also offers a quest to collect ruined books for which she&apos;ll give you new treasure maps, rare books and spell tomes in return. As a follower she gathers soul gems, tomes, scrolls, paper and the like.
+&lt;p&gt;
+Kyre: you can bring him ore and he can occasionally find gems or other ore types inside it. This can also be done once every 24 hours. As a follower, Kyre gathers ore, ingots and gems.
+&lt;p&gt;
+Eriana: runs the guild store. When used as a follower, Eriana gathers potions, lockpicks and other useful equipment.
+&lt;p&gt;
+Madras: eventually will start a quest to help build a Dwemer planetarium. When utilized as a follower, Madras will accumulate all manner of Dwemer materials.
+&lt;p&gt;
+Marassi: starts the three excavation quests and field station building quests. As a follower, Marassi will gain archaeological fragments.
+&lt;p&gt;
+Explorers can also be sent out on their own to excavate, and will return three days later with fragments, some gold from spoils sold and occasionally a rare, assembled artifact for display.
+&lt;p&gt;
+Recruiting followers:
+Using the Guildmaster&apos;s Journal found in the guild house, you can recruit any of your current followers who have been given an Explorers Guild Ring. This works for any follower that uses the vanilla follower system or an extension thereof (such as Nether&apos;s follower framework). Followers with custom systems may not work. Recruited members can be sent on digs just like the core explorer members can.
+&lt;p&gt;
+Gather the team:
+Using the Guildmaster&apos;s Journal will also summon the entire senior team and up to 4 random other recruited members to a meeting which lasts 1 hour in game, giving you a chance to assign tasks, utilize services, progress quests, change gear and select active followers.</Source>
+      <Dest>[pagebreak]
+&lt;p align=&quot;center&quot;&gt;
+&lt;font face=&apos;$Handwrittenbold&apos;&gt;&lt;font size=&apos;25&apos;&gt;
+
+Dragonborn Gallery
+Curator&apos;s Museum Guide
+
+Current display count: &lt;Global=DBM_DisplayCount&gt;&lt;/font&gt;
+
+&lt;/p&gt;
+
+[pagebreak]
+&lt;p align=&quot;left&quot;&gt;
+This guide outlines the specifics of utilizing all the functions of this museum. It can also be used to quickly find your way to specific areas of the museum without having to wander around, or to locate the Curator. Simply read the Curator&apos;s Guide again to transport to a chosen area of the museum or select &quot;Find Curator&quot; to locate Auryen in the museum. It will mark him with a quest marker until you interact with him again. The transportation feature can only be used in museum related areas, guildhouse and the safehouse. If the book is lost somehow, it will respawn by the front door of the museum. Also note that fast travel (if enabled) is available from any space inside the museum and safehouse.
+&lt;p&gt;
+&lt;b&gt;Displays:&lt;/b&gt;
+You can place any unique item which has a display in its designated location by clicking on the display while the item is in your inventory. Click again to remove it. Displays will ignore all equipped and favorited items. All items put on display are stored inside the museum&apos;s Display Safe located in the museum office behind the Hermaeus Mora painting.The safe is for EMERGENCY USE ONLY. If you need to retrieve an item, simply take it from its display manually. There are several displays in the museum which appear to be vacant of a display activator; these displays will become available when the relic for it is in your inventory as you enter the area with the display. These are for relics which have variant versions such as Red Eagle&apos;s Sword or Azura&apos;s Star.
+&lt;p&gt;
+&lt;b&gt;Supported mods:&lt;/b&gt;
+Legacy offers patches for a variety of mods which range from simply conflict resolutions to museum displays. These patches are ESL flagged ESP files which do not take space in your load order. Download the FOMOD installer for our patches and run it after your full mod list is installed and activated to ensure all patches you need are installed. Come see the Legacy Nexus page for instructions on creating official supported patches for other mods. Using our official system will fully integrate your displays into the museum, complete with prep station and MCM checklist support.
+&lt;p&gt;
+&lt;b&gt;Museum Event Pacing:&lt;/b&gt;
+Most of Legacy&apos;s quests and features are handled by your display count. Certain quests become available as your display count increases and patrons will visit the museum and leave you donations in the box by the front door starting at 50 displays. They donate randomly each day based on total display count. This pace can be slowed through the MCM configuration menu until you reach 50 displays and will let you pick longer waits between events/rewards if you have a larger load order with more items to find.
+&lt;p&gt;
+&lt;b&gt;Prep Station:&lt;/b&gt;
+In the museum office you will find a prep station for displays. When used, all items from your inventory which are not already on display and NOT equipped, favorited, or added to the exclusion list (see safehouse features that follows), will be placed in the museum safe and the display enabled. There is one prep station which handles all displays. While the prep stations are processing the item lists, displays cannot be placed or removed manually and the safe cannot be emptied. This process generally takes between a few seconds to a couple of minutes depending on how many items from the different galleries you have with you at the time. Displays will generally prefer accepting replicas of items first, but the prep station can be configured in a number of ways to accept them first, last, only or never in addition to some other useful configurable functions.
+&lt;p&gt;
+&lt;b&gt;Centralized Storage:&lt;/b&gt;
+The museum office, Gallery of Natural Science, Airship, guildhouse, guild field stations and all excavation base camps have access to a centralized stack of crates that provide menu based access to all storage inside the safehouse. There is also an optional spell you can activate in the MCM menu which allows remote access to this feature.
+&lt;p&gt;
+&lt;b&gt;Jewelry:&lt;/b&gt;
+A jewelry case in the upper hall of heroes can have items displayed via the prep station, or by simply adding items into the cabinet at the base. These models will update dynamically to match any model replacer that affects unique jewelry. All displays disappear and refresh with any jewelry that is present in the case.
+&lt;p&gt;
+&lt;b&gt;Book Sets:&lt;b&gt;
+Special book cases are in place to accept and display book sets. Using the prep station will display 1 copy of each book automatically, or the shelf can be activated to either remove all of that set or place any missing books of that set you may have onto the shelf.
+&lt;p&gt;
+&lt;b&gt;Book Sorting:&lt;/b&gt;
+After placing books in the Book Return on the lower floor of the library, activate the card catalog sorter next to it. All displayable books will be removed and displayed and the remaining books will be sorted alphabetically (Alphabetical, Numerical, Spells, Skill Books, Notes, Journals, etc). 
+
+Please note that skill books which have been read are sorted alphabetically and are no longer recognized by the game as being a skill book and hence do not sort to the skill books case.
+&lt;p&gt;
+&lt;b&gt;Library Reader Function:&lt;/b&gt;
+After sorting books, use the left card catalog to update the book list. All books stored or displayed in the library can be read simply by sitting in any of the chairs of the library. Your inventory will then be populated with all books from the book list and upon standing once again, the books will be removed.
+&lt;p&gt;
+&lt;b&gt;Shipment Crates:&lt;/b&gt;
+The museum office has a large delivery crate which can receive items from shipment crates placed in various places across Skyrim. By default each of the Carriage drivers have a museum shipment crate which you can place any item in to have it delivered to the museum for you. Once activated, the contents will be delivered 5 hours later. You can also configure additional crates at vanilla player homes or near Inns. Additionally you can craft additional shipment crates to place anywhere you like (one is provided for free when using the shipment planner in the office for the first time). These crates share a central out box. Simply drop the crate, Select drag it where you like and when satisfied, wait a few seconds for the prompt to lock it in place. If you don&apos;t like it simply pick it back up before the prompt or select &apos;No&apos;. Once locked in place, you can remove it by activating the crate while sneaking.
+&lt;p&gt;
+&lt;b&gt;Scribe&apos;s Desk:&lt;/b&gt;
+Auryen&apos;s desk in his office can be used to make copies of quest books previously found so that you can have an extra on display. It&apos;s best to turn the book in first to ensure the quest does not bug, then make a copy. The station can also make paper rolls which are needed, by breaking down ruined books. A supply cabinet is also kept stocked behind the desk.
+&lt;p&gt;
+&lt;b&gt;Printing Press:&lt;/b&gt;
+This station is a variation of the scribe&apos;s desk in the museum office which can be used to copy specific quest books for display. It&apos;s recommended that you wait until after you turn in the original as the prepstation and display may take the quest specific instance of the book rather than the copy. The system will track what quest items have come through your inventory and make the copy recipe available for the books at that time and the original is not required at the time you make it.
+&lt;p&gt;
+&lt;b&gt;Mannequin Configuration:&lt;/b&gt;
+Two mini mannequins in the museum office can be activated to swap the mannequins in the Armory from being set with half male mannequins and half female mannequins, or can be set to all male. Use the all male option if you prefer using a mannequin replacer mod. Make sure to empty the mannequins before swapping their state or items will be lost.
+&lt;p&gt;
+&lt;b&gt;Paintings:&lt;/b&gt;
+Paintings which are acquired throughout Skyrim can be manually placed in any of the painting locations in the museum. Using the museum safe to empty all displays will also remove the paintings. There is also a painting display tool next to the museum prep station in the curator&apos;s office which will display any paintings you possess, including any optionally enabled painting displays.
+&lt;p&gt;
+&lt;b&gt;Quest Item Displays and Replicas:&lt;/b&gt;
+Quest items which are turned in and not obtainable again cannot typically be displayed. Instead a replica workstation is in the office and safehouse workshop which allows construction of replicas to be used for display. Quest items you retain after the quest can be displayed manually but will typically not sort via the prep station to avoid accidentally removing a needed item during the quest. To make replica items, you simply have to have acquired the item during play but do not have to currently have it in hand to make a replica like when making replicas of general items (requires Legacy to be loaded when item was found). Once a replica has been crafted, the option is removed and further copies can be made only if the MCM option is set to allow crafting duplicates. The replica station will also create replicas of most items as long as you have them in your inventory and the item is not on display. This will allow you to display a replica and use the original if you wish. Replicas do not have tempering recipes and are generally weaker and unenchanted. These replicas are not meant to be useable unenchanted versions.
+&lt;p&gt;
+&lt;b&gt;Quest Achievement Exhibits:&lt;/b&gt;
+Upon completing major quest lines such as guild quests, main quests etc, an exhibit in the museum will permanently enable when entering the room. If these displays do not enable properly because of a mod conflict, you can enable them using the MCM configuration menu; Display management section.
+&lt;p&gt;
+&lt;b&gt;Exploration Exhibits:&lt;/b&gt;
+When exploring Dwemer ruins, Nordic ruins, or Snow Elf ruins, various displays will enable automatically in the Hall of Lost Empires or in the Cultural exhibits in the lower hallway of the hall of heroes. Alternately, if these displays are not working for you, you may enable them in the MCM configuration menu.
+&lt;p&gt;
+&lt;b&gt;Doomstone and Shrine displays:&lt;/b&gt;
+These displays will enable when receiving a blessing from the corresponding stone or shrine. Doomstones do not need to have their blessing accepted, the stones just have to be activated to  get the display.
+&lt;p&gt;
+&lt;b&gt;Natural Science Displays:&lt;/b&gt;
+Many fauna displays can be built in the natural science hall which requires materials to build. Simply click on the plagues around the hall while you have the indicated ingredients in your inventory or inside of proper storage in order to build the displays. These do not build by storing or sorting items and only appear when manually built.
+
+The natural science room also contains a hatchery for spawning fish in the aquarium as well as several planters for growing flora.
+&lt;p&gt;
+&lt;b&gt;Customizable Museum Displays:&lt;/b&gt;
+Using this guide book will allow you to toggle on and off a number of golden gallery control icons in various places of the museum. Activating these icons will let you customize a number of pre-set displays and features such as mannequins, weapon racks, benches and planters, statues, water features, paintings, tapestries and more. Once you are done customizing the displays simply deactivate the icons again. When enabling weapon racks or mannequins it may be necessary to step out of the cell and come back in order for full functionality to be available.
+&lt;p&gt;
+&lt;b&gt;MCM Menu custom features:&lt;/b&gt;
+If using SkyUI, Legacy of the Dragonborn has a useful MCM menu with a variety of custom tools such as holiday decoration options, light level settings, visitor configuration options and much more.
+&lt;p&gt;
+&lt;b&gt;Museum Visitors:&lt;/b&gt;
+In addition to new custom NPCs that visit regularly, there is a chance that a few visitors from the base game will show up to take in the sights. While visiting, non-legacy visitors will have their dialogue disabled to avoid potential mechanical issues. When leaving the museum area, these vanilla NPCs will be returned to their normal locations. There is also mod added NPC support both through patch implementation and also through using leaflets.
+&lt;p&gt;
+&lt;b&gt;Museum Leaflets:&lt;/b&gt;
+Available by the front door of the museum as well as in the office and craftable at the scribe desk/printing press, these fliers will give a dialogue option when carried to allow you to give a flier to most NPCs. This will add the NPC to a list of possible random visitors. Some NPCs such as Ulfric and all civil war officers have been put on an exclusion list for obvious reasons and cannot be given a leaflet.
+&lt;p&gt;
+&lt;b&gt;Museum Spoils Chest:&lt;/b&gt;
+This chest functions like a faction chest where you can get random useful (or useless) items ocassionally. This chest will also get additional reward items added to it after quests for the museum are completed. The chest DOES reset periodically, so use it or lose it. The chest will also ocassionally have items needed for displays such as rare coins, shells, fate cards, etc.
+
+[pagebreak]
+&lt;font size=&apos;20&apos;&gt;Safehouse Features&lt;/font&gt;
+&lt;p&gt;
+&lt;b&gt;Supply Sorting:&lt;/b&gt;
+Inside the safehouse workshop you will find a chest overflowing with goods. Activate this chest and all crafting materials, scrolls, potions, soul gems and more will be sorted into their proper storage containers. You can configure which items you wish to have sorted or not in the MCM configuration menu, or by utilizing the supply sorting planning station above the sorter. When an object is visible in the shelf, that variety of item will be sorted, if it&apos;s not, it will be ignored. Simply click to toggle these item categories off and on.
+&lt;p&gt;
+Storage containers are also learning containers. So if there are any mod added items you would like sorted at the press of a button as well, simply place them manually into the container and they will be recorded to the sort lists. If you ever wish to reset a sort list to default, simply use the Supply Planner book on the stand next to the Supply Sorter and choose which list to reset. The MCM menu also has an option for this.
+&lt;p&gt;
+&lt;b&gt;Dynamic Storage Displays:&lt;/b&gt;
+Any items placed inside the raw or cooked food containers, the liquor cabinet or the dishes hutches will display throughout the safehouse on the tables, counters
+and shelves around the area. Grabbing these items will also give you back one of that item from the container and disable the display if the container has none left.
+&lt;p&gt;
+&lt;b&gt;Craftloot System:&lt;/b&gt;
+By default the craftloot system is disabled but can be turned on by activating the craftloot toggle book to the left as you enter the workshop area. While it is enabled, using any craft station in the safehouse will loot any supply item that currently is set to sort in the MCM menu which is common for that station to utilize. When used, the station will first give you all supply crafting items and then enter into crafting like normal. After the station is left, the items will return to storage. If the system starts to cause issues due to an excessive number of stored items, either thin your supplies or disable the craftloot system to avoid problems. The MCM menu also offers a universal option to utilize craftloot with ANY crafting station in the game but could prove problematic on heavily scripted load orders so use with caution.
+&lt;p&gt;
+&lt;b&gt;Sorting Exclusion List:&lt;/b&gt;
+The museum prep station will ignore any items equipped or favorited but also will ignore items on the exclude list. Any items you place inside the &quot;Exclude from sorting&quot; knapsack near the supply sorting area will be recorded to a list after the container is closed. This list will ignore all rules and these items will always remain in your inventory unless manually displayed or stored. The supply sorter, craftloot system and prep station will ignore these items. Simply remove all items after you have exited the container.
+&lt;p&gt;
+Soul Gem Transmorgrifier:
+This station allows you to combine smaller soul gems into larger ones as well as to craft petty gems out of 5 identical fragments. The station will work to combine empty as well as filled soul gems.
+&lt;p&gt;
+Disenchanter:
+The disenchanter will do what it sounds like: clear enchantments. However it should ONLY be used on items you enchanted yourself otherwise it purges the enchantment from ALL copies of that item past present and future. They will reset on game reload however. The disenchanter will also clear any tempering improvements made to a weapon as well as the enchantments.
+&lt;p&gt;
+Soul Extractor:
+This station will take the living essence within enchanted items and break it down back into soul gems, destroying the item in the process. This only applies to weapons which have a specific charge to determine which size of gems it will yeild. 
+&lt;p&gt;
+&lt;b&gt;Sorting Chest:&lt;/b&gt;
+The sorting chest is a universal master sorter for the entire safehouse. The ONLY thing it will not do is display unique items. Any item placed into the sorting chest will go to a number of storage containers throughout the safehouse and museum. Gold will go to the secret treasury, food to the kitchen, books to the museum library book return, scrolls to the scroll storage, liquor to the wine cellar, weapons to their appropriate racks in the safehouse and much more. Any item that does not sort will remain in the container. The only items that don&apos;t sort are typically mod added items that have no keywords or are not on sorting lists. Manual placement of these items into learning containers will program them to the appropriate list for future sorting.
+&lt;p&gt;
+&lt;b&gt;Treasury Room:&lt;/b&gt;
+The hidden treasury room has a ledger which is used to store gold. When you store gold inside the ledger, the treasury room will fill with more and more loot displays. Continue adding up to 2 million gold to have the treasury fully filled. The system also identifies the gold value of gold ingots, silver ingots, gems and a number of mod supported items such as Coins of Tamriel mod and More Interesting Loot treasure. There is also a pedestal for King Orgnum&apos;s Coffer which will automatically use the coffer&apos;s daily gold gain ability and add it to your treasury as long as it remains on display there.
+&lt;p&gt;
+&lt;b&gt;Closet System:&lt;/b&gt;
+The safehouse offers a quick store, quick equip outfit system. Store your outfit in one of the several categorized drawers. Then activate the change outfit activator to select which outfit you wish to wear. All items will be added to your inventory and equipped.
+&lt;P&gt;
+&lt;b&gt;Sell Cart:&lt;/b&gt;
+After 100 displays are in place, you will have the option to have Auryen start to empty the sell cart in the safehouse and sell the items for you. You will get 30% of the value of items sold initially and over time, it grows to 50%. The cart will sell a random number of stacks of items each day which is configurable in the MCM menu. The sell cart will calculate the gold value of pre-enchanted gear, but because of limitations of the system, will only count base value of enchanted items you have created.
+&lt;p&gt;
+&lt;b&gt;Furniture Upgrade:&lt;/b&gt;
+Furniture sets can be purchased from bits and pieces in Solitude. There are 4 addons which can be purchased included an expanded balcony greenhouse garden, front patio sitting area, kids room and follower room. Each are set up as soon as you make the purchase.
+&lt;p&gt;
+[pagebreak]
+&lt;font size=&apos;20&apos;&gt;Explorers Society&lt;/font&gt;
+&lt;p&gt;
+The Explorers Society is a player established guild that is begun along with Auryen and unlocks a number of new interesting features, NPCs and quests.
+&lt;p&gt;
+Explorer Relics:
+A number of unique items can be found which bolster your relic hunting skills and abilities by helping to track relics, dig sites, improve fragment drop rates and give other special bonuses. These relics can be used or displayed in the trophy case of the Explorers Guild house.
+&lt;p&gt;
+Archaeology:
+Find excavation sites in or near all Nordic, Dwemer and Falmer ruins. You will gain a few fragments which you should bring to the archaeology station in the guildhouse, workshop or museum office. A number of fragments can be assembled to create artifacts which can be displayed in the Hall of Heroes reception area. Many of these items also have special abilities you may want to utilize. As you gather fragments and assemble relics, you will gain skill in an Archaeology skill that will allow you to create more elaborate items and unique relics. By default the crafting menu will hide any artifact recipes you have already placed on display. The MCM menu has an option to turn this feature off if you wish to make duplicates of anything.
+&lt;p&gt;
+Archaeology Perks:
+Legacy offers three brand new perk trees for archaeology! These perk trees operate 100% apart from the menu skill tree and therefore will not conflict in any way. The trees are accessible only at the Explorers Guild house or in the MCM menu where you can select the perks you desire.
+&lt;p&gt;
+Excavation Perks (pickaxe tree):
+Excavator RK1: 1 extra fragment from excavation sites and 20% chance of 1 extra keystone.
+Excavator RK2: 2 extra fragments from excavation sites and 25% chance of 1 extra keystone.
+Excavator RK1: 3 extra fragments from excavation sites and 30% chance of 1 extra keystone.
+Relic Hunter: Gives Locate Relic Power which targets a nearby relic.
+Surveyor: Gives Survey Dig Site Power which targets a nearby excavation site.
+&lt;p&gt;
+Expedition Perks (torch tree):
+Pack it in RK1: Increase carry capacity by 50.
+Pack it in RK2: Increase carry capacity by 75.
+Pack it in RK3: Increase carry capacity by 100.
+Scrapper: 50% bonus to blocking with torches and 25% bonus damage with pickaxes.
+&lt;p&gt;
+Academia Perks (compass rose tree):
+Supporter Branch-Benefactor: Sell prices on your items is increased by 10%.
+Quartermaster: Provides more gold and inventory to the Explorers Society Quartermaster shop.
+Dwemer Branch-Dwarven Specialization: Resist shock 10%, increased critical chance and damage to Automatons by 15%.
+Salvager: Automatons drop increased loot and the possibility of fragments.
+Artificer: You can spend 1 filled greater soul gem to rebuild a fallen Automaton as a follower.
+&lt;p&gt;
+Nordic Branch-Nordic Specialization: Resist Fire 10%, increased critical chance and damage to Undead by 15%.
+Exhume: Find increased gems, gold and possible fragments from Draugr, urns and burial remains.
+Walk Amongst the Dead: Provides a power that allows caster to move unabated amongst the undead.
+&lt;p&gt;
+Falmer and Snow Elf Branch-Falmer Specialization: Resist Poison 10%, increased critical chance and damage to Falmer and Charurus by 15%.
+Scavenger: Yield more resources and possible fragments from Charurus and Falmer.
+Tamer&apos;s Hand: You have a chance to tame 1 Charurus at a time by interacting with it.
+&lt;p&gt;
+Additional Member Features:
+In addition to being able to recruit an explorer member as a follower, most have their own special functions. Additionally, when used as followers, the explorers will gather items on their own (not from the area but from a random roll list).
+&lt;p&gt;
+Latoria: offers free explorer signet rings once every 24 hours and gives you a special unique version called Wanderlust. Also offers a quest to collect ruined books for which she&apos;ll give you new treasure maps, rare books and spell tomes in return. As a follower she gathers soul gems, tomes, scrolls, paper and the like.
+&lt;p&gt;
+Kyre: you can bring him ore and he can occasionally find gems or other ore types inside it. This can also be done once every 24 hours. As a follower, Kyre gathers ore, ingots and gems.
+&lt;p&gt;
+Eriana: runs the guild store. When used as a follower, Eriana gathers potions, lockpicks and other useful equipment.
+&lt;p&gt;
+Madras: eventually will start a quest to help build a Dwemer planetarium. When utilized as a follower, Madras will accumulate all manner of Dwemer materials.
+&lt;p&gt;
+Marassi: starts the three excavation quests and field station building quests. As a follower, Marassi will gain archaeological fragments.
+&lt;p&gt;
+Explorers can also be sent out on their own to excavate, and will return three days later with fragments, some gold from spoils sold and occasionally a rare, assembled artifact for display.
+&lt;p&gt;
+Recruiting followers:
+Using the Guildmaster&apos;s Journal found in the guild house, you can recruit any of your current followers who have been given an Explorers Guild Ring. This works for any follower that uses the vanilla follower system or an extension thereof (such as Nether&apos;s follower framework). Followers with custom systems may not work. Recruited members can be sent on digs just like the core explorer members can.
+&lt;p&gt;
+Gather the team:
+Using the Guildmaster&apos;s Journal will also summon the entire senior team and up to 4 random other recruited members to a meeting which lasts 1 hour in game, giving you a chance to assign tasks, utilize services, progress quests, change gear and select active followers.</Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DBM_MuchAdoAboutSnowElves</EDID>
+      <REC id="7" idMax="37">QUST:CNAM</REC>
+      <Source>I have spoken to Calcelmo about his notes in the Encyclopedia Bretonica. He has sent me to find his copy of Legacy of the Dwemer Paragons in his Dwemer Museum for further information. </Source>
+      <Dest>I have spoken to Calcelmo about his notes in the Encyclopedia Bretonica. He has sent me to find his copy of Legacy of the Dwemer Paragons in his Dwemer Museum for further information. </Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DBM_MuchAdoAboutSnowElves</EDID>
+      <REC id="8" idMax="37">QUST:CNAM</REC>
+      <Source>Finally! The Legacy of the Dwemer Paragons has shed some light on the existence of the Temple of Xrib deep beneath the Sightless Pit near Winterhold. I should seek out a potential artifact there.</Source>
+      <Dest>Finally! The Legacy of the Dwemer Paragons has shed some light on the existence of the Temple of Xrib deep beneath the Sightless Pit near Winterhold. I should seek out a potential artifact there.</Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DBM_EchosOfMadness</EDID>
+      <REC id="6" idMax="6">QUST:CNAM</REC>
+      <Source>I&apos;ve successfully removed the curse and restored the full Eye of Camlorn amulet of Pelagius the mad, bringing about the end of a long legacy of influence that the gem once had on members of the Septim Dynasty.</Source>
+      <Dest>I&apos;ve successfully removed the curse and restored the full Eye of Camlorn amulet of Pelagius the mad, bringing about the end of a long legacy of influence that the gem once had on members of the Septim Dynasty.</Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DBM_PatchingCompleteMSG</EDID>
+      <REC>MESG:DESC</REC>
+      <Source>Legacy of the Dragonborn: %.0f patches configured.</Source>
+      <Dest>Legacy of the Dragonborn: %.0f patches configured.</Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DBM_CraftlootToggleMessage</EDID>
+      <REC>MESG:DESC</REC>
+      <Source>If enabled, Craftloot will automatically loot the relevant containers from the Safehouse when using a crafting station and return the items once you are done.
+
+By default, it only works for locations added by Legacy of the Dragonborn, but you can enable a global toggle.
+
+The activation prompt is a menu that appears before crafting begins to confirm you want to use Craftloot.</Source>
+      <Dest>If enabled, Craftloot will automatically loot the relevant containers from the Safehouse when using a crafting station and return the items once you are done.
+
+By default, it only works for locations added by Legacy of the Dragonborn, but you can enable a global toggle.
+
+The activation prompt is a menu that appears before crafting begins to confirm you want to use Craftloot.</Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DBM_UpdateTo553KegbreakerWarning</EDID>
+      <REC>MESG:DESC</REC>
+      <Source>It looks like you just updated to Legacy of the Dragonborrn 5.5.3. 
+
+If you have started a new game with 5.5.3, you can ignore this message. 
+
+This version includes changes to the optional side quest &quot;Ongar&apos;s Kegbreaker&quot; which starts in the Nightgate Inn. If you continue this quest may be broken in your saved game, which means you may not be able to complete it. 
+
+To play this content properly you will need to downgrade to 5.5.2 and complete this quest before updating again. 
+
+Would you like to continue?</Source>
+      <Dest>It looks like you just updated to Legacy of the Dragonborrn 5.5.3. 
+
+If you have started a new game with 5.5.3, you can ignore this message. 
+
+This version includes changes to the optional side quest &quot;Ongar&apos;s Kegbreaker&quot; which starts in the Nightgate Inn. If you continue this quest may be broken in your saved game, which means you may not be able to complete it. 
+
+To play this content properly you will need to downgrade to 5.5.2 and complete this quest before updating again. 
+
+Would you like to continue?</Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DBM_WM_AirshipTPMsg</EDID>
+      <REC>MESG:DESC</REC>
+      <Source>REDUNDANT MOD DETECTED: Additional Dev Aveza Teleport Points
+
+V6 of Legacy of the Dragonborn utilizes an entirely new airship control system which does not rely on pre-placed points of port, allowing you to fly anywhere. This patch is redundant and now incompatible and should be removed from your load order before starting a new game.</Source>
+      <Dest>REDUNDANT MOD DETECTED: Additional Dev Aveza Teleport Points
+
+V6 of Legacy of the Dragonborn utilizes an entirely new airship control system which does not rely on pre-placed points of port, allowing you to fly anywhere. This patch is redundant and now incompatible and should be removed from your load order before starting a new game.</Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DBM_WM_BrumaMsg</EDID>
+      <REC>MESG:DESC</REC>
+      <Source>UNSUPPORTED MOD DETECTED: Beyond Skyrim Bruma
+
+BS: Bruma has a 3rd party patch for Legacy of the Dragonborn which functions properly but is not directly supported by the Legacy team. Any issues regarding this should be taken to the Bruma developers for support.</Source>
+      <Dest>UNSUPPORTED MOD DETECTED: Beyond Skyrim Bruma
+
+BS: Bruma has a 3rd party patch for Legacy of the Dragonborn which functions properly but is not directly supported by the Legacy team. Any issues regarding this should be taken to the Bruma developers for support.</Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DBM_WM_StorageCubeMsg</EDID>
+      <REC>MESG:DESC</REC>
+      <Source>HIGH RISK MOD DETECTED: Legacy of the Dragonborn Storage Control Cube
+
+Remote access of some museum functions from outside of the museum, safe house or guild house is potentially dangerous on the scripting system. Running the museum sorting is a heavy script process which can conflict with other script processes common in the outside world leading to stack dumps, lock up of museum sorting functions and CTD. It is highly recommended that you remove this mod and start a new game.</Source>
+      <Dest>HIGH RISK MOD DETECTED: Legacy of the Dragonborn Storage Control Cube
+
+Remote access of some museum functions from outside of the museum, safe house or guild house is potentially dangerous on the scripting system. Running the museum sorting is a heavy script process which can conflict with other script processes common in the outside world leading to stack dumps, lock up of museum sorting functions and CTD. It is highly recommended that you remove this mod and start a new game.</Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DBM_WM_SkyrimUnboundMsg</EDID>
+      <REC>MESG:DESC</REC>
+      <Source>INCOMPATIBLE MOD DETECTED: Skyrim Unbound
+
+Legacy hinges on the canonical aspect of the player being the Dragonborn (Legacy of the DRAGONBORN, hello? Lol), both thematically AND mechanically, and therefore Legacy is not compatible with Skyrim Unbound. Any third party patch that may make them functional at the same time will not be supported by the Legacy team and should be taken to the creator of the patch.</Source>
+      <Dest>INCOMPATIBLE MOD DETECTED: Skyrim Unbound
+
+Legacy hinges on the canonical aspect of the player being the Dragonborn (Legacy of the DRAGONBORN, hello? Lol), both thematically AND mechanically, and therefore Legacy is not compatible with Skyrim Unbound. Any third party patch that may make them functional at the same time will not be supported by the Legacy team and should be taken to the creator of the patch.</Dest>
+    </String>
+    <String List="1" Partial="1">
+      <EDID>DBM_MalrusMSG</EDID>
+      <REC>MESG:DESC</REC>
+      <Source>Malrus&apos; Codex is simply brimming with knowledge of all kinds. Depending on which Legacy of the Dragonborn supported mods you have loaded in your game, the codex will provide more and more options in the form of daily powers that will assist you in a number of ways. See the spell power tab for details.</Source>
+      <Dest>Malrus&apos; Codex is simply brimming with knowledge of all kinds. Depending on which Legacy of the Dragonborn supported mods you have loaded in your game, the codex will provide more and more options in the form of daily powers that will assist you in a number of ways. See the spell power tab for details.</Dest>
+    </String>
+  </Content>
+</SSTXMLRessources>

@@ -1,0 +1,135 @@
+<UserControl x:Class="XTranslatorAi.App.Views.CompareTabView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+    <Grid Margin="0,10,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="2*" />
+        </Grid.RowDefinitions>
+
+        <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
+            <Button Content="Run all" Command="{Binding RunCompareAllCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Clear" Command="{Binding ClearCompareOutputsCommand}" Style="{StaticResource XT.ToolbarButton}" />
+
+            <Separator Margin="12,0,12,0" Width="1" />
+
+            <CheckBox Content="Project glossary" IsChecked="{Binding CompareIncludeProjectGlossary}" VerticalAlignment="Center"
+                      ToolTip="Compare용 임시 DB에 현재 프로젝트 용어집을 복사해 적용합니다." />
+            <CheckBox Content="Global glossary" IsChecked="{Binding CompareIncludeGlobalGlossary}" VerticalAlignment="Center" Margin="12,0,0,0"
+                      ToolTip="Global glossary를 적용합니다." />
+            <CheckBox Content="Global TM" IsChecked="{Binding CompareIncludeGlobalTranslationMemory}" VerticalAlignment="Center" Margin="12,0,0,0"
+                      ToolTip="Global TM을 적용합니다. (TM hit가 있으면 LLM 호출 없이 Done (TM)으로 끝날 수 있습니다)" />
+        </WrapPanel>
+
+        <GroupBox Grid.Row="1" Header="{Binding CompareSelectedEntrySummary}" Style="{StaticResource XT.GroupBoxCard}" Margin="0,0,0,10">
+            <TextBox Text="{Binding SelectedEntry.SourceText}"
+                     IsReadOnly="True"
+                     Style="{StaticResource XT.EditorTextBox}"
+                     TextWrapping="Wrap"
+                     AcceptsReturn="True"
+                     VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Auto" />
+        </GroupBox>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+	            <GroupBox Grid.Column="0" Header="Slot 1" Style="{StaticResource XT.GroupBoxCard}" Margin="0,0,6,0">
+	                <DockPanel>
+	                    <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,8">
+	                        <TextBlock Text="Model:" VerticalAlignment="Center" Margin="0,0,6,0" />
+	                        <ComboBox ItemsSource="{Binding Compare1AvailableModels}"
+	                                  Text="{Binding Compare1Model, UpdateSourceTrigger=PropertyChanged}"
+	                                  IsEditable="True"
+	                                  Width="190"
+	                                  VerticalAlignment="Center"
+	                                  Style="{StaticResource XT.ToolbarComboBox}" />
+	                        <CheckBox Content="Thinking OFF"
+	                                  IsChecked="{Binding Compare1ThinkingOff}"
+	                                  VerticalAlignment="Center"
+	                                  Margin="12,0,0,0"
+	                                  ToolTip="thinkingConfig(thinkingBudget=0)로 요청합니다. (Gemini 3 Flash Preview 기본 dynamic thinking과 비교용)" />
+
+	                        <Button Content="Run" Command="{Binding RunCompare1Command}" Style="{StaticResource XT.ToolbarButton}" Margin="12,0,0,0" />
+	                    </WrapPanel>
+	                    <TextBlock DockPanel.Dock="Top" Text="{Binding Compare1Status}" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,0,0,6" />
+	                    <TextBox Text="{Binding Compare1Output}"
+	                             IsReadOnly="True"
+                             Style="{StaticResource XT.EditorTextBox}"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Auto"
+                             HorizontalScrollBarVisibility="Auto" />
+                </DockPanel>
+            </GroupBox>
+
+	            <GroupBox Grid.Column="1" Header="Slot 2" Style="{StaticResource XT.GroupBoxCard}" Margin="6,0,6,0">
+	                <DockPanel>
+	                    <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,8">
+	                        <TextBlock Text="Model:" VerticalAlignment="Center" Margin="0,0,6,0" />
+	                        <ComboBox ItemsSource="{Binding Compare2AvailableModels}"
+	                                  Text="{Binding Compare2Model, UpdateSourceTrigger=PropertyChanged}"
+	                                  IsEditable="True"
+	                                  Width="190"
+	                                  VerticalAlignment="Center"
+	                                  Style="{StaticResource XT.ToolbarComboBox}" />
+	                        <CheckBox Content="Thinking OFF"
+	                                  IsChecked="{Binding Compare2ThinkingOff}"
+	                                  VerticalAlignment="Center"
+	                                  Margin="12,0,0,0"
+	                                  ToolTip="thinkingConfig(thinkingBudget=0)로 요청합니다. (Gemini 3 Flash Preview 기본 dynamic thinking과 비교용)" />
+
+	                        <Button Content="Run" Command="{Binding RunCompare2Command}" Style="{StaticResource XT.ToolbarButton}" Margin="12,0,0,0" />
+	                    </WrapPanel>
+	                    <TextBlock DockPanel.Dock="Top" Text="{Binding Compare2Status}" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,0,0,6" />
+	                    <TextBox Text="{Binding Compare2Output}"
+	                             IsReadOnly="True"
+                             Style="{StaticResource XT.EditorTextBox}"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Auto"
+                             HorizontalScrollBarVisibility="Auto" />
+                </DockPanel>
+            </GroupBox>
+
+	            <GroupBox Grid.Column="2" Header="Slot 3" Style="{StaticResource XT.GroupBoxCard}" Margin="6,0,0,0">
+	                <DockPanel>
+	                    <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,8">
+	                        <TextBlock Text="Model:" VerticalAlignment="Center" Margin="0,0,6,0" />
+	                        <ComboBox ItemsSource="{Binding Compare3AvailableModels}"
+	                                  Text="{Binding Compare3Model, UpdateSourceTrigger=PropertyChanged}"
+	                                  IsEditable="True"
+	                                  Width="190"
+	                                  VerticalAlignment="Center"
+	                                  Style="{StaticResource XT.ToolbarComboBox}" />
+	                        <CheckBox Content="Thinking OFF"
+	                                  IsChecked="{Binding Compare3ThinkingOff}"
+	                                  VerticalAlignment="Center"
+	                                  Margin="12,0,0,0"
+	                                  ToolTip="thinkingConfig(thinkingBudget=0)로 요청합니다. (Gemini 3 Flash Preview 기본 dynamic thinking과 비교용)" />
+
+	                        <Button Content="Run" Command="{Binding RunCompare3Command}" Style="{StaticResource XT.ToolbarButton}" Margin="12,0,0,0" />
+	                    </WrapPanel>
+	                    <TextBlock DockPanel.Dock="Top" Text="{Binding Compare3Status}" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,0,0,6" />
+	                    <TextBox Text="{Binding Compare3Output}"
+	                             IsReadOnly="True"
+                             Style="{StaticResource XT.EditorTextBox}"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Auto"
+                             HorizontalScrollBarVisibility="Auto" />
+                </DockPanel>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</UserControl>

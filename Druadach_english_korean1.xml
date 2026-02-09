@@ -1,0 +1,1397 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SSTXMLRessources>
+  <Params>
+    <Addon>Druadach.esm</Addon>
+    <Source>english</Source>
+    <Dest>korean</Dest>
+    <Version>2</Version>
+  </Params>
+  <Content>
+    <String List="0" Partial="2">
+      <EDID>[00000000]</EDID>
+      <REC>TES4:CNAM</REC>
+      <Source>DEFAULT</Source>
+      <Dest>DEFAULT</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_DampenMagicka</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Dampen Magicka</Source>
+      <Dest>Dampen Magicka</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_DampenMagicka</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Magicka regenerates &lt;mag&gt;% slower for &lt;dur&gt; seconds.</Source>
+      <Dest>Magicka regenerates &lt;mag&gt;% slower for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRV_SummonMirageBrainRot</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Conjure Mirage</Source>
+      <Dest>Conjure Mirage</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRV_SummonMirageBrainRot</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Summons a Mirage for &lt;dur&gt; seconds wherever the caster is pointing.</Source>
+      <Dest>Summons a Mirage for &lt;dur&gt; seconds wherever the caster is pointing.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_ProtectiveVortexEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Protective Vortex</Source>
+      <Dest>Protective Vortex</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_ProtectiveVortexEffect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>As long as you concentrate, summons an unbreakable barrier around you.</Source>
+      <Dest>As long as you concentrate, summons an unbreakable barrier around you.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_EarthRaiseWallEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Earthen Wall</Source>
+      <Dest>Earthen Wall</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_EarthRaiseWallEffect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Cast on the nearby ground to raise the earth and form a protective wall that lasts for &lt;dur&gt; seconds.</Source>
+      <Dest>Cast on the nearby ground to raise the earth and form a protective wall that lasts for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_EarthRaisePillarEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Earthen Pillar</Source>
+      <Dest>Earthen Pillar</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_EarthRaisePillarEffect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Cast on the nearby ground to raise the earth and form a protective pillar that lasts for &lt;dur&gt; seconds.</Source>
+      <Dest>Cast on the nearby ground to raise the earth and form a protective pillar that lasts for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BittenAnklesBurden</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Out of balance</Source>
+      <Dest>Out of balance</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BittenAnklesBurden</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Carry weight is reduced by &lt;mag&gt; for &lt;dur&gt;.</Source>
+      <Dest>Carry weight is reduced by &lt;mag&gt; for &lt;dur&gt;.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BittenAnklesDamage</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Bleed</Source>
+      <Dest>Bleed</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BittenAnklesDamage</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Deal &lt;mag&gt; damages during &lt;dur&gt; seconds.</Source>
+      <Dest>Deal &lt;mag&gt; damages during &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRV_LesserLightningDamageFFAimedArea</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Lesser Chain Lightning</Source>
+      <Dest>Lesser Chain Lightning</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRV_crBurningTouch</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Burning Touch</Source>
+      <Dest>Burning Touch</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRV_crBurningTouch</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>An attack which burns the enemy for 6 seconds, dealing &lt;mag&gt; points of damage to Health every second.</Source>
+      <Dest>An attack which burns the enemy for 6 seconds, dealing &lt;mag&gt; points of damage to Health every second.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BarrierBOExplShock</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Barrier Burnout Explosin Shock</Source>
+      <Dest>Barrier Burnout Explosin Shock</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BarrierBOExplShock</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>A &lt;mag&gt; point Shocking explosion centered on the caster. Does more damage to closer targets.</Source>
+      <Dest>A &lt;mag&gt; point Shocking explosion centered on the caster. Does more damage to closer targets.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DrV_VolatileSpiderExplosion</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Volatile Shock Damage Area</Source>
+      <Dest>Volatile Shock Damage Area</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRV_AbGhostHorvutShade</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Ghost Visuals HorvutdaanBoss</Source>
+      <Dest>Ghost Visuals HorvutdaanBoss</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_ConcealingFogFFSelfArea</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Concealing Fog</Source>
+      <Dest>Concealing Fog</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_ConcealingFogFFSelfArea</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Creates a concealing fog covering the caster&apos;s general area for &lt;dur&gt; seconds, hiding them from nearby threats.</Source>
+      <Dest>Creates a concealing fog covering the caster&apos;s general area for &lt;dur&gt; seconds, hiding them from nearby threats.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_AbSplitTheMindAnimal</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Animal Split The Mind Ability</Source>
+      <Dest>Animal Split The Mind Ability</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_AbAbsorbHealthFFContact</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Blood Bound Absorb Health</Source>
+      <Dest>Blood Bound Absorb Health</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BlindingMistFFSelfAreaD</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Blinding Mist</Source>
+      <Dest>Blinding Mist</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BlindingMistFFSelfAreaD</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Creates a blinding mist embracing the caster&apos;s near vicinity.</Source>
+      <Dest>Creates a blinding mist embracing the caster&apos;s near vicinity.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_ShockDamageConcAimedGold</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Golden Sparks</Source>
+      <Dest>Golden Sparks</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_ShockDamageConcAimedGold</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Golden Lightning that does &lt;mag&gt; points of shock damage per second to Health and Magicka, with a chance of disintegrating opponents.</Source>
+      <Dest>Golden Lightning that does &lt;mag&gt; points of shock damage per second to Health and Magicka, with a chance of disintegrating opponents.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BloodBoundSwordFFSelf</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Blood Bound Sword</Source>
+      <Dest>Blood Bound Sword</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_EnchBloodBoundFX</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Blood Bound FX</Source>
+      <Dest>Blood Bound FX</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BloodCloakFFSelf</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>For &lt;dur&gt; seconds, you absorb your opponents&apos; health within melee range, dealing &lt;8&gt; points of damage per second.</Source>
+      <Dest>For &lt;dur&gt; seconds, you absorb your opponents&apos; health within melee range, dealing &lt;8&gt; points of damage per second.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_SplitTheMindFFAimed</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Split The Mind</Source>
+      <Dest>Split The Mind</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_SplitTheMindFFAimed</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Target turns into a ghost for &lt;dur&gt; seconds, revealing their inner spirit animal and making it vulnerable to attack.</Source>
+      <Dest>Target turns into a ghost for &lt;dur&gt; seconds, revealing their inner spirit animal and making it vulnerable to attack.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_EarthquakeEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Seism</Source>
+      <Dest>Seism</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_EarthquakeEffect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>A seismic wave that staggers enemies in front of you, dealing &lt;mag&gt; points of damage.</Source>
+      <Dest>A seismic wave that staggers enemies in front of you, dealing &lt;mag&gt; points of damage.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_EarthBoulder03Effect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>A pile of thrown rocks that does &lt;mag&gt; points of damage and staggers your foe.</Source>
+      <Dest>A pile of thrown rocks that does &lt;mag&gt; points of damage and staggers your foe.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_EarthStoneSpear02Effect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Stone Spear</Source>
+      <Dest>Stone Spear</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_EarthStoneSpear02Effect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>A spear of stone that does &lt;mag&gt; points of damage and staggers your foe.</Source>
+      <Dest>A spear of stone that does &lt;mag&gt; points of damage and staggers your foe.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StrabismCloneWithGhostEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Phantom Strabism</Source>
+      <Dest>Phantom Strabism</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StrabismCloneWithGhostEffect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Creates a clone of the player for &lt;dur&gt; seconds</Source>
+      <Dest>Creates a clone of the player for &lt;dur&gt; seconds</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_FrostCloakBrewEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Frost FX</Source>
+      <Dest>Frost FX</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_FlameCloakBrewEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Flame FX</Source>
+      <Dest>Flame FX</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_MountainPunchUnarmedCheckEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>MountainPunchPerk</Source>
+      <Dest>MountainPunchPerk</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_MountainPunchPushEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>MountainPunch</Source>
+      <Dest>MountainPunch</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_DetectLifeBrewEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Brew Detect Life</Source>
+      <Dest>Brew Detect Life</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_RootingBrewEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Rooting</Source>
+      <Dest>Rooting</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_RootingBrewEffect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Reduces incoming damages by 25%.</Source>
+      <Dest>Reduces incoming damages by 25%.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_MoonshinePullBrewEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Moonshine&apos;s Pull</Source>
+      <Dest>Moonshine&apos;s Pull</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkCOBRStaminaGain</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Stamina Gain on Attack</Source>
+      <Dest>Stamina Gain on Attack</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkCOBRStaminaGain</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Restores 20 points of Stamina with each hit.</Source>
+      <Dest>Restores 20 points of Stamina with each hit.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkCOBREffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Blinding Rage</Source>
+      <Dest>Blinding Rage</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkCOBREffect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Your rage blinds you</Source>
+      <Dest>Your rage blinds you</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkCOBR_DmgReflectEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Blinding Rage</Source>
+      <Dest>Blinding Rage</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkCOBR_DmgReflectEffect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>You reflect incoming damages.</Source>
+      <Dest>You reflect incoming damages.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_FirebreathSpeechDebuff</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Firebreath Speech</Source>
+      <Dest>Firebreath Speech</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_FireBreathEffect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Releases a fiery breath for &lt;mag&gt; damages</Source>
+      <Dest>Releases a fiery breath for &lt;mag&gt; damages</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_FireBreathBrandyBrewEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Firebreath Brandy</Source>
+      <Dest>Firebreath Brandy</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_MountainPunchApplyPerkEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>MountainPunchPerk</Source>
+      <Dest>MountainPunchPerk</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyConjuration</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Conjuration is &lt;mag&gt; points stronger for &lt;dur&gt; seconds.</Source>
+      <Dest>Conjuration is &lt;mag&gt; points stronger for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyDestruction</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Virtue of the Shaper</Source>
+      <Dest>Virtue of the Shaper</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyDestruction</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Fortifies Destruction and Smithing by &lt;mag&gt; and Stamina by &lt;15&gt; points for &lt;dur&gt; seconds.</Source>
+      <Dest>Fortifies Destruction and Smithing by &lt;mag&gt; and Stamina by &lt;15&gt; points for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyEnchanting</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Virtue of the Executioner</Source>
+      <Dest>Virtue of the Executioner</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyEnchanting</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Fortfies Enchanting and Two-Handed by &lt;mag&gt; points and Stamina by &lt;15&gt; points for &lt;dur&gt; seconds.</Source>
+      <Dest>Fortfies Enchanting and Two-Handed by &lt;mag&gt; points and Stamina by &lt;15&gt; points for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyIllusion</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Virtue of the Saboteur</Source>
+      <Dest>Virtue of the Saboteur</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyIllusion</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Fortifies Illusion och Alchemy skill is &lt;mag&gt; points and Health by &lt;15&gt; for &lt;dur&gt; seconds.</Source>
+      <Dest>Fortifies Illusion och Alchemy skill is &lt;mag&gt; points and Health by &lt;15&gt; for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyLightArmor</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Virtue of the Skirmisher</Source>
+      <Dest>Virtue of the Skirmisher</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyLightArmor</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Fortifies Light Armor and Archery skills by &lt;mag&gt; and Stamina by &lt;15&gt; points for &lt;dur&gt; seconds.</Source>
+      <Dest>Fortifies Light Armor and Archery skills by &lt;mag&gt; and Stamina by &lt;15&gt; points for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyLockpicking</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Virtue of the Ingenious</Source>
+      <Dest>Virtue of the Ingenious</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyLockpicking</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Fortifies Lockpicking and Alteration by &lt;mag&gt; points and Health by &lt;15&gt; for &lt;dur&gt; seconds.</Source>
+      <Dest>Fortifies Lockpicking and Alteration by &lt;mag&gt; points and Health by &lt;15&gt; for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyMarksman</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Marksman is &lt;mag&gt; points stronger for &lt;dur&gt; seconds.</Source>
+      <Dest>Marksman is &lt;mag&gt; points stronger for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyOneHanded</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Virtue of the Dexterous</Source>
+      <Dest>Virtue of the Dexterous</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyOneHanded</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Fortifies One-handed and Pickpocket by &lt;7&gt; points as well as Magicka by &lt;15&gt; points for &lt;dur&gt; seconds.</Source>
+      <Dest>Fortifies One-handed and Pickpocket by &lt;7&gt; points as well as Magicka by &lt;15&gt; points for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyPersuasion</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>+&lt;mag&gt; Speech for &lt;dur&gt; seconds.</Source>
+      <Dest>+&lt;mag&gt; Speech for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyPickpocket</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Pickpocketing is &lt;mag&gt; points stronger for &lt;dur&gt; seconds.</Source>
+      <Dest>Pickpocketing is &lt;mag&gt; points stronger for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyRestoration</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Virtue of the Selfless</Source>
+      <Dest>Virtue of the Selfless</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyRestoration</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Fortifies Restoration and Heavy Armor is &lt;mag&gt; points and Stamina by &lt;15&gt; points for &lt;dur&gt; seconds.</Source>
+      <Dest>Fortifies Restoration and Heavy Armor is &lt;mag&gt; points and Stamina by &lt;15&gt; points for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifySmithing</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Smithing is &lt;mag&gt; points stronger for &lt;dur&gt; seconds</Source>
+      <Dest>Smithing is &lt;mag&gt; points stronger for &lt;dur&gt; seconds</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifySneak</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Virtue of the Puppeteer</Source>
+      <Dest>Virtue of the Puppeteer</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifySneak</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Fortifies Sneak and Conjuration is &lt;mag&gt; points and Health &lt;15&gt; for &lt;dur&gt; seconds.</Source>
+      <Dest>Fortifies Sneak and Conjuration is &lt;mag&gt; points and Health &lt;15&gt; for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyTwoHanded</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Two-handed is &lt;mag&gt; points stronger for &lt;dur&gt; seconds.</Source>
+      <Dest>Two-handed is &lt;mag&gt; points stronger for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyAlchemy</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Sneak is &lt;mag&gt; points stronger for &lt;dur&gt; seconds.</Source>
+      <Dest>Sneak is &lt;mag&gt; points stronger for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyAlteration</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Alteration is &lt;mag&gt; points stronger for &lt;dur&gt; seconds.</Source>
+      <Dest>Alteration is &lt;mag&gt; points stronger for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyBlock</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Virtue of the Zealous</Source>
+      <Dest>Virtue of the Zealous</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_VimFortifyBlock</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Fortifies Block and Speech by &lt;mag&gt; points and Magicka by &lt;15&gt; points for &lt;dur&gt; seconds.</Source>
+      <Dest>Fortifies Block and Speech by &lt;mag&gt; points and Magicka by &lt;15&gt; points for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DD_EVSQ01NiryerieTargettedSpellEffect02</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Niryerie&apos;s Spell of Tracking</Source>
+      <Dest>Niryerie&apos;s Spell of Tracking</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DD_EVSQ01RitualChannelEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Niryerie Channel Effect</Source>
+      <Dest>Niryerie Channel Effect</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DD_EVSQ01RitualChannelEffectShade</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Niryerie Shade Channel Effect</Source>
+      <Dest>Niryerie Shade Channel Effect</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DD_EVSQ01PerkSpell</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Warp Stability</Source>
+      <Dest>Warp Stability</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DD_EVSQ01PerkSpell</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Wards you against any damage caused by dimensional instability.</Source>
+      <Dest>Wards you against any damage caused by dimensional instability.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DD_EVSQ01NiryerieTargettedSpellEffect01</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Targetted Spell</Source>
+      <Dest>Targetted Spell</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DD_PerkRevenantFireDamageEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Destabilised Soul</Source>
+      <Dest>Destabilised Soul</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_FortifyTwoHandedBlessing</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Two-handed is &lt;mag&gt; points stronger.</Source>
+      <Dest>Two-handed is &lt;mag&gt; points stronger.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRV_StonebarkAttractiveAleDescription</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Attractive Ale</Source>
+      <Dest>Attractive Ale</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRV_StonebarkAttractiveAleDescription</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Everything within &lt;75&gt; feet is pushed away from you. You are &lt;100%&gt; weaker to shock for &lt;30&gt; seconds.</Source>
+      <Dest>Everything within &lt;75&gt; feet is pushed away from you. You are &lt;100%&gt; weaker to shock for &lt;30&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BrewBeneficialBrandyDescription</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Beneficial Brandy</Source>
+      <Dest>Beneficial Brandy</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BrewBeneficialBrandyDescription</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Heals &lt;2&gt; points per second for &lt;120&gt; seconds. Drains magicka by  &lt;1&gt; points per second for &lt;45&gt; seconds.</Source>
+      <Dest>Heals &lt;2&gt; points per second for &lt;120&gt; seconds. Drains magicka by  &lt;1&gt; points per second for &lt;45&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkStoutOfStrabismDescription</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Stout of Strabism</Source>
+      <Dest>Stout of Strabism</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkStoutOfStrabismDescription</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Grants invisibility, consuming some lifeforce to summon a decoy for up to &lt;60&gt; seconds.</Source>
+      <Dest>Grants invisibility, consuming some lifeforce to summon a decoy for up to &lt;60&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BrewCordialCognacDescription</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Cordial Cognac</Source>
+      <Dest>Cordial Cognac</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BrewCordialCognacDescription</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Creatures and people up to level &lt;25&gt; nearby won&apos;t fight for &lt;60&gt; seconds. Your Magicka and Stamina are depleted by &lt;5&gt; points per second for &lt;30&gt; seconds.</Source>
+      <Dest>Creatures and people up to level &lt;25&gt; nearby won&apos;t fight for &lt;60&gt; seconds. Your Magicka and Stamina are depleted by &lt;5&gt; points per second for &lt;30&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkCOBRDescription</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Cider of Blind Rage</Source>
+      <Dest>Cider of Blind Rage</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkCOBRDescription</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>As your rage blinds you, you reflect incoming damage and regenerate stamina &lt;25&gt;% faster.</Source>
+      <Dest>As your rage blinds you, you reflect incoming damage and regenerate stamina &lt;25&gt;% faster.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DrV_StonebarkMagesHourglassDescription</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Mage&apos;s Hourglass</Source>
+      <Dest>Mage&apos;s Hourglass</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DrV_StonebarkMagesHourglassDescription</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>For &lt;30&gt; seconds, time slows down by &lt;15&gt;% and your magicka regenerates &lt;50&gt;% faster.</Source>
+      <Dest>For &lt;30&gt; seconds, time slows down by &lt;15&gt;% and your magicka regenerates &lt;50&gt;% faster.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkFirebreathBrandyDescription</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Firebreath Brandy</Source>
+      <Dest>Firebreath Brandy</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkFirebreathBrandyDescription</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Your breath becomes Fire, dealing &lt;30&gt; damage per second to enemies in front of you.</Source>
+      <Dest>Your breath becomes Fire, dealing &lt;30&gt; damage per second to enemies in front of you.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BrewRootingLiquorDescription</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Liquor of Rooting</Source>
+      <Dest>Liquor of Rooting</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BrewRootingLiquorDescription</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Your increased mass makes it harder for you to move, but reduces incoming damage by &lt;25&gt;% and allows you to block &lt;20&gt;% more damage.</Source>
+      <Dest>Your increased mass makes it harder for you to move, but reduces incoming damage by &lt;25&gt;% and allows you to block &lt;20&gt;% more damage.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_SummonDremoraFrostMage</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Summon Dremora Frost Mage</Source>
+      <Dest>Summon Dremora Frost Mage</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_DamageMagickaRate</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Completely drains the target&apos;s Magicka, preventing it from casting spells for &lt;dur&gt; seconds. Dispels defensive spells and conjured creatures.</Source>
+      <Dest>Completely drains the target&apos;s Magicka, preventing it from casting spells for &lt;dur&gt; seconds. Dispels defensive spells and conjured creatures.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_WeakenArmorConcAimed</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Afflict Armor</Source>
+      <Dest>Afflict Armor</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_WeakenArmorConcAimed</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Weakens the target´s armor rating by a strength of &lt;mag&gt; for &lt;dur&gt; seconds.</Source>
+      <Dest>Weakens the target´s armor rating by a strength of &lt;mag&gt; for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_FireDamageFFSelfAreaUndead</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Disintegrate the Undead</Source>
+      <Dest>Disintegrate the Undead</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_DisintegrateUndeadFFMassSelfArea</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Disintegrate Greater Undead</Source>
+      <Dest>Disintegrate Greater Undead</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_DisintegrateUndeadFFMassSelfArea</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Undead up to level &lt;mag&gt; are disintegrated. Other undead flee for &lt;dur&gt; seconds.</Source>
+      <Dest>Undead up to level &lt;mag&gt; are disintegrated. Other undead flee for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_ReflectDamageFFSelf</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Reflective Resolve</Source>
+      <Dest>Reflective Resolve</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_ReflectDamageFFSelf</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Reflects &lt;67%&gt; of received damage back to the attacker. For each received hit there&apos;s a &lt;10%&gt; chance of staggering and disarming the attacker.</Source>
+      <Dest>Reflects &lt;67%&gt; of received damage back to the attacker. For each received hit there&apos;s a &lt;10%&gt; chance of staggering and disarming the attacker.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_DamageDwarvenConcAimed</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Dwarven Damage</Source>
+      <Dest>Dwarven Damage</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_DamageDwarvenConcAimed</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>damages close Dwarven targets by &lt;mag&gt; points.</Source>
+      <Dest>damages close Dwarven targets by &lt;mag&gt; points.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_SummonDremoraFireMage</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Summon Dremora Fire Mage</Source>
+      <Dest>Summon Dremora Fire Mage</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_SummonDremoraShockMage</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Summon Dremora Storm Mage</Source>
+      <Dest>Summon Dremora Storm Mage</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_PoisonDamageConcAimed</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Causes &lt;mag&gt; points of poison damage on non dwarven targets for &lt;dur&gt; seconds.</Source>
+      <Dest>Causes &lt;mag&gt; points of poison damage on non dwarven targets for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_CorrodeArmorCloakFFself</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Armor Corroding Cloak</Source>
+      <Dest>Armor Corroding Cloak</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_CorrodeArmorCloakFFself</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>For &lt;60&gt; seconds, opponents in melee range take &lt;4&gt; points of damage and their armor rating is reduced by &lt;14&gt; points. Automatons take an additional &lt;14&gt; points of damage.</Source>
+      <Dest>For &lt;60&gt; seconds, opponents in melee range take &lt;4&gt; points of damage and their armor rating is reduced by &lt;14&gt; points. Automatons take an additional &lt;14&gt; points of damage.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DD_InstaKillArrowFFAimed</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>This really shouldn&apos;t be a spell and if you read this, something went horrible wrong.</Source>
+      <Dest>This really shouldn&apos;t be a spell and if you read this, something went horrible wrong.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_SlowWeaponSpeedFFAimed</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Slower Weapon Speed</Source>
+      <Dest>Slower Weapon Speed</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_HysteriaDecoy</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Hysteria Decoy</Source>
+      <Dest>Hysteria Decoy</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_HysteriaDecoy</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>For &lt;dur&gt; seconds, create a running illusion that provokes nearby enemies. When killed, nearby actors become frenzied.</Source>
+      <Dest>For &lt;dur&gt; seconds, create a running illusion that provokes nearby enemies. When killed, nearby actors become frenzied.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_SummonEtherealStrider</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Conjure Ethereal Strider</Source>
+      <Dest>Conjure Ethereal Strider</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_SummonEtherealStrider</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Summon a ghostly mount to ride for &lt;dur&gt; seconds.</Source>
+      <Dest>Summon a ghostly mount to ride for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_AbDecoyCloak</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Decoy Ability Cloak</Source>
+      <Dest>Decoy Ability Cloak</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_AbDecoyCloak</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>opponents in melee range becomes hostile.</Source>
+      <Dest>opponents in melee range becomes hostile.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_crDecoyAggroConcAimed</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Decoy Aggro</Source>
+      <Dest>Decoy Aggro</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_InfluenceAggUpFFSelfArea25</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Incite squabble</Source>
+      <Dest>Incite squabble</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_HysteriaDecoyDebugMessage</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Debug Message</Source>
+      <Dest>Debug Message</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BurdenDebugMessage</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Debug Message</Source>
+      <Dest>Debug Message</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_EtherealStriderDebugMessage</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Debug Message</Source>
+      <Dest>Debug Message</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DrV_AlchDetectUndead</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Mark Dead</Source>
+      <Dest>Mark Dead</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DrV_AlchDetectUndead</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Nearby dead and undead are marked for &lt;dur&gt; seconds and can be seen through walls.</Source>
+      <Dest>Nearby dead and undead are marked for &lt;dur&gt; seconds and can be seen through walls.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BoneGrenade</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Bone Grenade</Source>
+      <Dest>Bone Grenade</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BoneGrenade</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>A shrapnel explosion dealing &lt;40&gt; points of damage in a 25-foot radius. Deals splash damage to targets within the radius.</Source>
+      <Dest>A shrapnel explosion dealing &lt;40&gt; points of damage in a 25-foot radius. Deals splash damage to targets within the radius.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_DrainDeadDisintegrateFFAimed</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Drain Dead Disintegrate</Source>
+      <Dest>Drain Dead Disintegrate</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_DrainDeadDisintegrateFFAimed</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Drains dead bodies of their remaining Magicka, disintegrating them in the process.</Source>
+      <Dest>Drains dead bodies of their remaining Magicka, disintegrating them in the process.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_AbsorbDrainDeadFXAimed</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Drain The Dead FX</Source>
+      <Dest>Drain The Dead FX</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_WyrmsbaneEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Wyrmsbane Block Summon</Source>
+      <Dest>Wyrmsbane Block Summon</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_WyrmsbaneEffect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Blocking physical attacks has a chance of summoning an ancient protector.</Source>
+      <Dest>Blocking physical attacks has a chance of summoning an ancient protector.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRV_AbDevGraveTest</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Nerd</Source>
+      <Dest>Nerd</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRV_AbDevGraveTest</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>It does the thing</Source>
+      <Dest>It does the thing</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_UnrelentingForceLocation</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Cast on a nearby surface, pushes people and creatures, away sending them flying.</Source>
+      <Dest>Cast on a nearby surface, pushes people and creatures, away sending them flying.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_BurdenDebugMessageRune</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Debug Message</Source>
+      <Dest>Debug Message</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_SlowWeaponSpeedFFLocation</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Slower Weapon Speed</Source>
+      <Dest>Slower Weapon Speed</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StaggerAttackLocationEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Stagger Area Location</Source>
+      <Dest>Stagger Area Location</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StaggerAttackLocationEffect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Cast on a nearby surface, it staggers targets momentarily when stepped on.</Source>
+      <Dest>Cast on a nearby surface, it staggers targets momentarily when stepped on.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_InfluenceAggDownFFLocation</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Cast on a nearby surface, creatures and people up to level &lt;mag&gt; won&apos;t fight for &lt;dur&gt; seconds.</Source>
+      <Dest>Cast on a nearby surface, creatures and people up to level &lt;mag&gt; won&apos;t fight for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_AbLinkCloakHealth</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Link Share Health Ability Cloak</Source>
+      <Dest>Link Share Health Ability Cloak</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_AbLinkCloakMagicka</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Link Share Magicka Ability Cloak</Source>
+      <Dest>Link Share Magicka Ability Cloak</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_AbLinkCloakStamina</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Link Share Stamina Ability Cloak</Source>
+      <Dest>Link Share Stamina Ability Cloak</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_InfluenceConfDownFFLocation</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Cast on a nearby surface, creatures and people up to level &lt;mag&gt; flee from combat for &lt;dur&gt; seconds.</Source>
+      <Dest>Cast on a nearby surface, creatures and people up to level &lt;mag&gt; flee from combat for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkMirrorHealthFFTargetActor</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Mirror Fortitude</Source>
+      <Dest>Mirror Fortitude</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkMirrorHealthFFTargetActor</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Mirrors the caster&apos;s rate of Health loss and recovery with the target&apos;s for &lt;dur&gt; seconds.</Source>
+      <Dest>Mirrors the caster&apos;s rate of Health loss and recovery with the target&apos;s for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkMirrorMagickaFFTargetActor</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Mirror Intellect</Source>
+      <Dest>Mirror Intellect</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkMirrorMagickaFFTargetActor</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Mirrors the caster&apos;s rate of Magicka loss and recovery with the target&apos;s for &lt;dur&gt; seconds.</Source>
+      <Dest>Mirrors the caster&apos;s rate of Magicka loss and recovery with the target&apos;s for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkMirrorStaminaFFTargetActor</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Mirror Endurance</Source>
+      <Dest>Mirror Endurance</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkMirrorStaminaFFTargetActor</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Mirrors the caster&apos;s rate of Stamina loss and recovery with the target&apos;s for &lt;dur&gt; seconds.</Source>
+      <Dest>Mirrors the caster&apos;s rate of Stamina loss and recovery with the target&apos;s for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkShroudHealthConcAimed</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Shroud of Fortitude</Source>
+      <Dest>Shroud of Fortitude</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkShroudHealthConcAimed</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Matches the target&apos;s rate of &lt;Magicka&gt; loss and recovery with caster for &lt;dur&gt;, does not work on undead, dragons, daedra or machines.</Source>
+      <Dest>Matches the target&apos;s rate of &lt;Magicka&gt; loss and recovery with caster for &lt;dur&gt;, does not work on undead, dragons, daedra or machines.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkShroudMagickaConcAimed</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Shroud of Intellect</Source>
+      <Dest>Shroud of Intellect</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkShroudMagickaConcAimed</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Matches the &lt;Target&apos;s&gt; rate of &lt;Magicka&gt; loss with caster for &lt;dur&gt; with nearby Allys, does not work on undead, dragons, daedra or machines.</Source>
+      <Dest>Matches the &lt;Target&apos;s&gt; rate of &lt;Magicka&gt; loss with caster for &lt;dur&gt; with nearby Allys, does not work on undead, dragons, daedra or machines.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkShroudStaminaConcAimed</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Shroud of Endurance</Source>
+      <Dest>Shroud of Endurance</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkTargetShroudHealthFFTargetActor</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Shroud of Fortitude</Source>
+      <Dest>Shroud of Fortitude</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkTargetShroudHealthFFTargetActor</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>The target&apos;s rate of Health loss and recovery is mirrored on its nearby allies for &lt;dur&gt; seconds.</Source>
+      <Dest>The target&apos;s rate of Health loss and recovery is mirrored on its nearby allies for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkTargetShroudMagickaFFTargetActor</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Shroud of Intellect</Source>
+      <Dest>Shroud of Intellect</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkTargetShroudMagickaFFTargetActor</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>The target&apos;s rate of Magicka loss and recovery is mirrored on its nearby allies for &lt;dur&gt; seconds.</Source>
+      <Dest>The target&apos;s rate of Magicka loss and recovery is mirrored on its nearby allies for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkTargetShroudStaminaFFTargetActor</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Shroud of Endurance</Source>
+      <Dest>Shroud of Endurance</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_LinkTargetShroudStaminaFFTargetActor</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>The target&apos;s rate of Stamina loss and recovery is mirrored on its nearby allies for &lt;dur&gt; seconds.</Source>
+      <Dest>The target&apos;s rate of Stamina loss and recovery is mirrored on its nearby allies for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_SlowLeftWeaponSpeedFFContact</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Slower Left Weapon Speed</Source>
+      <Dest>Slower Left Weapon Speed</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_SlowLeftWeaponSpeedFFAimed</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Slower Left Weapon Speed</Source>
+      <Dest>Slower Left Weapon Speed</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_ShockBeamDamageConcAimed</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Lightning Weave</Source>
+      <Dest>Lightning Weave</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_ShockBeamDamageConcAimed</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Lightning beam that does &lt;mag&gt; points of shock damage to Health and Magicka per second.</Source>
+      <Dest>Lightning beam that does &lt;mag&gt; points of shock damage to Health and Magicka per second.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_FireBeamDamageConcAimed</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Fierce Flames</Source>
+      <Dest>Fierce Flames</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_FireBeamDamageConcAimed</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>A ray of fire that does &lt;mag&gt; points of damage per second. Targets on fire take extra damage.</Source>
+      <Dest>A ray of fire that does &lt;mag&gt; points of damage per second. Targets on fire take extra damage.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_FrostBeamDamageConcAimed</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Frost Beam</Source>
+      <Dest>Frost Beam</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_FrostBeamDamageConcAimed</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>A stream of cold that does &lt;mag&gt; points of damage per second to Health and Stamina.</Source>
+      <Dest>A stream of cold that does &lt;mag&gt; points of damage per second to Health and Stamina.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DrV_EnchSilverIceFrostDamage</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Silver Frost Damage</Source>
+      <Dest>Silver Frost Damage</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DrV_EnchSilverIceUndeadDamage</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Silver Frost Undead Damage</Source>
+      <Dest>Silver Frost Undead Damage</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DrV_EnchSilverIceUndeadDamage</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Strikes against undead targets deal extra damage and ignore frost resistance.</Source>
+      <Dest>Strikes against undead targets deal extra damage and ignore frost resistance.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_HazardCutsDamageFFContact</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Cuts Hazard</Source>
+      <Dest>Cuts Hazard</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_ThousandCutsHazard40</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Thousand Cuts</Source>
+      <Dest>Thousand Cuts</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_ThousandCutsHazard40</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Targets take &lt;mag&gt; points of damage for &lt;dur&gt; seconds.</Source>
+      <Dest>Targets take &lt;mag&gt; points of damage for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_FXThousandCutsBodyHolder</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Thousand Cuts Art Holder</Source>
+      <Dest>Thousand Cuts Art Holder</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_WerewolfChangeEffect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Take on the form of the Werewolf for &lt;150&gt; seconds.</Source>
+      <Dest>Take on the form of the Werewolf for &lt;150&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_EnchBoneDisintegrateExpl</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Secondary Bone Explosion</Source>
+      <Dest>Secondary Bone Explosion</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_EnchBoneDisintegrateExpl</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>If target dies within &lt;dur&gt; seconds, secondary Explosion follows.</Source>
+      <Dest>If target dies within &lt;dur&gt; seconds, secondary Explosion follows.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_AbSplitTheMindTarget</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Split The Mind Target</Source>
+      <Dest>Split The Mind Target</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_SplitTheMindDebugMessage</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Debug Message</Source>
+      <Dest>Debug Message</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DrV_DwarvenSteam</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>A burst of steam that does &lt;mag&gt; points of damage per second.</Source>
+      <Dest>A burst of steam that does &lt;mag&gt; points of damage per second.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_DamageHealthFFSelf</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Sacrifices the caster&apos;s Health points by &lt;mag&gt; to</Source>
+      <Dest>Sacrifices the caster&apos;s Health points by &lt;mag&gt; to</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_RestoreMagickaDuration</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>restore &lt;mag&gt; points of Magicka.</Source>
+      <Dest>restore &lt;mag&gt; points of Magicka.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_AbsorbHealthConcAimed</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Drain Health Cloak</Source>
+      <Dest>Drain Health Cloak</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DD_LBMQ07PowerCoreThrow</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Yeet</Source>
+      <Dest>Yeet</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DrV_AlchFortifySpeechcraft</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Speech is improved by &lt;mag&gt;% for &lt;dur&gt; seconds.</Source>
+      <Dest>Speech is improved by &lt;mag&gt;% for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_InebriationLvl1Description</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Minor Alcohol Content</Source>
+      <Dest>Minor Alcohol Content</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_InebriationLvl1Description</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Minor Alcohol Content.</Source>
+      <Dest>Minor Alcohol Content.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_InebriationLvl2Description</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Moderate Alcohol Content</Source>
+      <Dest>Moderate Alcohol Content</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_InebriationLvl2Description</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Moderate Alcohol Content.</Source>
+      <Dest>Moderate Alcohol Content.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_InebriationLvl3Description</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>High Alcohol Content</Source>
+      <Dest>High Alcohol Content</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_InebriationLvl3Description</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>High Alcohol Content.</Source>
+      <Dest>High Alcohol Content.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DrV_AlchDamageSpeechcraft</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Damage Speechcraft</Source>
+      <Dest>Damage Speechcraft</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DrV_AlchDamageSpeechcraft</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Speech is damaged by &lt;mag&gt;% for &lt;dur&gt; seconds.</Source>
+      <Dest>Speech is damaged by &lt;mag&gt;% for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_RubyAleBeserkEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Rolston&apos;s Resilience</Source>
+      <Dest>Rolston&apos;s Resilience</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_RubyAleBeserkEffect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>You gain immense strength and courage for &lt;dur&gt; seconds.</Source>
+      <Dest>You gain immense strength and courage for &lt;dur&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_MoonshinePushBrewEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Moonshine&apos;s Push</Source>
+      <Dest>Moonshine&apos;s Push</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StrabismSummonGhostEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Phantom Strabism</Source>
+      <Dest>Phantom Strabism</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StrabismSummonGhostEffect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Creates a ghost clone of the player for &lt;dur&gt; seconds</Source>
+      <Dest>Creates a ghost clone of the player for &lt;dur&gt; seconds</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkStoutOfPhantomStrabismDescription</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Stout of Phantom Strabism</Source>
+      <Dest>Stout of Phantom Strabism</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkStoutOfPhantomStrabismDescription</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Grants invisibility, consuming some lifeforce to summon a decoy for &lt;60&gt; seconds. If killed, its vengeful ghost will aid you for an additional &lt;60&gt; seconds.</Source>
+      <Dest>Grants invisibility, consuming some lifeforce to summon a decoy for &lt;60&gt; seconds. If killed, its vengeful ghost will aid you for an additional &lt;60&gt; seconds.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StrabismCloneEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Strabism</Source>
+      <Dest>Strabism</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StrabismCloneEffect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Creates a clone of the player for &lt;dur&gt; seconds</Source>
+      <Dest>Creates a clone of the player for &lt;dur&gt; seconds</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkExpBrewSpell_Effect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Stonebark Expeirmental Brew Spell</Source>
+      <Dest>Stonebark Expeirmental Brew Spell</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkExpBrewSpell_Effect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Test Brew</Source>
+      <Dest>Test Brew</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkExpBrewDescription</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Stonebark Experimental Brew</Source>
+      <Dest>Stonebark Experimental Brew</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkExpBrewDescription</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Brew for effect experimentation</Source>
+      <Dest>Brew for effect experimentation</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DrV_StonebarkSoulseerSpell_Effect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Soulseer</Source>
+      <Dest>Soulseer</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_FrostBreathEffect</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Releases a Frost breath for &lt;mag&gt; damages</Source>
+      <Dest>Releases a Frost breath for &lt;mag&gt; damages</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_FrostBreathBrandyBrewEffect</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Frostbreath Brandy</Source>
+      <Dest>Frostbreath Brandy</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkFrostbreathBrandyDescription</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Frostbreath Brandy</Source>
+      <Dest>Frostbreath Brandy</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DRVC_StonebarkFrostbreathBrandyDescription</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>Your breath becomes Frost, dealing &lt;34&gt; damage per second to enemies in front of you.</Source>
+      <Dest>Your breath becomes Frost, dealing &lt;34&gt; damage per second to enemies in front of you.</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DrV_StonebarkSoulseerDescription</EDID>
+      <REC>MGEF:FULL</REC>
+      <Source>Soulseer</Source>
+      <Dest>Soulseer</Dest>
+    </String>
+    <String List="0" Partial="1">
+      <EDID>DrV_StonebarkSoulseerDescription</EDID>
+      <REC>MGEF:DNAM</REC>
+      <Source>For &lt;dur&gt; seconds, your heightened vision and insight connects you to the souls of all living creatures within &lt;area&gt; feet. If killed, their soul fills a Soul Gem.</Source>
+      <Dest>For &lt;dur&gt; seconds, your heightened vision and insight connects you to the souls of all living creatures within &lt;area&gt; feet. If killed, their soul fills a Soul Gem.</Dest>
+    </String>
+  </Content>
+</SSTXMLRessources>

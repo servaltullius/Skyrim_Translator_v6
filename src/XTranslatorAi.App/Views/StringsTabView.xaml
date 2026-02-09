@@ -1,0 +1,193 @@
+<UserControl x:Class="XTranslatorAi.App.Views.StringsTabView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:XTranslatorAi.Core.Models;assembly=XTranslatorAi.Core"
+             mc:Ignorable="d"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
+            <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBox Text="{Binding EntryFilterText, UpdateSourceTrigger=PropertyChanged}"
+                     Width="260"
+                     Style="{StaticResource XT.ToolbarTextBox}" />
+
+            <TextBlock Text="Status:" VerticalAlignment="Center" Margin="12,0,6,0" />
+            <ComboBox ItemsSource="{Binding EntryStatusFilterValues}"
+                      SelectedItem="{Binding EntryFilterStatus}"
+                      Width="160"
+                      Style="{StaticResource XT.ToolbarComboBox}" />
+
+            <CheckBox Content="태그(원문)만"
+                      IsChecked="{Binding EntryFilterTagsOnly}"
+                      VerticalAlignment="Center"
+                      Margin="12,0,0,0"
+                      ToolTip="원문에 &lt;...&gt; / [pagebreak] / __XT_*__ 가 포함된 항목만 표시합니다. (검수용)" />
+
+            <CheckBox Content="태그 불일치만"
+                      IsChecked="{Binding EntryFilterTagMismatchOnly}"
+                      VerticalAlignment="Center"
+                      Margin="12,0,0,0"
+                      ToolTip="원문과 번역문의 태그 목록이 일치하지 않는 항목만 표시합니다. (태그 누락/변형 검수용)" />
+        </WrapPanel>
+
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding EntriesView}"
+                  SelectedItem="{Binding SelectedEntry}"
+                  Style="{StaticResource XT.DataGrid}"
+                  ColumnHeaderStyle="{StaticResource XT.DataGridColumnHeader}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  AlternationCount="2"
+                  EnableRowVirtualization="True"
+                  EnableColumnVirtualization="True"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  ScrollViewer.IsDeferredScrollingEnabled="True">
+	            <DataGrid.RowStyle>
+	                <Style TargetType="{x:Type DataGridRow}">
+	                    <Setter Property="ToolTip" Value="{Binding UserFacingErrorMessage}" />
+	                    <Style.Triggers>
+	                        <DataTrigger Binding="{Binding Status}" Value="{x:Static models:StringEntryStatus.InProgress}">
+	                            <Setter Property="Background" Value="{StaticResource XT.Row.InProgressBrush}" />
+	                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Status}" Value="{x:Static models:StringEntryStatus.Done}">
+                            <Setter Property="Background" Value="{StaticResource XT.Row.DoneBrush}" />
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Status}" Value="{x:Static models:StringEntryStatus.Done}" />
+                                <Condition Binding="{Binding IsTranslationMemoryApplied}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Background" Value="{StaticResource XT.Row.DoneTmBrush}" />
+                        </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding Status}" Value="{x:Static models:StringEntryStatus.Error}">
+                            <Setter Property="Background" Value="{StaticResource XT.Row.ErrorBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Status}" Value="{x:Static models:StringEntryStatus.Skipped}">
+                            <Setter Property="Background" Value="{StaticResource XT.Row.SkippedBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Status}" Value="{x:Static models:StringEntryStatus.Edited}">
+                            <Setter Property="Background" Value="{StaticResource XT.Row.EditedBrush}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+	            <DataGrid.Columns>
+	                <DataGridTextColumn Header="#" Binding="{Binding OrderIndex}" Width="70" />
+	                <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="90" />
+	                <DataGridTextColumn Header="EDID" Binding="{Binding Edid}" Width="140" />
+	                <DataGridTextColumn Header="REC" Binding="{Binding Rec}" Width="140" />
+	                <DataGridTextColumn Header="Error" Binding="{Binding UserFacingErrorMessage}" Width="220" />
+	                <DataGridTextColumn Header="Source" Binding="{Binding SourcePreview}" Width="*" />
+	                <DataGridTextColumn Header="Dest" Binding="{Binding DestPreview}" Width="*" />
+	            </DataGrid.Columns>
+	        </DataGrid>
+
+        <GridSplitter Grid.Row="2"
+                      Height="6"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center"
+                      ResizeDirection="Rows"
+                      ResizeBehavior="PreviousAndNext"
+                      Background="{StaticResource XT.BorderBrush}"
+                      Opacity="0.7"
+                      ShowsPreview="True" />
+
+        <Grid Grid.Row="3" Margin="0,6,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Header="Source" Grid.Column="0" Margin="0,0,6,0" Style="{StaticResource XT.GroupBoxCard}">
+                <TextBox Text="{Binding SelectedEntry.SourceText}"
+                         IsReadOnly="True"
+                         Style="{StaticResource XT.EditorTextBox}"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         VerticalScrollBarVisibility="Auto"
+                         HorizontalScrollBarVisibility="Auto" />
+            </GroupBox>
+
+            <GroupBox Header="Dest" Grid.Column="1" Margin="6,0,0,0" Style="{StaticResource XT.GroupBoxCard}">
+                <DockPanel>
+                    <Button DockPanel.Dock="Top"
+                            Content="Save Dest"
+                            Command="{Binding SaveSelectedDestCommand}"
+                            Style="{StaticResource XT.ToolbarButton}"
+                            HorizontalAlignment="Left"
+                            Margin="0,0,0,8" />
+                    <TabControl BorderThickness="0" Background="Transparent" ItemContainerStyle="{StaticResource XT.TabItem}">
+                        <TabItem Header="Edit">
+                            <TextBox Text="{Binding SelectedEntry.DestText, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource XT.EditorTextBox}"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     VerticalScrollBarVisibility="Auto"
+                                     HorizontalScrollBarVisibility="Auto" />
+                        </TabItem>
+
+                        <TabItem Header="Glossary">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,8">
+                                    <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                    <TextBox Text="{Binding GlossaryLookupText, UpdateSourceTrigger=PropertyChanged}"
+                                             Width="240"
+                                             Style="{StaticResource XT.ToolbarTextBox}" />
+
+                                    <CheckBox Content="Project"
+                                              IsChecked="{Binding GlossaryLookupIncludeProject}"
+                                              VerticalAlignment="Center"
+                                              Margin="12,0,0,0" />
+                                    <CheckBox Content="Global"
+                                              IsChecked="{Binding GlossaryLookupIncludeGlobal}"
+                                              VerticalAlignment="Center"
+                                              Margin="8,0,0,0" />
+                                </WrapPanel>
+
+                                <DataGrid Grid.Row="1"
+                                          ItemsSource="{Binding GlossaryLookupResultsView}"
+                                          Style="{StaticResource XT.DataGrid}"
+                                          ColumnHeaderStyle="{StaticResource XT.DataGridColumnHeader}"
+                                          AutoGenerateColumns="False"
+                                          IsReadOnly="True"
+                                          CanUserAddRows="False"
+                                          AlternationCount="2"
+                                          EnableRowVirtualization="True"
+                                          EnableColumnVirtualization="True"
+                                          VirtualizingPanel.IsVirtualizing="True"
+                                          VirtualizingPanel.VirtualizationMode="Recycling"
+                                          ScrollViewer.IsDeferredScrollingEnabled="True">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Scope" Binding="{Binding Scope}" Width="90" />
+                                        <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="140" />
+                                        <DataGridTextColumn Header="Source" Binding="{Binding SourceTerm}" Width="*" />
+                                        <DataGridTextColumn Header="Target" Binding="{Binding TargetTerm}" Width="*" />
+                                        <DataGridTextColumn Header="Priority" Binding="{Binding Priority}" Width="90" />
+                                        <DataGridTextColumn Header="Note" Binding="{Binding Note}" Width="220" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </DockPanel>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</UserControl>

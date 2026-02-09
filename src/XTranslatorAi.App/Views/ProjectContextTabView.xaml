@@ -1,0 +1,41 @@
+<UserControl x:Class="XTranslatorAi.App.Views.ProjectContextTabView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+    <Grid Margin="0,10,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
+            <CheckBox IsChecked="{Binding EnableProjectContext}" Content="Use generated project context" Margin="0,0,16,0"
+                      ToolTip="번역 시작 전 프로젝트 DB를 스캔하고 Gemini로 통합 컨텍스트(용어/스타일/템플릿)를 생성/저장하여 모든 배치에 동일하게 주입합니다." />
+
+            <Button Content="Generate (Gemini)"
+                    Command="{Binding GenerateProjectContextCommand}"
+                    Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Save"
+                    Command="{Binding SaveProjectContextCommand}"
+                    Style="{StaticResource XT.ToolbarButton}"
+                    Margin="6,0,0,0"
+                    ToolTip="현재 텍스트를 프로젝트 DB에 저장합니다. (수동 편집 후 저장 가능)" />
+            <Button Content="Clear"
+                    Command="{Binding ClearProjectContextCommand}"
+                    Style="{StaticResource XT.ToolbarButton}"
+                    Margin="6,0,0,0" />
+        </WrapPanel>
+
+        <TextBox Grid.Row="1"
+                 Text="{Binding ProjectContextPreview, UpdateSourceTrigger=PropertyChanged}"
+                 Style="{StaticResource XT.EditorTextBox}"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
+                 VerticalScrollBarVisibility="Auto"
+                 HorizontalScrollBarVisibility="Auto" />
+    </Grid>
+</UserControl>

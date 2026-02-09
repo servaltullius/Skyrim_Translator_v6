@@ -1,0 +1,62 @@
+<UserControl x:Class="XTranslatorAi.App.Views.GlobalTranslationMemoryTabView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+    <Grid Margin="0,10,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
+            <TextBlock Text="Source:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBox Text="{Binding GlobalTranslationMemorySourceText}" Width="320" Style="{StaticResource XT.ToolbarTextBox}" />
+            <TextBlock Text="Target:" VerticalAlignment="Center" Margin="12,0,6,0" />
+            <TextBox Text="{Binding GlobalTranslationMemoryDestText}" Width="320" Style="{StaticResource XT.ToolbarTextBox}" />
+
+            <Button Content="Add" Command="{Binding AddGlobalTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Save" Command="{Binding SaveGlobalTranslationMemoryChangesCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Delete" Command="{Binding DeleteGlobalTranslationMemoryEntryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Reload" Command="{Binding ReloadGlobalTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Import File" Command="{Binding ImportGlobalTranslationMemoryFromTabCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Export File" Command="{Binding ExportGlobalTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+        </WrapPanel>
+
+        <WrapPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
+            <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBox Text="{Binding GlobalTranslationMemoryFilterText, UpdateSourceTrigger=PropertyChanged}"
+                     Width="260"
+                     Style="{StaticResource XT.ToolbarTextBox}" />
+        </WrapPanel>
+
+        <DataGrid Grid.Row="2"
+                  ItemsSource="{Binding GlobalTranslationMemoryView}"
+                  SelectedItem="{Binding SelectedGlobalTranslationMemoryEntry}"
+                  Style="{StaticResource XT.DataGrid}"
+                  ColumnHeaderStyle="{StaticResource XT.DataGridColumnHeader}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  AlternationCount="2"
+                  EnableRowVirtualization="True"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling">
+            <DataGrid.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding DeleteGlobalTranslationMemoryEntryCommand}" />
+            </DataGrid.InputBindings>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True" Width="90" />
+                <DataGridTextColumn Header="Source" Binding="{Binding SourceText}" IsReadOnly="True" Width="*" />
+                <DataGridTextColumn Header="Target" Binding="{Binding DestText, UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                <DataGridTextColumn Header="Updated" Binding="{Binding UpdatedAt}" IsReadOnly="True" Width="220" />
+                <DataGridCheckBoxColumn Header="Dirty" Binding="{Binding IsDirty}" IsReadOnly="True" Width="70" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

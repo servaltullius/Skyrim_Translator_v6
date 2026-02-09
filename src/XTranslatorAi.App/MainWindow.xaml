@@ -1,0 +1,339 @@
+﻿<Window x:Class="XTranslatorAi.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:XTranslatorAi.App"
+        xmlns:vm="clr-namespace:XTranslatorAi.App.ViewModels"
+        xmlns:models="clr-namespace:XTranslatorAi.Core.Models;assembly=XTranslatorAi.Core"
+        xmlns:views="clr-namespace:XTranslatorAi.App.Views"
+        mc:Ignorable="d"
+        Title="Tullius Translator" Height="900" Width="1400" MinHeight="720" MinWidth="1100"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource XT.CardBorder}" Margin="0,0,0,10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <WrapPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
+                        <Button Content="Open XML" Command="{Binding OpenXmlCommand}" Style="{StaticResource XT.ToolbarButton}" />
+                        <Button Content="Export XML" Command="{Binding ExportXmlCommand}" Style="{StaticResource XT.ToolbarButton}" />
+                        <Button Content="용어집 폴더" Command="{Binding OpenGlossaryFolderCommand}" Style="{StaticResource XT.ToolbarButton}"
+                                ToolTip="%LOCALAPPDATA%\\XTranslatorAi\\ (Projects/Global) 폴더를 엽니다." />
+                    </WrapPanel>
+
+                    <Border Grid.Column="1" Width="1" Margin="0,6,12,6" Background="{StaticResource XT.BorderBrush}" />
+
+                    <DockPanel Grid.Column="2" VerticalAlignment="Center" LastChildFill="False">
+                        <WrapPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Content="Start" Command="{Binding StartTranslationCommand}" Style="{StaticResource XT.SuccessButton}" Margin="0,0,6,0" />
+                            <Button Content="{Binding PauseButtonText}" Command="{Binding TogglePauseTranslationCommand}" Style="{StaticResource XT.ToolbarButton}" />
+                            <Button Content="Stop" Command="{Binding StopTranslationCommand}" Style="{StaticResource XT.DangerButton}" />
+                        </WrapPanel>
+
+                        <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center" Foreground="{StaticResource XT.MutedTextBrush}" TextWrapping="NoWrap" Margin="12,0,0,0">
+                            <Run Text="{Binding DoneCount, StringFormat=Done {0}}" />
+                            <Run Text=" · " />
+                            <Run Text="{Binding PendingCount, StringFormat=Pending {0}}" />
+                            <Run Text=" · " />
+                            <Run Text="{Binding TotalCount, StringFormat=Total {0}}" />
+                            <Run Text=" · " />
+                            <Run Text="{Binding ProgressRatio, Mode=OneWay, StringFormat={}{0:P0}}" />
+                        </TextBlock>
+                    </DockPanel>
+
+                    <Border Grid.Column="3" Width="1" Margin="12,6,12,6" Background="{StaticResource XT.BorderBrush}" />
+
+                    <WrapPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                        <TextBlock Text="Franchise:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                        <ComboBox ItemsSource="{Binding FranchiseOptions}"
+                                  DisplayMemberPath="DisplayName"
+                                  SelectedValuePath="Value"
+                                  SelectedValue="{Binding SelectedFranchise}"
+                                  Width="140"
+                                  VerticalAlignment="Center"
+                                  Style="{StaticResource XT.ToolbarComboBox}" />
+                        <Border Width="1" Height="18" Margin="12,0,12,0" Background="{StaticResource XT.BorderBrush}" />
+                        <TextBlock Text="Model:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                        <ComboBox ItemsSource="{Binding AvailableModels}"
+                                  SelectedItem="{Binding SelectedModel}"
+                                  Width="220"
+                                  VerticalAlignment="Center"
+                                  Style="{StaticResource XT.ToolbarComboBox}" />
+                        <Button Content="Refresh" Command="{Binding RefreshModelsCommand}" Style="{StaticResource XT.ToolbarButton}" />
+                    </WrapPanel>
+                </Grid>
+
+                <Expander Grid.Row="1" Margin="0,8,0,0" IsExpanded="False">
+                    <Expander.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="고급 설정" FontWeight="SemiBold" />
+                            <TextBlock Grid.Column="1" Foreground="{StaticResource XT.MutedTextBrush}" HorizontalAlignment="Right" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding BatchSize, StringFormat=Batch {0}}" />
+                                <Run Text=" · " />
+                                <Run Text="{Binding MaxCharsPerBatch, StringFormat=Max {0}}" />
+                                <Run Text=" · " />
+                                <Run Text="{Binding MaxParallelRequests, StringFormat=Parallel {0}}" />
+                                <Run Text=" · " />
+                                <Run Text="{Binding MaxOutputTokensOverride, StringFormat=Max out {0}}" />
+                            </TextBlock>
+                        </Grid>
+                    </Expander.Header>
+                    <StackPanel>
+                        <TextBlock Text="번역 설정" FontWeight="SemiBold" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,4,0,4" />
+                        <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="Batch:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                            <TextBox Text="{Binding BatchSize, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="60"
+                                     VerticalAlignment="Center"
+                                     Style="{StaticResource XT.ToolbarTextBox}"
+                                     TextAlignment="Center" />
+                            <TextBlock Text="Max chars:" VerticalAlignment="Center" Margin="12,0,6,0" />
+                            <TextBox Text="{Binding MaxCharsPerBatch, UpdateSourceTrigger=PropertyChanged}" Width="80" VerticalAlignment="Center" Style="{StaticResource XT.ToolbarTextBox}" TextAlignment="Center" />
+                            <TextBlock Text="Parallel:" VerticalAlignment="Center" Margin="12,0,6,0" />
+                            <TextBox Text="{Binding MaxParallelRequests, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="60"
+                                     VerticalAlignment="Center"
+                                     Style="{StaticResource XT.ToolbarTextBox}"
+                                     TextAlignment="Center" />
+
+                            <TextBlock Text="Max out:" VerticalAlignment="Center" Margin="12,0,6,0" ToolTip="0=Auto (model limit)" />
+                            <TextBox Text="{Binding MaxOutputTokensOverride, UpdateSourceTrigger=PropertyChanged}" Width="80" VerticalAlignment="Center" Style="{StaticResource XT.ToolbarTextBox}" TextAlignment="Center" ToolTip="0=Auto (model limit)" />
+                        </WrapPanel>
+                        <TextBlock Text="{Binding EffectiveGeminiTranslationConfigSummary}"
+                                   Margin="0,4,0,0"
+                                   Foreground="{StaticResource XT.MutedTextBrush}"
+                                   ToolTip="{Binding EffectiveGeminiTranslationConfigToolTip}" />
+                        <TextBlock Text="{Binding SelectedModelCostSummary}"
+                                   Margin="0,2,0,0"
+                                   Foreground="{StaticResource XT.MutedTextBrush}" />
+
+	                        <TextBlock Text="옵션" FontWeight="SemiBold" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,10,0,4" />
+	                        <WrapPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,6">
+	                            <Button Content="무료티어 프리셋" Command="{Binding ApplyFreeTierPresetCommand}" Style="{StaticResource XT.ToolbarButton}"
+	                                    ToolTip="무료 티어 추천 설정(Flash-Lite 기본 + BOOK:FULL은 3.0 Flash + 문제 항목만 Flash 재번역 + 프롬프트 캐시 OFF)을 한 번에 적용합니다." />
+	                            <Button Content="유료 프리셋" Command="{Binding ApplyPaidPresetCommand}" Style="{StaticResource XT.ToolbarButton}" Margin="6,0,0,0"
+	                                    ToolTip="유료 키(3.0 Flash Preview) 기준으로 요청 수/실패를 줄이는 추천 설정을 적용합니다. (batch=12, maxChars=15000, parallel=2, maxOut=auto)" />
+	                        </WrapPanel>
+	                        <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
+	                            <CheckBox Content="자동 복구" IsChecked="{Binding EnableRepairPass}" VerticalAlignment="Center" Margin="12,0,0,0"
+	                                      ToolTip="번역 결과가 토큰/형식 검증에 실패하거나 플레이스홀더(&lt;mag&gt;/&lt;dur&gt;/&lt;숫자&gt;) 문맥이 이상하면 해당 항목을 추가로 재요청(필요 시 묶음)하여 복구합니다. 비용이 증가할 수 있습니다." />
+                            <ComboBox ItemsSource="{Binding SemanticRepairModeValues}"
+                                      SelectedItem="{Binding SemanticRepairMode}"
+                                      IsEnabled="{Binding EnableRepairPass}"
+                                      Width="90"
+                                      VerticalAlignment="Center"
+                                      Margin="6,0,0,0"
+                                      Style="{StaticResource XT.ToolbarComboBox}"
+                                      ToolTip="Semantic repair 강도입니다. Soft=명백한 &lt;dur&gt; 시간 문맥 오류만 추가 복구. Strict=조사/어순까지 포함해 더 공격적으로 복구합니다. (일반적으로 Strict가 더 느리고 비용이 큼)" />
+
+                            <CheckBox Content="템플릿 교정" IsChecked="{Binding EnableTemplateFixer}" VerticalAlignment="Center" Margin="12,0,0,0"
+                                      ToolTip="번역 후 MagDurPlaceholderFixer(규칙/템플릿) 기반으로 일부 문장 패턴을 결정적으로 교정합니다. 끄면 LLM 결과/자동 복구에만 의존합니다." />
+
+                            <CheckBox Content="태그 원문(&lt;mag&gt;/&lt;dur&gt;)" IsChecked="{Binding KeepSkyrimTagsRaw}" VerticalAlignment="Center" Margin="12,0,0,0"
+                                      ToolTip="실험 옵션: &lt;mag&gt;/&lt;dur&gt;(&lt;bur&gt; 포함)은 __XT_PH_*__로 마스킹하지 않고 원문 형태로 모델에 전달합니다. 일부 모델에서 문맥(포인트/초) 이해가 개선될 수 있지만, 태그 누락/변형 가능성도 있어 검증/자동복구와 함께 사용하는 것을 권장합니다." />
+
+                            <CheckBox Content="대화 문맥(윈도우)" IsChecked="{Binding EnableDialogueContextWindow}" VerticalAlignment="Center" Margin="12,0,0,0"
+                                      ToolTip="DIAL/INFO 번역 시 이전/다음 대사를 참고 정보로 함께 보내 문맥을 개선합니다. 안전을 위해 ctx에는 태그/토큰을 제외한 텍스트만 들어갑니다." />
+
+                            <CheckBox Content="세션 용어 메모리" IsChecked="{Binding EnableSessionTermMemory}" VerticalAlignment="Center" Margin="12,0,0,0"
+                                      ToolTip="번역 중 FULL/NAM/TITLE 계열 항목(이름/제목)에서 용어 번역을 학습하고, 이후 요청에 'preferred glossary' 힌트로 자동 주입합니다. 용어집을 직접 추가하지 않아도 통일성이 개선됩니다. (세션 동안만, 저장 없음)" />
+
+                            <CheckBox Content="프롬프트 캐시" IsChecked="{Binding EnablePromptCache}" VerticalAlignment="Center" Margin="12,0,0,0"
+                                      ToolTip="System prompt를 CachedContent로 올려 재사용합니다. 일부 환경에서 속도/비용이 개선될 수 있지만, Create/Delete CachedContent 호출이 추가됩니다. 무료 티어(RPD) 최적화가 목적이면 끄는 것을 권장합니다." />
+
+                            <CheckBox Content="품질 재번역(Flash)" IsChecked="{Binding EnableQualityEscalation}" VerticalAlignment="Center" Margin="12,0,0,0"
+                                      ToolTip="저오탐 품질 규칙(예: '초 초', '효과 효과', '%포인트' 등)이 감지되면 해당 항목만 2차 모델로 1회 재번역합니다. 무료 티어에서 전체를 고급 모델로 돌리는 대신, 문제 항목만 선별해 품질을 올릴 때 유용합니다." />
+                            <ComboBox ItemsSource="{Binding AvailableModels}"
+                                      SelectedItem="{Binding QualityEscalationModel}"
+                                      IsEnabled="{Binding EnableQualityEscalation}"
+                                      Width="220"
+                                      VerticalAlignment="Center"
+                                      Margin="6,0,0,0"
+                                      Style="{StaticResource XT.ToolbarComboBox}"
+                                      ToolTip="품질 재번역에 사용할 모델입니다. (추천: gemini-2.5-flash)" />
+
+                            <CheckBox Content="위험문장 다중후보"
+                                      IsChecked="{Binding EnableRiskyCandidateRerank}"
+                                      VerticalAlignment="Center"
+                                      Margin="12,0,0,0"
+                                      ToolTip="구문 충돌 위험이 높은 문장(예: protect A from B, 복합 접속/대조 구문)에 대해 다중 후보를 생성하고 품질 점수로 최종 후보를 선택합니다. 비용이 증가할 수 있습니다." />
+                            <TextBlock Text="후보 수:" VerticalAlignment="Center" Margin="6,0,4,0" />
+                            <TextBox Text="{Binding RiskyCandidateCount, UpdateSourceTrigger=PropertyChanged}"
+                                     IsEnabled="{Binding EnableRiskyCandidateRerank}"
+                                     Width="40"
+                                     VerticalAlignment="Center"
+                                     Style="{StaticResource XT.ToolbarTextBox}"
+                                     TextAlignment="Center"
+                                     ToolTip="위험문장 다중후보 수(권장 3, 범위 2~8)" />
+
+                            <CheckBox Content="BOOK:FULL 모델 분리" IsChecked="{Binding EnableBookFullModelOverride}" VerticalAlignment="Center" Margin="12,0,0,0"
+                                      ToolTip="서적류(REC=BOOK:FULL)만 별도 모델로 번역합니다. BOOK:DESC 등은 기본 모델을 사용합니다. 무료 티어에서 '책은 3.0 Flash, 나머지는 Flash-Lite' 같은 분리를 할 때 유용합니다." />
+                            <ComboBox ItemsSource="{Binding AvailableModels}"
+                                      SelectedItem="{Binding BookFullModel}"
+                                      IsEnabled="{Binding EnableBookFullModelOverride}"
+                                      Width="220"
+                                      VerticalAlignment="Center"
+                                      Margin="6,0,0,0"
+                                      Style="{StaticResource XT.ToolbarComboBox}"
+                                      ToolTip="BOOK:FULL에 사용할 모델입니다. (예: gemini-3-flash-preview)" />
+                        </WrapPanel>
+
+                        <TextBlock Text="API Keys" FontWeight="SemiBold" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,12,0,4" />
+
+                        <TextBlock Text="Gemini" FontWeight="SemiBold" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,4,0,4" />
+
+                        <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="Saved:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                            <ComboBox ItemsSource="{Binding SavedApiKeys}"
+                                      SelectedItem="{Binding SelectedSavedApiKey}"
+                                      DisplayMemberPath="DisplayLabel"
+                                      Width="220"
+                                      VerticalAlignment="Center"
+                                      Style="{StaticResource XT.ToolbarComboBox}"
+                                      ToolTip="저장된 API 키 목록입니다. 선택하면 현재 키가 해당 값으로 전환됩니다." />
+                            <TextBlock Text="Name:" VerticalAlignment="Center" Margin="12,0,6,0" />
+                            <TextBox Text="{Binding SavedApiKeyName, UpdateSourceTrigger=PropertyChanged}" Width="140" VerticalAlignment="Center" Style="{StaticResource XT.ToolbarTextBox}"
+                                     ToolTip="저장할 키의 표시 이름입니다. (예: Paid-Project-A)" />
+                            <TextBlock Text="API Key:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                            <PasswordBox x:Name="ApiKeyBox"
+                                         Width="260"
+                                         VerticalAlignment="Center"
+                                         Style="{StaticResource XT.ToolbarPasswordBox}"
+                                         PasswordChanged="ApiKeyBox_OnPasswordChanged" />
+
+                            <Button Content="Save"
+                                    Command="{Binding SaveApiKeyCommand}"
+                                    Style="{StaticResource XT.ToolbarButton}"
+                                    Margin="6,0,0,0"
+                                    ToolTip="현재 입력된 API 키를 저장 목록에 추가합니다." />
+                            <Button Content="Remove"
+                                    Command="{Binding ClearSavedApiKeyCommand}"
+                                    Style="{StaticResource XT.ToolbarButton}"
+                                    Margin="6,0,0,0"
+                                    ToolTip="선택된 저장 키(또는 현재 키)를 저장 목록에서 삭제합니다." />
+                        </WrapPanel>
+
+                        <WrapPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,6,0,0">
+                            <CheckBox Content="자동 키 전환"
+                                      IsChecked="{Binding EnableApiKeyFailover}"
+                                      VerticalAlignment="Center"
+                                      ToolTip="번역 중 401/403/429/5xx/네트워크/타임아웃 오류가 발생하면 저장된 다른 API 키로 자동 전환합니다." />
+                        </WrapPanel>
+
+                        <TextBlock Text="도구" FontWeight="SemiBold" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,12,0,4" />
+                        <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Content="비용 추정" Command="{Binding EstimateCostCommand}" Style="{StaticResource XT.ToolbarButton}"
+                                    ToolTip="현재 설정/모델 기준으로 토큰·비용을 추정합니다." />
+                            <Button Content="태그 교정" Command="{Binding FixMagDurPlaceholdersCommand}" Style="{StaticResource XT.ToolbarButton}"
+                                    ToolTip="현재 번역 결과에서 &lt;mag&gt;/&lt;dur&gt; 플레이스홀더 오번역(자리/역할)을 자동 교정합니다. (API 호출 없음)" />
+                            <Button Content="후처리 재적용" Command="{Binding ReapplyPostEditsCommand}" Style="{StaticResource XT.ToolbarButton}"
+                                    ToolTip="이미 번역된 항목에 플레이스홀더/단위/조사 후처리를 다시 적용합니다. (API 호출 없음)" />
+                            <Button Content="Global TM 가져오기" Command="{Binding ImportGlobalTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}"
+                                    ToolTip="TSV(Source&lt;TAB&gt;Target) 파일을 Global Translation Memory로 가져옵니다. (API 호출 없음)" />
+                        </WrapPanel>
+                    </StackPanel>
+                </Expander>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Style="{StaticResource XT.CardBorder}" Padding="10">
+        <TabControl BorderThickness="0" Background="Transparent" ItemContainerStyle="{StaticResource XT.TabItem}">
+            <TabItem Header="Strings" DataContext="{Binding StringsTab}">
+                <views:StringsTabView />
+            </TabItem>
+
+            <TabItem Header="Compare" DataContext="{Binding CompareTab}">
+                <views:CompareTabView />
+            </TabItem>
+
+            <TabItem Header="LQA (Review)" DataContext="{Binding LqaTab}">
+                <views:LqaTabView />
+            </TabItem>
+
+            <TabItem Header="Project Glossary (This Addon)" DataContext="{Binding ProjectGlossaryTab}">
+                <views:ProjectGlossaryTabView />
+            </TabItem>
+
+            <TabItem Header="Global Glossary (All projects)" DataContext="{Binding GlobalGlossaryTab}">
+                <views:GlobalGlossaryTabView />
+            </TabItem>
+
+            <TabItem Header="Global TM" DataContext="{Binding GlobalTranslationMemoryTab}">
+                <views:GlobalTranslationMemoryTabView />
+            </TabItem>
+
+            <TabItem Header="Prompt" DataContext="{Binding PromptTab}">
+                <views:PromptTabView />
+            </TabItem>
+
+            <TabItem Header="Project Context" DataContext="{Binding ProjectContextTab}">
+                <views:ProjectContextTabView />
+            </TabItem>
+
+            <TabItem Header="API Logs" DataContext="{Binding ApiLogsTab}">
+                <views:ApiLogsTabView />
+            </TabItem>
+        </TabControl>
+        </Border>
+
+        <StatusBar Grid.Row="2" Margin="0,10,0,0">
+            <StatusBarItem>
+                <ProgressBar Width="220" Height="16" Minimum="0" Maximum="1" Value="{Binding ProgressRatio, Mode=OneWay}" Style="{StaticResource XT.ProgressBar}" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding DoneCount, StringFormat=Done: {0}}" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding PendingCount, StringFormat=Pending: {0}}" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding TotalCount, StringFormat=Total: {0}}" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <StatusBarItem.Style>
+                    <Style TargetType="StatusBarItem">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsProjectLoaded}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StatusBarItem.Style>
+                <TextBlock Text="{Binding CurrentXmlFileName, StringFormat=File: {0}}"
+                           MaxWidth="360"
+                           TextTrimming="CharacterEllipsis" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding LastCostEstimateSummary}" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusMessage}" />
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>
