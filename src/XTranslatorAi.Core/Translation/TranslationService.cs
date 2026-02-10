@@ -38,6 +38,10 @@ public sealed partial class TranslationService
     private SemaphoreSlim? _generateContentGate;
     private SemaphoreSlim? _veryLongRequestGate;
     private int _longTextChunkParallelism = 1;
+    private int _adaptiveConcurrencyMax = 1;
+    private int _adaptiveConcurrencyLimit = 1;
+    private int _adaptiveInFlight;
+    private int _adaptiveSuccessStreak;
     private double? _maskedTokensPerCharHint;
     private Dictionary<long, RowContext>? _rowContextById;
     private IReadOnlyDictionary<long, IReadOnlyList<(long Id, string Source, MaskedText Mask)>>? _duplicateRowsByCanonicalId;

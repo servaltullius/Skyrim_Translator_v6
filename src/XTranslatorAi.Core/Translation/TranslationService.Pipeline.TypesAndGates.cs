@@ -69,6 +69,7 @@ public sealed partial class TranslationService
             await laneGate.WaitAsync(cancellationToken);
         }
 
+        var adaptiveAcquired = false;
         try
         {
             if (gate != null)
@@ -78,10 +79,18 @@ public sealed partial class TranslationService
 
             try
             {
-                return await _gemini.GenerateContentAsync(apiKey, modelName, request, cancellationToken);
+                await WaitForAdaptiveConcurrencySlotAsync(cancellationToken);
+                adaptiveAcquired = true;
+                var response = await _gemini.GenerateContentAsync(apiKey, modelName, request, cancellationToken);
+                RegisterAdaptiveRequestSuccess();
+                return response;
             }
             finally
             {
+                if (adaptiveAcquired)
+                {
+                    ReleaseAdaptiveConcurrencySlot();
+                }
                 gate?.Release();
             }
         }
@@ -113,6 +122,7 @@ public sealed partial class TranslationService
             await laneGate.WaitAsync(cancellationToken);
         }
 
+        var adaptiveAcquired = false;
         try
         {
             if (gate != null)
@@ -122,10 +132,18 @@ public sealed partial class TranslationService
 
             try
             {
-                return await _gemini.GenerateContentCandidatesAsync(apiKey, modelName, request, cancellationToken);
+                await WaitForAdaptiveConcurrencySlotAsync(cancellationToken);
+                adaptiveAcquired = true;
+                var response = await _gemini.GenerateContentCandidatesAsync(apiKey, modelName, request, cancellationToken);
+                RegisterAdaptiveRequestSuccess();
+                return response;
             }
             finally
             {
+                if (adaptiveAcquired)
+                {
+                    ReleaseAdaptiveConcurrencySlot();
+                }
                 gate?.Release();
             }
         }
@@ -146,12 +164,21 @@ public sealed partial class TranslationService
         }
 
         await gate.WaitAsync(cancellationToken);
+        var adaptiveAcquired = false;
         try
         {
-            return await _gemini.CountTokensAsync(apiKey, modelName, text, cancellationToken);
+            await WaitForAdaptiveConcurrencySlotAsync(cancellationToken);
+            adaptiveAcquired = true;
+            var tokenCount = await _gemini.CountTokensAsync(apiKey, modelName, text, cancellationToken);
+            RegisterAdaptiveRequestSuccess();
+            return tokenCount;
         }
         finally
         {
+            if (adaptiveAcquired)
+            {
+                ReleaseAdaptiveConcurrencySlot();
+            }
             gate.Release();
         }
     }

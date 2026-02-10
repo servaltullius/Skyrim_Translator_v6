@@ -9,6 +9,8 @@ namespace XTranslatorAi.Core.Data;
 
 public sealed partial class ProjectDb
 {
+    private const int MaxIdChunkSize = 900;
+
     public async Task<IReadOnlyList<StringEntry>> GetStringsAsync(int limit, int offset, CancellationToken cancellationToken)
     {
         await _gate.WaitAsync(cancellationToken);
@@ -290,6 +292,101 @@ public sealed partial class ProjectDb
                 reader.IsDBNull(3) ? null : reader.GetString(3),
                 (StringEntryStatus)reader.GetInt32(4)
             );
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
+    public async Task<IReadOnlyDictionary<long, (long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)>> GetStringTranslationContextsByIdsAsync(
+        IReadOnlyList<long> ids,
+        CancellationToken cancellationToken
+    )
+    {
+        var map = new Dictionary<long, (long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)>(capacity: ids.Count);
+        if (ids.Count == 0)
+        {
+            return map;
+        }
+
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            for (var offset = 0; offset < ids.Count; offset += MaxIdChunkSize)
+            {
+                var count = Math.Min(MaxIdChunkSize, ids.Count - offset);
+
+                await using var cmd = _connection.CreateCommand();
+                var placeholders = new List<string>(count);
+                for (var i = 0; i < count; i++)
+                {
+                    var name = $"$id{i}";
+                    placeholders.Add(name);
+                    cmd.Parameters.AddWithValue(name, ids[offset + i]);
+                }
+
+                cmd.CommandText = $"SELECT Id, SourceText, REC, EDID, Status FROM StringEntry WHERE Id IN ({string.Join(",", placeholders)});";
+
+                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+                while (await reader.ReadAsync(cancellationToken))
+                {
+                    var id = reader.GetInt64(0);
+                    map[id] = (
+                        id,
+                        reader.GetString(1),
+                        reader.IsDBNull(2) ? null : reader.GetString(2),
+                        reader.IsDBNull(3) ? null : reader.GetString(3),
+                        (StringEntryStatus)reader.GetInt32(4)
+                    );
+                }
+            }
+
+            return map;
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
+    public async Task<IReadOnlyDictionary<long, StringEntryStatus>> GetStringStatusesByIdsAsync(
+        IReadOnlyList<long> ids,
+        CancellationToken cancellationToken
+    )
+    {
+        var map = new Dictionary<long, StringEntryStatus>(capacity: ids.Count);
+        if (ids.Count == 0)
+        {
+            return map;
+        }
+
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            for (var offset = 0; offset < ids.Count; offset += MaxIdChunkSize)
+            {
+                var count = Math.Min(MaxIdChunkSize, ids.Count - offset);
+
+                await using var cmd = _connection.CreateCommand();
+                var placeholders = new List<string>(count);
+                for (var i = 0; i < count; i++)
+                {
+                    var name = $"$id{i}";
+                    placeholders.Add(name);
+                    cmd.Parameters.AddWithValue(name, ids[offset + i]);
+                }
+
+                cmd.CommandText = $"SELECT Id, Status FROM StringEntry WHERE Id IN ({string.Join(",", placeholders)});";
+
+                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+                while (await reader.ReadAsync(cancellationToken))
+                {
+                    map[reader.GetInt64(0)] = (StringEntryStatus)reader.GetInt32(1);
+                }
+            }
+
+            return map;
         }
         finally
         {

@@ -88,6 +88,7 @@ public sealed partial class TranslationService
 
         var maxConcurrency = Math.Max(1, request.MaxConcurrency);
         _generateContentGate = new SemaphoreSlim(maxConcurrency, maxConcurrency);
+        ConfigureAdaptiveConcurrency(maxConcurrency);
         _longTextChunkParallelism = maxConcurrency >= 5 ? 2 : 1;
         _maskedTokensPerCharHint = null;
 
@@ -132,6 +133,7 @@ public sealed partial class TranslationService
         _pendingSessionAutoGlossaryInserts = null;
         _sessionAutoGlossaryKnownKeys = null;
         _thinkingConfigOverride = null;
+        ResetAdaptiveConcurrency();
 
         if (promptCache != null)
         {

@@ -331,6 +331,7 @@ public sealed partial class TranslationService
         var delay = ComputeRetryDelay(ex, attempt);
         if (IsRateLimit(ex))
         {
+            RegisterAdaptiveRateLimit();
             ExtendGlobalThrottle(delay);
         }
         await Task.Delay(delay, cancellationToken);

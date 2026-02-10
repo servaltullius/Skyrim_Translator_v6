@@ -178,14 +178,6 @@ public sealed partial class TranslationService
         await UpdateDuplicateStatusesAsync(id, StringEntryStatus.Error, msg, onRowUpdated, cancellationToken);
     }
 
-    private async Task<(long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)> GetRowContextByIdAsync(
-        long id,
-        CancellationToken cancellationToken
-    )
-    {
-        return await _db.GetStringTranslationContextAsync(id, cancellationToken);
-    }
-
     private static int ComputeBatchWeight(
         IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> batch
     )

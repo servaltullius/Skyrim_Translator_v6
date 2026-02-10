@@ -18,6 +18,7 @@ public sealed partial class TranslationService
     )
     {
         _rowContextById = new Dictionary<long, RowContext>(capacity: request.Ids.Count);
+        var rowsById = await _db.GetStringTranslationContextsByIdsAsync(request.Ids, request.CancellationToken);
 
         var items = new List<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>();
         var canonicalIdByMaskedText = new Dictionary<string, long>(StringComparer.Ordinal);
@@ -28,7 +29,11 @@ public sealed partial class TranslationService
         {
             request.CancellationToken.ThrowIfCancellationRequested();
 
-            var row = await GetRowContextByIdAsync(id, request.CancellationToken);
+            if (!rowsById.TryGetValue(id, out var row))
+            {
+                throw new InvalidOperationException($"Missing row id={id}");
+            }
+
             _rowContextById[row.Id] = new RowContext(row.Rec, row.Edid);
             orderedRows.Add(new DialogueContextRow(row.Id, row.Rec, row.Edid, row.SourceText));
 
@@ -63,22 +68,7 @@ public sealed partial class TranslationService
                 glossed = glossed with { Text = expanded };
             }
 
-            var duplicateKey = expanded;
-            if (glossed.TokenToReplacement.Count > 0)
-            {
-                var sb = new StringBuilder(capacity: expanded.Length + glossed.TokenToReplacement.Count * 24);
-                sb.Append(expanded);
-                sb.Append("\n__XT_GLOSSARY__");
-                foreach (var (token, replacement) in glossed.TokenToReplacement.OrderBy(kv => kv.Key, StringComparer.Ordinal))
-                {
-                    sb.Append('\n');
-                    sb.Append(token);
-                    sb.Append('=');
-                    sb.Append(replacement);
-                }
-
-                duplicateKey = sb.ToString();
-            }
+            var duplicateKey = BuildDuplicateKey(expanded, glossed.TokenToReplacement);
 
             if (canonicalIdByMaskedText.TryGetValue(duplicateKey, out var canonicalId))
             {
@@ -115,6 +105,27 @@ public sealed partial class TranslationService
         }
 
         return items;
+    }
+
+    private static string BuildDuplicateKey(string expandedText, IReadOnlyDictionary<string, string> glossaryTokenToReplacement)
+    {
+        if (glossaryTokenToReplacement.Count <= 0)
+        {
+            return expandedText;
+        }
+
+        var sb = new StringBuilder(capacity: expandedText.Length + glossaryTokenToReplacement.Count * 24);
+        sb.Append(expandedText);
+        sb.Append("\n__XT_GLOSSARY__");
+        foreach (var (token, replacement) in glossaryTokenToReplacement.OrderBy(kv => kv.Key, StringComparer.Ordinal))
+        {
+            sb.Append('\n');
+            sb.Append(token);
+            sb.Append('=');
+            sb.Append(replacement);
+        }
+
+        return sb.ToString();
     }
 
     private sealed record DialogueContextRow(long Id, string? Rec, string? Edid, string SourceText);
@@ -435,11 +446,22 @@ public sealed partial class TranslationService
             await FlushSessionTermAutoGlossaryInsertsAsync();
         }
 
+        var seedIds = new long[seedItems.Count];
+        for (var i = 0; i < seedItems.Count; i++)
+        {
+            seedIds[i] = seedItems[i].Id;
+        }
+
+        var seedStatuses = await _db.GetStringStatusesByIdsAsync(seedIds, request.CancellationToken);
         var doneSeedIds = new HashSet<long>();
         foreach (var it in seedItems)
         {
-            var state = await _db.GetStringTranslationStateAsync(it.Id, request.CancellationToken);
-            if (state.Status == StringEntryStatus.Done || state.Status == StringEntryStatus.Edited)
+            if (!seedStatuses.TryGetValue(it.Id, out var status))
+            {
+                continue;
+            }
+
+            if (status == StringEntryStatus.Done || status == StringEntryStatus.Edited)
             {
                 doneSeedIds.Add(it.Id);
             }
