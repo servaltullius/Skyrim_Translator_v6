@@ -35,12 +35,23 @@ internal static class GeminiModelPolicy
         return IsGemini3(normalizedModelName) && normalizedModelName.Contains("-flash", StringComparison.OrdinalIgnoreCase);
     }
 
+    private static bool IsGemini3FlashLite(string normalizedModelName)
+    {
+        return IsGemini3Flash(normalizedModelName) && normalizedModelName.Contains("-lite", StringComparison.OrdinalIgnoreCase);
+    }
+
     internal static GeminiThinkingConfig? GetThinkingConfigForTranslation(string modelName)
     {
         var m = NormalizeModelName(modelName);
         if (string.IsNullOrWhiteSpace(m))
         {
             return null;
+        }
+
+        // Gemini 3 Flash Lite: use "high" thinking for better translation quality.
+        if (IsGemini3FlashLite(m))
+        {
+            return new GeminiThinkingConfig(ThinkingBudget: null, ThinkingLevel: "high");
         }
 
         // Gemini 3 Flash models default to dynamic "thinking".
@@ -76,6 +87,11 @@ internal static class GeminiModelPolicy
         // For Gemini 3, Google recommends using the model default temperature (1.0) to avoid looping or degraded
         // performance from explicitly setting low values. We omit the field to use API defaults.
         var m = NormalizeModelName(modelName);
+        if (IsGemini3FlashLite(m))
+        {
+            return null;
+        }
+
         if (IsGemini3(m))
         {
             return null;
@@ -92,6 +108,12 @@ internal static class GeminiModelPolicy
     internal static bool IsGemini3FlashPreview(string modelName)
     {
         var m = NormalizeModelName(modelName);
-        return IsGemini3Flash(m) && m.Contains("-preview", StringComparison.OrdinalIgnoreCase);
+        return IsGemini3Flash(m) && !IsGemini3FlashLite(m) && m.Contains("-preview", StringComparison.OrdinalIgnoreCase);
+    }
+
+    internal static bool IsGemini3FlashLitePreview(string modelName)
+    {
+        var m = NormalizeModelName(modelName);
+        return IsGemini3FlashLite(m);
     }
 }

@@ -45,6 +45,25 @@ public class GeminiThinkingConfigTests
     }
 
     [Theory]
+    [InlineData("gemini-3.1-flash-lite-preview", "high")]
+    [InlineData("models/gemini-3.1-flash-lite-preview", "high")]
+    public void GetThinkingConfigForModel_Gemini3FlashLite_UsesHighThinkingLevel(string modelName, string expectedThinkingLevel)
+    {
+        var method = typeof(TranslationService).GetMethod(
+            "GetThinkingConfigForModel",
+            BindingFlags.NonPublic | BindingFlags.Static
+        );
+
+        Assert.NotNull(method);
+
+        var config = (GeminiThinkingConfig?)method!.Invoke(null, new object?[] { modelName });
+
+        Assert.NotNull(config);
+        Assert.Null(config!.ThinkingBudget);
+        Assert.Equal(expectedThinkingLevel, config.ThinkingLevel);
+    }
+
+    [Theory]
     [InlineData("gemini-3-pro-preview", "low")]
     [InlineData("models/gemini-3-pro-preview", "low")]
     public void GetThinkingConfigForModel_Gemini3Pro_UsesLowThinkingLevel(string modelName, string expectedThinkingLevel)

@@ -121,6 +121,7 @@ public partial class MainViewModel
         sb.AppendLine("Note:");
         sb.AppendLine("- Gemini 3: temperature is omitted to use API defaults.");
         sb.AppendLine("- Gemini 3 Flash: thinkingConfig is omitted to use API defaults.");
+        sb.AppendLine("- Gemini 3 Flash Lite: temperature/thinkingConfig are omitted to use API defaults.");
         sb.AppendLine("- Gemini 2.5 Flash Lite: temperature/thinkingConfig are omitted to use API defaults.");
     }
 

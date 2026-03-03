@@ -22,10 +22,11 @@ public partial class MainViewModel
         SelectedModel = PickModelCandidate(
             candidates: new[]
             {
+                "gemini-3.1-flash-lite-preview",
                 "gemini-2.5-flash-lite",
                 "gemini-2.5-flash-lite-preview-09-2025",
             },
-            fallback: "gemini-2.5-flash-lite"
+            fallback: "gemini-3.1-flash-lite-preview"
         );
 
         EnablePromptCache = false;
@@ -213,6 +214,7 @@ public partial class MainViewModel
     {
         var candidates = new[]
         {
+            "gemini-3.1-flash-lite-preview",
             "gemini-2.5-flash-lite",
             "gemini-2.5-flash-lite-preview-09-2025",
             "gemini-2.5-flash",

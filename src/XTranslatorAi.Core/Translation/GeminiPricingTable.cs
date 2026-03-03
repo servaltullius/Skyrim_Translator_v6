@@ -24,6 +24,20 @@ internal static class GeminiPricingTable
             return true;
         }
 
+        if (GeminiModelPolicy.IsGemini3FlashLitePreview(m))
+        {
+            pricing = new GeminiPricing(
+                InputUsdPer1M: 0.25,
+                OutputUsdPer1M: 1.50,
+                BatchInputUsdPer1M: 0.125,
+                BatchOutputUsdPer1M: 0.75,
+                CacheUsdPer1M: 0.025,
+                CacheStorageUsdPer1MPerHour: 1.00,
+                BatchSupportsContextCaching: false
+            );
+            return true;
+        }
+
         if (GeminiModelPolicy.IsGemini3FlashPreview(m))
         {
             pricing = new GeminiPricing(
