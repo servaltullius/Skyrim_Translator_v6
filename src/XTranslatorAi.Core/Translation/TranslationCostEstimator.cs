@@ -12,13 +12,6 @@ namespace XTranslatorAi.Core.Translation;
 
 public sealed partial class TranslationCostEstimator
 {
-    private static readonly Regex XtTokenRegex = new(
-        pattern: @"__XT_(?:PH|TERM)(?:_[A-Z0-9]+)?_[0-9]{4}__",
-        options: RegexOptions.CultureInvariant
-    );
-
-    private const string EndSentinelToken = "__XT_PH_9999__";
-
     private readonly ProjectDb _db;
     private readonly GeminiClient _gemini;
 

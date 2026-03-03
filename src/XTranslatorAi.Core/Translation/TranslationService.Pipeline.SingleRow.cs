@@ -221,7 +221,7 @@ public sealed partial class TranslationService
 	        var rec = GetRecForId(row.Id);
 	        var styleHint = GuessStyleHint(row.Source, _useRecStyleHints ? rec : null);
 	        styleHint = AppendDialogueContextToStyleHint(styleHint, GetDialogueContextWindowForId(row.Id));
-	        var tokenCount = XtTokenRegex.Matches(row.Masked).Count;
+	        var tokenCount = TranslationConstants.XtTokenRegex.Matches(row.Masked).Count;
 	        var initialChunkChars = ComputeLongTextInitialChunkChars(ctx, tokenCount);
 
 	        var minChunkChars = 256;

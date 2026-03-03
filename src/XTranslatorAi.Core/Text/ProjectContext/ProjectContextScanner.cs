@@ -30,11 +30,6 @@ public sealed class ProjectContextScanner
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
-    private static readonly Regex XtTokenRegex = new(
-        pattern: @"__XT_(?:PH|TERM)(?:_[A-Z0-9]+)?_[0-9]{4}__",
-        options: RegexOptions.CultureInvariant
-    );
-
     private static readonly Regex EnglishPhraseRegex = new(
         pattern:
             @"\b(?:[A-Z][A-Za-z0-9'’\-]*)(?:\s+(?:[A-Z][A-Za-z0-9'’\-]*|of|the|and|or|to|a|an|in|on|for|with|from|at|by|de|la|le|du|van|von))+\b",
@@ -346,7 +341,7 @@ public sealed class ProjectContextScanner
             return false;
         }
 
-        if (XtTokenRegex.IsMatch(s))
+        if (TranslationConstants.XtTokenRegex.IsMatch(s))
         {
             return false;
         }

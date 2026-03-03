@@ -23,7 +23,7 @@ public sealed partial class TranslationService
         {
             sb.Append(text.AsSpan(cursor, idx - cursor));
 
-            var m = XtTokenRegex.Match(text, idx);
+            var m = TranslationConstants.XtTokenRegex.Match(text, idx);
             if (m.Success && m.Index == idx)
             {
                 sb.Append(m.Value);

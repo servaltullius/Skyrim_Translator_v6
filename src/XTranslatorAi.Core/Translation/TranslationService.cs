@@ -14,11 +14,6 @@ namespace XTranslatorAi.Core.Translation;
 
 public sealed partial class TranslationService
 {
-    private static readonly Regex XtTokenRegex = new(
-        pattern: @"__XT_(?:PH|TERM)(?:_[A-Z0-9]+)?_[0-9]{4}__",
-        options: RegexOptions.CultureInvariant
-    );
-
     private static readonly Regex RawMarkupTagRegex = new(
         pattern: @"<[^>]+>",
         options: RegexOptions.CultureInvariant
@@ -28,8 +23,6 @@ public sealed partial class TranslationService
         pattern: @"\[pagebreak\]",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
-
-    private const string EndSentinelToken = "__XT_PH_9999__";
 
     private readonly ProjectDb _db;
     private readonly GeminiClient _gemini;

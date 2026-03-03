@@ -31,7 +31,7 @@ public sealed partial class TranslationService
     private int GetRiskyCandidateCountForSource(string targetLang, string sourceText)
     {
         if (!_enableRiskyCandidateRerank
-            || !IsKoreanLanguage(targetLang)
+            || !LanguageHelper.IsKoreanLanguage(targetLang)
             || !IsStructuralRiskSourceText(sourceText))
         {
             return 1;

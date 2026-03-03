@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using XTranslatorAi.Core;
 using XTranslatorAi.Core.Models;
 
 namespace XTranslatorAi.App.ViewModels;
@@ -89,7 +90,7 @@ public partial class MainViewModel
 
         // Always start fresh: discard previous AI translations (keep only manual edits).
         await db.ResetNonEditedTranslationsAsync(CancellationToken.None);
-        await db.DeleteStringNotesByKindAsync(TmHitNoteKind, CancellationToken.None);
+        await db.DeleteStringNotesByKindAsync(TranslationConstants.TmHitNoteKind, CancellationToken.None);
         foreach (var vm in Entries)
         {
             if (vm.Status == StringEntryStatus.Edited)

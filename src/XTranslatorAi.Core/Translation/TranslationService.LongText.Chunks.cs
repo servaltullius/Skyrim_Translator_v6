@@ -20,7 +20,7 @@ public sealed partial class TranslationService
         chunkContext.CancellationToken.ThrowIfCancellationRequested();
 
         var maxTokensPerChunk = GetMaxTokensPerChunk(chunkContext.ModelName, chunkContext.TargetLang);
-        var tokenCount = XtTokenRegex.Matches(chunkText).Count;
+        var tokenCount = TranslationConstants.XtTokenRegex.Matches(chunkText).Count;
 
         if (chunkText.Length > chunkChars || tokenCount > maxTokensPerChunk)
         {

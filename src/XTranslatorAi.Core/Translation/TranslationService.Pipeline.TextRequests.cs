@@ -83,14 +83,7 @@ public sealed partial class TranslationService
             {
                 if (currentRequest.PromptCache != null && IsCachedContentInvalid(ex))
                 {
-                    if (IsCachedContentPermissionDenied(ex))
-                    {
-                        currentRequest.PromptCache.Disable();
-                    }
-                    else
-                    {
-                        currentRequest.PromptCache.Invalidate();
-                    }
+                    InvalidatePromptCache(currentRequest.PromptCache, ex);
 
                     // If the prompt cache resource expired / got invalidated mid-run, retry immediately
                     // without cachedContent so the translation can continue instead of failing the row.
@@ -154,14 +147,7 @@ public sealed partial class TranslationService
             {
                 if (currentRequest.PromptCache != null && IsCachedContentInvalid(ex))
                 {
-                    if (IsCachedContentPermissionDenied(ex))
-                    {
-                        currentRequest.PromptCache.Disable();
-                    }
-                    else
-                    {
-                        currentRequest.PromptCache.Invalidate();
-                    }
+                    InvalidatePromptCache(currentRequest.PromptCache, ex);
 
                     var noCacheRequest = currentRequest with { PromptCache = null };
                     try
@@ -289,8 +275,8 @@ public sealed partial class TranslationService
         // which some models occasionally mangle at chunk boundaries.
         var textForPrompt = PlaceholderSemanticHintInjector.Inject(request.TargetLang, text);
         textForPrompt = GlossarySemanticHintInjector.Inject(request.TargetLang, textForPrompt, sentinelContext.GlossaryTokenToReplacement);
-        var promptTextWithSentinel = textForPrompt + " " + EndSentinelToken;
-        var validateInputWithSentinel = text + " " + EndSentinelToken;
+        var promptTextWithSentinel = textForPrompt + " " + TranslationConstants.EndSentinelToken;
+        var validateInputWithSentinel = text + " " + TranslationConstants.EndSentinelToken;
         var mergedPromptOnlyGlossary = MergeSessionPromptOnlyGlossaryForText(text, promptOnlyGlossary);
         if (request.CandidateCount > 1)
         {
@@ -409,7 +395,7 @@ public sealed partial class TranslationService
         }
 
         score = 100;
-        if (translated.IndexOf(EndSentinelToken, StringComparison.Ordinal) < 0)
+        if (translated.IndexOf(TranslationConstants.EndSentinelToken, StringComparison.Ordinal) < 0)
         {
             score -= 10;
         }
@@ -452,7 +438,7 @@ public sealed partial class TranslationService
         var cleaned = SanitizeModelTranslationText(translated, text);
         cleaned = PlaceholderSemanticHintInjector.Strip(cleaned);
         cleaned = GlossarySemanticHintInjector.Strip(cleaned);
-        if (!cleaned.Contains(EndSentinelToken, StringComparison.Ordinal))
+        if (!cleaned.Contains(TranslationConstants.EndSentinelToken, StringComparison.Ordinal))
         {
             // The sentinel can be dropped/mangled even when the translation is otherwise fine.
             // If the output passes token integrity + anti-omission checks without the sentinel, accept it.
@@ -473,7 +459,7 @@ public sealed partial class TranslationService
             sentinelContext.Context,
             sentinelContext.GlossaryTokenToReplacement
         );
-        var withoutSentinel = validated.Replace(EndSentinelToken, "", StringComparison.Ordinal);
+        var withoutSentinel = validated.Replace(TranslationConstants.EndSentinelToken, "", StringComparison.Ordinal);
         return withoutSentinel.TrimEnd();
     }
 

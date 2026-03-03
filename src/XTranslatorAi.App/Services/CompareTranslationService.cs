@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using XTranslatorAi.Core;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text;
@@ -88,7 +89,7 @@ public sealed class CompareTranslationService
             }
 
             var row = rows[0];
-            var tmHitMap = await tempDb.GetStringNotesByKindAsync("tm_hit", cancellationToken);
+            var tmHitMap = await tempDb.GetStringNotesByKindAsync(TranslationConstants.TmHitNoteKind, cancellationToken);
 
             return new Result(
                 HasRow: true,

@@ -9,9 +9,6 @@ namespace XTranslatorAi.Core.Translation;
 
 public sealed partial class TranslationService
 {
-    private const string TmFallbackNoteKind = "tm_fallback";
-    private const string TmHitNoteKind = "tm_hit";
-
     private Task<IReadOnlyDictionary<string, string>> LoadTranslationMemoryAsync(
         string sourceLang,
         string targetLang,
@@ -98,14 +95,14 @@ public sealed partial class TranslationService
         {
             // If a TM entry breaks tag/placeholder integrity, skip it and fall back to LLM translation.
             var detail = string.IsNullOrWhiteSpace(ex.Message) ? ex.GetType().Name : ex.Message;
-            await _db.UpsertStringNoteAsync(id, TmFallbackNoteKind, $"TM 폴백: {detail}", cancellationToken);
+            await _db.UpsertStringNoteAsync(id, TranslationConstants.TmFallbackNoteKind, $"TM 폴백: {detail}", cancellationToken);
             return false;
         }
         TryLearnSessionTermMemory(id, sourceText, final);
 
         await _db.UpdateStringTranslationAsync(id, final, StringEntryStatus.Done, null, cancellationToken);
-        await _db.DeleteStringNoteAsync(id, TmFallbackNoteKind, cancellationToken);
-        await _db.UpsertStringNoteAsync(id, TmHitNoteKind, "TM 적용", cancellationToken);
+        await _db.DeleteStringNoteAsync(id, TranslationConstants.TmFallbackNoteKind, cancellationToken);
+        await _db.UpsertStringNoteAsync(id, TranslationConstants.TmHitNoteKind, "TM 적용", cancellationToken);
         if (onRowUpdated != null)
         {
             NotifyRowUpdated(onRowUpdated, id, StringEntryStatus.Done, final);

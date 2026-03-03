@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using XTranslatorAi.Core.Diagnostics;
 
 namespace XTranslatorAi.Core.Translation;
 
@@ -8,7 +9,7 @@ public sealed partial class TranslationService
 {
     private static bool IsCachedContentPermissionDenied(Exception ex)
     {
-        foreach (var msg in EnumerateExceptionMessages(ex))
+        foreach (var msg in ExceptionTraversal.EnumerateMessages(ex))
         {
             if (msg.IndexOf("cachedcontent", StringComparison.OrdinalIgnoreCase) >= 0
                 && (msg.IndexOf("HTTP 403", StringComparison.OrdinalIgnoreCase) >= 0
@@ -24,7 +25,7 @@ public sealed partial class TranslationService
 
     private static bool IsCachedContentInvalid(Exception ex)
     {
-        foreach (var msg in EnumerateExceptionMessages(ex))
+        foreach (var msg in ExceptionTraversal.EnumerateMessages(ex))
         {
             if (msg.IndexOf("cachedcontent", StringComparison.OrdinalIgnoreCase) >= 0
                 && (msg.IndexOf("HTTP 403", StringComparison.OrdinalIgnoreCase) >= 0
@@ -53,6 +54,18 @@ public sealed partial class TranslationService
         }
 
         return false;
+    }
+
+    private static void InvalidatePromptCache(PromptCache cache, Exception ex)
+    {
+        if (IsCachedContentPermissionDenied(ex))
+        {
+            cache.Disable();
+        }
+        else
+        {
+            cache.Invalidate();
+        }
     }
 
     private sealed class PromptCache

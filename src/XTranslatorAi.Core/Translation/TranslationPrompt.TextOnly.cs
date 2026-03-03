@@ -14,7 +14,7 @@ public static partial class TranslationPrompt
         string? styleHint = null
     )
     {
-        var isKorean = IsKoreanLanguage(targetLang);
+        var isKorean = LanguageHelper.IsKoreanLanguage(targetLang);
         var hasSemanticPlaceholders = HasSemanticPlaceholders(text);
 
         var sb = new StringBuilder();

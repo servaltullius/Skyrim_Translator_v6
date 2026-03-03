@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using XTranslatorAi.Core;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text;
 
@@ -27,7 +28,7 @@ public partial class MainViewModel
         )
             .ToList();
 
-        var forceTokenGlossary = IsKoreanLanguage(TargetLang) ? BuildLqaForceTokenGlossary() : Array.Empty<GlossaryEntry>();
+        var forceTokenGlossary = LanguageHelper.IsKoreanLanguage(TargetLang) ? BuildLqaForceTokenGlossary() : Array.Empty<GlossaryEntry>();
         var db = _projectState.Db;
         var tmFallbackNotes = db == null
             ? new Dictionary<long, string>()
@@ -94,30 +95,4 @@ public partial class MainViewModel
         );
     }
 
-    private static bool IsKoreanLanguage(string lang)
-    {
-        if (string.IsNullOrWhiteSpace(lang))
-        {
-            return false;
-        }
-
-        var s = lang.Trim();
-        if (string.Equals(s, "korean", StringComparison.OrdinalIgnoreCase) || string.Equals(s, "ko", StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
-
-        if (s.StartsWith("ko-", StringComparison.OrdinalIgnoreCase) || s.StartsWith("ko_", StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
-
-        if (s.IndexOf("korean", StringComparison.OrdinalIgnoreCase) >= 0)
-        {
-            return true;
-        }
-
-        return string.Equals(s, "한국어", StringComparison.OrdinalIgnoreCase)
-               || s.IndexOf("한국", StringComparison.OrdinalIgnoreCase) >= 0;
-    }
 }

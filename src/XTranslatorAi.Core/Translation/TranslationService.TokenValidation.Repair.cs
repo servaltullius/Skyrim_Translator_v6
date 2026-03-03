@@ -36,7 +36,7 @@ public sealed partial class TranslationService
         if (actual.Count == expected.Count)
         {
             var idx = 0;
-            repaired = XtTokenRegex.Replace(outputText, _ => expected[idx++]);
+            repaired = TranslationConstants.XtTokenRegex.Replace(outputText, _ => expected[idx++]);
             return true;
         }
 

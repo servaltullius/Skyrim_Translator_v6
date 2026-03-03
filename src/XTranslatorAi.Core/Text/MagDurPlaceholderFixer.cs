@@ -316,7 +316,7 @@ public static partial class MagDurPlaceholderFixer
 
     public static string Fix(string source, string dest, string targetLang)
     {
-        if (!IsKorean(targetLang) && !LooksLikeKoreanText(dest))
+        if (!LanguageHelper.IsKoreanLanguage(targetLang) && !LooksLikeKoreanText(dest))
         {
             return dest;
         }

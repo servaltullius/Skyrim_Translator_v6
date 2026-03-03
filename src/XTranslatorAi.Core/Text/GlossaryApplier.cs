@@ -8,11 +8,6 @@ namespace XTranslatorAi.Core.Text;
 
 public sealed class GlossaryApplier
 {
-    private static readonly Regex XtTokenRegex = new(
-        pattern: @"__XT_(?:PH|TERM)(?:_[A-Z0-9]+)?_[0-9]{4}__",
-        options: RegexOptions.CultureInvariant
-    );
-
     private readonly IReadOnlyList<CompiledGlossaryEntry> _entries;
 
     public GlossaryApplier(IEnumerable<GlossaryEntry> entries)
@@ -280,7 +275,7 @@ public sealed class GlossaryApplier
     private static IEnumerable<(string Text, bool IsToken)> SplitIntoTokenAndTextPieces(string text)
     {
         var idx = 0;
-        foreach (Match m in XtTokenRegex.Matches(text))
+        foreach (Match m in TranslationConstants.XtTokenRegex.Matches(text))
         {
             if (m.Index > idx)
             {

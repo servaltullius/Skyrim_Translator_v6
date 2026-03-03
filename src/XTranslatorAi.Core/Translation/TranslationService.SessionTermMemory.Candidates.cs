@@ -49,7 +49,7 @@ public sealed partial class TranslationService
             return false;
         }
 
-        if (XtTokenRegex.IsMatch(s))
+        if (TranslationConstants.XtTokenRegex.IsMatch(s))
         {
             return false;
         }
@@ -129,7 +129,7 @@ public sealed partial class TranslationService
             return false;
         }
 
-        if (XtTokenRegex.IsMatch(s))
+        if (TranslationConstants.XtTokenRegex.IsMatch(s))
         {
             return false;
         }

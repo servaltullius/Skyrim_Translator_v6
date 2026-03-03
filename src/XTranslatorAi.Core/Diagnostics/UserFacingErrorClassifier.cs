@@ -85,7 +85,7 @@ public static class UserFacingErrorClassifier
             );
         }
 
-        var msgChain = string.Join(" | ", EnumerateExceptionMessages(ex));
+        var msgChain = string.Join(" | ", ExceptionTraversal.EnumerateMessages(ex));
         return ClassifyMessageChain(msgChain);
     }
 
@@ -280,7 +280,7 @@ public static class UserFacingErrorClassifier
 
     private static T? FindInChain<T>(Exception ex) where T : Exception
     {
-        foreach (var current in EnumerateExceptions(ex))
+        foreach (var current in ExceptionTraversal.Enumerate(ex))
         {
             if (current is T found)
             {
@@ -291,23 +291,4 @@ public static class UserFacingErrorClassifier
         return null;
     }
 
-    private static IEnumerable<Exception> EnumerateExceptions(Exception ex)
-    {
-        Exception? current = ex;
-        var depth = 0;
-        while (current != null && depth < 6)
-        {
-            yield return current;
-            current = current.InnerException;
-            depth++;
-        }
-    }
-
-    private static IEnumerable<string> EnumerateExceptionMessages(Exception ex)
-    {
-        foreach (var current in EnumerateExceptions(ex))
-        {
-            yield return current.Message ?? "";
-        }
-    }
 }

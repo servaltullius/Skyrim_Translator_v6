@@ -37,7 +37,7 @@ public sealed partial class TranslationCostEstimator
             {
                 var it = batch[0];
                 var styleHint = GuessStyleHint(it.Source);
-                var withSentinel = it.Masked + " " + EndSentinelToken;
+                var withSentinel = it.Masked + " " + TranslationConstants.EndSentinelToken;
                 textPrompts.Add(TranslationPrompt.BuildTextOnlyUserPrompt(sourceLang, targetLang, withSentinel, it.PromptOnlyPairs, styleHint));
                 continue;
             }
@@ -72,7 +72,7 @@ public sealed partial class TranslationCostEstimator
 
         foreach (var it in veryLongItems)
         {
-            var tokenCount = XtTokenRegex.Matches(it.Masked).Count;
+            var tokenCount = TranslationConstants.XtTokenRegex.Matches(it.Masked).Count;
             var chunkChars = ComputeVeryLongChunkChars(
                 baseChunkChars,
                 tokenCount,
@@ -84,7 +84,7 @@ public sealed partial class TranslationCostEstimator
             var styleHint = GuessStyleHint(it.Source);
             foreach (var part in parts)
             {
-                var withSentinel = part + " " + EndSentinelToken;
+                var withSentinel = part + " " + TranslationConstants.EndSentinelToken;
                 textPrompts.Add(TranslationPrompt.BuildTextOnlyUserPrompt(sourceLang, targetLang, withSentinel, it.PromptOnlyPairs, styleHint));
             }
         }

@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using XTranslatorAi.Core.Diagnostics;
 
 namespace XTranslatorAi.Core.Translation;
 
@@ -49,7 +50,7 @@ public sealed partial class TranslationService
 
     private static bool IsRateLimit(Exception ex)
     {
-        foreach (var current in EnumerateExceptions(ex))
+        foreach (var current in ExceptionTraversal.Enumerate(ex))
         {
             if (current is GeminiHttpException http && http.StatusCode == 429)
             {
@@ -80,7 +81,7 @@ public sealed partial class TranslationService
 
     private static bool IsCredentialError(Exception ex)
     {
-        foreach (var current in EnumerateExceptions(ex))
+        foreach (var current in ExceptionTraversal.Enumerate(ex))
         {
             if (current is GeminiHttpException http && http.StatusCode is 401 or 403)
             {
@@ -93,7 +94,7 @@ public sealed partial class TranslationService
 
     private static bool IsServerError(Exception ex)
     {
-        foreach (var current in EnumerateExceptions(ex))
+        foreach (var current in ExceptionTraversal.Enumerate(ex))
         {
             if (current is GeminiHttpException http && http.StatusCode is >= 500 and <= 599)
             {
@@ -134,7 +135,7 @@ public sealed partial class TranslationService
             return true;
         }
 
-        foreach (var current in EnumerateExceptions(ex))
+        foreach (var current in ExceptionTraversal.Enumerate(ex))
         {
             if (current is HttpRequestException || current is TaskCanceledException)
             {
@@ -147,7 +148,7 @@ public sealed partial class TranslationService
 
     private static bool TryGetRetryAfter(Exception ex, out TimeSpan retryAfter)
     {
-        foreach (var current in EnumerateExceptions(ex))
+        foreach (var current in ExceptionTraversal.Enumerate(ex))
         {
             if (current is GeminiHttpException http && http.RetryAfter is { } ra && ra > TimeSpan.Zero)
             {
@@ -176,7 +177,7 @@ public sealed partial class TranslationService
 
     private static bool IsOutputValidationError(Exception ex)
     {
-        foreach (var msg in EnumerateExceptionMessages(ex))
+        foreach (var msg in ExceptionTraversal.EnumerateMessages(ex))
         {
             if (msg.IndexOf("Missing token in translation", StringComparison.OrdinalIgnoreCase) >= 0)
             {
@@ -221,26 +222,6 @@ public sealed partial class TranslationService
         }
 
         return ex is System.Text.Json.JsonException;
-    }
-
-    private static IEnumerable<Exception> EnumerateExceptions(Exception ex)
-    {
-        Exception? current = ex;
-        var depth = 0;
-        while (current != null && depth < 6)
-        {
-            yield return current;
-            current = current.InnerException;
-            depth++;
-        }
-    }
-
-    private static IEnumerable<string> EnumerateExceptionMessages(Exception ex)
-    {
-        foreach (var current in EnumerateExceptions(ex))
-        {
-            yield return current.Message;
-        }
     }
 
     private static string FormatError(Exception ex)

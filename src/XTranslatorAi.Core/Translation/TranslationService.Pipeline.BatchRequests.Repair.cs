@@ -246,14 +246,7 @@ public sealed partial class TranslationService
             {
                 if (currentCtx.PromptCache != null && IsCachedContentInvalid(ex))
                 {
-                    if (IsCachedContentPermissionDenied(ex))
-                    {
-                        currentCtx.PromptCache.Disable();
-                    }
-                    else
-                    {
-                        currentCtx.PromptCache.Invalidate();
-                    }
+                    InvalidatePromptCache(currentCtx.PromptCache, ex);
 
                     // CachedContent can expire mid-run; retry immediately without it.
                     var noCacheCtx = currentCtx with { PromptCache = null };

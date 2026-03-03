@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using XTranslatorAi.Core;
 
 namespace XTranslatorAi.App.ViewModels;
 
 public partial class MainViewModel
 {
-    private const string TmHitNoteKind = "tm_hit";
 
     private async Task RefreshTmHitFlagsAsync(CancellationToken cancellationToken)
     {
@@ -16,7 +16,7 @@ public partial class MainViewModel
             return;
         }
 
-        var notes = await db.GetStringNotesByKindAsync(TmHitNoteKind, cancellationToken).ConfigureAwait(false);
+        var notes = await db.GetStringNotesByKindAsync(TranslationConstants.TmHitNoteKind, cancellationToken).ConfigureAwait(false);
         var hitIds = new HashSet<long>(notes.Keys);
 
         await DispatchAsync(

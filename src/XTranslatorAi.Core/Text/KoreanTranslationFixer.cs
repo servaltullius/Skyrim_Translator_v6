@@ -27,7 +27,7 @@ internal static class KoreanTranslationFixer
 
     internal static string Fix(string targetLang, string text)
     {
-        if (!IsKoreanLanguage(targetLang))
+        if (!LanguageHelper.IsKoreanLanguage(targetLang))
         {
             return text;
         }
@@ -63,30 +63,4 @@ internal static class KoreanTranslationFixer
             .Replace("\u2060", "", StringComparison.Ordinal);
     }
 
-    private static bool IsKoreanLanguage(string lang)
-    {
-        if (string.IsNullOrWhiteSpace(lang))
-        {
-            return false;
-        }
-
-        var s = lang.Trim();
-        if (string.Equals(s, "korean", StringComparison.OrdinalIgnoreCase) || string.Equals(s, "ko", StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
-
-        if (s.StartsWith("ko-", StringComparison.OrdinalIgnoreCase) || s.StartsWith("ko_", StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
-
-        if (s.IndexOf("korean", StringComparison.OrdinalIgnoreCase) >= 0)
-        {
-            return true;
-        }
-
-        return string.Equals(s, "한국어", StringComparison.OrdinalIgnoreCase)
-               || s.IndexOf("한국", StringComparison.OrdinalIgnoreCase) >= 0;
-    }
 }

@@ -17,7 +17,7 @@ public sealed partial class TranslationService
         code = "";
         message = "";
 
-        if (!IsKoreanLanguage(targetLang))
+        if (!LanguageHelper.IsKoreanLanguage(targetLang))
         {
             return false;
         }

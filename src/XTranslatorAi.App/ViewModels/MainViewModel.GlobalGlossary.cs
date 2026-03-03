@@ -199,26 +199,7 @@ public partial class MainViewModel
     private async Task ReloadGlobalGlossaryAsync()
     {
         var rows = await _globalGlossaryService.GetAsync(CancellationToken.None);
-        var list = rows
-            .Select(
-                g =>
-                {
-                    var vm = new GlossaryEntryViewModel(g.Id);
-                    vm.BeginUpdate();
-                    vm.Category = g.Category ?? "";
-                    vm.SourceTerm = g.SourceTerm;
-                    vm.TargetTerm = g.TargetTerm;
-                    vm.Enabled = g.Enabled;
-                    vm.MatchMode = g.MatchMode;
-                    vm.ForceMode = g.ForceMode;
-                    vm.Priority = g.Priority;
-                    vm.Note = g.Note;
-                    vm.EndUpdate();
-                    vm.MarkClean();
-                    return vm;
-                }
-            )
-            .ToList();
+        var list = rows.Select(MapGlossaryToViewModel).ToList();
 
         GlobalGlossary.ReplaceAll(list);
         RebuildGlobalGlossaryCategoryFilters();
@@ -236,53 +217,12 @@ public partial class MainViewModel
             return true;
         }
 
-        var categoryFilter = (GlobalGlossaryFilterCategory ?? "").Trim();
-        if (!string.IsNullOrWhiteSpace(categoryFilter) && categoryFilter != GlossaryCategoryAll)
-        {
-            if (categoryFilter == GlossaryCategoryNone)
-            {
-                if (!string.IsNullOrWhiteSpace(entry.Category))
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if (!string.Equals(entry.Category?.Trim() ?? "", categoryFilter, StringComparison.Ordinal))
-                {
-                    return false;
-                }
-            }
-        }
-
-        var q = (GlobalGlossaryFilterText ?? "").Trim();
-        if (!string.IsNullOrWhiteSpace(q))
-        {
-            if ((entry.Category ?? "").Contains(q, StringComparison.OrdinalIgnoreCase)
-                || (entry.SourceTerm ?? "").Contains(q, StringComparison.OrdinalIgnoreCase)
-                || (entry.TargetTerm ?? "").Contains(q, StringComparison.OrdinalIgnoreCase)
-                || (entry.Note ?? "").Contains(q, StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        return true;
+        return MatchGlossaryFilter(entry, (GlobalGlossaryFilterCategory ?? "").Trim(), (GlobalGlossaryFilterText ?? "").Trim());
     }
 
     private void RebuildGlobalGlossaryCategoryFilters()
     {
-        var categories = GlobalGlossary
-            .Select(g => (g.Category ?? "").Trim())
-            .Where(c => !string.IsNullOrWhiteSpace(c))
-            .Distinct(StringComparer.Ordinal)
-            .OrderBy(c => c, StringComparer.Ordinal)
-            .ToList();
-
-        var list = new List<string> { GlossaryCategoryAll, GlossaryCategoryNone };
-        list.AddRange(categories);
+        var list = BuildCategoryFilterValues(GlobalGlossary);
         GlobalGlossaryCategoryFilterValues.ReplaceAll(list);
 
         if (!list.Contains(GlobalGlossaryFilterCategory, StringComparer.Ordinal))

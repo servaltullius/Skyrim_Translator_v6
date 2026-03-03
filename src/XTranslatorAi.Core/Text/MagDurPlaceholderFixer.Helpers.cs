@@ -202,33 +202,4 @@ public static partial class MagDurPlaceholderFixer
         working = working.Replace(tmp, b, StringComparison.OrdinalIgnoreCase);
         return working;
     }
-
-    private static bool IsKorean(string lang)
-    {
-        if (string.IsNullOrWhiteSpace(lang))
-        {
-            return false;
-        }
-
-        var s = lang.Trim();
-        if (string.Equals(s, "korean", StringComparison.OrdinalIgnoreCase) || string.Equals(s, "ko", StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
-
-        // Common culture-style codes: ko-KR / ko_kr
-        if (s.StartsWith("ko-", StringComparison.OrdinalIgnoreCase) || s.StartsWith("ko_", StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
-
-        // Some tools store display names or localized names.
-        if (s.IndexOf("korean", StringComparison.OrdinalIgnoreCase) >= 0)
-        {
-            return true;
-        }
-
-        return string.Equals(s, "한국어", StringComparison.OrdinalIgnoreCase)
-               || s.IndexOf("한국", StringComparison.OrdinalIgnoreCase) >= 0;
-    }
 }

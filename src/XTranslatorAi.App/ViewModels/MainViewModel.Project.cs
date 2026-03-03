@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using XTranslatorAi.App.Services;
+using XTranslatorAi.Core;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Xml;
@@ -178,7 +179,7 @@ public partial class MainViewModel
         TotalCount = total;
 
         var tmHitIds = new System.Collections.Generic.HashSet<long>(
-            (await db.GetStringNotesByKindAsync(TmHitNoteKind, CancellationToken.None)).Keys
+            (await db.GetStringNotesByKindAsync(TranslationConstants.TmHitNoteKind, CancellationToken.None)).Keys
         );
 
         const int pageSize = 500;

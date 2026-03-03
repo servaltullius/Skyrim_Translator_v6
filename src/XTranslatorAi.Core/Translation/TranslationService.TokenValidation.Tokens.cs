@@ -13,7 +13,7 @@ public sealed partial class TranslationService
         tokens = new List<string>();
 
         var idx = 0;
-        foreach (Match m in XtTokenRegex.Matches(text))
+        foreach (Match m in TranslationConstants.XtTokenRegex.Matches(text))
         {
             if (m.Index > idx)
             {
@@ -62,7 +62,7 @@ public sealed partial class TranslationService
 
     private static List<string> ExtractTokens(string text)
     {
-        var matches = XtTokenRegex.Matches(text);
+        var matches = TranslationConstants.XtTokenRegex.Matches(text);
         var tokens = new List<string>(capacity: matches.Count);
         foreach (Match m in matches)
         {
