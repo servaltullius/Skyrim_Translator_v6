@@ -39,6 +39,12 @@ Tullius Translator는 **Bethesda/xTranslator XML 현지화 작업**에 특화된
 - 번역 결과 편집 시 메모리 축적 가능
 - 반복 문장/유사 문장 작업 시 재사용성 향상
 
+## Fallout TM
+
+Fallout TM is currently scoped to Fallout 4 family data.
+Bundled Fallout TM is auto-seeded on first Fallout project load.
+Operator-provided TSV imports still work through the existing Franchise TM import flow.
+
 ### 4) 검수/비교/운영
 - Compare 탭: 여러 모델/설정을 나란히 실행해 결과 비교
 - LQA 탭: 검수 스캔 및 이슈 필터링
