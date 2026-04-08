@@ -15,6 +15,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <AssemblyName>TulliusTranslator</AssemblyName>
+    <Version>1.0.0</Version>
+    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +27,7 @@
     <EmbeddedResource Include="Assets\기본용어집.md" />
     <EmbeddedResource Include="Assets\기본용어집_폴아웃.md" />
     <EmbeddedResource Include="Assets\기본용어집_스타필드.md" />
+    <EmbeddedResource Include="Assets\TmSeeds\fallout4-franchise-tm.tsv" />
   </ItemGroup>
 
 </Project>
