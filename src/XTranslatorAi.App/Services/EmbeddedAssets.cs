@@ -33,6 +33,11 @@ public static class EmbeddedAssets
             }
         );
 
+    public static string? LoadBundledFranchiseTmSeed(BethesdaFranchise franchise)
+        => franchise == BethesdaFranchise.Fallout
+            ? LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.fallout4-franchise-tm.tsv")
+            : null;
+
     private static string LoadTextResource(string resourceName)
     {
         var assembly = Assembly.GetExecutingAssembly();
