@@ -8,6 +8,22 @@ namespace XTranslatorAi.App.Services;
 
 public static class ProjectPaths
 {
+    public static string GetGlobalRootDir()
+        => GetGlobalRootDir(globalRootOverride: null);
+
+    public static string GetGlobalRootDir(string? globalRootOverride)
+    {
+        var root = string.IsNullOrWhiteSpace(globalRootOverride)
+            ? Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "XTranslatorAi",
+                "Global"
+            )
+            : Path.GetFullPath(globalRootOverride);
+        Directory.CreateDirectory(root);
+        return root;
+    }
+
     public static string GetProjectDbPath(string addonName, string sourceLang, string destLang)
     {
         var baseDir = GetProjectsBaseDir();
@@ -43,14 +59,35 @@ public static class ProjectPaths
 
     public static string GetGlobalGlossaryDbPath(BethesdaFranchise franchise)
     {
-        var baseDir = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "XTranslatorAi",
-            "Global"
-        );
-        Directory.CreateDirectory(baseDir);
+        var baseDir = GetGlobalRootDir(globalRootOverride: null);
 
-        // Backward compatibility: keep the existing TES/Skyrim global DB path unchanged.
+        // Keep the legacy on-disk filename for Elder Scrolls so existing installs remain compatible.
+        // Conceptually this is franchise-scoped shared glossary/TM data; only the path layout varies
+        // by franchise for Fallout and Starfield.
+        if (franchise == BethesdaFranchise.ElderScrolls)
+        {
+            return Path.Combine(baseDir, "global-glossary.sqlite");
+        }
+
+        var franchiseDir = franchise switch
+        {
+            BethesdaFranchise.Fallout => "fallout",
+            BethesdaFranchise.Starfield => "starfield",
+            _ => "other",
+        };
+
+        var dir = Path.Combine(baseDir, franchiseDir);
+        Directory.CreateDirectory(dir);
+        return Path.Combine(dir, "global-glossary.sqlite");
+    }
+
+    public static string GetGlobalGlossaryDbPath(BethesdaFranchise franchise, string? globalRootOverride)
+    {
+        var baseDir = GetGlobalRootDir(globalRootOverride);
+
+        // Keep the legacy on-disk filename for Elder Scrolls so existing installs remain compatible.
+        // Conceptually this is franchise-scoped shared glossary/TM data; only the path layout varies
+        // by franchise for Fallout and Starfield.
         if (franchise == BethesdaFranchise.ElderScrolls)
         {
             return Path.Combine(baseDir, "global-glossary.sqlite");
@@ -71,6 +108,20 @@ public static class ProjectPaths
     public static string GetGlobalTranslationMemoryImportDir(BethesdaFranchise franchise)
     {
         var dbPath = GetGlobalGlossaryDbPath(franchise);
+        var baseDir = Path.GetDirectoryName(Path.GetFullPath(dbPath));
+        if (string.IsNullOrWhiteSpace(baseDir))
+        {
+            baseDir = GetProjectsBaseDir();
+        }
+
+        var dir = Path.Combine(baseDir, "tm-import");
+        Directory.CreateDirectory(dir);
+        return dir;
+    }
+
+    public static string GetGlobalTranslationMemoryImportDir(BethesdaFranchise franchise, string? globalRootOverride)
+    {
+        var dbPath = GetGlobalGlossaryDbPath(franchise, globalRootOverride);
         var baseDir = Path.GetDirectoryName(Path.GetFullPath(dbPath));
         if (string.IsNullOrWhiteSpace(baseDir))
         {

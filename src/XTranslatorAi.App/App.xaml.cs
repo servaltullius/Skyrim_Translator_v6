@@ -43,29 +43,31 @@ public partial class App : Application
             var apiCallLogs = new ApiCallLogService();
             var systemPromptBuilder = new SystemPromptBuilder();
             var builtInGlossaryService = new BuiltInGlossaryService();
+            var bundledFranchiseTmSeedService = new BundledFranchiseTmSeedService();
             var globalProjectDbService = new GlobalProjectDbService(builtInGlossaryService);
             var glossaryFileService = new GlossaryFileService();
             var glossaryImportService = new GlossaryImportService(glossaryFileService);
             var projectGlossaryService = new ProjectGlossaryService(glossaryImportService);
             var globalGlossaryService = new GlobalGlossaryService(globalProjectDbService, projectGlossaryService);
-            var globalTranslationMemoryService = new GlobalTranslationMemoryService(globalProjectDbService);
+            var franchiseTranslationMemoryService = new FranchiseTranslationMemoryService(globalProjectDbService);
             var projectWorkspaceService = new ProjectWorkspaceService(globalProjectDbService, builtInGlossaryService);
             var translationRunnerService = new TranslationRunnerService(globalProjectDbService);
             var compareTranslationService = new CompareTranslationService(projectGlossaryService);
-            var vm = new ViewModels.MainViewModel(
-                httpClient,
-                appSettings,
-                apiCallLogs,
-                systemPromptBuilder,
-                _uiInteractionService,
-                globalProjectDbService,
-                projectGlossaryService,
-                globalGlossaryService,
-                globalTranslationMemoryService,
-                projectWorkspaceService,
-                translationRunnerService,
-                compareTranslationService
+            var services = new MainViewModelServices(
+                AppSettings: appSettings,
+                ApiCallLogService: apiCallLogs,
+                SystemPromptBuilder: systemPromptBuilder,
+                UiInteractionService: _uiInteractionService,
+                BundledFranchiseTmSeedService: bundledFranchiseTmSeedService,
+                GlobalProjectDbService: globalProjectDbService,
+                ProjectGlossaryService: projectGlossaryService,
+                GlobalGlossaryService: globalGlossaryService,
+                FranchiseTranslationMemoryService: franchiseTranslationMemoryService,
+                ProjectWorkspaceService: projectWorkspaceService,
+                TranslationRunnerService: translationRunnerService,
+                CompareTranslationService: compareTranslationService
             );
+            var vm = new ViewModels.MainViewModel(httpClient, services);
             var window = new MainWindow(vm);
             MainWindow = window;
 
@@ -199,4 +201,3 @@ public partial class App : Application
         }
     }
 }
-

@@ -252,8 +252,8 @@
                                     ToolTip="현재 번역 결과에서 &lt;mag&gt;/&lt;dur&gt; 플레이스홀더 오번역(자리/역할)을 자동 교정합니다. (API 호출 없음)" />
                             <Button Content="후처리 재적용" Command="{Binding ReapplyPostEditsCommand}" Style="{StaticResource XT.ToolbarButton}"
                                     ToolTip="이미 번역된 항목에 플레이스홀더/단위/조사 후처리를 다시 적용합니다. (API 호출 없음)" />
-                            <Button Content="Global TM 가져오기" Command="{Binding ImportGlobalTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}"
-                                    ToolTip="TSV(Source&lt;TAB&gt;Target) 파일을 Global Translation Memory로 가져옵니다. (API 호출 없음)" />
+                            <Button Content="Franchise TM 가져오기" Command="{Binding ImportFranchiseTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}"
+                                    ToolTip="TSV(Source&lt;TAB&gt;Target) 파일을 Franchise TM으로 가져옵니다. (API 호출 없음)" />
                         </WrapPanel>
                     </StackPanel>
                 </Expander>
@@ -282,7 +282,7 @@
                 <views:GlobalGlossaryTabView />
             </TabItem>
 
-            <TabItem Header="Global TM" DataContext="{Binding GlobalTranslationMemoryTab}">
+            <TabItem Header="Franchise TM" DataContext="{Binding FranchiseTranslationMemoryTab}">
                 <views:GlobalTranslationMemoryTabView />
             </TabItem>
 
