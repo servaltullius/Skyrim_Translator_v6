@@ -87,6 +87,7 @@ public partial class MainViewModel
         SourceLang = result.SourceLang;
         TargetLang = result.TargetLang;
 
+        await _bundledFranchiseTmSeedService.EnsureBundledSeedAsync(result.Franchise, CancellationToken.None);
         await TryAutoImportFranchiseTranslationMemoryAsync();
 
         await ReloadGlossaryAsync();

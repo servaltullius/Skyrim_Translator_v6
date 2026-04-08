@@ -49,6 +49,7 @@ public partial class App : Application
             var projectGlossaryService = new ProjectGlossaryService(glossaryImportService);
             var globalGlossaryService = new GlobalGlossaryService(globalProjectDbService, projectGlossaryService);
             var franchiseTranslationMemoryService = new FranchiseTranslationMemoryService(globalProjectDbService);
+            var bundledFranchiseTmSeedService = new BundledFranchiseTmSeedService();
             var projectWorkspaceService = new ProjectWorkspaceService(globalProjectDbService, builtInGlossaryService);
             var translationRunnerService = new TranslationRunnerService(globalProjectDbService);
             var compareTranslationService = new CompareTranslationService(projectGlossaryService);
@@ -61,6 +62,7 @@ public partial class App : Application
                 ProjectGlossaryService: projectGlossaryService,
                 GlobalGlossaryService: globalGlossaryService,
                 FranchiseTranslationMemoryService: franchiseTranslationMemoryService,
+                BundledFranchiseTmSeedService: bundledFranchiseTmSeedService,
                 ProjectWorkspaceService: projectWorkspaceService,
                 TranslationRunnerService: translationRunnerService,
                 CompareTranslationService: compareTranslationService
@@ -199,4 +201,3 @@ public partial class App : Application
         }
     }
 }
-

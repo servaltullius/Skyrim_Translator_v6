@@ -31,6 +31,7 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
     private readonly ProjectGlossaryService _projectGlossaryService;
     private readonly GlobalGlossaryService _globalGlossaryService;
     private readonly FranchiseTranslationMemoryService _globalTranslationMemoryService;
+    private readonly BundledFranchiseTmSeedService _bundledFranchiseTmSeedService;
     private readonly ProjectWorkspaceService _projectWorkspaceService;
     private readonly TranslationRunnerService _translationRunnerService;
     private readonly CompareTranslationService _compareTranslationService;
@@ -76,6 +77,7 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
         _projectGlossaryService = services.ProjectGlossaryService;
         _globalGlossaryService = services.GlobalGlossaryService;
         _globalTranslationMemoryService = services.FranchiseTranslationMemoryService;
+        _bundledFranchiseTmSeedService = services.BundledFranchiseTmSeedService;
         _projectWorkspaceService = services.ProjectWorkspaceService;
         _translationRunnerService = services.TranslationRunnerService;
         _compareTranslationService = services.CompareTranslationService;

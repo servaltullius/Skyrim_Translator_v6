@@ -42,12 +42,11 @@ public static class ProjectPaths
         => GetGlobalGlossaryDbPath(BethesdaFranchise.ElderScrolls);
 
     public static string GetGlobalGlossaryDbPath(BethesdaFranchise franchise)
+        => GetGlobalGlossaryDbPath(franchise, globalRootOverride: null);
+
+    public static string GetGlobalGlossaryDbPath(BethesdaFranchise franchise, string? globalRootOverride)
     {
-        var baseDir = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "XTranslatorAi",
-            "Global"
-        );
+        var baseDir = GetGlobalBaseDir(globalRootOverride);
         Directory.CreateDirectory(baseDir);
 
         // Keep the legacy on-disk filename for Elder Scrolls so existing installs remain compatible.
@@ -71,8 +70,11 @@ public static class ProjectPaths
     }
 
     public static string GetGlobalTranslationMemoryImportDir(BethesdaFranchise franchise)
+        => GetGlobalTranslationMemoryImportDir(franchise, globalRootOverride: null);
+
+    public static string GetGlobalTranslationMemoryImportDir(BethesdaFranchise franchise, string? globalRootOverride)
     {
-        var dbPath = GetGlobalGlossaryDbPath(franchise);
+        var dbPath = GetGlobalGlossaryDbPath(franchise, globalRootOverride);
         var baseDir = Path.GetDirectoryName(Path.GetFullPath(dbPath));
         if (string.IsNullOrWhiteSpace(baseDir))
         {
@@ -84,12 +86,30 @@ public static class ProjectPaths
         return dir;
     }
 
+    public static string GetBundledFranchiseTmSeedStampPath(BethesdaFranchise franchise, string version)
+        => GetBundledFranchiseTmSeedStampPath(franchise, version, globalRootOverride: null);
+
+    public static string GetBundledFranchiseTmSeedStampPath(BethesdaFranchise franchise, string version, string? globalRootOverride)
+        => Path.Combine(
+            GetGlobalTranslationMemoryImportDir(franchise, globalRootOverride),
+            $".bundled-seed.{franchise.ToString().ToLowerInvariant()}.{version}.stamp"
+        );
+
     private static string GetProjectsBaseDir()
         => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "XTranslatorAi",
             "Projects"
         );
+
+    private static string GetGlobalBaseDir(string? globalRootOverride)
+        => !string.IsNullOrWhiteSpace(globalRootOverride)
+            ? Path.GetFullPath(globalRootOverride)
+            : Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "XTranslatorAi",
+                "Global"
+            );
 
     private static string SanitizeFileNameStem(string? value, string fallback)
     {

@@ -11,6 +11,7 @@ public sealed record MainViewModelServices(
     ProjectGlossaryService ProjectGlossaryService,
     GlobalGlossaryService GlobalGlossaryService,
     FranchiseTranslationMemoryService FranchiseTranslationMemoryService,
+    BundledFranchiseTmSeedService BundledFranchiseTmSeedService,
     ProjectWorkspaceService ProjectWorkspaceService,
     TranslationRunnerService TranslationRunnerService,
     CompareTranslationService CompareTranslationService
