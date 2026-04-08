@@ -50,7 +50,9 @@ public static class ProjectPaths
         );
         Directory.CreateDirectory(baseDir);
 
-        // Backward compatibility: keep the existing TES/Skyrim global DB path unchanged.
+        // Keep the legacy on-disk filename for Elder Scrolls so existing installs remain compatible.
+        // Conceptually this is franchise-scoped shared glossary/TM data; only the path layout varies
+        // by franchise for Fallout and Starfield.
         if (franchise == BethesdaFranchise.ElderScrolls)
         {
             return Path.Combine(baseDir, "global-glossary.sqlite");

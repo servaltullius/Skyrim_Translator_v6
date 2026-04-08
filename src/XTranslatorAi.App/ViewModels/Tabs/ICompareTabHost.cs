@@ -11,7 +11,7 @@ public interface ICompareTabHost : INotifyPropertyChanged
 
     bool CompareIncludeProjectGlossary { get; set; }
     bool CompareIncludeGlobalGlossary { get; set; }
-    bool CompareIncludeGlobalTranslationMemory { get; set; }
+    bool CompareIncludeFranchiseTranslationMemory { get; set; }
 
     string CompareSelectedEntrySummary { get; }
     StringEntryViewModel? SelectedEntry { get; set; }

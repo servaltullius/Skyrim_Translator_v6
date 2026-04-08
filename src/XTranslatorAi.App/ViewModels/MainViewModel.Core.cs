@@ -30,7 +30,7 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
     private readonly GlobalProjectDbService _globalProjectDbService;
     private readonly ProjectGlossaryService _projectGlossaryService;
     private readonly GlobalGlossaryService _globalGlossaryService;
-    private readonly GlobalTranslationMemoryService _globalTranslationMemoryService;
+    private readonly FranchiseTranslationMemoryService _globalTranslationMemoryService;
     private readonly ProjectWorkspaceService _projectWorkspaceService;
     private readonly TranslationRunnerService _translationRunnerService;
     private readonly CompareTranslationService _compareTranslationService;
@@ -53,8 +53,8 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
     public ObservableRangeCollection<GlossaryEntryViewModel> GlobalGlossary { get; } = new();
     public ICollectionView GlobalGlossaryView { get; }
     public ObservableRangeCollection<string> GlobalGlossaryCategoryFilterValues { get; } = new();
-    public ObservableRangeCollection<TranslationMemoryEntryViewModel> GlobalTranslationMemory { get; } = new();
-    public ICollectionView GlobalTranslationMemoryView { get; }
+    public ObservableRangeCollection<TranslationMemoryEntryViewModel> FranchiseTranslationMemory { get; } = new();
+    public ICollectionView FranchiseTranslationMemoryView { get; }
     public ObservableRangeCollection<GlossaryLookupResultViewModel> GlossaryLookupResults { get; } = new();
     public ICollectionView GlossaryLookupResultsView { get; }
     public ObservableRangeCollection<ApiCallLogRow> ApiCallLogs => _apiCallLogService.Rows;
@@ -65,33 +65,20 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
 
     public ObservableRangeCollection<string> AvailableModels { get; } = new();
 
-    public MainViewModel(
-        HttpClient httpClient,
-        AppSettingsStore appSettings,
-        ApiCallLogService apiCallLogService,
-        SystemPromptBuilder systemPromptBuilder,
-        IUiInteractionService uiInteractionService,
-        GlobalProjectDbService globalProjectDbService,
-        ProjectGlossaryService projectGlossaryService,
-        GlobalGlossaryService globalGlossaryService,
-        GlobalTranslationMemoryService globalTranslationMemoryService,
-        ProjectWorkspaceService projectWorkspaceService,
-        TranslationRunnerService translationRunnerService,
-        CompareTranslationService compareTranslationService
-    )
+    public MainViewModel(HttpClient httpClient, MainViewModelServices services)
     {
         _httpClient = httpClient;
-        _appSettings = appSettings;
-        _apiCallLogService = apiCallLogService;
-        _systemPromptBuilder = systemPromptBuilder;
-        _uiInteractionService = uiInteractionService;
-        _globalProjectDbService = globalProjectDbService;
-        _projectGlossaryService = projectGlossaryService;
-        _globalGlossaryService = globalGlossaryService;
-        _globalTranslationMemoryService = globalTranslationMemoryService;
-        _projectWorkspaceService = projectWorkspaceService;
-        _translationRunnerService = translationRunnerService;
-        _compareTranslationService = compareTranslationService;
+        _appSettings = services.AppSettings;
+        _apiCallLogService = services.ApiCallLogService;
+        _systemPromptBuilder = services.SystemPromptBuilder;
+        _uiInteractionService = services.UiInteractionService;
+        _globalProjectDbService = services.GlobalProjectDbService;
+        _projectGlossaryService = services.ProjectGlossaryService;
+        _globalGlossaryService = services.GlobalGlossaryService;
+        _globalTranslationMemoryService = services.FranchiseTranslationMemoryService;
+        _projectWorkspaceService = services.ProjectWorkspaceService;
+        _translationRunnerService = services.TranslationRunnerService;
+        _compareTranslationService = services.CompareTranslationService;
 
         // Long book texts on some models (e.g., Gemini 3 preview) can take several minutes per request.
         // Use a higher client timeout and rely on cancellation tokens for user-initiated Stop.
@@ -158,8 +145,8 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
         GlobalGlossaryView.Filter = GlobalGlossaryFilter;
         GlobalGlossaryCategoryFilterValues.ReplaceAll(new[] { GlossaryCategoryAll, GlossaryCategoryNone });
 
-        GlobalTranslationMemoryView = CollectionViewSource.GetDefaultView(GlobalTranslationMemory);
-        GlobalTranslationMemoryView.Filter = GlobalTranslationMemoryFilter;
+        FranchiseTranslationMemoryView = CollectionViewSource.GetDefaultView(FranchiseTranslationMemory);
+        FranchiseTranslationMemoryView.Filter = FranchiseTranslationMemoryFilter;
 
         GlossaryLookupResultsView = CollectionViewSource.GetDefaultView(GlossaryLookupResults);
 
@@ -171,7 +158,7 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
         LqaTab = new LqaTabViewModel(this);
         ProjectGlossaryTab = new ProjectGlossaryTabViewModel(this);
         GlobalGlossaryTab = new GlobalGlossaryTabViewModel(this);
-        GlobalTranslationMemoryTab = new GlobalTranslationMemoryTabViewModel(this);
+        FranchiseTranslationMemoryTab = new GlobalTranslationMemoryTabViewModel(this);
         PromptTab = new PromptTabViewModel(this);
         ProjectContextTab = new ProjectContextTabViewModel(this);
         ApiLogsTab = new ApiLogsTabViewModel(this);
@@ -292,7 +279,7 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
             }
 
             await ReloadGlobalGlossaryAsync();
-            await ReloadGlobalTranslationMemoryAsync();
+            await ReloadFranchiseTranslationMemoryAsync();
             StatusMessage = "Franchise changed.";
         }
         catch (Exception ex)

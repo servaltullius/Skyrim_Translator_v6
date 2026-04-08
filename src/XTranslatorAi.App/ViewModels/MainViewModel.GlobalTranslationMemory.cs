@@ -11,7 +11,7 @@ namespace XTranslatorAi.App.ViewModels;
 
 public partial class MainViewModel
 {
-    private async Task TryAutoImportGlobalTranslationMemoryAsync()
+    private async Task TryAutoImportFranchiseTranslationMemoryAsync()
     {
         if (IsTranslating)
         {
@@ -46,7 +46,7 @@ public partial class MainViewModel
                     continue;
                 }
 
-                StatusMessage = $"Global TM 자동 가져오기: {Path.GetFileName(path)}";
+                StatusMessage = $"Franchise TM 자동 가져오기: {Path.GetFileName(path)}";
                 var applied = await _globalTranslationMemoryService.ImportFromTsvAsync(
                     SourceLang.Trim(),
                     TargetLang.Trim(),
@@ -64,29 +64,29 @@ public partial class MainViewModel
 
             if (totalApplied > 0)
             {
-                StatusMessage = $"Global TM 자동 가져오기 완료: {totalApplied}개 항목";
+                StatusMessage = $"Franchise TM 자동 가져오기 완료: {totalApplied}개 항목";
             }
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Global TM 자동 가져오기", ex);
+            SetUserFacingError("Franchise TM 자동 가져오기", ex);
         }
     }
 
-    [RelayCommand(CanExecute = nameof(CanReloadGlobalTranslationMemory))]
-    private async Task ReloadGlobalTranslationMemoryAsync()
+    [RelayCommand(CanExecute = nameof(CanReloadFranchiseTranslationMemory))]
+    private async Task ReloadFranchiseTranslationMemoryAsync()
     {
         if (await _globalTranslationMemoryService.TryGetDbAsync(CancellationToken.None) == null)
         {
-            GlobalTranslationMemory.Clear();
-            GlobalTranslationMemoryView.Refresh();
-            StatusMessage = "Global DB 초기화에 실패했습니다.";
+            FranchiseTranslationMemory.Clear();
+            FranchiseTranslationMemoryView.Refresh();
+            StatusMessage = "Franchise TM DB 초기화에 실패했습니다.";
             return;
         }
 
         try
         {
-            StatusMessage = "Global TM 불러오는 중...";
+            StatusMessage = "Franchise TM 불러오는 중...";
             var rows = await _globalTranslationMemoryService.GetEntriesAsync(SourceLang.Trim(), TargetLang.Trim(), CancellationToken.None);
             var list = rows
                 .Select(
@@ -104,29 +104,29 @@ public partial class MainViewModel
                 )
                 .ToList();
 
-            GlobalTranslationMemory.ReplaceAll(list);
-            GlobalTranslationMemoryView.Refresh();
-            StatusMessage = $"Global TM 로드: {list.Count}개 항목";
+            FranchiseTranslationMemory.ReplaceAll(list);
+            FranchiseTranslationMemoryView.Refresh();
+            StatusMessage = $"Franchise TM 로드: {list.Count}개 항목";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Global TM 로드", ex);
+            SetUserFacingError("Franchise TM 로드", ex);
         }
     }
 
-    private bool CanReloadGlobalTranslationMemory() => !IsTranslating;
+    private bool CanReloadFranchiseTranslationMemory() => !IsTranslating;
 
-    [RelayCommand(CanExecute = nameof(CanAddGlobalTranslationMemory))]
-    private async Task AddGlobalTranslationMemoryAsync()
+    [RelayCommand(CanExecute = nameof(CanAddFranchiseTranslationMemory))]
+    private async Task AddFranchiseTranslationMemoryAsync()
     {
         if (await _globalTranslationMemoryService.TryGetDbAsync(CancellationToken.None) == null)
         {
-            StatusMessage = "Global DB 초기화에 실패했습니다.";
+            StatusMessage = "Franchise TM DB 초기화에 실패했습니다.";
             return;
         }
 
-        var src = (GlobalTranslationMemorySourceText ?? "").Trim();
-        var dst = (GlobalTranslationMemoryDestText ?? "").Trim();
+        var src = (FranchiseTranslationMemorySourceText ?? "").Trim();
+        var dst = (FranchiseTranslationMemoryDestText ?? "").Trim();
         if (string.IsNullOrWhiteSpace(src) || string.IsNullOrWhiteSpace(dst))
         {
             return;
@@ -141,32 +141,32 @@ public partial class MainViewModel
                 CancellationToken.None
             );
 
-            GlobalTranslationMemorySourceText = "";
-            GlobalTranslationMemoryDestText = "";
+            FranchiseTranslationMemorySourceText = "";
+            FranchiseTranslationMemoryDestText = "";
 
-            await ReloadGlobalTranslationMemoryAsync();
-            StatusMessage = applied > 0 ? "Global TM 추가/갱신 완료." : "Global TM 추가/갱신할 항목이 없습니다.";
+            await ReloadFranchiseTranslationMemoryAsync();
+            StatusMessage = applied > 0 ? "Franchise TM 추가/갱신 완료." : "Franchise TM 추가/갱신할 항목이 없습니다.";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Global TM 추가", ex);
+            SetUserFacingError("Franchise TM 추가", ex);
         }
     }
 
-    private bool CanAddGlobalTranslationMemory() => !IsTranslating
-        && !string.IsNullOrWhiteSpace(GlobalTranslationMemorySourceText)
-        && !string.IsNullOrWhiteSpace(GlobalTranslationMemoryDestText);
+    private bool CanAddFranchiseTranslationMemory() => !IsTranslating
+        && !string.IsNullOrWhiteSpace(FranchiseTranslationMemorySourceText)
+        && !string.IsNullOrWhiteSpace(FranchiseTranslationMemoryDestText);
 
-    [RelayCommand(CanExecute = nameof(CanSaveGlobalTranslationMemoryChanges))]
-    private async Task SaveGlobalTranslationMemoryChangesAsync()
+    [RelayCommand(CanExecute = nameof(CanSaveFranchiseTranslationMemoryChanges))]
+    private async Task SaveFranchiseTranslationMemoryChangesAsync()
     {
         if (await _globalTranslationMemoryService.TryGetDbAsync(CancellationToken.None) == null)
         {
-            StatusMessage = "Global DB 초기화에 실패했습니다.";
+            StatusMessage = "Franchise TM DB 초기화에 실패했습니다.";
             return;
         }
 
-        var dirty = GlobalTranslationMemory.Where(e => e.IsDirty).ToList();
+        var dirty = FranchiseTranslationMemory.Where(e => e.IsDirty).ToList();
         if (dirty.Count == 0)
         {
             StatusMessage = "저장할 변경사항이 없습니다.";
@@ -180,29 +180,29 @@ public partial class MainViewModel
                 .ToList();
 
             var applied = await _globalTranslationMemoryService.BulkUpdateAsync(SourceLang.Trim(), TargetLang.Trim(), rows, CancellationToken.None);
-            await ReloadGlobalTranslationMemoryAsync();
-            StatusMessage = $"Global TM 저장 완료: {applied}개 항목";
+            await ReloadFranchiseTranslationMemoryAsync();
+            StatusMessage = $"Franchise TM 저장 완료: {applied}개 항목";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Global TM 저장", ex);
+            SetUserFacingError("Franchise TM 저장", ex);
         }
     }
 
-    private bool CanSaveGlobalTranslationMemoryChanges() => !IsTranslating;
+    private bool CanSaveFranchiseTranslationMemoryChanges() => !IsTranslating;
 
-    [RelayCommand(CanExecute = nameof(CanDeleteGlobalTranslationMemoryEntry))]
-    private async Task DeleteGlobalTranslationMemoryEntryAsync()
+    [RelayCommand(CanExecute = nameof(CanDeleteFranchiseTranslationMemoryEntry))]
+    private async Task DeleteFranchiseTranslationMemoryEntryAsync()
     {
-        if (SelectedGlobalTranslationMemoryEntry == null
+        if (SelectedFranchiseTranslationMemoryEntry == null
             || await _globalTranslationMemoryService.TryGetDbAsync(CancellationToken.None) == null)
         {
             return;
         }
 
         var confirm = _uiInteractionService.ShowMessage(
-            $"선택한 Global TM 항목을 삭제할까요?\n\n- {SelectedGlobalTranslationMemoryEntry.SourceText} => {SelectedGlobalTranslationMemoryEntry.DestText}",
-            "Global TM 삭제",
+            $"선택한 Franchise TM 항목을 삭제할까요?\n\n- {SelectedFranchiseTranslationMemoryEntry.SourceText} => {SelectedFranchiseTranslationMemoryEntry.DestText}",
+            "Franchise TM 삭제",
             UiMessageBoxButton.YesNo,
             UiMessageBoxImage.Warning
         );
@@ -213,29 +213,29 @@ public partial class MainViewModel
 
         try
         {
-            var ids = new List<long> { SelectedGlobalTranslationMemoryEntry.Id };
+            var ids = new List<long> { SelectedFranchiseTranslationMemoryEntry.Id };
             var removed = await _globalTranslationMemoryService.DeleteAsync(SourceLang.Trim(), TargetLang.Trim(), ids, CancellationToken.None);
             if (removed > 0)
             {
-                GlobalTranslationMemory.Remove(SelectedGlobalTranslationMemoryEntry);
-                SelectedGlobalTranslationMemoryEntry = null;
-                GlobalTranslationMemoryView.Refresh();
+                FranchiseTranslationMemory.Remove(SelectedFranchiseTranslationMemoryEntry);
+                SelectedFranchiseTranslationMemoryEntry = null;
+                FranchiseTranslationMemoryView.Refresh();
             }
 
-            StatusMessage = removed > 0 ? "Global TM 항목 삭제 완료." : "삭제할 항목이 없습니다.";
+            StatusMessage = removed > 0 ? "Franchise TM 항목 삭제 완료." : "삭제할 항목이 없습니다.";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Global TM 삭제", ex);
+            SetUserFacingError("Franchise TM 삭제", ex);
         }
     }
 
-    private bool CanDeleteGlobalTranslationMemoryEntry() => !IsTranslating && SelectedGlobalTranslationMemoryEntry != null;
+    private bool CanDeleteFranchiseTranslationMemoryEntry() => !IsTranslating && SelectedFranchiseTranslationMemoryEntry != null;
 
-    [RelayCommand(CanExecute = nameof(CanExportGlobalTranslationMemory))]
-    private async Task ExportGlobalTranslationMemoryAsync()
+    [RelayCommand(CanExecute = nameof(CanExportFranchiseTranslationMemory))]
+    private async Task ExportFranchiseTranslationMemoryAsync()
     {
-        var path = ResolveGlossaryExportPath(title: "Export global TM", defaultFileName: "global-tm.tsv");
+        var path = ResolveGlossaryExportPath(title: "Export franchise TM", defaultFileName: "franchise-tm.tsv");
         if (string.IsNullOrWhiteSpace(path))
         {
             return;
@@ -243,29 +243,29 @@ public partial class MainViewModel
 
         try
         {
-            var rows = GlobalTranslationMemory
+            var rows = FranchiseTranslationMemory
                 .Select(e => (SourceText: e.SourceText ?? "", DestText: e.DestText ?? ""));
             await File.WriteAllTextAsync(path, TranslationMemoryFileService.BuildTsv(rows), CancellationToken.None);
-            StatusMessage = $"Global TM exported: {Path.GetFileName(path)}";
+            StatusMessage = $"Franchise TM exported: {Path.GetFileName(path)}";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Global TM export", ex);
+            SetUserFacingError("Franchise TM export", ex);
         }
     }
 
-    private bool CanExportGlobalTranslationMemory() => !IsTranslating;
+    private bool CanExportFranchiseTranslationMemory() => !IsTranslating;
 
-    partial void OnGlobalTranslationMemoryFilterTextChanged(string value) => GlobalTranslationMemoryView.Refresh();
+    partial void OnFranchiseTranslationMemoryFilterTextChanged(string value) => FranchiseTranslationMemoryView.Refresh();
 
-    private bool GlobalTranslationMemoryFilter(object obj)
+    private bool FranchiseTranslationMemoryFilter(object obj)
     {
         if (obj is not TranslationMemoryEntryViewModel entry)
         {
             return true;
         }
 
-        var q = (GlobalTranslationMemoryFilterText ?? "").Trim();
+        var q = (FranchiseTranslationMemoryFilterText ?? "").Trim();
         if (string.IsNullOrWhiteSpace(q))
         {
             return true;
@@ -275,13 +275,13 @@ public partial class MainViewModel
             || (entry.DestText ?? "").Contains(q, StringComparison.OrdinalIgnoreCase);
     }
 
-    [RelayCommand(CanExecute = nameof(CanImportGlobalTranslationMemoryFromTab))]
-    private async Task ImportGlobalTranslationMemoryFromTabAsync()
+    [RelayCommand(CanExecute = nameof(CanImportFranchiseTranslationMemoryFromTab))]
+    private async Task ImportFranchiseTranslationMemoryFromTabAsync()
     {
         var filePath = _uiInteractionService.ShowOpenFileDialog(
             new OpenFileDialogRequest(
                 Filter: "TSV files (*.tsv)|*.tsv|All files (*.*)|*.*",
-                Title: "Import global TM (TSV: Source<TAB>Target)"
+                Title: "Import franchise TM (TSV: Source<TAB>Target)"
             )
         );
         if (string.IsNullOrWhiteSpace(filePath))
@@ -289,22 +289,22 @@ public partial class MainViewModel
             return;
         }
 
-        await ImportGlobalTranslationMemoryFromTsvPathAsync(filePath, reloadAfterImport: true);
+        await ImportFranchiseTranslationMemoryFromTsvPathAsync(filePath, reloadAfterImport: true);
     }
 
-    private bool CanImportGlobalTranslationMemoryFromTab() => !IsTranslating;
+    private bool CanImportFranchiseTranslationMemoryFromTab() => !IsTranslating;
 
-    private async Task ImportGlobalTranslationMemoryFromTsvPathAsync(string tsvPath, bool reloadAfterImport)
+    private async Task ImportFranchiseTranslationMemoryFromTsvPathAsync(string tsvPath, bool reloadAfterImport)
     {
         if (await _globalTranslationMemoryService.TryGetDbAsync(CancellationToken.None) == null)
         {
-            StatusMessage = "Global DB 초기화에 실패했습니다.";
+            StatusMessage = "Franchise TM DB 초기화에 실패했습니다.";
             return;
         }
 
         try
         {
-            StatusMessage = "Global TM 가져오는 중...";
+            StatusMessage = "Franchise TM 가져오는 중...";
             var applied = await _globalTranslationMemoryService.ImportFromTsvAsync(SourceLang.Trim(), TargetLang.Trim(), tsvPath, CancellationToken.None);
             if (applied <= 0)
             {
@@ -314,14 +314,14 @@ public partial class MainViewModel
 
             if (reloadAfterImport)
             {
-                await ReloadGlobalTranslationMemoryAsync();
+                await ReloadFranchiseTranslationMemoryAsync();
             }
 
-            StatusMessage = $"Global TM 가져오기 완료: {applied}개 항목";
+            StatusMessage = $"Franchise TM 가져오기 완료: {applied}개 항목";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Global TM import", ex);
+            SetUserFacingError("Franchise TM import", ex);
         }
     }
 }

@@ -18,7 +18,7 @@ public partial class MainViewModel
 
     [ObservableProperty] private bool _compareIncludeProjectGlossary = true;
     [ObservableProperty] private bool _compareIncludeGlobalGlossary = true;
-    [ObservableProperty] private bool _compareIncludeGlobalTranslationMemory = true;
+    [ObservableProperty] private bool _compareIncludeFranchiseTranslationMemory = true;
 
     [ObservableProperty] private string _compare1Model = "gemini-3-flash-preview";
     [ObservableProperty] private bool _compare1ThinkingOff;
@@ -126,8 +126,8 @@ public partial class MainViewModel
         try
         {
             var globalGlossary = CompareIncludeGlobalGlossary ? await TryLoadGlobalGlossaryAsync() : null;
-            var globalTranslationMemory = CompareIncludeGlobalTranslationMemory ? await TryLoadGlobalTranslationMemoryAsync() : null;
-            var request = BuildCompareRequest(context, globalGlossary, globalTranslationMemory);
+            var franchiseTranslationMemory = CompareIncludeFranchiseTranslationMemory ? await TryLoadFranchiseTranslationMemoryAsync() : null;
+            var request = BuildCompareRequest(context, globalGlossary, franchiseTranslationMemory);
 
             var result = await _compareTranslationService.RunAsync(request, CancellationToken.None);
             ApplyCompareResult(slot, result);
@@ -147,7 +147,7 @@ public partial class MainViewModel
     private CompareTranslationService.Request BuildCompareRequest(
         CompareExecutionContext context,
         IReadOnlyList<GlossaryEntry>? globalGlossary,
-        IReadOnlyDictionary<string, string>? globalTranslationMemory
+        IReadOnlyDictionary<string, string>? franchiseTranslationMemory
     )
     {
         var maxOut = ComputeMaxOutputTokens(context.ModelName);
@@ -180,7 +180,7 @@ public partial class MainViewModel
             RiskyCandidateCount: RiskyCandidateCount,
             IncludeProjectGlossary: CompareIncludeProjectGlossary,
             GlobalGlossary: globalGlossary,
-            GlobalTranslationMemory: globalTranslationMemory
+            GlobalTranslationMemory: franchiseTranslationMemory
         );
     }
 

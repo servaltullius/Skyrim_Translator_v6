@@ -503,19 +503,19 @@ public partial class MainViewModel
 
     private bool CanReapplyPostEdits() => IsProjectLoaded && !IsTranslating;
 
-    [RelayCommand(CanExecute = nameof(CanImportGlobalTranslationMemory))]
-    private async Task ImportGlobalTranslationMemoryAsync()
+    [RelayCommand(CanExecute = nameof(CanImportFranchiseTranslationMemory))]
+    private async Task ImportFranchiseTranslationMemoryAsync()
     {
         if (await _globalTranslationMemoryService.TryGetDbAsync(CancellationToken.None) == null)
         {
-            StatusMessage = "Global DB 초기화에 실패했습니다.";
+            StatusMessage = "Franchise TM DB 초기화에 실패했습니다.";
             return;
         }
 
         var filePath = _uiInteractionService.ShowOpenFileDialog(
             new OpenFileDialogRequest(
                 Filter: "TSV files (*.tsv)|*.tsv|All files (*.*)|*.*",
-                Title: "Import translation memory (TSV: Source<TAB>Target)"
+                Title: "Import franchise TM (TSV: Source<TAB>Target)"
             )
         );
         if (string.IsNullOrWhiteSpace(filePath))
@@ -523,10 +523,10 @@ public partial class MainViewModel
             return;
         }
 
-        await ImportGlobalTranslationMemoryFromTsvPathAsync(filePath, reloadAfterImport: false);
+        await ImportFranchiseTranslationMemoryFromTsvPathAsync(filePath, reloadAfterImport: false);
     }
 
-    private bool CanImportGlobalTranslationMemory() => !IsTranslating;
+    private bool CanImportFranchiseTranslationMemory() => !IsTranslating;
 
     private static string BuildCostSummaryLine(TranslationCostEstimate estimate, string selectedModel)
     {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -5,7 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace XTranslatorAi.App.ViewModels.Tabs;
 
-public sealed class CompareTabViewModel : ObservableObject
+public sealed class CompareTabViewModel : ObservableObject, IDisposable
 {
     private readonly ICompareTabHost _host;
 
@@ -41,10 +42,10 @@ public sealed class CompareTabViewModel : ObservableObject
         set => _host.CompareIncludeGlobalGlossary = value;
     }
 
-    public bool CompareIncludeGlobalTranslationMemory
+    public bool CompareIncludeFranchiseTranslationMemory
     {
-        get => _host.CompareIncludeGlobalTranslationMemory;
-        set => _host.CompareIncludeGlobalTranslationMemory = value;
+        get => _host.CompareIncludeFranchiseTranslationMemory;
+        set => _host.CompareIncludeFranchiseTranslationMemory = value;
     }
 
     public string CompareSelectedEntrySummary => _host.CompareSelectedEntrySummary;
@@ -136,4 +137,13 @@ public sealed class CompareTabViewModel : ObservableObject
     }
 
     public IAsyncRelayCommand RunCompare3Command => _host.RunCompare3Command;
+
+    private bool _disposed;
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        _host.PropertyChanged -= HostOnPropertyChanged;
+    }
 }

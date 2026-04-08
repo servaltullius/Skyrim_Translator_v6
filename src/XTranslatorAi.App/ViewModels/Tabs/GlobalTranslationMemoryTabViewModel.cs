@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.Windows.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -5,7 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace XTranslatorAi.App.ViewModels.Tabs;
 
-public sealed class GlobalTranslationMemoryTabViewModel : ObservableObject
+public sealed class GlobalTranslationMemoryTabViewModel : ObservableObject, IDisposable
 {
     private readonly IGlobalTranslationMemoryTabHost _host;
 
@@ -26,36 +27,45 @@ public sealed class GlobalTranslationMemoryTabViewModel : ObservableObject
         OnPropertyChanged(e.PropertyName);
     }
 
-    public string GlobalTranslationMemorySourceText
+    public string FranchiseTranslationMemorySourceText
     {
-        get => _host.GlobalTranslationMemorySourceText;
-        set => _host.GlobalTranslationMemorySourceText = value;
+        get => _host.FranchiseTranslationMemorySourceText;
+        set => _host.FranchiseTranslationMemorySourceText = value;
     }
 
-    public string GlobalTranslationMemoryDestText
+    public string FranchiseTranslationMemoryDestText
     {
-        get => _host.GlobalTranslationMemoryDestText;
-        set => _host.GlobalTranslationMemoryDestText = value;
+        get => _host.FranchiseTranslationMemoryDestText;
+        set => _host.FranchiseTranslationMemoryDestText = value;
     }
 
-    public IAsyncRelayCommand AddGlobalTranslationMemoryCommand => _host.AddGlobalTranslationMemoryCommand;
-    public IAsyncRelayCommand SaveGlobalTranslationMemoryChangesCommand => _host.SaveGlobalTranslationMemoryChangesCommand;
-    public IAsyncRelayCommand DeleteGlobalTranslationMemoryEntryCommand => _host.DeleteGlobalTranslationMemoryEntryCommand;
-    public IAsyncRelayCommand ReloadGlobalTranslationMemoryCommand => _host.ReloadGlobalTranslationMemoryCommand;
-    public IAsyncRelayCommand ImportGlobalTranslationMemoryFromTabCommand => _host.ImportGlobalTranslationMemoryFromTabCommand;
-    public IAsyncRelayCommand ExportGlobalTranslationMemoryCommand => _host.ExportGlobalTranslationMemoryCommand;
+    public IAsyncRelayCommand AddFranchiseTranslationMemoryCommand => _host.AddFranchiseTranslationMemoryCommand;
+    public IAsyncRelayCommand SaveFranchiseTranslationMemoryChangesCommand => _host.SaveFranchiseTranslationMemoryChangesCommand;
+    public IAsyncRelayCommand DeleteFranchiseTranslationMemoryEntryCommand => _host.DeleteFranchiseTranslationMemoryEntryCommand;
+    public IAsyncRelayCommand ReloadFranchiseTranslationMemoryCommand => _host.ReloadFranchiseTranslationMemoryCommand;
+    public IAsyncRelayCommand ImportFranchiseTranslationMemoryFromTabCommand => _host.ImportFranchiseTranslationMemoryFromTabCommand;
+    public IAsyncRelayCommand ExportFranchiseTranslationMemoryCommand => _host.ExportFranchiseTranslationMemoryCommand;
 
-    public string GlobalTranslationMemoryFilterText
+    public string FranchiseTranslationMemoryFilterText
     {
-        get => _host.GlobalTranslationMemoryFilterText;
-        set => _host.GlobalTranslationMemoryFilterText = value;
+        get => _host.FranchiseTranslationMemoryFilterText;
+        set => _host.FranchiseTranslationMemoryFilterText = value;
     }
 
-    public ICollectionView GlobalTranslationMemoryView => _host.GlobalTranslationMemoryView;
+    public ICollectionView FranchiseTranslationMemoryView => _host.FranchiseTranslationMemoryView;
 
-    public TranslationMemoryEntryViewModel? SelectedGlobalTranslationMemoryEntry
+    public TranslationMemoryEntryViewModel? SelectedFranchiseTranslationMemoryEntry
     {
-        get => _host.SelectedGlobalTranslationMemoryEntry;
-        set => _host.SelectedGlobalTranslationMemoryEntry = value;
+        get => _host.SelectedFranchiseTranslationMemoryEntry;
+        set => _host.SelectedFranchiseTranslationMemoryEntry = value;
+    }
+
+    private bool _disposed;
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        _host.PropertyChanged -= HostOnPropertyChanged;
     }
 }

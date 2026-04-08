@@ -28,8 +28,8 @@ public partial class MainViewModel
     private GlossaryEntryViewModel? _selectedGlobalGlossaryEntry;
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(DeleteGlobalTranslationMemoryEntryCommand))]
-    private TranslationMemoryEntryViewModel? _selectedGlobalTranslationMemoryEntry;
+    [NotifyCanExecuteChangedFor(nameof(DeleteFranchiseTranslationMemoryEntryCommand))]
+    private TranslationMemoryEntryViewModel? _selectedFranchiseTranslationMemoryEntry;
 
     [ObservableProperty] private SavedApiKeyViewModel? _selectedSavedApiKey;
     [ObservableProperty] private string _savedApiKeyName = "";
@@ -130,13 +130,13 @@ public partial class MainViewModel
     [NotifyCanExecuteChangedFor(nameof(EstimateCostCommand))]
     [NotifyCanExecuteChangedFor(nameof(FixMagDurPlaceholdersCommand))]
     [NotifyCanExecuteChangedFor(nameof(ReapplyPostEditsCommand))]
-    [NotifyCanExecuteChangedFor(nameof(ImportGlobalTranslationMemoryCommand))]
-    [NotifyCanExecuteChangedFor(nameof(ReloadGlobalTranslationMemoryCommand))]
-    [NotifyCanExecuteChangedFor(nameof(AddGlobalTranslationMemoryCommand))]
-    [NotifyCanExecuteChangedFor(nameof(SaveGlobalTranslationMemoryChangesCommand))]
-    [NotifyCanExecuteChangedFor(nameof(DeleteGlobalTranslationMemoryEntryCommand))]
-    [NotifyCanExecuteChangedFor(nameof(ExportGlobalTranslationMemoryCommand))]
-    [NotifyCanExecuteChangedFor(nameof(ImportGlobalTranslationMemoryFromTabCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ImportFranchiseTranslationMemoryCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ReloadFranchiseTranslationMemoryCommand))]
+    [NotifyCanExecuteChangedFor(nameof(AddFranchiseTranslationMemoryCommand))]
+    [NotifyCanExecuteChangedFor(nameof(SaveFranchiseTranslationMemoryChangesCommand))]
+    [NotifyCanExecuteChangedFor(nameof(DeleteFranchiseTranslationMemoryEntryCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ExportFranchiseTranslationMemoryCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ImportFranchiseTranslationMemoryFromTabCommand))]
     [NotifyCanExecuteChangedFor(nameof(SaveSelectedDestCommand))]
     [NotifyCanExecuteChangedFor(nameof(GenerateProjectContextCommand))]
     [NotifyCanExecuteChangedFor(nameof(SaveProjectContextCommand))]
@@ -192,14 +192,14 @@ public partial class MainViewModel
     [ObservableProperty] private string _globalGlossaryFilterCategory = GlossaryCategoryAll;
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(AddGlobalTranslationMemoryCommand))]
-    private string _globalTranslationMemorySourceText = "";
+    [NotifyCanExecuteChangedFor(nameof(AddFranchiseTranslationMemoryCommand))]
+    private string _franchiseTranslationMemorySourceText = "";
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(AddGlobalTranslationMemoryCommand))]
-    private string _globalTranslationMemoryDestText = "";
+    [NotifyCanExecuteChangedFor(nameof(AddFranchiseTranslationMemoryCommand))]
+    private string _franchiseTranslationMemoryDestText = "";
 
-    [ObservableProperty] private string _globalTranslationMemoryFilterText = "";
+    [ObservableProperty] private string _franchiseTranslationMemoryFilterText = "";
 
     public Array GlossaryMatchModeValues => Enum.GetValues(typeof(GlossaryMatchMode));
     public Array GlossaryForceModeValues => Enum.GetValues(typeof(GlossaryForceMode));

@@ -15,28 +15,28 @@
 
         <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
             <TextBlock Text="Source:" VerticalAlignment="Center" Margin="0,0,6,0" />
-            <TextBox Text="{Binding GlobalTranslationMemorySourceText}" Width="320" Style="{StaticResource XT.ToolbarTextBox}" />
+            <TextBox Text="{Binding FranchiseTranslationMemorySourceText}" Width="320" Style="{StaticResource XT.ToolbarTextBox}" />
             <TextBlock Text="Target:" VerticalAlignment="Center" Margin="12,0,6,0" />
-            <TextBox Text="{Binding GlobalTranslationMemoryDestText}" Width="320" Style="{StaticResource XT.ToolbarTextBox}" />
+            <TextBox Text="{Binding FranchiseTranslationMemoryDestText}" Width="320" Style="{StaticResource XT.ToolbarTextBox}" />
 
-            <Button Content="Add" Command="{Binding AddGlobalTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Save" Command="{Binding SaveGlobalTranslationMemoryChangesCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Delete" Command="{Binding DeleteGlobalTranslationMemoryEntryCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Reload" Command="{Binding ReloadGlobalTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Import File" Command="{Binding ImportGlobalTranslationMemoryFromTabCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Export File" Command="{Binding ExportGlobalTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Add" Command="{Binding AddFranchiseTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Save" Command="{Binding SaveFranchiseTranslationMemoryChangesCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Delete" Command="{Binding DeleteFranchiseTranslationMemoryEntryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Reload" Command="{Binding ReloadFranchiseTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Import File" Command="{Binding ImportFranchiseTranslationMemoryFromTabCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="Export File" Command="{Binding ExportFranchiseTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}" />
         </WrapPanel>
 
         <WrapPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
             <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,6,0" />
-            <TextBox Text="{Binding GlobalTranslationMemoryFilterText, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Text="{Binding FranchiseTranslationMemoryFilterText, UpdateSourceTrigger=PropertyChanged}"
                      Width="260"
                      Style="{StaticResource XT.ToolbarTextBox}" />
         </WrapPanel>
 
         <DataGrid Grid.Row="2"
-                  ItemsSource="{Binding GlobalTranslationMemoryView}"
-                  SelectedItem="{Binding SelectedGlobalTranslationMemoryEntry}"
+                  ItemsSource="{Binding FranchiseTranslationMemoryView}"
+                  SelectedItem="{Binding SelectedFranchiseTranslationMemoryEntry}"
                   Style="{StaticResource XT.DataGrid}"
                   ColumnHeaderStyle="{StaticResource XT.DataGridColumnHeader}"
                   AutoGenerateColumns="False"
@@ -48,7 +48,7 @@
                   VirtualizingPanel.IsVirtualizing="True"
                   VirtualizingPanel.VirtualizationMode="Recycling">
             <DataGrid.InputBindings>
-                <KeyBinding Key="Delete" Command="{Binding DeleteGlobalTranslationMemoryEntryCommand}" />
+                <KeyBinding Key="Delete" Command="{Binding DeleteFranchiseTranslationMemoryEntryCommand}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True" Width="90" />

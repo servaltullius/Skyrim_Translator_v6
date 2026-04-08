@@ -36,7 +36,7 @@ public partial class MainViewModel
         }
     }
 
-    private async Task<IReadOnlyDictionary<string, string>?> TryLoadGlobalTranslationMemoryAsync()
+    private async Task<IReadOnlyDictionary<string, string>?> TryLoadFranchiseTranslationMemoryAsync()
     {
         try
         {

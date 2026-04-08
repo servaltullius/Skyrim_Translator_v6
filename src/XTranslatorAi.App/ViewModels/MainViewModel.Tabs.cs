@@ -9,7 +9,7 @@ public partial class MainViewModel
     public LqaTabViewModel LqaTab { get; }
     public ProjectGlossaryTabViewModel ProjectGlossaryTab { get; }
     public GlobalGlossaryTabViewModel GlobalGlossaryTab { get; }
-    public GlobalTranslationMemoryTabViewModel GlobalTranslationMemoryTab { get; }
+    public GlobalTranslationMemoryTabViewModel FranchiseTranslationMemoryTab { get; }
     public PromptTabViewModel PromptTab { get; }
     public ProjectContextTabViewModel ProjectContextTab { get; }
     public ApiLogsTabViewModel ApiLogsTab { get; }

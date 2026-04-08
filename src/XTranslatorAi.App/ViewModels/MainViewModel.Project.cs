@@ -87,11 +87,11 @@ public partial class MainViewModel
         SourceLang = result.SourceLang;
         TargetLang = result.TargetLang;
 
-        await TryAutoImportGlobalTranslationMemoryAsync();
+        await TryAutoImportFranchiseTranslationMemoryAsync();
 
         await ReloadGlossaryAsync();
         await ReloadGlobalGlossaryAsync();
-        await ReloadGlobalTranslationMemoryAsync();
+        await ReloadFranchiseTranslationMemoryAsync();
         await ReloadProjectContextAsync();
         await LoadEntriesAsync();
     }

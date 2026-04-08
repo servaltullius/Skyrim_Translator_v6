@@ -6,18 +6,18 @@ namespace XTranslatorAi.App.ViewModels.Tabs;
 
 public interface IGlobalTranslationMemoryTabHost : INotifyPropertyChanged
 {
-    string GlobalTranslationMemorySourceText { get; set; }
-    string GlobalTranslationMemoryDestText { get; set; }
+    string FranchiseTranslationMemorySourceText { get; set; }
+    string FranchiseTranslationMemoryDestText { get; set; }
 
-    IAsyncRelayCommand AddGlobalTranslationMemoryCommand { get; }
-    IAsyncRelayCommand SaveGlobalTranslationMemoryChangesCommand { get; }
-    IAsyncRelayCommand DeleteGlobalTranslationMemoryEntryCommand { get; }
-    IAsyncRelayCommand ReloadGlobalTranslationMemoryCommand { get; }
-    IAsyncRelayCommand ImportGlobalTranslationMemoryFromTabCommand { get; }
-    IAsyncRelayCommand ExportGlobalTranslationMemoryCommand { get; }
+    IAsyncRelayCommand AddFranchiseTranslationMemoryCommand { get; }
+    IAsyncRelayCommand SaveFranchiseTranslationMemoryChangesCommand { get; }
+    IAsyncRelayCommand DeleteFranchiseTranslationMemoryEntryCommand { get; }
+    IAsyncRelayCommand ReloadFranchiseTranslationMemoryCommand { get; }
+    IAsyncRelayCommand ImportFranchiseTranslationMemoryFromTabCommand { get; }
+    IAsyncRelayCommand ExportFranchiseTranslationMemoryCommand { get; }
 
-    string GlobalTranslationMemoryFilterText { get; set; }
-    ICollectionView GlobalTranslationMemoryView { get; }
+    string FranchiseTranslationMemoryFilterText { get; set; }
+    ICollectionView FranchiseTranslationMemoryView { get; }
 
-    TranslationMemoryEntryViewModel? SelectedGlobalTranslationMemoryEntry { get; set; }
+    TranslationMemoryEntryViewModel? SelectedFranchiseTranslationMemoryEntry { get; set; }
 }
