@@ -67,7 +67,7 @@ public class BundledFranchiseTmSeedServiceTests
     }
 
     [Fact]
-    public async Task EnsureBundledSeedAsync_DoesNothingForNonFalloutFranchise()
+    public async Task EnsureBundledSeedAsync_WritesSeedOnceForElderScrolls()
     {
         var root = CreateTempRoot();
         try
@@ -75,9 +75,65 @@ public class BundledFranchiseTmSeedServiceTests
             var service = new BundledFranchiseTmSeedService(root);
 
             await service.EnsureBundledSeedAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None);
+            await service.EnsureBundledSeedAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None);
 
             var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.ElderScrolls, root);
             var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, "v1", root);
+            var files = Directory.GetFiles(importDir, "*.tsv", SearchOption.TopDirectoryOnly);
+
+            Assert.Single(files);
+            Assert.Equal("bundled-skyrim-tes-franchise-tm.tsv", Path.GetFileName(files[0]));
+            Assert.True(File.Exists(stampPath));
+            var seed = await File.ReadAllTextAsync(files[0], CancellationToken.None);
+            Assert.Contains("Source\tTarget", seed, StringComparison.Ordinal);
+            Assert.Contains("Stormcloaks", seed, StringComparison.Ordinal);
+        }
+        finally
+        {
+            TryDeleteDirectory(root);
+        }
+    }
+
+    [Fact]
+    public async Task EnsureBundledSeedAsync_WritesSeedOnceForStarfield()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var service = new BundledFranchiseTmSeedService(root);
+
+            await service.EnsureBundledSeedAsync(BethesdaFranchise.Starfield, CancellationToken.None);
+            await service.EnsureBundledSeedAsync(BethesdaFranchise.Starfield, CancellationToken.None);
+
+            var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.Starfield, root);
+            var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.Starfield, "v1", root);
+            var files = Directory.GetFiles(importDir, "*.tsv", SearchOption.TopDirectoryOnly);
+
+            Assert.Single(files);
+            Assert.Equal("bundled-starfield-franchise-tm.tsv", Path.GetFileName(files[0]));
+            Assert.True(File.Exists(stampPath));
+            var seed = await File.ReadAllTextAsync(files[0], CancellationToken.None);
+            Assert.Contains("Source\tTarget", seed, StringComparison.Ordinal);
+            Assert.Contains("All Must Serve", seed, StringComparison.Ordinal);
+        }
+        finally
+        {
+            TryDeleteDirectory(root);
+        }
+    }
+
+    [Fact]
+    public async Task EnsureBundledSeedAsync_DoesNothingForUnsupportedFranchise()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var service = new BundledFranchiseTmSeedService(root);
+
+            await service.EnsureBundledSeedAsync((BethesdaFranchise)999, CancellationToken.None);
+
+            var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir((BethesdaFranchise)999, root);
+            var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath((BethesdaFranchise)999, "v1", root);
 
             Assert.Empty(Directory.GetFiles(importDir, "*.tsv", SearchOption.TopDirectoryOnly));
             Assert.False(File.Exists(stampPath));
@@ -116,27 +172,54 @@ public class BundledFranchiseTmSeedServiceTests
     }
 
     [Fact]
-    public async Task EnsureBundledSeedAsync_RepairsExistingSeedEvenWhenStampAlreadyExists()
+    public async Task EnsureBundledSeedAsync_RepairsPreexistingStaleSeedForElderScrolls()
     {
         var root = CreateTempRoot();
         try
         {
-            var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.Fallout, root);
-            var seedPath = Path.Combine(importDir, "bundled-fallout4-franchise-tm.tsv");
-            var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.Fallout, "v1", root);
+            var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.ElderScrolls, root);
+            var seedPath = Path.Combine(importDir, "bundled-skyrim-tes-franchise-tm.tsv");
+            Directory.CreateDirectory(importDir);
+            await File.WriteAllTextAsync(seedPath, "Source\tTarget\nStormcloaks\tWRONG", CancellationToken.None);
+
+            var service = new BundledFranchiseTmSeedService(root);
+            await service.EnsureBundledSeedAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None);
+
+            var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, "v1", root);
+            var seed = await File.ReadAllTextAsync(seedPath, CancellationToken.None);
+
+            Assert.True(File.Exists(stampPath));
+            Assert.DoesNotContain("WRONG", seed, StringComparison.Ordinal);
+            Assert.Contains("Stormcloaks", seed, StringComparison.Ordinal);
+        }
+        finally
+        {
+            TryDeleteDirectory(root);
+        }
+    }
+
+    [Fact]
+    public async Task EnsureBundledSeedAsync_RepairsPreexistingStaleSeedForStarfield()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.Starfield, root);
+            var seedPath = Path.Combine(importDir, "bundled-starfield-franchise-tm.tsv");
+            var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.Starfield, "v1", root);
             Directory.CreateDirectory(importDir);
 
-            await File.WriteAllTextAsync(seedPath, "Source\tTarget\nPip-Boy\tWRONG", CancellationToken.None);
+            await File.WriteAllTextAsync(seedPath, "Source\tTarget\nAll Must Serve\tWRONG", CancellationToken.None);
             await File.WriteAllTextAsync(stampPath, "v1", CancellationToken.None);
 
             var service = new BundledFranchiseTmSeedService(root);
-            await service.EnsureBundledSeedAsync(BethesdaFranchise.Fallout, CancellationToken.None);
+            await service.EnsureBundledSeedAsync(BethesdaFranchise.Starfield, CancellationToken.None);
 
             var seed = await File.ReadAllTextAsync(seedPath, CancellationToken.None);
 
             Assert.True(File.Exists(stampPath));
             Assert.DoesNotContain("WRONG", seed, StringComparison.Ordinal);
-            Assert.Contains("Pip-Boy", seed, StringComparison.Ordinal);
+            Assert.Contains("All Must Serve", seed, StringComparison.Ordinal);
         }
         finally
         {

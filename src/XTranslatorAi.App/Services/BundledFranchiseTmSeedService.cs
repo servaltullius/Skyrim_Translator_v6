@@ -60,14 +60,18 @@ public sealed class BundledFranchiseTmSeedService
     private static string? GetSeedVersion(BethesdaFranchise franchise)
         => franchise switch
         {
+            BethesdaFranchise.ElderScrolls => "v1",
             BethesdaFranchise.Fallout => "v1",
+            BethesdaFranchise.Starfield => "v1",
             _ => null,
         };
 
     private static string GetSeedFileName(BethesdaFranchise franchise)
         => franchise switch
         {
+            BethesdaFranchise.ElderScrolls => "bundled-skyrim-tes-franchise-tm.tsv",
             BethesdaFranchise.Fallout => "bundled-fallout4-franchise-tm.tsv",
+            BethesdaFranchise.Starfield => "bundled-starfield-franchise-tm.tsv",
             _ => "bundled-franchise-tm.tsv",
         };
 
