@@ -40,6 +40,75 @@ public class BundledFranchiseTmSeedServiceTests
     }
 
     [Fact]
+    public async Task EnsureBundledSeedAsync_SkipsEmbeddedLoadWhenStampedSeedIsCurrent()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var metadata = BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.Fallout)!;
+
+            var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.Fallout, root);
+            var seedPath = Path.Combine(importDir, metadata.FileName);
+            var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.Fallout, metadata.Version, root);
+
+            Directory.CreateDirectory(importDir);
+            await File.WriteAllTextAsync(seedPath, new string('x', (int)metadata.ExpectedByteLength), CancellationToken.None);
+            await File.WriteAllTextAsync(stampPath, metadata.Version, CancellationToken.None);
+
+            var loadCalls = 0;
+            var service = new BundledFranchiseTmSeedService(root, _ =>
+            {
+                loadCalls++;
+                throw new InvalidOperationException("Embedded seed should not be loaded on the fast path.");
+            });
+
+            await service.EnsureBundledSeedAsync(BethesdaFranchise.Fallout, CancellationToken.None);
+
+            Assert.Equal(0, loadCalls);
+            Assert.Equal(metadata.ExpectedByteLength, new FileInfo(seedPath).Length);
+            Assert.True(File.Exists(stampPath));
+        }
+        finally
+        {
+            TryDeleteDirectory(root);
+        }
+    }
+
+    [Fact]
+    public async Task EnsureBundledSeedAsync_WritesStampWithoutLoadingWhenSeedIsAlreadyCurrent()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var metadata = BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.Fallout)!;
+
+            var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.Fallout, root);
+            var seedPath = Path.Combine(importDir, metadata.FileName);
+            var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.Fallout, metadata.Version, root);
+
+            Directory.CreateDirectory(importDir);
+            await File.WriteAllTextAsync(seedPath, new string('x', (int)metadata.ExpectedByteLength), CancellationToken.None);
+
+            var loadCalls = 0;
+            var service = new BundledFranchiseTmSeedService(root, _ =>
+            {
+                loadCalls++;
+                throw new InvalidOperationException("Embedded seed should not be loaded when the on-disk file is already current.");
+            });
+
+            await service.EnsureBundledSeedAsync(BethesdaFranchise.Fallout, CancellationToken.None);
+
+            Assert.Equal(0, loadCalls);
+            Assert.True(File.Exists(stampPath));
+            Assert.Equal(metadata.ExpectedByteLength, new FileInfo(seedPath).Length);
+        }
+        finally
+        {
+            TryDeleteDirectory(root);
+        }
+    }
+
+    [Fact]
     public async Task EnsureBundledSeedAsync_WritesSeedOnceForFallout()
     {
         var root = CreateTempRoot();
