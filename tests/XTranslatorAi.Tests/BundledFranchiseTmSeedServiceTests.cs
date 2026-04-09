@@ -20,6 +20,26 @@ public class BundledFranchiseTmSeedServiceTests
     }
 
     [Fact]
+    public void LoadBundledFranchiseTmSeed_ElderScrolls_ReturnsEmbeddedSeedText()
+    {
+        var seed = EmbeddedAssets.LoadBundledFranchiseTmSeed(BethesdaFranchise.ElderScrolls);
+
+        Assert.NotNull(seed);
+        Assert.Contains("Source\tTarget", seed, StringComparison.Ordinal);
+        Assert.Contains("Stormcloaks", seed, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void LoadBundledFranchiseTmSeed_Starfield_ReturnsEmbeddedSeedText()
+    {
+        var seed = EmbeddedAssets.LoadBundledFranchiseTmSeed(BethesdaFranchise.Starfield);
+
+        Assert.NotNull(seed);
+        Assert.Contains("Source\tTarget", seed, StringComparison.Ordinal);
+        Assert.Contains("All Must Serve", seed, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task EnsureBundledSeedAsync_WritesSeedOnceForFallout()
     {
         var root = CreateTempRoot();
