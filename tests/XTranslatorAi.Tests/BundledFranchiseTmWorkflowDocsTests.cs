@@ -3,15 +3,17 @@ using System.IO;
 
 namespace XTranslatorAi.Tests;
 
-public class FalloutBuiltInTmWorkflowDocsTests
+public class BundledFranchiseTmWorkflowDocsTests
 {
     [Fact]
-    public void Readme_FalloutTmSection_DescribesTheBuiltInSeedContract()
+    public void Readme_BundledFranchiseTmSection_DescribesTheBuiltInSeedContract()
     {
         var readme = ReadRepoFile("README.md");
 
         Assert.Contains("Fallout TM is currently scoped to Fallout 4 family data.", readme, StringComparison.Ordinal);
         Assert.Contains("Bundled Fallout TM is auto-seeded on first Fallout project load.", readme, StringComparison.Ordinal);
+        Assert.Contains("Bundled Skyrim/TES TM is auto-seeded on first Elder Scrolls project load.", readme, StringComparison.Ordinal);
+        Assert.Contains("Bundled Starfield TM is auto-seeded on first Starfield project load.", readme, StringComparison.Ordinal);
         Assert.Contains("Operator-provided TSV imports still work through the existing Franchise TM import flow.", readme, StringComparison.Ordinal);
     }
 

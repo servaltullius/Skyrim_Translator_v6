@@ -39,10 +39,12 @@ Tullius Translator는 **Bethesda/xTranslator XML 현지화 작업**에 특화된
 - 번역 결과 편집 시 메모리 축적 가능
 - 반복 문장/유사 문장 작업 시 재사용성 향상
 
-## Fallout TM
+## Built-In Franchise TM
 
 Fallout TM is currently scoped to Fallout 4 family data.
 Bundled Fallout TM is auto-seeded on first Fallout project load.
+Bundled Skyrim/TES TM is auto-seeded on first Elder Scrolls project load.
+Bundled Starfield TM is auto-seeded on first Starfield project load.
 Operator-provided TSV imports still work through the existing Franchise TM import flow.
 
 ### 4) 검수/비교/운영
