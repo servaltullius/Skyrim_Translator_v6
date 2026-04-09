@@ -46,14 +46,17 @@ public class BundledFranchiseTmSeedServiceTests
         try
         {
             var metadata = BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.Fallout)!;
+            var seedText = EmbeddedAssets.LoadBundledFranchiseTmSeed(BethesdaFranchise.Fallout)!;
+            var stampTicks = new DateTimeOffset(2026, 4, 9, 0, 0, 0, TimeSpan.Zero).UtcTicks;
 
             var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.Fallout, root);
             var seedPath = Path.Combine(importDir, metadata.FileName);
             var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.Fallout, metadata.Version, root);
 
             Directory.CreateDirectory(importDir);
-            await File.WriteAllTextAsync(seedPath, new string('x', (int)metadata.ExpectedByteLength), CancellationToken.None);
-            await File.WriteAllTextAsync(stampPath, metadata.Version, CancellationToken.None);
+            await File.WriteAllTextAsync(seedPath, seedText, CancellationToken.None);
+            File.SetLastWriteTimeUtc(seedPath, new DateTime(stampTicks, DateTimeKind.Utc));
+            await File.WriteAllTextAsync(stampPath, BuildStamp(metadata, stampTicks), CancellationToken.None);
 
             var loadCalls = 0;
             var service = new BundledFranchiseTmSeedService(root, _ =>
@@ -66,7 +69,7 @@ public class BundledFranchiseTmSeedServiceTests
 
             Assert.Equal(0, loadCalls);
             Assert.Equal(metadata.ExpectedByteLength, new FileInfo(seedPath).Length);
-            Assert.True(File.Exists(stampPath));
+            Assert.Equal(BuildStamp(metadata, stampTicks), await File.ReadAllTextAsync(stampPath, CancellationToken.None));
         }
         finally
         {
@@ -81,13 +84,16 @@ public class BundledFranchiseTmSeedServiceTests
         try
         {
             var metadata = BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.Fallout)!;
+            var seedText = EmbeddedAssets.LoadBundledFranchiseTmSeed(BethesdaFranchise.Fallout)!;
+            var stampTicks = new DateTimeOffset(2026, 4, 9, 1, 0, 0, TimeSpan.Zero).UtcTicks;
 
             var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.Fallout, root);
             var seedPath = Path.Combine(importDir, metadata.FileName);
             var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.Fallout, metadata.Version, root);
 
             Directory.CreateDirectory(importDir);
-            await File.WriteAllTextAsync(seedPath, new string('x', (int)metadata.ExpectedByteLength), CancellationToken.None);
+            await File.WriteAllTextAsync(seedPath, seedText, CancellationToken.None);
+            File.SetLastWriteTimeUtc(seedPath, new DateTime(stampTicks, DateTimeKind.Utc));
 
             var loadCalls = 0;
             var service = new BundledFranchiseTmSeedService(root, _ =>
@@ -100,7 +106,49 @@ public class BundledFranchiseTmSeedServiceTests
 
             Assert.Equal(0, loadCalls);
             Assert.True(File.Exists(stampPath));
+            Assert.Equal(BuildStamp(metadata, stampTicks), await File.ReadAllTextAsync(stampPath, CancellationToken.None));
             Assert.Equal(metadata.ExpectedByteLength, new FileInfo(seedPath).Length);
+        }
+        finally
+        {
+            TryDeleteDirectory(root);
+        }
+    }
+
+    [Fact]
+    public async Task EnsureBundledSeedAsync_RewritesSameSizeCorruptedSeedWhenStampedMetadataLooksValid()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var metadata = BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.Fallout)!;
+            var originalSeedText = EmbeddedAssets.LoadBundledFranchiseTmSeed(BethesdaFranchise.Fallout)!;
+            var stampTicks = new DateTimeOffset(2026, 4, 9, 2, 0, 0, TimeSpan.Zero).UtcTicks;
+
+            var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.Fallout, root);
+            var seedPath = Path.Combine(importDir, metadata.FileName);
+            var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.Fallout, metadata.Version, root);
+
+            Directory.CreateDirectory(importDir);
+            await File.WriteAllTextAsync(seedPath, originalSeedText, CancellationToken.None);
+            File.SetLastWriteTimeUtc(seedPath, new DateTime(stampTicks, DateTimeKind.Utc));
+            await File.WriteAllTextAsync(stampPath, BuildStamp(metadata, stampTicks), CancellationToken.None);
+
+            var corruptedSeedText = MakeSameLengthCorruption(originalSeedText);
+            await File.WriteAllTextAsync(seedPath, corruptedSeedText, CancellationToken.None);
+
+            var loadCalls = 0;
+            var service = new BundledFranchiseTmSeedService(root, _ =>
+            {
+                loadCalls++;
+                return originalSeedText;
+            });
+
+            await service.EnsureBundledSeedAsync(BethesdaFranchise.Fallout, CancellationToken.None);
+
+            Assert.Equal(1, loadCalls);
+            Assert.Equal(originalSeedText, await File.ReadAllTextAsync(seedPath, CancellationToken.None));
+            Assert.Equal(BuildStamp(metadata, File.GetLastWriteTimeUtc(seedPath).Ticks), await File.ReadAllTextAsync(stampPath, CancellationToken.None));
         }
         finally
         {
@@ -315,5 +363,19 @@ public class BundledFranchiseTmSeedServiceTests
         catch
         {
         }
+    }
+
+    private static string BuildStamp(BundledFranchiseTmSeedService.BundledSeedMetadata metadata, long lastWriteUtcTicks)
+        => string.Join("|", metadata.Version, metadata.ExpectedByteLength, metadata.ExpectedSha256, lastWriteUtcTicks);
+
+    private static string MakeSameLengthCorruption(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return "x";
+        }
+
+        var last = text[^1] == 'x' ? 'y' : 'x';
+        return text[..^1] + last;
     }
 }
