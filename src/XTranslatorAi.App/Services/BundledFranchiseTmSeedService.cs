@@ -31,58 +31,30 @@ public sealed class BundledFranchiseTmSeedService
             var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(franchise, _globalRootOverride);
             var seedPath = Path.Combine(importDir, metadata.FileName);
             var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(franchise, metadata.Version, _globalRootOverride);
-            if (File.Exists(stampPath))
+
+            var seedMatches = await TryValidateOnDiskSeedAsync(seedPath, metadata, cancellationToken);
+            if (seedMatches)
             {
-                var stampText = await File.ReadAllTextAsync(stampPath, cancellationToken);
-                if (TryParseBundledSeedStamp(stampText, out var stamp))
+                var stampText = File.Exists(stampPath)
+                    ? await File.ReadAllTextAsync(stampPath, cancellationToken)
+                    : string.Empty;
+
+                if (IsLegacyVersionOnlyStamp(stampText, metadata.Version))
                 {
-                    if (!BundledSeedStampMatchesMetadata(stamp, metadata))
-                    {
-                        await RewriteSeedAsync(seedPath, metadata, cancellationToken);
-                        return;
-                    }
-
-                    if (!File.Exists(seedPath))
-                    {
-                        await RewriteSeedAsync(seedPath, metadata, cancellationToken);
-                        return;
-                    }
-
-                    var seedInfo = new FileInfo(seedPath);
-                    if (seedInfo.Length != metadata.ExpectedByteLength)
-                    {
-                        await RewriteSeedAsync(seedPath, metadata, cancellationToken);
-                        return;
-                    }
-
-                    if (seedInfo.LastWriteTimeUtc.Ticks == stamp.LastWriteUtcTicks)
-                    {
-                        return;
-                    }
-
-                    var onDiskSha256 = await ComputeSha256HexAsync(seedPath, cancellationToken);
-                    if (string.Equals(onDiskSha256, metadata.ExpectedSha256, StringComparison.OrdinalIgnoreCase))
-                    {
-                        await WriteStampAsync(stampPath, metadata, seedInfo.LastWriteTimeUtc.Ticks, cancellationToken);
-                        return;
-                    }
-
-                    await RewriteSeedAsync(seedPath, metadata, cancellationToken);
+                    await WriteStampAsync(stampPath, seedPath, metadata, cancellationToken);
                     return;
                 }
 
-                await RewriteSeedAsync(seedPath, metadata, cancellationToken);
+                if (TryParseBundledSeedStamp(stampText, out var stamp) && BundledSeedStampMatchesMetadata(stamp, metadata))
+                {
+                    return;
+                }
+
+                await WriteStampAsync(stampPath, seedPath, metadata, cancellationToken);
                 return;
             }
 
-            Directory.CreateDirectory(importDir);
-
-            if (await TryStampCurrentSeedAsync(seedPath, stampPath, metadata, cancellationToken))
-            {
-                return;
-            }
-
-            await RewriteSeedAsync(seedPath, metadata, cancellationToken);
+            await RewriteSeedAsync(seedPath, stampPath, metadata, cancellationToken);
         }
         catch
         {
@@ -99,7 +71,7 @@ public sealed class BundledFranchiseTmSeedService
             _ => null,
         };
 
-    private async Task RewriteSeedAsync(string seedPath, BundledSeedMetadata metadata, CancellationToken cancellationToken)
+    private async Task RewriteSeedAsync(string seedPath, string stampPath, BundledSeedMetadata metadata, CancellationToken cancellationToken)
     {
         var seedText = _loadBundledSeedText(metadata.Franchise);
         if (string.IsNullOrWhiteSpace(seedText))
@@ -109,10 +81,10 @@ public sealed class BundledFranchiseTmSeedService
 
         Directory.CreateDirectory(Path.GetDirectoryName(seedPath)!);
         await File.WriteAllTextAsync(seedPath, seedText, cancellationToken);
-        await WriteStampAsync(ProjectPaths.GetBundledFranchiseTmSeedStampPath(metadata.Franchise, metadata.Version, _globalRootOverride), metadata, File.GetLastWriteTimeUtc(seedPath).Ticks, cancellationToken);
+        await WriteStampAsync(stampPath, seedPath, metadata, cancellationToken);
     }
 
-    private async Task<bool> TryStampCurrentSeedAsync(string seedPath, string stampPath, BundledSeedMetadata metadata, CancellationToken cancellationToken)
+    private static async Task<bool> TryValidateOnDiskSeedAsync(string seedPath, BundledSeedMetadata metadata, CancellationToken cancellationToken)
     {
         if (!File.Exists(seedPath))
         {
@@ -126,19 +98,11 @@ public sealed class BundledFranchiseTmSeedService
         }
 
         var onDiskSha256 = await ComputeSha256HexAsync(seedPath, cancellationToken);
-        if (!string.Equals(onDiskSha256, metadata.ExpectedSha256, StringComparison.OrdinalIgnoreCase))
-        {
-            return false;
-        }
-
-        await WriteStampAsync(stampPath, metadata, seedInfo.LastWriteTimeUtc.Ticks, cancellationToken);
-        return true;
+        return string.Equals(onDiskSha256, metadata.ExpectedSha256, StringComparison.OrdinalIgnoreCase);
     }
 
-    private static bool BundledSeedStampMatchesMetadata(BundledSeedStamp stamp, BundledSeedMetadata metadata)
-        => string.Equals(stamp.Version, metadata.Version, StringComparison.Ordinal)
-            && stamp.ExpectedByteLength == metadata.ExpectedByteLength
-            && string.Equals(stamp.ExpectedSha256, metadata.ExpectedSha256, StringComparison.OrdinalIgnoreCase);
+    private static bool IsLegacyVersionOnlyStamp(string stampText, string expectedVersion)
+        => string.Equals(stampText.Trim(), expectedVersion, StringComparison.Ordinal);
 
     private static bool TryParseBundledSeedStamp(string stampText, out BundledSeedStamp stamp)
     {
@@ -163,8 +127,10 @@ public sealed class BundledFranchiseTmSeedService
         return true;
     }
 
-    private static string BuildBundledSeedStamp(BundledSeedMetadata metadata, long lastWriteUtcTicks)
-        => string.Join("|", metadata.Version, metadata.ExpectedByteLength, metadata.ExpectedSha256, lastWriteUtcTicks);
+    private static bool BundledSeedStampMatchesMetadata(BundledSeedStamp stamp, BundledSeedMetadata metadata)
+        => string.Equals(stamp.Version, metadata.Version, StringComparison.Ordinal)
+            && stamp.ExpectedByteLength == metadata.ExpectedByteLength
+            && string.Equals(stamp.ExpectedSha256, metadata.ExpectedSha256, StringComparison.OrdinalIgnoreCase);
 
     private static async Task<string> ComputeSha256HexAsync(string path, CancellationToken cancellationToken)
     {
@@ -174,8 +140,11 @@ public sealed class BundledFranchiseTmSeedService
         return Convert.ToHexString(hash).ToLowerInvariant();
     }
 
-    private static Task WriteStampAsync(string stampPath, BundledSeedMetadata metadata, long lastWriteUtcTicks, CancellationToken cancellationToken)
-        => File.WriteAllTextAsync(stampPath, BuildBundledSeedStamp(metadata, lastWriteUtcTicks), cancellationToken);
+    private static Task WriteStampAsync(string stampPath, string seedPath, BundledSeedMetadata metadata, CancellationToken cancellationToken)
+        => File.WriteAllTextAsync(stampPath, BuildBundledSeedStamp(metadata, File.GetLastWriteTimeUtc(seedPath).Ticks), cancellationToken);
+
+    private static string BuildBundledSeedStamp(BundledSeedMetadata metadata, long lastWriteUtcTicks)
+        => string.Join("|", metadata.Version, metadata.ExpectedByteLength, metadata.ExpectedSha256, lastWriteUtcTicks);
 
     public sealed record BundledSeedMetadata(BethesdaFranchise Franchise, string Version, string FileName, long ExpectedByteLength, string ExpectedSha256);
 
