@@ -18,7 +18,8 @@ public static partial class XTranslatorXmlImporter
         using var reader = XmlReader.Create(stream, new XmlReaderSettings
         {
             Async = true,
-            DtdProcessing = DtdProcessing.Ignore,
+            DtdProcessing = DtdProcessing.Prohibit,
+            XmlResolver = null,
         });
 
         string addon = "";

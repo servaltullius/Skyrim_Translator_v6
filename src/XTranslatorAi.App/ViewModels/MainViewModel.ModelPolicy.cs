@@ -53,7 +53,18 @@ public partial class MainViewModel
 
     private string BuildSelectedModelCostSummary()
     {
-        return "";
+        var model = (SelectedModel ?? "").Trim();
+        if (string.IsNullOrWhiteSpace(model))
+        {
+            return "";
+        }
+
+        if (!GeminiPricingTable.TryGetPricing(model, out var pricing))
+        {
+            return "Pricing: unknown model";
+        }
+
+        return $"표준 텍스트 요금 · In ${pricing.InputUsdPer1M}/1M · Out ${pricing.OutputUsdPer1M}/1M · Cache ${pricing.CacheUsdPer1M}/1M · {DateTime.UtcNow:yyyy-MM-dd} UTC";
     }
 
     private static void AppendModelLine(StringBuilder sb, string model)
@@ -119,10 +130,12 @@ public partial class MainViewModel
     {
         sb.AppendLine();
         sb.AppendLine("Note:");
-        sb.AppendLine("- Gemini 3: temperature is omitted to use API defaults.");
-        sb.AppendLine("- Gemini 3 Flash: thinkingConfig is omitted to use API defaults.");
-        sb.AppendLine("- Gemini 3 Flash Lite: temperature/thinkingConfig are omitted to use API defaults.");
+        sb.AppendLine("- Gemini 3: sampling controls are omitted; newer models deprecate temperature/topP/topK.");
+        sb.AppendLine("- Latest aliases and unrecognized models omit sampling controls and multiple-candidate requests.");
+        sb.AppendLine("- Gemini 3.8 Flash: low; Gemini 3.1 Flash-Lite: minimal (exact stable IDs).");
+        sb.AppendLine("- Other Gemini 3 Flash models use API defaults; other Flash-Lite models retain high.");
         sb.AppendLine("- Gemini 2.5 Flash Lite: temperature/thinkingConfig are omitted to use API defaults.");
+        sb.AppendLine("- Gemini 3.8 Flash supports low/medium/high thinking, not minimal or budget=0.");
     }
 
     private static string DescribeThinkingConfig(GeminiThinkingConfig? thinking)

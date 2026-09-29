@@ -74,11 +74,14 @@ public sealed partial class TranslationCostEstimator
 
             try
             {
-                var outText = await _gemini.GenerateContentAsync(apiKey, modelName, req, cancellationToken);
-                var outTokens = await SafeCountTokensAsync(apiKey, modelName, outText, cancellationToken);
+                var result = await _gemini.GenerateContentWithUsageAsync(apiKey, modelName, req, cancellationToken);
+                // Counting the returned text excludes hidden thinking. Missing usage must
+                // fall back to a labelled heuristic, never a supposedly measured total.
+                if (result.CompletionTokens is not >= 0) continue;
                 totalIn += inTokens;
-                totalOut += outTokens;
+                totalOut += result.CompletionTokens.Value;
             }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
             catch
             {
                 // ignore sample failures
@@ -105,6 +108,7 @@ public sealed partial class TranslationCostEstimator
                 cancellationToken
             );
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
         catch
         {
             return null;
@@ -165,7 +169,8 @@ public sealed partial class TranslationCostEstimator
             {
                 try
                 {
-                    await _gemini.DeleteCachedContentAsync(request.ApiKey, cachedContent!, request.CancellationToken);
+                    using var cleanup = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                    await _gemini.DeleteCachedContentAsync(request.ApiKey, cachedContent!, cleanup.Token);
                 }
                 catch
                 {
@@ -267,7 +272,7 @@ public sealed partial class TranslationCostEstimator
         return picks;
     }
 
-    private static GeminiThinkingConfig? GetThinkingConfigForModel(string modelName)
+    internal static GeminiThinkingConfig? GetThinkingConfigForModel(string modelName)
     {
         return GeminiModelPolicy.GetThinkingConfigForTranslation(modelName);
     }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using XTranslatorAi.Core.Models;
 
@@ -49,7 +51,7 @@ public static partial class XTranslatorXmlImporter
                 ? StringEntryStatus.Pending
                 : StringEntryStatus.Skipped;
 
-        var raw = el.ToString(SaveOptions.DisableFormatting);
+        var raw = SerializeStringElement(el);
 
         return new XTranslatorXmlStringRow(
             OrderIndex: orderIndex,
@@ -65,6 +67,22 @@ public static partial class XTranslatorXmlImporter
         );
     }
 
+    private static string SerializeStringElement(XElement element)
+    {
+        // The stored fragment is parsed again on export. Literal CR characters would
+        // be normalized to LF then, so preserve them as character references here.
+        var buffer = new StringBuilder();
+        using var writer = XmlWriter.Create(buffer, new XmlWriterSettings
+        {
+            OmitXmlDeclaration = true,
+            Indent = false,
+            NewLineHandling = NewLineHandling.Entitize,
+        });
+        element.WriteTo(writer);
+        writer.Flush();
+        return buffer.ToString();
+    }
+
     private static (bool HasBom, string PrologLine) ReadBomAndProlog(string path)
     {
         using var fs = File.OpenRead(path);
@@ -72,11 +90,11 @@ public static partial class XTranslatorXmlImporter
         var read = fs.Read(buf);
         var hasBom = read == 3 && buf[0] == 0xEF && buf[1] == 0xBB && buf[2] == 0xBF;
 
-        using var sr = new StreamReader(path, System.Text.Encoding.UTF8, detectEncodingFromByteOrderMarks: true);
-        var firstLine = sr.ReadLine();
-        if (firstLine != null && firstLine.TrimStart().StartsWith("<?xml", StringComparison.Ordinal))
+        using var reader = XmlReader.Create(path, new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null });
+        if (reader.Read() && reader.NodeType == XmlNodeType.XmlDeclaration)
         {
-            return (hasBom, firstLine.Trim());
+            // Output is UTF-8 even if the input was UTF-16. Never retain body text from the first line.
+            return (hasBom, new XDeclaration("1.0", "UTF-8", reader.GetAttribute("standalone")).ToString());
         }
 
         return (hasBom, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");

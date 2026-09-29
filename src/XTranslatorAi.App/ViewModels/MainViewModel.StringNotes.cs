@@ -16,7 +16,7 @@ public partial class MainViewModel
             return;
         }
 
-        var notes = await db.GetStringNotesByKindAsync(TranslationConstants.TmHitNoteKind, cancellationToken).ConfigureAwait(false);
+        var notes = await db.GetStringNotesByKindAsync(TranslationConstants.TmHitNoteKind, cancellationToken);
         var hitIds = new HashSet<long>(notes.Keys);
 
         await DispatchAsync(

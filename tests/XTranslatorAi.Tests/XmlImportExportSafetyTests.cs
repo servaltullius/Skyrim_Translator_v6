@@ -1,0 +1,178 @@
+using System.Text;
+using System.Xml.Linq;
+using XTranslatorAi.Core;
+using XTranslatorAi.Core.Data;
+using XTranslatorAi.Core.Models;
+using XTranslatorAi.Core.Xml;
+using XTranslatorAi.Tests.TestSupport;
+
+namespace XTranslatorAi.Tests;
+
+public sealed class XmlImportExportSafetyTests : IAsyncLifetime
+{
+    private readonly string _root = Path.Combine(Path.GetTempPath(), "xt-xml-tests-" + Guid.NewGuid().ToString("N"));
+    private ProjectDb _db = null!;
+    private string XmlPath => Path.Combine(_root, "input.xml");
+    private string DbPath => Path.Combine(_root, "project.sqlite");
+
+    public async Task InitializeAsync()
+    {
+        Directory.CreateDirectory(_root);
+        _db = await ProjectDb.OpenOrCreateAsync(DbPath, CancellationToken.None);
+    }
+
+    public async Task DisposeAsync()
+    {
+        await _db.DisposeAsync();
+        TestDbHelper.ReleaseProjectPoolAndDeleteDbFiles(DbPath);
+        Directory.Delete(_root, recursive: true);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("\n  ")]
+    public async Task AdjacentRows_ImportAndExportWithoutLosingRecords(string separator)
+    {
+        var rows = Enumerable.Range(1, 3).Select(i => Row(i.ToString(), "source " + i, "번역 " + i));
+        var xml = Document(string.Join(separator, rows));
+        await File.WriteAllTextAsync(XmlPath, xml, new UTF8Encoding(true));
+        var read = await XTranslatorXmlImporter.ReadAllAsync(XmlPath, CancellationToken.None);
+        Assert.Equal(3, read.Rows.Count);
+        var info = await XTranslatorXmlImporter.ImportToDbAsync(_db, XmlPath, CancellationToken.None);
+        Assert.Equal(3, await _db.GetStringCountAsync(CancellationToken.None));
+        Assert.DoesNotContain("SSTXMLRessources", info.PrologLine);
+        var output = Path.Combine(_root, "output.xml");
+        await XTranslatorXmlExporter.ExportAsync(_db, info, output, CancellationToken.None);
+        var parsed = XDocument.Load(output);
+        var original = XDocument.Parse(xml);
+        Assert.True(XNode.DeepEquals(original.Root, parsed.Root));
+        Assert.Equal(new byte[] { 0xEF, 0xBB, 0xBF }, (await File.ReadAllBytesAsync(output)).Take(3));
+    }
+
+    [Fact]
+    public async Task MalformedTail_RollsBackPreviousRowsNotesAndProject()
+    {
+        await ImportAsync(Row("1", "old", "이전"));
+        await _db.UpsertStringNoteAsync(1, "tm_hit", "old note", CancellationToken.None);
+        var oldProject = await _db.TryGetProjectAsync(CancellationToken.None);
+        var broken = Document(string.Concat(Enumerable.Range(0, 501).Select(i => Row(i.ToString(), "new", ""))))
+            .Replace("</Content>", "<String><Source>broken</Content>");
+        await File.WriteAllTextAsync(XmlPath, broken);
+        await Assert.ThrowsAnyAsync<Exception>(() => XTranslatorXmlImporter.ImportToDbAsync(_db, XmlPath,
+            CancellationToken.None, projectFactory: info => Project(info, "new-model")));
+        var row = Assert.Single(await _db.GetStringsAsync(10, 0, CancellationToken.None));
+        Assert.Equal("old", row.SourceText);
+        Assert.Equal("이전", row.DestText);
+        Assert.Equal("old note", (await _db.GetStringNotesByKindAsync("tm_hit", CancellationToken.None))[1]);
+        Assert.Equal(oldProject, await _db.TryGetProjectAsync(CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task CancellationAtEnd_RollsBackReplacement()
+    {
+        await ImportAsync(Row("1", "old", "이전"));
+        await File.WriteAllTextAsync(XmlPath, Document(Row("2", "new", "새 내용")));
+        using var cancellation = new CancellationTokenSource();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => XTranslatorXmlImporter.ImportToDbAsync(
+            _db, XmlPath, cancellation.Token, projectFactory: info =>
+            {
+                cancellation.Cancel();
+                return Project(info);
+            }));
+        Assert.Equal("old", Assert.Single(await _db.GetStringsAsync(10, 0, CancellationToken.None)).SourceText);
+    }
+
+    [Fact]
+    public async Task Reopen_PreservesEditsAndCompletedRowsButAcceptsIncomingTranslations()
+    {
+        await ImportAsync(Row("1", "a", "") + Row("2", "b", "") + Row("3", "c", "") + Row("4", "d", ""));
+        await _db.UpdateStringTranslationAsync(1, "", StringEntryStatus.Edited, null, CancellationToken.None);
+        await _db.UpdateStringTranslationAsync(2, "완료", StringEntryStatus.Done, null, CancellationToken.None);
+        await _db.UpdateStringTranslationAsync(3, "old", StringEntryStatus.Done, null, CancellationToken.None);
+        await _db.UpdateStringTranslationAsync(4, "edited", StringEntryStatus.Edited, null, CancellationToken.None);
+        await _db.UpsertStringNoteAsync(1, "tm_hit", "stale", CancellationToken.None);
+        // Reordering is safe when the record identity is unique. Changed source is a new translation task.
+        await ImportAsync(Row("2", "b", "") + Row("1", "a", "XML value") + Row("3", "c", "새 번역") + Row("4", "changed", ""), preserve: true);
+        var loaded = await _db.GetStringsAsync(10, 0, CancellationToken.None);
+        Assert.Equal("완료", loaded[0].DestText);
+        Assert.Equal(StringEntryStatus.Done, loaded[0].Status);
+        Assert.Equal("", loaded[1].DestText);
+        Assert.Equal(StringEntryStatus.Edited, loaded[1].Status);
+        Assert.Equal("새 번역", loaded[2].DestText);
+        Assert.Equal(StringEntryStatus.Pending, loaded[3].Status);
+        Assert.Empty(await _db.GetStringNotesByKindAsync("tm_hit", CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Reopen_DifferentRecordIdDoesNotBorrowTranslation()
+    {
+        await ImportAsync(Row("0001", "Same source", ""));
+        await _db.UpdateStringTranslationAsync(1, "edited", StringEntryStatus.Edited, null, CancellationToken.None);
+        await ImportAsync(Row("0002", "Same source", ""), preserve: true);
+        var row = Assert.Single(await _db.GetStringsAsync(10, 0, CancellationToken.None));
+        Assert.Empty(row.DestText);
+        Assert.Equal(StringEntryStatus.Pending, row.Status);
+    }
+
+    [Fact]
+    public async Task NonXTranslatorXml_DoesNotEraseProject()
+    {
+        await ImportAsync(Row("1", "old", "이전"));
+        await File.WriteAllTextAsync(XmlPath, "<unrelated/>");
+        await Assert.ThrowsAsync<InvalidDataException>(() => XTranslatorXmlImporter.ImportToDbAsync(_db, XmlPath, CancellationToken.None));
+        Assert.Equal(1, await _db.GetStringCountAsync(CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Export_UsesUtf8DeclarationAndPreservesControlWhitespace()
+    {
+        var xml = Document(Row("1", " first&#xD;&#xA;second&#x9;third ", " 첫째&#xD;둘째 "))
+            .Replace("encoding=\"UTF-8\"", "encoding=\"UTF-16\"");
+        await File.WriteAllTextAsync(XmlPath, xml, Encoding.Unicode);
+        var originalSource = XDocument.Parse(xml).Descendants("String").Single().Element("Source")!.Value;
+        var read = await XTranslatorXmlImporter.ReadAllAsync(XmlPath, CancellationToken.None);
+        var readRow = Assert.Single(read.Rows);
+        Assert.Equal(originalSource, readRow.SourceText);
+        Assert.Equal(originalSource, XElement.Parse(readRow.RawStringXml).Element("Source")!.Value);
+        var info = await XTranslatorXmlImporter.ImportToDbAsync(_db, XmlPath, CancellationToken.None);
+        var stored = Assert.Single(await _db.GetStringsForExportAsync(10, 0, CancellationToken.None));
+        Assert.Equal(originalSource, XElement.Parse(stored.RawStringXml).Element("Source")!.Value);
+        var output = Path.Combine(_root, "utf8.xml");
+        await XTranslatorXmlExporter.ExportAsync(_db, info, output, CancellationToken.None);
+        var parsed = XDocument.Load(output);
+        Assert.Equal("UTF-8", parsed.Declaration!.Encoding);
+        Assert.Equal(originalSource, parsed.Descendants("String").Single().Element("Source")!.Value);
+        Assert.Equal(" 첫째\r둘째 ", parsed.Descendants("String").Single().Element("Dest")!.Value);
+    }
+
+    [Fact]
+    public async Task Export_OldCorruptPrologIsSanitizedAndFailedWritePreservesOutput()
+    {
+        var info = await ImportAsync(Row("1", "source", "translated"));
+        var output = Path.Combine(_root, "output.xml");
+        await XTranslatorXmlExporter.ExportAsync(_db, info with { PrologLine = Document(Row("1", "source", "old")) }, output, CancellationToken.None);
+        Assert.Single(XDocument.Load(output).Descendants("String"));
+        var original = await File.ReadAllBytesAsync(output);
+        await _db.UpdateStringTranslationAsync(1, "invalid\0", StringEntryStatus.Done, null, CancellationToken.None);
+        await Assert.ThrowsAnyAsync<Exception>(() => XTranslatorXmlExporter.ExportAsync(_db, info, output, CancellationToken.None));
+        Assert.Equal(original, await File.ReadAllBytesAsync(output));
+        Assert.Empty(Directory.GetFiles(_root, "*.tmp"));
+    }
+
+    private async Task<XTranslatorXmlInfo> ImportAsync(string rows, bool preserve = false)
+    {
+        await File.WriteAllTextAsync(XmlPath, Document(rows));
+        return await XTranslatorXmlImporter.ImportToDbAsync(_db, XmlPath, CancellationToken.None,
+            preserveExistingTranslations: preserve, projectFactory: info => Project(info));
+    }
+
+    private ProjectInfo Project(XTranslatorXmlInfo info, string model = "model") => new(1, XmlPath,
+        info.AddonName, BethesdaFranchise.ElderScrolls, info.SourceLang, info.DestLang, info.Version,
+        info.HasBom, info.PrologLine, model, "base", "custom", true, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow);
+
+    private static string Document(string rows) => "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+        + "<SSTXMLRessources><Params><Addon>Test.esp</Addon><Source>english</Source><Dest>korean</Dest><Version>2</Version></Params><Content>"
+        + rows + "</Content></SSTXMLRessources>";
+
+    private static string Row(string id, string source, string dest) => $"<String List=\"0\" Partial=\"1\"><EDID>Record</EDID><REC id=\"{id}\">FULL</REC><Source>{source}</Source><Dest>{dest}</Dest></String>";
+}

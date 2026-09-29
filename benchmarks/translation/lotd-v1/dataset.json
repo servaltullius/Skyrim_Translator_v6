@@ -1,0 +1,3214 @@
+{
+  "version": "lotd-cross-provider-v1",
+  "source_file": "LegacyoftheDragonborn_english_korean.xml",
+  "source_sha256": "916d1fcb705d8d6540f145fb7e4b9773b0477d3c9f0eb885f1f5a853e66f11e8",
+  "glossary_sha256": "0e78bea4f1f71dc66f016ea38a585a2ee34d08e96f7748230c56de28329d623e",
+  "reference_translations": null,
+  "pilot_ids": [
+    "L10885",
+    "L10074",
+    "L10087",
+    "L10801",
+    "L14705",
+    "L13793",
+    "L13869",
+    "L12756",
+    "L16189",
+    "L12484",
+    "L15430",
+    "L16035",
+    "L12827",
+    "L15123",
+    "L05541",
+    "L06060",
+    "L02603",
+    "L09410",
+    "L05062",
+    "L06028",
+    "L08510",
+    "L08319",
+    "L08205",
+    "L08173"
+  ],
+  "source_contains_korean_reference": false,
+  "cases": [
+    {
+      "id": "L10885",
+      "source_row": 10885,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_SanamiaJournal3",
+      "source": "<font face=\"$HandwrittenFont\">\n\n7th of Sun's Dawn\n     \n              Fort Frostmoth was once the jewel of the empire on Solstheim, a rich center for the East Empire Trading Company, but after the Red Year disaster the fort was all but destroyed, leaving behind much death and ruin. The chaos of everyone's departure from Morrowind and parts of Solstheim would ensure that much was left behind. I expect that some store room or another must have been buried and left filled with riches. When I reach Solstheim, I should try and see what is left there.\n\n</font>",
+      "visible_length": 519,
+      "category": "book",
+      "stratum": "book_short",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_SanamiaJournal3",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Sanamia's Journal, Vol. 3"
+      },
+      "glossary": {
+        "Morrowind": "모로윈드",
+        "Solstheim": "솔스트하임",
+        "Sun's Dawn": "2월"
+      }
+    },
+    {
+      "id": "L10751",
+      "source_row": 10751,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_treasHuntAdventurersJournal",
+      "source": "<font face =\"$HandwrittenFont\"><b>11th of Frost Fall, 4E 200</b>\n\nWhile I was out hunting last night I found a hidden chest in that old burnt down shack west of town, and in it a treasure map!\nI havent told anyone yet, and I'll study it carefully when I get the chance. It'll have to wait until tomorrow, though.\nToo many long noses in town.\n[pagebreak]\n<b>14th of Frost Fall, 4E 200</b>\n\nOh joy, oh joy, I'm going to be rich! I've studied every inch of that map, and it didn't take very long before \nit looked familiar. I remember this exact location from a few years back, when my father took me on a trip to\nMarkarth, in Skyrim, to sell supplies brought from the Iliac Bay. After planning this trip I'll leave this damned rock for good!\n[pagebreak]\n<b>21st of Sun's Dusk, 4E 200</b>\n\nFinally I've made the escape! It took some time convincing mother to let me make the trip to Markarth alone. I'll reach Jehanna \ntomorrow, and from there, the descent to Skyrim shouldn't take too long. I'm pretty sure I remember about where that old ruin was.\n[pagebreak]\n<b>24th? of Sun's Dusk, 4E 200</b>\n\nIt has all gone wrong. Very wrong. Half way through the pass, the weather took a turn, and I haven't been able to see more than\n15 feet in front of me for ages. I've walked and walked, trying to stick to the road, but the snow and wind has completely covered\nevery sign of it. As I write this I've given up, resting by an old stump in what can only be described as a swamp. I'm really off course,\nthen. But no, if I don't find this treasure no one will! I've hidden the map inside a strongbox, and painfully swallowed the key.\nThis will be my final rest.\n</font>",
+      "visible_length": 1557,
+      "category": "book",
+      "stratum": "book_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_treasHuntAdventurersJournal",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Adventurer's Journal"
+      },
+      "glossary": {
+        "Iliac Bay": "일리악 만",
+        "Skyrim": "스카이림",
+        "Sun's Dusk": "11월"
+      }
+    },
+    {
+      "id": "L10838",
+      "source_row": 10838,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_MAASE_DwemerPrimer1",
+      "source": "[pagebreak]\n<p align=\"center\">\n\n\n<b>The Fall of the Snow Elves</b>\nHow the Falmer found themselves the blinded slaves of the Dwemer\n\n\nBy\nHyminae Whippet\n</p>\n\n[pagebreak]\n<p align=\"left\">\nThe following page has been earmarked:\n\n<img src='img://Textures/Interface/Books/Illuminated_Letters/T_letter.png'>he Order of the Skysisters, as the Snow Elves called them, waited until the human hordes were almost upon them before finally taking refuge in the last remaining Dwemer city to offer them 'hospitality'. It is said that the Skysisters were more suspicious of the Dwemer and their intentions than the other Snow Elven houses, and therefore held out initially. Eventually faced with the inevitability of the coming onslaught, they had no choice but to accept the terrible Dwemer bargain and take refuge in the depths of Alftand. It is also said by some scholars that the Skysisters were the first group of Snow Elves to be fed the poisonous algae and therefore discover the Dwemer's true intent... The enslavement of their entire race. There are references in Dwemer texts of this wing of Alftand being sealed shut after 'an incident' there, although no scholar to my knowledge has ever discovered further explanation of what occurred there.\n",
+      "visible_length": 1095,
+      "category": "book",
+      "stratum": "book_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_MAASE_DwemerPrimer1",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "The Fall of the Snow Elves"
+      },
+      "glossary": {
+        "Dwemer": "드웨머",
+        "Falmer": "팔머"
+      }
+    },
+    {
+      "id": "L10813",
+      "source_row": 10813,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_LostWonders",
+      "source": "[pagebreak]\n<p align=\"center\">\n<font=\"$skyrimbooks\">\n \nLost Wonders of the Ages Vol. 3\n \nBy\nGaspard Septus\n</p>\n \n \n \n[pagebreak]\n<p align=\"left\">Disclaimer: This book, like all others in this series, is purely speculation. It will not lead you straight to these artifacts, but it may give an adventurous treasure hunter a leg up. Though it may sound that I have gleamed the exact whereabouts of each relic, these descriptions herald from tales and lore and only relay the clues I have learned.\n           \n            The Crusader's Relics, the arms and armor of Pelinal Whitestrake, used in his battle with Umaril the Unfeathered, are unique among the various wonders covered in this series. Why, you ask? Because they have been lost not once, not twice, but three times. They were lost the first time following the death of Pelinal after his battle with Umaril. They were then gathered once more by the Knights of the Nine after they were founded by Sir Amiel in 3E 111. They were lost again after the Knights disbanded following the War of the Red Diamond.\n \nThe Relics were collected again by the Second Divine Crusader in order to fight Umaril once more when he was reborn in 3E 433. The Relics remained in the possession of the reestablished Knights of the Nine until the battle of the White-Gold Tower, where the current Champion of the Knights at the time, Dame Noriel, fell in battle with the Thalmor.\n \nThe remaining Knights of the Nine managed to recover the Crusader's Relics from the battlefield before the Thalmor could get to them. Knowing the Thalmor sought to destroy the Relics as they represented a Divine endorsement of Mankind, they decided to hide them from the Thalmor by taking the Relics deeper into the Empire. The Knights left a garrison at the Priory of the Nine, knowing the Thalmor would come for the relics, while they also sent a force north to Skyrim, hoping to divide the Thalmor agents who perused them. From amongst this group they chose seven knights to safekeep and hide the Relics throughout Skyrim. Each knight was given a chest, crafted and blessed in the name of one of the Divines, that could only be opened by one blessed by that Divine, or the steward of the order themselves, bearer of the ring of Sir Amiel; founder of the order. The ring, it is said, was lost during the Thalmor's efforts to purge the knights and the memory of Pelinal Whitestrake and his legacy by hunting down the members meant to safeguard the chests. All that is known is he was awaiting his brothers somewhere along the far north.\n \nThe seven departed from the main force one night, taking the relics where they saw fit. Herein is contained all accounts I have uncovered about the likely whereabouts of the chests and their contents.\n \nThe bearer of the Sword was perhaps the most faithful, taking the Relic to the Temple of the Divines in Solitude where all the Divines are worshipped, waiting for a wielder who understands the power of life and death. This chest is the only one of its brethren of which its whereabouts are known for certain.\n \nThe Shield of the Crusader could only be claimed by one blessed with wisdom, though the bearer chose to hide it not among those wise in the workings of the world, but in the cellar of one wise in the knowledge of passing travelers. I can only surmise that the chest must be tucked away within an inn or hostel of some sort.\n \nThe bearer of the Boots hid them near a fort once owned by an order dedicated to the eradication of the unnatural. They rest among native animals, waiting to be claimed by one blessed with an appreciation of nature. So much is considered unnatural to the Nords that the legendary whereabouts of this chest could almost literally be anywhere; from a dark Falmer infested Dwemer ruin to a dormitory room of the Winterhold Mage's College.\n \nThe Helm's bearer had less luck than the others. She was nearly caught by wandering Thalmor in her travels and forced to flee further north. She slipped their pursuit near a fort in the Pale, taking the Helm underground in a nearby cave. The Helm now languishes among the hideous cavern-dwellers while it waits for a champion of Beauty to recover it. Again, mentions of the hideous immediately draw my thoughts to that of the Falmer or perhaps Hagravens of Skyrim, but any who seek to find it would do best to start searching the areas around ruined forts in the northern Pale for nearby caves.\n \nThe Armor of the Crusader awaits a champion of the age, blessed by time, to recover it from the cave in which it rests, northeast of a town of stone. The passages concerning this legend are vexing to me to be certain. While some accounts imply that the blessing of the chest was imparted by Mara, others imply that it was Akatosh himself, which leads me to believe that the Greaves and Cuirass may well be safeguarded together within the chest. As we well know through the legends of the Crusader's relics, each of the original Eight Divines bestowed a relic, and yet there are only seven chests according to all sources concerning the chests. I would hate to think that one of the chests containing the Armor or Greaves has been lost to all time. As for the location, I would only surmise that the Rift is what is being spoken of, but the entire area is littered with spires from Dwarven ruins, so the exact location would be very hard to determine.\n \nThe bearer of the Mace brought it to a fort at the crossroads of several holds, to be found by one who knows the value of honest work. An elusive legend to be sure and providing only a vague insight as to the location it speaks. There are several crossroads throughout Skyrim, but the most likely perhaps would be one of the three crossroads that surround Whiterun, the central most hold in the province.\n \nThe bearer of the Gauntlets believed himself a crusader in his own right, and ended up chasing a vampire through the Reach after a failed attempt to execute it. He chased the vampire into a tomb, blinded by rage and slew them. He then realized he had run through a home of the dragon cults of old, and sealed away the Gauntlets before facing the undead horde he'd awakened. Hoping someone more merciful than he would claim them, he fought to his last in repentance for his failure.",
+      "visible_length": 6184,
+      "category": "book",
+      "stratum": "book_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_LostWonders",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Lost Wonders of the Ages Vol. 3"
+      },
+      "glossary": {
+        "Champion": "챔피언",
+        "Thalmor": "탈모어",
+        "Dwemer": "드웨머",
+        "Falmer": "팔머",
+        "Umaril the Unfeathered": "날개를 잃은 우마릴",
+        "Akatosh": "아카토쉬",
+        "Divines": "디바인",
+        "Mara": "마라",
+        "Pale": "페일",
+        "Reach": "리치",
+        "Skyrim": "스카이림",
+        "White-Gold Tower": "백금 탑",
+        "Whiterun": "화이트런",
+        "Winterhold": "윈터홀드",
+        "Solitude": "솔리튜드",
+        "Boots": "부츠",
+        "Cuirass": "흉갑",
+        "Mace": "철퇴"
+      }
+    },
+    {
+      "id": "L10074",
+      "source_row": 10074,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_MAASE_CWBook01REPLICA",
+      "source": "[pagebreak]\n<p align=\"center\">\n\n\n<b>Dwemer Sexuality Vol III</b>\n\n'Marital Aides'\n\nby\nPrudencen I. Hazhedake, Scholar\n</p>\n\n[pagebreak]\n<p align=\"left\">\n<font face='$SkyrimBooks'>\n<img src='img://Textures/Interface/Books/Illuminated_Letters/N_letter.png'> ow, with the third and final volume of our series, gentle reader, we may begin discussion of the practical application of what we have learned thus far. I strongly recommend that serious students of this topic conduct their own personal field research...\n\n[pagebreak]\n[You quickly surmise that there will not be anything useful in this book.] \n\n\n\n",
+      "visible_length": 415,
+      "category": "book",
+      "stratum": "book_short",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_MAASE_CWBook01REPLICA",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Interesting Book On the Dwemer (Replica)"
+      },
+      "glossary": {
+        "Dwemer": "드웨머"
+      }
+    },
+    {
+      "id": "L10169",
+      "source_row": 10169,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_FRbook01",
+      "source": "[pagebreak]\n<p align=\"center\">\n\n\n<b>The Saber Cat</b>\n\n\nAs he was still a kitten, the Sabre Cat was adopted by the Brotherhood of Scribes, to be raised as a pet and as a guardian of their sanctuary as well. The purpose of this brotherhood was to collect and translate in common language all the books, scrolls, notes, journals... Well, anything written, for the free use of anybody needing an intelligible version of text.\n\nGrowing up, the Saber Cat showed extraordinary talents, as he learned to speak (but without the terrible accent the Khajiit have), to read and write like any other sentient being. As he was able to do the same job as the other brothers (and usually better than most of them) he was raised to be a full-fledged Brother.\n\nYears passed, and the Saber Cat worked so hard, doing the very basic duties with as much quality and care as the major tasks, he finally became a pillar of the Brotherhood, using his time and energy for the greater good.\n\nSeven years have passed, and the voice of freedom began to sing in his ear, and the wild beast he really was began to want out, yearning to live his real life in the real world.\n\nSo, one day, after thanking his Brothers and Sisters, he left the Brotherhood and went back to the wilds to live as nature intended. As a Saber Cat. Just before his departure, he made a stop at Brother John-Kevin's cell to devour him, as an appetizer of his new life.\n\nAll the Brothers and Sisters mourned his leaving (but nobody had a word for the poor Brother John-Kevin). They raised a small icon in memory of Sylom, the talking Saber Cat, in the Hall of History of the Brotherhood.\n\nAnd then, they returned to work.\n",
+      "visible_length": 1624,
+      "category": "book",
+      "stratum": "book_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_FRbook01",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "The Sabre Cat"
+      },
+      "glossary": {
+        "Khajiit": "카짓"
+      }
+    },
+    {
+      "id": "L10087",
+      "source_row": 10087,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_HauntedReciept",
+      "source": "<font face=\"$HandwrittenBold\" size=\"24\">\nCommission Contract\n</font>\n<font face=\"$HandwrittenBold\">\nBurgess Olfstead of Haafingar agrees to sculpt one life size statue in the likeness of lady Orellia Macnarian using a provided oil painting as reference and hewn from natural marble provided by the patron, Niles Macnarian, for the sum of 8000 septims. The amount of 4000 septims has been paid in advance with the rest payable prior to delivery of the work.</font>\n",
+      "visible_length": 378,
+      "category": "book",
+      "stratum": "book_short",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_HauntedReciept",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Commission Contract"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L10749",
+      "source_row": 10749,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_treasHuntTharadsJournal",
+      "source": "Tharad's journal\n\n<font face=\"$HandwrittenFont\"><b>6th of Sun's Dawn, 4E 201</b>\n\nThis winter has been the longest I can remember. We've been on the road since Evening Star, when\na group of imperial soldiers finally ambushed our hideout in northern Cyrodiil. Only me and Agnarr made it out alive as far \nas I know. \n\nThe two of us have traveled all the way to Windhelm so far, surviving off the wildlife and the occational dead Imperial or Stormcloak.\nAgnarr overheard something about big trading routes off the north coast of Skyrim at the tavern last night. Perhaps our luck is about to turn?\n[pagebreak]\n<b>11th of Sun's Dawn, 4E 201</b>\n\nAfter a brief investigation at the docks and a bag of gold changing hands we've discovered unbelievable opportunity!\nThe \"Sea of Ghosts\" is filled with trading caravans, supplying both sides of the civil war with weapons and goods. After\nsome final preparation, we're heading out tomorrow, bound for the northernmost settlement in Skyrim, Winterhold.\n[pagebreak]\n<b>16th of Sun's Dawn, 4E 201</b>\n\nMy feet ache sorely after months of travel on foot. But we will not give up. Not now. After seeing at least half a dozen\nlarge ships passing by on the horizon I am convinced we are at the brink of something great. Tomorrow morning we set off again,\nthis time heading for an old nord ruin on an island just north of the town. We need a base of operation on the coast of Skyrim.\n[pagebreak]\n<b>25th of Sun's Dawn, 4E 201</b>\n\nAfter days of hard work, just the two of us have been able to fight off the foul creatures inhabiting the ruin, and setting up a nice camp\nin and around it. A poor fool camping on the cliffs nearby has provided us with a rowboat and supplies to last us more than a week! The\nunlucky bastard must have planned living in that tent for a long time. \n\nThese supplies should do for now, until we can get hold of some reqruits and plunder our first caravan.\n[pagebreak]\n<b>2nd of First Seed, 4E 201</b>\n\nSuccess! Our first raid couldnt have gone any better! With five men all in the little rowboat, we managed to sneak up on a small sloop\nhaving trouble surpassing a belt of ice that had likely drifted from the north the night before. Lucky for us, there was only a single mercenary\non board, the rest were travellers and cowardly sailors. To top it all off, we've now got the sloop to ourselves, marked with the flag of the east\nempire company. Blending in to the traffic should be no trouble from here on.\n[pagebreak]\n<b>9th of First Seed, 4E 201</b>\n\nOh, what a life we're living! We're swimming in treasure and supplies! Just the last week we plundered eight ships, all poorly defended\nand with useful supplies. One of the boys warned me from getting too excited, and I think he's right. If we get any louder than this,\nthe company might need to do something about it. From now on, we're going to keep it down, and only do a couple of raids a week.\n[pagebreak]\n<b>17th of First Seed, 4E 201</b>\n\nI knew this life was too good to believe. The crew I sent out a few days ago never came back, apart from a whelp who was lucky enough\nto drift to the coast on a piece of our biggest vessel. The coward was scared out of his boots, and didn't stay long before heading to town.\nHe mentioned something about other plunderers, something about the \"Blood Horkers.\" I've sent the mage to that college to see if she can\nfind something on them. Meanwhile me and Agnarr will fortify the base, and that old sloop.\n</font>",
+      "visible_length": 3316,
+      "category": "book",
+      "stratum": "book_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_treasHuntTharadsJournal",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Tharad's Journal"
+      },
+      "glossary": {
+        "Skyrim": "스카이림",
+        "Windhelm": "윈드헬름",
+        "Winterhold": "윈터홀드",
+        "Sun's Dawn": "2월",
+        "First Seed": "3월",
+        "Evening Star": "12월"
+      }
+    },
+    {
+      "id": "L10801",
+      "source_row": 10801,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_AMJournal05",
+      "source": "<font face='$Handwrittenbold'>\n\nIn all my studies of magical legend and lore concerning Skyrim, none have fascinated me more than the exploits of the great Shalidor. I was fortunate enough in fact to have come across some of his writings and after some effort of deciphering them I discovered quite an interesting account of the construction of a magical stone which Shalidor referred to as an Arcane battery which could focus and concentrate soul energy and instill it into the spell caster who invoked it in the form of Magicka. Quite an interesting artifact if in fact it does exist. I would suspect that the depths of Labyrinthian would hold the secrets of the stone as Shalidor sealed himself away for years at a time within its depths. Oh the secrets which must reside within. I should very much like to explore it one day.",
+      "visible_length": 797,
+      "category": "book",
+      "stratum": "book_short",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_AMJournal05",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Auryen's Notes on Shalidor's Stone"
+      },
+      "glossary": {
+        "Skyrim": "스카이림",
+        "Magicka": "매지카"
+      }
+    },
+    {
+      "id": "L10811",
+      "source_row": 10811,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_SafehouseKeyNote",
+      "source": "<font face=\"$Handwrittenbold\">\nGood day, my friend, I hope this message finds you well. I wanted to report to you the current success of the museum and to offer to you an additional incentive since you have proven yourself quite capable indeed.\n\nWe have started to receive visitors to the museum and they are quite taken with the displays. I've set up a donation box near the museum entrance and I will leave your share of the contributions made by patrons who visit inside it. Feel free to help yourself to the proceeds any time you stop by.\n\nAdditionally, I wanted to offer the use of the museum safehouse. It's been locked up and unused for some time, but I went in and made sure it was in good order. You will find it is fully equipped with all the amenities you could ever want. This key will give you access.\n\nBe well, and keep up the good work.\n-Auryen Morellus\n\n</font>",
+      "visible_length": 837,
+      "category": "book",
+      "stratum": "book_short",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_SafehouseKeyNote",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Letter from Auryen"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L10167",
+      "source_row": 10167,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_RkundJournal",
+      "source": "<font face='$Handwrittenbold'>\n\n4th of First Seed -\n\nI've been fooling with this confounded machine for days now! No matter what I do I cannot seem to get all the parts aligned. It seems that the buttons each control two or three pieces at a time and some pieces are controlled by more than one button. I can't find a pattern at all!\n\n17th of First Seed -\n\nThere is no pattern to this at all. I have found that if I leave the chamber the puzzle will reset itself, which is a saving grace. It seems to be connected to the door. I am going to go down to the rock chasm for some fresh water and get some air and maybe I can clear my head.\n\n22nd of First Seed -\n\nWell, this just figures. I am certain that no other living soul will read this before I am dead, but it gives me some kind of solace nonetheless. I was down here at the water when it dawned on me: the switches can trigger a non-moving piece while its partners are still in motion, effectively alternating their movement. Since the buttons do not trigger pieces already in motion, if I am able to hit all the buttons while every piece is still in motion, they should all converge to their correct location! I was so thrilled by this revelation that I set out to return to the chamber but slipped on some ice as I made my climb and landed hard, breaking both my legs.\n\n24th of First Seed -\n\nWell, Divines, seems that I will be coming to you soon. My entire body is numb from the cold and I fear I've been in shock for some time now. I can barely hold this quill to write and my lantern gave up the last of its heat yesterday. I suppose I only have myself to blame.\n",
+      "visible_length": 1589,
+      "category": "book",
+      "stratum": "book_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_RkundJournal",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Rkund Journal"
+      },
+      "glossary": {
+        "Divines": "디바인",
+        "First Seed": "3월"
+      }
+    },
+    {
+      "id": "L10787",
+      "source_row": 10787,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_SchneiderJournal",
+      "source": "<font face=\"$HandwrittenFont\">\nOpen letter to... myself, I suppose.\n<br><br>\nOpen letter to... myself, I suppose.\n <br><br>\nWhen I signed on to this dig I hadn't anticipated dealing with a raving madman. Make no mistake, I have dealt with a fair number of unhinged and zealous people in this field over the years.  Some deluded with notions of grandeur, others erroneously piecing together truths where there are none, just to suit their theories.  Even a few were just overwhelmed with lust for loot.  But Ralis is really at the top of this list. \n<br><br>\nHe'll go through completely cogent periods where he's even, dare I say, amusing to be around.  One minute he's showing signs of eagerness and hopefulness with the results of the project.  Other times I swear I find him rambling to himself, only to change the subject when he realizes he's been discovered, and then pretends he's looking for a fresh pair of socks and is merely frustrated.  Funny to me, but it's unnerving the diggers, to be certain. \n<br><br>\nLess amusing is that I also keep seeing him rifling through other people's bags as if he's looking for something specific. Never takes anything, mind you, other than occasionally helping himself to the use of my sextant. I don't mind too much, I suppose, as he's always careful with it and puts it back when he's done.  But it would be nice if he would ask. Though I really don't like the covetous look in his eye when he's holding it during one of his more unhinged phases. \n<br><br>\nI saw a digger approach him once when he was in one of his fits.  It must have startled him, because Ralis rounded on him and almost took his head off with a pick. He tried to pass it off as thinking a reaver had snuck up on him, but... well, he gets rather paranoid sometimes.",
+      "visible_length": 1709,
+      "category": "book",
+      "stratum": "book_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_SchneiderJournal",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Schneider's Journal"
+      },
+      "glossary": {
+        "loot": "루팅"
+      }
+    },
+    {
+      "id": "L10722",
+      "source_row": 10722,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_MicmousJournal",
+      "source": "<font face=\"$HandwrittenFont\">\n\nI just knew that when I found that shovel in the ruins of Bthalft last year that it would change my fortunes for the better! I'm frankly shocked some adventurer hadn't come upon it before now, but what luck! It didn't take much time and effort to repair the valve on the heat and coolant canisters on the arm of the shovel which fuel the steam gout at the end. Apparently the dwemer utilized digging tools like this with a steam generator built right in which could hyper heat large rocks and a coolant component that would simultaneously super cool them to crack large boulders and ease in the clearing of tunnels. How ingenious. It also seems as if this shovel were touched by the hand of fate in some way and everywhere I dig, I manage to find something useful or valuable. Sure I manage to stumble upon a few undead here and there, but thanks to the steam gout, I made short work of them.\n<br>\n<br>\nThinking on the nature of fate and good fortune, no sooner had the thought of Hermaeus mora's black library and the wonders it must hold crossed my mind when I came upon another cache of relics exhumed with the shovel which held some ancient scrolls concerning portal magic and breaching the walls of Oblivion! Almost as if the shovel were guiding me to exactly what I was thinking about. I quickly began to research and study the scrolls and found a way to open a rift between Nirn and Apocrypha! The portal would be fleeting and would have to be near a nexus of Mora's influence and I soon found one on Solstheim at the site of a large and ancient dragon priest temple which had apparently been taken over by cultists of Hermaeus Mora at some point. I quickly gathered my gear and raised the funds needed to explore this theory in more depth.\n<br>\n<br>\nIn my studies between my discovery of the scrolls and my arrival at the temple, I discovered a verse which was the key\n<br>\n<br>\n\"His name in number must light the way, the number which overwhelming knowledge holds.\"\n<br>\n<br>\nI began to think back to my magical studies and the powers inherent in numbers such as the defining number of 8 being that of the divines and the celestial bodies in the sky that there had to be good fortune in a number as well. I then found that Hermaeus mora was known by 10 different titles, the demon of knowledge, Master of the tides of fate, Gardener of Men, Prince of fate, lord of secrets, The golden eye, the abyssal cephaliarch, old antecedent, the scryer, and the inevitable knower. Then the connection to 10 was confirmed as the number of individual pursuits and a person of great potential. What better number to associate someone seeking vast knowledge!\n<br>\n<br>\nSo following the scrolls guidance I gathered materials and cast 10 candles of Vvardenfell bloat and daedra heart fat each inscribed with one of his titles. It was quite a trek to gathering these I can tell you, but it will be well worth it...\n<br>\n<br>\nI am such a blasted fool! How could I have been so stupid! The number is not ten, it's eleven! I completely forgot the old bosmeri title for Hermaeus mora of \"the woodland man\" and as certain as Secunda shines, the number 11 is the number of vast knowledge! However, I have already begun the ritual and I have found that the temple here is not fully vacant. It seems that some cult or another has taken up residence and I am not going to be able to fight them off if they get here before the ritual is done and I don't have time to go all the way back to Morrowind for more bloat! Oh divines why to you forsake me so? I'll just press onward. Perhaps if I cut a bit off the bottom of one of the longer candles and inscribe it with the final name it will suffice to open the portal...\n<br>\n<br>\nYes it seems it may work. The portal seems a bit unstable but it's working. I can hear voices in the distance of the temple and I'm sure these cultists will find me in less than an hour, I best press on. My next entry hopefully will be after I have delved the vastness of knowledge that is Apocrypha... here goes nothing.",
+      "visible_length": 3974,
+      "category": "book",
+      "stratum": "book_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_MicmousJournal",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Micmou's Journal"
+      },
+      "glossary": {
+        "Apocrypha": "아포크리파",
+        "Morrowind": "모로윈드",
+        "Nirn": "넌",
+        "Secunda": "세쿤다",
+        "Solstheim": "솔스트하임",
+        "Oblivion": "오블리비언",
+        "Master": "달인"
+      }
+    },
+    {
+      "id": "L10720",
+      "source_row": 10720,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_StonehandsJournal",
+      "source": "<font face='$HandwrittenFont'>\n\nIf found please return to Raucus \"Stonehands\" Tru'Bhadore \n[pagebreak]\n4E 130, 3 Morning Star\nIt feels strange and a bit unsettling to record my thoughts in this new volume, rather than my cherished folio.  The rockslide that swallowed my trusty backpack also claimed a portion of my memories and some pieces of my past in that worn book. That it disappeared while studying ancient and obscure history is a most bitter irony not lost on me.  Still there's nothing to be done about it, save begin anew.\n\n4E 130, 4 Morning Star\nIt appears that I left Riften not a moment too soon. From the scattered bits of news from other travelers, it appears the city has burned to the ground!  I guess I shan't be going back there for a while. Just as well, as some of the residents had taken an unhealthy interest in me. Criticism of one's writing and performance were to be expected, but some became far too easily outraged.  You'd think, for all the ceremony that Nords place upon fisticuffs as a venerated tradition to settle differences, that they would have accepted their losses with more grace. But apparently not. So much for the honor of Nords!  Serendipitously there was some buzz in the marketplace about ruins near Stone Hills that sounded most intriguing.  So the timing to depart without fanfare could not have been better - and indeed fortuitous or I might have been numbered in those caught in the blaze. Well, one more day's travel should see me at these ruins!\n\n4E 130, 22 Morning Star\nI feel a bit guilty for not having written in a while, but in truth there has been little beyond drudgework to report. I suppose I should be annoyed that the fragments I spent weeks deciphering amounted to little more than the tally for a year's harvest of cabbage, but there is a certain humor for all of that.  Though it may not lend itself to clever prose for the retelling.  Ah well, in the morning I will travel to Morthal and reprovision - skipping on cabbage for the nonce.  And, of course, ply the gossips and murmurs.\n \n4E 130, 25 Morning Star\nMy hangover heralds the revels of last night, although the innkeeper laughingly told me the lout I laid out probably has a worse headache than I do.  I spent a fuzzy morning in the inn sipping water and broth, catching up on correspondence, and listening to off-duty guards. One of them told me of a curious curved wall covered in strange writing atop a hill the locals call Shearpoint.  Apparently people shun the place and assign it a dark and evil past, though they know little more.  It is prudent to pay at least passing attention to such tales, for they almost always hold a glimmer of truth - and the seeds for good stories!  From her recount, I feel the tickle of excitement and confident this site merits a closer look. I am finally feeling myself, and shall set off in the morning.\n \n4E 130, 26 Morning Star\nA late start has left me a few hours short of Shearpoint, and I shall reluctantly have to make camp and give way to the waning light.  The odd wall the guard described is just visible in the distance, exposed on the hilltop and barren.  Due to its remote location, I suspect the dire stories persist only because there is little to draw people to the site.  Or they would see for themselves they are old tales without substance.  But I shall certainly have a closer look in the morning!",
+      "visible_length": 3337,
+      "category": "book",
+      "stratum": "book_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_StonehandsJournal",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Scorched Journal"
+      },
+      "glossary": {
+        "Morthal": "모탈",
+        "Riften": "리프튼",
+        "Morning Star": "1월"
+      }
+    },
+    {
+      "id": "L10718",
+      "source_row": 10718,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_RainsJournal",
+      "source": "<font face=\"$HandwrittenFont\">\n13th of Rains Hand \nSuch a gorgeous place this is! And quite a nice view as well. I have taken the opportunity to venture out on my namesake month no less, and observe the springtime behaviors of a variety of fauna as they welcome new young and prepare themselves for the eventual winter to come. The \nplace I chose, Clearspring Tarn, is teeming with a wide range of wildlife and peering down the cliff I can spot what looks like a wolf den of some kind far below. I may have to investigate it from afar once I double back down the mountain, but for now I'm content to view the various insects and little vermin around this nice cliff side oasis. The water here seems pretty fresh and good for drinking despite the fact it's still, maybe I'll boil it first just to be certain.\n\n15th of Rains Hand \nYesterday I was watching a group of squirrels play happily in the trees near my camp while I sketched some of the nearby flora, when a curious fox came by and began to watch me. He kept his distance but seemed quite interested in what I was doing. It eventually occurred to me that I was probably dominating his favorite watering hole and so I wandered a few yards away while I continued to journal my observations. Eventually he wandered in and drank his fill before moving on. Makes me wonder what other creatures frequent this place.\n\n16th of Rains Hand\nLast night I was awakened by what looked like torch light. I thought for a moment that it might have been some fellow travelers or, possibly worse, bandits. So I awoke with a start, sword in hand just in case. When I stepped outside the tent I was treated to a mid night light display courtesy of some fae folk of some sort. They seemed much like the frost wisps of Skyrim but much smaller and with a yellow glow, almost like fireflies. Upon closer examination they actually resembled tiny elves with black almond shaped eyes riding on wings of light. I really did not expect to see such an amazing thing outside of Valenwood, but was very thrilled to have been awakened to it.\n\n18th of Rains Hand\nSeems I got my answer about what other wildlife frequent this place. A lone timber wolf made its way toward my camp today and while It seemed somewhat timid it gave me enough of a fright nonetheless that I ran straight towards the cliff edge and he didn't pursue, probably knowing the danger of those sheer cliffs. Again, the animal took his fill of the clear water, rummaged around in my camp for a few minutes, snagged a bit of meat I had warming by the fire and ran off.\n\n19th of Rains Hand\nThat wolf was back again today, and seemed to have a few others watching from the distance. If they show up again I'm probably going to have to venture further out onto the cliff to avoid them. Then I will certainly have to break camp and move on to another spot. I think my lingering presence and good smelling food on the fire is starting to draw more than mere rabbits and foxes to the area.\n</font>",
+      "visible_length": 2941,
+      "category": "book",
+      "stratum": "book_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_RainsJournal",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Rains' Journal"
+      },
+      "glossary": {
+        "Skyrim": "스카이림",
+        "Valenwood": "발렌우드",
+        "Clearspring Tarn": "클리어스프링 옹달샘"
+      }
+    },
+    {
+      "id": "L10799",
+      "source_row": 10799,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_AMJournal03",
+      "source": "<font face='$Handwrittenbold'>\nKing Orgnum was and could very well still be to this day the grand ruler of the Maormer people, an ancient cousin of the Elves of the Sumerset Isle, long banished beyond Pyandonea, \"the veil of mist\", for his repeated attempts at conquering the Summerset Isles.\n\nOrgnum is supposedly immortal, growing more youthful by the ages, though his greatest claim to fame was his boundless coffer, which yields pure gold from nothingness. I surmise that this boundless wealth in fact utilizes the ethereal transportational powers that both the Snow Elves and the Ayleid seem to have employed in their culture, allowing Orgnum to reach through a portal and seize a handful of gold from some other location. Due to the seemingly random nature of the gain, I would theorize that these magical rifts were opening within the coffers and vaults of other wealthy individuals, perhaps his own enemies, perhaps somewhere totally random.\n\nThe coffer was last noted as being in the possession of the Eternal Champion of the era of the Imperial simulacrum, and all note of the coffer fell into legend and was forgotten thereafter, though I have found references that after the Eternal Champion ended their days of adventure, quite wealthy as a result of the coffer and other boons of their fame, they may have sealed the coffer away here in Skyrim, protected by an ancient evil so as to ward off any who would seek its absurd wealth. Perhaps it lies with the remains of a Dragon Priest? It would be quite a dangerous undertaking, one I do not intend to ever venture upon, but it would be curious to find out its fate.",
+      "visible_length": 1596,
+      "category": "book",
+      "stratum": "book_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_AMJournal03",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Auryen's Notes on Orgnum and the Maormer"
+      },
+      "glossary": {
+        "Champion": "챔피언",
+        "Ayleid": "에일리드",
+        "Dragon": "드래곤",
+        "Maormer": "마오머",
+        "Skyrim": "스카이림",
+        "Summerset Isles": "서머셋 아일즈",
+        "Pyandonea": "피안도네아"
+      }
+    },
+    {
+      "id": "L09523",
+      "source_row": 9523,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_MAASE_CWBook02REPLICA",
+      "source": "[pagebreak]\n<p align=\"center\">\n\n\n<b>That Wasn't Very Funny</b>\n\nA Compendium of Dwemer Jokes \n\n\nby\nYgol 'Carrot Top' Gromal, Scholar\n</p>\n\n[pagebreak]\n<p align=\"left\">\n<font face='$SkyrimBooks'>\nThis volume was inspired by my previous research excavating the numerous Dwemer out-houses dotted throughout Tamriel. I think any disciplined scholar would recognize that the discarded tablets and scrawled epitaphs found in those places must in fact be the Dwemer equivalent of 'humor'.\n\n[pagebreak]\nHere is an example of a saying scratched onto the wall of a Dwemer toilet closet found near the ruins of Mzulft:\n\n<font face='$DwemerFont'>\nRisen by order cousin-of-privilege Cuolec of Scheziline privileged duties. Clanhome building Hoagen Kultorra tradition to Hailed World shaper.\n<font face='$SkyrimBooks'>\n\n[pagebreak]\nA rough translation of this would be:\n\n<i>\"[So and So's] Mother, not his Proper Mother but the one that was slightly less proper, is indeed more proper than his Proper Mother!\"</i>\n\n[pagebreak]\nAs you can see, the Dwemer sense of humor leaves much to be desired. What follows is the translation of 842 Dwemer sayings I have collected over the years from ruined Out-Houses...\n\n[You are fairly sure that there is nothing in this book that will be helpful.]  \n\n",
+      "visible_length": 1084,
+      "category": "book",
+      "stratum": "book_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_MAASE_CWBook02REPLICA",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Unique Book About the Dwemer (Replica)"
+      },
+      "glossary": {
+        "Dwemer": "드웨머"
+      }
+    },
+    {
+      "id": "L10912",
+      "source_row": 10912,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_EX03AuryenManuscript",
+      "source": "<font face='$HandwrittenFont'>\n\nFate of the Snow Elves\n-Auryen Morellus\n\n<page break>\n\nSome things about the chronology of how the Neb-Crescen came into the possession of the Snow Elves have not sat well with me since our ordeal. How could the Snow Elves come into the possession of the Neb-Crescen when it hadn't even come into being until 500 years after the demise of the Snow Elven people?\n\nTo understand this perplexing problem, we first have to understand the nature of the collapse of the Snow Elven society. After the Atmoran invasion of Tamriel and the settling of the Nedic people into Skyrim, the Snow Elves began to go into decline. As evidenced by research made by Calcelmo of Markarth, the Snow Elves split into 3 factions and eventually came to be wards of the Dwemer and later degraded into the present day Falmer. However, evidence shows that many of the Snow Elven structures we have recently found were in fact erected after the supposed enslavement, leaving me to deduce that the various factions persisted for several hundred years before finally having to turn to the Dwemer for aid. Each of the factions of the Snow Elves fell to the Dwemer's control slowly over a period of some five hundred years. The first, bearers of the staff of the Sky Prince, which eventually became the Falmer we know today. Second were the keepers of the staff of the Sun Prince; the keepers of the old ways and the proudest, who most certainly were responsible for the temples constructed after the start of the decline of their civilization, in an effort to rebuild their society in secret. The last were the bearers of the staff of the Snow Prince; devout followers of Trinimac.\n\nOne must be willing to challenge the perceptions and beliefs of countless ages past in order to understand my theory. What I propose here-within will certainly be met with great skepticism, but if you follow the history, legends and recent events, the theory becomes quite plausible.\n\nMy assertion is that the third faction of the Snow Elven people, the followers of Trinimac, did not fall to the enslavement of the Dwemer, but in fact, evolved to become the Orsimer!\n\nI put before you the reader the facts that lend to my thesis. Firstly, the Orsimer's origin is vague and clouded in much speculation, appearing in High Rock around 1E 700. Their transformation which made them as they are coincides with the metamorphosis of Trinimac into the form of Mauloch or Malacath. Orsimer have traditionally been devout worshipers of Malacath, which is an aspect of Trinimac in a manner of speaking. Additionally, king Gortwog gro-Nagorm promoted the concept of reforming the worship of Malacath and instead worshiping Trinimac once again. Admittedly, this wasn't until late in the Third Era, but all sources indicate that the Orsimer used to worship Trinimac prior to their transformation. So really to say that the Orsimer changed who they worshiped is really splitting hairs.\n\nTo understand my further proposed theory, understanding the Neb-Crescen's origin is vital. The Neb-Crescen is a weapon which was wrought by Sheogorath, and was bestowed upon the son of Malacath, Emmeg, as a trick. The blade caused Emmeg to go into a blind rage and slay another Orc, which Malacath saw as a great atrocity. Not knowing the nature of the blade, Malacath set out to destroy the killer of one of his children, but was convinced to enter into a pact with Sheogorath to use the Neb-Crescen in exacting his justice. Malacath was blinded by rage and slew Emmeg, not knowing him to be his own son. At this point the blade was supposedly reclaimed by Sheogorath, and lost to all history.\n\nIt is also a curious coincidence which has bearing that the disappearance of the Dwemer also occurred in or around 1E 700, the same time that Trinimac and the Orsimer were transformed. It is widely speculated that the disappearance of the Dwemer might be attributed to a Dragon Break, and given that the events surrounding  the Numidium in the Iliac Bay in the Third Era resulted in several factions simultaneously possessing the totem of its control, as if in a sort of time vortex, I surmise that the Neb-Crescen in fact was not reclaimed by Sheogorath after its use, but in fact was consumed by the Dragon Break that proposedly occurred in 1E 700, which resulted in the disappearance of the Dwemer, and coincided with the transformation of the Orsimer and Trinimac into Malacath, and the blade was projected back into time where the Snow Elves took it upon themselves to scry into the time wound and see to the blade's internment.\n\nMy theory may seem outlandish, but if you look at the lines of the forbidden Falmer tome we discovered in the temple of Phynaster beneath Fort Greenwall, it sheds more light. The entries clearly indicate that the Neb-Crescen was a tool of great folly, but to whom? The Orsimer, of course. The tome seems to imply prophetic events, things proposedly seen when scrying through the time wound. And what has been known to be the tool of gleaming through the Dragon Breaks? An Elder Scroll, of course. Though that theory has no evidence to back it, just a hopeful musing.\n\nWhat has unsettled me the most about the forbidden tome is the very nature of its text. The first section is written as a warning, yet the second indicates that the very same object (the Neb-Crescen) would be the tool of their salvation. Almost contradicting its initial tone. Almost as if the verses were written at various points in time, or, that each segment of the text pertained to a different faction of the Snow Elves. It seems that the forbidden tome is a time warped artifact of sorts.\n\nOf course these theories are not to be admitted as hard truths; it will take a great many more years of research before any truth may be confirmed in them, but I think that the events of recent months have played a very large part in asking new questions about the fall of Trinimac and the fate of the Snow Elves.\n",
+      "visible_length": 5920,
+      "category": "book",
+      "stratum": "book_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_EX03AuryenManuscript",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Fate of the Snow Elves"
+      },
+      "glossary": {
+        "Dragon": "드래곤",
+        "Dwemer": "드웨머",
+        "Falmer": "팔머",
+        "Orsimer": "오시머",
+        "Malacath": "말라카스",
+        "Phynaster": "파이나스터",
+        "Sheogorath": "쉐오고라스",
+        "Trinimac": "트리니막",
+        "Fort Greenwall": "그린월 요새",
+        "High Rock": "하이 락",
+        "Iliac Bay": "일리악 만",
+        "Skyrim": "스카이림",
+        "Scroll": "주문서",
+        "Numidium": "누미디움"
+      }
+    },
+    {
+      "id": "L10820",
+      "source_row": 10820,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_RelicBook",
+      "source": "<font face='$Skyrimbooks'>\nHere you will find cataloged the sum of my research and a great many hours of my life. These pages will serve to catalog all items across Tamriel which I have exhaustively researched, from the local and obscure to the well known and legendary; these pages will contain their names. This will serve as an index while my other journals will notate my findings about the individual artifacts. This book will help serve to detail the sought after displays of the museum of Solitude.\n\n\nThe Hall of Heroes: This grand hall comprising the entry hall, reception hall, library, oddities room and the main gallery. I shall lay out all items which essentially do not fit into either the Hall of Lost Empires or the Daedric Gallery.\n\nQuest Achievement Displays\n\nThieves Guild\nMages College\nDark Brotherhood\nCompanions\nBlades\nRelics of the Dragonborn replicas\nBards College\nDragonborn quest display\nCivil War quest display\nDawnguard/Volkihar quest display\nMaster Smith achievement display\nMaster Enchanter achievement display\nMaster Alchemist achievement display\nMaster of Combat achievement display\nMaster of Stealth achievement display\nMaster of Magic achievement display\nShrine of the 9 Divines blessings display\nDoomstones blessings display\n\nDisplays\n\nIron Lunar Mace\nIron Lunar Sword\nIron Lunar Axe\nSteel Lunar Mace\nSteel Lunar Sword\nSteel Lunar Axe\nVisage of the Dragonborn Armor\nSword of the Ancient Tongues\nDrainblood Battle Axe\nDrainheart Sword\nDrainspell Bow\nAncient Helm of the Unburned\nHelm of Tohan\nThe Jagged Crown\nNoster's Helm\nYngol's Helm\nDiadem of the Savant\nCirclet of Waterbreathing\nBloodworm Helm\nMage's Circlet\nHelm of Oreyn Bearclaw\nShellbug Helm\n\nHall of Heroes\n\nBriarheart Geis\nKarliah's Bow\nGlass Bow of the Stag Prince\nBow of the Hunt\nStormfang\nHorksbane\nSword of the Crusader\nMace of the Crusader\nHelm of the Crusader\nArmor of the Crusader\nGloves of the Crusader\nBoots of the Crusader\nShield of the Crusader\n\n\nGrimsever\nCleaver of St Felms\nThornblade\nGravedigger\nSkullcrusher\nStendarr's Hammer\nDawnguard Runeaxe\nDawnguard Runeshield\nDawnguard Runehammer\nDagger of Symmachus\nBlade of Woe\nNettlebane\nBorvir's Dagger\nValdir's Lucky Dagger\nDawnfang/Duskfang\nSoulrend\nBloodscythe\nCyrus' Sabre\nBlade of Sacrifice\nBloodthorn\nKahvozein's Fang\nFang of Haynekhtnamet\nBlooded Targe\nEduj\nOkin\nStaff of Magus\nBlack Bow of Fate\nHrothmund's Axe\nGhostblade\nBloodskaal Blade\nDragon Bane\nHopesfire\nTrueflame\nHarkon's Sword\nChillrend\nChampion's Cudgel\nTrollsbane\nPale Blade\nBolar's Oathblade\nFroki's Bow\nThe Longhammer\nRed Eagle's Bane/Fury\nWindshear\nIce Blade of the Monarch\nZephyr Bow\nChrysamere\nDebaser\nMace of Aevar\nBiPolar Blade\nFiriniel's End\nSteel Battleaxe of Fiery Souls\nSixth House Bellhammer\nAegisbane\nGauldur Blackblade\nGauldur Blackbow\n\n\nMystic Tuning Gloves\nFists of Randagulf\nGloves of the Pugilist\nForgemaster's Fingers\nBoots of Blinding Speed\nPredator's Grace\nMovarth's Boots\nFocusing Gloves\nIronhand Gauntlets\nGilded Armguards\nTumblerbane\nDeathbrand Armor\nDragonmail Cuirass\nLord's Mail\nAhzidal's Armor\nArmor of the Old Gods\n\nHerebane's Courage\nHerebane's Fortress\n\nDragon Priest Staff (two varieties)\nHag's Wrath\nStaff of Hasedoki\nHevnoraak's staff\nHaldir's staff\nEye of Melka\nStaff of Jyrik Gauldurson\nRuunvald Staff\nSild Staff\nUnderking's Will\nElder Scroll of Dragons\nElder Scroll of Blood\nElder Scroll of the Sun\n\n\nHall of Oddities\n\nRoggi's Ancestral Shield\nHrolfdir's Shield\nShagrol's Warhammer\nAlessandra's Dagger\nAkaviri Brass Token\nAkaviri Dragon Bronze Piece \nAkaviri Dragon Silver Piece\nAkaviri Dragon Gold Piece\nAkaviri Royal Seal\nAncient Elsweyr Bronze Piece\nAtmoran Bronze Seal\nDominion Bronze Piece\nDwemer Copper Mark\nDwemer Platinum Mark\nHammerfel Steel Coin\nHigh Rock Copper Crown\nHigh Rock Bronze Crown\nHigh Rock Silver Crown\nHigh Rock Gold Crown\nAtmoran Kingmaker Mark\nMages' Guild Copper Seal\nMerethic Copper Dragonmark\nMerethic Silver Dragonmark\nMerethic Gold Dragonmark\nPotema Copper Piece\nPotema Silver Piece\nPotema Gold Piece\nSummerset Royal Mark\nValenwood Bronze Star Coin\nValenwood Cobalt Star Coin\nWhiterun Gold Proof\nWhiterun Silver Proof\nQueen Freydi's Sword\nBalgruuf the Greater's Greatsword\nHoarfrost\nRocksplinter\nNotched Pickaxe\nDeck of Arms\nDeck of Mystics\nDeck of Shadows\nDeck of Fortune\nDeck of Demons\nDeck of Walls\nDeck of Travelers\nDeck of Spiders\nDeck of Draconians\nDeck of the Builder\nPoacher's Axe\nAncient Nordic Pickaxe\nWoodsman's Friend\nAngi's Bow\nDraven's Bow\nHjalti's Sword\nAmren's Family Sword\nExecutioner's Axe\n9 gold statues of Dibella\n1 gold bejeweled statue of Dibella\nJade Priest Statue\nJade Skull\nJade Palace\nJade Dragon Statue 1\nJade Dragon Statue 2\nJade Dragon Statue 3\nJade Dragon Statue 4\nJade Dragon Statue 5\nJade Warrior 1\nJade Warrior 2\nJade Elder\nJade Lady\nPest Poison\nMichaela's Flagon\nDeathhound Collar\nHorn of Jurgen Windcaller\nShiv\nThe Dancer's Flute\nBloodstone Chalice\nWylandriah's Spoon\nYsgramor's Soup Spoon\nDraw Knife\nTorygg's War Horn\nWeystone Focus\nCurious Silver Mold\nThe White Phial\nSaerek and Torsten's Skull Keys\nBaulbus Fork\nTorc of Labyrinthian\nKing Orgnum's Coffer\nAretino Family Heirloom\n\nClaws\n\nRuby Claw\nIvory Claw\nEbony Claw\nDiamond Claw\nAmethyst Claw\nGolden Claw\nIron Claw\nGlass Claw\nCoral Claw\nSapphire Claw\nEmerald Claw\n\nMasks\n\nKrosis\nMiraak\nZahkriisos\nAhzidal\nVolsung\nVokun\nRahgot\nOtar\nNahkriin\nMorokei\nHevnoraak\nKonahrik\nWooden Mask\nDukaan\n\nBooks\n\nMythic Dawn Commentaries V1-4\nSkyrim's Rule\nLast King of the Ayleids\nLegendary Scourge\nThe Dragon Wars\nThere Be Dragons\nDragon Language: Myth No More\nAccounting of the Elder Scrolls\nThe Old Ways\nArcana Restored\nWaters of Oblivion\nPosting of the Hunt\nCleansing of the Fane\nThe Dreamstride\nOn Artaeum\nBoethiah's Proving\nNGasta! Kvata! Kvakis!\nThe Hanging Gardens\nChronicles of Nchuleft\nA Dance in the Fire V1-7\nArgonian Account V1-4\nA Biography of Barenziah V1-3\nBone V1-2\nBrief History of the Empire V1-4\nDwarves V1-3\nDwemer Inquiries V1-3\nFeyfolken V1-3\nHistory of Raven Rock V1-3\nMysteries of Talara V1-5\nPalla V1-2\nRising Threat V1-4\nSongs of the Return V 19, 2, 56, 7, 24\nThe Black Arrow V 1-2\nLusty Argonian Maid V1-2\nThe Nightingales V1-2\nPoison Song V1-7\nThe Real Barenziah V1-5\nThe Red Year V1-2\nSong of Pelinal V1-8\nThe Wolf Queen V1-8\nAncient Falmer Text V1-4\nCharwich-Koniinge Letters V1-4\n2929 V1-12\n16 Accords of Madness v6, 9, 12\nAnnals of the Dragonguard\nDragonborn\nMalyn Varens Grimoire\nDeathbrand Treasure map\nEast Empire Trade Routes\nMercer's Plans\nDragonstone map\n\nDragonbridge Treasure map\nIllinalta's Deep Treasure map\nGallows Rock Treasure map\nLost Valley Redoubt Treasure map\nRiverwood Treasure map\nMidden Treasure map\nWhiterun Treasure map\nFort Neugrad Treasure map\nBroke Helm Treasure map\nValtheim Treasure map\nSolitude Lighthouse Treasure map\nKorvanjund Treasure map\n\nAdabal-a\nChildren of the Sky\nEffects of the Elder Scrolls\nLycanthropic Legends\nVarieties of Daedra\nThe Third Door\nOn Stepping Lightly\nSovngarde Reexamination\nSovngarde Reexamination Revised\nSong of Skyrim\nShezarr and the Divines\nImperial Report of Saarthal\nThe Apprentice's Assistant\nThe Dragon Break\nPhysicalities of Werewolves\nOpusculus Lamae Bal\nMagic from the Sky\nLost Legends\nSecrets of Ragnvald\nWhere Were You When the Dragon Broke?\nVarieties of Faith\nTrap\nThe Anticipations\nSultry Argonian Bard\nWords of Clan Mother Ahnissi\nThe Falmer: A Study\nRise and Fall of the Blades\nA Short History of Morrowind\nHerebane's Bestiary: Automatons\nHerebane's Bestiary: Hagravens\nHerebane's Bestiary: Icewraiths\nGreat Harbingers\nGhost in the Storm\nFlight from the Thalmor\nA Final Lesson\nFall of the Snow Prince\nDwemer History and Culture\nConfessions of a Khajiit Fur Trader\nChildren of the All-Maker\nChaurus Pie: A Recipe\nChanged Ones\nAmongst the Draugr\nDoor of the Spirit\nSaint Jiub's Opus\nNchunak Fire and Faith\nDeathbrand\nAhzidal's Descent\nWild Elves\nWar of the First Council\nTrue Nature of the Orcs\nSouls: Black and White\nThe Red Book of Riddles\nPig Children\nNight Mother's Truth\nTreatise on Ayleidic Cities\n\n\nJewelry\n\nSaarthal Amulet\nThe Gauldur Amulet\n3 Enchanted Rings of Saarthal\nKyne's Token\nMoonstone Amulet\nAyleid Waystone\nBonehawk Amulet\nDregas Volar's Amulet\nAmulets of the 9 Divines\nSkaal Amulet\nAmulet of the Bat\nGargoyle Amulet\nSavos Aren's Amulet\nElder Council Amulet\nYsra's Amulet\nTalisman of Treachery\nNecromancer Amulet\nLocket of St Jiub\nMuiri's Ring \nRing of the Silverbloods\nEngraved Ring of Healing\nRing of the Vipereye\nRing of the Grey\nEidolon's Edge\nThe Jewel of Rumare\nDenstagmer Ring\nWeatherward Circle\nThe Black Band\nIlas-Tei's Ring\nErudite Ring \nRing of Beasts\nNightweaver Ring\nBonehawk Rings\nAhzidal's Ring of Necromancy\nAhzidal's Ring of Arcana\nBloodlust Ring\n Ring of Instinct\nMoon Ring\nRing of Khajiit\nMoon and Star\nVampiric Ring\nMentor's Ring\nWarlock's Ring\nPhynaster's Ring\nRing of the Hunt\n\nDaedric Gallery\nThe Hall of the Daedra has been painstakingly set so as to hold and contain the powers of the Daedric artifacts should they be found and placed on display. I do not know what will happen should more than a few come together, so I have taken every precaution and had magic wards placed to suspend their powers while they are on display. Hopefully it will be enough. Torasa has already agreed to safeguard some of the relics should I need to \"split them up\".\n\nDaedric Crescent\nBow of Shadows\nPage of the Mysterium Xarxes\nBlack Book: Waking Dreams\nBlack Book: Epistolary Acumen\nBlack Book: Untold Legends\nBlack Book: The Winds of Change\nBlack Book: The Sallow Regent\nBlack Book: Filament and Filigree\nBlack Book: The Hidden Twilight\nOghma Infinium\nOblivion Sigil Stone\nScourge\nUmbra\nSword of Jygalaag\nMehrunes' Razor\nSanguine Rose\nRing of Hircine or Savior's Hide\nSpellbreaker\nMace of Molag Bal\nVolendrung\nMask of Clavicus Vile or Rueful Axe\nEbony Mail\nDawnbreaker\nSkull of Corruption\nStar of Azura or Black Star\nRing of Namira\nWabbajack\nEbony Blade\nSkeleton Key\nSword and Staff of Miraak\nGoldbrand or Eltonbrand\n\n\nHall of Lost Empires\nThe Hall of Lost Empires is my pride and joy. A great deal of my research has been spent on the ancient cultures of the Dwemer and Ayleid races, but I welcome the opportunity to learn of the closely related Falmer or Snow Elves and to research more about the ancient Atmoran descended ancient Nordic culture.\n\nArtifacts\n\nKagrumez Resonance Gems\nDwemer Puzzle Cube\nFocusing Crystal\nAsh Extractor\nBlood Extractor\nLexicon\nVisage of Mzund\nDwemer Compass\nWraithguard\nSunder\nKeening\nAetherium Staff, Circlet or Shield\nNchardak Control Cubes\nSnow Elf Paragons\nInitiate's Ewer\nAuriel's Bow\nAuriel's Shield\nSpear of the Snow Prince\n\nExploration and Quest displays\n\nMzinchaleft\nMzulft\nAetherium Forge\nDwarven Schematics\nDwemer Mannequin\nAvanchnzel\nBlackreach\nFahlbtharz\nNchundzel\nNchardak\nTower of Mzark\nBthardamz\nIrkngthand (Falmer statue)\nIrkngthand (Dwemer display)\nRkund\nBthalft\nAlftand\nVolskygge\nYsgramor's Tomb\nShroudhearth\nKorvanjund\nAngarvunde\nSaarthal\nDead Men's Respite\nUstengrav\nForelhost\nStatue of Auriel (Falmer Temple)\nSun Pedestal (Falmer Temple)\nRemains of the Snow Prince (Jolgeirr Barrow)\nCalcelmo's Rubbings\nFalmer Rosetta Stone\n\n[page break]\n[page break]\n[page break]\nHall of Secrets\nA hidden area is rumored to be within the museum, where displays of a more 'questionable' nature may be displayed. These ill gained spoils and bloodthirsty exploits are best kept from the public eye\n\n\nPelagius' Hipbone\nSkull of Arvak\nHabd's Remains\nHoarfrost\nPotema's Skull\nKarstaag's Skull\nAncient Traveler's Skull\nKolbjorn Skull\nGlenmoril Witch Head\nAncient Vampire Remains\nAncient Shrouded Armor\nBlackthorn's Armor\nNightingale's Armor\nHircine's Totems\nBee Statue\nGolden Urn\nHonningbrew Decanter\nModel Ship\nJeweled Flagon\nJeweled Boat\nJeweled Goblet\nLeft Eye of the Falmer\nGolden Pitcher\nJeweled Drinking Horn\nJeweled Candlestick\nNightingale Bow\nNightingale Sword\nBlackguard's Armor\nCicero's Outfit (mannequin)\nEmperor's Clothes\n13 Dark Brotherhood contract kills displays\n\n",
+      "visible_length": 11874,
+      "category": "book",
+      "stratum": "book_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_RelicBook",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Auryen Morellus' Book of Relics"
+      },
+      "glossary": {
+        "Champion": "챔피언",
+        "Ayleid": "에일리드",
+        "Dark Brotherhood": "다크 브라더후드",
+        "Dawnguard": "던가드",
+        "Skaal": "스칼",
+        "Thalmor": "탈모어",
+        "Dragon": "드래곤",
+        "Draugr": "드로거",
+        "Dwemer": "드웨머",
+        "Falmer": "팔머",
+        "Khajiit": "카짓",
+        "Vampire": "흡혈귀",
+        "Chaurus": "차루스",
+        "Jurgen Windcaller": "유르겐 윈드콜러",
+        "Ysgramor": "이스그라모어",
+        "Morokei": "모로케이",
+        "Balgruuf": "발그루프",
+        "Jiub": "지웁",
+        "Miraak": "미락",
+        "Wylandriah": "윌란드리아",
+        "Azura": "아주라",
+        "Boethiah": "보에시아",
+        "Clavicus Vile": "클라비쿠스 바일",
+        "Daedra": "데이드라",
+        "Dibella": "디벨라",
+        "Divines": "디바인",
+        "Hircine": "허씬",
+        "Kyne": "카인",
+        "Molag Bal": "몰라그 발",
+        "Namira": "나미라",
+        "Phynaster": "파이나스터",
+        "Sanguine": "생귄",
+        "Stendarr": "스텐다르",
+        "Xarxes": "작시스",
+        "Elsweyr": "엘스웨어",
+        "High Rock": "하이 락",
+        "Morrowind": "모로윈드",
+        "Pale": "페일",
+        "Saarthal": "사아쌀",
+        "Skyrim": "스카이림",
+        "Sovngarde": "소븐가드",
+        "Valenwood": "발렌우드",
+        "Whiterun": "화이트런",
+        "Solitude": "솔리튜드",
+        "Ragnvald": "라근발드",
+        "Oblivion": "오블리비언",
+        "Bards College": "바드 대학",
+        "Dragonborn": "드래곤본",
+        "Mysterium Xarxes": "작시스의 신비",
+        "Scroll": "주문서",
+        "Grimsever": "그림세버",
+        "Dawnfang": "던팽",
+        "Duskfang": "더스크팽",
+        "Daedric Crescent": "데이드릭 크레센트",
+        "Goldbrand": "골드브랜드",
+        "Keening": "키닝",
+        "White Phial": "흰색 유리병",
+        "Boots": "부츠",
+        "Cuirass": "흉갑",
+        "Warhammer": "전투 망치",
+        "Battle Axe": "전투 도끼",
+        "Mace": "철퇴",
+        "Apprentice": "수습생",
+        "Master": "달인",
+        "Legendary": "전설",
+        "Deathbrand": "데스브랜드"
+      }
+    },
+    {
+      "id": "L10168",
+      "source_row": 10168,
+      "record": "BOOK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_ExpeditionLog",
+      "source": "[pagebreak]\n<p align=\"center\">\n<font face='$HandwrittenFont'>\n\n\nExpedition log\n-Finneas Ulaine\n\n\n\n</p>\n\nDay 22 - \nAfter exhaustive research and preparation, we have finally come upon the location of the lost tower of Karagas. It is no wonder that the tower has gone so long unknown as it barely protrudes from the rocks around it. If this tower did suddenly appear here out of thin air as is suggested, it obviously was not planned to arrive where it did. The entrance is a stone carved rotating door, similar in nature to the great doors of Labyrinthian, which suggests that when the tower arrived, additional work was done to conceal and protect the entrance, using materials from surrounding sources.\n\nDay 23 - \nWe have finally managed to break the seal on the entrance and gain access to the main entrance chamber where we have set up base camp. The entrance hall is massive with a raised dais of some kind in the center of the room with a Dwemer mechanism of some sort, which will take some time to decipher its purpose, much less how to use it.\n\nDay 25 - \nWe've spent the last two days trying to make sense of these blasted tunnels. There are four tunnels identical in nature, yet vastly different in their orientation: to put it plainly, they are a maze, and one that would make the architects of Labyrinthian pay homage. If these tunnels were carved and made by the Dwemer, they are a testament to their genius. The tunnels also seem to be littered with skeevers, disgusting things.\n\nDay 28 - \nAfter three days we still have not managed to make much headway. It became quite clear early on that we'd need to arrange some method of marking which tunnels we've visited, and the torch holders seem to be the best bet. Our goal is to place torches as we explore, and therefore will be able to tell that the dark passages are yet to be investigated. This idea seemed sound enough but we still managed to lose Ardrune somewhere in the tunnels. We keep shouting back and forth but the walls echo so badly it is impossible to determine where he is. Even with Laruk's detect life spell, we still couldn't come close enough to find him.\n\nDay 29 - \nArdrune has stopped shouting for us. Either he's too far out of earshot now, or something worse has happened. It doesn't bode well for him or any of us, and what is worse is that we have come upon reanimated skeletons in the passages; as if the skeevers weren't bad enough. Laruk says though that these skeletons are not raised by necromantic means, that somehow they are animated by another force. I suppose that perhaps it may be the same force which causes the Skyrim Draugr to walk again, but Laruk doesn't seem to think so. There must be some other source of magic that is to blame.\n\nDay 31 - \nWe've discovered a Dwemer chest inside of a hidden room in the tunnels but the lock is more complex than anything I've seen. Herana isn't even able to make any headway in picking it. The chest is far too heavy to lug with us, so I've left it here with one of my books lying on the ground to mark the spot in case we forget. Hopefully we'll come across a key soon.\n\nDay 33 - \nLaruk is dead. In the tunnels we came to several  passages that end at a drop to a level below, which we were able to climb down well enough, but we came upon one that was deep enough that we couldn't see bottom and began to lower Laruk. But the rope snapped and he fell to his death. We have yet to recover his body. Several members of the excavation have decided to leave, leaving only myself and two others behind.\n\nDay 36 - \nWe have now been lost in the tunnels for three days after trying to work our way back to the base camp. Nyjal has been a little scattered in his behavior and ran off. We tried to restrain him and convince him that we need to stick together, but he punched Herana and ran away into the tunnels sputtering and laughing randomly. I fear that if the undead do not claim him, his madness will. I also discovered that Laruk's rope was severed by one of the infernal Dwemer blade traps in here, probably triggered by one of those damned skeevers stepping on the plate by the looks of it.\n\nDay 37 - \nHerana and I made it out finally, back to base camp. She regrettably has resigned and departed, suggesting I do the same, but I've resigned myself to remain behind. There is too much at stake here, and too many possibilities to just give up.\n\nDay 38 - \nI'm making another major push into the tunnels today. I think I'll try and sketch a map as I go in my sketchbook and hopefully keep my bearings. I'll leave this journal behind and make entries upon my return as it's heavy and I need all the torches I can muster. Thus far I can say that the leftmost tunnel appears to go nowhere; it just loops around to a drop down into the starting corridor of the tunnel with a few branches that end in dead ends throughout. Tunnels two and four must connect to one another somehow as I swear that I keep running into the same places in one tunnel that I've been to in the other, though it could just be designed to make me think that way and we've gotten so scattered in our torch placement, and several have died out as well that I have no real bearing by them anymore. I think I'll venture into tunnel three and see what luck I have.\n",
+      "visible_length": 5198,
+      "category": "book",
+      "stratum": "book_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "BOOK:DESC",
+        "editor_id": "DBM_ExpeditionLog",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Expedition Log"
+      },
+      "glossary": {
+        "Draugr": "드로거",
+        "Dwemer": "드웨머",
+        "Skyrim": "스카이림"
+      }
+    },
+    {
+      "id": "L14705",
+      "source_row": 14705,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "6",
+        "idMax": "6"
+      },
+      "edid": "[060F0253]",
+      "source": "Or better still, how I stole the greatest of all jewels; the heart of a beautiful lady after avenging the death of her dear father.",
+      "visible_length": 131,
+      "category": "dialogue",
+      "stratum": "dialogue_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060F0253]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "6",
+        "same_info_other_parts": [
+          {
+            "part": "0",
+            "source": "Oh, what stories to recall!"
+          },
+          {
+            "part": "1",
+            "source": "Do I regale you with my daring recovery of the bloodstone amulet from the depths of a crumbling cavern?"
+          },
+          {
+            "part": "2",
+            "source": "Fleeing for my life with an entire coven, nay an entire BROOD of vampires close at my heels? "
+          },
+          {
+            "part": "3",
+            "source": "Or perhaps battling the storm of the century."
+          },
+          {
+            "part": "4",
+            "source": "Holding down the ropes to restrain the mainsails to keep a treasure vessel afloat with a hoard fit for Uriel Septim himself!"
+          },
+          {
+            "part": "5",
+            "source": "All while a sea monster angrily pursued our escape."
+          }
+        ]
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L13793",
+      "source_row": 13793,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[060EFF2A]",
+      "source": "What about before the Red Year?",
+      "visible_length": 31,
+      "category": "dialogue",
+      "stratum": "dialogue_short",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060EFF2A]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L13869",
+      "source_row": 13869,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "1"
+      },
+      "edid": "[060EFF6D]",
+      "source": "I've got to say, Madras, Dwemer architecture is amongst the finest I've ever seen.",
+      "visible_length": 82,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060EFF6D]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "0",
+        "same_info_other_parts": [
+          {
+            "part": "1",
+            "source": "And by the divines, where did they get all that Dwemer metal from?  There must be hundreds of tons of it!"
+          }
+        ]
+      },
+      "glossary": {
+        "Dwemer": "드웨머"
+      }
+    },
+    {
+      "id": "L12756",
+      "source_row": 12756,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[06075FA8]",
+      "source": "Is that what we came here for? Can we go to another Dwemer ruin now?",
+      "visible_length": 68,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[06075FA8]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {
+        "Dwemer": "드웨머"
+      }
+    },
+    {
+      "id": "L16189",
+      "source_row": 16189,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[06124E7E]",
+      "source": "Ah, I'm glad I caught you, I have something for you.",
+      "visible_length": 52,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[06124E7E]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L12484",
+      "source_row": 12484,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[06084C35]",
+      "source": "Someone was leaving trash around. Don't worry this one cleaned it up.",
+      "visible_length": 69,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[06084C35]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L15430",
+      "source_row": 15430,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "1",
+        "idMax": "6"
+      },
+      "edid": "[061214AF]",
+      "source": "I didn't think we'd ever manage to hunt all four guardians and with you wiping out the Morag Tong like that",
+      "visible_length": 107,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[061214AF]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "1",
+        "same_info_other_parts": [
+          {
+            "part": "0",
+            "source": "Excellent, yes, it all seems in order. I have to thank you for your help, after losing Ezra in Pale Pass "
+          },
+          {
+            "part": "2",
+            "source": "saves us a lot of time money and hassle. Oh, have you not figured it out yet? I suppose I gave you too much credit after all. "
+          },
+          {
+            "part": "3",
+            "source": "We were actually hired to find the shards, the same as the Morag Tong, because they were too conspicuous here in Skyrim,"
+          },
+          {
+            "part": "4",
+            "source": "found it difficult to move freely. But we figured why not get their cut too if they were unable to do the full job anyways."
+          },
+          {
+            "part": "5",
+            "source": "And then you came along and volunteered to do our dirty work for us."
+          },
+          {
+            "part": "6",
+            "source": "But sadly, you have outlived your usefulness. Farewell, Sovngarde awaits you."
+          }
+        ]
+      },
+      "glossary": {
+        "Pale": "페일",
+        "Skyrim": "스카이림",
+        "Sovngarde": "소븐가드"
+      }
+    },
+    {
+      "id": "L16035",
+      "source_row": 16035,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[06289BCD]",
+      "source": "Oh my, look there, the temple is down here!",
+      "visible_length": 43,
+      "category": "dialogue",
+      "stratum": "dialogue_short",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[06289BCD]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L12827",
+      "source_row": 12827,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[06075FDE]",
+      "source": "You have been found! And now will be lost.",
+      "visible_length": 42,
+      "category": "dialogue",
+      "stratum": "dialogue_short",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[06075FDE]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L15123",
+      "source_row": 15123,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[060F0390]",
+      "source": "Maybe so, but that fraction is mighty important too.",
+      "visible_length": 52,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060F0390]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L13965",
+      "source_row": 13965,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "1"
+      },
+      "edid": "[060EFFBF]",
+      "source": "They keep the dust out of my eyes in those dirty places we crawl around in.  Ptah!",
+      "visible_length": 82,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060EFFBF]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "0",
+        "same_info_other_parts": [
+          {
+            "part": "1",
+            "source": "Oh!  And of course I think they are quite stylish!"
+          }
+        ]
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L13646",
+      "source_row": 13646,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[060EFEA8]",
+      "source": "Yes, it is true, Latoria has never even been to Elsweyr.",
+      "visible_length": 56,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060EFEA8]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {
+        "Elsweyr": "엘스웨어"
+      }
+    },
+    {
+      "id": "L12728",
+      "source_row": 12728,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[06075F92]",
+      "source": "Breathe like a horker, move like one too!",
+      "visible_length": 41,
+      "category": "dialogue",
+      "stratum": "dialogue_short",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[06075F92]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L16860",
+      "source_row": 16860,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[064EB482]",
+      "source": "Oh, decades at least. Dozens if not hundreds of masons and stone workers digging and building around the clock. Really quite impressive.",
+      "visible_length": 136,
+      "category": "dialogue",
+      "stratum": "dialogue_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[064EB482]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L14252",
+      "source_row": 14252,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[060F00BA]",
+      "source": "Well, isn't this a surprise!",
+      "visible_length": 28,
+      "category": "dialogue",
+      "stratum": "dialogue_short",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060F00BA]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L15607",
+      "source_row": 15607,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "1",
+        "idMax": "1"
+      },
+      "edid": "[0601EE5C]",
+      "source": "Just gave him a long cold stare and he was on his best behavior for the rest of the visit.",
+      "visible_length": 90,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[0601EE5C]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "1",
+        "same_info_other_parts": [
+          {
+            "part": "0",
+            "source": "Going well enough. Caught that boy trying to climb on one of the displays in the Natural science wing when he thought that nobody was looking."
+          }
+        ]
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L12717",
+      "source_row": 12717,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[06075F8A]",
+      "source": "Friends! Remember?",
+      "visible_length": 18,
+      "category": "dialogue",
+      "stratum": "dialogue_short",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[06075F8A]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L12848",
+      "source_row": 12848,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[06075FEE]",
+      "source": "What WAS that?",
+      "visible_length": 14,
+      "category": "dialogue",
+      "stratum": "dialogue_short",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[06075FEE]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L15149",
+      "source_row": 15149,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[060F03AA]",
+      "source": "My last dig was a bust, leaving me lots of room.  That could be a LOT of sulfur.",
+      "visible_length": 80,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060F03AA]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L15238",
+      "source_row": 15238,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[060F03F0]",
+      "source": "*Laughs*",
+      "visible_length": 8,
+      "category": "dialogue",
+      "stratum": "dialogue_short",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060F03F0]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L17058",
+      "source_row": 17058,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "3",
+        "idMax": "4"
+      },
+      "edid": "[06371C24]",
+      "source": "He worries that the staff could fall into the hands of the Thalmor and with all of the struggles occurring there as of late with Thalmor occupation",
+      "visible_length": 147,
+      "category": "dialogue",
+      "stratum": "dialogue_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[06371C24]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "3",
+        "same_info_other_parts": [
+          {
+            "part": "0",
+            "source": "Oh, my friend! I have a fantastic opportunity for you, and it has only a small window of opportunity to pursue."
+          },
+          {
+            "part": "1",
+            "source": "I was contacted by a relic collector in the province of Elsweyr who is in possession of the Staff of Indarys."
+          },
+          {
+            "part": "2",
+            "source": "He has offered to donate the staff to the museum for safe keeping."
+          },
+          {
+            "part": "4",
+            "source": "and the local resistance, he needs someone such as yourself to retrieve the artifact personally. Do you think you are up to it?"
+          }
+        ]
+      },
+      "glossary": {
+        "Thalmor": "탈모어",
+        "Elsweyr": "엘스웨어"
+      }
+    },
+    {
+      "id": "L17119",
+      "source_row": 17119,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[065C7ECB]",
+      "source": "Hmm...",
+      "visible_length": 6,
+      "category": "dialogue",
+      "stratum": "dialogue_short",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[065C7ECB]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L12422",
+      "source_row": 12422,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[06075F26]",
+      "source": "I'll put an end to this!",
+      "visible_length": 24,
+      "category": "dialogue",
+      "stratum": "dialogue_short",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[06075F26]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L15688",
+      "source_row": 15688,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[0617C4CD]",
+      "source": "Might be good to work our way around the back side of the tower. I'll be right on your heel",
+      "visible_length": 91,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[0617C4CD]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L12692",
+      "source_row": 12692,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "1"
+      },
+      "edid": "[06075F00]",
+      "source": "Hmmm... I suppose I'll have to recheck my reference material. That's about all I have for you at the moment though.",
+      "visible_length": 115,
+      "category": "dialogue",
+      "stratum": "dialogue_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[06075F00]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "0",
+        "same_info_other_parts": [
+          {
+            "part": "1",
+            "source": "Check back another day and I'm sure I'll have a lead on something else."
+          }
+        ]
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L13774",
+      "source_row": 13774,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "1"
+      },
+      "edid": "[060EFF18]",
+      "source": "Keeping a network of contacts requires money.  Information on non-expedition projects is not free.",
+      "visible_length": 98,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060EFF18]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "0",
+        "same_info_other_parts": [
+          {
+            "part": "1",
+            "source": "Or you could always wander around Skyrim looking.  Your choice."
+          }
+        ]
+      },
+      "glossary": {
+        "Skyrim": "스카이림"
+      }
+    },
+    {
+      "id": "L16076",
+      "source_row": 16076,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[06289C37]",
+      "source": "Snow Elves really could do some amazing things with magic, much like how the Dwemer used machines.",
+      "visible_length": 98,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[06289C37]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {
+        "Dwemer": "드웨머"
+      }
+    },
+    {
+      "id": "L15427",
+      "source_row": 15427,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[061214A0]",
+      "source": "Oh, you did? I trust everything went alright. Do you have the Amulet setting?",
+      "visible_length": 77,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[061214A0]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L16017",
+      "source_row": 16017,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "2",
+        "idMax": "3"
+      },
+      "edid": "[06284A00]",
+      "source": "Well, Auryen mostly. Issue is, the temple was buried in a landslide ages ago, and we're going to have to dig. A lot.",
+      "visible_length": 116,
+      "category": "dialogue",
+      "stratum": "dialogue_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[06284A00]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "2",
+        "same_info_other_parts": [
+          {
+            "part": "0",
+            "source": "Ah, fantastic. Glad you caught up with us, we're going to need all the help we can get."
+          },
+          {
+            "part": "1",
+            "source": "Auryen and I managed to find some references in some books at the library and narrowed down the location to this place here."
+          },
+          {
+            "part": "3",
+            "source": "Jump on in, we're already well underway and could use your help."
+          }
+        ]
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L12252",
+      "source_row": 12252,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "1"
+      },
+      "edid": "[0602692B]",
+      "source": "At the center of the lower floor you will find a representation of an Oblivion gate, complete with a sigil stone recovered by our Relic Hunter.",
+      "visible_length": 143,
+      "category": "dialogue",
+      "stratum": "dialogue_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[0602692B]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "0",
+        "same_info_other_parts": [
+          {
+            "part": "1",
+            "source": "During the Oblivion Crisis, hundreds of these gates opened all across Tamriel and threatened the world's very existence."
+          }
+        ]
+      },
+      "glossary": {
+        "Oblivion": "오블리비언"
+      }
+    },
+    {
+      "id": "L15524",
+      "source_row": 15524,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "1",
+        "idMax": "5"
+      },
+      "edid": "[06124C51]",
+      "source": "After the Red Mountain erupted in the Fourth Era year five, called the Red Year, most of Vvardenfell was evacuated",
+      "visible_length": 114,
+      "category": "dialogue",
+      "stratum": "dialogue_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[06124C51]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "1",
+        "same_info_other_parts": [
+          {
+            "part": "0",
+            "source": "Well, the most obvious reason for many relics to be appearing here in Skyrim is of course the refugees from Morrowind, coming here by way of Solstheim."
+          },
+          {
+            "part": "2",
+            "source": "and the relics from the museum of Mournhold were lost, hidden, looted and more."
+          },
+          {
+            "part": "3",
+            "source": "Beyond that I have observed that throughout history, a variety of prominent artifacts have always seemed to be the key players"
+          },
+          {
+            "part": "4",
+            "source": "during times of great change, when great heroes would arise to overcome terrible events"
+          },
+          {
+            "part": "5",
+            "source": "and rise to greatness in fulfillment of prophecy or destiny. The coming of the Nerevarine and the Eternal Champion are perfect examples of this."
+          }
+        ]
+      },
+      "glossary": {
+        "Champion": "챔피언",
+        "Morrowind": "모로윈드",
+        "Red Mountain": "레드 마운틴",
+        "Skyrim": "스카이림",
+        "Solstheim": "솔스트하임",
+        "Mournhold": "모운홀드"
+      }
+    },
+    {
+      "id": "L14210",
+      "source_row": 14210,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "1"
+      },
+      "edid": "[060F0092]",
+      "source": "Oh it's not about Eggleman, but... now that you mention it, there is something...  But that can wait.",
+      "visible_length": 101,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060F0092]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "0",
+        "same_info_other_parts": [
+          {
+            "part": "1",
+            "source": "I wanted to ask you to have a look at one of the Dwemer ruin displays. The motor device has stopped working and I haven't been able to figure out how to get it running again. I think the dynamo may have gone out?"
+          }
+        ]
+      },
+      "glossary": {
+        "Dwemer": "드웨머"
+      }
+    },
+    {
+      "id": "L16597",
+      "source_row": 16597,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "1"
+      },
+      "edid": "[0642E8EE]",
+      "source": "The boon is no mere small enchantment, my friend. Your skills of legerdemain and skulduggery",
+      "visible_length": 92,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[0642E8EE]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "0",
+        "same_info_other_parts": [
+          {
+            "part": "1",
+            "source": "would make the legendary Gray Fox's skill look like that of an infant guar."
+          }
+        ]
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L14228",
+      "source_row": 14228,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[060F00A2]",
+      "source": "Hmm... what is that? Some kind of stone claw? I wonder what it's used for.",
+      "visible_length": 74,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060F00A2]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L16239",
+      "source_row": 16239,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "2"
+      },
+      "edid": "[062A880F]",
+      "source": "Yes, you are right, Kyre. That shrine does represent Y'frre. So between this, the two side room shrines and the temple of Trinimac,",
+      "visible_length": 131,
+      "category": "dialogue",
+      "stratum": "dialogue_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[062A880F]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "0",
+        "same_info_other_parts": [
+          {
+            "part": "1",
+            "source": "we have all four of the revered gods of Auriel's pantheon represented. If I recall correctly the book said:"
+          },
+          {
+            "part": "2",
+            "source": "The harmony of Y'frre shall forever entomb the great evil of our folly, and only by the tone of his voice shall the chambers open."
+          }
+        ]
+      },
+      "glossary": {
+        "Trinimac": "트리니막"
+      }
+    },
+    {
+      "id": "L12323",
+      "source_row": 12323,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "5"
+      },
+      "edid": "[0604BF34]",
+      "source": "I don't like the feeling of this place. There's something sinister about it.",
+      "visible_length": 76,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[0604BF34]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "0",
+        "same_info_other_parts": [
+          {
+            "part": "1",
+            "source": "Listen, I know I am in no place to make requests right now, but I'd like to ask you for something all the same."
+          },
+          {
+            "part": "2",
+            "source": "When we encounter Jelal, allow me a moment to confront him."
+          },
+          {
+            "part": "3",
+            "source": "I may be able to make him stand down and allow us to recover the rest of the relics without further bloodshed."
+          },
+          {
+            "part": "4",
+            "source": "And in the end, despite the fact that I want nothing more to do with him, I do feel that I at least owe him the chance to face justice,"
+          },
+          {
+            "part": "5",
+            "source": "rather than facing the blade."
+          }
+        ]
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L16441",
+      "source_row": 16441,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "2",
+        "idMax": "6"
+      },
+      "edid": "[063431C7]",
+      "source": "But I feel that many of them may have potential to assist us in uncovering more relics and lore.",
+      "visible_length": 96,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[063431C7]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "2",
+        "same_info_other_parts": [
+          {
+            "part": "0",
+            "source": "Ah, yes, indeed. I wanted to discuss a proposal I have for you regarding the museum and your profession as a relic hunter."
+          },
+          {
+            "part": "1",
+            "source": "There have been many people inquiring about potential work here as of late, spurred on by your success, as it were."
+          },
+          {
+            "part": "3",
+            "source": "My idea was that we could form a guild as such here at the museum, call it the Explorers' Society and members could combine their efforts"
+          },
+          {
+            "part": "4",
+            "source": "to collaborate to investigate more ruins, uncover more legends and lost lore. The fruits of any labor sponsored by the guild would be displayed here."
+          },
+          {
+            "part": "5",
+            "source": "This could take some of the work load off you and provide a new source of people and information that you could utilize on larger ventures."
+          },
+          {
+            "part": "6",
+            "source": "What do you think?"
+          }
+        ]
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L17281",
+      "source_row": 17281,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "2",
+        "idMax": "5"
+      },
+      "edid": "[067B6A1B]",
+      "source": "It looks as if the seal was broken a long time ago, perhaps delivered and then recovered by the original sender?",
+      "visible_length": 112,
+      "category": "dialogue",
+      "stratum": "dialogue_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[067B6A1B]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "2",
+        "same_info_other_parts": [
+          {
+            "part": "0",
+            "source": "Interesting, this is a personal letter from Lord Macnarian to his wife."
+          },
+          {
+            "part": "1",
+            "source": "Niles Macnarian was the benefactor who paid for and oversaw the construction of the original sections of the building."
+          },
+          {
+            "part": "3",
+            "source": "Whatever its fate, the letter almost certainly has something to do with the ghostly presence around here."
+          },
+          {
+            "part": "4",
+            "source": "Let's keep looking about, but do be careful, I think the spirit is starting to become agitated."
+          },
+          {
+            "part": "5",
+            "source": "Several weapons fell off the walls right behind me and many of the dishes in the reception hall flew off the table and landed at my feet."
+          }
+        ]
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L12624",
+      "source_row": 12624,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[060EFCFF]",
+      "source": "Such an impressive space, and so well suited for a museum!",
+      "visible_length": 58,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060EFCFF]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L12265",
+      "source_row": 12265,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "3",
+        "idMax": "4"
+      },
+      "edid": "[0602693C]",
+      "source": "to thwart Dagoth Ur's efforts to build a new Numidium and subsequently conquer Morrowind and all of Tamriel.",
+      "visible_length": 108,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[0602693C]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "3",
+        "same_info_other_parts": [
+          {
+            "part": "0",
+            "source": "And here you will find one of the most valuable displays in all of the museum, the famed Tools of Kagrenac"
+          },
+          {
+            "part": "1",
+            "source": "used by the Tonal Architect Kagrenac, the ancient dwemer sought to harness the power of the Heart of Lorkhan"
+          },
+          {
+            "part": "2",
+            "source": "to infuse the Numidium with enough power to remake the world to their own desires. Later the artifacts were used by the Nerevarine"
+          },
+          {
+            "part": "4",
+            "source": "Now they have a permanent home at the museum."
+          }
+        ]
+      },
+      "glossary": {
+        "Kagrenac": "카그레낙",
+        "Lorkhan": "로칸",
+        "Morrowind": "모로윈드",
+        "Numidium": "누미디움"
+      }
+    },
+    {
+      "id": "L15601",
+      "source_row": 15601,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "1",
+        "idMax": "2"
+      },
+      "edid": "[06166860]",
+      "source": "With the collections growing so quickly, he needed another set of eyes to ensure it's all well protected.",
+      "visible_length": 105,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[06166860]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "1",
+        "same_info_other_parts": [
+          {
+            "part": "0",
+            "source": "You must be the benefactor of this collection. Allow me to introduce myself. I am Avram Shazir. Auryen hired me as the guard captain for the museum."
+          },
+          {
+            "part": "2",
+            "source": "I intend to also hire additional guards as the museum continues to grow. If you need anything, don't hesitate to ask."
+          }
+        ]
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L16229",
+      "source_row": 16229,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[062A87FA]",
+      "source": "Ah, too right. You could use the archaeology station at the base camp out front to put it back together.",
+      "visible_length": 104,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[062A87FA]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L16872",
+      "source_row": 16872,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "3",
+        "idMax": "3"
+      },
+      "edid": "[064F0631]",
+      "source": "If you find some sort of stone archway or circle that you can place the shards in, it sounds like the staff will be reformed. ",
+      "visible_length": 125,
+      "category": "dialogue",
+      "stratum": "dialogue_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[064F0631]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "3",
+        "same_info_other_parts": [
+          {
+            "part": "0",
+            "source": "Well, if I recall, there was a passage in a little known follow up to the song of Hrormir that reads:"
+          },
+          {
+            "part": "1",
+            "source": "\"When staff of ice be broken to one and five, only to be wrought again by forge of ice,"
+          },
+          {
+            "part": "2",
+            "source": "through the eye of stone faced north-south true, placed five and one, then staff show through.\""
+          }
+        ]
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L16853",
+      "source_row": 16853,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "1",
+        "idMax": "1"
+      },
+      "edid": "[064EB465]",
+      "source": "These old Nord ruins are so large and open, anything can fit inside most of them.",
+      "visible_length": 81,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[064EB465]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "1",
+        "same_info_other_parts": [
+          {
+            "part": "0",
+            "source": "Yes, and this is exactly why I prefer to be indoors. Or at least inside a small, confined space inside an ancient ruin."
+          }
+        ]
+      },
+      "glossary": {
+        "Nord": "노드"
+      }
+    },
+    {
+      "id": "L14163",
+      "source_row": 14163,
+      "record": "INFO:NAM1",
+      "record_attributes": {},
+      "edid": "[060F0067]",
+      "source": "I still can't believe you never tried to throw me out on my ear for the things I pulled back then.",
+      "visible_length": 98,
+      "category": "dialogue",
+      "stratum": "dialogue_medium",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060F0067]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L13357",
+      "source_row": 13357,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "1"
+      },
+      "edid": "[060EFDAD]",
+      "source": "We could take a more subtle approach and entertain them while they believe we are packing away the relics for them. Spread them across the museum on a sort of hospitable tour, and you can find whatever means you can to neutralize each of them.",
+      "visible_length": 243,
+      "category": "dialogue",
+      "stratum": "dialogue_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060EFDAD]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "0",
+        "same_info_other_parts": [
+          {
+            "part": "1",
+            "source": "I believe I even have a small tincture of Jarrin root toxin left over from dealing with some rats in the store room a few months ago. I think it's still on the table down there if you need it."
+          }
+        ]
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L15219",
+      "source_row": 15219,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "1",
+        "idMax": "1"
+      },
+      "edid": "[060F03E3]",
+      "source": "Don't worry about the gold.  Just give me another one of those bottles you shared with me the other day and we'll call it even.",
+      "visible_length": 127,
+      "category": "dialogue",
+      "stratum": "dialogue_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060F03E3]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "1",
+        "same_info_other_parts": [
+          {
+            "part": "0",
+            "source": "Sure thing, my dear, not a problem at all."
+          }
+        ]
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L15113",
+      "source_row": 15113,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "1",
+        "idMax": "1"
+      },
+      "edid": "[060F0388]",
+      "source": "I did want to give you this, just a little thank you for your kindness. Verna made it and wanted you to have it. Take care!",
+      "visible_length": 123,
+      "category": "dialogue",
+      "stratum": "dialogue_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[060F0388]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "1",
+        "same_info_other_parts": [
+          {
+            "part": "0",
+            "source": "Thanks. We're making additional plans to get to know each other more, so who knows where things may lead?"
+          }
+        ]
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L16791",
+      "source_row": 16791,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "5",
+        "idMax": "5"
+      },
+      "edid": "[064E0D5E]",
+      "source": "But why would I be having those feelings again suddenly? I haven't been back to the Blue Palace since starting work here, and even so it was never this bad.",
+      "visible_length": 156,
+      "category": "dialogue",
+      "stratum": "dialogue_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[064E0D5E]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "5",
+        "same_info_other_parts": [
+          {
+            "part": "0",
+            "source": "Well, let me think back. There were a few instances where I felt ill at ease or very cold and worried... that's it!"
+          },
+          {
+            "part": "1",
+            "source": "Those feelings are related to the Pelagius wing, I'm certain of it."
+          },
+          {
+            "part": "2",
+            "source": "One time there were some visiting diplomats who had children accompanying them. Some palace doors were left unlocked for maintenance and the children ran off into the Pelagius Wing. I had to go in and fetch them."
+          },
+          {
+            "part": "3",
+            "source": "Ever since then, I had uneasy feelings whenever I would go near that door again."
+          },
+          {
+            "part": "4",
+            "source": "Now that I think back on it, it may have been that uneasy feeling that contributed to my desire to seek employment elsewhere."
+          }
+        ]
+      },
+      "glossary": {
+        "Blue Palace": "푸른 궁전",
+        "Pelagius Wing": "펠라지우스 구역"
+      }
+    },
+    {
+      "id": "L16806",
+      "source_row": 16806,
+      "record": "INFO:NAM1",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "1"
+      },
+      "edid": "[064E0D6F]",
+      "source": "Almost certainly. The gem in fact had been enchanted and re-enchanted a number of times before and during the wolf queen's lifetime, the last of which was to place the madness curse that befell Pelagius when she gave him that amulet.",
+      "visible_length": 233,
+      "category": "dialogue",
+      "stratum": "dialogue_long",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "INFO:NAM1",
+        "editor_id": "[064E0D6F]",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "response_part": "0",
+        "same_info_other_parts": [
+          {
+            "part": "1",
+            "source": "If the gem could be recovered, we could render it inert and cure its hold on Millicent."
+          }
+        ]
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L05541",
+      "source_row": 5541,
+      "record": "MISC:FULL",
+      "record_attributes": {},
+      "edid": "GemSmithsonite",
+      "source": "Smithsonite",
+      "visible_length": 11,
+      "category": "item_ui",
+      "stratum": "item_name",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "MISC:FULL",
+        "editor_id": "GemSmithsonite",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L06060",
+      "source_row": 6060,
+      "record": "WEAP:FULL",
+      "record_attributes": {},
+      "edid": "dunSilentMoonsEnchIronWarAxeREPLICA",
+      "source": "Lunar Iron War Axe (replica)",
+      "visible_length": 28,
+      "category": "item_ui",
+      "stratum": "item_name",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "WEAP:FULL",
+        "editor_id": "dunSilentMoonsEnchIronWarAxeREPLICA",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L02603",
+      "source_row": 2603,
+      "record": "ARMO:FULL",
+      "record_attributes": {},
+      "edid": "DBM_VisageTiberHelmLightDBM",
+      "source": "Helm of Tiber Septim (replica)",
+      "visible_length": 30,
+      "category": "item_ui",
+      "stratum": "item_name",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "ARMO:FULL",
+        "editor_id": "DBM_VisageTiberHelmLightDBM",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {
+        "Tiber Septim": "타이버 셉팀"
+      }
+    },
+    {
+      "id": "L09410",
+      "source_row": 9410,
+      "record": "ARMO:DESC",
+      "record_attributes": {},
+      "edid": "DBM_StonehandsGloves",
+      "source": "Stonehands' Stone Hands. 10 point bonus to Unarmed Attacks and Speechcraft and doubles damage with pickaxes.",
+      "visible_length": 108,
+      "category": "item_ui",
+      "stratum": "effect_description",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "ARMO:DESC",
+        "editor_id": "DBM_StonehandsGloves",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {
+        "Speechcraft": "화술"
+      }
+    },
+    {
+      "id": "L05062",
+      "source_row": 5062,
+      "record": "MISC:FULL",
+      "record_attributes": {},
+      "edid": "DBM_SeaCreatureFossil",
+      "source": "Sea Creature Fossil",
+      "visible_length": 19,
+      "category": "item_ui",
+      "stratum": "item_name",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "MISC:FULL",
+        "editor_id": "DBM_SeaCreatureFossil",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L06028",
+      "source_row": 6028,
+      "record": "WEAP:FULL",
+      "record_attributes": {},
+      "edid": "DBM_TonalStaffREPLICA",
+      "source": "The Tonal Staff of Karagas (replica)",
+      "visible_length": 36,
+      "category": "item_ui",
+      "stratum": "item_name",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "WEAP:FULL",
+        "editor_id": "DBM_TonalStaffREPLICA",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L09223",
+      "source_row": 9223,
+      "record": "MESG:ITXT",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "1"
+      },
+      "edid": "DBM_AlvaroMainMenu",
+      "source": "Keystones to Fragments",
+      "visible_length": 22,
+      "category": "item_ui",
+      "stratum": "ui_message",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "MESG:ITXT",
+        "editor_id": "DBM_AlvaroMainMenu",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L06057",
+      "source_row": 6057,
+      "record": "WEAP:FULL",
+      "record_attributes": {},
+      "edid": "MG07DraugrMagicSwordREPLICA",
+      "source": "Drainheart Sword (replica)",
+      "visible_length": 26,
+      "category": "item_ui",
+      "stratum": "item_name",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "WEAP:FULL",
+        "editor_id": "MG07DraugrMagicSwordREPLICA",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L10952",
+      "source_row": 10952,
+      "record": "WEAP:DESC",
+      "record_attributes": {},
+      "edid": "DBM_BowOfShadows",
+      "source": "Confers the Veil of Shadows ability which allows the user to become invisible and move twice as fast for 30 seconds.",
+      "visible_length": 116,
+      "category": "item_ui",
+      "stratum": "effect_description",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "WEAP:DESC",
+        "editor_id": "DBM_BowOfShadows",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L05136",
+      "source_row": 5136,
+      "record": "MISC:FULL",
+      "record_attributes": {},
+      "edid": "DBM_SafiaSkull",
+      "source": "Skull of Safia",
+      "visible_length": 14,
+      "category": "item_ui",
+      "stratum": "item_name",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "MISC:FULL",
+        "editor_id": "DBM_SafiaSkull",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L02517",
+      "source_row": 2517,
+      "record": "ARMO:FULL",
+      "record_attributes": {},
+      "edid": "DBM_Bandolier2",
+      "source": "Bandolier",
+      "visible_length": 9,
+      "category": "item_ui",
+      "stratum": "item_name",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "ARMO:FULL",
+        "editor_id": "DBM_Bandolier2",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L05035",
+      "source_row": 5035,
+      "record": "MISC:FULL",
+      "record_attributes": {},
+      "edid": "DBM_AncientSwiftFossil",
+      "source": "Ancient Swift Fossil",
+      "visible_length": 20,
+      "category": "item_ui",
+      "stratum": "item_name",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "MISC:FULL",
+        "editor_id": "DBM_AncientSwiftFossil",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L05227",
+      "source_row": 5227,
+      "record": "MISC:FULL",
+      "record_attributes": {},
+      "edid": "DBM_CardDemons09",
+      "source": "Card of Demons: 9",
+      "visible_length": 17,
+      "category": "item_ui",
+      "stratum": "item_name",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "MISC:FULL",
+        "editor_id": "DBM_CardDemons09",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L12176",
+      "source_row": 12176,
+      "record": "MESG:DESC",
+      "record_attributes": {},
+      "edid": "SpringganMSG",
+      "source": "Spriggans are malevolent nature spirits appearing as glowing, green humanoid females made mostly of wood. They can restore themselves to full health easily, and can call various animals to aid them in battle, even normally non-hostile creatures such as foxes and deer. Spriggans also have the ability to summon swarms of insects to attack. They are weak to fire. Spriggans can be an unwanted surprise in seemingly peaceful caves, as they blend in with the foliage using an invisibility spell, then attack when you pass them. Some even seem to inhabit the trunks of trees, stepping from within them when one comes too close.",
+      "visible_length": 623,
+      "category": "item_ui",
+      "stratum": "ui_message",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "MESG:DESC",
+        "editor_id": "SpringganMSG",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {
+        "Spriggans": "스프리건"
+      }
+    },
+    {
+      "id": "L09127",
+      "source_row": 9127,
+      "record": "MESG:ITXT",
+      "record_attributes": {
+        "id": "1",
+        "idMax": "1"
+      },
+      "edid": "perkspendPackItIn1",
+      "source": "No",
+      "visible_length": 2,
+      "category": "item_ui",
+      "stratum": "ui_message",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "MESG:ITXT",
+        "editor_id": "perkspendPackItIn1",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L00053",
+      "source_row": 53,
+      "record": "MGEF:DNAM",
+      "record_attributes": {},
+      "edid": "DBM_EnchFortifyArcheryConstantSelf",
+      "source": "Bows do <mag>% more damage.",
+      "visible_length": 22,
+      "category": "item_ui",
+      "stratum": "effect_description",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "MGEF:DNAM",
+        "editor_id": "DBM_EnchFortifyArcheryConstantSelf",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L12036",
+      "source_row": 12036,
+      "record": "MESG:DESC",
+      "record_attributes": {},
+      "edid": "DBMTWR_EmpowerChoice",
+      "source": "What effect would you like to imbue the Staff of Winterhold with?",
+      "visible_length": 65,
+      "category": "item_ui",
+      "stratum": "ui_message",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "MESG:DESC",
+        "editor_id": "DBMTWR_EmpowerChoice",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {
+        "Winterhold": "윈터홀드"
+      }
+    },
+    {
+      "id": "L00546",
+      "source_row": 546,
+      "record": "ACTI:RNAM",
+      "record_attributes": {},
+      "edid": "DBMBOOKSETACTCharwichKoniinge",
+      "source": "Charwich-Koniinge Letters",
+      "visible_length": 25,
+      "category": "item_ui",
+      "stratum": "ui_message",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "ACTI:RNAM",
+        "editor_id": "DBMBOOKSETACTCharwichKoniinge",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L11567",
+      "source_row": 11567,
+      "record": "PERK:DESC",
+      "record_attributes": {},
+      "edid": "DBM_VisageMaskPerk01",
+      "source": "Increase all skill experience gain by 1 percent for each piece of the visage set equipped.",
+      "visible_length": 90,
+      "category": "item_ui",
+      "stratum": "effect_description",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "PERK:DESC",
+        "editor_id": "DBM_VisageMaskPerk01",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L02191",
+      "source_row": 2191,
+      "record": "ACTI:RNAM",
+      "record_attributes": {},
+      "edid": "DBM_FlagMarkarth",
+      "source": "Plot Course:",
+      "visible_length": 12,
+      "category": "item_ui",
+      "stratum": "ui_message",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "ACTI:RNAM",
+        "editor_id": "DBM_FlagMarkarth",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L02349",
+      "source_row": 2349,
+      "record": "ACTI:RNAM",
+      "record_attributes": {},
+      "edid": "DBM_GearAct",
+      "source": "Place",
+      "visible_length": 5,
+      "category": "item_ui",
+      "stratum": "ui_message",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "ACTI:RNAM",
+        "editor_id": "DBM_GearAct",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L09228",
+      "source_row": 9228,
+      "record": "MESG:ITXT",
+      "record_attributes": {
+        "id": "3",
+        "idMax": "3"
+      },
+      "edid": "DBM_AlvaroMenu2",
+      "source": "Cancel",
+      "visible_length": 6,
+      "category": "item_ui",
+      "stratum": "ui_message",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "MESG:ITXT",
+        "editor_id": "DBM_AlvaroMenu2",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L09292",
+      "source_row": 9292,
+      "record": "MESG:ITXT",
+      "record_attributes": {
+        "id": "2",
+        "idMax": "7"
+      },
+      "edid": "DBM_ToolBagRelicsMSG",
+      "source": "Alvaro's Tools",
+      "visible_length": 14,
+      "category": "item_ui",
+      "stratum": "ui_message",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "MESG:ITXT",
+        "editor_id": "DBM_ToolBagRelicsMSG",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L11810",
+      "source_row": 11810,
+      "record": "MESG:DESC",
+      "record_attributes": {},
+      "edid": "DBM_ArmoryChitinMSG",
+      "source": "Chitin armor forged by the Dunmer ashlanders of Morrowind and Solstheim. Unlike Bonemold crafting which breaks down the raw materials, Chitin armor almost always employs fully intact sections of hard chitinous plating harvested from a number of exoskeleton bearing creatures native to Morrowind's harsh environment.",
+      "visible_length": 315,
+      "category": "item_ui",
+      "stratum": "ui_message",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "MESG:DESC",
+        "editor_id": "DBM_ArmoryChitinMSG",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {
+        "Dunmer": "던머",
+        "Morrowind": "모로윈드",
+        "Solstheim": "솔스트하임"
+      }
+    },
+    {
+      "id": "L09458",
+      "source_row": 9458,
+      "record": "ARMO:DESC",
+      "record_attributes": {},
+      "edid": "DBM_CrusaderShieldHVY",
+      "source": "Shield of the Divine Crusader, gift of Julianos. Shield can reflect spells when blocking back upon the caster.",
+      "visible_length": 110,
+      "category": "item_ui",
+      "stratum": "effect_description",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "ARMO:DESC",
+        "editor_id": "DBM_CrusaderShieldHVY",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {
+        "Julianos": "줄리아노스"
+      }
+    },
+    {
+      "id": "L10973",
+      "source_row": 10973,
+      "record": "WEAP:DESC",
+      "record_attributes": {},
+      "edid": "DBM_Chrysamere",
+      "source": "Paladin's Boon provides defense against fire, magic, and increased health regeneration. Attacks repel undead.",
+      "visible_length": 109,
+      "category": "item_ui",
+      "stratum": "effect_description",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "WEAP:DESC",
+        "editor_id": "DBM_Chrysamere",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {
+        "regeneration": "재생"
+      }
+    },
+    {
+      "id": "L09368",
+      "source_row": 9368,
+      "record": "SPEL:DESC",
+      "record_attributes": {},
+      "edid": "DBM_GhostHelmABIL",
+      "source": "Increases all Magic skills 10 points. Reduces damage taken 25% and reduces physical damage dealt 10%.",
+      "visible_length": 101,
+      "category": "item_ui",
+      "stratum": "effect_description",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "SPEL:DESC",
+        "editor_id": "DBM_GhostHelmABIL",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L09371",
+      "source_row": 9371,
+      "record": "SPEL:DESC",
+      "record_attributes": {},
+      "edid": "DBMTWR_MorthalBattleaxeBuff",
+      "source": "Resist disease increased 50 percent and damage to vampires increased 10 percent.",
+      "visible_length": 80,
+      "category": "item_ui",
+      "stratum": "effect_description",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "SPEL:DESC",
+        "editor_id": "DBMTWR_MorthalBattleaxeBuff",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {
+        "Resist": "저항"
+      }
+    },
+    {
+      "id": "L10954",
+      "source_row": 10954,
+      "record": "WEAP:DESC",
+      "record_attributes": {},
+      "edid": "DBM_AncientTonguesStaffDUMMY",
+      "source": "Deals level-scaled fire, frost and shock damage, regenerates charges when equipped, additional 5 percent spell damage and 20 percent magicka regeneration",
+      "visible_length": 153,
+      "category": "item_ui",
+      "stratum": "effect_description",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "WEAP:DESC",
+        "editor_id": "DBM_AncientTonguesStaffDUMMY",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {
+        "regeneration": "재생"
+      }
+    },
+    {
+      "id": "L09335",
+      "source_row": 9335,
+      "record": "SPEL:DESC",
+      "record_attributes": {},
+      "edid": "DBM_VisageArctusRingAbility01",
+      "source": "When the Visage set is fully equipped, all items can be enchanted with one extra effect.",
+      "visible_length": 88,
+      "category": "item_ui",
+      "stratum": "effect_description",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "SPEL:DESC",
+        "editor_id": "DBM_VisageArctusRingAbility01",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L08510",
+      "source_row": 8510,
+      "record": "QUST:NNAM",
+      "record_attributes": {
+        "id": "2",
+        "idMax": "5"
+      },
+      "edid": "DBM_ArtifactOrderQuest",
+      "source": "Reconstruct a <Alias=Artifact3>",
+      "visible_length": 13,
+      "category": "quest",
+      "stratum": "quest_objective",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:NNAM",
+        "editor_id": "DBM_ArtifactOrderQuest",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Rebuilding The Past"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L08319",
+      "source_row": 8319,
+      "record": "QUST:NNAM",
+      "record_attributes": {
+        "id": "12",
+        "idMax": "46"
+      },
+      "edid": "DBM_ShatteredLegacy",
+      "source": "Return to Argus",
+      "visible_length": 15,
+      "category": "quest",
+      "stratum": "quest_objective",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:NNAM",
+        "editor_id": "DBM_ShatteredLegacy",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Shattered Legacy"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L08205",
+      "source_row": 8205,
+      "record": "QUST:NNAM",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "23"
+      },
+      "edid": "DBM_ExplorerRelicFindQST",
+      "source": "Find Schneider's Sextant",
+      "visible_length": 24,
+      "category": "quest",
+      "stratum": "quest_objective",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:NNAM",
+        "editor_id": "DBM_ExplorerRelicFindQST",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Tools of the Trade"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L08173",
+      "source_row": 8173,
+      "record": "QUST:NNAM",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "3"
+      },
+      "edid": "DBM_MalrusCodexQST",
+      "source": "Find the Nordic Runestone",
+      "visible_length": 25,
+      "category": "quest",
+      "stratum": "quest_objective",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:NNAM",
+        "editor_id": "DBM_MalrusCodexQST",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "The Book of Wonders"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L08077",
+      "source_row": 8077,
+      "record": "QUST:NNAM",
+      "record_attributes": {
+        "id": "12",
+        "idMax": "24"
+      },
+      "edid": "DBM_Excavation01",
+      "source": "Check back with the expedition in a few days or help dig",
+      "visible_length": 56,
+      "category": "quest",
+      "stratum": "quest_objective",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:NNAM",
+        "editor_id": "DBM_Excavation01",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "The Excavation of Windcaller Pass"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L08175",
+      "source_row": 8175,
+      "record": "QUST:NNAM",
+      "record_attributes": {
+        "id": "2",
+        "idMax": "3"
+      },
+      "edid": "DBM_MalrusCodexQST",
+      "source": "Find the Dwemer Monument",
+      "visible_length": 24,
+      "category": "quest",
+      "stratum": "quest_objective",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:NNAM",
+        "editor_id": "DBM_MalrusCodexQST",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "The Book of Wonders"
+      },
+      "glossary": {
+        "Dwemer": "드웨머"
+      }
+    },
+    {
+      "id": "L08285",
+      "source_row": 8285,
+      "record": "QUST:NNAM",
+      "record_attributes": {
+        "id": "30",
+        "idMax": "42"
+      },
+      "edid": "DBM_Excavation03A",
+      "source": "Investigate the temple",
+      "visible_length": 22,
+      "category": "quest",
+      "stratum": "quest_objective",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:NNAM",
+        "editor_id": "DBM_Excavation03A",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Trial of Trinimac"
+      },
+      "glossary": {
+        "Trinimac": "트리니막"
+      }
+    },
+    {
+      "id": "L08344",
+      "source_row": 8344,
+      "record": "QUST:NNAM",
+      "record_attributes": {
+        "id": "37",
+        "idMax": "46"
+      },
+      "edid": "DBM_ShatteredLegacy",
+      "source": "Return to Auryen",
+      "visible_length": 16,
+      "category": "quest",
+      "stratum": "quest_objective",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:NNAM",
+        "editor_id": "DBM_ShatteredLegacy",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Shattered Legacy"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L07940",
+      "source_row": 7940,
+      "record": "QUST:NNAM",
+      "record_attributes": {},
+      "edid": "DBM_AMJournalQST07",
+      "source": "Locate the Warlock's Ring",
+      "visible_length": 25,
+      "category": "quest",
+      "stratum": "quest_objective",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:NNAM",
+        "editor_id": "DBM_AMJournalQST07",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Auryen's Notes: The Warlock's Ring"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L08178",
+      "source_row": 8178,
+      "record": "QUST:NNAM",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "25"
+      },
+      "edid": "DBM_hauntedMuseumQuest",
+      "source": "Give Ikard time to investigate",
+      "visible_length": 30,
+      "category": "quest",
+      "stratum": "quest_objective",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:NNAM",
+        "editor_id": "DBM_hauntedMuseumQuest",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Night at the Museum"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L11177",
+      "source_row": 11177,
+      "record": "QUST:CNAM",
+      "record_attributes": {},
+      "edid": "DBM_OreProspectQuest",
+      "source": "Kyre at the Explorer's Guild has offered to prospect ore for me. He's said that he has a knack for finding hidden gems or trace other elements in the ore. If I bring him five of one sample, he might find something interesting.",
+      "visible_length": 226,
+      "category": "quest",
+      "stratum": "quest_journal",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:CNAM",
+        "editor_id": "DBM_OreProspectQuest",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L11133",
+      "source_row": 11133,
+      "record": "QUST:CNAM",
+      "record_attributes": {
+        "id": "1",
+        "idMax": "9"
+      },
+      "edid": "DBM_HandofGloryQuest",
+      "source": "I have met Greigor of the Dark Brotherhood who has told me of the Hand of Glory and how I can obtain it. I should venture to the Glacial Cave on Solstheim to find the hanged man's hand and find the fat from someone wrongfully executed and return to Greigor. I believe Roggvir who was executed in Solitude would be a good bet.",
+      "visible_length": 325,
+      "category": "quest",
+      "stratum": "quest_journal",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:CNAM",
+        "editor_id": "DBM_HandofGloryQuest",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "The Hand of Glory"
+      },
+      "glossary": {
+        "Dark Brotherhood": "다크 브라더후드",
+        "Solstheim": "솔스트하임",
+        "Solitude": "솔리튜드"
+      }
+    },
+    {
+      "id": "L11183",
+      "source_row": 11183,
+      "record": "QUST:CNAM",
+      "record_attributes": {
+        "id": "5",
+        "idMax": "28"
+      },
+      "edid": "DBM_Excavation02",
+      "source": "I should check back with the excavation at Rkund and see if they have made any progress.",
+      "visible_length": 88,
+      "category": "quest",
+      "stratum": "quest_journal",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:CNAM",
+        "editor_id": "DBM_Excavation02",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "The Excavation of the Ruins of Rkund"
+      },
+      "glossary": {
+        "Ruins of Rkund": "르쿤드의 폐허"
+      }
+    },
+    {
+      "id": "L11353",
+      "source_row": 11353,
+      "record": "QUST:CNAM",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "5"
+      },
+      "edid": "DBM_RadiantFindersKeepers",
+      "source": "<Alias=Auryen> has given me information on a possible rare artifact that could be located in or around <Alias=CurrentRelicLocation>. If I find myself in the area I should look around to see what I can discover.",
+      "visible_length": 167,
+      "category": "quest",
+      "stratum": "quest_journal",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:CNAM",
+        "editor_id": "DBM_RadiantFindersKeepers",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Finders Keepers"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L11497",
+      "source_row": 11497,
+      "record": "QUST:CNAM",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "38"
+      },
+      "edid": "DBM_VigilantsQuest1",
+      "source": "A group of Vigilants of Stendarr have descended on the museum and are demanding the Daedric relics be turned over to them for destruction!  We shall see how this plays out!",
+      "visible_length": 172,
+      "category": "quest",
+      "stratum": "quest_journal",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:CNAM",
+        "editor_id": "DBM_VigilantsQuest1",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "The Price of Vigilants"
+      },
+      "glossary": {
+        "Stendarr": "스텐다르"
+      }
+    },
+    {
+      "id": "L11043",
+      "source_row": 11043,
+      "record": "QUST:CNAM",
+      "record_attributes": {
+        "id": "0",
+        "idMax": "2"
+      },
+      "edid": "DBM_AMJournalQST08",
+      "source": "Auryen's research notes indicate that the Dragonmail Cuirass, once a very unique relic and still quite powerful by all standards, may have made it's way to Skyrim or Solstheim by way of a Telvanni wizard murderer. I should be cautious and watchful should I have any dealings with any Telvanni.",
+      "visible_length": 293,
+      "category": "quest",
+      "stratum": "quest_journal",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:CNAM",
+        "editor_id": "DBM_AMJournalQST08",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Auryen's Notes: The Dragonmail Cuirass"
+      },
+      "glossary": {
+        "Skyrim": "스카이림",
+        "Solstheim": "솔스트하임",
+        "Cuirass": "흉갑"
+      }
+    },
+    {
+      "id": "L11340",
+      "source_row": 11340,
+      "record": "QUST:CNAM",
+      "record_attributes": {
+        "id": "29",
+        "idMax": "41"
+      },
+      "edid": "DBM_Excavation03A",
+      "source": "I have done it! Deep within Darkfall Passage I have found a Glacial Crevice which has a massive Snow Elf temple of some kind looming over the spans. I should return to the explorers and inform them of the find at once.",
+      "visible_length": 218,
+      "category": "quest",
+      "stratum": "quest_journal",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:CNAM",
+        "editor_id": "DBM_Excavation03A",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Trial of Trinimac"
+      },
+      "glossary": {
+        "Trinimac": "트리니막"
+      }
+    },
+    {
+      "id": "L11027",
+      "source_row": 11027,
+      "record": "QUST:CNAM",
+      "record_attributes": {
+        "id": "2",
+        "idMax": "2"
+      },
+      "edid": "DBM_AMJournalQST01",
+      "source": "I have found Auryen's notes on The Dagger of Symmachus, but I already found it. He really should stop leaving these superfluous notes lying around.",
+      "visible_length": 147,
+      "category": "quest",
+      "stratum": "quest_journal",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:CNAM",
+        "editor_id": "DBM_AMJournalQST01",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Auryen's Notes: Dagger of Symmachus"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L11208",
+      "source_row": 11208,
+      "record": "QUST:CNAM",
+      "record_attributes": {
+        "id": "1",
+        "idMax": "37"
+      },
+      "edid": "DBM_MuchAdoAboutSnowElves",
+      "source": "Calcelmo has given me his research notes which should shed some light on and offer good leads on discovering the truth about the lost elven race. I'll have a read through them.",
+      "visible_length": 176,
+      "category": "quest",
+      "stratum": "quest_journal",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:CNAM",
+        "editor_id": "DBM_MuchAdoAboutSnowElves",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Much Ado About Snow Elves"
+      },
+      "glossary": {}
+    },
+    {
+      "id": "L11131",
+      "source_row": 11131,
+      "record": "QUST:CNAM",
+      "record_attributes": {
+        "id": "3",
+        "idMax": "3"
+      },
+      "edid": "DBM_DwarvenTech",
+      "source": "Madras has deciphered the Dwemer schematics for me and taught me what knowledge they hold. If there are any others out there, I should keep an eye out and bring them to him.",
+      "visible_length": 173,
+      "category": "quest",
+      "stratum": "quest_journal",
+      "context": {
+        "game": "The Elder Scrolls V: Skyrim",
+        "mod": "Legacy of the Dragonborn v6.7.2",
+        "record": "QUST:CNAM",
+        "editor_id": "DBM_DwarvenTech",
+        "speaker": "unknown",
+        "speaker_relationship": "unknown",
+        "record_title": "Ancient Technology"
+      },
+      "glossary": {
+        "Dwemer": "드웨머"
+      }
+    }
+  ]
+}

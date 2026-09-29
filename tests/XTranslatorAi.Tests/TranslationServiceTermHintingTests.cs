@@ -13,6 +13,7 @@ using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Translation;
 using XTranslatorAi.Core.Text;
+using XTranslatorAi.Tests.TestSupport;
 using Xunit;
 
 namespace XTranslatorAi.Tests;
@@ -68,9 +69,7 @@ public sealed class TranslationServiceTermHintingTests
         }
         finally
         {
-            TryDelete(path);
-            TryDelete(path + "-wal");
-            TryDelete(path + "-shm");
+            TestDbHelper.TryDeleteDbFiles(path);
         }
     }
 
@@ -146,21 +145,6 @@ public sealed class TranslationServiceTermHintingTests
                 .ToArray(),
             CancellationToken.None
         );
-    }
-
-    private static void TryDelete(string path)
-    {
-        try
-        {
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-        }
-        catch
-        {
-            // ignore
-        }
     }
 
     private sealed class RecordingPromptGeminiHandler : HttpMessageHandler

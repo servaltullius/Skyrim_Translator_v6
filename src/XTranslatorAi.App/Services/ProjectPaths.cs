@@ -24,9 +24,10 @@ public static class ProjectPaths
         return root;
     }
 
-    public static string GetProjectDbPath(string addonName, string sourceLang, string destLang)
+    // Legacy path, retained only for safe migration of existing installations.
+    public static string GetProjectDbPath(string addonName, string sourceLang, string destLang, string? projectsRootOverride = null)
     {
-        var baseDir = GetProjectsBaseDir();
+        var baseDir = projectsRootOverride ?? GetProjectsBaseDir();
         Directory.CreateDirectory(baseDir);
 
         var addonStem = Path.GetFileNameWithoutExtension((addonName ?? "").Trim());
@@ -38,9 +39,31 @@ public static class ProjectPaths
         return Path.Combine(baseDir, $"{safeAddon}.{safeSourceLang}-{safeDestLang}.{hash}.sqlite");
     }
 
-    public static string GetLegacyProjectDbPath(string inputXmlPath)
+    public static string GetProjectDbPath(
+        BethesdaFranchise franchise, string addonName, string sourceLang, string destLang,
+        string? projectsRootOverride = null, string? inputPathForUnnamedProject = null)
     {
-        var baseDir = GetProjectsBaseDir();
+        var franchiseDir = franchise switch
+        {
+            BethesdaFranchise.ElderScrolls => "elder-scrolls",
+            BethesdaFranchise.Fallout => "fallout",
+            BethesdaFranchise.Starfield => "starfield",
+            _ => throw new ArgumentOutOfRangeException(nameof(franchise)),
+        };
+        var baseDir = Path.Combine(projectsRootOverride ?? GetProjectsBaseDir(), franchiseDir);
+        var name = (addonName ?? "").Trim();
+        // Without an Addon name, the source path is the only available project identity.
+        var identity = name.Length == 0
+            ? Path.GetFullPath(inputPathForUnnamedProject ?? throw new ArgumentException("An unnamed project requires its input path."))
+            : name;
+        var hash = ShortHash($"{identity.ToLowerInvariant()}|{sourceLang.Trim().ToLowerInvariant()}|{destLang.Trim().ToLowerInvariant()}");
+        var stem = SanitizeFileNameStem(Path.GetFileNameWithoutExtension(name), "project");
+        return Path.Combine(baseDir, $"{stem}.{SanitizeFileNameStem(sourceLang, "src")}-{SanitizeFileNameStem(destLang, "dst")}.{hash}.sqlite");
+    }
+
+    public static string GetLegacyProjectDbPath(string inputXmlPath, string? projectsRootOverride = null)
+    {
+        var baseDir = projectsRootOverride ?? GetProjectsBaseDir();
         Directory.CreateDirectory(baseDir);
 
         var fileName = Path.GetFileNameWithoutExtension(inputXmlPath);

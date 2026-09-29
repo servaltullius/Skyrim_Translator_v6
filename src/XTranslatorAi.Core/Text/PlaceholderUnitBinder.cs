@@ -14,6 +14,8 @@ internal static class PlaceholderUnitBinder
     private const string UnitPerSecondTag = "<XT_PER_SEC>";
     private const string UnitPointsTag = "<XT_PT>";
 
+    private static readonly Dictionary<string, Regex> RegexCache = new(StringComparer.Ordinal);
+
     private static readonly Regex PerSecondRegex = new(
         pattern: @"\b(?:per|every|each)\s+second\b",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
@@ -231,10 +233,21 @@ internal static class PlaceholderUnitBinder
     );
 
     private static string RemoveInvisibleSeparators(string text)
+        => TranslationConstants.RemoveInvisibleSeparators(text);
+
+    private static Regex GetOrCreateRegex(string pattern)
     {
-        return text.Replace("\u200B", "", StringComparison.Ordinal)
-            .Replace("\uFEFF", "", StringComparison.Ordinal)
-            .Replace("\u2060", "", StringComparison.Ordinal);
+        lock (RegexCache)
+        {
+            if (RegexCache.TryGetValue(pattern, out var cached))
+            {
+                return cached;
+            }
+
+            var regex = new Regex(pattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+            RegexCache[pattern] = regex;
+            return regex;
+        }
     }
 
     private static string? TryGetRateTokenPatternFromSource(string sourceText)
@@ -293,7 +306,7 @@ internal static class PlaceholderUnitBinder
             return text;
         }
 
-        var tokenRegex = new Regex(tokenPattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        var tokenRegex = GetOrCreateRegex(tokenPattern);
         var m = tokenRegex.Match(text);
         if (!m.Success)
         {
@@ -303,15 +316,17 @@ internal static class PlaceholderUnitBinder
         var working = text.Insert(m.Index, rateWord + " ");
 
         // Improve spacing in common Korean outputs (e.g., "대상에게초당 <mag>" -> "대상에게 초당 <mag>").
-        working = Regex.Replace(
+        var spacingPattern = @"(?<prev>[가-힣A-Za-z])" + Regex.Escape(rateWord) + @"\b";
+        var spacingRegex = GetOrCreateRegex(spacingPattern);
+        working = spacingRegex.Replace(
             working,
-            @"(?<prev>[가-힣A-Za-z])" + Regex.Escape(rateWord) + @"\b",
-            m2 => m2.Groups["prev"].Value + " " + rateWord,
-            RegexOptions.CultureInvariant
+            m2 => m2.Groups["prev"].Value + " " + rateWord
         );
 
         // Avoid duplicate spaces created by insertion.
-        working = Regex.Replace(working, Regex.Escape(rateWord) + @"\s+<", rateWord + " <", RegexOptions.CultureInvariant);
+        var dupSpacePattern = Regex.Escape(rateWord) + @"\s+<";
+        var dupSpaceRegex = GetOrCreateRegex(dupSpacePattern);
+        working = dupSpaceRegex.Replace(working, rateWord + " <");
 
         return working;
     }

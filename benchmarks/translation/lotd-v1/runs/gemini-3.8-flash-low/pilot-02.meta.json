@@ -1,0 +1,13 @@
+{
+  "model": "gemini-3.8-flash",
+  "route": "Google AI Studio",
+  "thinking": "Low",
+  "inputFile": "prompts/pilot-02.txt",
+  "inputVerified": true,
+  "apiKeySelected": false,
+  "tools": false,
+  "usage": null,
+  "uiElapsedSeconds": 1.9,
+  "rawRead": "response editor",
+  "savedAt": "2026-09-29T00:35:05.543Z"
+}

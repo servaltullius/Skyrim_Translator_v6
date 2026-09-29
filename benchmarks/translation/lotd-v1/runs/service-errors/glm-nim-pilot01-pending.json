@@ -1,0 +1,11 @@
+{
+  "model": "z-ai/glm-5.3-flash",
+  "route": "NVIDIA NIM Playground",
+  "batch": "pilot-01",
+  "inputVerified": true,
+  "reasoning": "ON (default)",
+  "status": "No final response; UI remained Thinking during other model tests",
+  "startedApproximate": "2026-09-29T09:35:00+09:00",
+  "recordedAt": "2026-09-29T00:51:47.602Z",
+  "usage": null
+}

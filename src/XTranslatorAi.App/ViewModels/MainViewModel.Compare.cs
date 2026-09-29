@@ -9,6 +9,7 @@ using XTranslatorAi.App.Services;
 using XTranslatorAi.Core.Diagnostics;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text;
+using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.App.ViewModels;
 
@@ -18,34 +19,27 @@ public partial class MainViewModel
 
     [ObservableProperty] private bool _compareIncludeProjectGlossary = true;
     [ObservableProperty] private bool _compareIncludeGlobalGlossary = true;
-    [ObservableProperty] private bool _compareIncludeGlobalTranslationMemory = true;
+    [ObservableProperty] private bool _compareIncludeFranchiseTranslationMemory = true;
 
-    [ObservableProperty] private string _compare1Model = "gemini-3-flash-preview";
+    [ObservableProperty] private string _compare1Model = GeminiModelCatalog.DefaultModel;
     [ObservableProperty] private bool _compare1ThinkingOff;
     [ObservableProperty] private string _compare1Status = "";
     [ObservableProperty] private string _compare1Output = "";
     [ObservableProperty] private bool _compare1IsRunning;
 
-    [ObservableProperty] private string _compare2Model = "gemini-3-flash-preview";
+    [ObservableProperty] private string _compare2Model = GeminiModelCatalog.LowCostModel;
     [ObservableProperty] private bool _compare2ThinkingOff = true;
     [ObservableProperty] private string _compare2Status = "";
     [ObservableProperty] private string _compare2Output = "";
     [ObservableProperty] private bool _compare2IsRunning;
 
-    [ObservableProperty] private string _compare3Model = "gemini-2.5-flash-lite";
+    [ObservableProperty] private string _compare3Model = "gemini-3.5-flash-lite";
     [ObservableProperty] private bool _compare3ThinkingOff;
     [ObservableProperty] private string _compare3Status = "";
     [ObservableProperty] private string _compare3Output = "";
     [ObservableProperty] private bool _compare3IsRunning;
 
-    public string[] CompareGeminiModelCandidates { get; } =
-    {
-        "gemini-3-flash-preview",
-        "gemini-3.1-flash-lite-preview",
-        "gemini-3-flash",
-        "gemini-2.5-flash",
-        "gemini-2.5-flash-lite",
-    };
+    public IReadOnlyList<string> CompareGeminiModelCandidates => GeminiModelCatalog.PreferredModels;
 
     public System.Collections.IEnumerable Compare1AvailableModels => GetCompareGeminiModels();
     public System.Collections.IEnumerable Compare2AvailableModels => GetCompareGeminiModels();
@@ -82,21 +76,23 @@ public partial class MainViewModel
     private string BuildCompareSelectedEntrySummary() => BuildCompareSelectedEntrySummary(SelectedEntry);
 
     [RelayCommand]
-    private async Task RunCompare1Async() => await RunCompareSlotAsync(slot: 1);
+    private Task RunCompare1Async() => RunProjectOperationAsync("Compare", token => RunCompareSlotAsync(1, token));
 
     [RelayCommand]
-    private async Task RunCompare2Async() => await RunCompareSlotAsync(slot: 2);
+    private Task RunCompare2Async() => RunProjectOperationAsync("Compare", token => RunCompareSlotAsync(2, token));
 
     [RelayCommand]
-    private async Task RunCompare3Async() => await RunCompareSlotAsync(slot: 3);
+    private Task RunCompare3Async() => RunProjectOperationAsync("Compare", token => RunCompareSlotAsync(3, token));
 
     [RelayCommand]
-    private async Task RunCompareAllAsync()
+    private Task RunCompareAllAsync() => RunProjectOperationAsync("Compare", async token =>
     {
-        await RunCompareSlotAsync(slot: 1);
-        await RunCompareSlotAsync(slot: 2);
-        await RunCompareSlotAsync(slot: 3);
-    }
+        for (var slot = 1; slot <= 3; slot++)
+        {
+            token.ThrowIfCancellationRequested();
+            await RunCompareSlotAsync(slot, token);
+        }
+    });
 
     [RelayCommand]
     private void ClearCompareOutputs()
@@ -109,8 +105,9 @@ public partial class MainViewModel
         Compare3Output = "";
     }
 
-    private async Task RunCompareSlotAsync(int slot)
+    private async Task RunCompareSlotAsync(int slot, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         if (IsCompareSlotRunning(slot))
         {
             return;
@@ -125,12 +122,19 @@ public partial class MainViewModel
         SetCompareStatus(slot, "Running...");
         try
         {
-            var globalGlossary = CompareIncludeGlobalGlossary ? await TryLoadGlobalGlossaryAsync() : null;
-            var globalTranslationMemory = CompareIncludeGlobalTranslationMemory ? await TryLoadGlobalTranslationMemoryAsync() : null;
-            var request = BuildCompareRequest(context, globalGlossary, globalTranslationMemory);
+            var globalGlossary = CompareIncludeGlobalGlossary ? await TryLoadGlobalGlossaryAsync(cancellationToken) : null;
+            var franchiseTranslationMemory = CompareIncludeFranchiseTranslationMemory ? await TryLoadFranchiseTranslationMemoryAsync(cancellationToken) : null;
+            cancellationToken.ThrowIfCancellationRequested();
+            var request = BuildCompareRequest(context, globalGlossary, franchiseTranslationMemory);
 
-            var result = await _compareTranslationService.RunAsync(request, CancellationToken.None);
+            var result = await _compareTranslationService.RunAsync(request, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             ApplyCompareResult(slot, result);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            SetCompareStatus(slot, "중지됨");
+            throw;
         }
         catch (Exception ex)
         {
@@ -147,7 +151,7 @@ public partial class MainViewModel
     private CompareTranslationService.Request BuildCompareRequest(
         CompareExecutionContext context,
         IReadOnlyList<GlossaryEntry>? globalGlossary,
-        IReadOnlyDictionary<string, string>? globalTranslationMemory
+        IReadOnlyDictionary<string, string>? franchiseTranslationMemory
     )
     {
         var maxOut = ComputeMaxOutputTokens(context.ModelName);
@@ -180,7 +184,7 @@ public partial class MainViewModel
             RiskyCandidateCount: RiskyCandidateCount,
             IncludeProjectGlossary: CompareIncludeProjectGlossary,
             GlobalGlossary: globalGlossary,
-            GlobalTranslationMemory: globalTranslationMemory
+            GlobalTranslationMemory: franchiseTranslationMemory
         );
     }
 
@@ -222,7 +226,7 @@ public partial class MainViewModel
     {
         context = default!;
 
-        if (IsTranslating)
+        if (IsTranslating || !IsWorkspaceInteractive)
         {
             SetCompareStatus(slot, "번역 중에는 Compare 실행을 잠시 멈춰주세요.");
             return false;

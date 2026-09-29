@@ -73,6 +73,10 @@ public sealed partial class TranslationService
             {
                 return await TranslateBatchOnceAsync(currentCtx, batch, userPrompt);
             }
+            catch (OperationCanceledException) when (ctx.CancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 if (currentCtx.PromptCache != null && IsCachedContentInvalid(ex))
@@ -87,6 +91,7 @@ public sealed partial class TranslationService
                     }
                     catch (Exception ex2)
                     {
+                        ctx.CancellationToken.ThrowIfCancellationRequested();
                         currentCtx = noCacheCtx;
                         ex = ex2;
                     }
@@ -106,7 +111,7 @@ public sealed partial class TranslationService
                 var delay = ComputeRetryDelay(ex, attempt);
                 if (IsRateLimit(ex))
                 {
-                    RegisterAdaptiveRateLimit();
+                    Ctx.AdaptiveConcurrency.RegisterRateLimit();
                     ExtendGlobalThrottle(delay);
                 }
                 await Task.Delay(delay, currentCtx.CancellationToken);
@@ -129,7 +134,7 @@ public sealed partial class TranslationService
         var promptOnlySet = new HashSet<(string Source, string Target)>(new SourceTargetComparer());
         foreach (var it in batch)
         {
-            var rec = _useRecStyleHints ? GetRecForId(it.Id) : null;
+            var rec = Ctx.UseRecStyleHints ? GetRecForId(it.Id) : null;
             var dialogueContextWindow = GetDialogueContextWindowForId(it.Id);
             var maskedForPrompt = PlaceholderSemanticHintInjector.Inject(targetLang, it.Masked);
             maskedForPrompt = GlossarySemanticHintInjector.Inject(targetLang, maskedForPrompt, it.Glossary.TokenToReplacement);
@@ -279,7 +284,7 @@ public sealed partial class TranslationService
             string candidate;
             try
             {
-                candidate = EnsureTokensPreservedOrRepair(
+                candidate = TokenSanitizer.EnsureTokensPreservedOrRepair(
                     it.Masked,
                     output,
                     context: $"id={it.Id}",
@@ -297,7 +302,7 @@ public sealed partial class TranslationService
                 continue;
             }
 
-            if (ctx.EnableRepairPass && NeedsPlaceholderSemanticRepair(it.Masked, candidate, ctx.TargetLang, _semanticRepairMode))
+            if (ctx.EnableRepairPass && TokenSanitizer.NeedsPlaceholderSemanticRepair(it.Masked, candidate, ctx.TargetLang, Ctx.SemanticRepairMode))
             {
                 needsRepair!.Add(new PendingRepair(it.Id, it.Source, it.Masked, it.Glossary, candidate));
                 continue;

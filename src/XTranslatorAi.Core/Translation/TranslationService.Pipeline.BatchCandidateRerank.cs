@@ -11,7 +11,7 @@ public sealed partial class TranslationService
         IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> batch
     )
     {
-        if (batch.Count == 0)
+        if (batch.Count == 0 || !GeminiModelPolicy.SupportsMultipleCandidates(ctx.ModelName))
         {
             return 1;
         }
@@ -30,14 +30,14 @@ public sealed partial class TranslationService
 
     private int GetRiskyCandidateCountForSource(string targetLang, string sourceText)
     {
-        if (!_enableRiskyCandidateRerank
+        if (!Ctx.EnableRiskyCandidateRerank
             || !LanguageHelper.IsKoreanLanguage(targetLang)
             || !IsStructuralRiskSourceText(sourceText))
         {
             return 1;
         }
 
-        return Math.Clamp(_riskyCandidateCount, 2, 8);
+        return Math.Clamp(Ctx.RiskyCandidateCount, 2, 8);
     }
 
     private static bool IsStructuralRiskSourceText(string sourceText)
@@ -137,7 +137,7 @@ public sealed partial class TranslationService
             string candidate;
             try
             {
-                candidate = EnsureTokensPreservedOrRepair(
+                candidate = TokenSanitizer.EnsureTokensPreservedOrRepair(
                     it.Masked,
                     output,
                     context: $"id={it.Id} candidate-rerank",
@@ -151,7 +151,7 @@ public sealed partial class TranslationService
                 continue;
             }
 
-            if (NeedsPlaceholderSemanticRepair(it.Masked, candidate, ctx.TargetLang, _semanticRepairMode))
+            if (TokenSanitizer.NeedsPlaceholderSemanticRepair(it.Masked, candidate, ctx.TargetLang, Ctx.SemanticRepairMode))
             {
                 score -= 60;
             }

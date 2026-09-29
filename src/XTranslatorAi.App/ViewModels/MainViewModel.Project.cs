@@ -19,30 +19,53 @@ public partial class MainViewModel
     [RelayCommand]
     private async Task OpenXmlAsync()
     {
-        StopTranslation();
-
+        if (!IsWorkspaceInteractive) return;
         var xmlPath = PromptOpenXmlPath();
         if (xmlPath == null)
         {
             return;
         }
 
-        StatusMessage = "Importing XML...";
-        await DisposeProjectDbAsync();
-        ResetProjectState();
-
+        _isSwitchingProject = true;
+        NotifyWorkspaceAvailability();
+        using var loadCancellation = new CancellationTokenSource();
+        _projectLoadCancellation = loadCancellation;
         try
         {
-            await LoadProjectFromXmlAsync(xmlPath);
+            await StopAllProjectOperationsAsync();
+            loadCancellation.Token.ThrowIfCancellationRequested();
+            StatusMessage = "Importing XML...";
+            await DisposeProjectDbAsync();
+            ResetProjectState();
+            await LoadProjectFromXmlAsync(xmlPath, loadCancellation.Token);
 
             IsProjectLoaded = true;
             StatusMessage = $"Loaded {TotalCount} strings from {Path.GetFileName(xmlPath)}";
         }
+        catch (OperationCanceledException) when (loadCancellation.IsCancellationRequested)
+        {
+            await DisposeProjectDbAsync();
+            ResetProjectState();
+            StatusMessage = "XML 불러오기를 중지했습니다.";
+        }
         catch (Exception ex)
         {
             SetUserFacingError("XML 로드", ex);
-            ResetProjectState();
-            await DisposeProjectDbAsync();
+            try
+            {
+                await DisposeProjectDbAsync();
+            }
+            finally
+            {
+                ResetProjectState();
+            }
+        }
+        finally
+        {
+            _isSwitchingProject = false;
+            _projectLoadCancellation = null;
+            if (!_isClosing) _projectOperations.Resume();
+            NotifyWorkspaceAvailability();
         }
     }
 
@@ -56,10 +79,15 @@ public partial class MainViewModel
 
     private void ResetProjectState()
     {
+        ClearPendingRowUpdates();
         IsProjectLoaded = false;
         _projectState.Clear();
         OnPropertyChanged(nameof(CurrentXmlFileName));
         ProjectContextPreview = "";
+        SelectedEntry = null;
+        TotalCount = 0;
+        DoneCount = 0;
+        PendingCount = 0;
     }
 
     private async Task DisposeProjectDbAsync()
@@ -67,7 +95,7 @@ public partial class MainViewModel
         await _projectState.DisposeDbAsync();
     }
 
-    private async Task LoadProjectFromXmlAsync(string xmlPath)
+    private async Task LoadProjectFromXmlAsync(string xmlPath, CancellationToken cancellationToken = default)
     {
         var result = await _projectWorkspaceService.LoadFromXmlAsync(
             new ProjectWorkspaceService.LoadFromXmlRequest(
@@ -77,7 +105,7 @@ public partial class MainViewModel
                 CustomPromptText: CustomPromptText,
                 UseCustomPrompt: UseCustomPrompt
             ),
-            CancellationToken.None
+            cancellationToken
         );
 
         _projectState.SetWorkspace(result.Db, result.XmlInfo, result.InputXmlPath);
@@ -87,14 +115,17 @@ public partial class MainViewModel
         SourceLang = result.SourceLang;
         TargetLang = result.TargetLang;
 
-        await _bundledFranchiseTmSeedService.EnsureSeedAsync(SelectedFranchise, CancellationToken.None);
+        cancellationToken.ThrowIfCancellationRequested();
+        await _bundledFranchiseTmSeedService.EnsureSeedAsync(SelectedFranchise, cancellationToken);
         await TryAutoImportFranchiseTranslationMemoryAsync();
 
+        cancellationToken.ThrowIfCancellationRequested();
         await ReloadGlossaryAsync();
         await ReloadGlobalGlossaryAsync();
         await ReloadFranchiseTranslationMemoryAsync();
         await ReloadProjectContextAsync();
         await LoadEntriesAsync();
+        cancellationToken.ThrowIfCancellationRequested();
     }
 
     [RelayCommand(CanExecute = nameof(CanExport))]
@@ -206,7 +237,7 @@ public partial class MainViewModel
 
                 loaded.Add(vm);
 
-                if (row.Status == StringEntryStatus.Done)
+                if (row.Status == StringEntryStatus.Done || row.Status == StringEntryStatus.Edited)
                 {
                     done++;
                 }

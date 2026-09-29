@@ -1,0 +1,1351 @@
+{
+  "schema_version": 1,
+  "review_type": "independent_ai_blind_review",
+  "human_evaluation": false,
+  "input_file": "artifacts/improvement-20260928/blind-review-input.json",
+  "date": "2026-09-28",
+  "blindness": {
+    "candidate_labels_only": [
+      "A",
+      "B",
+      "C"
+    ],
+    "model_identity_consulted": false,
+    "other_candidate_result_sources_consulted": false
+  },
+  "method": {
+    "basis": "source, context, meaning, required literals",
+    "reference_policy": "reference는 입력에 보였으나 문자 일치 또는 단일 정답으로 채점하지 않았다. 허용 가능한 한국어 변형은 감점하지 않았다.",
+    "scale": {
+      "0": "실사용 의미 문제 없이 허용 가능한 번역",
+      "1": "경미한 어색함 또는 용어 선택 확인 필요",
+      "2": "의미 수정 필요",
+      "3": "큰 오역"
+    },
+    "uncertainty_policy": "원문 지시·게임 고유 용어·지리·인명 음역이 불명확하면 uncertain을 기록하고 확정적 큰 오역으로 집계하지 않았다."
+  },
+  "cases": [
+    {
+      "id": "01",
+      "evaluations": {
+        "A": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "흡수 대상은 체력이며 <mag> 양과 <dur> 시간이 구분된다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "<mag>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "<dur>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "생명력은 Health의 허용 가능한 번역이며 양과 시간이 보존된다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "<mag>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "<dur>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "포인트 단위를 명시하지 않았지만 생명력의 양과 지속시간이 구분되어 수량 의미는 유지된다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "<mag>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "<dur>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "02",
+      "evaluations": {
+        "A": {
+          "score": 1,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [
+            "전달 대상과 개봉 금지는 맞지만 '(에게)' 괄호 표기가 부자연스럽다."
+          ],
+          "rationale": "전달 대상과 개봉 금지는 맞지만 '(에게)' 괄호 표기가 부자연스럽다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "<Alias=Recipient>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "개봉 금지와 수신자에게 돌려주는 행동을 모두 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "<Alias=Recipient>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "C": {
+          "score": 1,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [
+            "개봉 금지와 반환은 맞지만 사람인 Recipient에 '(으)로'를 붙여 조사가 어색하다."
+          ],
+          "rationale": "개봉 금지와 반환은 맞지만 사람인 Recipient에 '(으)로'를 붙여 조사가 어색하다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "<Alias=Recipient>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "03",
+      "evaluations": {
+        "A": {
+          "score": 1,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [
+            "추가 소지 불가 의미는 맞다. '%s(을)를'의 조사 선택 표기와 '가질' 표현이 다소 어색하다."
+          ],
+          "rationale": "추가 소지 불가 의미는 맞다. '%s(을)를'의 조사 선택 표기와 '가질' 표현이 다소 어색하다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "%s",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "소지 한도와 %s 변수를 자연스럽게 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "%s",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "C": {
+          "score": 1,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [
+            "소지 한도는 맞지만 '%s(을)를'는 일반적인 '을(를)' 조사 선택 표기와 다르다."
+          ],
+          "rationale": "소지 한도는 맞지만 '%s(을)를'는 일반적인 '을(를)' 조사 선택 표기와 다르다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "%s",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "04",
+      "evaluations": {
+        "A": {
+          "score": 1,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [
+            "두 재료의 개수는 맞다. strips를 '조각'으로 넓혀 옮겼으므로 끈/띠 계열의 재료명 확인이 필요하다."
+          ],
+          "rationale": "두 재료의 개수는 맞다. strips를 '조각'으로 넓혀 옮겼으므로 끈/띠 계열의 재료명 확인이 필요하다.",
+          "uncertain": true,
+          "uncertainty_note": "제시 문맥만으로 해당 용어/해석을 확정할 수 없어 큰 의미오류로 단정하지 않았다.",
+          "literal_checks": [
+            {
+              "literal": "{0}",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "{1}",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "철 주괴와 가죽끈의 개수를 올바르게 대응시킨다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "{0}",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "{1}",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "재료 두 종류와 각 개수의 대응을 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "{0}",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "{1}",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "05",
+      "evaluations": {
+        "A": {
+          "score": 1,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [
+            "두 번의 종, 응답 없음, 새벽의 열린 문과 줄/페이지 구분은 보존한다. '동트 무렵'은 '동틀 무렵'으로 다듬을 필요가 있다."
+          ],
+          "rationale": "두 번의 종, 응답 없음, 새벽의 열린 문과 줄/페이지 구분은 보존한다. '동트 무렵'은 '동틀 무렵'으로 다듬을 필요가 있다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "\n",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "[pagebreak]",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "사건 순서와 새벽 시점, 문이 열려 있던 상태를 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "\n",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "[pagebreak]",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "횟수·무응답·새벽의 상태와 문서 경계를 보존하며 원인을 추가하지 않는다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "\n",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "[pagebreak]",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "06",
+      "evaluations": {
+        "A": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "화염 저항의 25% 감소와 markup을 정확히 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "<font color='#FF0000'>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "</font>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "25%",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "감소하는 대상과 수치, 경고 markup이 맞다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "<font color='#FF0000'>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "</font>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "25%",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "저항 감소를 피해 감소로 바꾸지 않았고 수치와 markup이 유지된다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "<font color='#FF0000'>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "</font>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "25%",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "07",
+      "evaluations": {
+        "A": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "설치형 폭발물은 벽에 놓는 폭약이라는 제공 문맥에 맞는 명사다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "폭발물 명사로 문맥을 올바르게 구분한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "공격/충전이 아닌 폭약으로 해석한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        }
+      }
+    },
+    {
+      "id": "08",
+      "evaluations": {
+        "A": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "병사에게 공격을 명령하는 말로 자연스럽다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "간결한 돌격 명령으로 적절하다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "지휘관의 돌격 명령을 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        }
+      }
+    },
+    {
+      "id": "09",
+      "evaluations": {
+        "A": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "배터리를 채우는 충전 행동으로 해석한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "유지보수 메뉴의 충전 동작과 맞다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "가격이나 폭약 대신 충전 동작을 선택한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        }
+      }
+    },
+    {
+      "id": "10",
+      "evaluations": {
+        "A": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "최대 세 명이라는 상한과 같은 적 중복 타격 금지가 모두 유지된다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "정확히 세 명으로 고정하지 않고 중복 대상 금지도 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "상한과 서로 다른 적이라는 제약이 유지된다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        }
+      }
+    },
+    {
+      "id": "11",
+      "evaluations": {
+        "A": {
+          "score": 1,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [
+            "공격 또는 발각 시 종료하는 조건은 맞다. '와드'는 한국어 UI에서 용어 확인이 필요한 직역 음차다."
+          ],
+          "rationale": "공격 또는 발각 시 종료하는 조건은 맞다. '와드'는 한국어 UI에서 용어 확인이 필요한 직역 음차다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "공격과 발각 중 어느 하나도 종료 조건이라는 의미를 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "보호막 유지의 예외 조건 두 가지가 보존된다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        }
+      }
+    },
+    {
+      "id": "12",
+      "evaluations": {
+        "A": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "중갑이 없는 아군만 대상이며 완전 비무장을 요구하지 않는다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "대상·중갑 제외 조건·only 제한이 정확하다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "C": {
+          "score": 1,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [
+            "중갑 제외 조건은 맞다. '동료'가 전체 아군보다 동행 NPC로 좁게 읽힐 수 있어 용어 확인이 필요하다."
+          ],
+          "rationale": "중갑 제외 조건은 맞다. '동료'가 전체 아군보다 동행 NPC로 좁게 읽힐 수 있어 용어 확인이 필요하다.",
+          "uncertain": true,
+          "uncertainty_note": "제시 문맥만으로 해당 용어/해석을 확정할 수 없어 큰 의미오류로 단정하지 않았다.",
+          "literal_checks": []
+        }
+      }
+    },
+    {
+      "id": "13",
+      "evaluations": {
+        "A": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "의도적인 두 웃음 박자를 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "두 번의 반복을 유지한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "반복을 줄이지 않고 두 박자를 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        }
+      }
+    },
+    {
+      "id": "14",
+      "evaluations": {
+        "A": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "정직한 친구라는 반어와 열쇠에 관한 빈정거림을 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "반어적 인사와 도둑질을 에둘러 의심하는 말투가 살아 있다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "돌아온 도둑을 향한 조롱으로 읽히며 우정을 문자 그대로 부정하지 않는다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        }
+      }
+    },
+    {
+      "id": "15",
+      "evaluations": {
+        "A": {
+          "score": 1,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [
+            "등불을 켜 둔 행동과 공손함은 맞다. '머물다 가실'은 결국 떠난다는 뉘앙스를 추가하므로 희망 섞인 staying 질문에서는 다듬을 여지가 있다."
+          ],
+          "rationale": "등불을 켜 둔 행동과 공손함은 맞다. '머물다 가실'은 결국 떠난다는 뉘앙스를 추가하므로 희망 섞인 staying 질문에서는 다듬을 여지가 있다.",
+          "uncertain": true,
+          "uncertainty_note": "제시 문맥만으로 해당 용어/해석을 확정할 수 없어 큰 의미오류로 단정하지 않았다.",
+          "literal_checks": []
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "지시를 따른 지속 행동과 예의 바른 기대 섞인 질문을 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "C": {
+          "score": 1,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [
+            "계속 켜 둠과 높임말은 맞다. '머물다 가실'은 원문보다 일시 방문의 느낌이 강해 조정할 여지가 있다."
+          ],
+          "rationale": "계속 켜 둠과 높임말은 맞다. '머물다 가실'은 원문보다 일시 방문의 느낌이 강해 조정할 여지가 있다.",
+          "uncertain": true,
+          "uncertainty_note": "제시 문맥만으로 해당 용어/해석을 확정할 수 없어 큰 의미오류로 단정하지 않았다.",
+          "literal_checks": []
+        }
+      }
+    },
+    {
+      "id": "16",
+      "evaluations": {
+        "A": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "블랙리치 지하를 찾고 위쪽 유적을 제외하는 방향이 유지된다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "블랙리치",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "B": {
+          "score": 2,
+          "meaning_errors": [
+            "'블랙리치 위쪽에 있는 유적 안이 아니다'를 '유적 위가 아니다'로 바꾸어 제외 위치의 관계가 달라졌다."
+          ],
+          "style_or_terminology_notes": [],
+          "rationale": "'블랙리치 위쪽에 있는 유적 안이 아니다'를 '유적 위가 아니다'로 바꾸어 제외 위치의 관계가 달라졌다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "블랙리치",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "C": {
+          "score": 1,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [
+            "블랙리치 아래라는 목적지는 맞다. 'above it'을 '지상'으로 특정하여 원문에 없는 지리 정보를 좁혀 해석했다. 유적이 실제 지상인지는 제시문만으로 확정되지 않는다."
+          ],
+          "rationale": "블랙리치 아래라는 목적지는 맞다. 'above it'을 '지상'으로 특정하여 원문에 없는 지리 정보를 좁혀 해석했다. 유적이 실제 지상인지는 제시문만으로 확정되지 않는다.",
+          "uncertain": true,
+          "uncertainty_note": "제시 문맥만으로 해당 용어/해석을 확정할 수 없어 큰 의미오류로 단정하지 않았다.",
+          "literal_checks": [
+            {
+              "literal": "블랙리치",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "17",
+      "evaluations": {
+        "A": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "두 약품의 고유 역할과 스팀팩의 방사능 제거 불가를 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "라드어웨이",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "스팀팩",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "제거와 회복 기능을 구분하고 부정 조건도 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "라드어웨이",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "스팀팩",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "용어집과 약품별 기능, 명시적 부정을 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "라드어웨이",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "스팀팩",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "18",
+      "evaluations": {
+        "A": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "격리 구역 접근보다 전원 차단이 먼저이며 두 지정 용어도 맞다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "중력 드라이브",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "테러모프",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "전원 차단과 접근의 순서 및 용어집을 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "중력 드라이브",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "테러모프",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "선행 조치와 접근 대상, 지정 용어가 유지된다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "중력 드라이브",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "테러모프",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "19",
+      "evaluations": {
+        "A": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "불씨가 사그라듦과 이름의 기억 회복, 예언조와 이탤릭을 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "<i>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "</i>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "꺼지는 불씨와 이름을 기억하는 주체, 예언 문체를 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "<i>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "</i>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "엄숙한 예언조와 사건/주체 및 markup이 유지된다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "<i>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "</i>",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "20",
+      "evaluations": {
+        "A": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "실드의 충전 상태를 나타내는 HUD로 읽히며 두 printf 요소가 그대로다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "%0.1f",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "%%",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "충전량과 printf 서식을 명료하게 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "%0.1f",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "%%",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "C": {
+          "score": 1,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [
+            "충전량과 서식은 맞다. '방패'가 물리적 방패를 뜻하면 보호막과 달라질 수 있으나 source/context가 shield 종류를 확정하지 않아 의미오류로 단정하지 않는다."
+          ],
+          "rationale": "충전량과 서식은 맞다. '방패'가 물리적 방패를 뜻하면 보호막과 달라질 수 있으나 source/context가 shield 종류를 확정하지 않아 의미오류로 단정하지 않는다.",
+          "uncertain": true,
+          "uncertainty_note": "제시 문맥만으로 해당 용어/해석을 확정할 수 없어 큰 의미오류로 단정하지 않았다.",
+          "literal_checks": [
+            {
+              "literal": "%0.1f",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "%%",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "21",
+      "evaluations": {
+        "A": {
+          "score": 1,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [
+            "마라 소유 외투의 전달과 나중의 필요는 유지된다. Rhea를 '리'로 적은 표기와 자신을 '선장'으로 지칭하는 문장은 확인/다듬기가 필요하다."
+          ],
+          "rationale": "마라 소유 외투의 전달과 나중의 필요는 유지된다. Rhea를 '리'로 적은 표기와 자신을 '선장'으로 지칭하는 문장은 확인/다듬기가 필요하다.",
+          "uncertain": true,
+          "uncertainty_note": "she의 지시와 인명 음역에는 여지가 있다. 제공 meaning이 정한 외투 소유자는 마라로 평가하되 참고 번역의 문구를 정답으로 강제하지 않았다.",
+          "literal_checks": []
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "자기 코트의 소유자와 전달 방향, 나중의 필요를 보존한다. '선장'이 마라라는 연결을 원문처럼 남긴 것은 다른 인물을 발명한 것으로 단정하지 않는다.",
+          "uncertain": true,
+          "uncertainty_note": "she의 지시와 인명 음역에는 여지가 있다. 제공 meaning이 정한 외투 소유자는 마라로 평가하되 참고 번역의 문구를 정답으로 강제하지 않았다.",
+          "literal_checks": []
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "마라의 외투를 레아에게 준다는 관계와 나중의 필요를 유지한다. '선장'이라는 재지칭은 원문에도 있어 확정 오역으로 세지 않는다.",
+          "uncertain": true,
+          "uncertainty_note": "she의 지시와 인명 음역에는 여지가 있다. 제공 meaning이 정한 외투 소유자는 마라로 평가하되 참고 번역의 문구를 정답으로 강제하지 않았다.",
+          "literal_checks": []
+        }
+      }
+    },
+    {
+      "id": "22",
+      "evaluations": {
+        "A": {
+          "score": 2,
+          "meaning_errors": [
+            "after sunset을 '해 질 무렵'으로 바꾸었다. 해가 진 뒤라는 시간 조건을 해가 지는 전후로 넓혀 행동 시점이 달라진다."
+          ],
+          "style_or_terminology_notes": [],
+          "rationale": "after sunset을 '해 질 무렵'으로 바꾸었다. 해가 진 뒤라는 시간 조건을 해가 지는 전후로 넓혀 행동 시점이 달라진다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "일몰 이후라는 시점과 병참 담당자에게 말하는 목표를 보존한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "해가 진 후와 보급 담당자라는 목표 조건이 정확하다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        }
+      }
+    },
+    {
+      "id": "23",
+      "evaluations": {
+        "A": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "미끼는 수상한 일거리의 비유로 자연스럽게 읽히고 빈 상자 과다 보수의 의심이 유지된다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "비유적 경고와 비정상적으로 큰 보수라는 근거가 보존된다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        },
+        "C": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "함정에 대한 경고와 빈 상자에 큰돈을 줄 리 없다는 의미가 유지된다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": []
+        }
+      }
+    },
+    {
+      "id": "24",
+      "evaluations": {
+        "A": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "합류 주체·%s 소유 관계·환영과 두 player 변수 및 개행을 유지한다. '환영합니다'는 aboard의 상황을 앞 문장에서 받아 자연스럽게 축약한 것으로 본다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "{playerName}",
+              "expected_count": 2,
+              "actual_count": 2,
+              "pass": true
+            },
+            {
+              "literal": "%s",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "\n",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "B": {
+          "score": 0,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [],
+          "rationale": "합류 주체와 crew 소유자, 승선 환영 및 모든 변수를 유지한다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "{playerName}",
+              "expected_count": 2,
+              "actual_count": 2,
+              "pass": true
+            },
+            {
+              "literal": "%s",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "\n",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        },
+        "C": {
+          "score": 1,
+          "meaning_errors": [],
+          "style_or_terminology_notes": [
+            "사건과 소유 관계, 환영과 변수는 맞다. '크루'와 소유자에게까지 붙인 '님'은 시스템 문구의 용어/문체를 통일할 여지가 있다."
+          ],
+          "rationale": "사건과 소유 관계, 환영과 변수는 맞다. '크루'와 소유자에게까지 붙인 '님'은 시스템 문구의 용어/문체를 통일할 여지가 있다.",
+          "uncertain": false,
+          "uncertainty_note": null,
+          "literal_checks": [
+            {
+              "literal": "{playerName}",
+              "expected_count": 2,
+              "actual_count": 2,
+              "pass": true
+            },
+            {
+              "literal": "%s",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            },
+            {
+              "literal": "\n",
+              "expected_count": 1,
+              "actual_count": 1,
+              "pass": true
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "summary": {
+    "candidates": [
+      {
+        "candidate": "A",
+        "n": 24,
+        "score_counts": {
+          "0": 16,
+          "1": 7,
+          "2": 1,
+          "3": 0
+        },
+        "meaning_correction_case_ids": [
+          "22"
+        ],
+        "uncertain_case_ids": [
+          "04",
+          "15",
+          "21"
+        ],
+        "all_required_literal_checks_pass": true
+      },
+      {
+        "candidate": "B",
+        "n": 24,
+        "score_counts": {
+          "0": 23,
+          "1": 0,
+          "2": 1,
+          "3": 0
+        },
+        "meaning_correction_case_ids": [
+          "16"
+        ],
+        "uncertain_case_ids": [
+          "21"
+        ],
+        "all_required_literal_checks_pass": true
+      },
+      {
+        "candidate": "C",
+        "n": 24,
+        "score_counts": {
+          "0": 17,
+          "1": 7,
+          "2": 0,
+          "3": 0
+        },
+        "meaning_correction_case_ids": [],
+        "uncertain_case_ids": [
+          "12",
+          "15",
+          "16",
+          "20",
+          "21"
+        ],
+        "all_required_literal_checks_pass": true
+      }
+    ],
+    "observations": [
+      "확정적으로 수정이 필요한 의미 차이는 A의 22번 시간 조건과 B의 16번 위치 관계였다.",
+      "A의 가죽 재료명/Rhea 표기, C의 동료·지상·방패 등은 용어 또는 불확실한 해석으로 분리했다.",
+      "21번의 she 지시와 선장 재지칭은 원문 자체의 여지가 있어 reference와 다른 표현만으로 오역 처리하지 않았다.",
+      "요구된 태그·변수·개행·지정 용어의 literal checks는 세 후보 모두 통과했다. 이는 의미 정확도 전체를 증명하지 않는다."
+    ],
+    "limitations": [
+      "24개의 합성 문장과 후보별 한 번의 출력에 대한 단일 독립 AI 검토다.",
+      "사람 평가가 아니며 평가자 자체의 한국어/게임 용어 판단에 오류가 있을 수 있다.",
+      "일반적인 모델 우열, 통계적 신뢰구간 또는 다른 입력에서의 성능을 주장하지 않는다.",
+      "점수는 순서형 분류이며 점수 합계·평균을 일반 번역 품질 척도로 해석하지 않는다.",
+      "uncertain 사례를 포함하므로 실제 모드 문맥과 용어집 확인 후 점수가 달라질 수 있다."
+    ]
+  }
+}

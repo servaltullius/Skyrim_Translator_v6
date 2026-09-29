@@ -19,7 +19,7 @@ public partial class MainViewModel
         return false;
     }
 
-    private async Task TryPreloadContextsAsync()
+    private async Task TryPreloadContextsAsync(CancellationToken cancellationToken)
     {
         if (EnableProjectContext && !string.IsNullOrWhiteSpace(ApiKey))
         {
@@ -28,8 +28,12 @@ public partial class MainViewModel
                 // Generate once so all batches share the same context.
                 if (string.IsNullOrWhiteSpace(ProjectContextPreview))
                 {
-                    await GenerateProjectContextAsync();
+                    await GenerateProjectContextCoreAsync(cancellationToken);
                 }
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
             }
             catch
             {
@@ -45,10 +49,9 @@ public partial class MainViewModel
         _resumeTcs = null;
         _inProgressSinceTranslationStart.Clear();
         StatusMessage = "Translating...";
-        DoneCount = 0;
     }
 
-    private async Task SaveProjectInfoAsync()
+    private async Task SaveProjectInfoAsync(CancellationToken cancellationToken = default)
     {
         var db = _projectState.Db;
         var xmlInfo = _projectState.XmlInfo;
@@ -76,11 +79,11 @@ public partial class MainViewModel
                 CreatedAt: now,
                 UpdatedAt: now
             ),
-            CancellationToken.None
+            cancellationToken
         );
     }
 
-    private async Task ResetNonEditedTranslationsAsync()
+    private async Task PrepareTranslationsForResumeAsync(CancellationToken cancellationToken)
     {
         var db = _projectState.Db;
         if (db == null)
@@ -88,24 +91,25 @@ public partial class MainViewModel
             return;
         }
 
-        // Always start fresh: discard previous AI translations (keep only manual edits).
-        await db.ResetNonEditedTranslationsAsync(CancellationToken.None);
-        await db.DeleteStringNotesByKindAsync(TranslationConstants.TmHitNoteKind, CancellationToken.None);
+        // Resume unfinished rows without discarding completed translations or manual edits.
+        await db.ResetInProgressToPendingAsync(cancellationToken);
+        DoneCount = 0;
         foreach (var vm in Entries)
         {
-            if (vm.Status == StringEntryStatus.Edited)
+            if (vm.Status == StringEntryStatus.Done || vm.Status == StringEntryStatus.Edited)
             {
+                DoneCount++;
                 continue;
             }
-
-            vm.Status = StringEntryStatus.Pending;
-            vm.ErrorMessage = null;
-            vm.DestText = "";
-            vm.IsTranslationMemoryApplied = false;
+            if (vm.Status == StringEntryStatus.InProgress)
+            {
+                vm.Status = StringEntryStatus.Pending;
+                vm.ErrorMessage = null;
+            }
         }
     }
 
-    private async Task<IReadOnlyList<long>> LoadPendingIdsAsync()
+    private async Task<IReadOnlyList<long>> LoadPendingIdsAsync(CancellationToken cancellationToken)
     {
         var db = _projectState.Db;
         if (db == null)
@@ -113,7 +117,7 @@ public partial class MainViewModel
             return Array.Empty<long>();
         }
 
-        var ids = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending }, CancellationToken.None);
+        var ids = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending, StringEntryStatus.Error }, cancellationToken);
         PendingCount = ids.Count;
         return ids;
     }

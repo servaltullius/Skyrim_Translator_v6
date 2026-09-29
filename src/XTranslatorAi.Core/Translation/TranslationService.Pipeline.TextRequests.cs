@@ -79,6 +79,10 @@ public sealed partial class TranslationService
             {
                 return await TranslateUserPromptOnceAsync(currentRequest, userPrompt);
             }
+            catch (OperationCanceledException) when (request.CancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 if (currentRequest.PromptCache != null && IsCachedContentInvalid(ex))
@@ -94,6 +98,7 @@ public sealed partial class TranslationService
                     }
                     catch (Exception ex2)
                     {
+                        currentRequest.CancellationToken.ThrowIfCancellationRequested();
                         currentRequest = noCacheRequest;
                         ex = ex2;
                     }
@@ -143,6 +148,10 @@ public sealed partial class TranslationService
             {
                 return await TranslateUserPromptCandidatesOnceAsync(currentRequest, userPrompt);
             }
+            catch (OperationCanceledException) when (request.CancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 if (currentRequest.PromptCache != null && IsCachedContentInvalid(ex))
@@ -156,6 +165,7 @@ public sealed partial class TranslationService
                     }
                     catch (Exception ex2)
                     {
+                        currentRequest.CancellationToken.ThrowIfCancellationRequested();
                         currentRequest = noCacheRequest;
                         ex = ex2;
                     }
@@ -225,7 +235,7 @@ public sealed partial class TranslationService
         var delay = ComputeRetryDelay(ex, attempt);
         if (IsRateLimit(ex))
         {
-            RegisterAdaptiveRateLimit();
+            Ctx.AdaptiveConcurrency.RegisterRateLimit();
             ExtendGlobalThrottle(delay);
         }
         await Task.Delay(delay, cancellationToken);
@@ -400,7 +410,7 @@ public sealed partial class TranslationService
             score -= 10;
         }
 
-        if (NeedsPlaceholderSemanticRepair(text, normalized, request.TargetLang, _semanticRepairMode))
+        if (TokenSanitizer.NeedsPlaceholderSemanticRepair(text, normalized, request.TargetLang, Ctx.SemanticRepairMode))
         {
             score -= 40;
         }
@@ -435,7 +445,7 @@ public sealed partial class TranslationService
         string translated
     )
     {
-        var cleaned = SanitizeModelTranslationText(translated, text);
+        var cleaned = TokenSanitizer.SanitizeModelTranslationText(translated, text);
         cleaned = PlaceholderSemanticHintInjector.Strip(cleaned);
         cleaned = GlossarySemanticHintInjector.Strip(cleaned);
         if (!cleaned.Contains(TranslationConstants.EndSentinelToken, StringComparison.Ordinal))
@@ -443,7 +453,7 @@ public sealed partial class TranslationService
             // The sentinel can be dropped/mangled even when the translation is otherwise fine.
             // If the output passes token integrity + anti-omission checks without the sentinel, accept it.
             // Otherwise, the caller will split and retry with smaller chunks.
-            var ensured = EnsureTokensPreservedOrRepair(
+            var ensured = TokenSanitizer.EnsureTokensPreservedOrRepair(
                 text,
                 cleaned,
                 sentinelContext.Context,
@@ -453,7 +463,7 @@ public sealed partial class TranslationService
             return ensured.TrimEnd();
         }
 
-        var validated = EnsureTokensPreservedOrRepair(
+        var validated = TokenSanitizer.EnsureTokensPreservedOrRepair(
             validateInputWithSentinel,
             cleaned,
             sentinelContext.Context,
@@ -528,13 +538,13 @@ public sealed partial class TranslationService
         return s.Trim();
     }
 
-    private static GeminiThinkingConfig? GetThinkingConfigForModel(string modelName)
+    internal static GeminiThinkingConfig? GetThinkingConfigForModel(string modelName)
     {
         return GeminiModelPolicy.GetThinkingConfigForTranslation(modelName);
     }
 
     private GeminiThinkingConfig? GetEffectiveThinkingConfigForModel(string modelName)
     {
-        return _thinkingConfigOverride ?? GetThinkingConfigForModel(modelName);
+        return Ctx.ThinkingConfigOverride ?? GetThinkingConfigForModel(modelName);
     }
 }

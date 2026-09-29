@@ -7,7 +7,7 @@ namespace XTranslatorAi.Core.Translation;
 
 public sealed partial class TranslationService
 {
-    private sealed class SessionTermMemory
+    internal sealed class SessionTermMemory
     {
         private sealed record SessionTermEntry(string Target, string Token);
 

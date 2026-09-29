@@ -63,6 +63,9 @@ public interface IGeminiCallLogger
     void Log(GeminiCallLogEntry entry);
 }
 
+/// <summary>CompletionTokens includes final output and billed thinking tokens, when reported by the API.</summary>
+public sealed record GeminiGenerationResult(string Text, int? PromptTokens, int? CompletionTokens, int? CachedContentTokens);
+
 public sealed record GeminiGenerateContentRequest(
     [property: JsonPropertyName("contents")] List<GeminiContent> Contents,
     [property: JsonPropertyName("cachedContent")] string? CachedContent,
@@ -77,7 +80,8 @@ public sealed record GeminiContent(
 );
 
 public sealed record GeminiPart(
-    [property: JsonPropertyName("text")] string Text
+    [property: JsonPropertyName("text")] string Text,
+    [property: JsonPropertyName("thought")] bool? Thought = null
 );
 
 public sealed record GeminiGenerationConfig(

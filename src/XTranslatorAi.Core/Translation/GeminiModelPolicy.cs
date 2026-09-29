@@ -48,7 +48,15 @@ internal static class GeminiModelPolicy
             return null;
         }
 
-        // Gemini 3 Flash Lite: use "high" thinking for better translation quality.
+        // Exact stable IDs match the recorded LOTD web comparison. This sets the
+        // same thinking level; it does not establish app-level translation quality.
+        if (m.Equals(GeminiModelCatalog.DefaultModel, StringComparison.OrdinalIgnoreCase))
+            return new GeminiThinkingConfig(ThinkingBudget: null, ThinkingLevel: "low");
+        if (m.Equals(GeminiModelCatalog.LowCostModel, StringComparison.OrdinalIgnoreCase))
+            return new GeminiThinkingConfig(ThinkingBudget: null, ThinkingLevel: "minimal");
+
+        // Preserve the existing Flash-Lite translation setting. Quality must be
+        // evaluated separately; high thinking is not proof of a better translation.
         if (IsGemini3FlashLite(m))
         {
             return new GeminiThinkingConfig(ThinkingBudget: null, ThinkingLevel: "high");
@@ -84,36 +92,42 @@ internal static class GeminiModelPolicy
 
     internal static double? GetTemperatureForTranslation(string modelName, double temperature)
     {
-        // For Gemini 3, Google recommends using the model default temperature (1.0) to avoid looping or degraded
-        // performance from explicitly setting low values. We omit the field to use API defaults.
+        // Gemini 3.6+/3.5 Flash-Lite deprecate sampling controls. Keep them omitted
+        // throughout Gemini 3; this also preserves the older models' API defaults.
+        // https://ai.google.dev/gemini-api/docs/latest-model (2026-09-28)
         var m = NormalizeModelName(modelName);
-        if (IsGemini3FlashLite(m))
-        {
-            return null;
-        }
-
-        if (IsGemini3(m))
-        {
-            return null;
-        }
-
-        if (IsGemini25FlashLite(m))
-        {
-            return null;
-        }
-
-        return temperature;
+        // Unversioned aliases may change their target. Unknown model capabilities
+        // must not inherit legacy sampling controls merely because they are not 3.x.
+        return SupportsLegacySamplingControls(m) && !IsGemini25FlashLite(m) ? temperature : null;
     }
 
-    internal static bool IsGemini3FlashPreview(string modelName)
+    internal static GeminiThinkingConfig? GetLowThinkingConfigForTranslation(string modelName)
     {
-        var m = NormalizeModelName(modelName);
-        return IsGemini3Flash(m) && !IsGemini3FlashLite(m) && m.Contains("-preview", StringComparison.OrdinalIgnoreCase);
+        var model = NormalizeModelName(modelName);
+        if (model.Equals(GeminiModelCatalog.LowCostModel, StringComparison.OrdinalIgnoreCase))
+            return new GeminiThinkingConfig(ThinkingBudget: null, ThinkingLevel: "minimal");
+        if (IsGemini3(model))
+        {
+            // Gemini 3.8 supports low/medium/high; minimal and budget=0 are invalid.
+            return new GeminiThinkingConfig(ThinkingBudget: null, ThinkingLevel: "low");
+        }
+        if (IsGemini25Flash(model))
+        {
+            return new GeminiThinkingConfig(ThinkingBudget: 0);
+        }
+        return null;
     }
 
-    internal static bool IsGemini3FlashLitePreview(string modelName)
+    /// <summary>
+    /// Enables candidateCount only for known legacy models. New models and mutable
+    /// aliases use API defaults until their capabilities have been verified.
+    /// </summary>
+    internal static bool SupportsMultipleCandidates(string modelName)
     {
-        var m = NormalizeModelName(modelName);
-        return IsGemini3FlashLite(m);
+        return SupportsLegacySamplingControls(NormalizeModelName(modelName));
     }
+
+    private static bool SupportsLegacySamplingControls(string modelName)
+        => modelName.ToLowerInvariant() is "gemini-2.5-flash" or "gemini-2.5-flash-lite" or "gemini-2.5-pro"
+            or "gemini-2.0-flash" or "gemini-2.0-flash-001" or "gemini-2.0-flash-lite" or "gemini-2.0-flash-lite-001";
 }

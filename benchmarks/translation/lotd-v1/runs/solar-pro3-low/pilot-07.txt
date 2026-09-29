@@ -1,0 +1,7 @@
+{"translations":[{"id":"L02603","text":"타이버 셉팀 왕관 (replica)"},{"id":"L09410","text":"Stonehands의 Stone Hands. 주먹 공격과 화술에 10점 보너스, 곡괭이 피해 두 배로 증가."},{"id":"L05062","text":"Sea Creature Fossil"},{"id":"L06028","text":"Karagas의 Tonal Staff (replica)"},{"id":"L08510","text":"<Alias=Artifact3> 재구성"},{"id":"L08319","text":"Argus에게 귀환"}]
+
+{"translations":[{"id":"L02603","text":"타이버 셉팀 왕관 (replica)"},{"id":"L09410","text":"Stonehands의 Stone Hands. 주먹 공격과 화술에 10점 보너스, 곡괭이 피해 두 배로 증가."},{"id":"L05062","text":"Sea Creature Fossil"},{"id":"L06028","text":"Karagas의 Tonal Staff (replica)"},{"id":"L08510","text":"<Alias=Artifact3> 재구성"},{"id":"L08319","text":"Argus에게 귀환"}]
+
+{"translations":[{"id":"L02603","text":"타이버 셉팀 왕관 (replica)"},{"id":"L09410","text":"Stonehands의 Stone Hands. 주먹 공격과 화술에 10점 보너스, 곡괭이 피해 두 배로 증가."},{"id":"L05062","text":"Sea Creature Fossil"},{"id":"L06028","text":"Karagas의 Tonal Staff (replica)"},{"id":"L08510","text":"<Alias=Artifact3> 재구성"},{"id":"L08319","text":"Argus에게 귀환"}]
+
+{"translations":[{"id":"L02603","text":"타이버 셉팀 왕관 (replica)"},{"id":"L09410","text":"Stonehands의 Stone Hands. 주먹 공격과 화술에 10점 보너스, 곡괭이 피해 두 배로 증가."},{"id":"L05062","text":"Sea Creature Fossil"},{"id":"L06028","text":"Karagas의 Tonal Staff (replica)"},{"id":"L08510","text":"<Alias=Artifact3> 재구성"},{"id":"L08319","text":"Argus에게 귀환"}]

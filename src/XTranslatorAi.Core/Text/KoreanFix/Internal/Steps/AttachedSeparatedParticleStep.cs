@@ -49,6 +49,26 @@ internal sealed class AttachedSeparatedParticleStep : IKoreanFixStep
         options: RegexOptions.CultureInvariant
     );
 
+    private static readonly Regex AttachedSubjectParticleRegex = new(
+        pattern: @"(?<noun>[가-힣]{1,30})(?<particle>이|가)" + ParticleBoundary,
+        options: RegexOptions.CultureInvariant
+    );
+
+    private static readonly Regex AttachedSubjectParticleLatinRegex = new(
+        pattern: LatinNoun + @"(?<particle>이|가)" + ParticleBoundary,
+        options: RegexOptions.CultureInvariant
+    );
+
+    private static readonly Regex SeparatedSubjectParticleRegex = new(
+        pattern: @"(?<noun>[가-힣]{1,30})\s+(?<particle>이|가)" + ParticleBoundary,
+        options: RegexOptions.CultureInvariant
+    );
+
+    private static readonly Regex SeparatedSubjectParticleLatinRegex = new(
+        pattern: LatinNoun + @"\s+(?<particle>이|가)" + ParticleBoundary,
+        options: RegexOptions.CultureInvariant
+    );
+
     private static readonly Regex DuplicatePronounTopicParticleRegex = new(
         pattern: @"(?<pronoun>저는|나는|너는|그는|그녀는|우리는|너희는|여러분은|당신은)(?:은|는)" + ParticleBoundary,
         options: RegexOptions.CultureInvariant
@@ -149,6 +169,50 @@ internal sealed class AttachedSeparatedParticleStep : IKoreanFixStep
             working = DuplicatePronounTopicParticleRegex.Replace(
                 working,
                 m => m.Groups["pronoun"].Value
+            );
+        }
+
+        // Fix wrong subject particle: "지구력가" -> "지구력이", "매지카이" -> "매지카가".
+        if (working.IndexOf('이') >= 0 || working.IndexOf('가') >= 0)
+        {
+            working = SeparatedSubjectParticleRegex.Replace(
+                working,
+                m =>
+                {
+                    var noun = m.Groups["noun"].Value;
+                    var particle = m.Groups["particle"].Value;
+                    return noun + KoreanParticleSelector.FixSubjectParticleSafely(noun, particle);
+                }
+            );
+
+            working = AttachedSubjectParticleRegex.Replace(
+                working,
+                m =>
+                {
+                    var noun = m.Groups["noun"].Value;
+                    var particle = m.Groups["particle"].Value;
+                    return noun + KoreanParticleSelector.FixSubjectParticleSafely(noun, particle);
+                }
+            );
+
+            working = SeparatedSubjectParticleLatinRegex.Replace(
+                working,
+                m =>
+                {
+                    var noun = m.Groups["noun"].Value;
+                    var particle = m.Groups["particle"].Value;
+                    return noun + KoreanParticleSelector.FixSubjectParticleSafelyLatin(noun, particle);
+                }
+            );
+
+            working = AttachedSubjectParticleLatinRegex.Replace(
+                working,
+                m =>
+                {
+                    var noun = m.Groups["noun"].Value;
+                    var particle = m.Groups["particle"].Value;
+                    return noun + KoreanParticleSelector.FixSubjectParticleSafelyLatin(noun, particle);
+                }
             );
         }
 

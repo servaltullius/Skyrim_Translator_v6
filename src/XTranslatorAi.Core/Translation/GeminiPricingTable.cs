@@ -2,58 +2,50 @@ using System;
 
 namespace XTranslatorAi.Core.Translation;
 
-internal static class GeminiPricingTable
+public static class GeminiPricingTable
 {
+    // Standard text rates, not Free Tier eligibility or an actual billing quote.
+    // https://ai.google.dev/gemini-api/docs/pricing (verified 2026-09-28)
+    public static DateOnly VerifiedOn { get; } = new(2026, 9, 28);
+
     public static bool TryGetPricing(string modelName, out GeminiPricing pricing)
+        => TryGetPricing(modelName, DateOnly.FromDateTime(DateTime.UtcNow), out pricing);
+
+    public static bool TryGetPricing(string modelName, DateOnly effectiveDate, out GeminiPricing pricing)
     {
-        // Pricing source: https://ai.google.dev/gemini-api/docs/pricing (accessed 2026-01-17)
-        // Only include models we actively recommend for this app.
-        var m = GeminiModelPolicy.NormalizeModelName(modelName);
-
-        if (m.StartsWith("gemini-2.5-flash-lite", StringComparison.OrdinalIgnoreCase))
+        // Explicit IDs keep future models, image/TTS variants and moving aliases
+        // from silently inheriting another model's price.
+        var model = GeminiModelPolicy.NormalizeModelName(modelName).ToLowerInvariant();
+        switch (model)
         {
-            pricing = new GeminiPricing(
-                InputUsdPer1M: 0.10,
-                OutputUsdPer1M: 0.40,
-                BatchInputUsdPer1M: 0.05,
-                BatchOutputUsdPer1M: 0.20,
-                CacheUsdPer1M: 0.01,
-                CacheStorageUsdPer1MPerHour: 1.00,
-                BatchSupportsContextCaching: false
-            );
-            return true;
+            case "gemini-3.8-flash":
+            case "gemini-3.7-flash":
+            case "gemini-3.6-flash":
+                pricing = effectiveDate < new DateOnly(2027, 1, 1)
+                    ? TextPricing(0.75, 3.75, 0.075, 0.50)
+                    : TextPricing(1.50, 7.50, 0.15, 1.00);
+                return true;
+            case "gemini-3.5-flash":
+                pricing = TextPricing(1.50, 9.00, 0.15, 1.00);
+                return true;
+            case "gemini-3.5-flash-lite":
+                pricing = TextPricing(0.30, 2.50, 0.03, 1.00);
+                return true;
+            case "gemini-3.1-flash-lite":
+                pricing = TextPricing(0.25, 1.50, 0.025, 1.00);
+                return true;
+            case "gemini-2.5-flash":
+                pricing = TextPricing(0.30, 2.50, 0.03, 1.00);
+                return true;
+            case "gemini-2.5-flash-lite":
+                pricing = TextPricing(0.10, 0.40, 0.01, 1.00);
+                return true;
+            default:
+                pricing = default;
+                return false;
         }
-
-        if (GeminiModelPolicy.IsGemini3FlashLitePreview(m))
-        {
-            pricing = new GeminiPricing(
-                InputUsdPer1M: 0.25,
-                OutputUsdPer1M: 1.50,
-                BatchInputUsdPer1M: 0.125,
-                BatchOutputUsdPer1M: 0.75,
-                CacheUsdPer1M: 0.025,
-                CacheStorageUsdPer1MPerHour: 1.00,
-                BatchSupportsContextCaching: false
-            );
-            return true;
-        }
-
-        if (GeminiModelPolicy.IsGemini3FlashPreview(m))
-        {
-            pricing = new GeminiPricing(
-                InputUsdPer1M: 0.50,
-                OutputUsdPer1M: 3.00,
-                BatchInputUsdPer1M: 0.25,
-                BatchOutputUsdPer1M: 1.50,
-                CacheUsdPer1M: 0.05,
-                CacheStorageUsdPer1MPerHour: 1.00,
-                BatchSupportsContextCaching: false
-            );
-            return true;
-        }
-
-        pricing = default;
-        return false;
     }
-}
 
+    private static GeminiPricing TextPricing(double input, double output, double cache, double storage)
+        => new(input, output, input / 2, output / 2, cache, storage, BatchSupportsContextCaching: true);
+}

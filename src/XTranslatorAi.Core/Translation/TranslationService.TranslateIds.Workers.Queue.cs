@@ -86,7 +86,7 @@ public sealed partial class TranslationService
 
     private void ReleaseReservedGateSlotsIfNeeded(WorkerRunContext ctx, BatchSource source)
     {
-        if (_veryLongRequestGate == null)
+        if (Ctx.VeryLongRequestGate == null)
         {
             return;
         }
@@ -95,7 +95,7 @@ public sealed partial class TranslationService
         {
             if (Interlocked.Decrement(ref ctx.ShortBatchesRemainingForGate) == 0)
             {
-                _veryLongRequestGate.Release(ctx.ReservedShortGateSlots);
+                Ctx.VeryLongRequestGate.Release(ctx.ReservedShortGateSlots);
             }
             return;
         }
@@ -104,7 +104,7 @@ public sealed partial class TranslationService
         {
             if (Interlocked.Decrement(ref ctx.LongBatchesRemainingForGate) == 0)
             {
-                _veryLongRequestGate.Release(ctx.ReservedLongGateSlots);
+                Ctx.VeryLongRequestGate.Release(ctx.ReservedLongGateSlots);
             }
         }
     }

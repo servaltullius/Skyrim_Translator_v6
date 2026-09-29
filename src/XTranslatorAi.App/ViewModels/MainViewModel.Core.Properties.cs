@@ -37,12 +37,12 @@ public partial class MainViewModel
     [ObservableProperty] private string _apiKey = "";
     [ObservableProperty] private bool _hasSavedApiKey;
     [ObservableProperty] private bool _enableApiKeyFailover = true;
-    [ObservableProperty] private string _selectedModel = "gemini-3-flash-preview";
+    [ObservableProperty] private string _selectedModel = GeminiModelCatalog.DefaultModel;
     [ObservableProperty] private BethesdaFranchise _selectedFranchise = BethesdaFranchise.ElderScrolls;
     [ObservableProperty] private bool _enableBookFullModelOverride;
-    [ObservableProperty] private string _bookFullModel = "gemini-3-flash-preview";
+    [ObservableProperty] private string _bookFullModel = GeminiModelCatalog.DefaultModel;
     [ObservableProperty] private bool _enableQualityEscalation;
-    [ObservableProperty] private string _qualityEscalationModel = "gemini-2.5-flash";
+    [ObservableProperty] private string _qualityEscalationModel = GeminiModelCatalog.DefaultModel;
     [ObservableProperty] private string _sourceLang = "english";
     [ObservableProperty] private string _targetLang = "korean";
 

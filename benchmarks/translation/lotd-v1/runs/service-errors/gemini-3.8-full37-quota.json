@@ -1,0 +1,8 @@
+{
+  "model": "gemini-3.8-flash",
+  "batch": "full-37",
+  "inputVerified": true,
+  "error": "You've reached your rate limit. Please try again later.",
+  "additionalNotice": "You’ve reached your quota for the day",
+  "recordedAt": "2026-09-29T00:51:47.551Z"
+}

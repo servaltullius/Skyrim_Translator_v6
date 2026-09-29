@@ -9,7 +9,7 @@ public partial class MainViewModel
     [RelayCommand(CanExecute = nameof(CanStopTranslation))]
     private void StopTranslation()
     {
-        if (_translationCts == null)
+        if (!_translationOperation.IsRunning)
         {
             return;
         }
@@ -18,8 +18,14 @@ public partial class MainViewModel
         _resumeTcs = null;
         IsPaused = false;
 
-        _translationCts.Cancel();
-        StatusMessage = "Translation stopped.";
+        _translationOperation.Cancel();
+        StatusMessage = "번역을 중지하는 중입니다... 완료된 번역은 보존합니다.";
+    }
+
+    public async Task StopTranslationAndWaitAsync()
+    {
+        StopTranslation();
+        await _translationOperation.StopAsync();
     }
 
     private bool CanStopTranslation() => IsTranslating;

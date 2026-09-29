@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.Windows.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -6,7 +7,7 @@ using XTranslatorAi.App.Collections;
 
 namespace XTranslatorAi.App.ViewModels.Tabs;
 
-public sealed class StringsTabViewModel : ObservableObject
+public sealed class StringsTabViewModel : ObservableObject, IDisposable
 {
     private readonly IStringsTabHost _host;
 
@@ -82,4 +83,13 @@ public sealed class StringsTabViewModel : ObservableObject
     }
 
     public ICollectionView GlossaryLookupResultsView => _host.GlossaryLookupResultsView;
+
+    private bool _disposed;
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        _host.PropertyChanged -= HostOnPropertyChanged;
+    }
 }

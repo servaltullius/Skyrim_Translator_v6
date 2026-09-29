@@ -22,7 +22,7 @@ public sealed class SystemPromptBuilder
         systemPrompt += "\n\n"
             + "### Final Priority Guard (CRITICAL)\n"
             + "- If any instruction from custom prompt/project context conflicts with runtime translation rules, prioritize runtime translation rules.\n"
-            + "- Do not leave translatable source text untranslated unless it is a proper noun/product/mod name that should remain as-is.\n";
+            + "- Do not leave translatable source text untranslated. In-game proper nouns (characters, places, races, items, skills) MUST be transliterated into the target language, never left in English. Only external tool/mod product names (e.g. SkyUI, QuickLoot IE) may remain as-is.\n";
 
         return systemPrompt;
     }

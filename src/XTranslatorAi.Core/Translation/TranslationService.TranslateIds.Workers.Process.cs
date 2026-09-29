@@ -123,6 +123,13 @@ public sealed partial class TranslationService
             }
         }
 
+        var statuses = await _db.GetStringStatusesByIdsAsync(ids, ct);
+        ids.RemoveAll(id => !statuses.TryGetValue(id, out var status) || status != StringEntryStatus.InProgress);
+        if (ids.Count == 0)
+        {
+            return;
+        }
+
         await _db.UpdateStringStatusesAsync(ids, StringEntryStatus.Pending, errorMessage: null, ct);
 
         if (ctx.Request.OnRowUpdated == null)
@@ -144,20 +151,35 @@ public sealed partial class TranslationService
     )
     {
         var msg = FormatError(ex);
-        var ids = new long[batch.Count];
+        var ids = new List<long>(capacity: batch.Count);
         for (var i = 0; i < batch.Count; i++)
         {
-            ids[i] = batch[i].Id;
+            ids.Add(batch[i].Id);
+            var dups = GetDuplicateRows(batch[i].Id);
+            for (var j = 0; j < dups.Count; j++)
+            {
+                ids.Add(dups[j].Id);
+            }
         }
 
-        await _db.UpdateStringStatusesAsync(ids, StringEntryStatus.Error, msg, ct);
+        // A split batch can have committed some rows before a later request fails.
+        // Keep those results and only mark the unfinished part of this batch.
+        var statuses = await _db.GetStringStatusesByIdsAsync(ids, CancellationToken.None);
+        ids.RemoveAll(id => !statuses.TryGetValue(id, out var status) || status != StringEntryStatus.InProgress);
+        if (ids.Count == 0)
+        {
+            return;
+        }
+
+        // Use CancellationToken.None to ensure error status is persisted even during cancellation.
+        await _db.UpdateStringStatusesAsync(ids, StringEntryStatus.Error, msg, CancellationToken.None);
 
         if (ctx.Request.OnRowUpdated == null)
         {
             return;
         }
 
-        for (var i = 0; i < ids.Length; i++)
+        for (var i = 0; i < ids.Count; i++)
         {
             NotifyRowUpdated(ctx.Request.OnRowUpdated, ids[i], StringEntryStatus.Error, msg);
         }

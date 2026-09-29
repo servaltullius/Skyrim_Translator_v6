@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Models;
@@ -76,18 +78,23 @@ public sealed partial class TranslationService
     )
     {
         var text = modelText;
-        foreach (var token in glossary.TokenToReplacement.Keys)
+        foreach (var (token, replacement) in glossary.TokenToReplacement)
         {
-            if (!text.Contains(token, StringComparison.Ordinal))
+            if (text.Contains(token, StringComparison.Ordinal))
+            {
+                continue;
+            }
+            else if (!string.IsNullOrEmpty(replacement)
+                     && text.Contains(replacement, StringComparison.Ordinal))
+            {
+                // Model dropped the token but already output the correct translation directly — accept as-is.
+            }
+            else
             {
                 throw new InvalidOperationException($"Missing glossary token in translation: {token}");
             }
         }
-
-        foreach (var (token, replacement) in glossary.TokenToReplacement)
-        {
-            text = text.Replace(token, replacement, StringComparison.Ordinal);
-        }
+        text = ReplaceGlossaryTokens(text, glossary.TokenToReplacement);
 
         var unmasked = masker.Unmask(text, masked.TokenToOriginal);
         unmasked = PlaceholderUnitBinder.ReplaceUnitsAfterUnmask(targetLang, unmasked);
@@ -117,14 +124,14 @@ public sealed partial class TranslationService
             try
             {
                 var dupFinal = ApplyTokensAndUnmask(rawText, glossary, dup.Mask, placeholderMasker, targetLang);
-                if (_enableTemplateFixer)
+                if (Ctx.EnableTemplateFixer)
                 {
                     dupFinal = MagDurPlaceholderFixer.Fix(dup.Source, dupFinal, targetLang);
                 }
                 dupFinal = PlaceholderUnitBinder.EnforceUnitsFromSource(targetLang, dup.Source, dupFinal);
                 dupFinal = KoreanProtectFromFixer.Fix(targetLang, dup.Source, dupFinal);
                 dupFinal = KoreanTranslationFixer.Fix(targetLang, dupFinal);
-                ValidateFinalTextIntegrity(dup.Source, dupFinal, context: $"id={dup.Id} post-edits");
+                TokenValidator.ValidateFinalTextIntegrity(dup.Source, dupFinal, context: $"id={dup.Id} post-edits");
                 doneUpdates.Add((dup.Id, dupFinal, StringEntryStatus.Done, null));
             }
             catch (OperationCanceledException)
@@ -190,6 +197,143 @@ public sealed partial class TranslationService
         return sum;
     }
 
+    /// <summary>
+    /// Replaces every occurrence of <paramref name="token"/> with <paramref name="replacement"/>,
+    /// but removes the token (instead of doubling the text) when the replacement already
+    /// appears immediately adjacent (before or after, with optional whitespace).
+    /// </summary>
+    internal static string ReplaceTokenDedupAdjacent(string text, string token, string replacement)
+    {
+        if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(token))
+        {
+            return text;
+        }
+
+        if (string.IsNullOrEmpty(replacement))
+        {
+            return text.Replace(token, replacement, StringComparison.Ordinal);
+        }
+
+        var matches = new List<(int Position, string Token, string Replacement)>();
+        var position = 0;
+        while ((position = text.IndexOf(token, position, StringComparison.Ordinal)) >= 0)
+        {
+            matches.Add((position, token, replacement));
+            position += token.Length;
+        }
+        return ReplaceTokenMatches(text, matches);
+    }
+
+    internal static string ReplaceGlossaryTokens(string text, IReadOnlyDictionary<string, string> replacements)
+    {
+        var matches = new List<(int Position, string Token, string Replacement)>();
+        foreach (Match match in TranslationConstants.XtTokenRegex.Matches(text))
+        {
+            if (replacements.TryGetValue(match.Value, out var replacement))
+            {
+                matches.Add((match.Index, match.Value, replacement));
+            }
+        }
+        return ReplaceTokenMatches(text, matches);
+    }
+
+    private static string ReplaceTokenMatches(
+        string text,
+        IReadOnlyList<(int Position, string Token, string Replacement)> matches
+    )
+    {
+        // Inspect the original model output only. A replacement inserted by us
+        // must never be mistaken for a duplicate next to the following token.
+        var result = new StringBuilder(text.Length);
+        var cursor = 0;
+        foreach (var (pos, token, replacement) in matches)
+        {
+            if (pos < cursor)
+            {
+                continue;
+            }
+            var afterStart = pos + token.Length;
+
+            if (replacement.Length > 0 && TryMatchDupAfterToken(text, afterStart, replacement, out var afterStripLen))
+            {
+                result.Append(text, cursor, pos - cursor).Append(replacement);
+                cursor = afterStart + afterStripLen;
+                continue;
+            }
+
+            if (replacement.Length > 0
+                && TryMatchDupBeforeToken(text, pos, replacement, out var beforeStripLen)
+                && pos - beforeStripLen >= cursor)
+            {
+                result.Append(text, cursor, pos - beforeStripLen - cursor).Append(replacement);
+                cursor = afterStart;
+                continue;
+            }
+
+            result.Append(text, cursor, pos - cursor).Append(replacement);
+            cursor = afterStart;
+        }
+        return result.Append(text, cursor, text.Length - cursor).ToString();
+    }
+
+    private static bool TryMatchDupAfterToken(string text, int start, string replacement, out int stripLen)
+    {
+        stripLen = 0;
+        var i = start;
+
+        // Skip optional whitespace
+        while (i < text.Length && char.IsWhiteSpace(text[i]))
+        {
+            i++;
+        }
+
+        // Match replacement
+        if (i + replacement.Length > text.Length
+            || string.Compare(text, i, replacement, 0, replacement.Length, StringComparison.Ordinal) != 0)
+        {
+            return false;
+        }
+
+        i += replacement.Length;
+
+        // Strip optional trailing __
+        if (i + 2 <= text.Length && text[i] == '_' && text[i + 1] == '_')
+        {
+            i += 2;
+        }
+
+        stripLen = i - start;
+        return true;
+    }
+
+    private static bool TryMatchDupBeforeToken(string text, int tokenPos, string replacement, out int stripLen)
+    {
+        stripLen = 0;
+        var i = tokenPos;
+
+        // Skip trailing whitespace (backwards)
+        while (i > 0 && char.IsWhiteSpace(text[i - 1]))
+        {
+            i--;
+        }
+
+        // Skip optional __ (backwards)
+        if (i >= 2 && text[i - 1] == '_' && text[i - 2] == '_')
+        {
+            i -= 2;
+        }
+
+        // Match replacement (backwards)
+        if (i < replacement.Length
+            || string.Compare(text, i - replacement.Length, replacement, 0, replacement.Length, StringComparison.Ordinal) != 0)
+        {
+            return false;
+        }
+
+        stripLen = tokenPos - (i - replacement.Length);
+        return true;
+    }
+
     private sealed class SourceTargetComparer : IEqualityComparer<(string Source, string Target)>
     {
         public bool Equals((string Source, string Target) x, (string Source, string Target) y)
@@ -198,8 +342,8 @@ public sealed partial class TranslationService
 
         public int GetHashCode((string Source, string Target) obj)
             => HashCode.Combine(
-                StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Source ?? ""),
-                StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Target ?? "")
+                StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Source),
+                StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Target)
             );
     }
 }

@@ -43,10 +43,11 @@ public sealed class ProjectState
 
     public async Task DisposeDbAsync()
     {
-        if (Db != null)
+        var db = Db;
+        Db = null;
+        if (db != null)
         {
-            await Db.DisposeAsync();
-            Db = null;
+            await db.DisposeAsync();
         }
     }
 

@@ -34,13 +34,13 @@ public sealed record TranslationCostEstimate(
         sb.AppendLine($"요청 수: {N(BatchRequestCount + TextRequestCount)} (배치={N(BatchRequestCount)}, 텍스트/청크={N(TextRequestCount)})");
         sb.AppendLine($"문자 수: 원문={N(TotalSourceChars)}, 마스킹+용어집={N(TotalMaskedChars)}");
         sb.AppendLine(
-            $"입력 토큰(countTokens): 배치={N(InputTokensBatchPrompts)}, 텍스트/청크={N(InputTokensTextPrompts)}, 합계={N(InputTokensBatchPrompts + InputTokensTextPrompts)}"
+            $"입력 토큰(countTokens, 실패 시 문자수 추정): 배치={N(InputTokensBatchPrompts)}, 텍스트/청크={N(InputTokensTextPrompts)}, 합계={N(InputTokensBatchPrompts + InputTokensTextPrompts)}"
         );
         sb.AppendLine($"시스템 프롬프트 토큰(countTokens): {N(SystemPromptTokens)}");
         sb.AppendLine(
             OutputTokens.UsedSample
-                ? $"예상 출력 토큰(샘플 기반): {N(OutputTokens.Point)} (범위 {N(OutputTokens.Low)} ~ {N(OutputTokens.High)})"
-                : $"예상 출력 토큰(휴리스틱): {N(OutputTokens.Point)} (범위 {N(OutputTokens.Low)} ~ {N(OutputTokens.High)})"
+                ? $"예상 출력 토큰(샘플 기반, 추론 포함 사용량): {N(OutputTokens.Point)} (범위 {N(OutputTokens.Low)} ~ {N(OutputTokens.High)})"
+                : $"예상 출력 토큰(휴리스틱, 추론 미포함): {N(OutputTokens.Point)} (범위 {N(OutputTokens.Low)} ~ {N(OutputTokens.High)})"
         );
 
         if (OutputTokens.BatchRatio is > 0 || OutputTokens.TextRatio is > 0)
@@ -68,7 +68,7 @@ public sealed record TranslationCostEstimate(
         {
             sb.AppendLine($"- {c.ModelName}");
             sb.AppendLine(
-                $"  프롬프트 캐시 사용: ${c.TotalCostUsdLowWithPromptCache:0.###} ~ ${c.TotalCostUsdHighWithPromptCache:0.###} (입력 ${c.InputCostUsdWithPromptCache:0.###} + 출력)"
+                $"  프롬프트 캐시 사용 가정: ${c.TotalCostUsdLowWithPromptCache:0.###} ~ ${c.TotalCostUsdHighWithPromptCache:0.###} (입력 ${c.InputCostUsdWithPromptCache:0.###} + 출력, 저장 {c.PromptCacheTtlHours:0.#}시간)"
             );
             sb.AppendLine(
                 $"  프롬프트 캐시 미사용: ${c.TotalCostUsdLowWithoutPromptCache:0.###} ~ ${c.TotalCostUsdHighWithoutPromptCache:0.###} (입력 ${c.InputCostUsdWithoutPromptCache:0.###} + 출력)"
@@ -86,6 +86,10 @@ public sealed record TranslationCostEstimate(
         sb.AppendLine("- 이 값은 1회 성공 기준(재시도/실패 비용 미포함)이며, 특히 초장문에서 실패/재시도가 많으면 실제 비용은 더 증가할 수 있습니다.");
         sb.AppendLine("- 배치 API는 가격표에 따라 저렴하지만, 현재 앱은 실시간 번역(일반 API)을 사용합니다. 배치 API 비용은 참고용입니다.");
         sb.AppendLine("- 출력 가격에는 thinking tokens가 포함되며, 실제 출력 토큰은 단순 텍스트 길이보다 더 커질 수 있습니다.");
+        sb.AppendLine("- 샘플은 API의 추론 포함 사용량으로 계산합니다. 사용량이 없거나 샘플을 생략하면 추론 미포함 휴리스틱이며, 표시 범위는 청구 상한이 아닙니다.");
+        sb.AppendLine("- 다른 모델의 비용은 선택 모델과 동일한 토큰 수를 사용한다고 가정한 단가 비교입니다. 모델별 실제 사용량은 다릅니다.");
+        sb.AppendLine("- 캐시 비용은 생성 가능·모든 요청 적중·보관 2시간 가정입니다. 실제 캐시 실패/재생성/실행 시간에 따라 달라집니다.");
+        sb.AppendLine("- TM 재사용, 문맥 추가, 복구·후보 재평가, 모델 전환은 완전히 모사하지 않습니다. 최종 비용은 실제 호출 누계에서 확인하세요.");
     }
 }
 

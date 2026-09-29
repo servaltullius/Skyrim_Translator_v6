@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ public sealed partial class GeminiClient
 
             var promptTokens = result.Usage?.PromptTokenCount;
             var totalTokens = result.Usage?.TotalTokenCount;
-            var completionTokens = ComputeCompletionTokens(promptTokens, totalTokens, result.Usage?.CandidatesTokenCount);
+            var completionTokens = ComputeCompletionTokens(promptTokens, totalTokens, result.Usage?.CandidatesTokenCount, result.Usage?.ThoughtsTokenCount);
             var cachedTokens = result.Usage?.CachedContentTokenCount;
             var costUsd = GeminiUsageCost.TryEstimateUsd(
                 modelName,
@@ -79,6 +80,13 @@ public sealed partial class GeminiClient
         string modelName,
         GeminiGenerateContentRequest request,
         CancellationToken cancellationToken
+    ) => (await GenerateContentWithUsageAsync(apiKey, modelName, request, cancellationToken)).Text;
+
+    public async Task<GeminiGenerationResult> GenerateContentWithUsageAsync(
+        string apiKey,
+        string modelName,
+        GeminiGenerateContentRequest request,
+        CancellationToken cancellationToken
     )
     {
         var startedAt = DateTimeOffset.UtcNow;
@@ -91,7 +99,7 @@ public sealed partial class GeminiClient
 
             var promptTokens = result.Usage?.PromptTokenCount;
             var totalTokens = result.Usage?.TotalTokenCount;
-            var completionTokens = ComputeCompletionTokens(promptTokens, totalTokens, result.Usage?.CandidatesTokenCount);
+            var completionTokens = ComputeCompletionTokens(promptTokens, totalTokens, result.Usage?.CandidatesTokenCount, result.Usage?.ThoughtsTokenCount);
             var cachedTokens = result.Usage?.CachedContentTokenCount;
             var costUsd = GeminiUsageCost.TryEstimateUsd(
                 modelName,
@@ -117,7 +125,7 @@ public sealed partial class GeminiClient
                     CostUsd: costUsd
                 )
             );
-            return result.Text;
+            return new GeminiGenerationResult(result.Text, promptTokens, completionTokens, cachedTokens);
         }
         catch (Exception ex)
         {
@@ -181,17 +189,20 @@ public sealed partial class GeminiClient
 
         var parsed = DeserializeOrThrow<GeminiGenerateContentResponse>("GenerateContent", body);
 
-        var candidate = parsed?.Candidates?[0];
+        var candidate = parsed?.Candidates?.FirstOrDefault();
         if (!string.IsNullOrWhiteSpace(candidate?.FinishReason)
             && string.Equals(candidate!.FinishReason, "MAX_TOKENS", StringComparison.OrdinalIgnoreCase))
         {
             throw new GeminiException("GenerateContent: finishReason=MAX_TOKENS (output truncated).");
         }
 
-        var text = candidate?.Content?.Parts?[0]?.Text;
+        if (!IsCompletedCandidate(candidate))
+            throw new GeminiException($"GenerateContent: finishReason={candidate?.FinishReason} (incomplete response).");
+
+        var text = ExtractFinalText(candidate);
         if (string.IsNullOrWhiteSpace(text))
         {
-            throw new GeminiException($"GenerateContent: missing candidates[0].content.parts[0].text. {Truncate(body)}");
+            throw new GeminiException("GenerateContent: missing final text in response parts.");
         }
 
         return (text!, statusCode, parsed?.UsageMetadata);
@@ -201,6 +212,7 @@ public sealed partial class GeminiClient
     {
         var texts = new List<string>();
         var sawMaxTokens = false;
+        var sawIncomplete = false;
 
         var candidates = parsed?.Candidates;
         if (candidates != null)
@@ -220,7 +232,12 @@ public sealed partial class GeminiClient
                     continue;
                 }
 
-                var text = candidate.Content?.Parts?[0]?.Text;
+                if (!IsCompletedCandidate(candidate))
+                {
+                    sawIncomplete = true;
+                    continue;
+                }
+                var text = ExtractFinalText(candidate);
                 if (!string.IsNullOrWhiteSpace(text))
                 {
                     texts.Add(text!);
@@ -238,16 +255,30 @@ public sealed partial class GeminiClient
             throw new GeminiException("GenerateContent: finishReason=MAX_TOKENS (all candidates truncated).");
         }
 
-        throw new GeminiException($"GenerateContent: missing candidates[i].content.parts[0].text. {Truncate(body)}");
+        if (sawIncomplete)
+            throw new GeminiException("GenerateContent: no complete candidates were returned.");
+        throw new GeminiException("GenerateContent: missing final text in response parts.");
     }
 
-    private static int? ComputeCompletionTokens(int? promptTokens, int? totalTokens, int? candidatesTokenCount)
+    private static bool IsCompletedCandidate(GeminiCandidate? candidate)
+        => candidate != null && (string.IsNullOrWhiteSpace(candidate.FinishReason)
+            || string.Equals(candidate.FinishReason, "STOP", StringComparison.OrdinalIgnoreCase));
+
+    private static string ExtractFinalText(GeminiCandidate? candidate)
+        // A response may contain several text parts and optional thought summaries.
+        // Only concatenate final-output parts; never use a thought as translated text.
+        => candidate?.Content?.Parts == null ? "" : string.Concat(candidate.Content.Parts
+            .Where(part => part != null && part.Thought != true).Select(part => part.Text));
+
+    private static int? ComputeCompletionTokens(int? promptTokens, int? totalTokens, int? candidatesTokenCount, int? thoughtsTokenCount)
     {
         if (promptTokens is >= 0 && totalTokens is >= 0 && totalTokens >= promptTokens)
         {
             return totalTokens - promptTokens;
         }
 
-        return candidatesTokenCount;
+        return candidatesTokenCount is >= 0
+            ? candidatesTokenCount + Math.Max(0, thoughtsTokenCount ?? 0)
+            : null;
     }
 }

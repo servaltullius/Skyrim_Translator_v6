@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.Windows.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -5,7 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace XTranslatorAi.App.ViewModels.Tabs;
 
-public sealed class LqaTabViewModel : ObservableObject
+public sealed class LqaTabViewModel : ObservableObject, IDisposable
 {
     private readonly ILqaTabHost _host;
 
@@ -50,4 +51,13 @@ public sealed class LqaTabViewModel : ObservableObject
     }
 
     public IAsyncRelayCommand SaveSelectedDestCommand => _host.SaveSelectedDestCommand;
+
+    private bool _disposed;
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        _host.PropertyChanged -= HostOnPropertyChanged;
+    }
 }

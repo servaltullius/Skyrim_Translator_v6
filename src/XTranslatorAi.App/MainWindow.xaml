@@ -1,4 +1,4 @@
-﻿<Window x:Class="XTranslatorAi.App.MainWindow"
+<Window x:Class="XTranslatorAi.App.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -199,7 +199,7 @@
                                       VerticalAlignment="Center"
                                       Margin="6,0,0,0"
                                       Style="{StaticResource XT.ToolbarComboBox}"
-                                      ToolTip="BOOK:FULL에 사용할 모델입니다. (예: gemini-3-flash-preview)" />
+                                      ToolTip="BOOK:FULL에 사용할 모델입니다. (예: gemini-3.8-flash)" />
                         </WrapPanel>
 
                         <TextBlock Text="API Keys" FontWeight="SemiBold" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,12,0,4" />

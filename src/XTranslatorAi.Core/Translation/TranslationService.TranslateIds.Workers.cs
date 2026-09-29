@@ -21,8 +21,8 @@ public sealed partial class TranslationService
         var hasLong = !queues.LongQueue.IsEmpty;
         var hasVeryLong = !queues.VeryLongQueue.IsEmpty;
 
-        var reservedShortGateSlots = (_veryLongRequestGate != null && hasShort) ? 1 : 0;
-        var reservedLongGateSlots = (_veryLongRequestGate != null && hasLong) ? 1 : 0;
+        var reservedShortGateSlots = (Ctx.VeryLongRequestGate != null && hasShort) ? 1 : 0;
+        var reservedLongGateSlots = (Ctx.VeryLongRequestGate != null && hasLong) ? 1 : 0;
 
         var (shortWorkers, longWorkers, veryLongWorkers) = ComputeWorkerAllocation(
             hasShort,

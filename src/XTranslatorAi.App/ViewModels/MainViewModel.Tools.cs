@@ -20,13 +20,8 @@ public partial class MainViewModel
     {
         // No API calls here: apply values and let the user Refresh models when needed.
         SelectedModel = PickModelCandidate(
-            candidates: new[]
-            {
-                "gemini-3.1-flash-lite-preview",
-                "gemini-2.5-flash-lite",
-                "gemini-2.5-flash-lite-preview-09-2025",
-            },
-            fallback: "gemini-3.1-flash-lite-preview"
+            candidates: GeminiModelCatalog.LowCostModels,
+            fallback: GeminiModelCatalog.LowCostModel
         );
 
         EnablePromptCache = false;
@@ -35,28 +30,11 @@ public partial class MainViewModel
         MaxParallelRequests = 1;
         MaxOutputTokensOverride = 0; // Auto
 
-        EnableBookFullModelOverride = true;
-        BookFullModel = PickModelCandidate(
-            candidates: new[]
-            {
-                "gemini-3-flash-preview",
-                "gemini-3.0-flash-preview",
-                "gemini-3-flash",
-            },
-            fallback: "gemini-3-flash-preview"
-        );
+        // A low-cost preset should keep all rows on the selected model.
+        EnableBookFullModelOverride = false;
+        EnableQualityEscalation = false;
 
-        EnableQualityEscalation = true;
-        QualityEscalationModel = PickModelCandidate(
-            candidates: new[]
-            {
-                "gemini-2.5-flash",
-                "gemini-2.5-flash-preview-09-2025",
-            },
-            fallback: "gemini-2.5-flash"
-        );
-
-        StatusMessage = "무료 티어 프리셋을 적용했습니다.";
+        StatusMessage = $"무료 티어용 설정: {SelectedModel}, 동시 요청 1개. 실제 무료 할당량은 계정별로 확인하세요.";
     }
 
     [RelayCommand]
@@ -64,13 +42,8 @@ public partial class MainViewModel
     {
         // No API calls here: apply values and let the user Refresh models when needed.
         SelectedModel = PickModelCandidate(
-            candidates: new[]
-            {
-                "gemini-3-flash-preview",
-                "gemini-3.0-flash-preview",
-                "gemini-3-flash",
-            },
-            fallback: "gemini-3-flash-preview"
+            candidates: GeminiModelCatalog.FullModels,
+            fallback: GeminiModelCatalog.DefaultModel
         );
 
         // Paid tier: optimize request count without pushing concurrency too hard.
@@ -82,7 +55,7 @@ public partial class MainViewModel
         MaxParallelRequests = 2;
         MaxOutputTokensOverride = 0; // Auto
 
-        StatusMessage = "유료 프리셋을 적용했습니다. (3.0 Flash Preview + batch=12 / maxChars=15000 / parallel=2 / maxOut=auto)";
+        StatusMessage = $"유료 프리셋: {SelectedModel} · 배치 12개 · 최대 15000자 · 동시 요청 2개";
     }
 
     [RelayCommand]
@@ -109,7 +82,9 @@ public partial class MainViewModel
     }
 
     [RelayCommand]
-    private async Task RefreshModelsAsync()
+    private Task RefreshModelsAsync() => RunProjectOperationAsync("모델 목록", RefreshModelsCoreAsync);
+
+    private async Task RefreshModelsCoreAsync(CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(ApiKey))
         {
@@ -120,7 +95,8 @@ public partial class MainViewModel
         try
         {
             StatusMessage = "모델 목록을 불러오는 중...";
-            var models = await _geminiClient.ListModelsAsync(ApiKey.Trim(), CancellationToken.None);
+            var models = await _geminiClient.ListModelsAsync(ApiKey.Trim(), cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             ApplyAvailableModels(models);
 
             OnPropertyChanged(nameof(EffectiveGeminiTranslationConfigSummary));
@@ -129,6 +105,10 @@ public partial class MainViewModel
             OnPropertyChanged(nameof(Compare2AvailableModels));
             OnPropertyChanged(nameof(Compare3AvailableModels));
             StatusMessage = "모델 목록이 업데이트되었습니다.";
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -191,37 +171,11 @@ public partial class MainViewModel
     }
 
     private static bool TryGetUsableModelName(GeminiModel model, out string modelName)
-    {
-        modelName = "";
-
-        var name = model.Name;
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            return false;
-        }
-
-        if (model.SupportedGenerationMethods is { Count: > 0 }
-            && !model.SupportedGenerationMethods.Contains("generateContent", StringComparer.OrdinalIgnoreCase))
-        {
-            return false;
-        }
-
-        modelName = name.Replace("models/", "", StringComparison.Ordinal);
-        return !string.IsNullOrWhiteSpace(modelName);
-    }
+        => GeminiModelCatalog.TryGetTextTranslationModelName(model, out modelName);
 
     private static string PickPreferredModelName(IReadOnlyList<string> names)
     {
-        var candidates = new[]
-        {
-            "gemini-3.1-flash-lite-preview",
-            "gemini-2.5-flash-lite",
-            "gemini-2.5-flash-lite-preview-09-2025",
-            "gemini-2.5-flash",
-            "gemini-2.5-flash-preview-09-2025",
-            "gemini-3.0-flash-preview",
-            "gemini-3-flash-preview",
-        };
+        var candidates = GeminiModelCatalog.PreferredModels;
 
         foreach (var candidate in candidates)
         {
@@ -236,12 +190,7 @@ public partial class MainViewModel
 
     private static string PickPreferredBookFullModelName(IReadOnlyList<string> names, string primaryModel)
     {
-        var candidates = new[]
-        {
-            "gemini-3-flash-preview",
-            "gemini-3.0-flash-preview",
-            "gemini-3-flash",
-        };
+        var candidates = GeminiModelCatalog.FullModels;
 
         foreach (var candidate in candidates)
         {
@@ -256,11 +205,7 @@ public partial class MainViewModel
 
     private static string PickPreferredQualityEscalationModelName(IReadOnlyList<string> names)
     {
-        var candidates = new[]
-        {
-            "gemini-2.5-flash",
-            "gemini-2.5-flash-preview-09-2025",
-        };
+        var candidates = GeminiModelCatalog.FullModels;
 
         foreach (var candidate in candidates)
         {
@@ -276,6 +221,7 @@ public partial class MainViewModel
     [RelayCommand(CanExecute = nameof(CanEstimateCost))]
     private async Task EstimateCostAsync()
     {
+        if (!CanEstimateCost()) return;
         if (!TryGetCostEstimateContext(out var db, out var apiKey))
         {
             return;
@@ -291,11 +237,15 @@ public partial class MainViewModel
             return;
         }
 
-        var estimateRequest = await BuildCostEstimateRequestAsync(apiKey, includeCompletedItems, runSample);
-        await RunCostEstimateAsync(db, estimateRequest);
+        await RunProjectOperationAsync("비용 추정", async token =>
+        {
+            var estimateRequest = await BuildCostEstimateRequestAsync(apiKey, includeCompletedItems, runSample, token);
+            token.ThrowIfCancellationRequested();
+            await RunCostEstimateAsync(db, estimateRequest, token);
+        });
     }
 
-    private bool CanEstimateCost() => IsProjectLoaded && !IsTranslating;
+    private bool CanEstimateCost() => IsProjectLoaded && !IsTranslating && IsWorkspaceInteractive;
 
     private bool TryGetCostEstimateContext(out ProjectDb db, out string apiKey)
     {
@@ -360,10 +310,11 @@ public partial class MainViewModel
     private async Task<TranslationCostEstimateRequest> BuildCostEstimateRequestAsync(
         string apiKey,
         bool includeCompletedItems,
-        bool runSample
+        bool runSample,
+        CancellationToken cancellationToken
     )
     {
-        var systemPrompt = BuildEffectiveSystemPrompt();
+        var systemPrompt = BuildSystemPrompt();
         var batchSize = Math.Clamp(BatchSize, 1, 100);
         var maxChars = Math.Clamp(MaxCharsPerBatch, 1000, 50000);
 
@@ -381,23 +332,19 @@ public partial class MainViewModel
             MaxOutputTokens: maxOut,
             RunSampleToEstimateOutputTokens: runSample,
             IncludeCompletedItems: includeCompletedItems,
-            GlobalGlossary: await TryLoadGlobalGlossaryAsync(),
+            GlobalGlossary: await TryLoadGlobalGlossaryAsync(cancellationToken),
             KeepSkyrimTagsRaw: KeepSkyrimTagsRaw
         );
     }
 
-    private string BuildEffectiveSystemPrompt()
-        => UseCustomPrompt && !string.IsNullOrWhiteSpace(CustomPromptText)
-            ? BasePromptText + "\n\n" + CustomPromptText
-            : BasePromptText;
-
-    private async Task RunCostEstimateAsync(ProjectDb db, TranslationCostEstimateRequest estimateRequest)
+    private async Task RunCostEstimateAsync(ProjectDb db, TranslationCostEstimateRequest estimateRequest, CancellationToken cancellationToken)
     {
         StatusMessage = "토큰/비용을 추정하는 중...";
         try
         {
             var estimator = new TranslationCostEstimator(db, _geminiClient);
-            var estimate = await estimator.EstimateAsync(estimateRequest, CancellationToken.None);
+            var estimate = await estimator.EstimateAsync(estimateRequest, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
 
             _uiInteractionService.ShowMessage(
                 estimate.ToHumanReadableString(),
@@ -407,6 +354,10 @@ public partial class MainViewModel
             );
             LastCostEstimateSummary = BuildCostSummaryLine(estimate, estimateRequest.ModelName);
             StatusMessage = "비용 추정이 완료되었습니다.";
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -503,19 +454,19 @@ public partial class MainViewModel
 
     private bool CanReapplyPostEdits() => IsProjectLoaded && !IsTranslating;
 
-    [RelayCommand(CanExecute = nameof(CanImportGlobalTranslationMemory))]
-    private async Task ImportGlobalTranslationMemoryAsync()
+    [RelayCommand(CanExecute = nameof(CanImportFranchiseTranslationMemory))]
+    private async Task ImportFranchiseTranslationMemoryAsync()
     {
         if (await _globalTranslationMemoryService.TryGetDbAsync(CancellationToken.None) == null)
         {
-            StatusMessage = "Global DB 초기화에 실패했습니다.";
+            StatusMessage = "Franchise TM DB 초기화에 실패했습니다.";
             return;
         }
 
         var filePath = _uiInteractionService.ShowOpenFileDialog(
             new OpenFileDialogRequest(
                 Filter: "TSV files (*.tsv)|*.tsv|All files (*.*)|*.*",
-                Title: "Import translation memory (TSV: Source<TAB>Target)"
+                Title: "Import franchise TM (TSV: Source<TAB>Target)"
             )
         );
         if (string.IsNullOrWhiteSpace(filePath))
@@ -523,10 +474,10 @@ public partial class MainViewModel
             return;
         }
 
-        await ImportGlobalTranslationMemoryFromTsvPathAsync(filePath, reloadAfterImport: false);
+        await ImportFranchiseTranslationMemoryFromTsvPathAsync(filePath, reloadAfterImport: false);
     }
 
-    private bool CanImportGlobalTranslationMemory() => !IsTranslating;
+    private bool CanImportFranchiseTranslationMemory() => !IsTranslating;
 
     private static string BuildCostSummaryLine(TranslationCostEstimate estimate, string selectedModel)
     {

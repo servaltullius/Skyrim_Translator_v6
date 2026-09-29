@@ -11,22 +11,52 @@ public sealed partial class GeminiClient
 {
     public async Task<IReadOnlyList<GeminiModel>> ListModelsAsync(string apiKey, CancellationToken cancellationToken)
     {
+        RequireApiKey(apiKey);
         var startedAt = DateTimeOffset.UtcNow;
         var sw = Stopwatch.StartNew();
         int? statusCode = null;
         try
         {
-            var url = $"https://generativelanguage.googleapis.com/v1beta/models?key={Uri.EscapeDataString(apiKey)}";
-            using var resp = await _httpClient.GetAsync(url, cancellationToken);
-            statusCode = (int)resp.StatusCode;
-            var body = await resp.Content.ReadAsStringAsync(cancellationToken);
-            if (!resp.IsSuccessStatusCode)
+            var models = new List<GeminiModel>();
+            var names = new HashSet<string>(StringComparer.Ordinal);
+            var pageTokens = new HashSet<string>(StringComparer.Ordinal);
+            string? pageToken = null;
+            do
             {
-                throw CreateHttpException("ListModels", resp, body);
-            }
+                cancellationToken.ThrowIfCancellationRequested();
+                var url = $"https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key={Uri.EscapeDataString(apiKey)}";
+                if (pageToken != null)
+                {
+                    url += $"&pageToken={Uri.EscapeDataString(pageToken)}";
+                }
+                using var resp = await _httpClient.GetAsync(url, cancellationToken);
+                statusCode = (int)resp.StatusCode;
+                var body = await resp.Content.ReadAsStringAsync(cancellationToken);
+                if (!resp.IsSuccessStatusCode)
+                {
+                    throw CreateHttpException("ListModels", resp, body);
+                }
 
-            var parsed = JsonSerializer.Deserialize<GeminiListModelsResponse>(body, JsonOptions);
-            var models = (IReadOnlyList<GeminiModel>?)parsed?.Models ?? Array.Empty<GeminiModel>();
+                var parsed = JsonSerializer.Deserialize<GeminiListModelsResponse>(body, JsonOptions)
+                    ?? throw new GeminiException("ListModels returned an empty response.");
+                if (parsed.Models != null)
+                {
+                    foreach (var model in parsed.Models)
+                    {
+                        if (!string.IsNullOrWhiteSpace(model.Name) && names.Add(model.Name))
+                        {
+                            models.Add(model);
+                        }
+                    }
+                }
+
+                pageToken = string.IsNullOrWhiteSpace(parsed.NextPageToken) ? null : parsed.NextPageToken;
+                if (pageToken != null && !pageTokens.Add(pageToken))
+                {
+                    throw new GeminiException("ListModels repeated a page token; the model list could not be completed.");
+                }
+            }
+            while (pageToken != null);
 
             LogCall(
                 new GeminiCallLogEntry(

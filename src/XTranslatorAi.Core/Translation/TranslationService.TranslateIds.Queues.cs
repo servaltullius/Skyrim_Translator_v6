@@ -136,12 +136,20 @@ public sealed partial class TranslationService
             var tokens = await CountTokensWithGateAsync(request.ApiKey, request.ModelName, sample, request.CancellationToken);
             if (tokens > 0)
             {
-                _maskedTokensPerCharHint = (double)tokens / sampleChars;
+                Ctx.MaskedTokensPerCharHint = (double)tokens / sampleChars;
             }
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex) when (IsCredentialError(ex))
+        {
+            throw;
         }
         catch
         {
-            _maskedTokensPerCharHint = null;
+            Ctx.MaskedTokensPerCharHint = null;
         }
     }
 
@@ -186,8 +194,8 @@ public sealed partial class TranslationService
     )
     {
         // Create/clear lane gate now (used by TranslateTextWithSentinelAsync via RequestLane.VeryLong).
-        _veryLongRequestGate?.Dispose();
-        _veryLongRequestGate = null;
+        Ctx.VeryLongRequestGate?.Dispose();
+        Ctx.VeryLongRequestGate = null;
         if (veryLongQueue.IsEmpty || maxConcurrency < 3)
         {
             return;
@@ -202,7 +210,7 @@ public sealed partial class TranslationService
         }
 
         var veryLongLimit = Math.Max(1, maxConcurrency - reserved);
-        _veryLongRequestGate = new SemaphoreSlim(veryLongLimit, maxConcurrency);
+        Ctx.VeryLongRequestGate = new SemaphoreSlim(veryLongLimit, maxConcurrency);
     }
 
     private static bool IsGemini3Model(string modelName)

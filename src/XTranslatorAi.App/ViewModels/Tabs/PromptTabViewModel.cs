@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace XTranslatorAi.App.ViewModels.Tabs;
 
-public sealed class PromptTabViewModel : ObservableObject
+public sealed class PromptTabViewModel : ObservableObject, IDisposable
 {
     private readonly IPromptTabHost _host;
 
@@ -52,4 +52,13 @@ public sealed class PromptTabViewModel : ObservableObject
     public string PromptLintSummary => _host.PromptLintSummary;
 
     public string PromptLintDetails => _host.PromptLintDetails;
+
+    private bool _disposed;
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        _host.PropertyChanged -= HostOnPropertyChanged;
+    }
 }

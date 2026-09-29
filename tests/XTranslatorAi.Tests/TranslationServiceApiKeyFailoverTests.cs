@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Translation;
+using XTranslatorAi.Tests.TestSupport;
 using Xunit;
 
 namespace XTranslatorAi.Tests;
 
 public sealed class TranslationServiceApiKeyFailoverTests
 {
-    private const string ModelName = "gemini-3-flash-preview";
+    private const string ModelName = "gemini-3.0-flash-preview";
 
     [Fact]
     public async Task TranslateIdsAsync_WhenFailoverDisabled_DoesNotThrowAndMarksError_On429()
@@ -36,9 +37,7 @@ public sealed class TranslationServiceApiKeyFailoverTests
         }
         finally
         {
-            TryDelete(path);
-            TryDelete(path + "-wal");
-            TryDelete(path + "-shm");
+            TestDbHelper.TryDeleteDbFiles(path);
         }
     }
 
@@ -64,9 +63,7 @@ public sealed class TranslationServiceApiKeyFailoverTests
         }
         finally
         {
-            TryDelete(path);
-            TryDelete(path + "-wal");
-            TryDelete(path + "-shm");
+            TestDbHelper.TryDeleteDbFiles(path);
         }
     }
 
@@ -143,21 +140,6 @@ public sealed class TranslationServiceApiKeyFailoverTests
         var ids = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending }, CancellationToken.None);
         Assert.Single(ids);
         return ids[0];
-    }
-
-    private static void TryDelete(string path)
-    {
-        try
-        {
-            if (System.IO.File.Exists(path))
-            {
-                System.IO.File.Delete(path);
-            }
-        }
-        catch
-        {
-            // ignore
-        }
     }
 
     private sealed class Always429Handler : HttpMessageHandler

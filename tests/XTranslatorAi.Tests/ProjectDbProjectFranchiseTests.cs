@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
+using XTranslatorAi.Tests.TestSupport;
 using Xunit;
 
 namespace XTranslatorAi.Tests;
@@ -30,7 +31,7 @@ public class ProjectDbProjectFranchiseTests
                     XmlVersion: "2",
                     XmlHasBom: false,
                     XmlPrologLine: "<?xml version=\"1.0\"?>",
-                    ModelName: "gemini-3-flash-preview",
+                    ModelName: "gemini-3.0-flash-preview",
                     BasePromptText: "base",
                     CustomPromptText: null,
                     UseCustomPrompt: false,
@@ -46,24 +47,7 @@ public class ProjectDbProjectFranchiseTests
         }
         finally
         {
-            TryDelete(path);
-            TryDelete(path + "-wal");
-            TryDelete(path + "-shm");
-        }
-    }
-
-    private static void TryDelete(string path)
-    {
-        try
-        {
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-        }
-        catch
-        {
-            // ignore
+            TestDbHelper.TryDeleteDbFiles(path);
         }
     }
 }

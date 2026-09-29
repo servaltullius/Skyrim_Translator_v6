@@ -12,7 +12,7 @@ public static class PromptLeakCleaner
         }
 
         // If the source itself contains these concepts, don't try to strip them from the translation.
-        if (ContainsAny(sourceText, "placeholder", "token", "__XT_", "자리표시자", "토큰"))
+        if (ContainsAny(sourceText, "placeholder", "__XT_", "자리표시자"))
         {
             return translatedText;
         }

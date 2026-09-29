@@ -1,0 +1,244 @@
+using System.Net.Http;
+using System.Collections.Concurrent;
+using System.Reflection;
+using XTranslatorAi.App.Services;
+using XTranslatorAi.App.ViewModels;
+using XTranslatorAi.Core.Data;
+using XTranslatorAi.Core.Models;
+using XTranslatorAi.Core.Xml;
+
+namespace XTranslatorAi.Tests;
+
+public class TranslationUiLifecycleTests
+{
+    [Fact]
+    public Task LateRowFromPreviousRun_DoesNotChangeNewProjectWithSameRowId()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new ViewModelFixture();
+            var vm = fixture.ViewModel;
+            var entry = new StringEntryViewModel(1, 0) { SourceText = "new source", DestText = "new translation" };
+            fixture.State.SetEntries(new[] { entry });
+            SetField(vm, "_rowUpdateGeneration", 2L);
+
+            Enqueue(vm, 1, "stale translation");
+            Invoke(vm, "DrainRowUpdates");
+            Assert.Equal("new translation", entry.DestText);
+            Assert.Equal(StringEntryStatus.Pending, entry.Status);
+
+            Enqueue(vm, 2, "current translation");
+            Invoke(vm, "DrainRowUpdates");
+            Assert.Equal("current translation", entry.DestText);
+            Assert.Equal(StringEntryStatus.Done, entry.Status);
+        });
+
+    [Fact]
+    public Task ResetProject_DiscardsQueuedRowsAndResetsSelectionAndCounters()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new ViewModelFixture();
+            var vm = fixture.ViewModel;
+            vm.TotalCount = 10;
+            vm.DoneCount = 5;
+            vm.PendingCount = 5;
+            vm.SelectedEntry = new StringEntryViewModel(1, 0);
+            Enqueue(vm, 0, "old queued translation");
+            Invoke(vm, "ResetProjectState");
+            var next = new StringEntryViewModel(1, 0);
+            fixture.State.SetEntries(new[] { next });
+            Invoke(vm, "DrainRowUpdates");
+
+            Assert.Equal("", next.DestText);
+            Assert.Null(vm.SelectedEntry);
+            Assert.Equal(0, vm.TotalCount);
+            Assert.Equal(0, vm.DoneCount);
+            Assert.Equal(0, vm.PendingCount);
+        });
+
+    [Fact]
+    public Task Resume_PreservesCompletedAndEditedRowsAndSelectsOnlyUnfinishedRows()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new ViewModelFixture();
+            var db = await ProjectDb.OpenOrCreateAsync(Path.Combine(fixture.DirectoryPath, "resume.sqlite"), CancellationToken.None);
+            fixture.State.SetWorkspace(db, new XTranslatorXmlInfo("test.esp", "english", "korean", "2", false, ""), "test.xml");
+            var statuses = new[] { StringEntryStatus.Done, StringEntryStatus.Edited, StringEntryStatus.InProgress, StringEntryStatus.Error };
+            await db.BulkInsertStringsAsync(statuses.Select((status, i) => (
+                OrderIndex: i, ListAttr: (string?)null, PartialAttr: (string?)null, AttributesJson: (string?)null,
+                Edid: (string?)null, Rec: (string?)null, SourceText: $"Source {i}", DestText: $"Dest {i}",
+                Status: status, RawStringXml: "<String />")), CancellationToken.None);
+            var rows = await db.GetStringsAsync(10, 0, CancellationToken.None);
+            fixture.State.SetEntries(rows.Select(row => new StringEntryViewModel(row.Id, row.OrderIndex)
+            { Status = row.Status, SourceText = row.SourceText, DestText = row.DestText ?? "" }).ToArray());
+
+            await (Task)Invoke(fixture.ViewModel, "PrepareTranslationsForResumeAsync", CancellationToken.None)!;
+            var pending = await (Task<IReadOnlyList<long>>)Invoke(fixture.ViewModel, "LoadPendingIdsAsync", CancellationToken.None)!;
+            var after = await db.GetStringsAsync(10, 0, CancellationToken.None);
+
+            Assert.Equal("Dest 0", after[0].DestText);
+            Assert.Equal(StringEntryStatus.Done, after[0].Status);
+            Assert.Equal("Dest 1", after[1].DestText);
+            Assert.Equal(StringEntryStatus.Edited, after[1].Status);
+            Assert.Equal(StringEntryStatus.Pending, after[2].Status);
+            Assert.Equal(new[] { after[2].Id, after[3].Id }, pending);
+            Assert.Equal(2, fixture.ViewModel.DoneCount);
+        });
+
+    [Fact]
+    public Task Close_WaitsForProjectToolCleanupBeforeDisposingDb()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new ViewModelFixture();
+            var db = await ProjectDb.OpenOrCreateAsync(Path.Combine(fixture.DirectoryPath, "close.sqlite"), CancellationToken.None);
+            fixture.State.SetWorkspace(db, new XTranslatorXmlInfo("test.esp", "english", "korean", "2", false, ""), "test.xml");
+            var tracker = (ProjectOperationTracker)typeof(MainViewModel)
+                .GetField("_projectOperations", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(fixture.ViewModel)!;
+            var canceled = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var cleanup = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var work = tracker.RunAsync(async token =>
+            {
+                try { await Task.Delay(Timeout.Infinite, token); }
+                finally
+                {
+                    canceled.TrySetResult();
+                    await cleanup.Task;
+                    Assert.Equal(0, await db.GetStringCountAsync(CancellationToken.None));
+                }
+            });
+
+            var closing = fixture.ViewModel.TryCloseWorkspaceAsync();
+            await canceled.Task;
+            Assert.False(closing.IsCompleted);
+            Assert.Same(db, fixture.State.Db);
+            Assert.False(fixture.ViewModel.IsWorkspaceInteractive);
+            cleanup.SetResult();
+            Assert.True(await closing);
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => work);
+            Assert.Null(fixture.State.Db);
+        });
+
+    [Fact]
+    public Task Close_CancelsCompareHttpRequestAndWaitsForCommandCompletion()
+        => RunOnSta(async () =>
+        {
+            using var handler = new BlockingHttpHandler();
+            await using var fixture = new ViewModelFixture(handler);
+            var vm = fixture.ViewModel;
+            vm.ApiKey = "unit-test-key";
+            vm.IsProjectLoaded = true;
+            vm.SelectedEntry = new StringEntryViewModel(1, 0) { SourceText = "Iron Sword", Rec = "WEAP:FULL" };
+            vm.CompareIncludeProjectGlossary = false;
+            vm.CompareIncludeGlobalGlossary = false;
+            vm.CompareIncludeFranchiseTranslationMemory = false;
+            vm.EnablePromptCache = false;
+            vm.EnableRepairPass = false;
+            var comparing = vm.RunCompare1Command.ExecuteAsync(null);
+            await handler.Started.Task;
+
+            Assert.True(await vm.TryCloseWorkspaceAsync());
+            await comparing;
+            Assert.True(handler.CancellationObserved);
+            Assert.False(vm.Compare1IsRunning);
+            Assert.Equal("중지됨", vm.Compare1Status);
+        });
+
+    private static void Enqueue(MainViewModel vm, long generation, string text)
+        => typeof(MainViewModel).GetMethod("OnRowUpdatedAsync", BindingFlags.NonPublic | BindingFlags.Instance,
+            null, new[] { typeof(long), typeof(long), typeof(StringEntryStatus), typeof(string) }, null)!
+            .Invoke(vm, new object[] { generation, 1L, StringEntryStatus.Done, text });
+
+    private static object? Invoke(MainViewModel vm, string method, params object[] args)
+        => typeof(MainViewModel).GetMethod(method, BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(vm, args);
+
+    private static void SetField(MainViewModel vm, string field, object value)
+        => typeof(MainViewModel).GetField(field, BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(vm, value);
+
+    private static Task RunOnSta(Func<Task> action)
+    {
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var thread = new Thread(() =>
+        {
+            using var context = new StaTestSynchronizationContext();
+            SynchronizationContext.SetSynchronizationContext(context);
+            context.Post(async _ =>
+            {
+                try { await action(); completion.SetResult(); }
+                catch (Exception ex) { completion.SetException(ex); }
+                finally { context.Complete(); }
+            }, null);
+            context.Run();
+        });
+        thread.SetApartmentState(ApartmentState.STA);
+        thread.IsBackground = true;
+        thread.Start();
+        return completion.Task.WaitAsync(TimeSpan.FromSeconds(20));
+    }
+
+    private sealed class StaTestSynchronizationContext : SynchronizationContext, IDisposable
+    {
+        private readonly BlockingCollection<(SendOrPostCallback Callback, object? State)> _queue = new();
+        public override void Post(SendOrPostCallback callback, object? state) => _queue.Add((callback, state));
+        public void Run()
+        {
+            foreach (var work in _queue.GetConsumingEnumerable()) work.Callback(work.State);
+        }
+        public void Complete() => _queue.CompleteAdding();
+        public void Dispose() => _queue.Dispose();
+    }
+
+    private sealed class ViewModelFixture : IAsyncDisposable
+    {
+        private readonly HttpClient _httpClient;
+        public string DirectoryPath { get; } = Path.Combine(Path.GetTempPath(), "TulliusTranslator-tests", Guid.NewGuid().ToString("N"));
+        public MainViewModel ViewModel { get; }
+        public ProjectState State => (ProjectState)typeof(MainViewModel).GetField("_projectState", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(ViewModel)!;
+
+        public ViewModelFixture(HttpMessageHandler? handler = null)
+        {
+            _httpClient = new HttpClient(handler ?? new NoNetworkHandler());
+            Directory.CreateDirectory(DirectoryPath);
+            var builtIn = new BuiltInGlossaryService();
+            var globalDb = new GlobalProjectDbService(builtIn);
+            var glossary = new ProjectGlossaryService(new GlossaryImportService(new GlossaryFileService()));
+            ViewModel = new MainViewModel(_httpClient, new MainViewModelServices(
+                new AppSettingsStore(Path.Combine(DirectoryPath, "settings.json")), new ApiCallLogService(),
+                new SystemPromptBuilder(), new NoUi(), new BundledFranchiseTmSeedService(DirectoryPath), globalDb,
+                glossary, new GlobalGlossaryService(globalDb, glossary), new FranchiseTranslationMemoryService(globalDb),
+                new ProjectWorkspaceService(globalDb, builtIn), new TranslationRunnerService(globalDb), new CompareTranslationService(glossary)));
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await State.DisposeDbAsync();
+            _httpClient.Dispose();
+            try { Directory.Delete(DirectoryPath, recursive: true); } catch (IOException) { }
+        }
+    }
+
+    private sealed class NoNetworkHandler : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            => throw new InvalidOperationException("Network calls are forbidden in UI lifecycle tests.");
+    }
+
+    private sealed class BlockingHttpHandler : HttpMessageHandler
+    {
+        public TaskCompletionSource Started { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public bool CancellationObserved { get; private set; }
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            Started.TrySetResult();
+            try { await Task.Delay(Timeout.Infinite, cancellationToken); }
+            catch (OperationCanceledException) { CancellationObserved = true; throw; }
+            return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+        }
+    }
+
+    private sealed class NoUi : IUiInteractionService
+    {
+        public UiMessageBoxResult ShowMessage(string message, string title, UiMessageBoxButton button, UiMessageBoxImage image, UiMessageBoxResult defaultResult) => UiMessageBoxResult.Ok;
+        public string? ShowOpenFileDialog(OpenFileDialogRequest request) => null;
+        public string? ShowSaveFileDialog(SaveFileDialogRequest request) => null;
+        public bool TryOpenFolder(string path) => false;
+    }
+}

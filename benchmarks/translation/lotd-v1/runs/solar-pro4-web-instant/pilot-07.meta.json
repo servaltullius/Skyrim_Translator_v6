@@ -1,0 +1,11 @@
+{
+  "model": "solar-pro4",
+  "route": "Solar Chat",
+  "thinking": "Instant",
+  "agentPipeline": true,
+  "apiEquivalent": false,
+  "inputVerified": true,
+  "inputFile": "prompts/pilot-07.txt",
+  "usage": null,
+  "savedAt": "2026-09-29T00:44:51.593Z"
+}

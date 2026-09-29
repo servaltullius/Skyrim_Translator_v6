@@ -8,7 +8,7 @@ using XTranslatorAi.Core.Text;
 
 namespace XTranslatorAi.App.ViewModels.Tabs;
 
-public sealed class GlobalGlossaryTabViewModel : ObservableObject
+public sealed class GlobalGlossaryTabViewModel : ObservableObject, IDisposable
 {
     private readonly IGlobalGlossaryTabHost _host;
 
@@ -96,5 +96,14 @@ public sealed class GlobalGlossaryTabViewModel : ObservableObject
     {
         get => _host.SelectedGlobalGlossaryEntry;
         set => _host.SelectedGlobalGlossaryEntry = value;
+    }
+
+    private bool _disposed;
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        _host.PropertyChanged -= HostOnPropertyChanged;
     }
 }

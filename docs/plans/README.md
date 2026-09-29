@@ -1,58 +1,14 @@
-# Plans Index (Status + Canonical Order)
+# 계획 문서 안내
 
-This index is the current entrypoint for `docs/plans/*`.
-It keeps old plans as history, while clarifying which documents are currently authoritative.
+## 현재
 
-Status labels:
-- `active`: use this first for current direction.
-- `historical`: useful implementation history; not primary guidance.
-- `superseded`: preserved for traceability, but replaced by newer direction.
+- [2026-09-29 비용·모델·배포 정리 및 .NET 10 이전](2026-09-29-maintenance.md)
+- [2026-09-28 번역기 개선 및 무료 모델 비교](2026-09-28-translator-improvement.md)
 
-## Active
-- `docs/plans/2026-02-10-app-reanalysis-and-rule-decomposition.md`
-  - Latest app-layer reanalysis with enforceable decoupling rules and incremental wave order.
-- `docs/plans/2026-02-09-batch-refactor-wave2-plan.md`
-  - One-shot integrated execution plan for current top hotspots (app orchestration + core binder/TM + test/docs cleanup).
-- `docs/plans/2026-02-09-refactor-decoupling-analysis.md`
-  - Current refactor/decoupling strategy (incremental seam-first).
-- `docs/plans/2026-02-09-lqa-fixer-pr-slicing-plan.md`
-  - PR-level slicing plan for `LqaScanner` and `KoreanTranslationFixer` decomposition (execution completed; use as parity/refactor trace log).
-- `docs/plans/2026-01-25-multi-franchise-support-and-remove-nexus.md`
-  - Franchise split and Nexus removal direction (still relevant in parts; verify against current code before execution).
-- `docs/plans/2026-01-24-model-presets-and-compare.md`
-  - Preset/model policy behavior reference.
+## 과거 설계 기록
 
-## Superseded
-- `docs/plans/2026-01-23-qwen-mt-provider.md`
-  - Superseded by Gemini-only backend direction.
-- `docs/plans/2026-01-23-qwen-mt-logging-and-cost.md`
-  - Superseded by Gemini-only backend direction.
-- `docs/plans/2026-01-23-deepseek-engine.md`
-  - Superseded by Gemini-only backend direction.
-- `docs/plans/2026-01-24-app-di-and-tab-vm-bigbang.md`
-  - Superseded by incremental seam-first refactor path.
+이 폴더의 2026년 1~2월 문서와 `../superpowers/plans/`의 4월 문서는 이력 보존용입니다. 예전의 active 표시는 2026-09-28 현재 방향을 뜻하지 않습니다. 일부 계획은 구현되지 않았거나 다른 설계로 대체되었습니다.
 
-## Historical
-- `docs/plans/2026-01-18-paired-slash-list-expander.md`
-- `docs/plans/2026-01-18-session-term-memory-auto-glossary.md`
-- `docs/plans/2026-01-19-global-project-glossary-tiers.md`
-- `docs/plans/2026-01-19-hotspot-refactor-phase2.md`
-- `docs/plans/2026-01-19-project-preflight-session-terms.md`
-- `docs/plans/2026-01-19-translation-safety-overhaul.md`
-- `docs/plans/2026-01-19-translationservice-refactor-plan.md`
-- `docs/plans/2026-01-19-vibe-kit-design.md`
-- `docs/plans/2026-01-19-vibekit-and-next-hotspots.md`
-- `docs/plans/2026-01-19-vibekit-improvements-and-pipeline-refactor.md`
-- `docs/plans/2026-01-22-app-lqa-review-tab.md`
-- `docs/plans/2026-01-22-dialogue-context-sliding-window.md`
-- `docs/plans/2026-01-22-light-theme-revert.md`
-- `docs/plans/2026-01-22-project-context-hardening.md`
-- `docs/plans/2026-01-22-vibekit-token-contract-qa-v2.md`
-- `docs/plans/2026-01-23-community-glossary-fortify-hardening.md`
-- `docs/plans/2026-01-23-quality-escalation-model-routing.md`
-- `docs/plans/2026-01-23-strings-tm-hit-highlighting.md`
-- `docs/plans/2026-01-24-gemini-only-engine-cleanup.md`
+특히 VibeKit 실행 절차, DeepSeek/Qwen provider 계획, 초기 Gemini preview 모델 설정, 모든 프랜차이즈의 내장 TM 계획은 현재 기능으로 간주하지 마세요. 현재 기능은 [루트 README](../../README.md), 검증 상태는 위의 현재 계획에서 확인합니다.
 
-## Maintenance Rule
-- When a new plan changes architectural direction, update this file first.
-- Do not delete old plan files unless legal/security reasons require removal.
+과거 파일은 삭제하거나 옮기지 않고 기존 경로를 보존합니다. 새로운 변경은 현재 계획과 문서 안내에 기록합니다.

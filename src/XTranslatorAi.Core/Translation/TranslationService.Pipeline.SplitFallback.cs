@@ -141,20 +141,20 @@ public sealed partial class TranslationService
 	        try
 	        {
 	            var final = ApplyTokensAndUnmask(rawText, batchItem.Glossary, batchItem.Mask, ctx.PlaceholderMasker, ctx.TargetLang);
-	            if (_enableTemplateFixer)
+	            if (Ctx.EnableTemplateFixer)
 	            {
 	                final = MagDurPlaceholderFixer.Fix(batchItem.Source, final, ctx.TargetLang);
 	            }
 	            final = PlaceholderUnitBinder.EnforceUnitsFromSource(ctx.TargetLang, batchItem.Source, final);
 	            final = KoreanProtectFromFixer.Fix(ctx.TargetLang, batchItem.Source, final);
 	            final = KoreanTranslationFixer.Fix(ctx.TargetLang, final);
-	            ValidateFinalTextIntegrity(batchItem.Source, final, context: $"id={id} post-edits");
+	            TokenValidator.ValidateFinalTextIntegrity(batchItem.Source, final, context: $"id={id} post-edits");
 
 	            string? styleHint = null;
-	            if (_enableQualityEscalation)
+	            if (Ctx.EnableQualityEscalation)
 	            {
 	                var rec = GetRecForId(id);
-	                styleHint = GuessStyleHint(batchItem.Source, _useRecStyleHints ? rec : null);
+	                styleHint = GuessStyleHint(batchItem.Source, Ctx.UseRecStyleHints ? rec : null);
 	                styleHint = AppendDialogueContextToStyleHint(styleHint, GetDialogueContextWindowForId(id));
 	            }
 

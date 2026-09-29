@@ -33,7 +33,7 @@ public sealed partial class TranslationService
             return globalTranslationMemory;
         }
 
-        // Project TM should override global TM when keys collide.
+        // Project TM should override franchise TM when keys collide.
         var merged = new Dictionary<string, string>(globalTranslationMemory.Count + projectTranslationMemory.Count, StringComparer.Ordinal);
         foreach (var (key, value) in globalTranslationMemory)
         {
@@ -75,7 +75,7 @@ public sealed partial class TranslationService
         }
 
         var final = tmText;
-        if (_enableTemplateFixer)
+        if (Ctx.EnableTemplateFixer)
         {
             final = MagDurPlaceholderFixer.Fix(sourceText, final, targetLang);
         }
@@ -85,7 +85,7 @@ public sealed partial class TranslationService
         final = PercentSignFixer.FixDuplicatePercents(final);
         try
         {
-            ValidateFinalTextIntegrity(sourceText, final, context: $"id={id} tm post-edits");
+            TokenValidator.ValidateFinalTextIntegrity(sourceText, final, context: $"id={id} tm post-edits");
         }
         catch (OperationCanceledException)
         {

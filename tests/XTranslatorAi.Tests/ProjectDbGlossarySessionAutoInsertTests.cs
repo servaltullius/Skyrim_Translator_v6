@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Text;
+using XTranslatorAi.Tests.TestSupport;
 using Xunit;
 
 namespace XTranslatorAi.Tests;
@@ -43,9 +44,7 @@ public class ProjectDbGlossarySessionAutoInsertTests
         }
         finally
         {
-            TryDelete(path);
-            TryDelete(path + "-wal");
-            TryDelete(path + "-shm");
+            TestDbHelper.TryDeleteDbFiles(path);
         }
     }
 
@@ -60,19 +59,4 @@ public class ProjectDbGlossarySessionAutoInsertTests
             ForceMode: GlossaryForceMode.ForceToken,
             Note: "test"
         );
-
-    private static void TryDelete(string path)
-    {
-        try
-        {
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-        }
-        catch
-        {
-            // ignore
-        }
-    }
 }

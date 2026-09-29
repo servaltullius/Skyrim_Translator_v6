@@ -13,6 +13,7 @@ using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text;
 using XTranslatorAi.Core.Translation;
+using XTranslatorAi.Tests.TestSupport;
 using Xunit;
 
 namespace XTranslatorAi.Tests;
@@ -51,9 +52,7 @@ public class TranslationServiceDuplicateDedupTests
         }
         finally
         {
-            TryDelete(path);
-            TryDelete(path + "-wal");
-            TryDelete(path + "-shm");
+            TestDbHelper.TryDeleteDbFiles(path);
         }
     }
 
@@ -93,9 +92,7 @@ public class TranslationServiceDuplicateDedupTests
         }
         finally
         {
-            TryDelete(path);
-            TryDelete(path + "-wal");
-            TryDelete(path + "-shm");
+            TestDbHelper.TryDeleteDbFiles(path);
         }
     }
 
@@ -137,9 +134,7 @@ public class TranslationServiceDuplicateDedupTests
         }
         finally
         {
-            TryDelete(path);
-            TryDelete(path + "-wal");
-            TryDelete(path + "-shm");
+            TestDbHelper.TryDeleteDbFiles(path);
         }
     }
 
@@ -485,18 +480,4 @@ public class TranslationServiceDuplicateDedupTests
         }
     }
 
-    private static void TryDelete(string path)
-    {
-        try
-        {
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-        }
-        catch
-        {
-            // ignore
-        }
-    }
 }

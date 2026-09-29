@@ -31,7 +31,7 @@ public sealed class GlossaryApplier
             );
         }
 
-        var tokenToReplacement = new Dictionary<string, string>(StringComparer.Ordinal);
+        var tokenToReplacement = new SortedDictionary<string, string>(StringComparer.Ordinal);
         var entryIdToToken = new Dictionary<long, string>();
         var promptOnlyPairs = new List<(string Source, string Target)>();
 
@@ -61,7 +61,7 @@ public sealed class GlossaryApplier
     private static string ReplaceAllMatchesTokenSafe(
         string input,
         CompiledGlossaryEntry entry,
-        Dictionary<string, string> tokenToReplacement,
+        IDictionary<string, string> tokenToReplacement,
         Dictionary<long, string> entryIdToToken
     )
     {
@@ -90,7 +90,7 @@ public sealed class GlossaryApplier
     private static string ReplaceAllMatchesInPlainText(
         string input,
         CompiledGlossaryEntry entry,
-        Dictionary<string, string> tokenToReplacement,
+        IDictionary<string, string> tokenToReplacement,
         Dictionary<long, string> entryIdToToken
     )
     {
@@ -214,7 +214,7 @@ public sealed class GlossaryApplier
 
     private static string GetOrCreateEntryToken(
         GlossaryEntry entry,
-        Dictionary<string, string> tokenToReplacement,
+        IDictionary<string, string> tokenToReplacement,
         Dictionary<long, string> entryIdToToken
     )
     {

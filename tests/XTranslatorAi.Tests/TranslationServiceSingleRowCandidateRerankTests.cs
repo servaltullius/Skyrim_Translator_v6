@@ -11,13 +11,14 @@ using System.Threading.Tasks;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Translation;
+using XTranslatorAi.Tests.TestSupport;
 using Xunit;
 
 namespace XTranslatorAi.Tests;
 
 public sealed class TranslationServiceSingleRowCandidateRerankTests
 {
-    private const string ModelName = "gemini-3.0-flash-preview";
+    private const string ModelName = "gemini-2.5-flash";
 
     [Fact]
     public async Task TranslateIdsAsync_RiskySingleRow_UsesMultipleCandidatesAndSelectsBetterOne()
@@ -62,9 +63,7 @@ public sealed class TranslationServiceSingleRowCandidateRerankTests
         }
         finally
         {
-            TryDelete(path);
-            TryDelete(path + "-wal");
-            TryDelete(path + "-shm");
+            TestDbHelper.TryDeleteDbFiles(path);
         }
     }
 
@@ -116,21 +115,6 @@ public sealed class TranslationServiceSingleRowCandidateRerankTests
             ),
             CancellationToken.None
         );
-    }
-
-    private static void TryDelete(string path)
-    {
-        try
-        {
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-        }
-        catch
-        {
-            // ignore
-        }
     }
 
     private sealed class MultiCandidateSingleRowHandler : HttpMessageHandler

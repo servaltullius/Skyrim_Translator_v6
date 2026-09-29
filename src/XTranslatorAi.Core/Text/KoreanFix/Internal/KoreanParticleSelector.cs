@@ -95,6 +95,30 @@ internal static class KoreanParticleSelector
         return HasFinalConsonant(last) ? "은" : "는";
     }
 
+    public static string FixSubjectParticleSafely(string noun, string particle)
+    {
+        var expected = ChooseSubjectParticle(noun);
+        if (string.Equals(particle, expected, StringComparison.Ordinal))
+        {
+            return particle;
+        }
+
+        // Both directions are risky on single-syllable nouns:
+        // "가" could be verb 가다, "이" could be copula 이다.
+        if (noun.Length < 2)
+        {
+            return particle;
+        }
+
+        return expected;
+    }
+
+    public static string FixSubjectParticleSafelyLatin(string noun, string particle)
+    {
+        var expected = HasFinalConsonantLatin(noun) ? "이" : "가";
+        return string.Equals(particle, expected, StringComparison.Ordinal) ? particle : expected;
+    }
+
     public static string FixObjectParticleSafely(string noun, string particle)
         => FixParticleSafely(noun, particle, ChooseObjectParticle, unsafeParticle: "을", unsafeExpected: "를");
 

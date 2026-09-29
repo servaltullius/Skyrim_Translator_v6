@@ -6,6 +6,26 @@ namespace XTranslatorAi.Core.Text;
 
 public static partial class MagDurPlaceholderFixer
 {
+    private static readonly Regex DurLooksAmountRegex = new(
+        @"[+-]?<\s*dur\s*>\s*(%|퍼센트|만큼|점|포인트|수치)",
+        RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
+    );
+
+    private static readonly Regex MagLooksTimeRegex = new(
+        @"([+-]?<\s*mag\s*>\s*%?\s*(초간|초|분|시간|일|주|개월|년|동안|간))|((초간|초|분|시간|일|주|개월|년|동안|간)\s*[+-]?<\s*mag\s*>\s*%?)",
+        RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
+    );
+
+    private static readonly Regex MagHasPercentRegex = new(
+        @"[+-]?<\s*mag\s*>\s*%",
+        RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
+    );
+
+    private static readonly Regex DurHasPercentRegex = new(
+        @"[+-]?<\s*dur\s*>\s*%",
+        RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
+    );
+
     private static bool LooksLikeKoreanText(string text)
     {
         if (string.IsNullOrEmpty(text))
@@ -134,14 +154,10 @@ public static partial class MagDurPlaceholderFixer
     {
         // A few strong signals that the placeholders got swapped or placed on the wrong particle.
         // We keep this conservative: only auto-fix when it is very likely wrong.
-        var durLooksAmount = Regex.IsMatch(dest, @"[+-]?<\s*dur\s*>\s*(%|퍼센트|만큼|점|포인트|수치)", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-        var magLooksTime = Regex.IsMatch(
-            dest,
-            @"([+-]?<\s*mag\s*>\s*%?\s*(초간|초|분|시간|일|주|개월|년|동안|간))|((초간|초|분|시간|일|주|개월|년|동안|간)\s*[+-]?<\s*mag\s*>\s*%?)",
-            RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
-        );
-        var magHasPercent = Regex.IsMatch(dest, @"[+-]?<\s*mag\s*>\s*%", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-        var durHasPercent = Regex.IsMatch(dest, @"[+-]?<\s*dur\s*>\s*%", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        var durLooksAmount = DurLooksAmountRegex.IsMatch(dest);
+        var magLooksTime = MagLooksTimeRegex.IsMatch(dest);
+        var magHasPercent = MagHasPercentRegex.IsMatch(dest);
+        var durHasPercent = DurHasPercentRegex.IsMatch(dest);
 
         return durLooksAmount || magLooksTime || (!magHasPercent && durHasPercent);
     }

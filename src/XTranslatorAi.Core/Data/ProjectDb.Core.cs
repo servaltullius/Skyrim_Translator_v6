@@ -8,7 +8,7 @@ using Microsoft.Data.Sqlite;
 
 namespace XTranslatorAi.Core.Data;
 
-public sealed partial class ProjectDb : IAsyncDisposable
+public sealed partial class ProjectDb : IAsyncDisposable, IProjectDb
 {
     private readonly SqliteConnection _connection;
     private readonly SemaphoreSlim _gate = new(1, 1);
@@ -122,24 +122,32 @@ public sealed partial class ProjectDb : IAsyncDisposable
         }.ToString();
 
         var connection = new SqliteConnection(connString);
-        await connection.OpenAsync(cancellationToken);
-
-        await ExecPragmaAsync(connection, "PRAGMA busy_timeout=5000;", cancellationToken);
         try
         {
-            await ExecPragmaAsync(connection, "PRAGMA journal_mode=WAL;", cancellationToken);
+            await connection.OpenAsync(cancellationToken);
+
+            await ExecPragmaAsync(connection, "PRAGMA busy_timeout=5000;", cancellationToken);
+            try
+            {
+                await ExecPragmaAsync(connection, "PRAGMA journal_mode=WAL;", cancellationToken);
+            }
+            catch (SqliteException)
+            {
+                await ExecPragmaAsync(connection, "PRAGMA journal_mode=DELETE;", cancellationToken);
+            }
+
+            await ExecPragmaAsync(connection, "PRAGMA synchronous=NORMAL;", cancellationToken);
+            await ExecPragmaAsync(connection, "PRAGMA temp_store=MEMORY;", cancellationToken);
+
+            var db = new ProjectDb(connection);
+            await db.EnsureSchemaAsync(cancellationToken);
+            return db;
         }
-        catch (SqliteException)
+        catch
         {
-            await ExecPragmaAsync(connection, "PRAGMA journal_mode=DELETE;", cancellationToken);
+            await connection.DisposeAsync();
+            throw;
         }
-
-        await ExecPragmaAsync(connection, "PRAGMA synchronous=NORMAL;", cancellationToken);
-        await ExecPragmaAsync(connection, "PRAGMA temp_store=MEMORY;", cancellationToken);
-
-        var db = new ProjectDb(connection);
-        await db.EnsureSchemaAsync(cancellationToken);
-        return db;
     }
 
     private static async Task ExecPragmaAsync(SqliteConnection connection, string sql, CancellationToken cancellationToken)

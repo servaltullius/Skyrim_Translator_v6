@@ -66,14 +66,5 @@ internal static class PercentSignFixer
     }
 
     private static string RemoveInvisibleSeparators(string text)
-    {
-        if (text.IndexOf('\u200B') < 0 && text.IndexOf('\uFEFF') < 0 && text.IndexOf('\u2060') < 0)
-        {
-            return text;
-        }
-
-        return text.Replace("\u200B", "", StringComparison.Ordinal)
-            .Replace("\uFEFF", "", StringComparison.Ordinal)
-            .Replace("\u2060", "", StringComparison.Ordinal);
-    }
+        => TranslationConstants.RemoveInvisibleSeparators(text);
 }

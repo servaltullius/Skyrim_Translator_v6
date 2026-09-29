@@ -23,8 +23,8 @@
                       ToolTip="Compare용 임시 DB에 현재 프로젝트 용어집을 복사해 적용합니다." />
             <CheckBox Content="Global glossary" IsChecked="{Binding CompareIncludeGlobalGlossary}" VerticalAlignment="Center" Margin="12,0,0,0"
                       ToolTip="Global glossary를 적용합니다." />
-            <CheckBox Content="Global TM" IsChecked="{Binding CompareIncludeGlobalTranslationMemory}" VerticalAlignment="Center" Margin="12,0,0,0"
-                      ToolTip="Global TM을 적용합니다. (TM hit가 있으면 LLM 호출 없이 Done (TM)으로 끝날 수 있습니다)" />
+            <CheckBox Content="Franchise TM" IsChecked="{Binding CompareIncludeFranchiseTranslationMemory}" VerticalAlignment="Center" Margin="12,0,0,0"
+                      ToolTip="Franchise TM을 적용합니다. (TM hit가 있으면 LLM 호출 없이 Done (TM)으로 끝날 수 있습니다)" />
         </WrapPanel>
 
         <GroupBox Grid.Row="1" Header="{Binding CompareSelectedEntrySummary}" Style="{StaticResource XT.GroupBoxCard}" Margin="0,0,0,10">
@@ -54,11 +54,11 @@
 	                                  Width="190"
 	                                  VerticalAlignment="Center"
 	                                  Style="{StaticResource XT.ToolbarComboBox}" />
-	                        <CheckBox Content="Thinking OFF"
+	                        <CheckBox Content="Thinking 최소화"
 	                                  IsChecked="{Binding Compare1ThinkingOff}"
 	                                  VerticalAlignment="Center"
 	                                  Margin="12,0,0,0"
-	                                  ToolTip="thinkingConfig(thinkingBudget=0)로 요청합니다. (Gemini 3 Flash Preview 기본 dynamic thinking과 비교용)" />
+	                                  ToolTip="지원되는 낮은 Thinking 설정을 사용합니다. Gemini 3.1 Flash-Lite는 minimal, 다른 Gemini 3 모델은 low, 2.5 Flash 계열은 사고 예산 0으로 비교합니다." />
 
 	                        <Button Content="Run" Command="{Binding RunCompare1Command}" Style="{StaticResource XT.ToolbarButton}" Margin="12,0,0,0" />
 	                    </WrapPanel>
@@ -83,11 +83,11 @@
 	                                  Width="190"
 	                                  VerticalAlignment="Center"
 	                                  Style="{StaticResource XT.ToolbarComboBox}" />
-	                        <CheckBox Content="Thinking OFF"
+	                        <CheckBox Content="Thinking 최소화"
 	                                  IsChecked="{Binding Compare2ThinkingOff}"
 	                                  VerticalAlignment="Center"
 	                                  Margin="12,0,0,0"
-	                                  ToolTip="thinkingConfig(thinkingBudget=0)로 요청합니다. (Gemini 3 Flash Preview 기본 dynamic thinking과 비교용)" />
+	                                  ToolTip="지원되는 낮은 Thinking 설정을 사용합니다. Gemini 3.1 Flash-Lite는 minimal, 다른 Gemini 3 모델은 low, 2.5 Flash 계열은 사고 예산 0으로 비교합니다." />
 
 	                        <Button Content="Run" Command="{Binding RunCompare2Command}" Style="{StaticResource XT.ToolbarButton}" Margin="12,0,0,0" />
 	                    </WrapPanel>
@@ -112,11 +112,11 @@
 	                                  Width="190"
 	                                  VerticalAlignment="Center"
 	                                  Style="{StaticResource XT.ToolbarComboBox}" />
-	                        <CheckBox Content="Thinking OFF"
+	                        <CheckBox Content="Thinking 최소화"
 	                                  IsChecked="{Binding Compare3ThinkingOff}"
 	                                  VerticalAlignment="Center"
 	                                  Margin="12,0,0,0"
-	                                  ToolTip="thinkingConfig(thinkingBudget=0)로 요청합니다. (Gemini 3 Flash Preview 기본 dynamic thinking과 비교용)" />
+	                                  ToolTip="지원되는 낮은 Thinking 설정을 사용합니다. Gemini 3.1 Flash-Lite는 minimal, 다른 Gemini 3 모델은 low, 2.5 Flash 계열은 사고 예산 0으로 비교합니다." />
 
 	                        <Button Content="Run" Command="{Binding RunCompare3Command}" Style="{StaticResource XT.ToolbarButton}" Margin="12,0,0,0" />
 	                    </WrapPanel>

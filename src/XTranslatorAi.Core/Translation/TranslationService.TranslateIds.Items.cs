@@ -17,15 +17,15 @@ public sealed partial class TranslationService
         IReadOnlyDictionary<string, string> translationMemory
     )
     {
-        _rowContextById = new Dictionary<long, RowContext>(capacity: request.Ids.Count);
+        Ctx.RowContextById = new Dictionary<long, RowContext>(capacity: request.Ids.Count);
         var rowsById = await _db.GetStringTranslationContextsByIdsAsync(request.Ids, request.CancellationToken);
 
         var items = new List<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>();
-        var canonicalIdByMaskedText = new Dictionary<string, long>(StringComparer.Ordinal);
+        var canonicalIdByMaskedText = new Dictionary<DuplicateKey, long>();
         var duplicateRowsByCanonicalId = new Dictionary<long, List<(long Id, string Source, MaskedText Mask)>>();
         var orderedRows = new List<DialogueContextRow>(capacity: request.Ids.Count);
 
-        foreach (var id in request.Ids)
+        foreach (var id in request.Ids.Distinct())
         {
             request.CancellationToken.ThrowIfCancellationRequested();
 
@@ -34,15 +34,32 @@ public sealed partial class TranslationService
                 throw new InvalidOperationException($"Missing row id={id}");
             }
 
-            _rowContextById[row.Id] = new RowContext(row.Rec, row.Edid);
+            Ctx.RowContextById[row.Id] = new RowContext(row.Rec, row.Edid);
             orderedRows.Add(new DialogueContextRow(row.Id, row.Rec, row.Edid, row.SourceText));
+        }
+
+        Ctx.DialogueContextWindowById = Ctx.EnableDialogueContextWindow
+            ? BuildDialogueContextWindowMap(orderedRows)
+            : null;
+        var ambiguousTmSources = FindAmbiguousTranslationMemorySources(orderedRows);
+
+        foreach (var contextRow in orderedRows)
+        {
+            request.CancellationToken.ThrowIfCancellationRequested();
+            var row = rowsById[contextRow.Id];
 
             if (row.Status != StringEntryStatus.Pending && row.Status != StringEntryStatus.Error)
             {
                 continue;
             }
 
-            if (await TryApplyTranslationMemoryAsync(
+            var sourceKey = TranslationMemoryKey.NormalizeSource(row.SourceText);
+            if (ambiguousTmSources.Contains(sourceKey) && translationMemory.ContainsKey(sourceKey))
+            {
+                await _db.UpsertStringNoteAsync(row.Id, TranslationConstants.TmFallbackNoteKind,
+                    "TM 폴백: 같은 원문의 REC/EDID/대화 문맥이 달라 개별 번역합니다.", request.CancellationToken);
+            }
+            else if (await TryApplyTranslationMemoryAsync(
                     row.Id,
                     row.SourceText,
                     request.TargetLang,
@@ -68,7 +85,11 @@ public sealed partial class TranslationService
                 glossed = glossed with { Text = expanded };
             }
 
-            var duplicateKey = BuildDuplicateKey(expanded, glossed.TokenToReplacement);
+            var duplicateKey = new DuplicateKey(
+                row.SourceText,
+                BuildDuplicateKey(expanded, glossed.TokenToReplacement),
+                GetTranslationContextKey(contextRow)
+            );
 
             if (canonicalIdByMaskedText.TryGetValue(duplicateKey, out var canonicalId))
             {
@@ -86,13 +107,9 @@ public sealed partial class TranslationService
             items.Add((row.Id, row.SourceText, expanded, masked, glossed));
         }
 
-        _dialogueContextWindowById = _enableDialogueContextWindow
-            ? BuildDialogueContextWindowMap(orderedRows)
-            : null;
-
         if (duplicateRowsByCanonicalId.Count == 0)
         {
-            _duplicateRowsByCanonicalId = null;
+            Ctx.DuplicateRowsByCanonicalId = null;
         }
         else
         {
@@ -101,10 +118,41 @@ public sealed partial class TranslationService
             {
                 frozen[canonicalId] = dups.ToArray();
             }
-            _duplicateRowsByCanonicalId = frozen;
+            Ctx.DuplicateRowsByCanonicalId = frozen;
         }
 
         return items;
+    }
+
+    // Reuse a translation only when both its protected source and prompt context
+    // agree. Identical words may be an item name, a command, or different dialogue.
+    private readonly record struct TranslationContextKey(string Rec, string Edid, string Dialogue);
+    private readonly record struct DuplicateKey(string Source, string TextAndGlossary, TranslationContextKey Context);
+
+    private TranslationContextKey GetTranslationContextKey(DialogueContextRow row)
+        => new(row.Rec?.Trim().ToUpperInvariant() ?? "", row.Edid?.Trim().ToUpperInvariant() ?? "",
+            GetDialogueContextWindowForId(row.Id) ?? "");
+
+    private HashSet<string> FindAmbiguousTranslationMemorySources(IReadOnlyList<DialogueContextRow> rows)
+    {
+        // The current TM schema is source-only. When the selected rows prove that
+        // a source belongs to several contexts, do not choose one TM value for all.
+        var firstContextBySource = new Dictionary<string, TranslationContextKey>(StringComparer.Ordinal);
+        var ambiguous = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var row in rows)
+        {
+            var source = TranslationMemoryKey.NormalizeSource(row.SourceText);
+            var context = GetTranslationContextKey(row);
+            if (firstContextBySource.TryGetValue(source, out var previous) && previous != context)
+            {
+                ambiguous.Add(source);
+            }
+            else
+            {
+                firstContextBySource[source] = context;
+            }
+        }
+        return ambiguous;
     }
 
     private static string BuildDuplicateKey(string expandedText, IReadOnlyDictionary<string, string> glossaryTokenToReplacement)
@@ -352,7 +400,7 @@ public sealed partial class TranslationService
             return null;
         }
 
-        if (RawMarkupTagRegex.IsMatch(sourceText) || RawPagebreakRegex.IsMatch(sourceText))
+        if (TokenSanitizer.RawMarkupTagRegex.IsMatch(sourceText) || TokenSanitizer.RawPagebreakRegex.IsMatch(sourceText))
         {
             return null;
         }
@@ -404,7 +452,7 @@ public sealed partial class TranslationService
         System.Text.Json.JsonElement responseSchema
     )
     {
-        if (!_enableSessionTermMemory)
+        if (!Ctx.EnableSessionTermMemory)
         {
             return items;
         }

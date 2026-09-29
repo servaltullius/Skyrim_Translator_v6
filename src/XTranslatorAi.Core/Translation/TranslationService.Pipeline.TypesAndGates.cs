@@ -15,36 +15,36 @@ public sealed partial class TranslationService
         VeryLong,
     }
 
-    private sealed record RowContext(string? Rec, string? Edid);
+    internal sealed record RowContext(string? Rec, string? Edid);
 
     private string? GetRecForId(long id)
     {
-        if (_rowContextById == null)
+        if (Ctx.RowContextById == null)
         {
             return null;
         }
 
-        return _rowContextById.TryGetValue(id, out var ctx) ? ctx.Rec : null;
+        return Ctx.RowContextById.TryGetValue(id, out var ctx) ? ctx.Rec : null;
     }
 
     private string? GetEdidForId(long id)
     {
-        if (_rowContextById == null)
+        if (Ctx.RowContextById == null)
         {
             return null;
         }
 
-        return _rowContextById.TryGetValue(id, out var ctx) ? ctx.Edid : null;
+        return Ctx.RowContextById.TryGetValue(id, out var ctx) ? ctx.Edid : null;
     }
 
     private string? GetDialogueContextWindowForId(long id)
     {
-        if (_dialogueContextWindowById == null)
+        if (Ctx.DialogueContextWindowById == null)
         {
             return null;
         }
 
-        return _dialogueContextWindowById.TryGetValue(id, out var ctx) ? ctx : null;
+        return Ctx.DialogueContextWindowById.TryGetValue(id, out var ctx) ? ctx : null;
     }
 
     private async Task<string> GenerateContentWithGateAsync(
@@ -57,8 +57,8 @@ public sealed partial class TranslationService
     {
         await WaitForGlobalThrottleAsync(cancellationToken);
 
-        var laneGate = lane == RequestLane.VeryLong ? _veryLongRequestGate : null;
-        var gate = _generateContentGate;
+        var laneGate = lane == RequestLane.VeryLong ? Ctx.VeryLongRequestGate : null;
+        var gate = Ctx.GenerateContentGate;
         if (gate == null && laneGate == null)
         {
             return await _gemini.GenerateContentAsync(apiKey, modelName, request, cancellationToken);
@@ -79,17 +79,17 @@ public sealed partial class TranslationService
 
             try
             {
-                await WaitForAdaptiveConcurrencySlotAsync(cancellationToken);
+                await Ctx.AdaptiveConcurrency.WaitForSlotAsync(cancellationToken);
                 adaptiveAcquired = true;
                 var response = await _gemini.GenerateContentAsync(apiKey, modelName, request, cancellationToken);
-                RegisterAdaptiveRequestSuccess();
+                Ctx.AdaptiveConcurrency.RegisterSuccess();
                 return response;
             }
             finally
             {
                 if (adaptiveAcquired)
                 {
-                    ReleaseAdaptiveConcurrencySlot();
+                    Ctx.AdaptiveConcurrency.ReleaseSlot();
                 }
                 gate?.Release();
             }
@@ -110,8 +110,8 @@ public sealed partial class TranslationService
     {
         await WaitForGlobalThrottleAsync(cancellationToken);
 
-        var laneGate = lane == RequestLane.VeryLong ? _veryLongRequestGate : null;
-        var gate = _generateContentGate;
+        var laneGate = lane == RequestLane.VeryLong ? Ctx.VeryLongRequestGate : null;
+        var gate = Ctx.GenerateContentGate;
         if (gate == null && laneGate == null)
         {
             return await _gemini.GenerateContentCandidatesAsync(apiKey, modelName, request, cancellationToken);
@@ -132,17 +132,17 @@ public sealed partial class TranslationService
 
             try
             {
-                await WaitForAdaptiveConcurrencySlotAsync(cancellationToken);
+                await Ctx.AdaptiveConcurrency.WaitForSlotAsync(cancellationToken);
                 adaptiveAcquired = true;
                 var response = await _gemini.GenerateContentCandidatesAsync(apiKey, modelName, request, cancellationToken);
-                RegisterAdaptiveRequestSuccess();
+                Ctx.AdaptiveConcurrency.RegisterSuccess();
                 return response;
             }
             finally
             {
                 if (adaptiveAcquired)
                 {
-                    ReleaseAdaptiveConcurrencySlot();
+                    Ctx.AdaptiveConcurrency.ReleaseSlot();
                 }
                 gate?.Release();
             }
@@ -157,7 +157,7 @@ public sealed partial class TranslationService
     {
         await WaitForGlobalThrottleAsync(cancellationToken);
 
-        var gate = _generateContentGate;
+        var gate = Ctx.GenerateContentGate;
         if (gate == null)
         {
             return await _gemini.CountTokensAsync(apiKey, modelName, text, cancellationToken);
@@ -167,17 +167,17 @@ public sealed partial class TranslationService
         var adaptiveAcquired = false;
         try
         {
-            await WaitForAdaptiveConcurrencySlotAsync(cancellationToken);
+            await Ctx.AdaptiveConcurrency.WaitForSlotAsync(cancellationToken);
             adaptiveAcquired = true;
             var tokenCount = await _gemini.CountTokensAsync(apiKey, modelName, text, cancellationToken);
-            RegisterAdaptiveRequestSuccess();
+            Ctx.AdaptiveConcurrency.RegisterSuccess();
             return tokenCount;
         }
         finally
         {
             if (adaptiveAcquired)
             {
-                ReleaseAdaptiveConcurrencySlot();
+                Ctx.AdaptiveConcurrency.ReleaseSlot();
             }
             gate.Release();
         }

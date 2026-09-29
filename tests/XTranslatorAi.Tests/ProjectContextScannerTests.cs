@@ -7,6 +7,7 @@ using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text;
 using XTranslatorAi.Core.Text.ProjectContext;
+using XTranslatorAi.Tests.TestSupport;
 using Xunit;
 
 namespace XTranslatorAi.Tests;
@@ -73,7 +74,7 @@ public class ProjectContextScannerTests
         }
         finally
         {
-            TryDeleteDbFiles(path);
+            TestDbHelper.TryDeleteDbFiles(path);
         }
     }
 
@@ -111,7 +112,7 @@ public class ProjectContextScannerTests
                 XmlVersion: "1",
                 XmlHasBom: false,
                 XmlPrologLine: "<?xml version=\"1.0\"?>",
-                ModelName: "gemini-3-flash-preview",
+                ModelName: "gemini-3.0-flash-preview",
                 BasePromptText: "base",
                 CustomPromptText: null,
                 UseCustomPrompt: false,
@@ -122,25 +123,4 @@ public class ProjectContextScannerTests
         );
     }
 
-    private static void TryDelete(string path)
-    {
-        try
-        {
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-        }
-        catch
-        {
-            // ignore
-        }
-    }
-
-    private static void TryDeleteDbFiles(string path)
-    {
-        TryDelete(path);
-        TryDelete(path + "-wal");
-        TryDelete(path + "-shm");
-    }
 }

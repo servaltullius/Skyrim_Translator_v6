@@ -1,0 +1,14 @@
+{
+  "model": "gemini-3.1-flash-lite",
+  "route": "Google AI Studio",
+  "thinking": "Minimal",
+  "inputVerified": true,
+  "apiKeySelected": false,
+  "tools": false,
+  "usage": null,
+  "savedAt": "2026-09-29T00:40:12.389Z",
+  "inputFile": "prompts/full-01.txt",
+  "rawRead": "response editor; unchanged",
+  "reusedFromBatch": "pilot-01",
+  "reuseReason": "Identical SHA-256 prompt; same original request, not a new repeat"
+}

@@ -4,7 +4,8 @@ using System.Text.Json.Serialization;
 namespace XTranslatorAi.Core.Translation;
 
 public sealed record GeminiListModelsResponse(
-    [property: JsonPropertyName("models")] List<GeminiModel>? Models
+    [property: JsonPropertyName("models")] List<GeminiModel>? Models,
+    [property: JsonPropertyName("nextPageToken")] string? NextPageToken = null
 );
 
 public sealed record GeminiModel(
@@ -15,4 +16,3 @@ public sealed record GeminiModel(
     [property: JsonPropertyName("outputTokenLimit")] int? OutputTokenLimit,
     [property: JsonPropertyName("supportedGenerationMethods")] List<string>? SupportedGenerationMethods
 );
-

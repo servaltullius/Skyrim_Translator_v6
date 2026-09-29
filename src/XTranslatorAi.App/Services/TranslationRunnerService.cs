@@ -21,12 +21,12 @@ public sealed class TranslationRunnerService
     }
 
     public sealed record Request(
-        ProjectDb Db,
-        GeminiClient GeminiClient,
+        IProjectDb Db,
+        IGeminiClient GeminiClient,
         ITranslationRunnerStatusPort StatusPort,
         ITranslationRunnerFlowControlPort FlowControlPort,
         ITranslationRunnerFailoverPort FailoverPort,
-        CancellationTokenSource CancellationTokenSource,
+        CancellationToken CancellationToken,
         IReadOnlyList<long> Ids,
         Func<long, string?> GetRecById,
         Func<string?, bool> IsBookFullRec,
@@ -64,12 +64,13 @@ public sealed class TranslationRunnerService
 
         try
         {
+            request.CancellationToken.ThrowIfCancellationRequested();
             var runs = await BuildRunsAsync(request);
             await ExecuteRunsWithFailoverAsync(request, runs, triedApiKeys);
 
             return new Result(Canceled: false, Error: null);
         }
-        catch (OperationCanceledException) when (request.CancellationTokenSource.IsCancellationRequested)
+        catch (OperationCanceledException) when (request.CancellationToken.IsCancellationRequested)
         {
             return new Result(Canceled: true, Error: null);
         }
@@ -100,23 +101,32 @@ public sealed class TranslationRunnerService
     {
         while (true)
         {
-            request.CancellationTokenSource.Token.ThrowIfCancellationRequested();
+            request.CancellationToken.ThrowIfCancellationRequested();
 
             try
             {
                 triedApiKeys.Add((request.FailoverPort.ApiKey ?? "").Trim());
 
                 await run.Service.TranslateIdsAsync(
-                    BuildTranslateIdsRequest(request, run, request.CancellationTokenSource.Token)
+                    BuildTranslateIdsRequest(request, run, request.CancellationToken)
                 );
 
                 return;
             }
-            catch (Exception ex) when (!request.CancellationTokenSource.IsCancellationRequested && TryFailoverToNextSavedKey(request, triedApiKeys, ex))
+            catch (OperationCanceledException) when (request.CancellationToken.IsCancellationRequested)
             {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                if (!await TryFailoverToNextSavedKeyAsync(request, triedApiKeys, ex))
+                {
+                    throw;
+                }
+
                 try
                 {
-                    await request.Db.ResetInProgressToPendingAsync(CancellationToken.None);
+                    await request.Db.ResetInProgressToPendingAsync(request.CancellationToken);
                 }
                 catch
                 {
@@ -301,7 +311,7 @@ public sealed class TranslationRunnerService
 
     private async Task<IReadOnlyList<GlossaryEntry>?> TryLoadGlobalGlossaryAsync(Request request)
     {
-        var globalDb = await _globalProjectDbService.GetOrCreateAsync(request.Franchise, CancellationToken.None);
+        var globalDb = await _globalProjectDbService.GetOrCreateAsync(request.Franchise, request.CancellationToken);
         if (globalDb == null)
         {
             return null;
@@ -309,7 +319,7 @@ public sealed class TranslationRunnerService
 
         try
         {
-            return await globalDb.GetGlossaryAsync(CancellationToken.None);
+            return await globalDb.GetGlossaryAsync(request.CancellationToken);
         }
         catch
         {
@@ -319,7 +329,7 @@ public sealed class TranslationRunnerService
 
     private async Task<IReadOnlyDictionary<string, string>?> TryLoadGlobalTranslationMemoryAsync(Request request)
     {
-        var globalDb = await _globalProjectDbService.GetOrCreateAsync(request.Franchise, CancellationToken.None);
+        var globalDb = await _globalProjectDbService.GetOrCreateAsync(request.Franchise, request.CancellationToken);
         if (globalDb == null)
         {
             return null;
@@ -330,7 +340,7 @@ public sealed class TranslationRunnerService
             return await globalDb.GetTranslationMemoryAsync(
                 request.SourceLang.Trim(),
                 request.TargetLang.Trim(),
-                CancellationToken.None
+                request.CancellationToken
             );
         }
         catch
@@ -378,7 +388,7 @@ public sealed class TranslationRunnerService
     private static bool ShouldFailover(UserFacingError error)
         => error.Code is "E201" or "E202" or "E203" or "E210" or "E211";
 
-    private static bool TryFailoverToNextSavedKey(Request request, HashSet<string> triedApiKeys, Exception ex)
+    private static async Task<bool> TryFailoverToNextSavedKeyAsync(Request request, HashSet<string> triedApiKeys, Exception ex)
     {
         if (!request.FailoverPort.EnableApiKeyFailover)
         {
@@ -391,10 +401,10 @@ public sealed class TranslationRunnerService
             return false;
         }
 
-        return TryFailoverToNextSavedGeminiKey(request, triedApiKeys, classified);
+        return await TryFailoverToNextSavedGeminiKeyAsync(request, triedApiKeys, classified);
     }
 
-    private static bool TryFailoverToNextSavedGeminiKey(Request request, HashSet<string> triedApiKeys, UserFacingError classifiedError)
+    private static async Task<bool> TryFailoverToNextSavedGeminiKeyAsync(Request request, HashSet<string> triedApiKeys, UserFacingError classifiedError)
     {
         var savedKeys = request.FailoverPort.SavedApiKeys;
         if (savedKeys.Count <= 0)
@@ -433,7 +443,9 @@ public sealed class TranslationRunnerService
 
             triedApiKeys.Add(candidateKey);
 
-            _ = request.StatusPort.DispatchAsync(
+            // API 키 변경과 UI 상태 메시지를 UI 스레드에서 수행하되,
+            // 완료까지 대기하여 다음 요청이 새 키를 확실히 사용하도록 보장
+            await request.StatusPort.DispatchAsync(
                 () =>
                 {
                     request.FailoverPort.SelectSavedApiKey(candidate);

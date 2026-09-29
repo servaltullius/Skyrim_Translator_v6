@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Data.Sqlite;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Xml;
@@ -12,11 +13,14 @@ public sealed class ProjectWorkspaceService
 {
     private readonly GlobalProjectDbService _globalProjectDbService;
     private readonly BuiltInGlossaryService _builtInGlossaryService;
+    private readonly string? _projectsRootOverride;
 
-    public ProjectWorkspaceService(GlobalProjectDbService globalProjectDbService, BuiltInGlossaryService builtInGlossaryService)
+    public ProjectWorkspaceService(GlobalProjectDbService globalProjectDbService, BuiltInGlossaryService builtInGlossaryService,
+        string? projectsRootOverride = null)
     {
         _globalProjectDbService = globalProjectDbService;
         _builtInGlossaryService = builtInGlossaryService;
+        _projectsRootOverride = projectsRootOverride;
     }
 
     public sealed record LoadFromXmlRequest(
@@ -47,53 +51,39 @@ public sealed class ProjectWorkspaceService
         var xmlPath = request.XmlPath;
         var preInfo = await XTranslatorXmlImporter.ReadInfoAsync(xmlPath, cancellationToken);
 
-        var legacyDbPath = ProjectPaths.GetLegacyProjectDbPath(xmlPath);
-        var dbPath = string.IsNullOrWhiteSpace(preInfo.AddonName)
-            ? legacyDbPath
-            : ProjectPaths.GetProjectDbPath(preInfo.AddonName, preInfo.SourceLang, preInfo.DestLang);
-
-        TryMigrateLegacyProjectDb(legacyDbPath, dbPath);
+        var franchise = TryDetectFranchiseFromAddonName(preInfo.AddonName) ?? request.SelectedFranchise;
+        var dbPath = ProjectPaths.GetProjectDbPath(franchise, preInfo.AddonName, preInfo.SourceLang,
+            preInfo.DestLang, _projectsRootOverride, xmlPath);
+        var legacyAddonPath = ProjectPaths.GetProjectDbPath(preInfo.AddonName, preInfo.SourceLang,
+            preInfo.DestLang, _projectsRootOverride);
+        var legacyInputPath = ProjectPaths.GetLegacyProjectDbPath(xmlPath, _projectsRootOverride);
+        foreach (var legacyPath in new[] { legacyAddonPath, legacyInputPath })
+        {
+            if (File.Exists(dbPath)) break;
+            await TryMigrateLegacyProjectDbAsync(legacyPath, dbPath, franchise, preInfo, xmlPath, cancellationToken);
+        }
 
         var db = await ProjectDb.OpenOrCreateAsync(dbPath, cancellationToken);
+        try
+        {
+            var info = await XTranslatorXmlImporter.ImportToDbAsync(db, xmlPath, cancellationToken,
+                preserveExistingTranslations: true,
+                projectFactory: xml => CreateProjectInfo(xml, xmlPath, franchise, request.SelectedModel,
+                    request.CustomPromptText, request.UseCustomPrompt));
 
-        var existingProject = await db.TryGetProjectAsync(cancellationToken);
+            // Seed only after the complete input has been accepted; parse failures leave the old DB intact.
+            var globalDb = await _globalProjectDbService.GetOrCreateAsync(franchise, cancellationToken);
+            await _builtInGlossaryService.EnsureBuiltInGlossaryAsync(db, cancellationToken,
+                insertMissingEntries: globalDb == null, franchise: franchise);
 
-        var franchise = existingProject?.Franchise
-                        ?? TryDetectFranchiseFromAddonName(preInfo.AddonName)
-                        ?? request.SelectedFranchise;
-
-        // Best-effort: global DB may fail to open (network drive permissions, etc). Project should still load.
-        var globalDb = await _globalProjectDbService.GetOrCreateAsync(franchise, cancellationToken);
-
-        await _builtInGlossaryService.EnsureBuiltInGlossaryAsync(
-            db,
-            cancellationToken,
-            insertMissingEntries: globalDb == null,
-            franchise: franchise
-        );
-
-        await db.ClearStringsAsync(cancellationToken);
-
-        var info = await XTranslatorXmlImporter.ImportToDbAsync(db, xmlPath, cancellationToken, ignoreDestText: true);
-
-        var project = CreateProjectInfo(
-            info,
-            xmlPath,
-            franchise,
-            selectedModel: request.SelectedModel,
-            customPromptText: request.CustomPromptText,
-            useCustomPrompt: request.UseCustomPrompt
-        );
-        await db.UpsertProjectAsync(project, cancellationToken);
-
-        return new LoadFromXmlResult(
-            Db: db,
-            XmlInfo: info,
-            InputXmlPath: xmlPath,
-            SourceLang: info.SourceLang,
-            TargetLang: info.DestLang,
-            Franchise: franchise
-        );
+            return new LoadFromXmlResult(db, info, xmlPath, info.SourceLang, info.DestLang, franchise);
+        }
+        catch
+        {
+            // The caller takes ownership only after a successful return.
+            await db.DisposeAsync();
+            throw;
+        }
     }
 
     public Task ExportXmlAsync(ProjectDb db, XTranslatorXmlInfo xmlInfo, string outputPath, CancellationToken cancellationToken)
@@ -188,51 +178,64 @@ public sealed class ProjectWorkspaceService
         => fileName is not null
            && fileName.Trim().ToLowerInvariant() is "starfield.esm";
 
-    private static void TryMigrateLegacyProjectDb(string legacyDbPath, string newDbPath)
+    public static async Task<bool> TryMigrateLegacyProjectDbAsync(
+        string legacyDbPath, string newDbPath, BethesdaFranchise franchise,
+        XTranslatorXmlInfo xmlInfo, string inputXmlPath, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(legacyDbPath)
-            || string.IsNullOrWhiteSpace(newDbPath)
-            || string.Equals(legacyDbPath, newDbPath, StringComparison.OrdinalIgnoreCase))
+        if (File.Exists(newDbPath) || !File.Exists(legacyDbPath)) return false;
+        await using var source = new SqliteConnection(new SqliteConnectionStringBuilder
         {
-            return;
+            DataSource = legacyDbPath, Mode = SqliteOpenMode.ReadOnly, Pooling = false,
+        }.ToString());
+        await source.OpenAsync(cancellationToken);
+        var hasFranchise = false;
+        await using (var schema = source.CreateCommand())
+        {
+            schema.CommandText = "PRAGMA table_info(Project);";
+            await using var columns = await schema.ExecuteReaderAsync(cancellationToken);
+            while (await columns.ReadAsync(cancellationToken))
+                hasFranchise |= string.Equals(columns.GetString(1), "Franchise", StringComparison.OrdinalIgnoreCase);
         }
-
-        // Migrate only if the new DB doesn't exist yet.
-        if (File.Exists(newDbPath) || !File.Exists(legacyDbPath))
+        await using (var query = source.CreateCommand())
         {
-            return;
-        }
-
-        try
-        {
-            var dir = Path.GetDirectoryName(Path.GetFullPath(newDbPath));
-            if (!string.IsNullOrWhiteSpace(dir))
+            query.CommandText = "SELECT InputXmlPath, AddonName, SourceLang, DestLang, "
+                + (hasFranchise ? "Franchise" : "NULL") + " FROM Project WHERE Id=1;";
+            await using var row = await query.ExecuteReaderAsync(cancellationToken);
+            if (!await row.ReadAsync(cancellationToken)) return false;
+            if (!string.Equals(row.IsDBNull(1) ? "" : row.GetString(1), xmlInfo.AddonName, StringComparison.OrdinalIgnoreCase)
+                || !string.Equals(row.GetString(2), xmlInfo.SourceLang, StringComparison.OrdinalIgnoreCase)
+                || !string.Equals(row.GetString(3), xmlInfo.DestLang, StringComparison.OrdinalIgnoreCase)) return false;
+            if (!row.IsDBNull(4))
             {
-                Directory.CreateDirectory(dir);
+                if (!Enum.TryParse<BethesdaFranchise>(row.GetString(4), true, out var oldFranchise)
+                    || oldFranchise != franchise) return false;
             }
-
-            TryMoveFile(legacyDbPath, newDbPath);
-            TryMoveFile(legacyDbPath + "-wal", newDbPath + "-wal");
-            TryMoveFile(legacyDbPath + "-shm", newDbPath + "-shm");
-        }
-        catch
-        {
-            // Best-effort migration.
-        }
-    }
-
-    private static void TryMoveFile(string source, string destination)
-    {
-        try
-        {
-            if (File.Exists(source) && !File.Exists(destination))
+            else if (!string.Equals(Path.GetFullPath(row.GetString(0)), Path.GetFullPath(inputXmlPath), StringComparison.OrdinalIgnoreCase))
             {
-                File.Move(source, destination);
+                // A DB predating the franchise field is ambiguous unless it belongs to this exact input.
+                return false;
             }
         }
-        catch
+        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(newDbPath))!);
+        var temporary = newDbPath + "." + Guid.NewGuid().ToString("N") + ".migration";
+        try
         {
-            // ignore
+            await using (var destination = new SqliteConnection(new SqliteConnectionStringBuilder
+            {
+                DataSource = temporary, Mode = SqliteOpenMode.ReadWriteCreate, Pooling = false,
+            }.ToString()))
+            {
+                await destination.OpenAsync(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                source.BackupDatabase(destination);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            File.Move(temporary, newDbPath, overwrite: false);
+            return true;
+        }
+        finally
+        {
+            if (File.Exists(temporary)) File.Delete(temporary);
         }
     }
 }

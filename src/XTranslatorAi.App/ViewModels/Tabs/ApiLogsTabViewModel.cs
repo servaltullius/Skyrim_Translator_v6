@@ -6,7 +6,7 @@ using XTranslatorAi.App.Collections;
 
 namespace XTranslatorAi.App.ViewModels.Tabs;
 
-public sealed class ApiLogsTabViewModel : ObservableObject
+public sealed class ApiLogsTabViewModel : ObservableObject, IDisposable
 {
     private readonly IApiLogsTabHost _host;
 
@@ -39,4 +39,13 @@ public sealed class ApiLogsTabViewModel : ObservableObject
     public string ApiCallLogTotalsToolTip => _host.ApiCallLogTotalsToolTip;
 
     public ObservableRangeCollection<ApiCallLogRow> ApiCallLogs => _host.ApiCallLogs;
+
+    private bool _disposed;
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        _host.PropertyChanged -= HostOnPropertyChanged;
+    }
 }

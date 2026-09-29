@@ -9,9 +9,12 @@ namespace XTranslatorAi.Core.Text;
 /// </summary>
 internal static class KoreanProtectFromFixer
 {
+    private static readonly TimeSpan RegexTimeout = TimeSpan.FromMilliseconds(250);
+
     private static readonly Regex SourceProtectFromAttackRegex = new(
         pattern: @"\bprotect(?:ing|ed|s)?\b.+?\bfrom\b.+?\battack\b",
-        options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
+        options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase,
+        matchTimeout: RegexTimeout
     );
 
     private const string IncomingKoPattern =
@@ -29,7 +32,8 @@ internal static class KoreanProtectFromFixer
                  + @"(?<attacker>[\p{L}\p{N} \-'\u2019]{1,60}?)의\s*"
                  + @"(?<attackNoun>공격|습격|공세|기습)\s*(?<from>(?:으)?로부터)\s*"
                  + @"(?<protected>[\p{L}\p{N} \-'\u2019]{1,60}?)(?<objParticle>을|를)\s*보호",
-        options: RegexOptions.CultureInvariant
+        options: RegexOptions.CultureInvariant,
+        matchTimeout: RegexTimeout
     );
 
     private static readonly Regex DestProtectFromAttackIncomingAfterFromRegex = new(
@@ -37,14 +41,16 @@ internal static class KoreanProtectFromFixer
                  + @"(?<attackNoun>공격|습격|공세|기습)\s*(?<from>(?:으)?로부터)\s*"
                  + @"(?<incoming>" + IncomingKoPattern + @")\s+"
                  + @"(?<protected>[\p{L}\p{N} \-'\u2019]{1,60}?)(?<objParticle>을|를)\s*보호",
-        options: RegexOptions.CultureInvariant
+        options: RegexOptions.CultureInvariant,
+        matchTimeout: RegexTimeout
     );
 
     private static readonly Regex DestProtectFromDirectFromRegex = new(
         pattern: @"(?<incoming>" + IncomingKoPattern + @"\s+)?"
                  + @"(?<attacker>[\p{L}\p{N} \-'\u2019]{1,60}?)(?<attackerPlural>들)?\s*(?:으)?로부터\s*"
                  + @"(?<protected>[\p{L}\p{N} \-'\u2019]{1,60}?)(?<objParticle>을|를)\s*보호",
-        options: RegexOptions.CultureInvariant
+        options: RegexOptions.CultureInvariant,
+        matchTimeout: RegexTimeout
     );
 
     private static readonly string[] AttackNounsKo = { "공격", "습격", "공세", "기습" };

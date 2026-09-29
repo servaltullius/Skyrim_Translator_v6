@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace XTranslatorAi.App.ViewModels.Tabs;
 
-public sealed class ProjectContextTabViewModel : ObservableObject
+public sealed class ProjectContextTabViewModel : ObservableObject, IDisposable
 {
     private readonly IProjectContextTabHost _host;
 
@@ -40,5 +40,14 @@ public sealed class ProjectContextTabViewModel : ObservableObject
     {
         get => _host.ProjectContextPreview;
         set => _host.ProjectContextPreview = value;
+    }
+
+    private bool _disposed;
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        _host.PropertyChanged -= HostOnPropertyChanged;
     }
 }

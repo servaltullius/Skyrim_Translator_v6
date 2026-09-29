@@ -44,7 +44,7 @@ public static partial class MagDurPlaceholderFixer
         if (carry.Success)
         {
             return LooksLikeBadMagDurUsage(dest)
-                ? $"{carry.Groups["dur"].Value.Trim()} 동안 무게 한계가 {carry.Groups["mag"].Value.Trim()}만큼 감소합니다."
+                ? $"{carry.Groups["dur"].Value.Trim()}초 동안 무게 한계가 {carry.Groups["mag"].Value.Trim()}만큼 감소합니다."
                 : dest;
         }
 

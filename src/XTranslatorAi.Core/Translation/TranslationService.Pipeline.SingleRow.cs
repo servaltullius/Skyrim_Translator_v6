@@ -40,21 +40,21 @@ public sealed partial class TranslationService
     )
     {
         var rec = GetRecForId(row.Id);
-        var styleHint = GuessStyleHint(row.Source, _useRecStyleHints ? rec : null);
+        var styleHint = GuessStyleHint(row.Source, Ctx.UseRecStyleHints ? rec : null);
         styleHint = AppendDialogueContextToStyleHint(styleHint, GetDialogueContextWindowForId(row.Id));
 
         var raw = await TranslateRowRawAsync(ctx, row, styleHint);
         raw = await TrySemanticRepairAsync(ctx, row, styleHint, raw);
 
         var final = ApplyTokensAndUnmask(raw, row.Glossary, row.Mask, ctx.PlaceholderMasker, ctx.TargetLang);
-        if (_enableTemplateFixer)
+        if (Ctx.EnableTemplateFixer)
         {
             final = MagDurPlaceholderFixer.Fix(row.Source, final, ctx.TargetLang);
         }
         final = PlaceholderUnitBinder.EnforceUnitsFromSource(ctx.TargetLang, row.Source, final);
         final = KoreanProtectFromFixer.Fix(ctx.TargetLang, row.Source, final);
         final = KoreanTranslationFixer.Fix(ctx.TargetLang, final);
-        ValidateFinalTextIntegrity(row.Source, final, context: $"id={row.Id} post-edits");
+        TokenValidator.ValidateFinalTextIntegrity(row.Source, final, context: $"id={row.Id} post-edits");
 
         (raw, final) = await MaybeApplyQualityEscalationAsync(ctx, row, styleHint, raw, final);
         TryLearnSessionTermMemory(row.Id, row.Source, final);
@@ -116,7 +116,9 @@ public sealed partial class TranslationService
                 MaxOutputTokens: ctx.MaxOutputTokens,
                 MaxRetries: ctx.MaxRetries,
                 CancellationToken: ctx.CancellationToken,
-                CandidateCount: GetRiskyCandidateCountForSource(ctx.TargetLang, row.Source)
+                CandidateCount: GeminiModelPolicy.SupportsMultipleCandidates(ctx.ModelName)
+                    ? GetRiskyCandidateCountForSource(ctx.TargetLang, row.Source)
+                    : 1
             );
 
             return await TranslateTextWithSentinelAsync(
@@ -135,7 +137,7 @@ public sealed partial class TranslationService
         {
             throw;
         }
-        catch
+        catch (Exception ex) when (!IsCredentialError(ex))
         {
             return await TranslateLongMaskedTextAsync(ctx, row);
         }
@@ -148,7 +150,7 @@ public sealed partial class TranslationService
         string raw
     )
     {
-        if (!ctx.EnableRepairPass || !NeedsPlaceholderSemanticRepair(row.Masked, raw, ctx.TargetLang, _semanticRepairMode))
+        if (!ctx.EnableRepairPass || !TokenSanitizer.NeedsPlaceholderSemanticRepair(row.Masked, raw, ctx.TargetLang, Ctx.SemanticRepairMode))
         {
             return raw;
         }
@@ -165,12 +167,16 @@ public sealed partial class TranslationService
             var repairRequest = CreateSemanticRepairRequest(ctx);
             var repairedText = await TranslateUserPromptWithRetriesAsync(repairRequest, repairPrompt);
 
-            return EnsureTokensPreservedOrRepair(
+            return TokenSanitizer.EnsureTokensPreservedOrRepair(
                 row.Masked,
                 repairedText,
                 context: $"id={row.Id} semantic-repair",
                 glossaryTokenToReplacement: row.Glossary.TokenToReplacement
             );
+        }
+        catch (OperationCanceledException) when (ctx.CancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch
         {
@@ -219,7 +225,7 @@ public sealed partial class TranslationService
 	    )
 	    {
 	        var rec = GetRecForId(row.Id);
-	        var styleHint = GuessStyleHint(row.Source, _useRecStyleHints ? rec : null);
+	        var styleHint = GuessStyleHint(row.Source, Ctx.UseRecStyleHints ? rec : null);
 	        styleHint = AppendDialogueContextToStyleHint(styleHint, GetDialogueContextWindowForId(row.Id));
 	        var tokenCount = TranslationConstants.XtTokenRegex.Matches(row.Masked).Count;
 	        var initialChunkChars = ComputeLongTextInitialChunkChars(ctx, tokenCount);
@@ -279,10 +285,10 @@ public sealed partial class TranslationService
 	            // CJK outputs can hit output token limits sooner; keep chunks smaller to avoid MAX_TOKENS truncation.
 	            initialChunkChars = Math.Min(initialChunkChars, 4500);
 	        }
-	        if (_maskedTokensPerCharHint is > 0)
+	        if (Ctx.MaskedTokensPerCharHint is > 0)
 	        {
 	            var targetTokens = GetLongTextTargetOutputTokens(ctx.MaxOutputTokens);
-	            var estimated = (int)Math.Floor(targetTokens / _maskedTokensPerCharHint.Value);
+	            var estimated = (int)Math.Floor(targetTokens / Ctx.MaskedTokensPerCharHint.Value);
 	            if (estimated >= 256)
 	            {
 	                initialChunkChars = Math.Min(initialChunkChars, estimated);

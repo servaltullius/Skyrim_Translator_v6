@@ -1,0 +1,13 @@
+{
+  "model": "solar-pro3",
+  "route": "Upstage Playground",
+  "thinking": "Low",
+  "inputVerified": true,
+  "systemPrompt": "empty",
+  "temperature": 0.8,
+  "maxTokens": 65536,
+  "usage": null,
+  "uiTokenLabel": 142,
+  "time": "2026-09-29T00:28:50.030Z",
+  "inputFile": "prompts/pilot-01.txt"
+}

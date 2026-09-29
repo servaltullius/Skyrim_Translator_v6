@@ -66,6 +66,7 @@ public sealed partial class TranslationCostEstimator
         {
             return await _gemini.CountTokensAsync(apiKey, modelName, text, cancellationToken);
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
         catch
         {
             // Conservative fallback: ~1 token per 4 characters for English-ish payloads.

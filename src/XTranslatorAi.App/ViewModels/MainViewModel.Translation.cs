@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
@@ -13,6 +14,11 @@ public partial class MainViewModel
     [RelayCommand(CanExecute = nameof(CanStartTranslation))]
     private async Task StartTranslationAsync()
     {
+        if (!CanStartTranslation() || _translationOperation.IsRunning)
+        {
+            return;
+        }
+
         var db = _projectState.Db;
         if (db == null || _projectState.XmlInfo == null)
         {
@@ -29,74 +35,99 @@ public partial class MainViewModel
             return;
         }
 
-        await TryPreloadContextsAsync();
+        await _translationOperation.RunAsync(async cancellationToken =>
+        {
+            var generation = Interlocked.Increment(ref _rowUpdateGeneration);
+            BeginTranslationUiState();
+            var canceled = false;
+            var nothingToTranslate = false;
+            Exception? error = null;
+            try
+            {
+                await SaveProjectInfoAsync(cancellationToken);
+                await PrepareTranslationsForResumeAsync(cancellationToken);
+                var ids = await LoadPendingIdsAsync(cancellationToken);
+                if (ids.Count == 0)
+                {
+                    nothingToTranslate = true;
+                    return;
+                }
 
-        BeginTranslationUiState();
-        await SaveProjectInfoAsync();
+                await TryPreloadContextsAsync(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                var systemPrompt = BuildSystemPrompt();
+                var recById = Entries.ToDictionary(entry => entry.Id, entry => entry.Rec);
+                var primaryModel = (SelectedModel ?? "").Trim();
+                var request = new TranslationRunnerService.Request(
+                    Db: db,
+                    GeminiClient: _geminiClient,
+                    StatusPort: this,
+                    FlowControlPort: new RunFlowControlPort(this, generation),
+                    FailoverPort: this,
+                    CancellationToken: cancellationToken,
+                    Ids: ids,
+                    GetRecById: id => recById.GetValueOrDefault(id),
+                    IsBookFullRec: IsBookFullRec,
+                    GetEffectiveBookFullModelName: GetEffectiveBookFullModelName,
+                    ComputeMaxOutputTokens: ComputeMaxOutputTokens,
+                    SystemPrompt: systemPrompt,
+                    PrimaryModel: primaryModel,
+                    EnableBookFullModelOverride: EnableBookFullModelOverride,
+                    EnableQualityEscalation: EnableQualityEscalation,
+                    QualityEscalationModelName: QualityEscalationModel,
+                    BatchSize: BatchSize,
+                    MaxChars: MaxCharsPerBatch,
+                    Parallel: MaxParallelRequests,
+                    Franchise: SelectedFranchise,
+                    SourceLang: SourceLang,
+                    TargetLang: TargetLang,
+                    UseRecStyleHints: UseRecStyleHints,
+                    EnableRepairPass: EnableRepairPass,
+                    EnableSessionTermMemory: EnableSessionTermMemory,
+                    SemanticRepairMode: SemanticRepairMode,
+                    EnableTemplateFixer: EnableTemplateFixer,
+                    KeepSkyrimTagsRaw: KeepSkyrimTagsRaw,
+                    EnableDialogueContextWindow: EnableDialogueContextWindow,
+                    EnablePromptCache: EnablePromptCache,
+                    EnableRiskyCandidateRerank: EnableRiskyCandidateRerank,
+                    RiskyCandidateCount: RiskyCandidateCount
+                );
 
-        await ResetNonEditedTranslationsAsync();
-        var ids = await LoadPendingIdsAsync();
-
-        var systemPrompt = BuildSystemPrompt();
-        var cts = new CancellationTokenSource();
-        _translationCts = cts;
-
-        var primaryModel = (SelectedModel ?? "").Trim();
-        var request = new TranslationRunnerService.Request(
-            Db: db,
-            GeminiClient: _geminiClient,
-            StatusPort: this,
-            FlowControlPort: this,
-            FailoverPort: this,
-            CancellationTokenSource: cts,
-            Ids: ids,
-            GetRecById: id => _projectState.TryGetById(id, out var vm) ? vm.Rec : null,
-            IsBookFullRec: IsBookFullRec,
-            GetEffectiveBookFullModelName: GetEffectiveBookFullModelName,
-            ComputeMaxOutputTokens: ComputeMaxOutputTokens,
-            SystemPrompt: systemPrompt,
-            PrimaryModel: primaryModel,
-            EnableBookFullModelOverride: EnableBookFullModelOverride,
-            EnableQualityEscalation: EnableQualityEscalation,
-            QualityEscalationModelName: QualityEscalationModel,
-            BatchSize: BatchSize,
-            MaxChars: MaxCharsPerBatch,
-            Parallel: MaxParallelRequests,
-            Franchise: SelectedFranchise,
-            SourceLang: SourceLang,
-            TargetLang: TargetLang,
-            UseRecStyleHints: UseRecStyleHints,
-            EnableRepairPass: EnableRepairPass,
-            EnableSessionTermMemory: EnableSessionTermMemory,
-            SemanticRepairMode: SemanticRepairMode,
-            EnableTemplateFixer: EnableTemplateFixer,
-            KeepSkyrimTagsRaw: KeepSkyrimTagsRaw,
-            EnableDialogueContextWindow: EnableDialogueContextWindow,
-            EnablePromptCache: EnablePromptCache,
-            EnableRiskyCandidateRerank: EnableRiskyCandidateRerank,
-            RiskyCandidateCount: RiskyCandidateCount
-        );
-
-        _ = Task.Run(
-            async () =>
+                var result = await Task.Run(() => _translationRunnerService.RunAsync(request), cancellationToken);
+                canceled = result.Canceled;
+                error = result.Error;
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                canceled = true;
+            }
+            catch (Exception ex)
+            {
+                error = ex;
+                SetUserFacingError("번역 준비/실행", ex);
+            }
+            finally
             {
                 try
                 {
-                    var result = await _translationRunnerService.RunAsync(request);
-                    await DispatchAsync(() => FinishTranslationUiStateAsync(result.Canceled, result.Error));
+                    await FinishTranslationUiStateAsync(canceled, error);
+                    if (nothingToTranslate)
+                    {
+                        StatusMessage = "번역할 미완료 항목이 없습니다. 기존 번역과 편집 내용을 유지했습니다.";
+                    }
                 }
                 finally
                 {
-                    cts.Dispose();
-                    if (ReferenceEquals(_translationCts, cts))
-                    {
-                        _translationCts = null;
-                    }
+                    IsTranslating = false;
+                    IsPaused = false;
+                    _resumeTcs?.TrySetResult(true);
+                    _resumeTcs = null;
                 }
             }
-        );
+        });
     }
-    private bool CanStartTranslation() => IsProjectLoaded && !IsTranslating && !HasPromptLintBlockingIssues;
+    private bool CanStartTranslation() => IsProjectLoaded && !IsTranslating && IsWorkspaceInteractive
+        && !_projectOperations.IsRunning && !HasPromptLintBlockingIssues;
 
     private static bool IsBookFullRec(string? rec)
     {
@@ -127,12 +158,7 @@ public partial class MainViewModel
             return configured;
         }
 
-        var candidates = new[]
-        {
-            "gemini-3-flash-preview",
-            "gemini-3-flash",
-            "gemini-3.0-flash-preview",
-        };
+        var candidates = GeminiModelCatalog.FullModels;
 
         foreach (var c in candidates)
         {

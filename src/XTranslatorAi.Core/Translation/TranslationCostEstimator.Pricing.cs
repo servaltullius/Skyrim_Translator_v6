@@ -23,8 +23,9 @@ public sealed partial class TranslationCostEstimator
         ModelCostUsage usage
     )
     {
-        var cacheCost = (usage.SystemPromptTokens / 1_000_000.0) * pricing.CacheUsdPer1M
-                        + (usage.SystemPromptTokens / 1_000_000.0) * pricing.CacheStorageUsdPer1MPerHour * usage.PromptCacheTtlHours;
+        var cacheCost = usage.RequestCount <= 0 ? 0
+            : (usage.SystemPromptTokens * (double)usage.RequestCount / 1_000_000.0) * pricing.CacheUsdPer1M
+              + (usage.SystemPromptTokens / 1_000_000.0) * pricing.CacheStorageUsdPer1MPerHour * usage.PromptCacheTtlHours;
 
         var inputCostWithCache = (usage.InputTokensUserPrompts / 1_000_000.0) * pricing.InputUsdPer1M + cacheCost;
         var inputCostNoCache = ((usage.InputTokensUserPrompts + usage.SystemPromptTokens * usage.RequestCount) / 1_000_000.0)

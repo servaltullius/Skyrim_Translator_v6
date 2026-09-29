@@ -31,7 +31,7 @@ public sealed partial class TranslationService
         var repairBatchItems = new List<RepairTranslationItem>(needsRepair.Count);
         foreach (var r in needsRepair)
         {
-            var rec = _useRecStyleHints ? GetRecForId(r.Id) : null;
+            var rec = Ctx.UseRecStyleHints ? GetRecForId(r.Id) : null;
             repairBatchItems.Add(new RepairTranslationItem(r.Id, r.Masked, r.Current, rec));
         }
         return repairBatchItems;
@@ -71,6 +71,10 @@ public sealed partial class TranslationService
         try
         {
             return await RepairBatchWithRetriesAsync(ctx, repairBatch, repairPromptOnlyPairs, maxRetries: 1);
+        }
+        catch (OperationCanceledException) when (ctx.CancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch
         {
@@ -129,7 +133,7 @@ public sealed partial class TranslationService
 
             try
             {
-                results[repairedItem.Id] = EnsureTokensPreservedOrRepair(
+                results[repairedItem.Id] = TokenSanitizer.EnsureTokensPreservedOrRepair(
                     original.Masked,
                     repairedText,
                     context: $"id={repairedItem.Id} repair-batch",
@@ -149,7 +153,7 @@ public sealed partial class TranslationService
         string context
     )
     {
-        var rec = _useRecStyleHints ? GetRecForId(original.Id) : null;
+        var rec = Ctx.UseRecStyleHints ? GetRecForId(original.Id) : null;
         var styleHint = GuessStyleHint(original.Source, rec);
         var request = new TextRequestContext(
             ApiKey: ctx.ApiKey,
@@ -204,7 +208,7 @@ public sealed partial class TranslationService
 
             try
             {
-                results[it.Id] = EnsureTokensPreservedOrRepair(
+                results[it.Id] = TokenSanitizer.EnsureTokensPreservedOrRepair(
                     it.Masked,
                     output,
                     context: $"id={it.Id} final",
@@ -242,6 +246,10 @@ public sealed partial class TranslationService
             {
                 return await RepairBatchOnceAsync(currentCtx, userPrompt, cancellationToken);
             }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 if (currentCtx.PromptCache != null && IsCachedContentInvalid(ex))
@@ -256,6 +264,7 @@ public sealed partial class TranslationService
                     }
                     catch (Exception ex2)
                     {
+                        cancellationToken.ThrowIfCancellationRequested();
                         currentCtx = noCacheCtx;
                         ex = ex2;
                     }
@@ -324,7 +333,7 @@ public sealed partial class TranslationService
         var delay = ComputeRetryDelay(ex, attempt);
         if (IsRateLimit(ex))
         {
-            RegisterAdaptiveRateLimit();
+            Ctx.AdaptiveConcurrency.RegisterRateLimit();
             ExtendGlobalThrottle(delay);
         }
         await Task.Delay(delay, cancellationToken);

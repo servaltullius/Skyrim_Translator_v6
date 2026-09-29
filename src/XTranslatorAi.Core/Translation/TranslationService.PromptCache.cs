@@ -70,7 +70,7 @@ public sealed partial class TranslationService
 
     private sealed class PromptCache
     {
-        private readonly GeminiClient _gemini;
+        private readonly IGeminiClient _gemini;
         private readonly string _apiKey;
         private readonly string _modelName;
         private readonly string _systemPrompt;
@@ -80,7 +80,7 @@ public sealed partial class TranslationService
         private string? _cachedContentName;
         private bool _disabled;
 
-        public PromptCache(GeminiClient gemini, string apiKey, string modelName, string systemPrompt, TimeSpan ttl)
+        public PromptCache(IGeminiClient gemini, string apiKey, string modelName, string systemPrompt, TimeSpan ttl)
         {
             _gemini = gemini;
             _apiKey = apiKey;
@@ -129,6 +129,10 @@ public sealed partial class TranslationService
                 var created = await _gemini.CreateCachedContentAsync(_apiKey, _modelName, _systemPrompt, _ttl, cancellationToken);
                 _cachedContentName = created;
                 return created;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch
             {

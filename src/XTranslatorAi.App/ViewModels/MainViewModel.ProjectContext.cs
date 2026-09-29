@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
+using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text.ProjectContext;
 using XTranslatorAi.Core.Translation;
 
@@ -11,7 +12,9 @@ namespace XTranslatorAi.App.ViewModels;
 public partial class MainViewModel
 {
     [RelayCommand(CanExecute = nameof(CanUseProjectContextTools))]
-    private async Task GenerateProjectContextAsync()
+    private Task GenerateProjectContextAsync() => RunProjectOperationAsync("문맥 생성", GenerateProjectContextCoreAsync);
+
+    private async Task GenerateProjectContextCoreAsync(CancellationToken cancellationToken)
     {
         var db = _projectState.Db;
         if (db == null || _projectState.XmlInfo == null)
@@ -30,17 +33,17 @@ public partial class MainViewModel
         {
             StatusMessage = "Generating project context (scan + Gemini)...";
 
-            var report = await BuildProjectContextScanReportAsync(CancellationToken.None);
+            var report = await BuildProjectContextScanReportAsync(cancellationToken);
             var translationPrompt = BuildProjectContextTranslationPrompt();
             var userPrompt = BuildProjectContextUserPrompt(report, translationPrompt);
             var request = BuildProjectContextGenerationRequest(userPrompt, isRetry: false);
 
-            var raw = await _geminiClient.GenerateContentAsync(apiKey, SelectedModel.Trim(), request, CancellationToken.None);
+            var raw = await _geminiClient.GenerateContentAsync(apiKey, SelectedModel.Trim(), request, cancellationToken);
             if (!ProjectContextResponseParser.TryParseContext(raw, out var ctx) || string.IsNullOrWhiteSpace(ctx))
             {
                 StatusMessage = "Project context generation: invalid JSON output; retrying...";
                 var retryRequest = BuildProjectContextGenerationRequest(userPrompt, isRetry: true);
-                var retryRaw = await _geminiClient.GenerateContentAsync(apiKey, SelectedModel.Trim(), retryRequest, CancellationToken.None);
+                var retryRaw = await _geminiClient.GenerateContentAsync(apiKey, SelectedModel.Trim(), retryRequest, cancellationToken);
                 if (!ProjectContextResponseParser.TryParseContext(retryRaw, out ctx) || string.IsNullOrWhiteSpace(ctx))
                 {
                     throw new InvalidOperationException("Gemini response is missing 'context'.");
@@ -49,9 +52,13 @@ public partial class MainViewModel
 
             ctx = TrimAndClamp(ctx, maxChars: 6000);
 
-            await db.UpsertProjectContextAsync(ctx, CancellationToken.None);
+            await db.UpsertProjectContextAsync(ctx, cancellationToken);
             ProjectContextPreview = ctx;
             StatusMessage = "Project context updated.";
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -70,10 +77,17 @@ public partial class MainViewModel
         return string.IsNullOrWhiteSpace(translationPrompt) ? "" : TrimAndClamp(translationPrompt, maxChars: 12000);
     }
 
-    private static GeminiGenerateContentRequest BuildProjectContextGenerationRequest(string userPrompt, bool isRetry)
+    private GeminiGenerateContentRequest BuildProjectContextGenerationRequest(string userPrompt, bool isRetry)
     {
+        var franchiseName = SelectedFranchise switch
+        {
+            BethesdaFranchise.ElderScrolls => "Skyrim",
+            BethesdaFranchise.Fallout => "Fallout 4",
+            BethesdaFranchise.Starfield => "Starfield",
+            _ => "Bethesda game"
+        };
         var systemPrompt =
-            "You are a Korean Skyrim mod localization expert.\n"
+            $"You are a Korean {franchiseName} mod localization expert.\n"
             + "You generate a concise, high-signal 'Project Context' section to improve translation consistency.\n"
             + "Output ONLY valid JSON. No markdown, no code fences, no explanations.\n"
             + (isRetry ? "IMPORTANT: Output must be a single JSON object with the key \"context\".\n" : "");
@@ -150,7 +164,7 @@ public partial class MainViewModel
         }
     }
 
-    private bool CanUseProjectContextTools() => IsProjectLoaded && !IsTranslating;
+    private bool CanUseProjectContextTools() => IsProjectLoaded && !IsTranslating && IsWorkspaceInteractive;
 
     private async Task ReloadProjectContextAsync()
     {

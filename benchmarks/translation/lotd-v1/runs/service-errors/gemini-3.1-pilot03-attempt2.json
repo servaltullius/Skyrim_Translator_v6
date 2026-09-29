@@ -1,0 +1,8 @@
+{
+  "model": "gemini-3.1-flash-lite",
+  "batch": "pilot-03",
+  "error": "An internal error has occurred.",
+  "rawOutput": "",
+  "inputVerified": true,
+  "recordedAt": "2026-09-29T00:43:10.675Z"
+}

@@ -1,62 +1,54 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Text.Json;
 
 namespace XTranslatorAi.App.Services;
 
 public static class TranslationMemoryFileService
 {
+    private const string EscapedFormat = "XTranslatorAi-JSON-v1";
+
     public static List<(string SourceText, string DestText)> ParseTsvPairs(IEnumerable<string> lines)
     {
         var pairs = new List<(string SourceText, string DestText)>();
+        var escaped = false;
+        var firstRecord = true;
         foreach (var line in lines)
         {
-            if (string.IsNullOrWhiteSpace(line))
-            {
-                continue;
-            }
-
+            if (string.IsNullOrWhiteSpace(line)) continue;
             var parts = line.Split('\t');
-            if (parts.Length < 2)
+            if (parts.Length < 2) continue;
+            if (firstRecord && string.Equals(parts[0].Trim().TrimStart('\uFEFF'), "Source", StringComparison.OrdinalIgnoreCase)
+                && string.Equals(parts[1].Trim(), "Target", StringComparison.OrdinalIgnoreCase))
             {
+                escaped = parts.Length > 2 && parts[2] == EscapedFormat;
+                firstRecord = false;
                 continue;
             }
-
-            var src = (parts[0] ?? "").Trim();
-            var dst = (parts[1] ?? "").Trim();
-            if (string.IsNullOrWhiteSpace(src) || string.IsNullOrWhiteSpace(dst))
-            {
-                continue;
-            }
-
-            // Optional header row: Source<TAB>Target
-            if (pairs.Count == 0
-                && string.Equals(src, "Source", StringComparison.OrdinalIgnoreCase)
-                && string.Equals(dst, "Target", StringComparison.OrdinalIgnoreCase))
-            {
-                continue;
-            }
-
-            pairs.Add((src, dst));
+            firstRecord = false;
+            var source = escaped ? JsonSerializer.Deserialize<string>(parts[0]) ?? "" : parts[0];
+            var target = escaped ? JsonSerializer.Deserialize<string>(parts[1]) ?? "" : parts[1];
+            if (!string.IsNullOrWhiteSpace(source) && !string.IsNullOrWhiteSpace(target))
+                pairs.Add((source, target));
         }
-
         return pairs;
     }
 
+    /// <summary>
+    /// Versioned TSV with JSON string fields preserves tabs, line endings, quotes and backslashes.
+    /// Unversioned Source/Target TSV imports retain their original literal interpretation.
+    /// </summary>
     public static string BuildTsv(IEnumerable<(string SourceText, string DestText)> entries)
     {
-        var sb = new System.Text.StringBuilder(capacity: Math.Min(1_000_000, 64_000));
-        sb.AppendLine("Source\tTarget");
-        foreach (var e in entries)
+        var builder = new StringBuilder();
+        builder.Append("Source\tTarget\t").AppendLine(EscapedFormat);
+        foreach (var (source, target) in entries)
         {
-            sb.Append(EscapeTsv(e.SourceText));
-            sb.Append('\t');
-            sb.AppendLine(EscapeTsv(e.DestText));
+            builder.Append(JsonSerializer.Serialize(source ?? ""));
+            builder.Append('\t');
+            builder.AppendLine(JsonSerializer.Serialize(target ?? ""));
         }
-
-        return sb.ToString();
+        return builder.ToString();
     }
-
-    private static string EscapeTsv(string? value)
-        => (value ?? "").Replace('\t', ' ').Replace("\r", " ", StringComparison.Ordinal).Replace("\n", " ", StringComparison.Ordinal);
 }
-

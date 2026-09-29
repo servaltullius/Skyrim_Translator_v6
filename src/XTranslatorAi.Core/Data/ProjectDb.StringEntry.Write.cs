@@ -12,9 +12,12 @@ public sealed partial class ProjectDb
         await _gate.WaitAsync(cancellationToken);
         try
         {
+            await using var tx = (Microsoft.Data.Sqlite.SqliteTransaction)await _connection.BeginTransactionAsync(cancellationToken);
             await using var cmd = _connection.CreateCommand();
-            cmd.CommandText = "DELETE FROM StringEntry;";
+            cmd.Transaction = tx;
+            cmd.CommandText = "DELETE FROM StringNote; DELETE FROM StringEntry;";
             await cmd.ExecuteNonQueryAsync(cancellationToken);
+            await tx.CommitAsync(cancellationToken);
         }
         finally
         {

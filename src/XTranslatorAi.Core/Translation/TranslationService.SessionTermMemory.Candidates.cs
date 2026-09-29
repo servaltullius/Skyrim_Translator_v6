@@ -166,12 +166,12 @@ public sealed partial class TranslationService
         IReadOnlyList<(string Source, string Target)> basePromptOnlyGlossary
     )
     {
-        if (!_enableSessionTermMemory || _sessionTermMemory == null)
+        if (!Ctx.EnableSessionTermMemory || Ctx.SessionTermMemory == null)
         {
             return basePromptOnlyGlossary;
         }
 
-        return _sessionTermMemory.MergeForText(text, basePromptOnlyGlossary);
+        return Ctx.SessionTermMemory.MergeForText(text, basePromptOnlyGlossary);
     }
 
     private IReadOnlyList<(string Source, string Target)> MergeSessionPromptOnlyGlossaryForTexts(
@@ -179,12 +179,12 @@ public sealed partial class TranslationService
         IReadOnlyList<(string Source, string Target)> basePromptOnlyGlossary
     )
     {
-        if (!_enableSessionTermMemory || _sessionTermMemory == null)
+        if (!Ctx.EnableSessionTermMemory || Ctx.SessionTermMemory == null)
         {
             return basePromptOnlyGlossary;
         }
 
-        return _sessionTermMemory.MergeForTexts(texts, basePromptOnlyGlossary);
+        return Ctx.SessionTermMemory.MergeForTexts(texts, basePromptOnlyGlossary);
     }
 
     private IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> SelectSessionTermSeedItems(
@@ -192,7 +192,7 @@ public sealed partial class TranslationService
         int maxSeedCount
     )
     {
-        if (!_enableSessionTermMemory || maxSeedCount <= 0)
+        if (!Ctx.EnableSessionTermMemory || maxSeedCount <= 0)
         {
             return Array.Empty<(long, string, string, MaskedText, GlossaryApplication)>();
         }

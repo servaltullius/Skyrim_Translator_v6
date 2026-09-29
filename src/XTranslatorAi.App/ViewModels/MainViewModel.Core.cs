@@ -37,7 +37,9 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
     private readonly CompareTranslationService _compareTranslationService;
 
     private readonly ProjectState _projectState = new();
-    private CancellationTokenSource? _translationCts;
+    private readonly TranslationOperation _translationOperation = new();
+    private long _rowUpdateGeneration;
+    private bool _isSwitchingProject;
     private TaskCompletionSource<bool>? _resumeTcs;
 
     private readonly ConcurrentQueue<RowUpdate> _rowUpdates = new();
@@ -88,7 +90,7 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
         _geminiClient = new GeminiClient(_httpClient, new UiGeminiCallLogger(this));
 
         // Model availability varies by API key; use Refresh to populate the real list.
-        AvailableModels.ReplaceAll(new[] { "gemini-3-flash-preview" });
+        AvailableModels.ReplaceAll(GeminiModelCatalog.PreferredModels);
         BasePromptText = EmbeddedAssets.LoadMetaPrompt(SelectedFranchise);
 
         var settings = _appSettings.Load();

@@ -7,10 +7,7 @@ namespace XTranslatorAi.Core.Text;
 
 public static class LqaHeuristics
 {
-    private static readonly Regex UiTagTokenRegex = new(
-        pattern: @"[+-]?<\s*[^>]+\s*>|\[pagebreak\]|__XT_[A-Za-z0-9_]+__",
-        options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
-    );
+    private static readonly Regex UiTagTokenRegex = TranslationConstants.UiTagTokenRegex;
 
     private static readonly Regex DoubledParticleRegex = new(
         pattern: @"을\s*를|를\s*을|은\s*는|는\s*은|이\s*가|가\s*이|와\s*과|과\s*와",

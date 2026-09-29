@@ -97,6 +97,11 @@ public static class GlossaryFileParser
             }
 
             var key = ReadQuotedString(text, ref i);
+            if (key is null)
+            {
+                continue;
+            }
+
             SkipTrivia(text, ref i);
             if (i >= text.Length || text[i] != ':')
             {
@@ -200,11 +205,11 @@ public static class GlossaryFileParser
         }
     }
 
-    private static string ReadQuotedString(string text, ref int i)
+    private static string? ReadQuotedString(string text, ref int i)
     {
         if (i >= text.Length || text[i] != '"')
         {
-            return "";
+            return null;
         }
 
         i++; // opening quote
@@ -244,6 +249,7 @@ public static class GlossaryFileParser
             i++;
         }
 
-        return "";
+        // Unclosed quote — return null so callers can skip this malformed entry.
+        return null;
     }
 }

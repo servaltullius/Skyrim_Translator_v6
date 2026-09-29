@@ -24,7 +24,7 @@ public sealed class CompareTranslationService
     }
 
     public sealed record Request(
-        GeminiClient GeminiClient,
+        IGeminiClient GeminiClient,
         ProjectDb? ProjectDb,
         string ApiKey,
         string ModelName,
@@ -154,7 +154,9 @@ public sealed class CompareTranslationService
 
     private static TranslateIdsRequest BuildTranslateRequest(Request request, CancellationToken cancellationToken)
     {
-        var thinkingOverride = request.ThinkingOff ? new GeminiThinkingConfig(ThinkingBudget: 0) : null;
+        var thinkingOverride = request.ThinkingOff
+            ? GeminiTranslationPolicy.GetLowThinkingConfigForTranslation(request.ModelName)
+            : null;
 
         return new TranslateIdsRequest(
             ApiKey: request.ApiKey.Trim(),

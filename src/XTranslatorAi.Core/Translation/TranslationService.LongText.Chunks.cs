@@ -24,7 +24,10 @@ public sealed partial class TranslationService
 
         if (chunkText.Length > chunkChars || tokenCount > maxTokensPerChunk)
         {
-            var parts = TokenAwareTextSplitter.Split(chunkText, chunkChars, maxTokensPerChunk);
+            // Prefer splitting at [pagebreak] boundaries for structural integrity.
+            var parts = TrySplitAtPagebreakBoundaries(chunkText, chunkChars, chunkContext.Row.Mask)
+                        ?? TokenAwareTextSplitter.Split(chunkText, chunkChars, maxTokensPerChunk);
+
             if (parts.Count <= 1)
             {
                 throw new InvalidOperationException($"Failed to split long text (len={chunkText.Length}, chunk={chunkChars}).");
@@ -64,7 +67,7 @@ public sealed partial class TranslationService
     private async Task<string> TranslateChunkTextAsync(LongTextChunkContext chunkContext, string chunkText)
     {
         var request = CreateLongTextChunkRequestContext(chunkContext);
-        return await TranslateTextWithSentinelAsync(
+        var translated = await TranslateTextWithSentinelAsync(
             request,
             chunkText,
             chunkContext.Row.Glossary.PromptOnlyPairs,
@@ -75,6 +78,26 @@ public sealed partial class TranslationService
                 SourceTextForTranslationMemory: chunkContext.Row.Source
             )
         );
+
+        // Sentinel cleanup trims model output. Restore the source chunk's edge
+        // whitespace before concatenation so a split within a sentence cannot
+        // silently join two words. Newline/pagebreak tokens remain untouched.
+        return RestoreChunkBoundaryWhitespace(chunkText, translated);
+    }
+
+    internal static string RestoreChunkBoundaryWhitespace(string source, string translated)
+    {
+        var leading = 0;
+        while (leading < source.Length && char.IsWhiteSpace(source[leading]))
+        {
+            leading++;
+        }
+        var trailing = source.Length;
+        while (trailing > leading && char.IsWhiteSpace(source[trailing - 1]))
+        {
+            trailing--;
+        }
+        return source[..leading] + translated.Trim() + source[trailing..];
     }
 
     private static TextRequestContext CreateLongTextChunkRequestContext(LongTextChunkContext chunkContext)
@@ -151,7 +174,7 @@ public sealed partial class TranslationService
             return "";
         }
 
-        var parallelism = _longTextChunkParallelism;
+        var parallelism = Ctx.LongTextChunkParallelism;
         if (parallelism <= 1 || parts.Count == 1)
         {
             return await TranslateChunkPartsSequentialAsync(chunkContext, parts, chunkChars, minChunkChars);
@@ -238,5 +261,19 @@ public sealed partial class TranslationService
             sbAll.Append(r);
         }
         return sbAll.ToString();
+    }
+
+    private static IReadOnlyList<string>? TrySplitAtPagebreakBoundaries(
+        string chunkText,
+        int chunkChars,
+        MaskedText mask)
+    {
+        if (mask.TokenToOriginal.Count == 0)
+        {
+            return null;
+        }
+
+        var parts = TokenAwareTextSplitter.SplitAtPagebreaks(chunkText, chunkChars, mask.TokenToOriginal);
+        return parts.Count > 1 ? parts : null;
     }
 }

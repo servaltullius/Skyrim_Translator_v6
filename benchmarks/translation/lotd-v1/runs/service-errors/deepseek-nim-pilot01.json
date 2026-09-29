@@ -1,0 +1,9 @@
+{
+  "model": "deepseek-ai/deepseek-v4.1-flash",
+  "route": "NVIDIA NIM Playground",
+  "batch": "pilot-01",
+  "inputVerified": true,
+  "error": "Retries exhausted: 3/3",
+  "usage": null,
+  "recordedAt": "2026-09-29T00:48:53.498Z"
+}

@@ -12,8 +12,11 @@ namespace XTranslatorAi.App.ViewModels;
 public partial class MainViewModel
 {
     private Task OnRowUpdatedAsync(long id, StringEntryStatus status, string text)
+        => OnRowUpdatedAsync(Interlocked.Read(ref _rowUpdateGeneration), id, status, text);
+
+    private Task OnRowUpdatedAsync(long generation, long id, StringEntryStatus status, string text)
     {
-        _rowUpdates.Enqueue(new RowUpdate(id, status, text));
+        _rowUpdates.Enqueue(new RowUpdate(generation, id, status, text));
         EnsureRowUpdatePump();
         return Task.CompletedTask;
     }
@@ -79,6 +82,11 @@ public partial class MainViewModel
 
     private void ApplyRowUpdate(RowUpdate update)
     {
+        if (update.Generation != Interlocked.Read(ref _rowUpdateGeneration))
+        {
+            return;
+        }
+
         if (_projectState.TryGetById(update.Id, out var vm))
         {
             var previous = vm.Status;
@@ -87,9 +95,11 @@ public partial class MainViewModel
             {
                 _inProgressSinceTranslationStart.Add(update.Id);
                 vm.IsTranslationMemoryApplied = false;
+                vm.ErrorMessage = null;
             }
             if (update.Status == StringEntryStatus.Done)
             {
+                vm.ErrorMessage = null;
                 if (!string.IsNullOrEmpty(update.Text))
                 {
                     vm.DestText = update.Text;
@@ -127,5 +137,22 @@ public partial class MainViewModel
         return text[..maxLen] + "…";
     }
 
-    private readonly record struct RowUpdate(long Id, StringEntryStatus Status, string Text);
+    private void ClearPendingRowUpdates()
+    {
+        Interlocked.Increment(ref _rowUpdateGeneration);
+        _rowUpdateTimer?.Stop();
+        _rowUpdates.Clear();
+        _inProgressSinceTranslationStart.Clear();
+    }
+
+    private sealed class RunFlowControlPort(MainViewModel owner, long generation) : ITranslationRunnerFlowControlPort
+    {
+        public Task OnRowUpdatedAsync(long id, StringEntryStatus status, string text)
+            => owner.OnRowUpdatedAsync(generation, id, status, text);
+
+        public Task WaitIfPausedAsync(CancellationToken cancellationToken)
+            => owner.WaitIfPausedAsync(cancellationToken);
+    }
+
+    private readonly record struct RowUpdate(long Generation, long Id, StringEntryStatus Status, string Text);
 }

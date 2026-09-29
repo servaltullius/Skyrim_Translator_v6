@@ -11,8 +11,8 @@ public sealed partial class TranslationService
 {
     private IReadOnlyList<(long Id, string Source, MaskedText Mask)> GetDuplicateRows(long canonicalId)
     {
-        if (_duplicateRowsByCanonicalId == null
-            || !_duplicateRowsByCanonicalId.TryGetValue(canonicalId, out var rows)
+        if (Ctx.DuplicateRowsByCanonicalId == null
+            || !Ctx.DuplicateRowsByCanonicalId.TryGetValue(canonicalId, out var rows)
             || rows.Count == 0)
         {
             return Array.Empty<(long Id, string Source, MaskedText Mask)>();

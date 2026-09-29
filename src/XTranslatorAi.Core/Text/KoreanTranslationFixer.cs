@@ -23,6 +23,7 @@ internal static class KoreanTranslationFixer
         new StatAndSubjectParticleStep(),
         new DurationProbabilityStep(),
         new ArtifactCleanupStep(),
+        new SpellingFixStep(),
     };
 
     internal static string Fix(string targetLang, string text)
@@ -55,12 +56,6 @@ internal static class KoreanTranslationFixer
     }
 
     private static string RemoveInvisibleSeparators(string text)
-    {
-        // Some LLM outputs contain invisible Unicode separators that break simple regex matching.
-        // Keep this conservative: strip only the most common zero-width characters.
-        return text.Replace("\u200B", "", StringComparison.Ordinal)
-            .Replace("\uFEFF", "", StringComparison.Ordinal)
-            .Replace("\u2060", "", StringComparison.Ordinal);
-    }
+        => TranslationConstants.RemoveInvisibleSeparators(text);
 
 }

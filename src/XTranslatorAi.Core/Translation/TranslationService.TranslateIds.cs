@@ -29,29 +29,63 @@ public sealed partial class TranslationService
 
             await TranslateIdsCoreBodyAsync(request, promptCache);
         }
+        catch (OperationCanceledException) when (request.CancellationToken.IsCancellationRequested)
+        {
+            await RestoreCancelledRowsAsync(request);
+            throw;
+        }
         finally
         {
             await CleanupTranslateIdsRunStateAsync(promptCache);
         }
     }
 
+    private async Task RestoreCancelledRowsAsync(TranslateIdsRequest request)
+    {
+        // All workers have settled before this path. Keep completed rows and only
+        // restore unfinished rows owned by this run, including duplicate rows.
+        var statuses = await _db.GetStringStatusesByIdsAsync(request.Ids, CancellationToken.None);
+        var pending = new List<long>();
+        foreach (var (id, status) in statuses)
+        {
+            if (status == StringEntryStatus.InProgress)
+            {
+                pending.Add(id);
+            }
+        }
+        if (pending.Count == 0)
+        {
+            return;
+        }
+
+        await _db.UpdateStringStatusesAsync(pending, StringEntryStatus.Pending, null, CancellationToken.None);
+        if (request.OnRowUpdated != null)
+        {
+            foreach (var id in pending)
+            {
+                NotifyRowUpdated(request.OnRowUpdated, id, StringEntryStatus.Pending, "");
+            }
+        }
+    }
+
     private void InitializeTranslateIdsRunState(TranslateIdsRequest request)
     {
-        _thinkingConfigOverride = request.ThinkingConfigOverride;
-        _enableSessionTermMemory = request.EnableSessionTermMemory;
-        _sessionTermMemory = request.EnableSessionTermMemory ? new SessionTermMemory(DefaultSessionTermMemoryMaxTerms) : null;
-        _pendingSessionAutoGlossaryInserts = null;
-        _sessionAutoGlossaryKnownKeys = null;
-        _semanticRepairMode = request.EnableRepairPass ? request.SemanticRepairMode : PlaceholderSemanticRepairMode.Off;
-        _enableTemplateFixer = request.EnableTemplateFixer;
-        _useRecStyleHints = request.UseRecStyleHints;
-        _enableDialogueContextWindow = request.EnableDialogueContextWindow;
-        _enableQualityEscalation = request.EnableQualityEscalation && !string.IsNullOrWhiteSpace(request.QualityEscalationModelName);
-        _qualityEscalationModelName = string.IsNullOrWhiteSpace(request.QualityEscalationModelName) ? null : request.QualityEscalationModelName.Trim();
-        _enableRiskyCandidateRerank = request.EnableRiskyCandidateRerank;
-        _riskyCandidateCount = Math.Clamp(request.RiskyCandidateCount, 2, 8);
+        _ctx = new TranslationRunContext
+        {
+            ThinkingConfigOverride = request.ThinkingConfigOverride,
+            EnableSessionTermMemory = request.EnableSessionTermMemory,
+            SessionTermMemory = request.EnableSessionTermMemory ? new SessionTermMemory(DefaultSessionTermMemoryMaxTerms) : null,
+            SemanticRepairMode = request.EnableRepairPass ? request.SemanticRepairMode : PlaceholderSemanticRepairMode.Off,
+            EnableTemplateFixer = request.EnableTemplateFixer,
+            UseRecStyleHints = request.UseRecStyleHints,
+            EnableDialogueContextWindow = request.EnableDialogueContextWindow,
+            EnableQualityEscalation = request.EnableQualityEscalation && !string.IsNullOrWhiteSpace(request.QualityEscalationModelName),
+            QualityEscalationModelName = string.IsNullOrWhiteSpace(request.QualityEscalationModelName) ? null : request.QualityEscalationModelName.Trim(),
+            EnableRiskyCandidateRerank = request.EnableRiskyCandidateRerank,
+            RiskyCandidateCount = Math.Clamp(request.RiskyCandidateCount, 2, 8),
+        };
 
-        if (_enableSessionTermMemory && _sessionTermMemory != null && request.PreloadedSessionTerms != null)
+        if (Ctx.EnableSessionTermMemory && Ctx.SessionTermMemory != null && request.PreloadedSessionTerms != null)
         {
             foreach (var (source, target) in request.PreloadedSessionTerms)
             {
@@ -59,7 +93,7 @@ public sealed partial class TranslationService
                 {
                     continue;
                 }
-                _sessionTermMemory.TryLearn(source, target);
+                Ctx.SessionTermMemory.TryLearn(source, target);
             }
         }
     }
@@ -87,10 +121,10 @@ public sealed partial class TranslationService
         var schema = TranslationPrompt.BuildResponseSchema();
 
         var maxConcurrency = Math.Max(1, request.MaxConcurrency);
-        _generateContentGate = new SemaphoreSlim(maxConcurrency, maxConcurrency);
-        ConfigureAdaptiveConcurrency(maxConcurrency);
-        _longTextChunkParallelism = maxConcurrency >= 5 ? 2 : 1;
-        _maskedTokensPerCharHint = null;
+        Ctx.GenerateContentGate = new SemaphoreSlim(maxConcurrency, maxConcurrency);
+        Ctx.AdaptiveConcurrency.Configure(maxConcurrency);
+        Ctx.LongTextChunkParallelism = maxConcurrency >= 5 ? 2 : 1;
+        Ctx.MaskedTokensPerCharHint = null;
 
         items = await SeedSessionTermMemoryAsync(
             request,
@@ -118,22 +152,8 @@ public sealed partial class TranslationService
     private async Task CleanupTranslateIdsRunStateAsync(PromptCache? promptCache)
     {
         await FlushSessionTermAutoGlossaryInsertsAsync();
-        _generateContentGate?.Dispose();
-        _generateContentGate = null;
-        _veryLongRequestGate?.Dispose();
-        _veryLongRequestGate = null;
-        _rowContextById = null;
-        _dialogueContextWindowById = null;
-        _sessionTermMemory = null;
-        _enableSessionTermMemory = false;
-        _enableQualityEscalation = false;
-        _qualityEscalationModelName = null;
-        _enableRiskyCandidateRerank = true;
-        _riskyCandidateCount = 3;
-        _pendingSessionAutoGlossaryInserts = null;
-        _sessionAutoGlossaryKnownKeys = null;
-        _thinkingConfigOverride = null;
-        ResetAdaptiveConcurrency();
+        _ctx?.Dispose();
+        _ctx = null;
 
         if (promptCache != null)
         {
@@ -143,7 +163,8 @@ public sealed partial class TranslationService
             }
             catch
             {
-                // ignore
+                // Cleanup path in finally block -- swallow all exceptions
+                // including OperationCanceledException to avoid masking the original exception.
             }
         }
     }
@@ -161,6 +182,10 @@ public sealed partial class TranslationService
             _ = await cache.GetOrCreateAsync(cancellationToken);
             return cache;
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
             if (IsCredentialError(ex))
@@ -172,21 +197,21 @@ public sealed partial class TranslationService
         }
     }
 
-	    private void InitializeSessionAutoGlossary(IReadOnlyList<GlossaryEntry> glossary)
-	    {
-	        if (!_enableSessionTermMemory || !EnableSessionTermAutoGlossaryPersistence)
+    private void InitializeSessionAutoGlossary(IReadOnlyList<GlossaryEntry> glossary)
+    {
+        if (!Ctx.EnableSessionTermMemory || !EnableSessionTermAutoGlossaryPersistence)
         {
             return;
         }
 
-        _pendingSessionAutoGlossaryInserts = new ConcurrentQueue<(string Source, string Target)>();
-        _sessionAutoGlossaryKnownKeys = new ConcurrentDictionary<string, byte>(StringComparer.OrdinalIgnoreCase);
+        Ctx.PendingSessionAutoGlossaryInserts = new ConcurrentQueue<(string Source, string Target)>();
+        Ctx.SessionAutoGlossaryKnownKeys = new ConcurrentDictionary<string, byte>(StringComparer.OrdinalIgnoreCase);
         foreach (var g in glossary)
         {
             var key = NormalizeSessionTermKey(g.SourceTerm);
             if (!string.IsNullOrWhiteSpace(key))
             {
-                _sessionAutoGlossaryKnownKeys.TryAdd(key, 0);
+                Ctx.SessionAutoGlossaryKnownKeys.TryAdd(key, 0);
             }
         }
     }

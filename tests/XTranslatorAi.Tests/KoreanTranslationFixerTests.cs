@@ -304,10 +304,130 @@ public class KoreanTranslationFixerTests
     }
 
     [Fact]
+    public void Fix_CorrectsAttachedSubjectParticle_ConsonantEndingNoun()
+    {
+        // 력 has 받침 → should be 이, not 가
+        var input = "지구력가 부족합니다.";
+        var output = KoreanTranslationFixer.Fix("korean", input);
+        Assert.Equal("지구력이 부족합니다.", output);
+    }
+
+    [Fact]
+    public void Fix_CorrectsAttachedSubjectParticle_VowelEndingNoun()
+    {
+        // 카 has no 받침 → should be 가, not 이
+        var input = "매지카이 부족합니다.";
+        var output = KoreanTranslationFixer.Fix("korean", input);
+        Assert.Equal("매지카가 부족합니다.", output);
+    }
+
+    [Fact]
+    public void Fix_CorrectsSeparatedSubjectParticle_ConsonantEndingNoun()
+    {
+        var input = "중갑 가 무겁다.";
+        var output = KoreanTranslationFixer.Fix("korean", input);
+        Assert.Equal("중갑이 무겁다.", output);
+    }
+
+    [Fact]
+    public void Fix_DoesNotChangeCorrectSubjectParticle()
+    {
+        var input = "지구력이 부족합니다.";
+        var output = KoreanTranslationFixer.Fix("korean", input);
+        Assert.Equal("지구력이 부족합니다.", output);
+    }
+
+    [Fact]
+    public void Fix_DoesNotChangeSubjectParticle_OnSingleSyllableNoun()
+    {
+        // 1-syllable guard: "집가" could be verb 가다, skip
+        var input = "집가 멀다.";
+        var output = KoreanTranslationFixer.Fix("korean", input);
+        Assert.Equal("집가 멀다.", output);
+    }
+
+    [Fact]
+    public void Fix_CorrectsSubjectParticle_ForLatinNoun()
+    {
+        // Skyrim ends in consonant 'm' → should be 이
+        var input = "Skyrim가 좋다.";
+        var output = KoreanTranslationFixer.Fix("korean", input);
+        Assert.Equal("Skyrim이 좋다.", output);
+    }
+
+    [Fact]
+    public void Fix_CorrectsSubjectParticle_ForLatinNoun_VowelEnding()
+    {
+        // Aela ends in vowel 'a' → should be 가
+        var input = "Aela이 말했다.";
+        var output = KoreanTranslationFixer.Fix("korean", input);
+        Assert.Equal("Aela가 말했다.", output);
+    }
+
+    [Fact]
     public void Fix_DoesNothing_ForNonKorean()
     {
         var input = "체력에게 <mag> points";
         var output = KoreanTranslationFixer.Fix("english", input);
         Assert.Equal(input, output);
+    }
+
+    // --- SpellingFixStep tests ---
+
+    [Fact]
+    public void Fix_CorrectsDwae_되어_To_돼()
+    {
+        var input = "이것은 사용되어 왔다.";
+        var output = KoreanTranslationFixer.Fix("korean", input);
+        Assert.Equal("이것은 사용돼 왔다.", output);
+    }
+
+    [Fact]
+    public void Fix_CorrectsDwaet_되었_To_됐()
+    {
+        var input = "마법이 해제되었습니다.";
+        var output = KoreanTranslationFixer.Fix("korean", input);
+        Assert.Equal("마법이 해제됐습니다.", output);
+    }
+
+    [Fact]
+    public void Fix_CorrectsDwaetda_되었다_To_됐다()
+    {
+        var input = "전쟁이 시작되었다.";
+        var output = KoreanTranslationFixer.Fix("korean", input);
+        Assert.Equal("전쟁이 시작됐다.", output);
+    }
+
+    [Fact]
+    public void Fix_Corrects몇일_To_며칠()
+    {
+        var input = "몇일 후에 돌아오겠다.";
+        var output = KoreanTranslationFixer.Fix("korean", input);
+        Assert.Equal("며칠 후에 돌아오겠다.", output);
+    }
+
+    [Fact]
+    public void Fix_Corrects됬_To_됐()
+    {
+        var input = "마을이 파괴됬다.";
+        var output = KoreanTranslationFixer.Fix("korean", input);
+        Assert.Equal("마을이 파괴됐다.", output);
+    }
+
+    [Fact]
+    public void Fix_DoesNotChange_AlreadyCorrect_돼()
+    {
+        var input = "이렇게 하면 안 돼.";
+        var output = KoreanTranslationFixer.Fix("korean", input);
+        Assert.Equal("이렇게 하면 안 돼.", output);
+    }
+
+    [Fact]
+    public void Fix_DoesNotChange_되다_Standalone()
+    {
+        // 되 + consonant (되다, 되면, 되니) is correct and should not be changed
+        var input = "이것은 사용되면 좋다.";
+        var output = KoreanTranslationFixer.Fix("korean", input);
+        Assert.Equal("이것은 사용되면 좋다.", output);
     }
 }

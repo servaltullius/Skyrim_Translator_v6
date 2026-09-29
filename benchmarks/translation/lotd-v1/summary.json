@@ -1,0 +1,62 @@
+[
+  {
+    "model": "gemini-3.8-flash-low",
+    "stage": "pilot",
+    "saved_batches": 8,
+    "total_planned_batches": 8,
+    "response_target_rows": 24,
+    "strict_json_rows": 24,
+    "format_pass_rows": 24,
+    "schema_failed_batches": 0
+  },
+  {
+    "model": "gemini-3.1-flash-lite-minimal",
+    "stage": "pilot",
+    "saved_batches": 7,
+    "total_planned_batches": 8,
+    "response_target_rows": 23,
+    "strict_json_rows": 23,
+    "format_pass_rows": 23,
+    "schema_failed_batches": 0
+  },
+  {
+    "model": "solar-pro3-low",
+    "stage": "pilot",
+    "saved_batches": 8,
+    "total_planned_batches": 8,
+    "response_target_rows": 24,
+    "strict_json_rows": 18,
+    "format_pass_rows": 17,
+    "schema_failed_batches": 1
+  },
+  {
+    "model": "solar-pro4-web-instant",
+    "stage": "pilot",
+    "saved_batches": 8,
+    "total_planned_batches": 8,
+    "response_target_rows": 24,
+    "strict_json_rows": 24,
+    "format_pass_rows": 22,
+    "schema_failed_batches": 0
+  },
+  {
+    "model": "gemini-3.8-flash-low",
+    "stage": "full",
+    "saved_batches": 36,
+    "total_planned_batches": 37,
+    "response_target_rows": 116,
+    "strict_json_rows": 116,
+    "format_pass_rows": 114,
+    "schema_failed_batches": 0
+  },
+  {
+    "model": "gemini-3.1-flash-lite-minimal",
+    "stage": "full",
+    "saved_batches": 36,
+    "total_planned_batches": 37,
+    "response_target_rows": 119,
+    "strict_json_rows": 116,
+    "format_pass_rows": 112,
+    "schema_failed_batches": 3
+  }
+]

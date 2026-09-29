@@ -25,6 +25,129 @@ public static class TokenAwareTextSplitter
         public int CurrentTokens { get; set; }
     }
 
+    /// <summary>
+    /// Splits masked text preferring [pagebreak] token boundaries.
+    /// Falls back to <see cref="Split"/> for segments that exceed <paramref name="maxCharsPerChunk"/>.
+    /// Short adjacent segments are merged up to the char limit for efficiency.
+    /// </summary>
+    public static IReadOnlyList<string> SplitAtPagebreaks(
+        string text,
+        int maxCharsPerChunk,
+        IReadOnlyDictionary<string, string> tokenToOriginal)
+    {
+        if (maxCharsPerChunk <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(maxCharsPerChunk));
+        }
+
+        if (string.IsNullOrEmpty(text))
+        {
+            return new[] { text ?? "" };
+        }
+
+        var pagebreakPositions = FindPagebreakTokenPositions(text, tokenToOriginal);
+        if (pagebreakPositions.Count == 0)
+        {
+            return text.Length <= maxCharsPerChunk
+                ? new[] { text }
+                : Split(text, maxCharsPerChunk);
+        }
+
+        // Split into segments at pagebreak boundaries.
+        // Each segment includes its trailing pagebreak token (except possibly the last).
+        var segments = BuildPagebreakSegments(text, pagebreakPositions);
+
+        // Merge short adjacent segments up to maxCharsPerChunk.
+        return MergePagebreakSegments(segments, maxCharsPerChunk);
+    }
+
+    private static List<(int Position, int Length)> FindPagebreakTokenPositions(
+        string text,
+        IReadOnlyDictionary<string, string> tokenToOriginal)
+    {
+        var positions = new List<(int Position, int Length)>();
+        foreach (Match m in TokenRegex.Matches(text))
+        {
+            if (tokenToOriginal.TryGetValue(m.Value, out var original)
+                && original.Equals("[pagebreak]", StringComparison.OrdinalIgnoreCase))
+            {
+                positions.Add((m.Index, m.Length));
+            }
+        }
+
+        return positions;
+    }
+
+    private static List<string> BuildPagebreakSegments(
+        string text,
+        List<(int Position, int Length)> pagebreakPositions)
+    {
+        var segments = new List<string>();
+        var startIdx = 0;
+
+        foreach (var (pos, length) in pagebreakPositions)
+        {
+            var endIdx = pos + length;
+            if (endIdx > startIdx)
+            {
+                segments.Add(text[startIdx..endIdx]);
+            }
+
+            startIdx = endIdx;
+        }
+
+        if (startIdx < text.Length)
+        {
+            segments.Add(text[startIdx..]);
+        }
+
+        return segments;
+    }
+
+    private static IReadOnlyList<string> MergePagebreakSegments(List<string> segments, int maxCharsPerChunk)
+    {
+        if (segments.Count <= 1)
+        {
+            // Single segment that might still be too long.
+            if (segments.Count == 1 && segments[0].Length > maxCharsPerChunk)
+            {
+                return Split(segments[0], maxCharsPerChunk);
+            }
+
+            return segments;
+        }
+
+        var chunks = new List<string>();
+        var sb = new StringBuilder(capacity: Math.Min(maxCharsPerChunk, 4096));
+
+        foreach (var seg in segments)
+        {
+            // If appending this segment would exceed the limit, flush current.
+            if (sb.Length > 0 && sb.Length + seg.Length > maxCharsPerChunk)
+            {
+                chunks.Add(sb.ToString());
+                sb.Clear();
+            }
+
+            // If segment alone exceeds the limit, sub-split it.
+            if (seg.Length > maxCharsPerChunk && sb.Length == 0)
+            {
+                var subParts = Split(seg, maxCharsPerChunk);
+                chunks.AddRange(subParts);
+                continue;
+            }
+
+            sb.Append(seg);
+        }
+
+        if (sb.Length > 0)
+        {
+            chunks.Add(sb.ToString());
+        }
+
+        return chunks.Count == 0 ? new[] { string.Concat(segments) } : chunks;
+    }
+
     public static IReadOnlyList<string> Split(string text, int maxChunkChars, int? maxTokensPerChunk = null)
     {
         if (maxChunkChars <= 0)

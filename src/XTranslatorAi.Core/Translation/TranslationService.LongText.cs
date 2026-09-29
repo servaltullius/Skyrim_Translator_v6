@@ -21,6 +21,22 @@ public sealed partial class TranslationService
         CancellationToken CancellationToken
     );
 
+    private static int GetMaxTokensPerChunk(string modelName, string targetLang)
+    {
+        var normalizedModel = modelName?.Trim() ?? "";
+        if (normalizedModel.StartsWith("models/", StringComparison.OrdinalIgnoreCase))
+        {
+            normalizedModel = normalizedModel["models/".Length..];
+        }
+
+        var isGemini3 = normalizedModel.StartsWith("gemini-3", StringComparison.OrdinalIgnoreCase);
+        var isCjk = IsCjkLanguage(targetLang);
+
+        return isGemini3
+            ? isCjk ? 24 : 32
+            : isCjk ? 30 : 40;
+    }
+
     private static bool IsCjkLanguage(string lang)
     {
         if (string.IsNullOrWhiteSpace(lang))
@@ -97,6 +113,20 @@ public sealed partial class TranslationService
             {
                 styleHint = "REC=MESG (UI message). Keep it short, clear, and game-UI friendly. Avoid long literary phrasing.";
             }
+
+            // Item/object name records: ACTI, MISC, WEAP, ARMO, AMMO, INGR, ALCH, FLOR, CONT, FURN, DOOR
+            // with :FULL or :NAME subtype → short noun phrase style.
+            // Exclude QUST (quest names can be verb-like) and NPC_ (nicknames).
+            if (styleHint == null
+                && r is "ACTI" or "MISC" or "WEAP" or "ARMO" or "AMMO" or "INGR" or "ALCH" or "FLOR" or "CONT" or "FURN" or "DOOR")
+            {
+                var subtype = GetRecSubtype(rec);
+                if (subtype is "FULL" or "NAME")
+                {
+                    styleHint = "REC=*:FULL/NAME (item/object name). 짧은 명사구로 번역. "
+                                + "동사형 어미(-하기, -하다, -됩니다) 금지. 예: '부서진 문', '낡은 전등', '탐험가 발굴'";
+                }
+            }
         }
 
         // Heuristic: xTranslator book exports often include [pagebreak] and book UI image tags.
@@ -124,6 +154,22 @@ public sealed partial class TranslationService
         }
 
         return styleHint;
+    }
+
+    private static string? GetRecSubtype(string? rec)
+    {
+        if (string.IsNullOrWhiteSpace(rec))
+        {
+            return null;
+        }
+
+        var colon = rec.IndexOf(':');
+        if (colon < 0 || colon + 1 >= rec.Length)
+        {
+            return null;
+        }
+
+        return rec[(colon + 1)..].Trim().ToUpperInvariant();
     }
 
     private static bool ContainsMultilineItalicBlock(string text)

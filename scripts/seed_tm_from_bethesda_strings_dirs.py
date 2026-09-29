@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import struct
 import sys
@@ -114,6 +115,53 @@ def _write_tsv(path: Path, pairs: list[tuple[str, str]]) -> None:
             f.write("\n")
 
 
+def _write_report_json(
+    path: Path,
+    *,
+    matched_files: int,
+    missing_target_files: int,
+    pairs: int,
+    source_root: Path,
+    target_root: Path,
+    source_locale: str,
+    include_long: bool,
+) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    report = {
+        "matched_files": matched_files,
+        "missing_target_files": missing_target_files,
+        "pairs": pairs,
+        "source_root": str(source_root),
+        "target_root": str(target_root),
+        "source_locale": source_locale,
+        "include_long": include_long,
+    }
+    with path.open("w", encoding="utf-8", newline="\n") as f:
+        json.dump(report, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+
+def _prepare_report_json_path(out_path: Path, report_json: str | None) -> Path | None:
+    if not report_json:
+        return None
+
+    report_path = Path(report_json).expanduser()
+    out_resolved = out_path.resolve(strict=False)
+    report_resolved = report_path.resolve(strict=False)
+
+    if report_resolved == out_resolved:
+        raise SystemExit(f"--report-json must not match --out: {report_path}")
+    if report_path.exists() and report_path.is_dir():
+        raise SystemExit(f"--report-json must be a file path, not a directory: {report_path}")
+
+    try:
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+    except OSError as ex:
+        raise SystemExit(f"unable to prepare --report-json parent directory: {report_path.parent}: {ex}") from ex
+
+    return report_path
+
+
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(
         description="Build Source->Target translation-memory TSV by matching Bethesda *.STRINGS files (by filename and string ID)."
@@ -127,12 +175,14 @@ def main(argv: list[str]) -> int:
         action="store_true",
         help="Include long/multiline entries (default filters them out).",
     )
+    ap.add_argument("--report-json", help="Optional JSON path for a machine-readable generation summary.")
     args = ap.parse_args(argv)
 
     source_root = Path(args.source_root).expanduser()
     target_root = Path(args.target_root).expanduser()
     out_path = Path(args.out).expanduser()
     source_locale = (args.source_locale or "").strip()
+    report_path = _prepare_report_json_path(out_path, args.report_json)
 
     if not source_root.exists():
         raise SystemExit(f"missing --source-root: {source_root}")
@@ -182,6 +232,20 @@ def main(argv: list[str]) -> int:
 
     pairs = sorted(pairs_by_key.values(), key=lambda p: _normalize_tm_key(p[0]))
     _write_tsv(out_path, pairs)
+    if report_path is not None:
+        try:
+            _write_report_json(
+                report_path,
+                matched_files=matched_files,
+                missing_target_files=missing_target_files,
+                pairs=len(pairs),
+                source_root=source_root,
+                target_root=target_root,
+                source_locale=source_locale,
+                include_long=args.include_long,
+            )
+        except Exception as ex:
+            print(f"[seed-tm] warning: failed to write report JSON {report_path}: {ex}", file=sys.stderr)
     print(
         f"[seed-tm] matched_files={matched_files} missing_target_files={missing_target_files} "
         f"pairs={len(pairs)} out={out_path}"
@@ -191,4 +255,3 @@ def main(argv: list[str]) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv[1:]))
-

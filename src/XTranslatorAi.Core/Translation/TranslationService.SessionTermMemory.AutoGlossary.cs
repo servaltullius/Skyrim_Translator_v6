@@ -12,7 +12,7 @@ public sealed partial class TranslationService
 {
     private void TryLearnSessionTermMemory(long id, string sourceText, string translatedText)
     {
-        if (!_enableSessionTermMemory || _sessionTermMemory == null)
+        if (!Ctx.EnableSessionTermMemory || Ctx.SessionTermMemory == null)
         {
             return;
         }
@@ -35,7 +35,7 @@ public sealed partial class TranslationService
         }
 
         var target = translatedText.Trim();
-        if (!_sessionTermMemory.TryLearn(key, target))
+        if (!Ctx.SessionTermMemory.TryLearn(key, target))
         {
             return;
         }
@@ -46,30 +46,30 @@ public sealed partial class TranslationService
         }
 
         // Queue for auto-persist into project glossary.
-        if (_pendingSessionAutoGlossaryInserts == null || _sessionAutoGlossaryKnownKeys == null)
+        if (Ctx.PendingSessionAutoGlossaryInserts == null || Ctx.SessionAutoGlossaryKnownKeys == null)
         {
             return;
         }
 
-        if (_sessionAutoGlossaryKnownKeys.TryAdd(key, 0))
+        if (Ctx.SessionAutoGlossaryKnownKeys.TryAdd(key, 0))
         {
-            _pendingSessionAutoGlossaryInserts.Enqueue((key, target));
+            Ctx.PendingSessionAutoGlossaryInserts.Enqueue((key, target));
         }
     }
 
-    private async Task FlushSessionTermAutoGlossaryInsertsAsync()
+    internal async Task FlushSessionTermAutoGlossaryInsertsAsync()
     {
-        if (!EnableSessionTermAutoGlossaryPersistence)
+        if (!EnableSessionTermAutoGlossaryPersistence || _ctx == null)
         {
             return;
         }
 
-        if (!_enableSessionTermMemory || _pendingSessionAutoGlossaryInserts == null)
+        if (!Ctx.EnableSessionTermMemory || Ctx.PendingSessionAutoGlossaryInserts == null)
         {
             return;
         }
 
-        var pending = DrainSessionAutoGlossaryInserts(_pendingSessionAutoGlossaryInserts);
+        var pending = DrainSessionAutoGlossaryInserts(Ctx.PendingSessionAutoGlossaryInserts);
         if (pending.Count == 0)
         {
             return;

@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace XTranslatorAi.Core.Translation;
 
-public sealed partial class GeminiClient
+public sealed partial class GeminiClient : IGeminiClient
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {

@@ -19,34 +19,36 @@ public partial class MainViewModel
         );
     }
 
-    private async Task<IReadOnlyList<GlossaryEntry>?> TryLoadGlobalGlossaryAsync()
+    private async Task<IReadOnlyList<GlossaryEntry>?> TryLoadGlobalGlossaryAsync(CancellationToken cancellationToken = default)
     {
         try
         {
-            if (await _globalGlossaryService.TryGetDbAsync(CancellationToken.None) == null)
+            if (await _globalGlossaryService.TryGetDbAsync(cancellationToken) == null)
             {
                 return null;
             }
 
-            return await _globalGlossaryService.GetAsync(CancellationToken.None);
+            return await _globalGlossaryService.GetAsync(cancellationToken);
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
         catch
         {
             return null;
         }
     }
 
-    private async Task<IReadOnlyDictionary<string, string>?> TryLoadGlobalTranslationMemoryAsync()
+    private async Task<IReadOnlyDictionary<string, string>?> TryLoadFranchiseTranslationMemoryAsync(CancellationToken cancellationToken = default)
     {
         try
         {
-            if (await _globalTranslationMemoryService.TryGetDbAsync(CancellationToken.None) == null)
+            if (await _globalTranslationMemoryService.TryGetDbAsync(cancellationToken) == null)
             {
                 return null;
             }
 
-            return await _globalTranslationMemoryService.GetDictionaryAsync(SourceLang.Trim(), TargetLang.Trim(), CancellationToken.None);
+            return await _globalTranslationMemoryService.GetDictionaryAsync(SourceLang.Trim(), TargetLang.Trim(), cancellationToken);
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
         catch
         {
             return null;

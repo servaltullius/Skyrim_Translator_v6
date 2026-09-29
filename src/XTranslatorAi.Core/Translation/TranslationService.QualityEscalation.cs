@@ -63,12 +63,12 @@ public sealed partial class TranslationService
         string final
     )
     {
-        if (!_enableQualityEscalation || string.IsNullOrWhiteSpace(_qualityEscalationModelName))
+        if (!Ctx.EnableQualityEscalation || string.IsNullOrWhiteSpace(Ctx.QualityEscalationModelName))
         {
             return (raw, final);
         }
 
-        var escalationModel = _qualityEscalationModelName!.Trim();
+        var escalationModel = Ctx.QualityEscalationModelName!.Trim();
         if (string.IsNullOrWhiteSpace(escalationModel)
             || string.Equals(escalationModel, ctx.ModelName, StringComparison.OrdinalIgnoreCase))
         {
@@ -89,7 +89,7 @@ public sealed partial class TranslationService
             escRaw = await TrySemanticRepairAsync(escCtx, row, styleHint, escRaw);
 
             var escFinal = ApplyTokensAndUnmask(escRaw, row.Glossary, row.Mask, escCtx.PlaceholderMasker, escCtx.TargetLang);
-            if (_enableTemplateFixer)
+            if (Ctx.EnableTemplateFixer)
             {
                 escFinal = MagDurPlaceholderFixer.Fix(row.Source, escFinal, escCtx.TargetLang);
             }
@@ -97,7 +97,7 @@ public sealed partial class TranslationService
             escFinal = PlaceholderUnitBinder.EnforceUnitsFromSource(escCtx.TargetLang, row.Source, escFinal);
             escFinal = KoreanProtectFromFixer.Fix(escCtx.TargetLang, row.Source, escFinal);
             escFinal = KoreanTranslationFixer.Fix(escCtx.TargetLang, escFinal);
-            ValidateFinalTextIntegrity(row.Source, escFinal, context: $"id={row.Id} quality-escalation post-edits");
+            TokenValidator.ValidateFinalTextIntegrity(row.Source, escFinal, context: $"id={row.Id} quality-escalation post-edits");
 
             if (TryGetQualityEscalationTrigger(row.Source, escFinal, escCtx.TargetLang, out _, out _))
             {
@@ -105,6 +105,10 @@ public sealed partial class TranslationService
             }
 
             return (escRaw, escFinal);
+        }
+        catch (OperationCanceledException) when (ctx.CancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch
         {

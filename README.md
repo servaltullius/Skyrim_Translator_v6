@@ -1,134 +1,78 @@
 # Tullius Translator
 
-Tullius Translator는 **Bethesda/xTranslator XML 현지화 작업**에 특화된 Windows WPF 번역 앱입니다.  
-핵심 목적은 단순 기계번역이 아니라, 모드 번역에서 자주 깨지는 **태그/플레이스홀더 보존**, **용어 통일**, **품질 검수**까지 한 번에 처리하는 것입니다.
+Bethesda/xTranslator XML을 한국어로 번역하고 검수하는 Windows 앱입니다. .NET 10 WPF와 SQLite를 사용하며 Gemini API를 지원합니다.
 
-이 레포는 다음 구성으로 이루어져 있습니다.
-- **Windows WPF 앱(권장)**: `src/XTranslatorAi.App`
-- **(선택) 보조 도구**
-  - Validate CLI: `tools/XTranslatorAi.Validate` (XML ↔ DB 라운드트립 검증)
-  - Python CLI: `translate_xtranslator_xml_gemini.py` (간단 자동화/실험용)
+현재 유지보수 빌드는 **2026.09.29-maintenance**입니다. 프로젝트 루트의 `TulliusTranslator.exe`가 공식 실행 위치이며 창 제목에서도 빌드 날짜를 확인할 수 있습니다. .NET 런타임을 포함한 Windows x64 단일 파일입니다. 이전 실행 파일과 복구 방법은 `artifacts/maintenance-20260929/README.md`에 기록합니다.
 
-## 앱 소개
+**현재 입력 형식은 xTranslator XML(`SSTXMLRessources`)입니다.** ESP·ESM·ESL은 xTranslator에서 XML로 내보낸 뒤 번역 결과를 다시 가져옵니다. 직접 플러그인 쓰기의 검토 범위와 도입 조건은 [검토 문서](docs/direct-plugin-feasibility.md)를 참고하세요.
 
-이 앱은 xTranslator에서 Export한 XML(`SSTXMLRessources`)을 입력으로 받아, 각 `<String>`의 `<Source>`를 Gemini로 번역하고 `<Dest>`를 채운 뒤 다시 XML로 내보냅니다.  
-즉, ESP/ESM을 직접 파싱하는 툴이 아니라 **xTranslator XML 기반 번역 파이프라인**에 집중한 앱입니다.
+## 사용 흐름
 
-실사용에서 중요한 지점은 다음입니다.
-- 대량 문자열 번역 중에도 행 단위 진행 상태를 실시간으로 확인
-- 번역 실패/오류 항목을 상태와 메시지로 추적
-- 번역 후 수동 편집/저장과 후처리까지 UI 안에서 처리
+1. xTranslator에서 원본 플러그인의 문자열을 XML로 내보냅니다.
+2. 앱에서 프랜차이즈(TES / Fallout / Starfield)를 선택하고 `Open XML`로 엽니다.
+3. API 키와 모델을 선택합니다. 기본 모델은 `gemini-3.8-flash`입니다. `Refresh`는 계정에서 사용 가능한 모델 목록을 갱신합니다.
+4. 용어집과 프로젝트 문맥을 확인한 뒤 `Start`로 번역합니다. 기존 완료·수동 편집 결과는 보존하고 미완료/오류 행을 이어서 처리합니다.
+5. `LQA`와 `Compare`에서 검토하고 필요한 행을 수정합니다. Compare와 비용 추정의 API 호출도 선택한 계정의 요금·할당량을 따릅니다.
+6. `Export XML`로 결과를 저장하고 xTranslator에 가져와 확인합니다. 기존 출력 파일이 있으면 `.bak` 백업을 남깁니다.
 
-## 핵심 기능
+앱의 API 호출이 항상 무료인 것은 아닙니다. 무료 웹 비교의 실행 조건·실제 출력·한계는 [LOTD 모델 비교](benchmarks/translation/lotd-v1/README.md)에 별도로 기록합니다.
 
-### 1) 번역 정확도/안정성
-- 태그/플레이스홀더 보호: `<mag>`, `<dur>`, `<Alias=...>`, `%0f`, 줄바꿈 등 보존
-- 자동 복구(Repair Pass): 토큰/형식 검증 실패 및 문맥 이상 항목 재요청 복구
-- 템플릿 교정: 규칙 기반 보정으로 반복 오역 패턴 수정
-- 품질 재번역(선별): 품질 규칙에 걸린 항목만 2차 모델로 재번역
-- 위험 문장 다중 후보 재랭킹: 충돌 위험 구문에서 다중 후보 생성 후 최종 선택
+현재 정확한 stable 모델 ID에 적용되는 추론 설정은 `gemini-3.8-flash=low`, `gemini-3.1-flash-lite=minimal`입니다. Compare와 비용 샘플도 같은 공통 정책을 사용합니다. 웹 비교와 추론 수준을 맞춘 것이며, 앱의 마스킹·문맥·후처리까지 포함한 품질 우위를 실측한 것은 아닙니다.
 
-### 2) 용어 통일
-- Project Glossary / Global Glossary 분리 운영
-- 매치 방식/강제 방식/우선순위 기반 용어 적용
-- 문자열 편집 화면에서 즉시 용어 검색(프로젝트/글로벌 범위 선택)
-- 세션 용어 메모리(번역 중 자동 학습)로 일관성 강화
+비용 추정에서 샘플을 실행하면 추론 포함 API 사용량으로 출력 토큰을 추정합니다. 샘플 사용량이 없으면 **추론 미포함 휴리스틱**으로 표시합니다. 캐시 사용 비용은 요청별 읽기 비용과 2시간 저장을 가정하며, 재시도·TM 적중·후보 재평가 등을 완전히 모사하지 않으므로 최종 비용은 실제 호출 누계로 확인하세요.
 
-### 3) 번역 자산 재사용
-- Global TM(Translation Memory) 조회/가져오기
-- 번역 결과 편집 시 메모리 축적 가능
-- 반복 문장/유사 문장 작업 시 재사용성 향상
+## 번역과 데이터 보호
 
-## Fallout TM
+- 태그, 변수, printf 형식, 줄바꿈, 페이지 구분자를 보호하고 최종 결과에서도 검사합니다. TM에서 재사용한 문장에도 같은 검사를 적용합니다.
+- 반복 용어를 임의로 줄이지 않으며 긴 텍스트 분할 경계의 공백을 보존합니다.
+- 문맥과 레코드가 다른 행은 단순히 원문이 같다는 이유로 같은 API 결과를 공유하지 않습니다.
+- XML 가져오기는 전체를 하나의 트랜잭션으로 처리합니다. 읽기 실패나 취소가 발생하면 이전 문자열과 프로젝트 정보를 유지합니다.
+- 같은 XML을 다시 열 때 식별 정보가 일치하는 기존 번역을 복원합니다. 수동 편집은 의도적으로 비운 번역까지 보존합니다.
+- 파일 전환·작업 종료에서 진행 중 요청의 취소와 정리를 기다립니다.
+
+형식 검증은 의미 정확성이나 게임 내 표시를 보증하지 않습니다. 고유명사·문맥·말투·퀘스트 조건은 사람이 확인해야 합니다.
+
+## 용어집과 번역 메모리(TM)
+
+Project Glossary/TM은 현재 애드온에 속합니다. 화면의 `Global`은 **선택한 프랜차이즈 안에서 공유**한다는 뜻이며 TES·Fallout·Starfield 데이터를 섞지 않습니다. TM은 원문 중심 조회이므로 모호한 짧은 단어는 문맥을 함께 검토하세요.
+
+### 내장 TM의 실제 범위
 
 Fallout TM is currently scoped to Fallout 4 family data.
 Bundled Fallout TM is auto-seeded on first Fallout project load.
 Operator-provided TSV imports still work through the existing Franchise TM import flow.
 
-### 4) 검수/비교/운영
-- Compare 탭: 여러 모델/설정을 나란히 실행해 결과 비교
-- LQA 탭: 검수 스캔 및 이슈 필터링
-- Project Context 탭: 프로젝트 문맥 관리
-- API Logs 탭: 요청/토큰/오류 흐름 확인
-- API Key 저장 및 자동 페일오버(오류 시 다른 키로 전환)
+현재 내장 Fallout 시드는 `Pip-Boy`, `Vault-Tec`, `Commonwealth`의 **영문 유지 3쌍**입니다. 완성된 Fallout 한글 번역 데이터가 아닙니다. TES와 Starfield의 완성된 번역 TM은 내장되어 있지 않습니다. 직접 보유한 번역 자산을 해당 프랜차이즈로 가져오세요.
 
-## 주요 화면 구성
+- 일반 TSV: 첫 줄 `Source<TAB>Target`, 이후 원문과 번역문 두 열을 지원합니다.
+- 앱의 새 내보내기 형식: 헤더에 `XTranslatorAi-JSON-v1`이 있으며 각 열을 JSON 문자열로 기록합니다. 앱으로 다시 가져올 때 탭·개행·따옴표·역슬래시를 복원합니다. 일반 2열 TSV만 받는 외부 도구와는 형식이 다릅니다.
+- [Starfield 로컬 자산에서 TM 만들기](docs/starfield-franchise-tm.md)
 
-- `Strings`: 검색/필터, 소스-타깃 편집, 상태 모니터링
-- `Compare`: 다중 모델 결과 비교
-- `LQA (Review)`: 번역 품질 검수
-- `Project Glossary (This Addon)`: 프로젝트별 용어집
-- `Global Glossary (All projects)`: 공용 용어집
-- `Global TM`: 공용 번역 메모리
-- `Prompt`: 기본/커스텀 프롬프트 및 린트 상태
-- `Project Context`: 작품/모드 문맥 정보 관리
-- `API Logs`: 호출 로그/토큰 사용량 확인
+## 저장 위치와 이전
 
-## 실행(개발용)
-- 솔루션: `XTranslatorAi.sln`
-- 앱 프로젝트: `src/XTranslatorAi.App`
+- 프로젝트 DB: `%LOCALAPPDATA%\XTranslatorAi\Projects\{elder-scrolls,fallout,starfield}`
+- 프랜차이즈 공용 데이터: `%LOCALAPPDATA%\XTranslatorAi\Global` 아래 프랜차이즈별 경로. TES는 호환성을 위해 기존 `global-glossary.sqlite` 위치를 유지합니다.
+- 이전 프로젝트 DB는 프랜차이즈·언어·애드온이 일치할 때 새 위치로 복사합니다. 레거시 원본은 남깁니다. 프랜차이즈 정보가 없으면 입력 XML 경로까지 일치해야 이전합니다.
+- 이전 후 되돌리려면 앱을 종료하고 보존된 기존 DB와 실행 파일을 사용하세요. 새 DB에서 편집한 내용은 XML/TM으로 먼저 내보내세요.
 
-Windows에서:
-```bash
-dotnet build XTranslatorAi.sln -c Release
-dotnet run --project src/XTranslatorAi.App -c Release
+## 개발과 검증
+
+Windows, .NET 10 SDK가 필요합니다. `global.json`은 안정판 .NET 10 SDK를 선택합니다. 아래 스크립트는 일반 SDK 또는 이 PC의 사용자 전용 SDK를 찾아 실행합니다.
+
+```powershell
+./scripts/build.ps1 -Task Test
+./scripts/build.ps1 -Task Publish
 ```
 
-앱에서:
-1) `Open XML`로 xTranslator XML 열기  
-2) `API Key` 입력 + 모델 선택(기본 `gemini-2.5-flash-lite`, 필요 시 `Refresh`)  
-3) `Start`로 번역 시작  
-4) `Export XML`로 저장  
+XML 왕복 검증 도구는 [Validate CLI](tools/XTranslatorAi.Validate/README.md)에 설명되어 있습니다. 앱과 테스트의 주 구현은 `src/XTranslatorAi.App`, `src/XTranslatorAi.Core`, `tests/XTranslatorAi.Tests`입니다.
 
-## GitHub 릴리즈 자동 EXE 첨부
+테스트는 Release 빌드 후 `dotnet test --no-build`를 실행합니다. Publish 출력은 `artifacts/current`이며, 실행 중인 루트 EXE를 자동 교체하지 않습니다. 릴리스 워크플로는 지정 태그를 checkout하고 해당 커밋인지 확인한 뒤 .NET 10 Windows 단일 실행 파일과 SHA-256을 만듭니다. 로컬 빌드와 공개 릴리스는 별도 작업입니다.
 
-- 워크플로: `.github/workflows/release-win-x64-singlefile.yml`
-- 트리거:
-  - GitHub Release를 `Published`하면 자동 실행
-  - `workflow_dispatch`로 특정 태그를 수동 재업로드 가능
-- 업로드 자산:
-  - `TulliusTranslator.exe` (win-x64 단일 파일)
-  - `TulliusTranslator.exe.sha256`
+## 문서 구분
 
-수동 재실행 예시(기존 태그 자산 덮어쓰기):
-```bash
-gh workflow run release-win-x64-singlefile.yml -f tag=v0.1.0
-```
-
-## Python CLI
-
-앱만 사용할 예정이면 이 섹션은 건너뛰어도 됩니다.
-
-### 준비물
-
-- Python 3
-- Gemini API Key (Google AI Studio)
-
-### 사용법
-
-1) API 키 설정
-
-```bash
-export GEMINI_API_KEY="YOUR_KEY_HERE"
-```
-
-2) 번역 실행
-
-```bash
-python3 translate_xtranslator_xml_gemini.py \
-  --input LegacyoftheDragonborn_english_korean.xml \
-  --output LegacyoftheDragonborn_english_korean.translated.xml
-```
-
-### 동작 방식(요약)
-
-- 기본값으로, `<Dest>`가 비어있거나 `<Source>`와 같은 경우에만 번역합니다. (이미 번역된 항목은 건너뜀)
-- `<mag>`, `<Alias=...>`, `<font ...>` 같은 태그/플레이스홀더는 `__XT_PH_0000__` 같은 토큰으로 마스킹 후 번역하고 원복해서, 원문 토큰이 깨지지 않게 합니다.
-- 진행 중단/재시작을 위해 `*.gemini_cache.jsonl` 캐시를 자동으로 사용합니다.
-
-### 유용한 옵션
-
-- `--limit 50` : 테스트로 50개만 번역
-- `--overwrite` : 기존 `<Dest>`가 있어도 덮어쓰기
-- `--batch-size 10` / `--max-chars 8000` : 한 번에 보내는 크기 조절
-- `--cache path.jsonl` : 캐시 파일 위치 지정
+- [현재 유지보수 계획과 검증 상태](docs/plans/2026-09-29-maintenance.md)
+- [이전 개선 작업](docs/plans/2026-09-28-translator-improvement.md)
+- [현재 코드 검토 기준](docs/review-checklist.md)
+- [문서 안내](docs/README.md)
+- [이전 설계 기록](docs/plans/README.md): 과거 계획은 현재 구현이나 지원 모델을 뜻하지 않습니다.
+- [이전 CLI·설계·VibeKit 자료](docs/archive/2026-09-29/README.md)는 이력 보관용이며 현재 실행 절차가 아닙니다.

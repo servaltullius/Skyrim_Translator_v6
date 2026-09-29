@@ -1,0 +1,8 @@
+{
+  "model": "gemini-3.8-flash",
+  "batch": "full-02",
+  "error": "An internal error has occurred.",
+  "rawOutput": "",
+  "inputVerified": true,
+  "recordedAt": "2026-09-29T00:44:33.474Z"
+}

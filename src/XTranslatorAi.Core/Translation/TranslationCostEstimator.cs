@@ -12,10 +12,10 @@ namespace XTranslatorAi.Core.Translation;
 
 public sealed partial class TranslationCostEstimator
 {
-    private readonly ProjectDb _db;
-    private readonly GeminiClient _gemini;
+    private readonly IProjectDb _db;
+    private readonly IGeminiClient _gemini;
 
-    public TranslationCostEstimator(ProjectDb db, GeminiClient gemini)
+    public TranslationCostEstimator(IProjectDb db, IGeminiClient gemini)
     {
         _db = db;
         _gemini = gemini;
@@ -184,9 +184,8 @@ public sealed partial class TranslationCostEstimator
         var modelsForCost = new[]
         {
             request.ModelName,
-            "gemini-2.5-flash-lite",
-            "gemini-3.1-flash-lite-preview",
-            "gemini-3.0-flash-preview",
+            GeminiModelCatalog.DefaultModel,
+            GeminiModelCatalog.LowCostModel,
         };
 
         var costEstimates = new List<ModelCostEstimate>();
@@ -264,6 +263,7 @@ public sealed partial class TranslationCostEstimator
                 sampled.TextRatio
             );
         }
+        catch (OperationCanceledException) when (inputs.CancellationToken.IsCancellationRequested) { throw; }
         catch
         {
             return null;
@@ -290,7 +290,7 @@ public sealed partial class TranslationCostEstimator
         }
 
         var point = Math.Max(0, estBatch) + Math.Max(0, estText);
-        // Provide a small safety band; real runs include retries and occasional longer outputs.
+        // A sample extrapolation band, not a confidence interval or a retry allowance.
         var low = (long)Math.Floor(point * 0.9);
         var high = (long)Math.Ceiling(point * 1.15);
         return new OutputTokenEstimate(

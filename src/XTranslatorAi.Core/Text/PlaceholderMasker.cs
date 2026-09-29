@@ -13,6 +13,11 @@ public sealed class PlaceholderMasker
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
+    private static readonly Regex SecondsAfterPlaceholderRegex = new(
+        pattern: @"^\s*seconds?\b",
+        options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
+    );
+
     private readonly PlaceholderMaskerOptions _options;
 
     public PlaceholderMasker()
@@ -236,7 +241,7 @@ public sealed class PlaceholderMasker
         }
 
         var after = fullText.Substring(afterIdx, take);
-        return Regex.IsMatch(after, @"^\s*seconds?\b", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        return SecondsAfterPlaceholderRegex.IsMatch(after);
     }
 
     private static bool IsAsciiDigits(ReadOnlySpan<char> s)
@@ -267,12 +272,17 @@ public sealed class PlaceholderMasker
             }
         }
 
-        var working = text;
-        foreach (var (token, original) in tokenToOriginal)
+        if (tokenToOriginal.Count == 0)
         {
-            working = working.Replace(token, original, StringComparison.Ordinal);
+            return text;
         }
-        return working;
+
+        // Single-pass replacement using regex that matches all XT tokens at once,
+        // replacing O(N*M) string.Replace calls with a single Regex.Replace pass.
+        return TranslationConstants.XtTokenRegex.Replace(
+            text,
+            m => tokenToOriginal.TryGetValue(m.Value, out var orig) ? orig : m.Value
+        );
     }
 }
 

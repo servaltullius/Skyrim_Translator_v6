@@ -9,13 +9,14 @@ using Microsoft.Data.Sqlite;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Translation;
+using XTranslatorAi.Tests.TestSupport;
 using Xunit;
 
 namespace XTranslatorAi.Tests;
 
 public class TranslationMemoryTests
 {
-    private const string ModelName = "gemini-3-flash-preview";
+    private const string ModelName = "gemini-3.0-flash-preview";
 
     [Fact]
     public async Task UpdateStringTranslationAsync_Edited_PersistsTranslationMemory()
@@ -33,7 +34,7 @@ public class TranslationMemoryTests
         finally
         {
             await AssertTranslationMemoryRowAsync(path, "english", "korean", "ancient dragons' lightning spear", "고룡의 뇌창");
-            TryDeleteDbFiles(path);
+            TestDbHelper.TryDeleteDbFiles(path);
         }
     }
 
@@ -72,12 +73,12 @@ public class TranslationMemoryTests
         }
         finally
         {
-            TryDeleteDbFiles(path);
+            TestDbHelper.TryDeleteDbFiles(path);
         }
     }
 
     [Fact]
-    public async Task TranslateIdsAsync_UsesGlobalTranslationMemory_ForPendingRows()
+    public async Task TranslateIdsAsync_UsesFranchiseTranslationMemory_ForPendingRows()
     {
         var path = Path.Combine(Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
         try
@@ -109,7 +110,7 @@ public class TranslationMemoryTests
         }
         finally
         {
-            TryDeleteDbFiles(path);
+            TestDbHelper.TryDeleteDbFiles(path);
         }
     }
 
@@ -146,7 +147,7 @@ public class TranslationMemoryTests
         }
         finally
         {
-            TryDeleteDbFiles(path);
+            TestDbHelper.TryDeleteDbFiles(path);
         }
     }
 
@@ -264,25 +265,4 @@ public class TranslationMemoryTests
         }
     }
 
-    private static void TryDelete(string path)
-    {
-        try
-        {
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-        }
-        catch
-        {
-            // ignore
-        }
-    }
-
-    private static void TryDeleteDbFiles(string path)
-    {
-        TryDelete(path);
-        TryDelete(path + "-wal");
-        TryDelete(path + "-shm");
-    }
 }

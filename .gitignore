@@ -7,18 +7,29 @@
 __pycache__/
 *.pyc
 
-.vibe/db/
-.vibe/reports/
-.vibe/locks/
-.vibe/context/LATEST_CONTEXT.md
 
 *.stproj.sqlite
 *.bak
 *.tmp
 *.gemini_cache.jsonl
 
-# vibe-kit
-.vibekit.auto
 
 # build outputs
-artifacts/
+artifacts/*
+!artifacts/.gitkeep
+publish/
+publish-single/
+
+# Local working copies and disposable outputs
+/.tmp/
+/.worktrees/
+/TulliusTranslator.exe
+/TulliusTranslator.exe.sha256
+/*.validate.out.xml
+/*.validate.sqlite
+/*.validate.sqlite-wal
+/*.validate.sqlite-shm
+
+# Local third-party translation assets and browser evidence with account UI
+/tm/
+/benchmarks/translation/lotd-v1/evidence/*.png

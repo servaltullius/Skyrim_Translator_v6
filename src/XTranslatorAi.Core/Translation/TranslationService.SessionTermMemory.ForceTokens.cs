@@ -10,18 +10,18 @@ public sealed partial class TranslationService
         (long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary) row
     )
     {
-        if (!_enableSessionTermMemory || _sessionTermMemory == null)
+        if (!Ctx.EnableSessionTermMemory || Ctx.SessionTermMemory == null)
         {
             return row;
         }
 
-        if (string.IsNullOrWhiteSpace(row.Masked) || _sessionTermMemory.IsEmpty)
+        if (string.IsNullOrWhiteSpace(row.Masked) || Ctx.SessionTermMemory.IsEmpty)
         {
             return row;
         }
 
         var excludedSources = SessionTermMemory.BuildExcludedSources(row.Glossary.PromptOnlyPairs);
-        var forcingEntries = _sessionTermMemory.GetForcingEntriesForText(row.Masked, excludedSources);
+        var forcingEntries = Ctx.SessionTermMemory.GetForcingEntriesForText(row.Masked, excludedSources);
         if (forcingEntries.Count == 0)
         {
             return row;
@@ -42,7 +42,7 @@ public sealed partial class TranslationService
         IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> batch
     )
     {
-        if (!_enableSessionTermMemory || _sessionTermMemory == null || _sessionTermMemory.IsEmpty)
+        if (!Ctx.EnableSessionTermMemory || Ctx.SessionTermMemory == null || Ctx.SessionTermMemory.IsEmpty)
         {
             return batch;
         }
@@ -90,7 +90,7 @@ public sealed partial class TranslationService
         return merged;
     }
 
-    private static string ReplaceSessionTermsTokenSafe(
+    internal static string ReplaceSessionTermsTokenSafe(
         string input,
         IReadOnlyList<(string Source, string Token, string Target)> forcingEntries,
         out IReadOnlyDictionary<string, string> usedTokenToReplacement
@@ -103,7 +103,7 @@ public sealed partial class TranslationService
             return input;
         }
 
-        SplitByTokens(input, out var texts, out var tokens);
+        TokenValidator.SplitByTokens(input, out var texts, out var tokens);
         var used = new Dictionary<string, string>(StringComparer.Ordinal);
         var changed = ApplySessionTermReplacements(texts, forcingEntries, used);
 
@@ -113,7 +113,7 @@ public sealed partial class TranslationService
         }
 
         usedTokenToReplacement = used;
-        return JoinTextAndTokens(texts, tokens);
+        return TokenValidator.JoinTextAndTokens(texts, tokens);
     }
 
     private static bool ApplySessionTermReplacements(
