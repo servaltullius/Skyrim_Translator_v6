@@ -1,0 +1,593 @@
+{
+  "input_file": "LegacyoftheDragonborn_english_korean.xml",
+  "sha256": "916d1fcb705d8d6540f145fb7e4b9773b0477d3c9f0eb885f1f5a853e66f11e8",
+  "method": "ElementTree XML parsing; Unicode code points after XML newline normalization; tags included. Exact-source duplicates ignore context and are an optimistic bound, not app dedup/TM hits or token savings.",
+  "total": {
+    "rows": 17373,
+    "source_chars": 5051827,
+    "unique_sources": 14479,
+    "unique_source_chars": 4993643,
+    "duplicate_extra_rows": 2894,
+    "duplicate_extra_chars": 58184,
+    "max_source_chars": 39639
+  },
+  "all_dest_equal_source": true,
+  "by_rec": {
+    "ACTI:FULL": {
+      "rows": 1606,
+      "source_chars": 28215,
+      "unique_sources": 1517,
+      "unique_source_chars": 27104,
+      "duplicate_extra_rows": 89,
+      "duplicate_extra_chars": 1111,
+      "max_source_chars": 74,
+      "source_char_share_pct": 0.5585
+    },
+    "ACTI:RNAM": {
+      "rows": 436,
+      "source_chars": 4158,
+      "unique_sources": 108,
+      "unique_source_chars": 1357,
+      "duplicate_extra_rows": 328,
+      "duplicate_extra_chars": 2801,
+      "max_source_chars": 52,
+      "source_char_share_pct": 0.0823
+    },
+    "ALCH:FULL": {
+      "rows": 22,
+      "source_chars": 317,
+      "unique_sources": 22,
+      "unique_source_chars": 317,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 32,
+      "source_char_share_pct": 0.0063
+    },
+    "AMMO:FULL": {
+      "rows": 3,
+      "source_chars": 44,
+      "unique_sources": 3,
+      "unique_source_chars": 44,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 20,
+      "source_char_share_pct": 0.0009
+    },
+    "ARMO:DESC": {
+      "rows": 57,
+      "source_chars": 5288,
+      "unique_sources": 50,
+      "unique_source_chars": 4375,
+      "duplicate_extra_rows": 7,
+      "duplicate_extra_chars": 913,
+      "max_source_chars": 179,
+      "source_char_share_pct": 0.1047
+    },
+    "ARMO:FULL": {
+      "rows": 451,
+      "source_chars": 10196,
+      "unique_sources": 399,
+      "unique_source_chars": 9116,
+      "duplicate_extra_rows": 52,
+      "duplicate_extra_chars": 1080,
+      "max_source_chars": 45,
+      "source_char_share_pct": 0.2018
+    },
+    "BOOK:CNAM": {
+      "rows": 59,
+      "source_chars": 1547,
+      "unique_sources": 59,
+      "unique_source_chars": 1547,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 49,
+      "source_char_share_pct": 0.0306
+    },
+    "BOOK:DESC": {
+      "rows": 1410,
+      "source_chars": 4214150,
+      "unique_sources": 1369,
+      "unique_source_chars": 4208228,
+      "duplicate_extra_rows": 41,
+      "duplicate_extra_chars": 5922,
+      "max_source_chars": 39639,
+      "source_char_share_pct": 83.4183
+    },
+    "BOOK:FULL": {
+      "rows": 1419,
+      "source_chars": 32369,
+      "unique_sources": 1355,
+      "unique_source_chars": 31152,
+      "duplicate_extra_rows": 64,
+      "duplicate_extra_chars": 1217,
+      "max_source_chars": 74,
+      "source_char_share_pct": 0.6407
+    },
+    "CELL:FULL": {
+      "rows": 416,
+      "source_chars": 7008,
+      "unique_sources": 405,
+      "unique_source_chars": 6850,
+      "duplicate_extra_rows": 11,
+      "duplicate_extra_chars": 158,
+      "max_source_chars": 33,
+      "source_char_share_pct": 0.1387
+    },
+    "CLAS:FULL": {
+      "rows": 2,
+      "source_chars": 28,
+      "unique_sources": 2,
+      "unique_source_chars": 28,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 16,
+      "source_char_share_pct": 0.0006
+    },
+    "CONT:FULL": {
+      "rows": 391,
+      "source_chars": 4546,
+      "unique_sources": 222,
+      "unique_source_chars": 3317,
+      "duplicate_extra_rows": 169,
+      "duplicate_extra_chars": 1229,
+      "max_source_chars": 44,
+      "source_char_share_pct": 0.09
+    },
+    "DIAL:FULL": {
+      "rows": 872,
+      "source_chars": 36280,
+      "unique_sources": 821,
+      "unique_source_chars": 35164,
+      "duplicate_extra_rows": 51,
+      "duplicate_extra_chars": 1116,
+      "max_source_chars": 160,
+      "source_char_share_pct": 0.7182
+    },
+    "DOOR:FULL": {
+      "rows": 39,
+      "source_chars": 426,
+      "unique_sources": 30,
+      "unique_source_chars": 364,
+      "duplicate_extra_rows": 9,
+      "duplicate_extra_chars": 62,
+      "max_source_chars": 26,
+      "source_char_share_pct": 0.0084
+    },
+    "ENCH:FULL": {
+      "rows": 78,
+      "source_chars": 1091,
+      "unique_sources": 72,
+      "unique_source_chars": 1026,
+      "duplicate_extra_rows": 6,
+      "duplicate_extra_chars": 65,
+      "max_source_chars": 24,
+      "source_char_share_pct": 0.0216
+    },
+    "EXPL:FULL": {
+      "rows": 2,
+      "source_chars": 43,
+      "unique_sources": 2,
+      "unique_source_chars": 43,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 23,
+      "source_char_share_pct": 0.0009
+    },
+    "FACT:FNAM": {
+      "rows": 6,
+      "source_chars": 83,
+      "unique_sources": 6,
+      "unique_source_chars": 83,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 18,
+      "source_char_share_pct": 0.0016
+    },
+    "FACT:FULL": {
+      "rows": 10,
+      "source_chars": 203,
+      "unique_sources": 10,
+      "unique_source_chars": 203,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 34,
+      "source_char_share_pct": 0.004
+    },
+    "FACT:MNAM": {
+      "rows": 9,
+      "source_chars": 100,
+      "unique_sources": 9,
+      "unique_source_chars": 100,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 18,
+      "source_char_share_pct": 0.002
+    },
+    "FURN:FULL": {
+      "rows": 41,
+      "source_chars": 443,
+      "unique_sources": 27,
+      "unique_source_chars": 345,
+      "duplicate_extra_rows": 14,
+      "duplicate_extra_chars": 98,
+      "max_source_chars": 26,
+      "source_char_share_pct": 0.0088
+    },
+    "HDPT:FULL": {
+      "rows": 1,
+      "source_chars": 17,
+      "unique_sources": 1,
+      "unique_source_chars": 17,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 17,
+      "source_char_share_pct": 0.0003
+    },
+    "INFO:NAM1": {
+      "rows": 5134,
+      "source_chars": 397434,
+      "unique_sources": 4943,
+      "unique_source_chars": 392750,
+      "duplicate_extra_rows": 191,
+      "duplicate_extra_chars": 4684,
+      "max_source_chars": 254,
+      "source_char_share_pct": 7.8671
+    },
+    "INFO:RNAM": {
+      "rows": 35,
+      "source_chars": 1075,
+      "unique_sources": 34,
+      "unique_source_chars": 1054,
+      "duplicate_extra_rows": 1,
+      "duplicate_extra_chars": 21,
+      "max_source_chars": 85,
+      "source_char_share_pct": 0.0213
+    },
+    "KEYM:FULL": {
+      "rows": 38,
+      "source_chars": 617,
+      "unique_sources": 35,
+      "unique_source_chars": 590,
+      "duplicate_extra_rows": 3,
+      "duplicate_extra_chars": 27,
+      "max_source_chars": 35,
+      "source_char_share_pct": 0.0122
+    },
+    "LCTN:FULL": {
+      "rows": 30,
+      "source_chars": 491,
+      "unique_sources": 30,
+      "unique_source_chars": 491,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 35,
+      "source_char_share_pct": 0.0097
+    },
+    "LIGH:FULL": {
+      "rows": 2,
+      "source_chars": 34,
+      "unique_sources": 2,
+      "unique_source_chars": 34,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 22,
+      "source_char_share_pct": 0.0007
+    },
+    "LSCR:DESC": {
+      "rows": 11,
+      "source_chars": 1711,
+      "unique_sources": 11,
+      "unique_source_chars": 1711,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 201,
+      "source_char_share_pct": 0.0339
+    },
+    "MESG:DESC": {
+      "rows": 658,
+      "source_chars": 119519,
+      "unique_sources": 614,
+      "unique_source_chars": 115206,
+      "duplicate_extra_rows": 44,
+      "duplicate_extra_chars": 4313,
+      "max_source_chars": 1910,
+      "source_char_share_pct": 2.3659
+    },
+    "MESG:FULL": {
+      "rows": 73,
+      "source_chars": 1299,
+      "unique_sources": 63,
+      "unique_source_chars": 1168,
+      "duplicate_extra_rows": 10,
+      "duplicate_extra_chars": 131,
+      "max_source_chars": 45,
+      "source_char_share_pct": 0.0257
+    },
+    "MESG:ITXT": {
+      "rows": 639,
+      "source_chars": 4093,
+      "unique_sources": 247,
+      "unique_source_chars": 2884,
+      "duplicate_extra_rows": 392,
+      "duplicate_extra_chars": 1209,
+      "max_source_chars": 53,
+      "source_char_share_pct": 0.081
+    },
+    "MGEF:DNAM": {
+      "rows": 88,
+      "source_chars": 4754,
+      "unique_sources": 81,
+      "unique_source_chars": 4407,
+      "duplicate_extra_rows": 7,
+      "duplicate_extra_chars": 347,
+      "max_source_chars": 180,
+      "source_char_share_pct": 0.0941
+    },
+    "MGEF:FULL": {
+      "rows": 135,
+      "source_chars": 2059,
+      "unique_sources": 122,
+      "unique_source_chars": 1906,
+      "duplicate_extra_rows": 13,
+      "duplicate_extra_chars": 153,
+      "max_source_chars": 33,
+      "source_char_share_pct": 0.0408
+    },
+    "MISC:FULL": {
+      "rows": 767,
+      "source_chars": 14057,
+      "unique_sources": 723,
+      "unique_source_chars": 13382,
+      "duplicate_extra_rows": 44,
+      "duplicate_extra_chars": 675,
+      "max_source_chars": 36,
+      "source_char_share_pct": 0.2783
+    },
+    "MSTT:FULL": {
+      "rows": 29,
+      "source_chars": 343,
+      "unique_sources": 29,
+      "unique_source_chars": 343,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 17,
+      "source_char_share_pct": 0.0068
+    },
+    "NPC_:FULL": {
+      "rows": 244,
+      "source_chars": 3454,
+      "unique_sources": 149,
+      "unique_source_chars": 2034,
+      "duplicate_extra_rows": 95,
+      "duplicate_extra_chars": 1420,
+      "max_source_chars": 34,
+      "source_char_share_pct": 0.0684
+    },
+    "NPC_:SHRT": {
+      "rows": 60,
+      "source_chars": 447,
+      "unique_sources": 40,
+      "unique_source_chars": 310,
+      "duplicate_extra_rows": 20,
+      "duplicate_extra_chars": 137,
+      "max_source_chars": 17,
+      "source_char_share_pct": 0.0088
+    },
+    "PERK:DESC": {
+      "rows": 24,
+      "source_chars": 1543,
+      "unique_sources": 24,
+      "unique_source_chars": 1543,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 150,
+      "source_char_share_pct": 0.0305
+    },
+    "PERK:EPF2": {
+      "rows": 3,
+      "source_chars": 62,
+      "unique_sources": 3,
+      "unique_source_chars": 62,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 24,
+      "source_char_share_pct": 0.0012
+    },
+    "PERK:FULL": {
+      "rows": 52,
+      "source_chars": 767,
+      "unique_sources": 52,
+      "unique_source_chars": 767,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 28,
+      "source_char_share_pct": 0.0152
+    },
+    "PROJ:FULL": {
+      "rows": 1,
+      "source_chars": 20,
+      "unique_sources": 1,
+      "unique_source_chars": 20,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 20,
+      "source_char_share_pct": 0.0004
+    },
+    "QUST:CNAM": {
+      "rows": 543,
+      "source_chars": 105023,
+      "unique_sources": 518,
+      "unique_source_chars": 99332,
+      "duplicate_extra_rows": 25,
+      "duplicate_extra_chars": 5691,
+      "max_source_chars": 596,
+      "source_char_share_pct": 2.0789
+    },
+    "QUST:FULL": {
+      "rows": 248,
+      "source_chars": 5251,
+      "unique_sources": 247,
+      "unique_source_chars": 5233,
+      "duplicate_extra_rows": 1,
+      "duplicate_extra_chars": 18,
+      "max_source_chars": 43,
+      "source_char_share_pct": 0.1039
+    },
+    "QUST:NNAM": {
+      "rows": 448,
+      "source_chars": 15091,
+      "unique_sources": 412,
+      "unique_source_chars": 14200,
+      "duplicate_extra_rows": 36,
+      "duplicate_extra_chars": 891,
+      "max_source_chars": 92,
+      "source_char_share_pct": 0.2987
+    },
+    "RACE:DESC": {
+      "rows": 1,
+      "source_chars": 203,
+      "unique_sources": 1,
+      "unique_source_chars": 203,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 203,
+      "source_char_share_pct": 0.004
+    },
+    "RACE:FULL": {
+      "rows": 13,
+      "source_chars": 109,
+      "unique_sources": 12,
+      "unique_source_chars": 99,
+      "duplicate_extra_rows": 1,
+      "duplicate_extra_chars": 10,
+      "max_source_chars": 13,
+      "source_char_share_pct": 0.0022
+    },
+    "REFR:FULL": {
+      "rows": 24,
+      "source_chars": 367,
+      "unique_sources": 24,
+      "unique_source_chars": 367,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 22,
+      "source_char_share_pct": 0.0073
+    },
+    "SCRL:DESC": {
+      "rows": 1,
+      "source_chars": 67,
+      "unique_sources": 1,
+      "unique_source_chars": 67,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 67,
+      "source_char_share_pct": 0.0013
+    },
+    "SCRL:FULL": {
+      "rows": 1,
+      "source_chars": 20,
+      "unique_sources": 1,
+      "unique_source_chars": 20,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 20,
+      "source_char_share_pct": 0.0004
+    },
+    "SHOU:FULL": {
+      "rows": 1,
+      "source_chars": 11,
+      "unique_sources": 1,
+      "unique_source_chars": 11,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 11,
+      "source_char_share_pct": 0.0002
+    },
+    "SLGM:FULL": {
+      "rows": 3,
+      "source_chars": 67,
+      "unique_sources": 3,
+      "unique_source_chars": 67,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 24,
+      "source_char_share_pct": 0.0013
+    },
+    "SPEL:DESC": {
+      "rows": 74,
+      "source_chars": 5070,
+      "unique_sources": 69,
+      "unique_source_chars": 4922,
+      "duplicate_extra_rows": 5,
+      "duplicate_extra_chars": 148,
+      "max_source_chars": 143,
+      "source_char_share_pct": 0.1004
+    },
+    "SPEL:FULL": {
+      "rows": 113,
+      "source_chars": 1877,
+      "unique_sources": 96,
+      "unique_source_chars": 1615,
+      "duplicate_extra_rows": 17,
+      "duplicate_extra_chars": 262,
+      "max_source_chars": 34,
+      "source_char_share_pct": 0.0372
+    },
+    "TES4:CNAM": {
+      "rows": 1,
+      "source_chars": 16,
+      "unique_sources": 1,
+      "unique_source_chars": 16,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 16,
+      "source_char_share_pct": 0.0003
+    },
+    "TES4:SNAM": {
+      "rows": 1,
+      "source_chars": 505,
+      "unique_sources": 1,
+      "unique_source_chars": 505,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 505,
+      "source_char_share_pct": 0.01
+    },
+    "WEAP:DESC": {
+      "rows": 87,
+      "source_chars": 8213,
+      "unique_sources": 74,
+      "unique_source_chars": 6822,
+      "duplicate_extra_rows": 13,
+      "duplicate_extra_chars": 1391,
+      "max_source_chars": 170,
+      "source_char_share_pct": 0.1626
+    },
+    "WEAP:FULL": {
+      "rows": 425,
+      "source_chars": 9093,
+      "unique_sources": 371,
+      "unique_source_chars": 8117,
+      "duplicate_extra_rows": 54,
+      "duplicate_extra_chars": 976,
+      "max_source_chars": 52,
+      "source_char_share_pct": 0.18
+    },
+    "WRLD:FULL": {
+      "rows": 36,
+      "source_chars": 513,
+      "unique_sources": 36,
+      "unique_source_chars": 513,
+      "duplicate_extra_rows": 0,
+      "duplicate_extra_chars": 0,
+      "max_source_chars": 29,
+      "source_char_share_pct": 0.0102
+    }
+  },
+  "books_source_over_8000_chars": 135,
+  "books_source_over_15000_chars": 28,
+  "rec_edid_source_duplicate_extra_rows": 43,
+  "rec_edid_source_duplicate_extra_chars": 6222,
+  "dialogue_rows": 6041,
+  "dialogue_rows_without_edid": 0
+}

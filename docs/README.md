@@ -5,6 +5,7 @@
 - [현재 유지보수 작업과 검증 상태](plans/2026-09-29-maintenance.md)
 - [이전 개선 작업과 검증 상태](plans/2026-09-28-translator-improvement.md)
 - [LOTD 무료 번역 모델 비교](../benchmarks/translation/lotd-v1/README.md)
+- [번역 품질·비용 최적화 조사와 검증 설계](analysis/2026-09-29-quality-cost-optimization.md)
 - [현재 코드 검토 기준](review-checklist.md)
 - [보관한 루트 문서·CLI·VibeKit](archive/2026-09-29/README.md)
 - [직접 ESP·ESM·ESL 지원 검토](direct-plugin-feasibility.md)
