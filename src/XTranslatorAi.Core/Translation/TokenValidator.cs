@@ -15,17 +15,6 @@ internal static class TokenValidator
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
-    private static readonly Regex MarkupTagNameRegex = new(
-        pattern: @"^[+-]?<\s*(?<closing>/)?\s*(?<name>[A-Za-z][A-Za-z0-9:_-]*)(?=[\s=/>])",
-        options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
-    );
-
-    private static readonly string[] FormattingTagNames =
-    {
-        "a", "b", "i", "u", "s", "font", "p", "br", "img", "textformat", "li", "ul", "ol",
-        "span", "div", "strong", "em", "sub", "sup", "hr", "body", "html",
-    };
-
     // ── Token extraction ──
 
     internal static void SplitByTokens(string text, out List<string> texts, out List<string> tokens)
@@ -243,15 +232,7 @@ internal static class TokenValidator
 
         // Runtime values may move with Korean grammar. Formatting tags, page breaks
         // and line breaks must retain their relative order, including custom paired tags.
-        var formattingNames = new HashSet<string>(FormattingTagNames, StringComparer.OrdinalIgnoreCase);
-        foreach (var placeholder in sourceProtected)
-        {
-            var tag = MarkupTagNameRegex.Match(placeholder);
-            if (tag.Success && tag.Groups["closing"].Success)
-            {
-                formattingNames.Add(tag.Groups["name"].Value);
-            }
-        }
+        var formattingNames = ProtectedTextKinds.FormattingNamesFor(sourceProtected);
         var sourceStructure = ExtractFixedProtectedText(sourceProtected, formattingNames);
         var finalStructure = ExtractFixedProtectedText(finalProtected, formattingNames);
         if (sourceStructure.Count != finalStructure.Count)
@@ -272,10 +253,7 @@ internal static class TokenValidator
         var structure = new List<string>();
         foreach (var placeholder in placeholders)
         {
-            var tag = MarkupTagNameRegex.Match(placeholder);
-            if (placeholder is "\r\n" or "\r" or "\n"
-                || placeholder.Equals("[pagebreak]", StringComparison.OrdinalIgnoreCase)
-                || (tag.Success && formattingNames.Contains(tag.Groups["name"].Value)))
+            if (ProtectedTextKinds.IsLayout(placeholder, formattingNames))
             {
                 structure.Add(placeholder);
             }
@@ -349,13 +327,46 @@ internal static class TokenValidator
 
         if (actual.Count == expected.Count)
         {
-            var idx = 0;
-            repaired = TranslationConstants.XtTokenRegex.Replace(outputText, m => idx < expected.Count ? expected[idx++] : m.Value);
+            repaired = RepairSameCountTokens(expected, outputText, actual);
             return true;
         }
 
         repaired = RepairTokenCountMismatchGreedy(inputText, expected, outputText, actual, glossaryTokenToReplacement);
         return repaired.Length > 0;
+    }
+
+    /// <summary>
+    /// Keeps every movable token the model placed (terms and values may follow Korean word order)
+    /// and reassigns only the remaining slots, in source order, so layout tokens regain their order.
+    /// </summary>
+    private static string RepairSameCountTokens(IReadOnlyList<string> expected, string outputText, IReadOnlyList<string> actual)
+    {
+        var unplaced = CountTokens(expected);
+        var keep = new bool[actual.Count];
+        for (var i = 0; i < actual.Count; i++)
+        {
+            if (IsMovablePlaceholderToken(actual[i]) && unplaced.TryGetValue(actual[i], out var n) && n > 0)
+            {
+                keep[i] = true;
+                unplaced[actual[i]] = n - 1;
+            }
+        }
+
+        var fill = new Queue<string>();
+        foreach (var token in expected)
+        {
+            if (unplaced.TryGetValue(token, out var n) && n > 0)
+            {
+                fill.Enqueue(token);
+                unplaced[token] = n - 1;
+            }
+        }
+
+        var index = 0;
+        return TranslationConstants.XtTokenRegex.Replace(
+            outputText,
+            m => keep[index++] ? m.Value : fill.Dequeue()
+        );
     }
 
     // ── Private helpers ──
@@ -610,10 +621,14 @@ internal static class TokenValidator
         movableSegments.Add(current);
     }
 
+    // Values and glossary terms follow target-language word order ("the Jarl of Whiterun" →
+    // "화이트런의 야를"). Plain __XT_PH_####__ tokens are layout (line breaks, formatting tags).
     private static bool IsMovablePlaceholderToken(string token)
         => token.StartsWith("__XT_PH_MAG_", StringComparison.Ordinal)
             || token.StartsWith("__XT_PH_DUR_", StringComparison.Ordinal)
-            || token.StartsWith("__XT_PH_NUM_", StringComparison.Ordinal);
+            || token.StartsWith("__XT_PH_NUM_", StringComparison.Ordinal)
+            || token.StartsWith("__XT_PH_VAR_", StringComparison.Ordinal)
+            || token.StartsWith("__XT_TERM_", StringComparison.Ordinal);
 
     // ── Repair helpers ──
 
@@ -627,39 +642,143 @@ internal static class TokenValidator
     {
         SplitByTokens(outputText, out var texts, out var tokens);
 
+        if (!RepairMovableTokens(expectedTokens, texts, tokens, glossaryTokenToReplacement))
+        {
+            return "";
+        }
+
+        // Layout tokens must keep source order: align them greedily, ignoring movable tokens.
+        var expectedFixed = new List<string>();
+        foreach (var token in expectedTokens)
+        {
+            if (!IsMovablePlaceholderToken(token))
+            {
+                expectedFixed.Add(token);
+            }
+        }
+
+        var fixedSlots = new List<int>();
+        var outputFixed = new List<string>();
+        for (var j = 0; j < tokens.Count; j++)
+        {
+            if (tokens[j].Length > 0 && !IsMovablePlaceholderToken(tokens[j]) && TranslationConstants.XtTokenRegex.IsMatch(tokens[j]))
+            {
+                fixedSlots.Add(j);
+                outputFixed.Add(tokens[j]);
+            }
+        }
+
         var iExp = 0;
         var jOut = 0;
         const int lookahead = 8;
 
-        while (iExp < expectedTokens.Count && jOut < tokens.Count)
+        while (iExp < expectedFixed.Count && jOut < outputFixed.Count)
         {
-            if (string.Equals(tokens[jOut], expectedTokens[iExp], StringComparison.Ordinal))
+            if (string.Equals(outputFixed[jOut], expectedFixed[iExp], StringComparison.Ordinal))
             {
                 iExp++;
                 jOut++;
                 continue;
             }
 
-            switch (DecideTokenMismatch(expectedTokens, tokens, iExp, jOut, lookahead))
+            switch (DecideTokenMismatch(expectedFixed, outputFixed, iExp, jOut, lookahead))
             {
                 case TokenMismatchDecision.DropOutputToken:
-                    tokens[jOut] = "";
+                    tokens[fixedSlots[jOut]] = "";
                     jOut++;
                     break;
                 case TokenMismatchDecision.InsertExpectedToken:
-                    InsertTokenAtTextBoundary(inputText, texts, jOut, expectedTokens[iExp], glossaryTokenToReplacement);
+                    InsertTokenAtTextBoundary(inputText, texts, fixedSlots[jOut], expectedFixed[iExp], glossaryTokenToReplacement);
                     iExp++;
                     break;
                 default:
-                    tokens[jOut] = expectedTokens[iExp];
+                    tokens[fixedSlots[jOut]] = expectedFixed[iExp];
                     iExp++;
                     jOut++;
                     break;
             }
         }
 
-        var ctx = new TokenRepairContext(inputText, expectedTokens, tokens, texts, glossaryTokenToReplacement);
-        return FinalizeTokenRepair(ctx, iExp, jOut);
+        while (jOut < outputFixed.Count)
+        {
+            tokens[fixedSlots[jOut]] = "";
+            jOut++;
+        }
+
+        var ctx = new TokenRepairContext(inputText, expectedFixed, tokens, texts, glossaryTokenToReplacement);
+        return FinalizeTokenRepair(ctx, iExp, tokens.Count);
+    }
+
+    /// <summary>
+    /// Matches glossary terms and runtime values by count, not position. Surplus copies of a term
+    /// become its plain translation; a missing term takes the place of its translation if the model
+    /// wrote that instead. A missing term or value with no such place fails the repair rather than
+    /// being appended to the end of the text.
+    /// </summary>
+    private static bool RepairMovableTokens(
+        IReadOnlyList<string> expectedTokens,
+        List<string> texts,
+        List<string> tokens,
+        IReadOnlyDictionary<string, string>? glossaryTokenToReplacement
+    )
+    {
+        var unplaced = new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (var token in expectedTokens)
+        {
+            if (IsMovablePlaceholderToken(token))
+            {
+                unplaced[token] = unplaced.TryGetValue(token, out var n) ? n + 1 : 1;
+            }
+        }
+
+        for (var j = 0; j < tokens.Count; j++)
+        {
+            var token = tokens[j];
+            if (!IsMovablePlaceholderToken(token))
+            {
+                continue;
+            }
+
+            if (unplaced.TryGetValue(token, out var n) && n > 0)
+            {
+                unplaced[token] = n - 1;
+                continue;
+            }
+
+            tokens[j] = glossaryTokenToReplacement != null
+                        && glossaryTokenToReplacement.TryGetValue(token, out var replacement)
+                ? replacement
+                : "";
+        }
+
+        foreach (var (token, missing) in unplaced)
+        {
+            for (var k = 0; k < missing; k++)
+            {
+                if (glossaryTokenToReplacement == null
+                    || !token.StartsWith("__XT_TERM_", StringComparison.Ordinal)
+                    || !glossaryTokenToReplacement.TryGetValue(token, out var replacement)
+                    || string.IsNullOrWhiteSpace(replacement)
+                    || !TryReplaceFirstOccurrenceInAnyText(texts, replacement, token))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private static bool TryReplaceFirstOccurrenceInAnyText(List<string> texts, string needle, string replacement)
+    {
+        for (var i = 0; i < texts.Count; i++)
+        {
+            if (TryReplaceFirstOccurrence(texts, i, needle, replacement))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private readonly record struct TokenRepairContext(

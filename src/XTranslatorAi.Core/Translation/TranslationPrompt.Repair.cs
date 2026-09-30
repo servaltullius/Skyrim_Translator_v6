@@ -55,7 +55,7 @@ public static partial class TranslationPrompt
     private static void AppendRepairTextOnlyRules(StringBuilder sb)
     {
         sb.AppendLine("Rules (CRITICAL):");
-        sb.AppendLine("- Preserve any tokens like __XT_PH_0000__, __XT_PH_MAG_0000__, __XT_PH_DUR_0001__, __XT_PH_NUM_0002__, __XT_TERM_0000__, or __XT_TERM_SESS_0000__ exactly (do not alter or remove).");
+        sb.AppendLine("- Preserve any tokens like __XT_PH_0000__, __XT_PH_MAG_0000__, __XT_PH_DUR_0001__, __XT_PH_NUM_0002__, __XT_PH_VAR_0003__, __XT_TERM_0000__, or __XT_TERM_SESS_0000__ exactly (do not alter or remove).");
         sb.AppendLine("- The output MUST contain every token that appears in the SOURCE (same counts). Do not delete, merge, or duplicate tokens.");
         sb.AppendLine("- Do NOT output any raw markup tags/markers that were NOT present in the SOURCE (e.g., <p ...>, <img ...>, or [pagebreak]). If the SOURCE contains runtime tags like <mag>/<dur>/<bur>/<100%>, preserve them exactly.");
         sb.AppendLine("- Token semantics:");
@@ -125,7 +125,7 @@ public static partial class TranslationPrompt
             + "You are given items with SOURCE text and CURRENT translation.\n"
             + "Rewrite ONLY the translations so they are correct, natural, and faithful to the source.\n\n"
             + "Rules (CRITICAL):\n"
-            + "- Preserve any tokens like __XT_PH_0000__, __XT_PH_MAG_0000__, __XT_PH_DUR_0001__, __XT_PH_NUM_0002__, __XT_TERM_0000__, or __XT_TERM_SESS_0000__ exactly (do not alter or remove).\n"
+            + "- Preserve any tokens like __XT_PH_0000__, __XT_PH_MAG_0000__, __XT_PH_DUR_0001__, __XT_PH_NUM_0002__, __XT_PH_VAR_0003__, __XT_TERM_0000__, or __XT_TERM_SESS_0000__ exactly (do not alter or remove).\n"
             + "- The output MUST contain every token that appears in SOURCE (same counts). Do not delete, merge, or duplicate tokens.\n"
             + "- Do NOT output any raw markup tags/markers that were NOT present in SOURCE (e.g., <p ...>, <img ...>, or [pagebreak]). If SOURCE contains runtime tags like <mag>/<dur>/<bur>/<100%>, preserve them exactly.\n"
             + "- Token semantics:\n"

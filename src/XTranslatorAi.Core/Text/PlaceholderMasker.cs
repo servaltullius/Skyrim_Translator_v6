@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace XTranslatorAi.Core.Text;
@@ -33,6 +34,9 @@ public sealed class PlaceholderMasker
     public MaskedText Mask(string text)
     {
         var tokenToOriginal = new Dictionary<string, string>(StringComparer.Ordinal);
+        var formattingNames = ProtectedTextKinds.FormattingNamesFor(
+            PlaceholderRegex.Matches(text).Select(m => m.Value)
+        );
         var masked = PlaceholderRegex.Replace(
             text,
             m =>
@@ -51,7 +55,10 @@ public sealed class PlaceholderMasker
                     throw new InvalidOperationException("Too many placeholders in a single string (>= 9999).");
                 }
 
-                var label = TryGetSemanticPlaceholderLabel(original, text, m.Index, m.Length);
+                // Runtime values (<Alias=…>, %s, {name}) are labeled VAR so token checks let them
+                // follow target-language word order; layout tokens keep the plain form and their order.
+                var label = TryGetSemanticPlaceholderLabel(original, text, m.Index, m.Length)
+                            ?? (ProtectedTextKinds.IsLayout(original, formattingNames) ? null : "VAR");
                 var token = label == null ? $"__XT_PH_{idx:0000}__" : $"__XT_PH_{label}_{idx:0000}__";
                 tokenToOriginal[token] = original;
                 return token;

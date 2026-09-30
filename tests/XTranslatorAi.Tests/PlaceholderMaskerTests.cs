@@ -28,7 +28,7 @@ public class PlaceholderMaskerTests
         var input = "Letter from <Alias=Enemy>";
         var masked = masker.Mask(input);
 
-        var bad = masked.Text.Replace("__XT_PH_0000__", "MISSING", StringComparison.Ordinal);
+        var bad = masked.Text.Replace("__XT_PH_VAR_0000__", "MISSING", StringComparison.Ordinal);
         Assert.Throws<InvalidOperationException>(() => masker.Unmask(bad, masked.TokenToOriginal));
     }
 
@@ -169,8 +169,8 @@ public class PlaceholderMaskerTests
         var input = "Hello %PLAYERNAME%.";
 
         var masked = masker.Mask(input);
-        Assert.Contains("__XT_PH_0000__", masked.Text, StringComparison.Ordinal);
-        Assert.Equal("%PLAYERNAME%", masked.TokenToOriginal["__XT_PH_0000__"]);
+        Assert.Contains("__XT_PH_VAR_0000__", masked.Text, StringComparison.Ordinal);
+        Assert.Equal("%PLAYERNAME%", masked.TokenToOriginal["__XT_PH_VAR_0000__"]);
 
         var output = masker.Unmask(masked.Text, masked.TokenToOriginal);
         Assert.Equal(input, output);
@@ -183,8 +183,8 @@ public class PlaceholderMaskerTests
         var input = "Hello %1$s.";
 
         var masked = masker.Mask(input);
-        Assert.Contains("__XT_PH_0000__", masked.Text, StringComparison.Ordinal);
-        Assert.Equal("%1$s", masked.TokenToOriginal["__XT_PH_0000__"]);
+        Assert.Contains("__XT_PH_VAR_0000__", masked.Text, StringComparison.Ordinal);
+        Assert.Equal("%1$s", masked.TokenToOriginal["__XT_PH_VAR_0000__"]);
 
         var output = masker.Unmask(masked.Text, masked.TokenToOriginal);
         Assert.Equal(input, output);
@@ -197,8 +197,8 @@ public class PlaceholderMaskerTests
         var input = "Hello $PLAYERNAME$.";
 
         var masked = masker.Mask(input);
-        Assert.Contains("__XT_PH_0000__", masked.Text, StringComparison.Ordinal);
-        Assert.Equal("$PLAYERNAME$", masked.TokenToOriginal["__XT_PH_0000__"]);
+        Assert.Contains("__XT_PH_VAR_0000__", masked.Text, StringComparison.Ordinal);
+        Assert.Equal("$PLAYERNAME$", masked.TokenToOriginal["__XT_PH_VAR_0000__"]);
 
         var output = masker.Unmask(masked.Text, masked.TokenToOriginal);
         Assert.Equal(input, output);
@@ -211,8 +211,8 @@ public class PlaceholderMaskerTests
         var input = "Hello {PLAYERNAME}.";
 
         var masked = masker.Mask(input);
-        Assert.Contains("__XT_PH_0000__", masked.Text, StringComparison.Ordinal);
-        Assert.Equal("{PLAYERNAME}", masked.TokenToOriginal["__XT_PH_0000__"]);
+        Assert.Contains("__XT_PH_VAR_0000__", masked.Text, StringComparison.Ordinal);
+        Assert.Equal("{PLAYERNAME}", masked.TokenToOriginal["__XT_PH_VAR_0000__"]);
 
         var output = masker.Unmask(masked.Text, masked.TokenToOriginal);
         Assert.Equal(input, output);
@@ -225,8 +225,8 @@ public class PlaceholderMaskerTests
         var input = "Hello {{PLAYERNAME}}.";
 
         var masked = masker.Mask(input);
-        Assert.Contains("__XT_PH_0000__", masked.Text, StringComparison.Ordinal);
-        Assert.Equal("{{PLAYERNAME}}", masked.TokenToOriginal["__XT_PH_0000__"]);
+        Assert.Contains("__XT_PH_VAR_0000__", masked.Text, StringComparison.Ordinal);
+        Assert.Equal("{{PLAYERNAME}}", masked.TokenToOriginal["__XT_PH_VAR_0000__"]);
 
         var output = masker.Unmask(masked.Text, masked.TokenToOriginal);
         Assert.Equal(input, output);
