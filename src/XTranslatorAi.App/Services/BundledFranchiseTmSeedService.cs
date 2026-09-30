@@ -32,6 +32,16 @@ public sealed class BundledFranchiseTmSeedService
             var seedPath = Path.Combine(importDir, metadata.FileName);
             var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(franchise, metadata.Version, _globalRootOverride);
 
+            // Auto-import moves a successfully imported TSV into imported/. A current stamp
+            // without the seed file means this version was already imported; rewriting it
+            // would re-import on every load and overwrite user-edited TM rows.
+            if (!File.Exists(seedPath) && File.Exists(stampPath)
+                && TryParseBundledSeedStamp(await File.ReadAllTextAsync(stampPath, cancellationToken), out var importedStamp)
+                && BundledSeedStampMatchesMetadata(importedStamp, metadata))
+            {
+                return;
+            }
+
             var seedMatches = await TryValidateOnDiskSeedAsync(seedPath, metadata, cancellationToken);
             if (seedMatches)
             {
