@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using XTranslatorAi.Core.Text;
@@ -210,6 +211,7 @@ internal static class TokenValidator
         var finalProtected = masker.Mask(finalText).TokenToOriginal.Values;
         var expected = CountTokens(sourceProtected);
         var actual = CountTokens(finalProtected);
+        ValidatePlainPercentValues(sourceText, finalText, expected, actual, context);
         foreach (var (placeholder, count) in expected)
         {
             actual.TryGetValue(placeholder, out var actualCount);
@@ -247,6 +249,73 @@ internal static class TokenValidator
             }
         }
     }
+
+    private static readonly Regex PlainPercentPlaceholderRegex = new(
+        pattern: @"^(?<n>[+-]?\d+(?:\.\d+)?)[\t ]*%$",
+        options: RegexOptions.CultureInvariant
+    );
+
+    private static readonly Regex PercentWordRegex = new(
+        pattern: @"(?<![\w.])(?<n>[+-]?\d+(?:\.\d+)?)[\t ]*(?:percent|per[\t ]?cent|퍼센트)(?![A-Za-z])",
+        options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
+    );
+
+    /// <summary>
+    /// "50 percent", "50%" and "50퍼센트" state the same value, and translations naturally switch
+    /// between them. Plain percentages are therefore compared by value and count, not by spelling,
+    /// and removed from the exact protected-text comparison. A changed or missing value still fails.
+    /// </summary>
+    private static void ValidatePlainPercentValues(
+        string sourceText,
+        string finalText,
+        Dictionary<string, int> expected,
+        Dictionary<string, int> actual,
+        string context
+    )
+    {
+        var expectedValues = TakePlainPercentValues(expected, sourceText);
+        var actualValues = TakePlainPercentValues(actual, finalText);
+        foreach (var value in expectedValues.Keys.Union(actualValues.Keys))
+        {
+            expectedValues.TryGetValue(value, out var expectedCount);
+            actualValues.TryGetValue(value, out var actualCount);
+            if (expectedCount != actualCount)
+            {
+                throw new InvalidOperationException(
+                    $"Protected text mismatch for {context}: {value}% (expected {expectedCount}, got {actualCount})."
+                );
+            }
+        }
+    }
+
+    private static Dictionary<string, int> TakePlainPercentValues(Dictionary<string, int> protectedCounts, string text)
+    {
+        var values = new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (var placeholder in protectedCounts.Keys.ToList())
+        {
+            var m = PlainPercentPlaceholderRegex.Match(placeholder);
+            if (!m.Success)
+            {
+                continue;
+            }
+
+            Add(values, NormalizePercentValue(m.Groups["n"].Value), protectedCounts[placeholder]);
+            protectedCounts.Remove(placeholder);
+        }
+
+        foreach (Match m in PercentWordRegex.Matches(text))
+        {
+            Add(values, NormalizePercentValue(m.Groups["n"].Value), 1);
+        }
+
+        return values;
+
+        static void Add(Dictionary<string, int> counts, string key, int n)
+            => counts[key] = counts.TryGetValue(key, out var existing) ? existing + n : n;
+    }
+
+    // "+10%" in a stat line is usually written "10% 증가" in Korean; the sign moves into the verb.
+    private static string NormalizePercentValue(string value) => value.TrimStart('+');
 
     private static List<string> ExtractFixedProtectedText(IEnumerable<string> placeholders, ISet<string> formattingNames)
     {
