@@ -190,6 +190,47 @@ public sealed class TranslationServiceIntegrityRegressionTests
         Assert.True(fixture.Client.Calls >= 2);
     }
 
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    public async Task LongText_ChunkFallbackAfterFailedWholeText_IsNotCappedByRecoveryLimit(int batchSize)
+    {
+        // E0580: the whole-book attempt failed, and translating the book in its normal chunks
+        // (more than the 8 recovery calls a row may use) ran into the per-row recovery limit.
+        // With batchSize 2 the book first fails in a batch, so the row is already in recovery.
+        var source = string.Join("\n", Enumerable.Range(1, 420).Select(i => $"Alpha{i}."));
+        await using var fixture = await Fixture.CreateAsync((source, "BOOK:DESC", null), ("Short line", "BOOK:FULL", null));
+        fixture.Client.ResponseOverride = (_, request) =>
+        {
+            var text = request.Contents[0].Parts[0].Text!;
+            return text.Contains("Alpha1.", StringComparison.Ordinal) && text.Contains("Alpha420.", StringComparison.Ordinal)
+                && !text.Contains("Input JSON:", StringComparison.Ordinal)
+                ? "broken output"
+                : null;
+        };
+
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { MaxChars = 20000, BatchSize = batchSize });
+
+        var book = (await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None)).Single(s => s.SourceText == source);
+        Assert.True(book.Status == StringEntryStatus.Done, book.ErrorMessage);
+        Assert.Equal(source, book.DestText);
+        Assert.True(fixture.Client.Calls > 9, $"expected a chunked fallback, got {fixture.Client.Calls} calls");
+    }
+
+    [Fact]
+    public async Task LongText_ChunksThatKeepFailing_StillStopAtTheRecoveryLimit()
+    {
+        var source = string.Join("\n", Enumerable.Range(1, 420).Select(i => $"Alpha{i}."));
+        await using var fixture = await Fixture.CreateAsync((source, "BOOK:DESC", null));
+        fixture.Client.ResponseOverride = (_, _) => "broken output";
+
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { MaxChars = 20000 });
+
+        var book = Assert.Single(await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None));
+        Assert.Equal(StringEntryStatus.Error, book.Status);
+        Assert.True(fixture.Client.Calls <= 25, $"retries were not bounded: {fixture.Client.Calls} calls");
+    }
+
     [Fact]
     public async Task Glossary_PreservesAdjacentRepeatedTerms()
     {

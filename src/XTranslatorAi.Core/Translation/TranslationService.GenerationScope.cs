@@ -21,6 +21,19 @@ public sealed partial class TranslationService
         return new ScopeRestore(() => _generationScope.Value = previous);
     }
 
+    /// <summary>
+    /// The first pass over a long text's chunks is one attempt at a smaller granularity, not one retry
+    /// per chunk: a long book needs more chunks than the per-row recovery limit even when it arrives
+    /// through a recovery path. Retries of a failed chunk enter recovery again; the run-wide limit
+    /// still bounds the total.
+    /// </summary>
+    private IDisposable EnterChunkFirstPassScope()
+    {
+        var previous = _generationScope.Value;
+        _generationScope.Value = new GenerationScope(previous?.RowIds ?? Array.Empty<long>(), Recovery: false);
+        return new ScopeRestore(() => _generationScope.Value = previous);
+    }
+
     private sealed class ScopeRestore(Action restore) : IDisposable
     {
         public void Dispose() => restore();

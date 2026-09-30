@@ -260,6 +260,7 @@ public sealed partial class TranslationService
 	            CancellationToken: ctx.CancellationToken
 	        );
 
+	        using var firstPass = EnterChunkFirstPassScope();
 	        return await TranslateChunkWithAdaptiveSplittingAsync(
 	            chunkContext,
 	            row.Masked,
