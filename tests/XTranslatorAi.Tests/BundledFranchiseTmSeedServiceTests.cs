@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.App.Services;
@@ -39,6 +41,22 @@ public class BundledFranchiseTmSeedServiceTests
         Assert.Contains("All Must Serve", seed, StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData(BethesdaFranchise.ElderScrolls)]
+    [InlineData(BethesdaFranchise.Fallout)]
+    [InlineData(BethesdaFranchise.Starfield)]
+    public void EmbeddedSeed_MatchesBundledMetadataBytes(BethesdaFranchise franchise)
+    {
+        // A CRLF checkout (core.autocrlf=true) would embed different bytes; the on-disk
+        // seed would then never validate and be rewritten on every project load.
+        var metadata = BundledFranchiseTmSeedService.GetBundledSeedMetadata(franchise)!;
+        var bytes = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false)
+            .GetBytes(EmbeddedAssets.LoadBundledFranchiseTmSeed(franchise)!);
+
+        Assert.Equal(metadata.ExpectedByteLength, bytes.LongLength);
+        Assert.Equal(metadata.ExpectedSha256, Convert.ToHexString(SHA256.HashData(bytes)), ignoreCase: true);
+    }
+
     [Fact]
     public async Task EnsureBundledSeedAsync_SkipsEmbeddedLoadWhenStampedSeedIsCurrent()
     {
@@ -66,6 +84,69 @@ public class BundledFranchiseTmSeedServiceTests
             await service.EnsureBundledSeedAsync(BethesdaFranchise.Fallout, CancellationToken.None);
 
             Assert.Equal(0, loadCalls);
+            Assert.Equal(metadata.ExpectedByteLength, new FileInfo(seedPath).Length);
+            AssertCurrentStamp(await File.ReadAllTextAsync(stampPath, CancellationToken.None), metadata);
+        }
+        finally
+        {
+            TryDeleteDirectory(root);
+        }
+    }
+
+    [Fact]
+    public async Task EnsureBundledSeedAsync_DoesNotRewriteSeedMovedByAutoImport()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var loadCalls = 0;
+            var service = new BundledFranchiseTmSeedService(root, franchise =>
+            {
+                loadCalls++;
+                return EmbeddedAssets.LoadBundledFranchiseTmSeed(franchise);
+            });
+            await service.EnsureBundledSeedAsync(BethesdaFranchise.Starfield, CancellationToken.None);
+
+            var metadata = BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.Starfield)!;
+            var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.Starfield, root);
+            var seedPath = Path.Combine(importDir, metadata.FileName);
+            Assert.True(File.Exists(seedPath));
+
+            // Mirrors TryAutoImportFranchiseTranslationMemoryAsync after a successful import.
+            var importedDir = Path.Combine(importDir, "imported");
+            Directory.CreateDirectory(importedDir);
+            File.Move(seedPath, Path.Combine(importedDir, "bundled-starfield-franchise-tm.imported.20260930-000000.tsv"));
+
+            await service.EnsureBundledSeedAsync(BethesdaFranchise.Starfield, CancellationToken.None);
+
+            Assert.Equal(1, loadCalls);
+            Assert.False(File.Exists(seedPath));
+        }
+        finally
+        {
+            TryDeleteDirectory(root);
+        }
+    }
+
+    [Fact]
+    public async Task EnsureBundledSeedAsync_RewritesMissingSeedWhenStampIsForDifferentContent()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var metadata = BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.Fallout)!;
+            var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.Fallout, root);
+            var seedPath = Path.Combine(importDir, metadata.FileName);
+            var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.Fallout, metadata.Version, root);
+            await File.WriteAllTextAsync(
+                stampPath,
+                string.Join("|", metadata.Version, metadata.ExpectedByteLength, new string('0', 64), "0"),
+                CancellationToken.None
+            );
+
+            var service = new BundledFranchiseTmSeedService(root);
+            await service.EnsureBundledSeedAsync(BethesdaFranchise.Fallout, CancellationToken.None);
+
             Assert.Equal(metadata.ExpectedByteLength, new FileInfo(seedPath).Length);
             AssertCurrentStamp(await File.ReadAllTextAsync(stampPath, CancellationToken.None), metadata);
         }
