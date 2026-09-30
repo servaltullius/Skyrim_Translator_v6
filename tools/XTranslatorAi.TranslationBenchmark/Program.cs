@@ -274,14 +274,29 @@ sealed class SafeApiHandler(string tracePath, string allowedModel = "gemini-3.8-
         }
         if (uri.AbsolutePath.Contains(":generateContent") && !uri.AbsolutePath.EndsWith($"/{allowedModel}:generateContent"))
             throw new InvalidOperationException("A different model was requested.");
-        // Only the model input body is retained, never HTTP headers or credential-bearing URLs.
+        // Only request and response bodies are retained, never HTTP headers or credential-bearing URLs.
+        // Seq pairs a response with its request so failed outputs can be replayed offline.
+        var seq = Interlocked.Increment(ref _seq);
         if (request.Content != null) {
             var body = await request.Content.ReadAsStringAsync(ct);
             using var parsed = JsonDocument.Parse(body);
             lock (_gate) File.AppendAllText(tracePath, JsonSerializer.Serialize(new {
-                At = DateTimeOffset.UtcNow, Path = uri.AbsolutePath, Body = parsed.RootElement
+                Seq = seq, At = DateTimeOffset.UtcNow, Path = uri.AbsolutePath, Body = parsed.RootElement
             }) + "\n");
         }
-        return await base.SendAsync(request, ct);
+        var response = await base.SendAsync(request, ct);
+        if (uri.AbsolutePath.Contains(":generateContent")) {
+            await response.Content.LoadIntoBufferAsync(ct);
+            var text = await response.Content.ReadAsStringAsync(ct);
+            object bodyValue;
+            try { bodyValue = JsonDocument.Parse(text).RootElement.Clone(); } catch (JsonException) { bodyValue = text; }
+            lock (_gate) File.AppendAllText(_responsePath, JsonSerializer.Serialize(new {
+                Seq = seq, At = DateTimeOffset.UtcNow, Status = (int)response.StatusCode, Body = bodyValue
+            }) + "\n");
+        }
+        return response;
     }
+
+    private long _seq;
+    private readonly string _responsePath = Path.Combine(Path.GetDirectoryName(tracePath) ?? ".", "responses.jsonl");
 }
