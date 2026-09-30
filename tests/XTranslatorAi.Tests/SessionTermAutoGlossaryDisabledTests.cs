@@ -15,6 +15,29 @@ namespace XTranslatorAi.Tests;
 public class SessionTermAutoGlossaryPersistenceTests
 {
     [Fact]
+    public async Task ConflictedQueuedSuggestion_IsNotPersisted()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
+        try
+        {
+            await using var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
+            var memory = new TranslationService.SessionTermMemory(200);
+            memory.TryLearn("Weapon Art", "전투 기술", allowForce: false);
+            memory.TryLearn("Weapon Art", "무기 기술", allowForce: false);
+            var queue = new ConcurrentQueue<(string Source, string Target)>();
+            queue.Enqueue(("Weapon Art", "전투 기술"));
+            var service = new TranslationService(db, new GeminiClient(new HttpClient()));
+            service._ctx = new TranslationRunContext
+            {
+                EnableSessionTermMemory = true, SessionTermMemory = memory, PendingSessionAutoGlossaryInserts = queue,
+            };
+            await service.FlushSessionTermAutoGlossaryInsertsAsync();
+            Assert.Empty(await db.GetGlossaryAsync(CancellationToken.None));
+        }
+        finally { TestDbHelper.TryDeleteDbFiles(path); }
+    }
+
+    [Fact]
     public async Task FlushSessionTermAutoGlossaryInsertsAsync_PersistsToProjectGlossary()
     {
         var path = Path.Combine(Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");

@@ -34,7 +34,7 @@ public sealed partial class TranslationService
         {
             var rec = Ctx.UseRecStyleHints ? GetRecForId(r.Id) : null;
             repairBatchItems.Add(new RepairTranslationItem(r.Id, r.Masked, r.Current, rec,
-                GuessStyleHint(r.Source, rec), AppendBookTitleReference(r.Id, GetDialogueContextWindowForId(r.Id))));
+                GuessStyleHint(r.Source, rec), AppendBookTitleReference(r.Id, GetDialogueContextWindowForId(r.Id)), GetEdidForId(r.Id)));
         }
         return repairBatchItems;
     }
@@ -187,7 +187,8 @@ public sealed partial class TranslationService
             MaxOutputTokens: ctx.MaxOutputTokens,
             MaxRetries: 1,
             CancellationToken: ctx.CancellationToken,
-            Purpose: "repair-text"
+            Purpose: "repair-text",
+            Edid: GetEdidForId(original.Id)
         );
 
         return await TranslateTextWithSentinelAsync(

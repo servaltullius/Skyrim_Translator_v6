@@ -130,8 +130,6 @@ public sealed partial class TranslationService
                 continue;
             }
 
-            var isSingleWord = source.IndexOf(' ') < 0;
-
             // Prefer removing leading articles when present ("The X" / "A X" / "An X").
             // This keeps title/name phrases cleaner in Korean.
             var the = "The " + source;
@@ -141,7 +139,6 @@ public sealed partial class TranslationService
             var pattern = new SessionTermReplacementPattern(
                 Source: source,
                 Token: token,
-                IsSingleWord: isSingleWord,
                 The: the,
                 An: an,
                 A: a
@@ -160,7 +157,6 @@ public sealed partial class TranslationService
     private readonly record struct SessionTermReplacementPattern(
         string Source,
         string Token,
-        bool IsSingleWord,
         string The,
         string An,
         string A
@@ -193,15 +189,13 @@ public sealed partial class TranslationService
 
     private static string ReplaceSessionTermInSegment(string text, SessionTermReplacementPattern pattern)
     {
-        var replaced = ReplaceSubstringOrdinalIgnoreCase(text, pattern.The, pattern.Token);
-        replaced = ReplaceSubstringOrdinalIgnoreCase(replaced, pattern.An, pattern.Token);
-        replaced = ReplaceSubstringOrdinalIgnoreCase(replaced, pattern.A, pattern.Token);
-        return pattern.IsSingleWord
-            ? ReplaceWholeAsciiWordOrdinalIgnoreCase(replaced, pattern.Source, pattern.Token)
-            : ReplaceSubstringOrdinalIgnoreCase(replaced, pattern.Source, pattern.Token);
+        var replaced = ReplaceWholeSessionTermOrdinalIgnoreCase(text, pattern.The, pattern.Token);
+        replaced = ReplaceWholeSessionTermOrdinalIgnoreCase(replaced, pattern.An, pattern.Token);
+        replaced = ReplaceWholeSessionTermOrdinalIgnoreCase(replaced, pattern.A, pattern.Token);
+        return ReplaceWholeSessionTermOrdinalIgnoreCase(replaced, pattern.Source, pattern.Token);
     }
 
-    private static string ReplaceWholeAsciiWordOrdinalIgnoreCase(string input, string sourceTerm, string replacement)
+    private static string ReplaceWholeSessionTermOrdinalIgnoreCase(string input, string sourceTerm, string replacement)
     {
         if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(sourceTerm))
         {
@@ -227,9 +221,9 @@ public sealed partial class TranslationService
 
             sb.Append(input.AsSpan(cursor, next - cursor));
 
-            var beforeOk = next == 0 || !IsAsciiWordChar(input[next - 1]);
+            var beforeOk = next == 0 || !IsSessionTermWordChar(input[next - 1]);
             var afterPos = next + sourceTerm.Length;
-            var afterOk = afterPos >= input.Length || !IsAsciiWordChar(input[afterPos]);
+            var afterOk = afterPos >= input.Length || !IsSessionTermWordChar(input[afterPos]);
             if (beforeOk && afterOk)
             {
                 sb.Append(replacement);
@@ -245,45 +239,4 @@ public sealed partial class TranslationService
         return sb.ToString();
     }
 
-    private static bool IsAsciiWordChar(char ch)
-        => (ch is >= 'A' and <= 'Z')
-           || (ch is >= 'a' and <= 'z')
-           || (ch is >= '0' and <= '9')
-           || ch == '_';
-
-    private static string ReplaceSubstringOrdinalIgnoreCase(string input, string sourceTerm, string replacement)
-    {
-        if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(sourceTerm))
-        {
-            return input;
-        }
-
-        var first = input.IndexOf(sourceTerm, StringComparison.OrdinalIgnoreCase);
-        if (first < 0)
-        {
-            return input;
-        }
-
-        var sb = new System.Text.StringBuilder(capacity: input.Length);
-        sb.Append(input.AsSpan(0, first));
-        sb.Append(replacement);
-
-        var cursor = first + sourceTerm.Length;
-        while (cursor < input.Length)
-        {
-            var next = input.IndexOf(sourceTerm, cursor, StringComparison.OrdinalIgnoreCase);
-            if (next < 0)
-            {
-                sb.Append(input.AsSpan(cursor));
-                break;
-            }
-
-            sb.Append(input.AsSpan(cursor, next - cursor));
-            sb.Append(replacement);
-            cursor = next + sourceTerm.Length;
-        }
-
-        return sb.ToString();
-    }
 }
-

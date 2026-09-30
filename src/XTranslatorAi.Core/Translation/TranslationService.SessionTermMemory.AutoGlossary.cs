@@ -100,6 +100,8 @@ public sealed partial class TranslationService
     {
         foreach (var (source, target) in pending)
         {
+            // A conflict may have arrived before this queued suggestion is flushed.
+            if (Ctx.SessionTermMemory?.IsConflicted(source) == true) continue;
             try
             {
                 await _db.TryInsertGlossaryIfMissingAsync(

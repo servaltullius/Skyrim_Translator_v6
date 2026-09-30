@@ -141,7 +141,7 @@ public sealed partial class TranslationService
             var dialogueContextWindow = AppendBookTitleReference(it.Id, GetDialogueContextWindowForId(it.Id));
             var maskedForPrompt = PlaceholderSemanticHintInjector.Inject(targetLang, it.Masked);
             maskedForPrompt = GlossarySemanticHintInjector.Inject(targetLang, maskedForPrompt, it.Glossary.TokenToReplacement);
-            requestItems.Add(new TranslationItem(it.Id, maskedForPrompt, rec, dialogueContextWindow, GuessStyleHint(it.Source, rec)));
+            requestItems.Add(new TranslationItem(it.Id, maskedForPrompt, rec, dialogueContextWindow, GuessStyleHint(it.Source, rec), GetEdidForId(it.Id)));
             requestTexts.Add(it.Masked);
 
             foreach (var p in it.Glossary.PromptOnlyPairs)

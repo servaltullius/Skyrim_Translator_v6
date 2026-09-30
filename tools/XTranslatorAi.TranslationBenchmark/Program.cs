@@ -14,6 +14,8 @@ using XTranslatorAi.Core.Translation;
 // The baseline Korean translations are deliberately not an input to this program.
 const string model = "gemini-3.8-flash";
 var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
+if (args.Length == 3 && args[0] == "evaluate-prompts")
+    return await PromptEvaluationCommand.RunAsync(args[1], args[2]);
 if (args.Length != 3 || args[0] is not ("prepare" or "estimate" or "translate" or "export"))
 {
     Console.Error.WriteLine("Usage: TranslationBenchmark prepare|estimate|translate|export original.esp NEW-EXPERIMENT-FOLDER");

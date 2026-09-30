@@ -23,7 +23,8 @@ public sealed partial class TranslationCostEstimator
         string targetLang,
         IReadOnlyList<IReadOnlyList<PreparedRow>> batches,
         List<string> batchPrompts,
-        List<string> textPrompts
+        List<string> textPrompts,
+        IReadOnlyDictionary<long, (string? Rec, string? Edid)> contextById
     )
     {
         foreach (var batch in batches)
@@ -38,7 +39,8 @@ public sealed partial class TranslationCostEstimator
                 var it = batch[0];
                 var styleHint = GuessStyleHint(it.Source);
                 var withSentinel = it.Masked + " " + TranslationConstants.EndSentinelToken;
-                textPrompts.Add(TranslationPrompt.BuildTextOnlyUserPrompt(sourceLang, targetLang, withSentinel, it.PromptOnlyPairs, styleHint));
+                textPrompts.Add(TranslationPrompt.BuildTextOnlyUserPrompt(sourceLang, targetLang, withSentinel, it.PromptOnlyPairs, styleHint,
+                    contextById.TryGetValue(it.Id, out var context) ? context.Edid : null));
                 continue;
             }
 
@@ -47,7 +49,8 @@ public sealed partial class TranslationCostEstimator
 
             foreach (var it in batch)
             {
-                requestItems.Add(new TranslationItem(it.Id, it.Masked));
+                requestItems.Add(new TranslationItem(it.Id, it.Masked,
+                    Edid: contextById.TryGetValue(it.Id, out var context) ? context.Edid : null));
             }
 
             batchPrompts.Add(TranslationPrompt.BuildUserPrompt(sourceLang, targetLang, requestItems, promptOnlyPairs));
@@ -59,7 +62,8 @@ public sealed partial class TranslationCostEstimator
         string targetLang,
         IReadOnlyList<PreparedRow> veryLongItems,
         VeryLongPromptConfig cfg,
-        List<string> textPrompts
+        List<string> textPrompts,
+        IReadOnlyDictionary<long, (string? Rec, string? Edid)> contextById
     )
     {
         if (veryLongItems.Count == 0)
@@ -85,7 +89,8 @@ public sealed partial class TranslationCostEstimator
             foreach (var part in parts)
             {
                 var withSentinel = part + " " + TranslationConstants.EndSentinelToken;
-                textPrompts.Add(TranslationPrompt.BuildTextOnlyUserPrompt(sourceLang, targetLang, withSentinel, it.PromptOnlyPairs, styleHint));
+                textPrompts.Add(TranslationPrompt.BuildTextOnlyUserPrompt(sourceLang, targetLang, withSentinel, it.PromptOnlyPairs, styleHint,
+                    contextById.TryGetValue(it.Id, out var context) ? context.Edid : null));
             }
         }
     }
@@ -239,8 +244,8 @@ public sealed partial class TranslationCostEstimator
         var batchPrompts = new List<string>(capacity: shortBatches.Count + longBatches.Count);
         var textPrompts = new List<string>(capacity: veryLongItems.Count + 16);
 
-        BuildPromptsForBatches(sourceLang, targetLang, shortBatches, batchPrompts, textPrompts);
-        BuildPromptsForBatches(sourceLang, targetLang, longBatches, batchPrompts, textPrompts);
+        BuildPromptsForBatches(sourceLang, targetLang, shortBatches, batchPrompts, textPrompts, prepared.ContextById);
+        BuildPromptsForBatches(sourceLang, targetLang, longBatches, batchPrompts, textPrompts, prepared.ContextById);
         var veryLongConfig = new VeryLongPromptConfig(
             IsCjk: IsCjkLanguage(targetLang),
             IsGemini3: IsGemini3Model(modelName),
@@ -248,7 +253,7 @@ public sealed partial class TranslationCostEstimator
             MaxChars: maxChars,
             MaxOutputTokens: maxOutputTokens
         );
-        BuildPromptsForVeryLong(sourceLang, targetLang, veryLongItems, veryLongConfig, textPrompts);
+        BuildPromptsForVeryLong(sourceLang, targetLang, veryLongItems, veryLongConfig, textPrompts, prepared.ContextById);
 
         return (batchPrompts, textPrompts);
     }

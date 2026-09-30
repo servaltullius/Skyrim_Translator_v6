@@ -37,12 +37,20 @@ public static class TranslationStyleHints
 
             if (r is "INFO" or "DIAL")
             {
-                styleHint = "REC=INFO/DIAL (dialogue/subtitles). Use natural spoken Korean. Keep register consistent (do not randomly switch between 존댓말/반말 within this item unless the source clearly switches).";
+                styleHint = r == "DIAL" && GetRecSubtype(rec) == "FULL"
+                    ? "REC=DIAL:FULL (dialogue topic label). Translate as a short topic label, not a spoken response."
+                    : "REC=INFO/DIAL (dialogue/subtitles). Use natural spoken Korean. Keep register consistent (do not randomly switch between 존댓말/반말 within this item unless the source clearly switches).";
             }
 
             if (r == "QUST")
             {
-                styleHint = "REC=QUST (quest/journal/objective). Keep it concise and instructional. Avoid unnecessary embellishment; keep the tone consistent within the item.";
+                styleHint = GetRecSubtype(rec) switch
+                {
+                    "FULL" => "REC=QUST:FULL (quest title). Translate as a concise title; do not force an objective-style -하기 ending.",
+                    "NNAM" => "REC=QUST:NNAM (quest objective). Use a concise action phrase (prefer ~하기 in Korean) and preserve the target and completion condition.",
+                    "CNAM" => "REC=QUST:CNAM (quest journal). Preserve the source tense and whether events are pending or completed; do not rewrite it as an instruction.",
+                    _ => "REC=QUST (quest text). Choose the style from the source meaning; preserve tense and conditions.",
+                };
             }
 
             if (r == "MESG")

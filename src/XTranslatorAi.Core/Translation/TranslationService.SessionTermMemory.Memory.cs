@@ -9,10 +9,11 @@ public sealed partial class TranslationService
 {
     internal sealed class SessionTermMemory
     {
-        private sealed record SessionTermEntry(string Target, string Token, bool AllowForce);
+        private sealed record SessionTermEntry(string Target, string Token, bool AllowForce, bool Conflicted = false);
 
         private readonly ConcurrentDictionary<string, SessionTermEntry> _termToEntry;
         private readonly int _maxTerms;
+        private readonly object _learnLock = new();
         private int _nextTokenId = -1;
 
         public SessionTermMemory(int maxTerms)
@@ -42,16 +43,33 @@ public sealed partial class TranslationService
                 return false;
             }
 
-            // Bound growth: keep the first mapping for consistency.
-            if (_termToEntry.Count >= _maxTerms && !_termToEntry.ContainsKey(key))
-            {
-                return false;
-            }
+            if (!allowForce && !IsAutomaticSessionTermCandidate(sourceTerm)) return false;
 
-            var tokenId = Interlocked.Increment(ref _nextTokenId);
-            var token = $"__XT_TERM_SESS_{tokenId:0000}__";
-            return _termToEntry.TryAdd(key, new SessionTermEntry(target, token, allowForce));
+            lock (_learnLock)
+            {
+                if (_termToEntry.TryGetValue(key, out var existing))
+                {
+                    // Explicit preloaded terms are authoritative. Automatic observations
+                    // never overwrite them; competing automatic translations stop reuse.
+                    if (existing.AllowForce) return false;
+                    if (allowForce)
+                    {
+                        _termToEntry[key] = new SessionTermEntry(target, existing.Token, true);
+                        return true;
+                    }
+                    if (!string.Equals(existing.Target, target, StringComparison.Ordinal))
+                        _termToEntry[key] = existing with { Conflicted = true };
+                    return false;
+                }
+                if (_termToEntry.Count >= _maxTerms) return false;
+                var tokenId = Interlocked.Increment(ref _nextTokenId);
+                var token = $"__XT_TERM_SESS_{tokenId:0000}__";
+                return _termToEntry.TryAdd(key, new SessionTermEntry(target, token, allowForce));
+            }
         }
+
+        public bool IsConflicted(string source)
+            => _termToEntry.TryGetValue(NormalizeSessionTermKey(source), out var entry) && entry.Conflicted;
 
         public IReadOnlyList<(string Source, string Target)> MergeForText(
             string text,
@@ -131,7 +149,7 @@ public sealed partial class TranslationService
                     continue;
                 }
 
-                if (text.IndexOf(source, StringComparison.OrdinalIgnoreCase) < 0)
+                if (!ContainsSessionTerm(text, source))
                 {
                     continue;
                 }
@@ -159,29 +177,28 @@ public sealed partial class TranslationService
 
             foreach (var (source, entry) in _termToEntry)
             {
-                if (excludedSources.Contains(source))
+                if (entry.Conflicted || excludedSources.Contains(source))
                 {
                     continue;
                 }
 
-                var hit = false;
-                foreach (var t in texts)
-                {
-                    if (string.IsNullOrWhiteSpace(t))
-                    {
-                        continue;
-                    }
+                AddIfRelevant(source);
+                // A small, explicit set of plural name forms is hint-only. Do not
+                // infer single-word morphology (e.g. Trigger -> the verb triggers).
+                var plural = GetSessionTermPluralHint(source);
+                if (plural != null && !_termToEntry.ContainsKey(plural)) AddIfRelevant(plural);
 
-                    if (t.IndexOf(source, StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        hit = true;
-                        break;
-                    }
-                }
-
-                if (hit)
+                void AddIfRelevant(string variant)
                 {
-                    list.Add((source, entry.Target));
+                    if (excludedSources.Contains(variant)) return;
+                    foreach (var text in texts)
+                    {
+                        if (ContainsSessionTerm(text, variant))
+                        {
+                            list.Add((variant, entry.Target));
+                            return;
+                        }
+                    }
                 }
             }
 
@@ -190,7 +207,11 @@ public sealed partial class TranslationService
                 return list;
             }
 
-            list.Sort((a, b) => b.Source.Length.CompareTo(a.Source.Length));
+            list.Sort((a, b) =>
+            {
+                var length = b.Source.Length.CompareTo(a.Source.Length);
+                return length != 0 ? length : StringComparer.OrdinalIgnoreCase.Compare(a.Source, b.Source);
+            });
             if (list.Count > MaxSessionTermPairsPerRequest)
             {
                 list.RemoveRange(MaxSessionTermPairsPerRequest, list.Count - MaxSessionTermPairsPerRequest);

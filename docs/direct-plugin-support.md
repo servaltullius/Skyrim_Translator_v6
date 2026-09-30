@@ -1,6 +1,6 @@
 # Skyrim SE/AE 플러그인 직접 번역
 
-현재 루트 실행 파일: `2026.09.30-esp-preview5`. 동일한 배포본은 `artifacts/direct-plugin-20260929/candidate-preview5/TulliusTranslator.exe`에 있다. 사용자 요청으로 저장 API 키를 제거하고 루트 EXE를 교체했다. 이전 루트 EXE와 PERK 기술 변수 오분류가 있던 최초 `esp-preview`는 각각 `.disabled` 백업으로 보존한다.
+현재 루트 실행 파일: `2026.09.30-context-preview7`. 동일한 배포본은 `artifacts/edid-session-review-20260930/publish/TulliusTranslator.exe`에 있다. [EDID 문맥 전달과 자동 용어 기억을 개선](analysis/2026-09-30-edid-session-memory.md)했으며 앞선 [프롬프트 개선](analysis/2026-09-30-prompt-improvement.md)도 포함한다. 플러그인 reader/writer는 preview5와 같다. 설정과 API 키는 이번 교체에서 변경하지 않았다. 이전 preview6는 이번 증거 폴더의 `deployment/TulliusTranslator.preview6.exe.disabled`에, preview5와 최초 `esp-preview`도 기존 `.disabled` 백업에 보존한다.
 
 ## 사용 순서
 

@@ -48,7 +48,7 @@ public static partial class TranslationPrompt
             source_language = sourceLang,
             target_language = targetLang,
             glossary = promptOnlyGlossary.Select(pair => new { source = pair.Source, target = pair.Target }),
-            items = items,
+            items = items.Select(i => i with { Edid = NormalizeEditorIdReference(i.Edid) }),
         };
 
         var isKorean = LanguageHelper.IsKoreanLanguage(targetLang);
@@ -58,6 +58,17 @@ public static partial class TranslationPrompt
         var sb = new StringBuilder();
         AppendJsonHeader(sb, sourceLang, targetLang);
         AppendJsonRules(sb);
+        AppendMeaningAndTerminologyRules(sb);
+        if (items.Any(i => NormalizeEditorIdReference(i.Edid) != null)) AppendEditorIdRule(sb);
+
+        if (isKorean)
+        {
+            AppendKoreanGrammarRules(sb);
+            if (items.Any(i => i.Text.Contains("chance", StringComparison.OrdinalIgnoreCase)))
+            {
+                AppendKoreanProbabilityExamples(sb);
+            }
+        }
 
         if (hasPairedSlashList)
         {
@@ -83,8 +94,9 @@ public static partial class TranslationPrompt
 
     private static void AppendJsonRules(StringBuilder sb)
     {
-        sb.AppendLine("Rules (CRITICAL):");
+        sb.AppendLine("Translation rules:");
         sb.AppendLine("- Output ONLY valid JSON (no markdown, code fences, or commentary).");
+        sb.AppendLine("- Return exactly one translation for every input id; do not add, omit or repeat ids.");
         sb.AppendLine("- Preserve any tokens like __XT_PH_0000__, __XT_PH_MAG_0000__, __XT_PH_DUR_0001__, __XT_PH_NUM_0002__, __XT_TERM_0000__, or __XT_TERM_SESS_0000__ exactly (do not alter or remove).");
         sb.AppendLine("- Hint markers like \"⟦XT_MAG=100⟧\" or \"⟦XT_TERM=...⟧\" may appear next to tokens. They are hints only; ignore them and DO NOT include them in the output.");
         sb.AppendLine("- The output MUST contain every token that appears in each item's input 'text' (same counts). Do not delete, merge, or duplicate tokens.");
@@ -116,9 +128,6 @@ public static partial class TranslationPrompt
         sb.AppendLine("- You MAY reorder numeric placeholder tokens (__XT_PH_MAG_####__, __XT_PH_NUM_####__, __XT_PH_DUR_####__) for natural Korean grammar, but do not reorder other tokens.");
         sb.AppendLine(
             "- Do NOT attach particles directly to numeric tokens (__XT_PH_MAG_####__/__XT_PH_NUM_####__). Avoid forms like \"__XT_PH_MAG_0000__을(를)\", \"__XT_PH_MAG_0000__와(과)\", or \"__XT_PH_MAG_0000__에게\"."
-        );
-        sb.AppendLine(
-            "- Do NOT output ambiguous particle markers like \"을(를)\", \"(을)를\", \"은(는)\", \"(은)는\", \"이(가)\", \"(이)가\", \"와(과)\", \"(와)과\", or \"(으)로\". Choose one correct form."
         );
         sb.AppendLine("- Only use the word \"포인트\" when the input contains the English word \"point\"/\"points\" (e.g., \"__XT_PH_MAG_####__포인트\").");
         sb.AppendLine("- Hint markers like \"⟦XT_MAG=100⟧\" may appear next to placeholder tokens. They are hints only; ignore them and DO NOT include them in the output.");

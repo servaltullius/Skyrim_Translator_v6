@@ -21,7 +21,8 @@ public sealed partial class TranslationService
         int MaxRetries,
         CancellationToken CancellationToken,
         int CandidateCount = 1,
-        string Purpose = "translate-text"
+        string Purpose = "translate-text",
+        string? Edid = null
     );
 
     private readonly record struct TextWithSentinelContext(
@@ -43,7 +44,8 @@ public sealed partial class TranslationService
             request.TargetLang,
             text,
             promptOnlyGlossary,
-            styleHint
+            styleHint,
+            request.Edid
         );
         return await TranslateUserPromptWithRetriesAsync(request, userPrompt);
     }
@@ -60,7 +62,8 @@ public sealed partial class TranslationService
             request.TargetLang,
             text,
             promptOnlyGlossary,
-            styleHint
+            styleHint,
+            request.Edid
         );
 
         return await TranslateUserPromptCandidatesWithRetriesAsync(request, userPrompt);

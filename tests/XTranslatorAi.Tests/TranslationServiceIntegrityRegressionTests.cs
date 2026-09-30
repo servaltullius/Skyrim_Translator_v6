@@ -512,6 +512,73 @@ public sealed class TranslationServiceIntegrityRegressionTests
         Assert.All(await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None), row => Assert.Equal(StringEntryStatus.Done, row.Status));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task EditorId_ReachesSingleRowAndBookChunksEvenWithoutStyleHints(bool longText)
+    {
+        var source = longText ? string.Concat(Enumerable.Repeat("Original book sentence. ", 120)) : "Disable NPC tumbling";
+        await using var fixture = await Fixture.CreateAsync((source, longText ? "BOOK:DESC" : "PERK:FULL", "DisableNpcDodge"));
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { MaxChars = 1000, UseRecStyleHints = false });
+        Assert.NotEmpty(fixture.Client.Requests);
+        Assert.All(fixture.Client.Requests, request =>
+        {
+            var prompt = request.Contents[0].Parts[0].Text!;
+            Assert.Contains("edid (reference only): DisableNpcDodge", prompt);
+            Assert.Contains("never override explicit source facts", prompt);
+        });
+        var row = Assert.Single(await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None));
+        Assert.Equal(source, row.DestText);
+        Assert.Equal(StringEntryStatus.Done, row.Status);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task EditorId_ReachesBatchRepairAndSingleFallback(bool repair)
+    {
+        await using var fixture = await Fixture.CreateAsync(("Hello %s", "MESG:DESC", "Message01"), ("World %s", "MESG:DESC", "Message02"));
+        fixture.Client.ResponseOverride = (call, request) =>
+            repair && call == 1 ? JsonSerializer.Serialize(new { translations = fixture.Ids.Select(id => new { id, text = "missing token" }) }) : null;
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { BatchSize = 2, EnableRepairPass = repair });
+        var jsonRequests = fixture.Client.Requests.Where(r => r.Contents[0].Parts[0].Text!.Contains("Input JSON:")).ToArray();
+        Assert.NotEmpty(jsonRequests);
+        if (repair) Assert.Contains(jsonRequests, r => r.Purpose == "repair-batch");
+        foreach (var request in jsonRequests)
+        {
+            var prompt = request.Contents[0].Parts[0].Text!;
+            using var payload = JsonDocument.Parse(prompt[(prompt.IndexOf("Input JSON:", StringComparison.Ordinal) + "Input JSON:".Length)..]);
+            foreach (var item in payload.RootElement.GetProperty("items").EnumerateArray())
+                Assert.Equal(item.GetProperty("id").GetInt64() == fixture.Ids[0] ? "Message01" : "Message02", item.GetProperty("edid").GetString());
+        }
+        Assert.Contains(fixture.Client.Requests, r => r.Contents[0].Parts[0].Text!.Contains("edid (reference only): Message01"));
+        Assert.Contains(fixture.Client.Requests, r => r.Contents[0].Parts[0].Text!.Contains("edid (reference only): Message02"));
+        Assert.All(await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None), row =>
+        {
+            Assert.Equal(StringEntryStatus.Done, row.Status);
+            Assert.Equal(row.SourceText, row.DestText);
+        });
+    }
+
+    [Fact]
+    public async Task AutomaticGenericTerm_IsNotRememberedInRealRequestsOrSavedAsSuggestion()
+    {
+        await using var fixture = await Fixture.CreateAsync(("Trigger", "WEAP:FULL", "Trigger01"), ("This triggers an effect.", "WEAP:DESC", "Trigger01"));
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { EnableSessionTermMemory = true });
+        Assert.Empty(await fixture.Db.GetGlossaryAsync(CancellationToken.None));
+        Assert.All(fixture.Client.Requests, request => Assert.DoesNotContain("Trigger =>", request.Contents[0].Parts[0].Text!));
+    }
+
+    [Fact]
+    public async Task AutomaticName_RemainsAHintAndPluralReachesRealRequest()
+    {
+        await using var fixture = await Fixture.CreateAsync(("Weapon Art", "WEAP:FULL", "WeaponArt01"), ("Weapon Art triggers Weapon Arts.", "WEAP:DESC", "WeaponArt01"));
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { EnableSessionTermMemory = true });
+        Assert.Contains(fixture.Client.Requests, request => request.Contents[0].Parts[0].Text!.Contains("Weapon Arts => Weapon Art"));
+        Assert.All(fixture.Client.Requests, request => Assert.DoesNotContain("__XT_TERM_SESS_", request.Contents[0].Parts[0].Text!.Split("<<<TEXT").Last()));
+        Assert.False(Assert.Single(await fixture.Db.GetGlossaryAsync(CancellationToken.None)).Enabled);
+    }
+
     private sealed class Fixture : IAsyncDisposable
     {
         private readonly string _path;

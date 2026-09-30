@@ -14,7 +14,8 @@ public static partial class TranslationPrompt
         string SourceText,
         string CurrentTranslation,
         IReadOnlyList<(string Source, string Target)> PromptOnlyGlossary,
-        string? StyleHint = null
+        string? StyleHint = null,
+        string? Edid = null
     );
 
     public static string BuildRepairTextOnlyUserPrompt(RepairTextOnlyPromptRequest request)
@@ -22,7 +23,17 @@ public static partial class TranslationPrompt
         var sb = new StringBuilder();
         AppendRepairTextOnlyHeader(sb, request.SourceLang, request.TargetLang);
         AppendRepairTextOnlyRules(sb);
+        AppendMeaningAndTerminologyRules(sb);
+        if (LanguageHelper.IsKoreanLanguage(request.TargetLang))
+        {
+            AppendKoreanGrammarRules(sb);
+            if (request.SourceText.Contains("chance", System.StringComparison.OrdinalIgnoreCase))
+            {
+                AppendKoreanProbabilityExamples(sb);
+            }
+        }
         AppendOptionalStyle(sb, request.StyleHint);
+        AppendOptionalEditorId(sb, request.Edid);
         AppendOptionalGlossary(sb, request.PromptOnlyGlossary);
         AppendRepairTextOnlyBody(sb, request.SourceText, request.CurrentTranslation);
 
@@ -93,8 +104,20 @@ public static partial class TranslationPrompt
             source_language = sourceLang,
             target_language = targetLang,
             glossary = promptOnlyGlossary.Select(pair => new { source = pair.Source, target = pair.Target }),
-            items = items,
+            items = items.Select(i => i with { Edid = NormalizeEditorIdReference(i.Edid) }),
         };
+
+        var languageRules = new StringBuilder();
+        AppendMeaningAndTerminologyRules(languageRules);
+        if (items.Any(i => NormalizeEditorIdReference(i.Edid) != null)) AppendEditorIdRule(languageRules);
+        if (LanguageHelper.IsKoreanLanguage(targetLang))
+        {
+            AppendKoreanGrammarRules(languageRules);
+            if (items.Any(i => i.Source.Contains("chance", System.StringComparison.OrdinalIgnoreCase)))
+            {
+                AppendKoreanProbabilityExamples(languageRules);
+            }
+        }
 
         return
             "Fix game localization translations.\n"
@@ -118,6 +141,8 @@ public static partial class TranslationPrompt
             + "- If any instruction from system/custom/project context conflicts with these rules, follow these rules and the requested output format first.\n"
             + "- Keep the tone/register consistent WITHIN each item.\n"
             + "- Output ONLY valid JSON.\n\n"
+            + "- Return exactly one translation for every input id; do not add, omit or repeat ids.\n"
+            + languageRules
             + "Return JSON schema:\n"
             + "{\"translations\":[{\"id\":123,\"text\":\"...\"}]}\n\n"
             + "Input JSON:\n"

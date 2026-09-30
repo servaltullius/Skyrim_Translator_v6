@@ -7,7 +7,8 @@ public sealed record TranslationItem(
     [property: JsonPropertyName("text")] string Text,
     [property: JsonPropertyName("rec")] string? Rec = null,
     [property: JsonPropertyName("ctx")] string? Ctx = null,
-    [property: JsonPropertyName("style")] string? Style = null
+    [property: JsonPropertyName("style")] string? Style = null,
+    [property: JsonPropertyName("edid")] string? Edid = null
 );
 
 public sealed record RepairTranslationItem(
@@ -16,5 +17,6 @@ public sealed record RepairTranslationItem(
     [property: JsonPropertyName("current")] string Current,
     [property: JsonPropertyName("rec")] string? Rec = null,
     [property: JsonPropertyName("style")] string? Style = null,
-    [property: JsonPropertyName("ctx")] string? Ctx = null
+    [property: JsonPropertyName("ctx")] string? Ctx = null,
+    [property: JsonPropertyName("edid")] string? Edid = null
 );

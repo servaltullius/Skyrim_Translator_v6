@@ -97,7 +97,7 @@ public sealed partial class TranslationService
             return false;
         }
 
-        // Require TitleCase-ish to avoid learning generic words.
+        // Require TitleCase-ish; automatic learning also filters common UI/mechanics words.
         if (s[0] is < 'A' or > 'Z')
         {
             return false;
@@ -215,7 +215,7 @@ public sealed partial class TranslationService
                 continue;
             }
 
-            if (!IsSessionTermDefinitionText(it.Source))
+            if (!IsAutomaticSessionTermCandidate(it.Source))
             {
                 continue;
             }

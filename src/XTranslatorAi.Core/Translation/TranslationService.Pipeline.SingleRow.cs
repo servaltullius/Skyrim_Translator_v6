@@ -120,7 +120,8 @@ public sealed partial class TranslationService
                 CancellationToken: ctx.CancellationToken,
                 CandidateCount: GeminiModelPolicy.SupportsMultipleCandidates(ctx.ModelName)
                     ? GetRiskyCandidateCountForSource(ctx.TargetLang, row.Source)
-                    : 1
+                    : 1,
+                Edid: GetEdidForId(row.Id)
             );
 
             return await TranslateTextWithSentinelAsync(
@@ -166,7 +167,8 @@ public sealed partial class TranslationService
                 maskedSource: row.Masked,
                 currentTranslation: raw,
                 promptOnlyGlossary: row.Glossary.PromptOnlyPairs,
-                styleHint: styleHint
+                styleHint: styleHint,
+                edid: GetEdidForId(row.Id)
             );
             var repairRequest = CreateSemanticRepairRequest(ctx) with { MaxOutputTokens = TranslationOutputBudget.Compute(
                 row.Masked.Length, TranslationConstants.XtTokenRegex.Matches(row.Masked).Count, 1,
@@ -195,7 +197,8 @@ public sealed partial class TranslationService
         string maskedSource,
         string currentTranslation,
         IReadOnlyList<(string Source, string Target)> promptOnlyGlossary,
-        string? styleHint
+        string? styleHint,
+        string? edid
     )
     {
         return TranslationPrompt.BuildRepairTextOnlyUserPrompt(
@@ -205,7 +208,8 @@ public sealed partial class TranslationService
                 SourceText: maskedSource,
                 CurrentTranslation: currentTranslation,
                 PromptOnlyGlossary: MergeSessionPromptOnlyGlossaryForText(maskedSource, promptOnlyGlossary),
-                StyleHint: styleHint
+                StyleHint: styleHint,
+                Edid: edid
             )
         );
     }

@@ -1,5 +1,23 @@
 # Fresh Gemini 3.8 Flash plugin comparison
 
+## Frozen prompt evaluation
+
+`evaluate-prompts INPUT.json NEW-OUTPUT-FOLDER` translates at most 150 frozen
+input rows with the build's embedded Skyrim system prompt and production batch
+prompt builder. Input is an array of `{ "items": [...], "glossary": [...] }`
+batches using the existing `TranslationItem` and `source`/`target` glossary schema.
+Compare the same input with separately preserved before/after builds. It reads
+`GEMINI_API_KEY` in memory and makes paid standard API requests to the exact
+`gemini-3.8-flash` with Low thinking and default temperature.
+
+It records input and prompt hashes, raw responses, token counts and input-ID/token
+integrity checks. It does not learn new session terms, retry, repair, post-edit,
+use TM/cache, or export a plugin. Frozen reference glossary/context is retained.
+This isolates prompt changes; it is not an end-to-end pipeline evaluation or a
+blind quality score. A separate output folder is required for every invocation.
+
+## Fresh plugin translation
+
 This console tool uses the production `TranslationService`, `GeminiClient`, plugin
 importer and writer. It accepts only an original plugin and an isolated experiment
 folder. Existing Korean translations are separate inputs to `compare.py`; they

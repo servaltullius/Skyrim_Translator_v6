@@ -101,7 +101,7 @@ public sealed partial class TranslationService
         return source[..leading] + translated.Trim() + source[trailing..];
     }
 
-    private static TextRequestContext CreateLongTextChunkRequestContext(LongTextChunkContext chunkContext)
+    private TextRequestContext CreateLongTextChunkRequestContext(LongTextChunkContext chunkContext)
     {
         return new TextRequestContext(
             ApiKey: chunkContext.ApiKey,
@@ -115,7 +115,8 @@ public sealed partial class TranslationService
             MaxOutputTokens: chunkContext.MaxOutputTokens,
             MaxRetries: chunkContext.MaxRetries,
             CancellationToken: chunkContext.CancellationToken,
-            Purpose: "translate-chunk"
+            Purpose: "translate-chunk",
+            Edid: GetEdidForId(chunkContext.Row.Id)
         );
     }
 
