@@ -16,6 +16,20 @@ const string model = "gemini-3.8-flash";
 var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 if (args.Length == 3 && args[0] == "evaluate-prompts")
     return await PromptEvaluationCommand.RunAsync(args[1], args[2]);
+if (args.Length > 0 && args[0] == "eval-run")
+{
+    try { return await EvalRunCommand.RunAsync(args[1..]); }
+    catch (Exception ex)
+    {
+        // Never print HTTP exception messages, request URLs, masks, or credentials.
+        Console.Error.WriteLine(JsonSerializer.Serialize(new {
+            Error = ex is GeminiHttpException ? "GeminiHttpFailure" : ex.GetType().Name,
+            StatusCode = ex is GeminiHttpException he ? (int?)he.StatusCode : null,
+            Detail = ex is GeminiException or HttpRequestException ? "API request failed; credentials omitted." : ex.Message
+        }));
+        return 1;
+    }
+}
 if (args.Length != 3 || args[0] is not ("prepare" or "estimate" or "translate" or "export"))
 {
     Console.Error.WriteLine("Usage: TranslationBenchmark prepare|estimate|translate|export original.esp NEW-EXPERIMENT-FOLDER");
@@ -244,7 +258,7 @@ sealed class UsageLogger(string path) : IGeminiCallLogger
     }
 }
 
-sealed class SafeApiHandler(string tracePath) : DelegatingHandler(new HttpClientHandler())
+sealed class SafeApiHandler(string tracePath, string allowedModel = "gemini-3.8-flash") : DelegatingHandler(new HttpClientHandler())
 {
     private readonly object _gate = new();
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
@@ -258,7 +272,7 @@ sealed class SafeApiHandler(string tracePath) : DelegatingHandler(new HttpClient
             request.Headers.Add("x-goog-api-key", Uri.UnescapeDataString(keyParameter[4..]));
             request.RequestUri = new UriBuilder(uri) { Query = string.Join("&", query.Where(p => p != keyParameter)) }.Uri;
         }
-        if (uri.AbsolutePath.Contains(":generateContent") && !uri.AbsolutePath.EndsWith("/gemini-3.8-flash:generateContent"))
+        if (uri.AbsolutePath.Contains(":generateContent") && !uri.AbsolutePath.EndsWith($"/{allowedModel}:generateContent"))
             throw new InvalidOperationException("A different model was requested.");
         // Only the model input body is retained, never HTTP headers or credential-bearing URLs.
         if (request.Content != null) {

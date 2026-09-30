@@ -9,5 +9,8 @@
     <ProjectReference Include="../../src/XTranslatorAi.Core/XTranslatorAi.Core.csproj" />
     <Compile Include="../../src/XTranslatorAi.App/Services/SystemPromptBuilder.cs" Link="SystemPromptBuilder.cs" />
     <EmbeddedResource Include="../../src/XTranslatorAi.App/Assets/메타프롬프트.md" LogicalName="SkyrimPrompt" />
+    <Compile Include="../../src/XTranslatorAi.App/Services/BuiltInGlossaryService.cs" Link="BuiltInGlossaryService.cs" />
+    <Compile Include="../../src/XTranslatorAi.App/Services/EmbeddedAssets.cs" Link="EmbeddedAssets.cs" />
+    <EmbeddedResource Include="../../src/XTranslatorAi.App/Assets/기본용어집.md" LogicalName="XTranslatorAi.App.Assets.기본용어집.md" />
   </ItemGroup>
 </Project>
