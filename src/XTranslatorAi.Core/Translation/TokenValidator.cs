@@ -335,6 +335,8 @@ internal static class TokenValidator
         if (!string.IsNullOrWhiteSpace(inputText) && string.IsNullOrWhiteSpace(outputText))
             throw new InvalidOperationException($"Translation is empty for {context}.");
 
+        ValidateLinesAligned(inputText, outputText, context);
+
         SplitByTokens(inputText, out var inputTexts, out _);
         SplitByTokens(outputText, out var outputTexts, out _);
 
@@ -363,6 +365,63 @@ internal static class TokenValidator
                 );
             }
         }
+    }
+
+    private static readonly Regex LayoutTokenRegex = new(
+        pattern: @"__XT_PH_[0-9]{4}__",
+        options: RegexOptions.CultureInvariant
+    );
+
+    private static readonly Regex RawAngleTagRegex = new(
+        pattern: @"<[^>]*>",
+        options: RegexOptions.CultureInvariant
+    );
+
+    /// <summary>
+    /// Plain __XT_PH_####__ tokens are layout (line breaks, page breaks, formatting tags). A slot between
+    /// them that is empty in the source must stay empty; text there means the model shifted lines past
+    /// the layout (a duplicated line pushing a poem past "&lt;/p&gt;" and the page breaks). The reverse is
+    /// allowed: Korean word order often joins a title split over two lines ("A Short History / of Morrowind").
+    /// </summary>
+    private static void ValidateLinesAligned(string inputText, string outputText, string context)
+    {
+        var inputSlots = LayoutTokenRegex.Split(inputText);
+        var outputSlots = LayoutTokenRegex.Split(outputText);
+        if (inputSlots.Length != outputSlots.Length)
+        {
+            return; // Token validation reports layout count differences.
+        }
+
+        // One moved line is cosmetic ("<font>" and the first sentence joined on one line) and not worth
+        // losing the whole translation over. A shift cascades into many slots (8–18 in the evaluation).
+        const int shiftedSlotLimit = 3;
+        var shifted = 0;
+        for (var i = 0; i < inputSlots.Length; i++)
+        {
+            if (!HasContent(inputSlots[i]) && HasContent(outputSlots[i]) && ++shifted >= shiftedSlotLimit)
+            {
+                throw new InvalidOperationException(
+                    $"Translation shifted text across line breaks or tags for {context} (slot {i})."
+                );
+            }
+        }
+    }
+
+    private static bool HasContent(string slot)
+    {
+        if (TranslationConstants.XtTokenRegex.IsMatch(slot))
+        {
+            return true; // A term or value.
+        }
+
+        foreach (var ch in RawAngleTagRegex.Replace(slot, ""))
+        {
+            if (char.IsLetter(ch))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     // ── Repair ──
@@ -622,13 +681,15 @@ internal static class TokenValidator
 
     private static bool IsTokenOrderCompatibleWithMovablePlaceholders(IReadOnlyList<string> expected, IReadOnlyList<string> actual)
     {
+        // Terms and runtime values may also cross line breaks and tags: prose wrapped mid-sentence
+        // is reordered across the break. Numeric values stay within their line (stat text).
         var expectedFixed = new List<string>();
         var expectedMovableSegments = new List<Dictionary<string, int>>();
-        BuildFixedAndMovableSegments(expected, expectedFixed, expectedMovableSegments);
+        BuildFixedAndMovableSegments(WithoutFreeTokens(expected), expectedFixed, expectedMovableSegments);
 
         var actualFixed = new List<string>();
         var actualMovableSegments = new List<Dictionary<string, int>>();
-        BuildFixedAndMovableSegments(actual, actualFixed, actualMovableSegments);
+        BuildFixedAndMovableSegments(WithoutFreeTokens(actual), actualFixed, actualMovableSegments);
 
         if (expectedFixed.Count != actualFixed.Count)
         {
@@ -688,6 +749,23 @@ internal static class TokenValidator
         }
 
         movableSegments.Add(current);
+    }
+
+    private static bool IsFreeToken(string token)
+        => token.StartsWith("__XT_PH_VAR_", StringComparison.Ordinal)
+            || token.StartsWith("__XT_TERM_", StringComparison.Ordinal);
+
+    private static List<string> WithoutFreeTokens(IReadOnlyList<string> tokens)
+    {
+        var result = new List<string>(tokens.Count);
+        foreach (var token in tokens)
+        {
+            if (!IsFreeToken(token))
+            {
+                result.Add(token);
+            }
+        }
+        return result;
     }
 
     // Values and glossary terms follow target-language word order ("the Jarl of Whiterun" →
