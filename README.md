@@ -2,7 +2,7 @@
 
 Skyrim SE/AE 플러그인과 Bethesda/xTranslator XML을 한국어로 번역하고 검수하는 Windows 앱입니다. .NET 10 WPF와 SQLite를 사용하며 Gemini API를 지원합니다.
 
-현재 루트 빌드는 **2026.09.30-tm-seed-preview8**입니다. 프로젝트 루트의 `TulliusTranslator.exe`로 실행하며 창 제목에서도 버전을 확인할 수 있습니다. .NET 런타임을 포함한 Windows x64 단일 파일입니다. 1.6 릴리스의 TES·Starfield 내장 TM을 통합하고, 내장 TM이 프로젝트를 열 때마다 다시 가져와지던 문제를 고쳤습니다. 이전 preview7 EXE는 `artifacts/integrate-1.6-20260930/deployment/TulliusTranslator.preview7.exe.disabled`로 보존합니다. [EDID·용어 기억 개선과 실제 표본 비교](docs/analysis/2026-09-30-edid-session-memory.md), [앞선 프롬프트 개선](docs/analysis/2026-09-30-prompt-improvement.md)에 변경·비용·미해결 범위를 기록했습니다.
+현재 루트 빌드는 **2026.09.30-sndr-preview9**입니다. 프로젝트 루트의 `TulliusTranslator.exe`로 실행하며 창 제목에서도 버전을 확인할 수 있습니다. .NET 런타임을 포함한 Windows x64 단일 파일입니다. preview8(1.6 내장 TM 통합, 재수입 수정)에 더해 Skyrim.esm을 열 때 SNDR:FNAM 경고 63개가 잘못 표시되던 문제를 고쳤습니다([SNDR:FNAM 확인](docs/analysis/2026-09-30-sndr-fnam.md)). 이전 preview8 EXE는 `artifacts/sndr-preview9-20260930/deployment/TulliusTranslator.preview8.exe.disabled`로 보존합니다. [EDID·용어 기억 개선과 실제 표본 비교](docs/analysis/2026-09-30-edid-session-memory.md), [앞선 프롬프트 개선](docs/analysis/2026-09-30-prompt-improvement.md)에 변경·비용·미해결 범위를 기록했습니다.
 
 현재 빌드는 앞서 적용한 번역 파이프라인·기본값 개선을 포함합니다. 그 변경 내용은 [파이프라인 개선 기록](docs/analysis/2026-09-29-pipeline-defaults-implementation.md)에 보존합니다.
 
