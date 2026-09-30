@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text;
+using XTranslatorAi.Core.Text.KoreanFix.Internal;
 
 namespace XTranslatorAi.Core.Translation;
 
@@ -94,7 +95,7 @@ public sealed partial class TranslationService
                 throw new InvalidOperationException($"Missing glossary token in translation: {token}");
             }
         }
-        text = ReplaceGlossaryTokens(text, glossary.TokenToReplacement);
+        text = ReplaceGlossaryTokens(text, glossary.TokenToReplacement, LanguageHelper.IsKoreanLanguage(targetLang));
 
         var unmasked = masker.Unmask(text, masked.TokenToOriginal);
         unmasked = PlaceholderUnitBinder.ReplaceUnitsAfterUnmask(targetLang, unmasked);
@@ -224,7 +225,11 @@ public sealed partial class TranslationService
         return ReplaceTokenMatches(text, matches);
     }
 
-    internal static string ReplaceGlossaryTokens(string text, IReadOnlyDictionary<string, string> replacements)
+    internal static string ReplaceGlossaryTokens(
+        string text,
+        IReadOnlyDictionary<string, string> replacements,
+        bool fixKoreanParticles = false
+    )
     {
         var matches = new List<(int Position, string Token, string Replacement)>();
         foreach (Match match in TranslationConstants.XtTokenRegex.Matches(text))
@@ -234,12 +239,13 @@ public sealed partial class TranslationService
                 matches.Add((match.Index, match.Value, replacement));
             }
         }
-        return ReplaceTokenMatches(text, matches);
+        return ReplaceTokenMatches(text, matches, fixKoreanParticles);
     }
 
     private static string ReplaceTokenMatches(
         string text,
-        IReadOnlyList<(int Position, string Token, string Replacement)> matches
+        IReadOnlyList<(int Position, string Token, string Replacement)> matches,
+        bool fixKoreanParticles = false
     )
     {
         // Inspect the original model output only. A replacement inserted by us
@@ -272,6 +278,14 @@ public sealed partial class TranslationService
 
             result.Append(text, cursor, pos - cursor).Append(replacement);
             cursor = afterStart;
+
+            // The model chose this particle while seeing only the token, not the term.
+            if (fixKoreanParticles
+                && KoreanParticleSelector.TryFixParticleAfterTerm(replacement, text, afterStart, out var particle, out var particleLength))
+            {
+                result.Append(particle);
+                cursor = afterStart + particleLength;
+            }
         }
         return result.Append(text, cursor, text.Length - cursor).ToString();
     }

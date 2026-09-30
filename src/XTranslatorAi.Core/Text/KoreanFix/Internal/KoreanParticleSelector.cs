@@ -119,8 +119,24 @@ internal static class KoreanParticleSelector
         return string.Equals(particle, expected, StringComparison.Ordinal) ? particle : expected;
     }
 
+    // Nouns that end in "을" themselves; in compounds ("시골마을") the regex splits them as noun + "을".
+    private static readonly string[] WordsEndingInEul = { "마을", "가을", "고을", "노을" };
+
     public static string FixObjectParticleSafely(string noun, string particle)
-        => FixParticleSafely(noun, particle, ChooseObjectParticle, unsafeParticle: "을", unsafeExpected: "를");
+    {
+        if (string.Equals(particle, "을", StringComparison.Ordinal))
+        {
+            foreach (var word in WordsEndingInEul)
+            {
+                if (noun.EndsWith(word[..1], StringComparison.Ordinal))
+                {
+                    return particle;
+                }
+            }
+        }
+
+        return FixParticleSafely(noun, particle, ChooseObjectParticle, unsafeParticle: "을", unsafeExpected: "를");
+    }
 
     public static string FixObjectParticleSafelyLatin(string noun, string particle)
         => FixParticleSafely(noun, particle, ChooseObjectParticleLatin, unsafeParticle: "을", unsafeExpected: "를");
@@ -133,19 +149,130 @@ internal static class KoreanParticleSelector
             return particle;
         }
 
-        // "…는" can be an attributive verb ending (e.g., "있는/없는/떠있는") rather than a topic particle.
-        // Be conservative: avoid rewriting "는" -> "은" in these ambiguous verb-like cases to reduce false positives.
-        if (string.Equals(particle, "는", StringComparison.Ordinal) && string.Equals(expected, "은", StringComparison.Ordinal))
+        // "…는" after a consonant is almost always an attributive verb ending
+        // ("살아남는", "잡아먹는", "있는"), not a wrong topic particle. Never rewrite it to "은".
+        if (string.Equals(particle, "는", StringComparison.Ordinal))
         {
-            if (noun.Length < 2
-                || noun.EndsWith("있", StringComparison.Ordinal)
-                || noun.EndsWith("없", StringComparison.Ordinal))
-            {
-                return particle;
-            }
+            return particle;
         }
 
         return FixParticleSafely(noun, particle, ChooseTopicParticle, unsafeParticle: "은", unsafeExpected: "는");
+    }
+
+    // Particle pairs as (after a final consonant, after a vowel). Longer forms come first so
+    // "으로" is not read as "으" + "로" and "이라" is not read as "이" + "라".
+    private static readonly (string Consonant, string Vowel)[] TermParticlePairs =
+    {
+        ("으로", "로"), ("이라", "라"), ("이나", "나"),
+        ("이", "가"), ("은", "는"), ("을", "를"), ("과", "와"),
+    };
+
+    // Endings that may follow a particle without a boundary ("로부터", "과의", "이라고").
+    private static readonly string[] DirectionalContinuations = { "부터", "서", "써", "의", "는", "도", "만" };
+    private static readonly string[] ConjunctionContinuations = { "의", "는", "도" };
+    private static readonly string[] CopulaContinuations = { "고", "는", "면", "서" };
+
+    /// <summary>
+    /// Chooses the particle that directly follows a term we substituted into the model output.
+    /// The model wrote that particle while seeing only a placeholder token, so its choice cannot be trusted,
+    /// but the position is certain: unlike free-text fixes, the syllable here is known to follow a noun.
+    /// </summary>
+    public static bool TryFixParticleAfterTerm(string term, string text, int start, out string particle, out int length)
+    {
+        particle = "";
+        length = 0;
+        if (!TryGetFinalSound(term, out var hasFinal, out var finalRieul))
+        {
+            return false;
+        }
+
+        foreach (var (consonantForm, vowelForm) in TermParticlePairs)
+        {
+            foreach (var written in new[] { consonantForm, vowelForm })
+            {
+                if (string.CompareOrdinal(text, start, written, 0, written.Length) != 0)
+                {
+                    continue;
+                }
+
+                var end = start + written.Length;
+                if (!IsParticleEnd(text, end, ContinuationsFor(consonantForm)))
+                {
+                    continue;
+                }
+
+                var useConsonantForm = consonantForm == "으로" ? hasFinal && !finalRieul : hasFinal;
+                particle = useConsonantForm ? consonantForm : vowelForm;
+                length = written.Length;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static string[] ContinuationsFor(string consonantForm) => consonantForm switch
+    {
+        "으로" => DirectionalContinuations,
+        "과" => ConjunctionContinuations,
+        "이라" => CopulaContinuations,
+        _ => Array.Empty<string>(),
+    };
+
+    private static bool IsParticleEnd(string text, int end, string[] continuations)
+    {
+        if (end >= text.Length || !IsHangulSyllable(text[end]))
+        {
+            return true;
+        }
+
+        foreach (var continuation in continuations)
+        {
+            if (string.CompareOrdinal(text, end, continuation, 0, continuation.Length) == 0
+                && (end + continuation.Length >= text.Length || !IsHangulSyllable(text[end + continuation.Length])))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool TryGetFinalSound(string term, out bool hasFinal, out bool finalRieul)
+    {
+        hasFinal = false;
+        finalRieul = false;
+        if (string.IsNullOrEmpty(term))
+        {
+            return false;
+        }
+
+        var last = term[^1];
+        if (IsHangulSyllable(last))
+        {
+            hasFinal = HasFinalConsonant(last);
+            finalRieul = HasFinalRieul(last);
+            return true;
+        }
+
+        if (char.IsDigit(last))
+        {
+            hasFinal = DigitHasFinalConsonant(last);
+            finalRieul = last is '1' or '7' or '8';
+            return true;
+        }
+
+        if (last is >= 'A' and <= 'Z' or >= 'a' and <= 'z')
+        {
+            var lower = char.ToLowerInvariant(last);
+            hasFinal = !IsLatinVowel(lower);
+            finalRieul = lower == 'l';
+            return true;
+        }
+
+        // Terms ending in brackets or punctuation: the right particle depends on how the reader
+        // pronounces them, so leave the model's choice alone.
+        return false;
     }
 
     public static string FixTopicParticleSafelyLatin(string noun, string particle)

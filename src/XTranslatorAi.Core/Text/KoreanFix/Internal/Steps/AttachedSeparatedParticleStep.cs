@@ -39,33 +39,27 @@ internal sealed class AttachedSeparatedParticleStep : IKoreanFixStep
         options: RegexOptions.CultureInvariant
     );
 
+    // A lone "은" is often the noun "silver" ("은 주화"), so only the unambiguous "는" is joined.
     private static readonly Regex SeparatedTopicParticleRegex = new(
-        pattern: @"(?<noun>[가-힣]{1,30})\s+(?<particle>은|는)" + ParticleBoundary,
+        pattern: @"(?<noun>[가-힣]{1,30})\s+(?<particle>는)" + ParticleBoundary,
         options: RegexOptions.CultureInvariant
     );
 
     private static readonly Regex SeparatedTopicParticleLatinRegex = new(
-        pattern: LatinNoun + @"\s+(?<particle>은|는)" + ParticleBoundary,
+        pattern: LatinNoun + @"\s+(?<particle>는)" + ParticleBoundary,
         options: RegexOptions.CultureInvariant
     );
 
+    // Countless Korean words end in "가" or "이" (무언가, 전문가, 기꺼이, 가까이, 무엇인가?), so a
+    // Hangul subject particle is only corrected after the stat nouns of effect descriptions.
+    // Particles after glossary terms are fixed where the term is substituted.
     private static readonly Regex AttachedSubjectParticleRegex = new(
-        pattern: @"(?<noun>[가-힣]{1,30})(?<particle>이|가)" + ParticleBoundary,
+        pattern: @"(?<noun>체력|매지카|지구력)(?<particle>이|가)" + ParticleBoundary,
         options: RegexOptions.CultureInvariant
     );
 
     private static readonly Regex AttachedSubjectParticleLatinRegex = new(
         pattern: LatinNoun + @"(?<particle>이|가)" + ParticleBoundary,
-        options: RegexOptions.CultureInvariant
-    );
-
-    private static readonly Regex SeparatedSubjectParticleRegex = new(
-        pattern: @"(?<noun>[가-힣]{1,30})\s+(?<particle>이|가)" + ParticleBoundary,
-        options: RegexOptions.CultureInvariant
-    );
-
-    private static readonly Regex SeparatedSubjectParticleLatinRegex = new(
-        pattern: LatinNoun + @"\s+(?<particle>이|가)" + ParticleBoundary,
         options: RegexOptions.CultureInvariant
     );
 
@@ -173,18 +167,10 @@ internal sealed class AttachedSeparatedParticleStep : IKoreanFixStep
         }
 
         // Fix wrong subject particle: "지구력가" -> "지구력이", "매지카이" -> "매지카가".
+        // Spaced forms are left alone: a lone "이" is usually the demonstrative ("그대가 이 책")
+        // and a lone "가" the verb ("그만 가 봐").
         if (working.IndexOf('이') >= 0 || working.IndexOf('가') >= 0)
         {
-            working = SeparatedSubjectParticleRegex.Replace(
-                working,
-                m =>
-                {
-                    var noun = m.Groups["noun"].Value;
-                    var particle = m.Groups["particle"].Value;
-                    return noun + KoreanParticleSelector.FixSubjectParticleSafely(noun, particle);
-                }
-            );
-
             working = AttachedSubjectParticleRegex.Replace(
                 working,
                 m =>
@@ -192,16 +178,6 @@ internal sealed class AttachedSeparatedParticleStep : IKoreanFixStep
                     var noun = m.Groups["noun"].Value;
                     var particle = m.Groups["particle"].Value;
                     return noun + KoreanParticleSelector.FixSubjectParticleSafely(noun, particle);
-                }
-            );
-
-            working = SeparatedSubjectParticleLatinRegex.Replace(
-                working,
-                m =>
-                {
-                    var noun = m.Groups["noun"].Value;
-                    var particle = m.Groups["particle"].Value;
-                    return noun + KoreanParticleSelector.FixSubjectParticleSafelyLatin(noun, particle);
                 }
             );
 

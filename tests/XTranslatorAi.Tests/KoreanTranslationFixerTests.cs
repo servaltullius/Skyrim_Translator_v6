@@ -322,11 +322,13 @@ public class KoreanTranslationFixerTests
     }
 
     [Fact]
-    public void Fix_CorrectsSeparatedSubjectParticle_ConsonantEndingNoun()
+    public void Fix_LeavesSeparatedSubjectParticle_OutsideStatPhrases()
     {
+        // A lone "가"/"이" is too often the verb or the demonstrative ("그만 가 봐", "그대가 이 책").
+        // Only the stat phrase before a placeholder ("중갑 가 <mag>") is joined.
         var input = "중갑 가 무겁다.";
         var output = KoreanTranslationFixer.Fix("korean", input);
-        Assert.Equal("중갑이 무겁다.", output);
+        Assert.Equal("중갑 가 무겁다.", output);
     }
 
     [Fact]
