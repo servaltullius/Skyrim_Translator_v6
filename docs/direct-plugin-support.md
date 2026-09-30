@@ -1,6 +1,6 @@
 # Skyrim SE/AE 플러그인 직접 번역
 
-현재 루트 실행 파일: `2026.09.30-sndr-preview9`. 동일한 배포본은 `artifacts/sndr-preview9-20260930/publish/TulliusTranslator.exe`에 있다. preview7의 [EDID 문맥 전달·자동 용어 기억](analysis/2026-09-30-edid-session-memory.md)과 [프롬프트 개선](analysis/2026-09-30-prompt-improvement.md), preview8의 1.6 TES·Starfield 내장 TM과 재수입 수정에 [SNDR:FNAM 경고 제거](analysis/2026-09-30-sndr-fnam.md)를 더했다. 플러그인 writer는 preview5와 같고, reader는 진단 표시만 바뀌었다. 설정과 API 키는 이번 교체에서 변경하지 않았다. 이전 preview8은 `artifacts/sndr-preview9-20260930/deployment/TulliusTranslator.preview8.exe.disabled`에, preview7 이전 빌드도 기존 `.disabled` 백업에 보존한다.
+현재 루트 실행 파일: `2026.09.30-quality-preview10`. 동일한 배포본은 `artifacts/quality-preview10-20260930/publish/TulliusTranslator.exe`에 있다. preview9(1.6 내장 TM, [SNDR:FNAM 경고 제거](analysis/2026-09-30-sndr-fnam.md))에 [품질 평가 v2](analysis/2026-09-30-quality-eval-v2.md)의 후처리 결함 수정을 더했다. 번역 결과 후처리와 토큰 검사가 바뀌었고, 플러그인 reader/writer는 preview9와 같다. 설정과 API 키는 이번 교체에서 변경하지 않았다. 이전 preview9는 `artifacts/quality-preview10-20260930/deployment/TulliusTranslator.preview9.exe.disabled`에, preview8 이전 빌드도 기존 `.disabled` 백업에 보존한다.
 
 ## 사용 순서
 
