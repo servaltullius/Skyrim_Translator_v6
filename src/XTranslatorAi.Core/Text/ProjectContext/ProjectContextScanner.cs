@@ -124,6 +124,7 @@ public sealed class ProjectContextScanner
         var editedByKey = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var samples = new List<ProjectContextSample>();
         var seenSamples = new HashSet<string>(StringComparer.Ordinal);
+        var plainSamples = new List<ProjectContextSample>();
 
         const int pageSize = 2000;
         for (var offset = 0; offset < total; offset += pageSize)
@@ -143,10 +144,25 @@ public sealed class ProjectContextScanner
 
                 AccumulateTitleCaseTerms(termCounts, source);
                 TryAccumulateSample(samples, seenSamples, row.Rec, source);
+                TryAccumulatePlainSample(plainSamples, row.Rec, source);
             }
         }
 
+        // A project of ordinary unique names/dialogue can have neither special samples nor
+        // frequent title-case terms. Include bounded source evidence instead of asking the model
+        // to infer context from only the filename and record counts.
+        if (samples.Count == 0) samples.AddRange(plainSamples);
         return new ScanAccumulation(recCounts, termCounts, samples, editedByKey);
+    }
+
+    private static void TryAccumulatePlainSample(List<ProjectContextSample> samples, string? recRaw, string source)
+    {
+        if (samples.Count >= 8) return;
+        var rec = (recRaw ?? "").Trim();
+        var text = TruncateExample(source, 220);
+        if (samples.Any(sample => string.Equals(sample.Rec, rec, StringComparison.OrdinalIgnoreCase) && sample.Text == text)) return;
+        if (samples.Count(sample => string.Equals(sample.Rec, rec, StringComparison.OrdinalIgnoreCase)) >= 2) return;
+        samples.Add(new ProjectContextSample(rec, text));
     }
 
     private static void AccumulateRecCount(Dictionary<string, int> recCounts, string? recRaw)

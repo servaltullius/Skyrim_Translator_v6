@@ -46,7 +46,7 @@ public sealed partial class TranslationCostEstimator
                 : new GeminiContent(Role: null, Parts: new List<GeminiPart> { new(systemPrompt ?? "") }),
             GenerationConfig: generationConfig,
             SafetySettings: BuildDefaultSafetySettings()
-        );
+        ) { Purpose = "cost-sample" };
     }
 
     private async Task<(long InTokens, long OutTokens)> TryAccumulateSampleTokensAsync(

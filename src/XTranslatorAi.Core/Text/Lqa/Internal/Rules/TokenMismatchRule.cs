@@ -19,7 +19,7 @@ internal static class TokenMismatchRule
                 Rec: entry.Rec,
                 Severity: "Error",
                 Code: "token_mismatch",
-                Message: "원문/번역 태그·토큰(<...>, [pagebreak], __XT_*__)이 일치하지 않습니다.",
+                Message: "원문/번역 보호 요소가 일치하지 않습니다: 태그·토큰(<...>, [pagebreak], __XT_*__), 변수(%s, {name}), 줄바꿈 또는 서식 순서를 확인하세요.",
                 SourceText: sourceText,
                 DestText: destText
             )

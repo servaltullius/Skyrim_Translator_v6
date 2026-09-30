@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.App.Services;
 
@@ -39,7 +40,7 @@ public sealed class AppSettingsStore
 
             var json = File.ReadAllText(_settingsPath);
             var persisted = JsonSerializer.Deserialize<PersistedAppSettings>(json, JsonOptions) ?? new PersistedAppSettings();
-            var settings = ConvertFromPersisted(persisted, out var needsMigration);
+            var settings = NormalizeTranslationPreferences(ConvertFromPersisted(persisted, out var needsMigration));
             if (needsMigration)
             {
                 try
@@ -68,7 +69,7 @@ public sealed class AppSettingsStore
             Directory.CreateDirectory(dir);
         }
 
-        var persisted = ConvertToPersisted(settings);
+        var persisted = ConvertToPersisted(NormalizeTranslationPreferences(settings));
         var json = JsonSerializer.Serialize(persisted, JsonOptions);
         File.WriteAllText(_settingsPath, json);
     }
@@ -108,12 +109,36 @@ public sealed class AppSettingsStore
             ApiKeys: savedApiKeys.Count == 0 ? null : savedApiKeys.ToArray(),
             EnableApiKeyFailover: persisted.EnableApiKeyFailover,
             EnableBookFullModelOverride: persisted.EnableBookFullModelOverride,
+            EnableBookBodyModelOverride: persisted.EnableBookBodyModelOverride,
             BookFullModel: persisted.BookFullModel,
             EnablePromptCache: persisted.EnablePromptCache,
             EnableQualityEscalation: persisted.EnableQualityEscalation,
             QualityEscalationModel: persisted.QualityEscalationModel,
             EnableRiskyCandidateRerank: persisted.EnableRiskyCandidateRerank,
-            RiskyCandidateCount: persisted.RiskyCandidateCount
+            RiskyCandidateCount: persisted.RiskyCandidateCount,
+            SelectedModel: persisted.SelectedModel,
+            BatchSize: persisted.BatchSize,
+            MaxCharsPerBatch: persisted.MaxCharsPerBatch,
+            MaxParallelRequests: persisted.MaxParallelRequests,
+            MaxOutputTokensOverride: persisted.MaxOutputTokensOverride,
+            EnableRepairPass: persisted.EnableRepairPass,
+            SemanticRepairMode: persisted.SemanticRepairMode,
+            KeepSkyrimTagsRaw: persisted.KeepSkyrimTagsRaw,
+            EnableDialogueContextWindow: persisted.EnableDialogueContextWindow,
+            EnableSessionTermMemory: persisted.EnableSessionTermMemory,
+            UseRecStyleHints: persisted.UseRecStyleHints,
+            EnableTemplateFixer: persisted.EnableTemplateFixer,
+            EnableProjectContext: persisted.EnableProjectContext,
+            EnableAdaptiveOutputBudget: persisted.EnableAdaptiveOutputBudget,
+            EnableBookContext: persisted.EnableBookContext,
+            MaxRetryGenerations: persisted.MaxRetryGenerations,
+            MaxTotalGenerations: persisted.MaxTotalGenerations,
+            PluginSourceLanguage: persisted.PluginSourceLanguage,
+            PluginTargetLanguage: persisted.PluginTargetLanguage,
+            PluginSourceEncoding: persisted.PluginSourceEncoding,
+            PluginMetadataEncoding: persisted.PluginMetadataEncoding,
+            PluginTargetEncoding: persisted.PluginTargetEncoding,
+            PluginStringsDirectory: persisted.PluginStringsDirectory
         );
     }
 
@@ -130,12 +155,36 @@ public sealed class AppSettingsStore
                 ApiKeys: normalizedApiKeys.Count == 0 ? null : BuildProtectedApiKeys(normalizedApiKeys).ToArray(),
                 EnableApiKeyFailover: settings.EnableApiKeyFailover,
                 EnableBookFullModelOverride: settings.EnableBookFullModelOverride,
+                EnableBookBodyModelOverride: settings.EnableBookBodyModelOverride,
                 BookFullModel: settings.BookFullModel,
                 EnablePromptCache: settings.EnablePromptCache,
                 EnableQualityEscalation: settings.EnableQualityEscalation,
                 QualityEscalationModel: settings.QualityEscalationModel,
                 EnableRiskyCandidateRerank: settings.EnableRiskyCandidateRerank,
-                RiskyCandidateCount: settings.RiskyCandidateCount
+                RiskyCandidateCount: settings.RiskyCandidateCount,
+                SelectedModel: settings.SelectedModel,
+                BatchSize: settings.BatchSize,
+                MaxCharsPerBatch: settings.MaxCharsPerBatch,
+                MaxParallelRequests: settings.MaxParallelRequests,
+                MaxOutputTokensOverride: settings.MaxOutputTokensOverride,
+                EnableRepairPass: settings.EnableRepairPass,
+                SemanticRepairMode: settings.SemanticRepairMode,
+                KeepSkyrimTagsRaw: settings.KeepSkyrimTagsRaw,
+                EnableDialogueContextWindow: settings.EnableDialogueContextWindow,
+                EnableSessionTermMemory: settings.EnableSessionTermMemory,
+                UseRecStyleHints: settings.UseRecStyleHints,
+                EnableTemplateFixer: settings.EnableTemplateFixer,
+                EnableProjectContext: settings.EnableProjectContext,
+                EnableAdaptiveOutputBudget: settings.EnableAdaptiveOutputBudget,
+                EnableBookContext: settings.EnableBookContext,
+                MaxRetryGenerations: settings.MaxRetryGenerations,
+                MaxTotalGenerations: settings.MaxTotalGenerations,
+                PluginSourceLanguage: settings.PluginSourceLanguage,
+                PluginTargetLanguage: settings.PluginTargetLanguage,
+                PluginSourceEncoding: settings.PluginSourceEncoding,
+                PluginMetadataEncoding: settings.PluginMetadataEncoding,
+                PluginTargetEncoding: settings.PluginTargetEncoding,
+                PluginStringsDirectory: settings.PluginStringsDirectory
             );
         }
 
@@ -146,14 +195,51 @@ public sealed class AppSettingsStore
             ApiKeys: normalizedApiKeys.Count == 0 ? null : BuildLegacyApiKeys(normalizedApiKeys).ToArray(),
             EnableApiKeyFailover: settings.EnableApiKeyFailover,
             EnableBookFullModelOverride: settings.EnableBookFullModelOverride,
+            EnableBookBodyModelOverride: settings.EnableBookBodyModelOverride,
             BookFullModel: settings.BookFullModel,
             EnablePromptCache: settings.EnablePromptCache,
             EnableQualityEscalation: settings.EnableQualityEscalation,
             QualityEscalationModel: settings.QualityEscalationModel,
             EnableRiskyCandidateRerank: settings.EnableRiskyCandidateRerank,
-            RiskyCandidateCount: settings.RiskyCandidateCount
+            RiskyCandidateCount: settings.RiskyCandidateCount,
+            SelectedModel: settings.SelectedModel,
+            BatchSize: settings.BatchSize,
+            MaxCharsPerBatch: settings.MaxCharsPerBatch,
+            MaxParallelRequests: settings.MaxParallelRequests,
+            MaxOutputTokensOverride: settings.MaxOutputTokensOverride,
+            EnableRepairPass: settings.EnableRepairPass,
+            SemanticRepairMode: settings.SemanticRepairMode,
+            KeepSkyrimTagsRaw: settings.KeepSkyrimTagsRaw,
+            EnableDialogueContextWindow: settings.EnableDialogueContextWindow,
+            EnableSessionTermMemory: settings.EnableSessionTermMemory,
+            UseRecStyleHints: settings.UseRecStyleHints,
+            EnableTemplateFixer: settings.EnableTemplateFixer,
+            EnableProjectContext: settings.EnableProjectContext,
+            EnableAdaptiveOutputBudget: settings.EnableAdaptiveOutputBudget,
+            EnableBookContext: settings.EnableBookContext,
+            MaxRetryGenerations: settings.MaxRetryGenerations,
+            MaxTotalGenerations: settings.MaxTotalGenerations,
+            PluginSourceLanguage: settings.PluginSourceLanguage,
+            PluginTargetLanguage: settings.PluginTargetLanguage,
+            PluginSourceEncoding: settings.PluginSourceEncoding,
+            PluginMetadataEncoding: settings.PluginMetadataEncoding,
+            PluginTargetEncoding: settings.PluginTargetEncoding,
+            PluginStringsDirectory: settings.PluginStringsDirectory
         );
     }
+
+    private static AppSettings NormalizeTranslationPreferences(AppSettings settings) => settings with
+    {
+        SelectedModel = string.IsNullOrWhiteSpace(settings.SelectedModel) ? null : settings.SelectedModel.Trim(),
+        BatchSize = Math.Clamp(settings.BatchSize, 1, 100),
+        MaxCharsPerBatch = Math.Clamp(settings.MaxCharsPerBatch, 1000, 50000),
+        MaxParallelRequests = Math.Clamp(settings.MaxParallelRequests, 1, 8),
+        MaxOutputTokensOverride = settings.MaxOutputTokensOverride <= 0 ? 0 : Math.Clamp(settings.MaxOutputTokensOverride, 256, 65536),
+        RiskyCandidateCount = Math.Clamp(settings.RiskyCandidateCount, 2, 8),
+        SemanticRepairMode = Enum.IsDefined(settings.SemanticRepairMode) ? settings.SemanticRepairMode : PlaceholderSemanticRepairMode.Soft,
+        MaxRetryGenerations = Math.Clamp(settings.MaxRetryGenerations, 0, 100),
+        MaxTotalGenerations = Math.Max(0, settings.MaxTotalGenerations),
+    };
 
     private static string? NormalizeApiKey(string? apiKey)
     {
@@ -349,7 +435,31 @@ public sealed class AppSettingsStore
         [property: JsonPropertyName("enableQualityEscalation")] bool EnableQualityEscalation = false,
         [property: JsonPropertyName("qualityEscalationModel")] string? QualityEscalationModel = null,
         [property: JsonPropertyName("enableRiskyCandidateRerank")] bool EnableRiskyCandidateRerank = true,
-        [property: JsonPropertyName("riskyCandidateCount")] int RiskyCandidateCount = 3
+        [property: JsonPropertyName("riskyCandidateCount")] int RiskyCandidateCount = 3,
+        [property: JsonPropertyName("enableBookBodyModelOverride")] bool EnableBookBodyModelOverride = false,
+        [property: JsonPropertyName("selectedModel")] string? SelectedModel = null,
+        [property: JsonPropertyName("batchSize")] int BatchSize = 12,
+        [property: JsonPropertyName("maxCharsPerBatch")] int MaxCharsPerBatch = 15000,
+        [property: JsonPropertyName("maxParallelRequests")] int MaxParallelRequests = 2,
+        [property: JsonPropertyName("maxOutputTokensOverride")] int MaxOutputTokensOverride = 0,
+        [property: JsonPropertyName("enableRepairPass")] bool EnableRepairPass = true,
+        [property: JsonPropertyName("semanticRepairMode")] PlaceholderSemanticRepairMode SemanticRepairMode = PlaceholderSemanticRepairMode.Soft,
+        [property: JsonPropertyName("keepSkyrimTagsRaw")] bool KeepSkyrimTagsRaw = true,
+        [property: JsonPropertyName("enableDialogueContextWindow")] bool EnableDialogueContextWindow = true,
+        [property: JsonPropertyName("enableSessionTermMemory")] bool EnableSessionTermMemory = true,
+        [property: JsonPropertyName("useRecStyleHints")] bool UseRecStyleHints = true,
+        [property: JsonPropertyName("enableTemplateFixer")] bool EnableTemplateFixer = false,
+        [property: JsonPropertyName("enableProjectContext")] bool EnableProjectContext = true,
+        [property: JsonPropertyName("enableAdaptiveOutputBudget")] bool EnableAdaptiveOutputBudget = false,
+        [property: JsonPropertyName("enableBookContext")] bool EnableBookContext = false,
+        [property: JsonPropertyName("maxRetryGenerations")] int MaxRetryGenerations = 8,
+        [property: JsonPropertyName("maxTotalGenerations")] int MaxTotalGenerations = 0,
+        [property: JsonPropertyName("pluginSourceLanguage")] string PluginSourceLanguage = "english",
+        [property: JsonPropertyName("pluginTargetLanguage")] string PluginTargetLanguage = "korean",
+        [property: JsonPropertyName("pluginSourceEncoding")] string PluginSourceEncoding = "utf-8",
+        [property: JsonPropertyName("pluginMetadataEncoding")] string PluginMetadataEncoding = "windows-1252",
+        [property: JsonPropertyName("pluginTargetEncoding")] string PluginTargetEncoding = "utf-8",
+        [property: JsonPropertyName("pluginStringsDirectory")] string PluginStringsDirectory = ""
     );
 
     private sealed record PersistedSavedApiKey(
@@ -369,7 +479,31 @@ public sealed record AppSettings(
     [property: JsonPropertyName("enableQualityEscalation")] bool EnableQualityEscalation = false,
     [property: JsonPropertyName("qualityEscalationModel")] string? QualityEscalationModel = null,
     [property: JsonPropertyName("enableRiskyCandidateRerank")] bool EnableRiskyCandidateRerank = true,
-    [property: JsonPropertyName("riskyCandidateCount")] int RiskyCandidateCount = 3
+    [property: JsonPropertyName("riskyCandidateCount")] int RiskyCandidateCount = 3,
+    [property: JsonPropertyName("enableBookBodyModelOverride")] bool EnableBookBodyModelOverride = false,
+    [property: JsonPropertyName("selectedModel")] string? SelectedModel = null,
+    [property: JsonPropertyName("batchSize")] int BatchSize = 12,
+    [property: JsonPropertyName("maxCharsPerBatch")] int MaxCharsPerBatch = 15000,
+    [property: JsonPropertyName("maxParallelRequests")] int MaxParallelRequests = 2,
+    [property: JsonPropertyName("maxOutputTokensOverride")] int MaxOutputTokensOverride = 0,
+    [property: JsonPropertyName("enableRepairPass")] bool EnableRepairPass = true,
+    [property: JsonPropertyName("semanticRepairMode")] PlaceholderSemanticRepairMode SemanticRepairMode = PlaceholderSemanticRepairMode.Soft,
+    [property: JsonPropertyName("keepSkyrimTagsRaw")] bool KeepSkyrimTagsRaw = true,
+    [property: JsonPropertyName("enableDialogueContextWindow")] bool EnableDialogueContextWindow = true,
+    [property: JsonPropertyName("enableSessionTermMemory")] bool EnableSessionTermMemory = true,
+    [property: JsonPropertyName("useRecStyleHints")] bool UseRecStyleHints = true,
+    [property: JsonPropertyName("enableTemplateFixer")] bool EnableTemplateFixer = false,
+    [property: JsonPropertyName("enableProjectContext")] bool EnableProjectContext = true,
+    [property: JsonPropertyName("enableAdaptiveOutputBudget")] bool EnableAdaptiveOutputBudget = false,
+    [property: JsonPropertyName("enableBookContext")] bool EnableBookContext = false,
+    [property: JsonPropertyName("maxRetryGenerations")] int MaxRetryGenerations = 8,
+    [property: JsonPropertyName("maxTotalGenerations")] int MaxTotalGenerations = 0,
+    [property: JsonPropertyName("pluginSourceLanguage")] string PluginSourceLanguage = "english",
+    [property: JsonPropertyName("pluginTargetLanguage")] string PluginTargetLanguage = "korean",
+    [property: JsonPropertyName("pluginSourceEncoding")] string PluginSourceEncoding = "utf-8",
+    [property: JsonPropertyName("pluginMetadataEncoding")] string PluginMetadataEncoding = "windows-1252",
+    [property: JsonPropertyName("pluginTargetEncoding")] string PluginTargetEncoding = "utf-8",
+    [property: JsonPropertyName("pluginStringsDirectory")] string PluginStringsDirectory = ""
 );
 
 public sealed record SavedApiKey(

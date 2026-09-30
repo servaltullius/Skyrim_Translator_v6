@@ -3,11 +3,26 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using XTranslatorAi.Core.Models;
+using XTranslatorAi.Core.Plugins;
 
 namespace XTranslatorAi.App.Services;
 
 public static class ProjectPaths
 {
+    public static string GetPluginProjectDbPath(string inputPath, PluginReadOptions options,
+        string targetLanguage, string targetEncoding, string? projectsRootOverride = null)
+    {
+        var identity = string.Join("\0", Path.GetFullPath(inputPath).ToLowerInvariant(), options.Game,
+            options.SourceLanguage.Trim().ToLowerInvariant(), targetLanguage.Trim().ToLowerInvariant(),
+            options.SourceEncoding.Trim().ToLowerInvariant(), targetEncoding.Trim().ToLowerInvariant(),
+            options.MetadataEncoding.Trim().ToLowerInvariant(),
+            string.IsNullOrWhiteSpace(options.StringsDirectory) ? "" : Path.GetFullPath(options.StringsDirectory).ToLowerInvariant());
+        var hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(identity)))[..32].ToLowerInvariant();
+        var directory = Path.Combine(projectsRootOverride ?? GetProjectsBaseDir(), "elder-scrolls", "plugin", options.Game.ToString());
+        var name = SanitizeFileNameStem(Path.GetFileNameWithoutExtension(inputPath), "plugin");
+        return Path.Combine(directory, $"{name}.{hash}.sqlite");
+    }
+
     public static string GetGlobalRootDir()
         => GetGlobalRootDir(globalRootOverride: null);
 

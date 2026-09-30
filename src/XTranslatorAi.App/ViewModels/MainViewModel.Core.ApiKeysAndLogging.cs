@@ -114,7 +114,12 @@ public partial class MainViewModel
                 PromptTokens: entry.PromptTokens,
                 CompletionTokens: entry.CompletionTokens,
                 TotalTokens: entry.TotalTokens,
-                CostUsd: entry.CostUsd
+                CostUsd: entry.CostUsd,
+                Purpose: entry.Purpose,
+                FinishReason: entry.FinishReason,
+                OutputTokens: entry.OutputTokens,
+                ThoughtsTokens: entry.ThoughtsTokens,
+                CachedContentTokens: entry.CachedContentTokens
             )
         );
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Models;
@@ -68,6 +69,7 @@ public sealed partial class TranslationService
         Exception? last = null;
         for (var attempt = 0; attempt <= ctx.MaxRetries; attempt++)
         {
+            using var retryScope = EnterGenerationScope(recovery: attempt > 0);
             ctx.CancellationToken.ThrowIfCancellationRequested();
             try
             {
@@ -87,6 +89,7 @@ public sealed partial class TranslationService
                     var noCacheCtx = currentCtx with { PromptCache = null };
                     try
                     {
+                        using var recovery = EnterGenerationScope(recovery: true);
                         return await TranslateBatchOnceAsync(noCacheCtx, batch, userPrompt);
                     }
                     catch (Exception ex2)
@@ -135,10 +138,10 @@ public sealed partial class TranslationService
         foreach (var it in batch)
         {
             var rec = Ctx.UseRecStyleHints ? GetRecForId(it.Id) : null;
-            var dialogueContextWindow = GetDialogueContextWindowForId(it.Id);
+            var dialogueContextWindow = AppendBookTitleReference(it.Id, GetDialogueContextWindowForId(it.Id));
             var maskedForPrompt = PlaceholderSemanticHintInjector.Inject(targetLang, it.Masked);
             maskedForPrompt = GlossarySemanticHintInjector.Inject(targetLang, maskedForPrompt, it.Glossary.TokenToReplacement);
-            requestItems.Add(new TranslationItem(it.Id, maskedForPrompt, rec, dialogueContextWindow));
+            requestItems.Add(new TranslationItem(it.Id, maskedForPrompt, rec, dialogueContextWindow, GuessStyleHint(it.Source, rec)));
             requestTexts.Add(it.Masked);
 
             foreach (var p in it.Glossary.PromptOnlyPairs)
@@ -183,7 +186,7 @@ public sealed partial class TranslationService
                 new("HARM_CATEGORY_SEXUALLY_EXPLICIT", "BLOCK_NONE"),
                 new("HARM_CATEGORY_DANGEROUS_CONTENT", "BLOCK_NONE"),
             }
-        );
+        ) { Purpose = "translate-batch" };
     }
 
     private static Dictionary<long, (long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> BuildBatchById(
@@ -221,7 +224,10 @@ public sealed partial class TranslationService
     {
         var cachedContent = ctx.PromptCache != null ? await ctx.PromptCache.GetOrCreateAsync(ctx.CancellationToken) : null;
         var candidateCount = GetBatchCandidateCount(ctx, batch);
-        var request = CreateBatchRequest(ctx, userPrompt, cachedContent, candidateCount);
+        var sizedContext = ctx with { MaxOutputTokens = TranslationOutputBudget.Compute(
+            batch.Sum(row => row.Masked.Length), batch.Sum(row => TranslationConstants.XtTokenRegex.Matches(row.Masked).Count),
+            batch.Count, ctx.MaxOutputTokens, Ctx.EnableAdaptiveOutputBudget) };
+        var request = CreateBatchRequest(sizedContext, userPrompt, cachedContent, candidateCount);
 
         string text;
         if (candidateCount > 1)
@@ -246,21 +252,34 @@ public sealed partial class TranslationService
             );
         }
 
-        var map = ParseAndValidateBatchMap(text, batch.Count);
+        var map = TranslationResultParser.ParseTranslations(text);
         var byId = BuildBatchById(batch);
+        foreach (var id in map.Keys)
+            if (!byId.ContainsKey(id))
+                throw new InvalidOperationException($"Model returned unknown id: {id}");
+        return map;
+    }
 
+    private async Task ProcessBatchResultsAsync(
+        BatchTranslateContext ctx,
+        IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> batch,
+        IReadOnlyDictionary<long, string> map,
+        Func<IReadOnlyDictionary<long, string>, Task> persistProgress
+    )
+    {
+        var byId = BuildBatchById(batch);
         var results = new Dictionary<long, string>(capacity: batch.Count);
         var needsRepair = ctx.EnableRepairPass ? new List<PendingRepair>() : null;
 
         PopulateInitialBatchResults(ctx, batch, map, results, needsRepair);
+        await persistProgress(results);
 
         if (ctx.EnableRepairPass && needsRepair is { Count: > 0 })
         {
-            await ApplyRepairPassAsync(ctx, byId, results, needsRepair);
+            await ApplyRepairPassAsync(ctx, byId, results, needsRepair, persistProgress);
         }
 
-        await FillMissingResultsAsync(ctx, batch, map, results);
-        return results;
+        await FillMissingResultsAsync(ctx, batch, map, results, persistProgress);
     }
 
     private void PopulateInitialBatchResults(
@@ -275,7 +294,7 @@ public sealed partial class TranslationService
         {
             if (!map.TryGetValue(it.Id, out var output))
             {
-                throw new InvalidOperationException($"Model output missing id: {it.Id}");
+                continue; // Preserve valid peers; only this missing ID will be requested again.
             }
 
             output = PlaceholderSemanticHintInjector.Strip(output);
@@ -295,7 +314,7 @@ public sealed partial class TranslationService
             {
                 if (!ctx.EnableRepairPass)
                 {
-                    throw;
+                    continue; // Structural fallback happens after valid peers are persisted.
                 }
 
                 needsRepair!.Add(new PendingRepair(it.Id, it.Source, it.Masked, it.Glossary, output));

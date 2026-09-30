@@ -15,5 +15,10 @@ public sealed record ApiCallLogRow(
     int? PromptTokens = null,
     int? CompletionTokens = null,
     int? TotalTokens = null,
-    double? CostUsd = null
+    double? CostUsd = null,
+    string? Purpose = null,
+    string? FinishReason = null,
+    int? OutputTokens = null,
+    int? ThoughtsTokens = null,
+    int? CachedContentTokens = null
 );

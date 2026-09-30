@@ -39,7 +39,13 @@ public partial class MainViewModel
     [ObservableProperty] private bool _enableApiKeyFailover = true;
     [ObservableProperty] private string _selectedModel = GeminiModelCatalog.DefaultModel;
     [ObservableProperty] private BethesdaFranchise _selectedFranchise = BethesdaFranchise.ElderScrolls;
-    [ObservableProperty] private bool _enableBookFullModelOverride;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsBookModelOverrideEnabled))]
+    private bool _enableBookFullModelOverride;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsBookModelOverrideEnabled))]
+    private bool _enableBookBodyModelOverride;
+    public bool IsBookModelOverrideEnabled => EnableBookFullModelOverride || EnableBookBodyModelOverride;
     [ObservableProperty] private string _bookFullModel = GeminiModelCatalog.DefaultModel;
     [ObservableProperty] private bool _enableQualityEscalation;
     [ObservableProperty] private string _qualityEscalationModel = GeminiModelCatalog.DefaultModel;
@@ -50,6 +56,10 @@ public partial class MainViewModel
     [ObservableProperty] private int _maxCharsPerBatch = 15000;
     [ObservableProperty] private int _maxParallelRequests = 2;
     [ObservableProperty] private int _maxOutputTokensOverride;
+    [ObservableProperty] private int _maxRetryGenerations = 8;
+    [ObservableProperty] private int _maxTotalGenerations;
+    [ObservableProperty] private bool _enableAdaptiveOutputBudget;
+    [ObservableProperty] private bool _enableBookContext;
 
     [ObservableProperty] private string _entryFilterText = "";
     [ObservableProperty] private bool _entryFilterTagsOnly;
@@ -80,8 +90,15 @@ public partial class MainViewModel
     [ObservableProperty] private bool _keepSkyrimTagsRaw = true;
     [ObservableProperty] private bool _enableSessionTermMemory = true;
     [ObservableProperty] private bool _enablePromptCache = true;
-    [ObservableProperty] private bool _enableRiskyCandidateRerank = true;
-    [ObservableProperty] private int _riskyCandidateCount = 3;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsRiskyCandidateCountEnabled))]
+    [NotifyPropertyChangedFor(nameof(EffectiveRiskyCandidateCount))]
+    [NotifyPropertyChangedFor(nameof(EffectiveRiskyCandidateSummary))]
+    private bool _enableRiskyCandidateRerank = true;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(EffectiveRiskyCandidateCount))]
+    [NotifyPropertyChangedFor(nameof(EffectiveRiskyCandidateSummary))]
+    private int _riskyCandidateCount = 3;
     [ObservableProperty] private bool _enableProjectContext = true;
     [ObservableProperty] private string _projectContextPreview = "";
 
@@ -90,6 +107,7 @@ public partial class MainViewModel
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ExportXmlCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ExportPluginCommand))]
     [NotifyCanExecuteChangedFor(nameof(StartTranslationCommand))]
     [NotifyCanExecuteChangedFor(nameof(AddGlossaryCommand))]
     [NotifyCanExecuteChangedFor(nameof(ImportGlossaryCommand))]
@@ -114,6 +132,7 @@ public partial class MainViewModel
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ExportXmlCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ExportPluginCommand))]
     [NotifyCanExecuteChangedFor(nameof(StartTranslationCommand))]
     [NotifyCanExecuteChangedFor(nameof(StopTranslationCommand))]
     [NotifyCanExecuteChangedFor(nameof(TogglePauseTranslationCommand))]

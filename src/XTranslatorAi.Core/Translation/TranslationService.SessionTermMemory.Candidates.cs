@@ -25,6 +25,12 @@ public sealed partial class TranslationService
             return false;
         }
 
+        // Dialogue text is not a term definition, even when it is short and lacks punctuation.
+        if (IsDialogueRecBase(rec))
+        {
+            return false;
+        }
+
         return rec.IndexOf(":FULL", StringComparison.OrdinalIgnoreCase) >= 0
             || rec.IndexOf(":NAME", StringComparison.OrdinalIgnoreCase) >= 0
             || rec.IndexOf(":NAM", StringComparison.OrdinalIgnoreCase) >= 0
@@ -319,4 +325,3 @@ public sealed partial class TranslationService
         return result;
     }
 }
-

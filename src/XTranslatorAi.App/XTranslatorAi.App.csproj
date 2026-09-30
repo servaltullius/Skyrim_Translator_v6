@@ -16,8 +16,15 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>TulliusTranslator</AssemblyName>
     <Version>2026.9.29</Version>
-    <InformationalVersion>2026.09.29-maintenance</InformationalVersion>
+    <InformationalVersion>2026.09.30-esp-preview5</InformationalVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\third-party\*.txt" Link="Licenses\%(Filename)%(Extension)"
+          CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    <None Include="..\..\docs\third-party\README.md" Link="Licenses\README.md"
+          CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\메타프롬프트.md" />

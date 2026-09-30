@@ -54,6 +54,18 @@ public class ApiCallLogServiceTests
         Assert.Contains("일부 미확인", service.TotalsSummary);
     }
 
+    [Fact]
+    public void RejectedGeneration_WithUsage_ContributesToCostTotals()
+    {
+        var service = new ApiCallLogService();
+        service.Add(Row(false, 100, 34, 0.25));
+        Assert.Equal(1, service.UsageTotals.FailCalls);
+        Assert.Equal(100, service.UsageTotals.InTok);
+        Assert.Equal(34, service.UsageTotals.OutTok);
+        Assert.Equal(0.25, service.UsageTotals.CostUsd);
+        Assert.Equal(1, service.UsageTotals.CostRows);
+    }
+
     private static ApiCallLogRow Row(bool success, int? input, int? output, double? cost)
         => new(DateTimeOffset.UtcNow, TimeSpan.Zero, "Test", "Translate", "test-model", null,
             success ? 200 : 429, success, null, input, output, null, cost);

@@ -219,9 +219,9 @@ public partial class MainViewModel
     private string? ResolveGlossaryExportPath(string title, string defaultFileName)
     {
         var initialDirectory = (string?)null;
-        if (!string.IsNullOrWhiteSpace(_projectState.InputXmlPath))
+        if (!string.IsNullOrWhiteSpace(_projectState.InputPath))
         {
-            var dir = Path.GetDirectoryName(_projectState.InputXmlPath);
+            var dir = Path.GetDirectoryName(_projectState.InputPath);
             if (!string.IsNullOrWhiteSpace(dir) && Directory.Exists(dir))
             {
                 initialDirectory = dir;

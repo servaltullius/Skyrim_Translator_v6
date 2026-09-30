@@ -30,6 +30,7 @@ public partial class StringEntryViewModel : ObservableObject
     {
         OnPropertyChanged(nameof(StatusText));
         OnPropertyChanged(nameof(UserFacingErrorMessage));
+        OnPropertyChanged(nameof(RowToolTip));
     }
 
     public string UserFacingErrorMessage
@@ -55,6 +56,7 @@ public partial class StringEntryViewModel : ObservableObject
     partial void OnErrorMessageChanged(string? value)
     {
         OnPropertyChanged(nameof(UserFacingErrorMessage));
+        OnPropertyChanged(nameof(RowToolTip));
     }
 
     public string SourcePreview => Preview(SourceText);

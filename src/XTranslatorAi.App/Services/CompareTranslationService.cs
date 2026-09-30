@@ -51,7 +51,8 @@ public sealed class CompareTranslationService
         int RiskyCandidateCount,
         bool IncludeProjectGlossary,
         IReadOnlyList<GlossaryEntry>? GlobalGlossary,
-        IReadOnlyDictionary<string, string>? GlobalTranslationMemory
+        IReadOnlyDictionary<string, string>? GlobalTranslationMemory,
+        bool IsDirectPluginSource = false
     );
 
     public sealed record Result(
@@ -157,6 +158,11 @@ public sealed class CompareTranslationService
         var thinkingOverride = request.ThinkingOff
             ? GeminiTranslationPolicy.GetLowThinkingConfigForTranslation(request.ModelName)
             : null;
+        var recBase = request.Rec?.Split(':', 2)[0].Trim().ToUpperInvariant();
+        // The comparison scratch row deliberately has no plugin binding. Preserve
+        // its provenance in the request so it cannot bypass the normal dialogue
+        // pipeline's rejection of source-only TM with an unknown topic origin.
+        var skipUnscopedDialogueTm = request.IsDirectPluginSource && (recBase is "INFO" or "DIAL");
 
         return new TranslateIdsRequest(
             ApiKey: request.ApiKey.Trim(),
@@ -178,7 +184,7 @@ public sealed class CompareTranslationService
             WaitIfPaused: null,
             CancellationToken: cancellationToken,
             GlobalGlossary: request.GlobalGlossary,
-            GlobalTranslationMemory: request.GlobalTranslationMemory,
+            GlobalTranslationMemory: skipUnscopedDialogueTm ? null : request.GlobalTranslationMemory,
             SemanticRepairMode: request.SemanticRepairMode,
             EnableTemplateFixer: request.EnableTemplateFixer,
             KeepSkyrimTagsRaw: request.KeepSkyrimTagsRaw,

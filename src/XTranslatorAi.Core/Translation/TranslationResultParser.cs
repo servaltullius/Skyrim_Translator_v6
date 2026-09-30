@@ -50,7 +50,8 @@ public static class TranslationResultParser
         {
             if (TryReadTranslationItem(item, out var id, out var text))
             {
-                map[id] = text;
+                if (!map.TryAdd(id, text))
+                    throw new InvalidOperationException($"Model returned duplicate id: {id}");
             }
         }
 

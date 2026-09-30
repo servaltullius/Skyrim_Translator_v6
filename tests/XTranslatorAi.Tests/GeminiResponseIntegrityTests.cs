@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.Tests;
@@ -56,6 +57,70 @@ public class GeminiResponseIntegrityTests
         await Assert.ThrowsAsync<GeminiException>(() => client.GenerateContentCandidatesAsync("fixture-key", "gemini-3.8-flash", Request(), CancellationToken.None));
     }
 
+    [Theory]
+    [InlineData(false, "MAX_TOKENS")]
+    [InlineData(true, "MAX_TOKENS")]
+    [InlineData(false, "SAFETY")]
+    [InlineData(true, "SAFETY")]
+    public async Task RejectedResponse_PreservesBilledUsageAndLogsFailureOnce(bool multiple, string reason)
+    {
+        var body = $$$"""
+            {"candidates":[{"finishReason":"{{{reason}}}","content":{"parts":[{"text":"partial"}]}}],
+             "usageMetadata":{"promptTokenCount":100,"candidatesTokenCount":4,"thoughtsTokenCount":30,
+                              "totalTokenCount":134,"cachedContentTokenCount":80}}
+            """;
+        using var http = new HttpClient(new JsonHandler(body));
+        var logger = new CaptureLogger();
+        var client = new GeminiClient(http, logger);
+        var request = Request() with { Purpose = "repair-text" };
+        await Assert.ThrowsAsync<GeminiException>(async () =>
+        {
+            if (multiple)
+                await client.GenerateContentCandidatesAsync("fixture-key", "gemini-3.8-flash", request, CancellationToken.None);
+            else
+                await client.GenerateContentAsync("fixture-key", "gemini-3.8-flash", request, CancellationToken.None);
+        });
+
+        var entry = Assert.Single(logger.Entries);
+        Assert.False(entry.Success);
+        Assert.Equal(200, entry.StatusCode);
+        Assert.Equal(reason, entry.FinishReason);
+        Assert.Equal("repair-text", entry.Purpose);
+        Assert.Equal(100, entry.PromptTokens);
+        Assert.Equal(4, entry.OutputTokens);
+        Assert.Equal(30, entry.ThoughtsTokens);
+        Assert.Equal(34, entry.CompletionTokens);
+        Assert.Equal(134, entry.TotalTokens);
+        Assert.Equal(80, entry.CachedContentTokens);
+        Assert.True(entry.CostUsd > 0);
+    }
+
+    [Theory]
+    [InlineData("not JSON", HttpStatusCode.OK)]
+    [InlineData("{\"error\":{\"message\":\"quota\"}}", HttpStatusCode.TooManyRequests)]
+    public async Task UnknownUsage_PreservesHttpStatusWithoutInventingZeroCost(string body, HttpStatusCode status)
+    {
+        using var http = new HttpClient(new JsonHandler(body, status));
+        var logger = new CaptureLogger();
+        var client = new GeminiClient(http, logger);
+        await Assert.ThrowsAnyAsync<Exception>(() => client.GenerateContentAsync(
+            "fixture-key", "gemini-3.8-flash", Request(), CancellationToken.None));
+        var entry = Assert.Single(logger.Entries);
+        Assert.False(entry.Success);
+        Assert.Equal((int)status, entry.StatusCode);
+        Assert.Null(entry.PromptTokens);
+        Assert.Null(entry.CompletionTokens);
+        Assert.Null(entry.CostUsd);
+    }
+
+    [Fact]
+    public void Purpose_IsLocalMetadataAndNeverSerializedForApi()
+    {
+        var json = JsonSerializer.Serialize(Request() with { Purpose = "repair-text" });
+        Assert.DoesNotContain("purpose", json, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("repair-text", json);
+    }
+
     private static GeminiGenerateContentRequest Request()
         => new(new() { new("user", new() { new("Translate") }) }, null, null, null, null);
 
@@ -65,10 +130,10 @@ public class GeminiResponseIntegrityTests
         public void Log(GeminiCallLogEntry entry) => Entries.Add(entry);
     }
 
-    private sealed class JsonHandler(string body) : HttpMessageHandler
+    private sealed class JsonHandler(string body, HttpStatusCode status = HttpStatusCode.OK) : HttpMessageHandler
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-            => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            => Task.FromResult(new HttpResponseMessage(status)
             { Content = new StringContent(body, Encoding.UTF8, "application/json") });
     }
 }

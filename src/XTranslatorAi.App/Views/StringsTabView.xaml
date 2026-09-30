@@ -19,6 +19,7 @@
             <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,6,0" />
             <TextBox Text="{Binding EntryFilterText, UpdateSourceTrigger=PropertyChanged}"
                      Width="260"
+                     ToolTip="문구·EDID 검색. 정확한 위치: form:01000800 / string:STRINGS/123 / row:0"
                      Style="{StaticResource XT.ToolbarTextBox}" />
 
             <TextBlock Text="Status:" VerticalAlignment="Center" Margin="12,0,6,0" />
@@ -27,17 +28,17 @@
                       Width="160"
                       Style="{StaticResource XT.ToolbarComboBox}" />
 
-            <CheckBox Content="태그(원문)만"
+            <CheckBox Content="보호 요소(원문)만"
                       IsChecked="{Binding EntryFilterTagsOnly}"
                       VerticalAlignment="Center"
                       Margin="12,0,0,0"
-                      ToolTip="원문에 &lt;...&gt; / [pagebreak] / __XT_*__ 가 포함된 항목만 표시합니다. (검수용)" />
+                      ToolTip="원문에 태그·페이지·변수(%s, {name}, __XT_*__)·줄바꿈 등 보호 요소가 포함된 항목만 표시합니다." />
 
-            <CheckBox Content="태그 불일치만"
+            <CheckBox Content="보호 요소 불일치만"
                       IsChecked="{Binding EntryFilterTagMismatchOnly}"
                       VerticalAlignment="Center"
                       Margin="12,0,0,0"
-                      ToolTip="원문과 번역문의 태그 목록이 일치하지 않는 항목만 표시합니다. (태그 누락/변형 검수용)" />
+                      ToolTip="태그·페이지·변수(%s, {name})·줄바꿈·서식 순서 등 저장 보호 검사에 실패하는 항목만 표시합니다." />
         </WrapPanel>
 
         <DataGrid Grid.Row="1"
@@ -56,7 +57,7 @@
                   ScrollViewer.IsDeferredScrollingEnabled="True">
 	            <DataGrid.RowStyle>
 	                <Style TargetType="{x:Type DataGridRow}">
-	                    <Setter Property="ToolTip" Value="{Binding UserFacingErrorMessage}" />
+	                    <Setter Property="ToolTip" Value="{Binding RowToolTip}" />
 	                    <Style.Triggers>
 	                        <DataTrigger Binding="{Binding Status}" Value="{x:Static models:StringEntryStatus.InProgress}">
 	                            <Setter Property="Background" Value="{StaticResource XT.Row.InProgressBrush}" />
@@ -111,6 +112,22 @@
             </Grid.ColumnDefinitions>
 
             <GroupBox Header="Source" Grid.Column="0" Margin="0,0,6,0" Style="{StaticResource XT.GroupBoxCard}">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="{Binding SelectedEntry.PluginLocationText}"
+                               TextWrapping="Wrap" Margin="0,0,0,6" Foreground="{StaticResource XT.MutedTextBrush}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedEntry.PluginLocationText}" Value="">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedEntry}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 <TextBox Text="{Binding SelectedEntry.SourceText}"
                          IsReadOnly="True"
                          Style="{StaticResource XT.EditorTextBox}"
@@ -118,6 +135,7 @@
                          AcceptsReturn="True"
                          VerticalScrollBarVisibility="Auto"
                          HorizontalScrollBarVisibility="Auto" />
+                </DockPanel>
             </GroupBox>
 
             <GroupBox Header="Dest" Grid.Column="1" Margin="6,0,0,0" Style="{StaticResource XT.GroupBoxCard}">

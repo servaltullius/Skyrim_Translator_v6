@@ -35,7 +35,7 @@ public sealed partial class TranslationService
         }
 
         var target = translatedText.Trim();
-        if (!Ctx.SessionTermMemory.TryLearn(key, target))
+        if (!Ctx.SessionTermMemory.TryLearn(key, target, allowForce: false))
         {
             return;
         }
@@ -119,11 +119,10 @@ public sealed partial class TranslationService
             Category: "Auto(Session)",
             SourceTerm: source,
             TargetTerm: target,
-            Enabled: true,
+            Enabled: false,
             Priority: 20,
-            MatchMode: GlossaryMatchMode.Substring,
-            ForceMode: GlossaryForceMode.ForceToken,
-            Note: "Auto-learned from session term memory"
+            MatchMode: GlossaryMatchMode.WordBoundary,
+            ForceMode: GlossaryForceMode.PromptOnly,
+            Note: "Auto-learned suggestion; review before enabling"
         );
 }
-

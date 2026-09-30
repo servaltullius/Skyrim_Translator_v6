@@ -42,7 +42,7 @@ public sealed class TranslationServiceApiKeyFailoverTests
     }
 
     [Fact]
-    public async Task TranslateIdsAsync_WhenFailoverEnabled_ThrowsAndLeavesInProgress_On429()
+    public async Task TranslateIdsAsync_WhenFailoverEnabled_ThrowsAndRestoresPending_On429()
     {
         var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
         try
@@ -59,7 +59,39 @@ public sealed class TranslationServiceApiKeyFailoverTests
             await Assert.ThrowsAnyAsync<Exception>(() => service.TranslateIdsAsync(request));
 
             var state = await db.GetStringTranslationStateAsync(id, CancellationToken.None);
-            Assert.Equal(StringEntryStatus.InProgress, state.Status);
+            Assert.Equal(StringEntryStatus.Pending, state.Status);
+        }
+        finally
+        {
+            TestDbHelper.TryDeleteDbFiles(path);
+        }
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task SharedBudget_DoesNotResetWhenKeyAndModelChange(bool useTotalCap)
+    {
+        var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
+        try
+        {
+            await using var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
+            await SeedProjectAsync(db);
+            var id = await InsertPendingStringAsync(db);
+            var handler = new Always429Handler();
+            using var httpClient = new HttpClient(handler);
+            var budget = new TranslationGenerationBudget(useTotalCap ? 8 : 0, useTotalCap ? 1 : 100);
+            var request = CreateRequest(new[] { id }, true) with { GenerationBudget = budget };
+            var first = new TranslationService(db, new GeminiClient(httpClient));
+            await Assert.ThrowsAnyAsync<Exception>(() => first.TranslateIdsAsync(request));
+            var second = new TranslationService(db, new GeminiClient(httpClient));
+            var next = request with { ApiKey = "DUMMY_SECOND", ModelName = "gemini-2.5-flash" };
+            if (useTotalCap) await Assert.ThrowsAnyAsync<Exception>(() => second.TranslateIdsAsync(next));
+            else await second.TranslateIdsAsync(next);
+            Assert.Equal(1, handler.Calls);
+            Assert.Equal(1, budget.TotalCalls);
+            Assert.Equal(useTotalCap ? StringEntryStatus.Pending : StringEntryStatus.Error,
+                (await db.GetStringTranslationStateAsync(id, CancellationToken.None)).Status);
         }
         finally
         {
@@ -144,11 +176,13 @@ public sealed class TranslationServiceApiKeyFailoverTests
 
     private sealed class Always429Handler : HttpMessageHandler
     {
+        public int Calls { get; private set; }
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var url = request.RequestUri?.ToString() ?? "";
             if (url.IndexOf(":generateContent", StringComparison.OrdinalIgnoreCase) >= 0)
             {
+                Calls++;
                 var resp = new HttpResponseMessage((HttpStatusCode)429)
                 {
                     ReasonPhrase = "Too Many Requests",

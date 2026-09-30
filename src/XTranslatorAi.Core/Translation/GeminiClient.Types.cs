@@ -55,7 +55,11 @@ public sealed record GeminiCallLogEntry(
     int? CompletionTokens = null,
     int? TotalTokens = null,
     int? CachedContentTokens = null,
-    double? CostUsd = null
+    double? CostUsd = null,
+    string? Purpose = null,
+    string? FinishReason = null,
+    int? OutputTokens = null,
+    int? ThoughtsTokens = null
 );
 
 public interface IGeminiCallLogger
@@ -72,7 +76,11 @@ public sealed record GeminiGenerateContentRequest(
     [property: JsonPropertyName("systemInstruction")] GeminiContent? SystemInstruction,
     [property: JsonPropertyName("generationConfig")] GeminiGenerationConfig? GenerationConfig,
     [property: JsonPropertyName("safetySettings")] List<GeminiSafetySetting>? SafetySettings
-);
+)
+{
+    // Local diagnostics only; never send application metadata to the API.
+    [JsonIgnore] public string? Purpose { get; init; }
+}
 
 public sealed record GeminiContent(
     [property: JsonPropertyName("role")] string? Role,

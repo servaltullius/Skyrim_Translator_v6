@@ -2,6 +2,11 @@
 
 현재 기능과 실행 절차는 [루트 README](../README.md)를 기준으로 합니다.
 
+- [파이프라인·설정 개선과 후보 빌드 검증](analysis/2026-09-29-pipeline-defaults-implementation.md)
+- [Skyrim SE/AE 플러그인 직접 번역 사용법과 검증 범위](direct-plugin-support.md)
+- [직접 지원 자동 테스트·실제 파일·xEdit 검증 기록](analysis/2026-09-29-direct-plugin-validation.md)
+- [플러그인 번역 필드 전수 대조](analysis/2026-09-29-plugin-field-registry.md)
+- [일반 API 최적화 구현과 검증 결과](analysis/2026-09-29-standard-api-implementation.md)
 - [현재 유지보수 작업과 검증 상태](plans/2026-09-29-maintenance.md)
 - [이전 개선 작업과 검증 상태](plans/2026-09-28-translator-improvement.md)
 - [LOTD 무료 번역 모델 비교](../benchmarks/translation/lotd-v1/README.md)

@@ -3,6 +3,7 @@ using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text;
 using XTranslatorAi.Core.Translation;
 using XTranslatorAi.Tests.TestSupport;
+using System.Text.Json;
 
 namespace XTranslatorAi.Tests;
 
@@ -45,6 +46,7 @@ public sealed class TranslationServiceIntegrityRegressionTests
         await using var fixture = await Fixture.CreateAsync((source, "BOOK:DESC", null));
         await fixture.Service.TranslateIdsAsync(fixture.Request with
         {
+            EnablePromptCache = true,
             GlobalTranslationMemory = new Dictionary<string, string>
             {
                 [TranslationMemoryKey.NormalizeSource(source)] = translated,
@@ -54,6 +56,68 @@ public sealed class TranslationServiceIntegrityRegressionTests
         var state = Assert.Single(await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None));
         Assert.Equal(translated, state.DestText);
         Assert.Equal(0, fixture.Client.Calls);
+        Assert.Equal(0, fixture.Client.CacheCreates);
+        Assert.Equal(0, fixture.Client.CacheDeletes);
+    }
+
+    [Fact]
+    public async Task EmptyRun_DoesNotCreatePromptCache()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { EnablePromptCache = true });
+        Assert.Equal(0, fixture.Client.Calls);
+        Assert.Equal(0, fixture.Client.CacheCreates);
+        Assert.Equal(0, fixture.Client.CacheDeletes);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task PromptCache_IsCreatedOnceOnDemandOrFallsBackToSystemPrompt(bool unavailable)
+    {
+        await using var fixture = await Fixture.CreateAsync(("Hello", "MESG", null), ("World", "MESG", null));
+        fixture.Client.CacheUnavailable = unavailable;
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { EnablePromptCache = true });
+        Assert.Equal(1, fixture.Client.CacheCreates);
+        Assert.Equal(unavailable ? 0 : 1, fixture.Client.CacheDeletes);
+        Assert.Equal(2, fixture.Client.Calls);
+        Assert.All(fixture.Client.Requests, request =>
+        {
+            if (unavailable)
+            {
+                Assert.Null(request.CachedContent);
+                Assert.NotNull(request.SystemInstruction);
+            }
+            else
+            {
+                Assert.Equal("cachedContents/fixture", request.CachedContent);
+                Assert.Null(request.SystemInstruction);
+            }
+        });
+        Assert.All(await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None),
+            row => Assert.Equal(StringEntryStatus.Done, row.Status));
+    }
+
+    [Theory]
+    [InlineData("WEAP:FULL", true)]
+    [InlineData("BOOK:FULL", true)]
+    [InlineData("INFO:NAM1", false)]
+    [InlineData("DIAL:FULL", false)]
+    public async Task AutomaticTermLearning_QueuesNamesForReviewAndExcludesDialogue(string rec, bool expected)
+    {
+        await using var fixture = await Fixture.CreateAsync(("Ancient Sword", rec, null));
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { EnableSessionTermMemory = true });
+        var glossary = await fixture.Db.GetGlossaryAsync(CancellationToken.None);
+        if (expected)
+        {
+            var suggestion = Assert.Single(glossary);
+            Assert.False(suggestion.Enabled);
+            Assert.Equal(GlossaryForceMode.PromptOnly, suggestion.ForceMode);
+        }
+        else
+        {
+            Assert.Empty(glossary);
+        }
     }
 
     [Theory]
@@ -260,6 +324,194 @@ public sealed class TranslationServiceIntegrityRegressionTests
         Assert.Single(states.Values, status => status == StringEntryStatus.Pending);
     }
 
+    [Fact]
+    public async Task PartialBatch_CommitsValidPeerBeforeRequestingOnlyMissingRow()
+    {
+        await using var fixture = await Fixture.CreateAsync(("Hello", "MESG", null), ("World", "MESG", null));
+        fixture.Client.ResponseOverride = (call, _) => call == 1
+            ? JsonSerializer.Serialize(new { translations = new[] { new { id = fixture.Ids[0], text = "Hello" } } }) : null;
+        fixture.Client.BeforeGenerate = async (call, _) =>
+        {
+            if (call == 2)
+                Assert.Equal(StringEntryStatus.Done, (await fixture.Db.GetStringTranslationStateAsync(fixture.Ids[0], CancellationToken.None)).Status);
+        };
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { BatchSize = 2 });
+        Assert.Equal(2, fixture.Client.Calls);
+        Assert.DoesNotContain("Hello", fixture.Client.Requests[1].Contents[0].Parts[0].Text!);
+        Assert.All(await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None), row => Assert.Equal(StringEntryStatus.Done, row.Status));
+    }
+
+    [Fact]
+    public async Task PartialBatch_GlobalCapKeepsCompletedPeerAndRestoresMissingRow()
+    {
+        await using var fixture = await Fixture.CreateAsync(("Hello", "MESG", null), ("World", "MESG", null));
+        fixture.Client.ResponseOverride = (_, _) => JsonSerializer.Serialize(new { translations = new[] { new { id = fixture.Ids[0], text = "Hello" } } });
+        await Assert.ThrowsAnyAsync<Exception>(() => fixture.Service.TranslateIdsAsync(fixture.Request with { BatchSize = 2, MaxTotalGenerations = 1 }));
+        Assert.Equal(1, fixture.Client.Calls);
+        Assert.Equal(StringEntryStatus.Done, (await fixture.Db.GetStringTranslationStateAsync(fixture.Ids[0], CancellationToken.None)).Status);
+        Assert.Equal(StringEntryStatus.Pending, (await fixture.Db.GetStringTranslationStateAsync(fixture.Ids[1], CancellationToken.None)).Status);
+    }
+
+    [Theory]
+    [InlineData(401)]
+    [InlineData(403)]
+    [InlineData(429)]
+    [InlineData(503)]
+    public async Task LongText_TransportFailureDoesNotRecursivelySplit(int status)
+    {
+        await using var fixture = await Fixture.CreateAsync((string.Concat(Enumerable.Repeat("Long source text. ", 300)), "BOOK:DESC", null));
+        fixture.Client.BeforeGenerate = (_, _) => Task.FromException(new GeminiHttpException("generateContent", status, "fixture", null, "fixture"));
+        var run = () => fixture.Service.TranslateIdsAsync(fixture.Request with { MaxChars = 1000, MaxRetries = 0 });
+        if (status is 401 or 403) await Assert.ThrowsAnyAsync<Exception>(run);
+        else await run();
+        Assert.Equal(1, fixture.Client.Calls);
+    }
+
+    [Fact]
+    public async Task RepairBatch_CommitsLaterValidPeerBeforeMissingRowHitsRunCap()
+    {
+        await using var fixture = await Fixture.CreateAsync(("Hello %s", "MESG", null), ("World %s", "MESG", null));
+        fixture.Client.ResponseOverride = (call, request) =>
+        {
+            if (call == 1)
+                return JsonSerializer.Serialize(new { translations = fixture.Ids.Select(id => new { id, text = "missing token" }) });
+            Assert.Equal("repair-batch", request.Purpose);
+            var prompt = request.Contents[0].Parts[0].Text!;
+            using var json = JsonDocument.Parse(prompt[(prompt.IndexOf("Input JSON:\n", StringComparison.Ordinal) + "Input JSON:\n".Length)..]);
+            var repaired = json.RootElement.GetProperty("items")[1].GetProperty("source").GetString();
+            return JsonSerializer.Serialize(new { translations = new[] { new { id = fixture.Ids[1], text = repaired } } });
+        };
+        await Assert.ThrowsAnyAsync<Exception>(() => fixture.Service.TranslateIdsAsync(fixture.Request with
+        { BatchSize = 2, EnableRepairPass = true, MaxTotalGenerations = 2 }));
+        Assert.Equal(2, fixture.Client.Calls);
+        var first = await fixture.Db.GetStringTranslationStateAsync(fixture.Ids[0], CancellationToken.None);
+        var second = await fixture.Db.GetStringTranslationStateAsync(fixture.Ids[1], CancellationToken.None);
+        Assert.Equal(StringEntryStatus.Pending, first.Status);
+        Assert.Equal(StringEntryStatus.Done, second.Status);
+        Assert.Equal("World %s", (await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None)).Single(row => row.Id == fixture.Ids[1]).DestText);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    public async Task OptionalEscalation_ExhaustedBudgetPreservesValidatedBaseline(int rowCount)
+    {
+        var rows = new[] { ("Hello friend", "MESG", (string?)null), ("Goodbye friend", "MESG", (string?)null) };
+        await using var fixture = await Fixture.CreateAsync(rows.Take(rowCount).ToArray());
+        if (rowCount == 2)
+            fixture.Client.ResponseOverride = (_, _) => JsonSerializer.Serialize(new
+            { translations = fixture.Ids.Select((id, i) => new { id, text = rows[i].Item1 }) });
+        await fixture.Service.TranslateIdsAsync(fixture.Request with
+        { BatchSize = rowCount, TargetLang = "korean", EnableQualityEscalation = true, QualityEscalationModelName = "gemini-2.5-pro", MaxTotalGenerations = 1 });
+        Assert.True(LqaHeuristics.IsLikelyUntranslated(rows[0].Item1, rows[0].Item1));
+        Assert.Equal(1, fixture.Client.Calls);
+        Assert.All(await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None), row =>
+        {
+            Assert.Equal(StringEntryStatus.Done, row.Status);
+            Assert.Equal(row.SourceText, row.DestText);
+        });
+    }
+
+    [Fact]
+    public async Task PartialBatch_RepairHttpFailureNeverRetriesCompletedPeer()
+    {
+        await using var fixture = await Fixture.CreateAsync(("Hello", "MESG", null), ("World", "MESG", null));
+        fixture.Client.ResponseOverride = (call, _) => call == 1
+            ? JsonSerializer.Serialize(new { translations = new[] { new { id = fixture.Ids[0], text = "Hello" } } }) : null;
+        fixture.Client.BeforeGenerate = (call, _) => call > 1
+            ? Task.FromException(new GeminiHttpException("generateContent", 503, "fixture", TimeSpan.Zero, "fixture")) : Task.CompletedTask;
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { BatchSize = 2, MaxRetries = 2 });
+        Assert.Equal(3, fixture.Client.Calls); // Initial JSON + bounded single-row repair attempts.
+        Assert.All(fixture.Client.Requests.Skip(1), request => Assert.DoesNotContain("Hello", request.Contents[0].Parts[0].Text!));
+        Assert.Equal(StringEntryStatus.Done, (await fixture.Db.GetStringTranslationStateAsync(fixture.Ids[0], CancellationToken.None)).Status);
+        Assert.Equal(StringEntryStatus.Error, (await fixture.Db.GetStringTranslationStateAsync(fixture.Ids[1], CancellationToken.None)).Status);
+    }
+
+    [Theory]
+    [InlineData("empty")]
+    [InlineData("unknown")]
+    [InlineData("duplicate")]
+    public async Task BatchResponse_InvalidEntriesCannotBecomeCompletedTranslations(string kind)
+    {
+        await using var fixture = await Fixture.CreateAsync(("Hello", "MESG", null), ("World", "MESG", null));
+        fixture.Client.ResponseOverride = (call, _) => call != 1 ? null : kind switch
+        {
+            "empty" => JsonSerializer.Serialize(new { translations = new[] { new { id = fixture.Ids[0], text = "" }, new { id = fixture.Ids[1], text = "World" } } }),
+            "unknown" => JsonSerializer.Serialize(new { translations = new[] { new { id = long.MaxValue, text = "bogus" }, new { id = fixture.Ids[1], text = "bogus" } } }),
+            _ => JsonSerializer.Serialize(new { translations = new[] { new { id = fixture.Ids[0], text = "bogus" }, new { id = fixture.Ids[0], text = "duplicate" } } }),
+        };
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { BatchSize = 2 });
+        Assert.All(await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None), row =>
+        {
+            Assert.Equal(StringEntryStatus.Done, row.Status);
+            Assert.Equal(row.SourceText, row.DestText);
+        });
+        Assert.Equal(kind == "empty" ? 2 : 3, fixture.Client.Calls);
+    }
+
+    [Fact]
+    public async Task RowRecoveryCap_StopsRepeatedOutputRepair()
+    {
+        await using var fixture = await Fixture.CreateAsync(("Hello %s", "MESG:DESC", null));
+        fixture.Client.ResponseOverride = (_, _) => "invalid output without required token";
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { MaxRetryGenerations = 1 });
+        Assert.Equal(2, fixture.Client.Calls); // One initial generation, one recovery.
+        Assert.Equal(StringEntryStatus.Error, (await fixture.Db.GetStringTranslationStateAsync(fixture.Ids[0], CancellationToken.None)).Status);
+    }
+
+    [Fact]
+    public async Task SeedRowRecoveryLimit_PreservesPeerAndContinuesRemainingWork()
+    {
+        await using var fixture = await Fixture.CreateAsync(("Ancient Sword", "WEAP:FULL", null),
+            ("Ancient Shield", "ARMO:FULL", null), ("Please bring Ancient Sword. Please bring Ancient Shield.", "INFO:NAM1", null));
+        fixture.Client.ResponseOverride = (call, _) => call == 1
+            ? JsonSerializer.Serialize(new { translations = new[] { new { id = fixture.Ids[0], text = "Ancient Sword" } } }) : null;
+        await fixture.Service.TranslateIdsAsync(fixture.Request with
+        { BatchSize = 2, EnableSessionTermMemory = true, MaxRetryGenerations = 0 });
+        Assert.Equal(2, fixture.Client.Calls);
+        var statuses = await fixture.Db.GetStringStatusesByIdsAsync(fixture.Ids, CancellationToken.None);
+        Assert.Equal(StringEntryStatus.Done, statuses[fixture.Ids[0]]);
+        Assert.Equal(StringEntryStatus.Error, statuses[fixture.Ids[1]]);
+        Assert.Equal(StringEntryStatus.Done, statuses[fixture.Ids[2]]);
+    }
+
+    [Fact]
+    public async Task ValidInitialBookChunks_DoNotSpendRecoveryAllowance()
+    {
+        var source = string.Concat(Enumerable.Repeat("Long source text. ", 300));
+        await using var fixture = await Fixture.CreateAsync((source, "BOOK:DESC", null));
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { MaxChars = 1000, MaxRetryGenerations = 0 });
+        Assert.True(fixture.Client.Calls > 1);
+        var row = Assert.Single(await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None));
+        Assert.Equal(StringEntryStatus.Done, row.Status);
+        Assert.Equal(source, row.DestText);
+    }
+
+    [Theory]
+    [InlineData(false, 65536)]
+    [InlineData(true, 4096)]
+    public async Task AdaptiveOutputBudget_IsOptInAndReachesActualRequest(bool enabled, int expected)
+    {
+        await using var fixture = await Fixture.CreateAsync(("Hello", "MESG", null));
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { MaxOutputTokens = 65536, EnableAdaptiveOutputBudget = enabled });
+        Assert.Equal(expected, Assert.Single(fixture.Client.Requests).GenerationConfig!.MaxOutputTokens);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task BookReference_UsesSelectedExactTitleAndOriginalNeighborsOnlyWhenEnabled(bool enabled)
+    {
+        var source = string.Concat(Enumerable.Repeat("Before the first sunrise. After the last sunset. ", 100));
+        await using var fixture = await Fixture.CreateAsync(("My Book Title", "BOOK:FULL", "Book01"), (source, "BOOK:DESC", "Book01"));
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { MaxChars = 1000, EnableBookContext = enabled });
+        var chunks = fixture.Client.Requests.Where(r => r.Purpose == "translate-chunk").ToArray();
+        Assert.NotEmpty(chunks);
+        Assert.Equal(enabled, chunks.Any(r => r.Contents[0].Parts[0].Text!.Contains("Next source excerpt")));
+        Assert.Equal(enabled, chunks.Any(r => r.Contents[0].Parts[0].Text!.Contains("Book title (source): My Book Title")));
+        Assert.All(await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None), row => Assert.Equal(StringEntryStatus.Done, row.Status));
+    }
+
     private sealed class Fixture : IAsyncDisposable
     {
         private readonly string _path;
@@ -308,15 +560,22 @@ public sealed class TranslationServiceIntegrityRegressionTests
     private sealed class EchoClient : IGeminiClient
     {
         public int Calls { get; private set; }
+        public int CacheCreates { get; private set; }
+        public int CacheDeletes { get; private set; }
+        public bool CacheUnavailable { get; set; }
+        public List<GeminiGenerateContentRequest> Requests { get; } = new();
         public Func<int, CancellationToken, Task>? BeforeGenerate { get; set; }
+        public Func<int, GeminiGenerateContentRequest, string?>? ResponseOverride { get; set; }
 
         public async Task<string> GenerateContentAsync(string apiKey, string modelName, GeminiGenerateContentRequest request, CancellationToken cancellationToken)
         {
             Calls++;
+            Requests.Add(request);
             if (BeforeGenerate != null)
             {
                 await BeforeGenerate(Calls, cancellationToken);
             }
+            if (ResponseOverride?.Invoke(Calls, request) is { } response) return response;
             var prompt = request.Contents[0].Parts[0].Text!;
             if (prompt.Contains("Input JSON:", StringComparison.Ordinal))
             {
@@ -339,8 +598,16 @@ public sealed class TranslationServiceIntegrityRegressionTests
         public Task<IReadOnlyList<GeminiModel>> ListModelsAsync(string apiKey, CancellationToken cancellationToken)
             => throw new NotSupportedException();
         public Task<string> CreateCachedContentAsync(string apiKey, string modelName, string systemInstructionText, TimeSpan ttl, CancellationToken cancellationToken)
-            => throw new NotSupportedException();
+        {
+            CacheCreates++;
+            if (CacheUnavailable)
+                throw new GeminiException("Fixture cache unavailable");
+            return Task.FromResult("cachedContents/fixture");
+        }
         public Task DeleteCachedContentAsync(string apiKey, string cacheName, CancellationToken cancellationToken)
-            => Task.CompletedTask;
+        {
+            CacheDeletes++;
+            return Task.CompletedTask;
+        }
     }
 }

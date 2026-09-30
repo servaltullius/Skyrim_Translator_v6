@@ -20,7 +20,8 @@ public sealed partial class TranslationService
         int MaxOutputTokens,
         int MaxRetries,
         CancellationToken CancellationToken,
-        int CandidateCount = 1
+        int CandidateCount = 1,
+        string Purpose = "translate-text"
     );
 
     private readonly record struct TextWithSentinelContext(
@@ -74,6 +75,7 @@ public sealed partial class TranslationService
         Exception? last = null;
         for (var attempt = 0; attempt <= request.MaxRetries; attempt++)
         {
+            using var retryScope = EnterGenerationScope(recovery: attempt > 0);
             request.CancellationToken.ThrowIfCancellationRequested();
             try
             {
@@ -94,6 +96,7 @@ public sealed partial class TranslationService
                     var noCacheRequest = currentRequest with { PromptCache = null };
                     try
                     {
+                        using var recovery = EnterGenerationScope(recovery: true);
                         return await TranslateUserPromptOnceAsync(noCacheRequest, userPrompt);
                     }
                     catch (Exception ex2)
@@ -143,6 +146,7 @@ public sealed partial class TranslationService
         Exception? last = null;
         for (var attempt = 0; attempt <= request.MaxRetries; attempt++)
         {
+            using var retryScope = EnterGenerationScope(recovery: attempt > 0);
             request.CancellationToken.ThrowIfCancellationRequested();
             try
             {
@@ -161,6 +165,7 @@ public sealed partial class TranslationService
                     var noCacheRequest = currentRequest with { PromptCache = null };
                     try
                     {
+                        using var recovery = EnterGenerationScope(recovery: true);
                         return await TranslateUserPromptCandidatesOnceAsync(noCacheRequest, userPrompt);
                     }
                     catch (Exception ex2)
@@ -271,7 +276,7 @@ public sealed partial class TranslationService
                 new("HARM_CATEGORY_SEXUALLY_EXPLICIT", "BLOCK_NONE"),
                 new("HARM_CATEGORY_DANGEROUS_CONTENT", "BLOCK_NONE"),
             }
-        );
+        ) { Purpose = request.Purpose };
     }
 
     private async Task<string> TranslateTextWithSentinelAsync(
@@ -282,6 +287,8 @@ public sealed partial class TranslationService
     )
     {
         // Add a small separator so the sentinel doesn't end up adjacent to another __XT_* token,
+        request = request with { MaxOutputTokens = TranslationOutputBudget.Compute(text.Length,
+            TranslationConstants.XtTokenRegex.Matches(text).Count, 1, request.MaxOutputTokens, Ctx.EnableAdaptiveOutputBudget) };
         // which some models occasionally mangle at chunk boundaries.
         var textForPrompt = PlaceholderSemanticHintInjector.Inject(request.TargetLang, text);
         textForPrompt = GlossarySemanticHintInjector.Inject(request.TargetLang, textForPrompt, sentinelContext.GlossaryTokenToReplacement);

@@ -219,10 +219,10 @@ public class TranslationCostEstimatorTests
         public Task UpdateStringStatusesAsync(IReadOnlyList<long> ids, StringEntryStatus status, string? errorMessage, CancellationToken cancellationToken)
             => Task.CompletedTask;
 
-        public Task<IReadOnlyDictionary<long, (long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)>>
+        public Task<IReadOnlyDictionary<long, (long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status, string? DialogueScope)>>
             GetStringTranslationContextsByIdsAsync(IReadOnlyList<long> ids, CancellationToken cancellationToken)
-            => Task.FromResult<IReadOnlyDictionary<long, (long, string, string?, string?, StringEntryStatus)>>(
-                new Dictionary<long, (long, string, string?, string?, StringEntryStatus)>());
+            => Task.FromResult<IReadOnlyDictionary<long, (long, string, string?, string?, StringEntryStatus, string?)>>(
+                new Dictionary<long, (long, string, string?, string?, StringEntryStatus, string?)>());
 
         public Task<IReadOnlyDictionary<long, StringEntryStatus>> GetStringStatusesByIdsAsync(IReadOnlyList<long> ids, CancellationToken cancellationToken)
             => Task.FromResult<IReadOnlyDictionary<long, StringEntryStatus>>(new Dictionary<long, StringEntryStatus>());

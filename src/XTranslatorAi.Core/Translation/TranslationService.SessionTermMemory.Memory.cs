@@ -9,7 +9,7 @@ public sealed partial class TranslationService
 {
     internal sealed class SessionTermMemory
     {
-        private sealed record SessionTermEntry(string Target, string Token);
+        private sealed record SessionTermEntry(string Target, string Token, bool AllowForce);
 
         private readonly ConcurrentDictionary<string, SessionTermEntry> _termToEntry;
         private readonly int _maxTerms;
@@ -23,7 +23,7 @@ public sealed partial class TranslationService
 
         public bool IsEmpty => _termToEntry.IsEmpty;
 
-        public bool TryLearn(string sourceTerm, string targetTranslation)
+        public bool TryLearn(string sourceTerm, string targetTranslation, bool allowForce = true)
         {
             if (_maxTerms <= 0)
             {
@@ -50,7 +50,7 @@ public sealed partial class TranslationService
 
             var tokenId = Interlocked.Increment(ref _nextTokenId);
             var token = $"__XT_TERM_SESS_{tokenId:0000}__";
-            return _termToEntry.TryAdd(key, new SessionTermEntry(target, token));
+            return _termToEntry.TryAdd(key, new SessionTermEntry(target, token, allowForce));
         }
 
         public IReadOnlyList<(string Source, string Target)> MergeForText(
@@ -126,7 +126,7 @@ public sealed partial class TranslationService
 
             foreach (var (source, entry) in _termToEntry)
             {
-                if (excludedSources.Contains(source))
+                if (!entry.AllowForce || excludedSources.Contains(source))
                 {
                     continue;
                 }
@@ -216,4 +216,3 @@ public sealed partial class TranslationService
         }
     }
 }
-

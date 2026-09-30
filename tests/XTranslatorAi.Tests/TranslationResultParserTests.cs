@@ -153,7 +153,7 @@ public class TranslationResultParserTests
     }
 
     [Fact]
-    public void ParseTranslations_DuplicateIds_LastOneWins()
+    public void ParseTranslations_DuplicateIds_RejectsAmbiguousResult()
     {
         var json = """
             {
@@ -164,10 +164,7 @@ public class TranslationResultParserTests
             }
             """;
 
-        var result = TranslationResultParser.ParseTranslations(json);
-
-        Assert.Single(result);
-        Assert.Equal("second", result[1]);
+        Assert.Throws<InvalidOperationException>(() => TranslationResultParser.ParseTranslations(json));
     }
 
     [Fact]

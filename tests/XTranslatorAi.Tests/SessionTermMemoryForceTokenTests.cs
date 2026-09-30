@@ -8,6 +8,18 @@ namespace XTranslatorAi.Tests;
 public class SessionTermMemoryForceTokenTests
 {
     [Fact]
+    public void UnreviewedTerm_IsHintOnlyAndDoesNotOverrideManualHint()
+    {
+        var memory = new TranslationService.SessionTermMemory(maxTerms: 200);
+        Assert.True(memory.TryLearn("Alduin", "자동 후보", allowForce: false));
+        Assert.Empty(memory.GetForcingEntriesForText("Alduin", new HashSet<string>()));
+        Assert.Equal(("Alduin", "자동 후보"), Assert.Single(memory.MergeForText(
+            "Alduin", Array.Empty<(string Source, string Target)>())));
+        Assert.Equal(("Alduin", "수동 확정"), Assert.Single(memory.MergeForText(
+            "Alduin", new[] { ("Alduin", "수동 확정") })));
+    }
+
+    [Fact]
     public void ReplaceSessionTermsTokenSafe_ReplacesInPlainText_AndBuildsTokenMap()
     {
         var memory = new TranslationService.SessionTermMemory(maxTerms: 200);

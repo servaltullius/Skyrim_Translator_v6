@@ -101,6 +101,19 @@ public sealed partial class ProjectDb : IAsyncDisposable, IProjectDb
           UpdatedAt TEXT NOT NULL,
           PRIMARY KEY (StringId, Kind)
         );
+
+        CREATE TABLE IF NOT EXISTS ProjectSource (
+          ProjectId INTEGER PRIMARY KEY CHECK (ProjectId = 1),
+          Kind TEXT NOT NULL,
+          SourceInfoJson TEXT NOT NULL,
+          TargetEncoding TEXT NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS PluginStringBinding (
+          StringId INTEGER PRIMARY KEY,
+          FieldKey TEXT NOT NULL UNIQUE,
+          FieldJson TEXT NOT NULL
+        );
         """;
 
     private ProjectDb(SqliteConnection connection)

@@ -24,6 +24,7 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
     private readonly GeminiClient _geminiClient;
     private readonly Dictionary<string, GeminiModel> _modelInfoByName = new(StringComparer.Ordinal);
     private readonly AppSettingsStore _appSettings;
+    private bool _isUpdatingTranslationPreferences = true;
     private readonly ApiCallLogService _apiCallLogService;
     private readonly SystemPromptBuilder _systemPromptBuilder;
     private readonly IUiInteractionService _uiInteractionService;
@@ -102,6 +103,7 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
         LoadSavedApiKeys(settings);
         EnableApiKeyFailover = settings.EnableApiKeyFailover;
         EnableBookFullModelOverride = settings.EnableBookFullModelOverride;
+        EnableBookBodyModelOverride = settings.EnableBookBodyModelOverride;
         if (!string.IsNullOrWhiteSpace(settings.BookFullModel))
         {
             BookFullModel = settings.BookFullModel.Trim();
@@ -114,6 +116,33 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
         EnablePromptCache = settings.EnablePromptCache;
         EnableRiskyCandidateRerank = settings.EnableRiskyCandidateRerank;
         RiskyCandidateCount = Math.Clamp(settings.RiskyCandidateCount, 2, 8);
+        BatchSize = settings.BatchSize;
+        MaxCharsPerBatch = settings.MaxCharsPerBatch;
+        MaxParallelRequests = settings.MaxParallelRequests;
+        MaxOutputTokensOverride = settings.MaxOutputTokensOverride;
+        EnableRepairPass = settings.EnableRepairPass;
+        SemanticRepairMode = settings.SemanticRepairMode;
+        KeepSkyrimTagsRaw = settings.KeepSkyrimTagsRaw;
+        EnableDialogueContextWindow = settings.EnableDialogueContextWindow;
+        EnableSessionTermMemory = settings.EnableSessionTermMemory;
+        UseRecStyleHints = settings.UseRecStyleHints;
+        EnableTemplateFixer = settings.EnableTemplateFixer;
+        EnableProjectContext = settings.EnableProjectContext;
+        EnableAdaptiveOutputBudget = settings.EnableAdaptiveOutputBudget;
+        EnableBookContext = settings.EnableBookContext;
+        MaxRetryGenerations = settings.MaxRetryGenerations;
+        MaxTotalGenerations = settings.MaxTotalGenerations;
+        PluginSourceLanguage = settings.PluginSourceLanguage;
+        PluginTargetLanguage = settings.PluginTargetLanguage;
+        PluginSourceEncoding = settings.PluginSourceEncoding;
+        PluginMetadataEncoding = settings.PluginMetadataEncoding;
+        PluginTargetEncoding = settings.PluginTargetEncoding;
+        PluginStringsDirectory = settings.PluginStringsDirectory;
+        if (!string.IsNullOrWhiteSpace(settings.SelectedModel))
+        {
+            if (!AvailableModels.Contains(settings.SelectedModel)) AvailableModels.Add(settings.SelectedModel);
+            SelectedModel = settings.SelectedModel;
+        }
 
         EntriesView = CollectionViewSource.GetDefaultView(Entries);
         EntriesView.Filter = EntryFilter;
@@ -168,6 +197,8 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
         ApiLogsTab = new ApiLogsTabViewModel(this);
 
         RefreshPromptLint();
+        _isUpdatingTranslationPreferences = false;
+        PropertyChanged += SaveChangedTranslationPreference;
     }
 
     private void LoadSavedApiKeys(AppSettings settings)
@@ -216,20 +247,6 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
     partial void OnDoneCountChanged(int value) => OnPropertyChanged(nameof(ProgressRatio));
     partial void OnTotalCountChanged(int value) => OnPropertyChanged(nameof(ProgressRatio));
 
-    partial void OnEnableApiKeyFailoverChanged(bool value) => SaveTranslationPreferences();
-
-    partial void OnEnableBookFullModelOverrideChanged(bool value) => SaveTranslationPreferences();
-
-    partial void OnBookFullModelChanged(string value) => SaveTranslationPreferences();
-
-    partial void OnEnableQualityEscalationChanged(bool value) => SaveTranslationPreferences();
-
-    partial void OnQualityEscalationModelChanged(string value) => SaveTranslationPreferences();
-
-    partial void OnEnablePromptCacheChanged(bool value) => SaveTranslationPreferences();
-
-    partial void OnEnableRiskyCandidateRerankChanged(bool value) => SaveTranslationPreferences();
-
     partial void OnRiskyCandidateCountChanged(int value)
     {
         var clamped = Math.Clamp(value, 2, 8);
@@ -238,12 +255,28 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
             RiskyCandidateCount = clamped;
             return;
         }
+    }
 
-        SaveTranslationPreferences();
+    partial void OnMaxRetryGenerationsChanged(int value)
+    {
+        var clamped = Math.Clamp(value, 0, 100);
+        if (clamped != value) MaxRetryGenerations = clamped;
+    }
+
+    partial void OnMaxTotalGenerationsChanged(int value)
+    {
+        if (value < 0) MaxTotalGenerations = 0;
     }
 
     partial void OnSelectedFranchiseChanged(BethesdaFranchise value)
     {
+        if (_projectState.PluginDocument != null)
+        {
+            _globalProjectDbService.SelectedFranchise = BethesdaFranchise.ElderScrolls;
+            BasePromptText = EmbeddedAssets.LoadMetaPrompt(BethesdaFranchise.ElderScrolls);
+            if (value != BethesdaFranchise.ElderScrolls) SelectedFranchise = BethesdaFranchise.ElderScrolls;
+            return;
+        }
         _globalProjectDbService.SelectedFranchise = value;
 
         try
@@ -292,8 +325,49 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
         }
     }
 
+    private void SaveChangedTranslationPreference(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is
+            nameof(EnableApiKeyFailover)
+            or nameof(EnableBookFullModelOverride)
+            or nameof(EnableBookBodyModelOverride)
+            or nameof(BookFullModel)
+            or nameof(EnablePromptCache)
+            or nameof(EnableQualityEscalation)
+            or nameof(QualityEscalationModel)
+            or nameof(EnableRiskyCandidateRerank)
+            or nameof(RiskyCandidateCount)
+            or nameof(SelectedModel)
+            or nameof(BatchSize)
+            or nameof(MaxCharsPerBatch)
+            or nameof(MaxParallelRequests)
+            or nameof(MaxOutputTokensOverride)
+            or nameof(EnableRepairPass)
+            or nameof(SemanticRepairMode)
+            or nameof(KeepSkyrimTagsRaw)
+            or nameof(EnableDialogueContextWindow)
+            or nameof(EnableSessionTermMemory)
+            or nameof(UseRecStyleHints)
+            or nameof(EnableTemplateFixer)
+            or nameof(EnableProjectContext)
+            or nameof(EnableAdaptiveOutputBudget)
+            or nameof(EnableBookContext)
+            or nameof(MaxRetryGenerations)
+            or nameof(MaxTotalGenerations)
+            or nameof(PluginSourceLanguage)
+            or nameof(PluginTargetLanguage)
+            or nameof(PluginSourceEncoding)
+            or nameof(PluginMetadataEncoding)
+            or nameof(PluginTargetEncoding)
+            or nameof(PluginStringsDirectory))
+        {
+            SaveTranslationPreferences();
+        }
+    }
+
     private void SaveTranslationPreferences()
     {
+        if (_isUpdatingTranslationPreferences) return;
         try
         {
             var current = _appSettings.Load();
@@ -302,12 +376,36 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
                 {
                     EnableApiKeyFailover = EnableApiKeyFailover,
                     EnableBookFullModelOverride = EnableBookFullModelOverride,
+                    EnableBookBodyModelOverride = EnableBookBodyModelOverride,
                     BookFullModel = string.IsNullOrWhiteSpace(BookFullModel) ? null : BookFullModel.Trim(),
                     EnablePromptCache = EnablePromptCache,
                     EnableQualityEscalation = EnableQualityEscalation,
                     QualityEscalationModel = string.IsNullOrWhiteSpace(QualityEscalationModel) ? null : QualityEscalationModel.Trim(),
                     EnableRiskyCandidateRerank = EnableRiskyCandidateRerank,
                     RiskyCandidateCount = Math.Clamp(RiskyCandidateCount, 2, 8),
+                    SelectedModel = SelectedModel,
+                    BatchSize = BatchSize,
+                    MaxCharsPerBatch = MaxCharsPerBatch,
+                    MaxParallelRequests = MaxParallelRequests,
+                    MaxOutputTokensOverride = MaxOutputTokensOverride,
+                    EnableRepairPass = EnableRepairPass,
+                    SemanticRepairMode = SemanticRepairMode,
+                    KeepSkyrimTagsRaw = KeepSkyrimTagsRaw,
+                    EnableDialogueContextWindow = EnableDialogueContextWindow,
+                    EnableSessionTermMemory = EnableSessionTermMemory,
+                    UseRecStyleHints = UseRecStyleHints,
+                    EnableTemplateFixer = EnableTemplateFixer,
+                    EnableProjectContext = EnableProjectContext,
+                    EnableAdaptiveOutputBudget = EnableAdaptiveOutputBudget,
+                    EnableBookContext = EnableBookContext,
+                    MaxRetryGenerations = MaxRetryGenerations,
+                    MaxTotalGenerations = MaxTotalGenerations,
+                    PluginSourceLanguage = PluginSourceLanguage,
+                    PluginTargetLanguage = PluginTargetLanguage,
+                    PluginSourceEncoding = PluginSourceEncoding,
+                    PluginMetadataEncoding = PluginMetadataEncoding,
+                    PluginTargetEncoding = PluginTargetEncoding,
+                    PluginStringsDirectory = PluginStringsDirectory,
                 }
             );
         }

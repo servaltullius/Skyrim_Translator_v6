@@ -39,5 +39,11 @@ public sealed record TranslateIdsRequest(
     bool EnableRiskyCandidateRerank = true,
     int RiskyCandidateCount = 3,
     bool EnableApiKeyFailover = false,
-    GeminiThinkingConfig? ThinkingConfigOverride = null
+    GeminiThinkingConfig? ThinkingConfigOverride = null,
+    int MaxRetryGenerations = 8,
+    int MaxTotalGenerations = 0,
+    TranslationGenerationBudget? GenerationBudget = null,
+    bool EnableAdaptiveOutputBudget = false,
+    bool EnableBookContext = false,
+    IReadOnlyDictionary<string, string>? BookTitlesByEdid = null
 );

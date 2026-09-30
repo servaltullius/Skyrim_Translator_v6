@@ -39,7 +39,7 @@ public interface IProjectDb
         CancellationToken cancellationToken
     );
 
-    Task<IReadOnlyDictionary<long, (long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)>>
+    Task<IReadOnlyDictionary<long, (long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status, string? DialogueScope)>>
         GetStringTranslationContextsByIdsAsync(
             IReadOnlyList<long> ids,
             CancellationToken cancellationToken

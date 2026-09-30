@@ -12,6 +12,9 @@ using XTranslatorAi.Core.Xml;
 
 // Usage: XTranslatorAi.Validate input.xml [validation.sqlite] [output.xml] [--existing-db]
 // --existing-db exports an existing project without importing over its intentional Dest edits.
+if (args.Length > 0 && args[0] == "--plugin")
+    return await PluginValidationCommand.RunAsync(args[1..]);
+
 var positional = args.Where(a => !a.StartsWith("--", StringComparison.Ordinal)).ToArray();
 if (args.Any(a => a.StartsWith("--", StringComparison.Ordinal) && a != "--existing-db") || positional.Length > 3)
 {

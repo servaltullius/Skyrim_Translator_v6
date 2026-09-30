@@ -18,6 +18,10 @@ internal sealed class TranslationRunContext : IDisposable
     public string? QualityEscalationModelName { get; set; }
     public bool EnableRiskyCandidateRerank { get; set; } = true;
     public int RiskyCandidateCount { get; set; } = 3;
+    public TranslationGenerationBudget? GenerationBudget { get; set; }
+    public bool EnableAdaptiveOutputBudget { get; set; }
+    public bool EnableBookContext { get; set; }
+    public IReadOnlyDictionary<string, string>? BookTitlesByEdid { get; set; }
 
     // Concurrency / gates
     public SemaphoreSlim? GenerateContentGate { get; set; }

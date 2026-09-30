@@ -12,6 +12,7 @@ public sealed partial class TranslationService
 {
     private async Task TranslateIdsCoreAsync(TranslateIdsRequest request)
     {
+        request = request with { MaxChars = TranslationOutputBudget.GetSourceCharLimit(request.MaxChars, request.MaxOutputTokens, request.EnableAdaptiveOutputBudget) };
         InitializeTranslateIdsRunState(request);
 
         PromptCache? promptCache = null;
@@ -19,18 +20,23 @@ public sealed partial class TranslationService
         {
             if (request.EnablePromptCache)
             {
-                promptCache = await TryCreatePromptCacheAsync(
-                    request.ApiKey,
-                    request.ModelName,
-                    request.SystemPrompt,
-                    request.CancellationToken
-                );
+                // GetOrCreateAsync is called by the first actual generation request.
+                // TM-only and empty runs must not create a billable cache.
+                promptCache = new PromptCache(_gemini, request.ApiKey, request.ModelName,
+                    request.SystemPrompt, ttl: TimeSpan.FromHours(2));
             }
 
             await TranslateIdsCoreBodyAsync(request, promptCache);
         }
         catch (OperationCanceledException) when (request.CancellationToken.IsCancellationRequested)
         {
+            await RestoreCancelledRowsAsync(request);
+            throw;
+        }
+        catch (Exception)
+        {
+            // Includes seed/auth/budget failures before workers start. Never leave
+            // unfinished rows stuck InProgress after an aborted run.
             await RestoreCancelledRowsAsync(request);
             throw;
         }
@@ -83,6 +89,9 @@ public sealed partial class TranslationService
             QualityEscalationModelName = string.IsNullOrWhiteSpace(request.QualityEscalationModelName) ? null : request.QualityEscalationModelName.Trim(),
             EnableRiskyCandidateRerank = request.EnableRiskyCandidateRerank,
             RiskyCandidateCount = Math.Clamp(request.RiskyCandidateCount, 2, 8),
+            GenerationBudget = request.GenerationBudget ?? new TranslationGenerationBudget(request.MaxRetryGenerations, request.MaxTotalGenerations),
+            EnableAdaptiveOutputBudget = request.EnableAdaptiveOutputBudget,
+            EnableBookContext = request.EnableBookContext,
         };
 
         if (Ctx.EnableSessionTermMemory && Ctx.SessionTermMemory != null && request.PreloadedSessionTerms != null)
@@ -119,6 +128,8 @@ public sealed partial class TranslationService
         );
 
         var schema = TranslationPrompt.BuildResponseSchema();
+        foreach (var item in items)
+            Ctx.GenerationBudget!.RegisterRow(item.Id, item.Masked.Length, TranslationConstants.XtTokenRegex.Matches(item.Masked).Count);
 
         var maxConcurrency = Math.Max(1, request.MaxConcurrency);
         Ctx.GenerateContentGate = new SemaphoreSlim(maxConcurrency, maxConcurrency);
@@ -159,41 +170,14 @@ public sealed partial class TranslationService
         {
             try
             {
-                await promptCache.DeleteAsync(CancellationToken.None);
+                using var cleanupTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                await promptCache.DeleteAsync(cleanupTimeout.Token);
             }
             catch
             {
                 // Cleanup path in finally block -- swallow all exceptions
                 // including OperationCanceledException to avoid masking the original exception.
             }
-        }
-    }
-
-    private async Task<PromptCache?> TryCreatePromptCacheAsync(
-        string apiKey,
-        string modelName,
-        string systemPrompt,
-        CancellationToken cancellationToken
-    )
-    {
-        try
-        {
-            var cache = new PromptCache(_gemini, apiKey, modelName, systemPrompt, ttl: TimeSpan.FromHours(2));
-            _ = await cache.GetOrCreateAsync(cancellationToken);
-            return cache;
-        }
-        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-        {
-            throw;
-        }
-        catch (Exception ex)
-        {
-            if (IsCredentialError(ex))
-            {
-                throw;
-            }
-
-            return null;
         }
     }
 

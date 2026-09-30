@@ -12,6 +12,61 @@ namespace XTranslatorAi.Tests;
 public class TranslationUiLifecycleTests
 {
     [Fact]
+    public Task ManualEdit_UpdatesProgressImmediately_WithoutCountingRepeatedSavesTwice()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new ViewModelFixture();
+            var db = await ProjectDb.OpenOrCreateAsync(Path.Combine(fixture.DirectoryPath, "manual-edit.sqlite"), CancellationToken.None);
+            fixture.State.SetWorkspace(db, new XTranslatorXmlInfo("test.esp", "english", "korean", "2", false, ""), "test.xml");
+            await db.BulkInsertStringsAsync(new[] { (0, (string?)null, (string?)null, (string?)null,
+                (string?)null, (string?)null, "Source", "Source", StringEntryStatus.Pending, "<String />") }, CancellationToken.None);
+            var row = Assert.Single(await db.GetStringsAsync(10, 0, CancellationToken.None));
+            var entry = new StringEntryViewModel(row.Id, row.OrderIndex) { SourceText = row.SourceText, DestText = row.DestText ?? "" };
+            fixture.State.SetEntries(new[] { entry });
+            fixture.ViewModel.TotalCount = 1;
+            fixture.ViewModel.PendingCount = 1;
+
+            await fixture.ViewModel.CommitDestEditAsync(entry, "수동 번역");
+            Assert.Equal(1, fixture.ViewModel.DoneCount);
+            Assert.Equal(0, fixture.ViewModel.PendingCount);
+            Assert.Equal(1d, fixture.ViewModel.ProgressRatio);
+            await fixture.ViewModel.CommitDestEditAsync(entry, "수정한 번역");
+            Assert.Equal(1, fixture.ViewModel.DoneCount);
+            Assert.Equal(0, fixture.ViewModel.PendingCount);
+            var saved = Assert.Single(await db.GetStringsAsync(10, 0, CancellationToken.None));
+            Assert.Equal("수정한 번역", saved.DestText);
+            Assert.Equal(StringEntryStatus.Edited, saved.Status);
+        });
+
+    [Fact]
+    public Task FailedManualEdit_DoesNotMarkTheRowCompleteOrChangeProgress()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new ViewModelFixture();
+            var db = await ProjectDb.OpenOrCreateAsync(Path.Combine(fixture.DirectoryPath, "failed-edit.sqlite"), CancellationToken.None);
+            fixture.State.SetWorkspace(db, new XTranslatorXmlInfo("test.esp", "english", "korean", "2", false, ""), "test.xml");
+            var entry = new StringEntryViewModel(1, 0) { SourceText = "Source", DestText = "Source" };
+            fixture.State.SetEntries(new[] { entry });
+            fixture.ViewModel.TotalCount = 1;
+            fixture.ViewModel.PendingCount = 1;
+            await db.DisposeAsync();
+
+            try
+            {
+                await Assert.ThrowsAnyAsync<Exception>(() => fixture.ViewModel.CommitDestEditAsync(entry, "저장 실패"));
+                Assert.Equal("Source", entry.DestText);
+                Assert.Equal(StringEntryStatus.Pending, entry.Status);
+                Assert.Equal(0, fixture.ViewModel.DoneCount);
+                Assert.Equal(1, fixture.ViewModel.PendingCount);
+            }
+            finally
+            {
+                // The fixture must not dispose the deliberately closed database again.
+                fixture.State.Clear();
+            }
+        });
+
+    [Fact]
     public Task LateRowFromPreviousRun_DoesNotChangeNewProjectWithSameRowId()
         => RunOnSta(async () =>
         {

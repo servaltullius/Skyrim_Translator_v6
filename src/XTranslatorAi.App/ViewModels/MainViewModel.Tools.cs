@@ -18,44 +18,40 @@ public partial class MainViewModel
     [RelayCommand]
     private void ApplyFreeTierPreset()
     {
-        // No API calls here: apply values and let the user Refresh models when needed.
-        SelectedModel = PickModelCandidate(
-            candidates: GeminiModelCatalog.LowCostModels,
-            fallback: GeminiModelCatalog.LowCostModel
-        );
-
-        EnablePromptCache = false;
-        BatchSize = 8;
-        MaxCharsPerBatch = 15000;
-        MaxParallelRequests = 1;
-        MaxOutputTokensOverride = 0; // Auto
-
-        // A low-cost preset should keep all rows on the selected model.
-        EnableBookFullModelOverride = false;
-        EnableQualityEscalation = false;
-
-        StatusMessage = $"무료 티어용 설정: {SelectedModel}, 동시 요청 1개. 실제 무료 할당량은 계정별로 확인하세요.";
+        ApplyThroughputPreset(
+            PickModelCandidate(GeminiModelCatalog.LowCostModels, GeminiModelCatalog.LowCostModel),
+            enablePromptCache: false, batchSize: 8, parallel: 1);
+        StatusMessage = $"저비용 프리셋: {SelectedModel} · 배치 8개 · 최대 15000자 · 동시 1개 · 출력 Auto · 캐시 OFF. 책/품질 모델·복구·실험 설정은 유지합니다. 무료 할당량은 계정별로 확인하세요.";
     }
 
     [RelayCommand]
     private void ApplyPaidPreset()
     {
-        // No API calls here: apply values and let the user Refresh models when needed.
-        SelectedModel = PickModelCandidate(
-            candidates: GeminiModelCatalog.FullModels,
-            fallback: GeminiModelCatalog.DefaultModel
-        );
+        ApplyThroughputPreset(
+            PickModelCandidate(GeminiModelCatalog.FullModels, GeminiModelCatalog.DefaultModel),
+            enablePromptCache: true, batchSize: 12, parallel: 2);
+        StatusMessage = $"유료 프리셋: {SelectedModel} · 배치 12개 · 최대 15000자 · 동시 2개 · 출력 Auto · 캐시 ON. 책/품질 모델·복구·실험 설정은 유지합니다.";
+    }
 
-        // Paid tier: optimize request count without pushing concurrency too hard.
-        // - Larger maxChars reduces long-text chunking (fewer requests) for book-like entries.
-        // - Moderate batch size reduces request count for short strings while keeping JSON batches stable.
-        EnablePromptCache = true;
-        BatchSize = 12;
-        MaxCharsPerBatch = 15000;
-        MaxParallelRequests = 2;
-        MaxOutputTokensOverride = 0; // Auto
-
-        StatusMessage = $"유료 프리셋: {SelectedModel} · 배치 12개 · 최대 15000자 · 동시 요청 2개";
+    private void ApplyThroughputPreset(string model, bool enablePromptCache, int batchSize, int parallel)
+    {
+        // Apply only the advertised model/throughput/cache scope and persist once.
+        var wasUpdating = _isUpdatingTranslationPreferences;
+        _isUpdatingTranslationPreferences = true;
+        try
+        {
+            SelectedModel = model;
+            EnablePromptCache = enablePromptCache;
+            BatchSize = batchSize;
+            MaxCharsPerBatch = 15000;
+            MaxParallelRequests = parallel;
+            MaxOutputTokensOverride = 0;
+        }
+        finally
+        {
+            _isUpdatingTranslationPreferences = wasUpdating;
+        }
+        SaveTranslationPreferences();
     }
 
     [RelayCommand]
@@ -250,7 +246,7 @@ public partial class MainViewModel
     private bool TryGetCostEstimateContext(out ProjectDb db, out string apiKey)
     {
         var projectDb = _projectState.Db;
-        if (projectDb == null || _projectState.XmlInfo == null)
+        if (projectDb == null || !_projectState.HasSource)
         {
             db = null!;
             apiKey = "";

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using XTranslatorAi.App.Collections;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Xml;
+using XTranslatorAi.Core.Plugins;
 
 namespace XTranslatorAi.App.ViewModels;
 
@@ -12,13 +13,18 @@ public sealed class ProjectState
     public ProjectDb? Db { get; private set; }
     public XTranslatorXmlInfo? XmlInfo { get; private set; }
     public string? InputXmlPath { get; private set; }
+    public PluginDocument? PluginDocument { get; private set; }
+    public string? PluginTargetEncoding { get; private set; }
+    public string? InputPath => PluginDocument?.Info.InputPath ?? InputXmlPath;
+    public string? AddonName => PluginDocument == null ? XmlInfo?.AddonName : Path.GetFileName(PluginDocument.Info.InputPath);
+    public bool HasSource => XmlInfo != null || PluginDocument != null;
 
     public ObservableRangeCollection<StringEntryViewModel> Entries { get; } = new();
 
     private readonly Dictionary<long, StringEntryViewModel> _byId = new();
 
     public string CurrentXmlFileName
-        => string.IsNullOrWhiteSpace(InputXmlPath) ? "" : Path.GetFileName(InputXmlPath);
+        => string.IsNullOrWhiteSpace(InputPath) ? "" : Path.GetFileName(InputPath);
 
     public bool TryGetById(long id, out StringEntryViewModel entry)
     {
@@ -38,6 +44,8 @@ public sealed class ProjectState
         _byId.Clear();
         XmlInfo = null;
         InputXmlPath = null;
+        PluginDocument = null;
+        PluginTargetEncoding = null;
         Db = null;
     }
 
@@ -56,6 +64,17 @@ public sealed class ProjectState
         Db = db;
         XmlInfo = xmlInfo;
         InputXmlPath = inputXmlPath;
+        PluginDocument = null;
+        PluginTargetEncoding = null;
+    }
+
+    public void SetPluginWorkspace(ProjectDb db, PluginDocument document, string targetEncoding)
+    {
+        Db = db;
+        PluginDocument = document;
+        PluginTargetEncoding = targetEncoding;
+        XmlInfo = null;
+        InputXmlPath = null;
     }
 
     public void SetEntries(IReadOnlyList<StringEntryViewModel> entries)

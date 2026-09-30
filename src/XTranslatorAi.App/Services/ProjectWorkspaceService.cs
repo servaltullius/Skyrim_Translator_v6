@@ -9,7 +9,7 @@ using XTranslatorAi.Core.Xml;
 
 namespace XTranslatorAi.App.Services;
 
-public sealed class ProjectWorkspaceService
+public sealed partial class ProjectWorkspaceService
 {
     private readonly GlobalProjectDbService _globalProjectDbService;
     private readonly BuiltInGlossaryService _builtInGlossaryService;
@@ -66,6 +66,8 @@ public sealed class ProjectWorkspaceService
         var db = await ProjectDb.OpenOrCreateAsync(dbPath, cancellationToken);
         try
         {
+            if (await db.TryGetPluginSourceAsync(cancellationToken) != null)
+                throw new InvalidOperationException("Cannot import XML into a plugin project.");
             var info = await XTranslatorXmlImporter.ImportToDbAsync(db, xmlPath, cancellationToken,
                 preserveExistingTranslations: true,
                 projectFactory: xml => CreateProjectInfo(xml, xmlPath, franchise, request.SelectedModel,
@@ -86,9 +88,11 @@ public sealed class ProjectWorkspaceService
         }
     }
 
-    public Task ExportXmlAsync(ProjectDb db, XTranslatorXmlInfo xmlInfo, string outputPath, CancellationToken cancellationToken)
+    public async Task ExportXmlAsync(ProjectDb db, XTranslatorXmlInfo xmlInfo, string outputPath, CancellationToken cancellationToken)
     {
-        return XTranslatorXmlExporter.ExportAsync(db, xmlInfo, outputPath, cancellationToken);
+        if (await db.TryGetPluginSourceAsync(cancellationToken) != null)
+            throw new InvalidOperationException("Use plugin export for a plugin project.");
+        await XTranslatorXmlExporter.ExportAsync(db, xmlInfo, outputPath, cancellationToken);
     }
 
     private static ProjectInfo CreateProjectInfo(

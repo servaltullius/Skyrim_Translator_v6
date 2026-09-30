@@ -71,10 +71,49 @@ public class ProjectContextScannerTests
             Assert.Contains(report.TopTerms, t => t.Source == "Saarthal" && t.Count == 3 && t.Target == "사아쌀");
 
             Assert.Contains(report.Samples, s => s.Rec == "MGEF" && s.Text.Contains("<mag>", StringComparison.Ordinal));
+            Assert.Single(report.Samples); // Existing special-sample reports keep their payload unchanged.
         }
         finally
         {
             TestDbHelper.TryDeleteDbFiles(path);
+        }
+    }
+
+    [Fact]
+    public async Task ScanAsync_WithoutSpecialSamples_ProvidesBoundedDistinctOriginalText()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"xt-context-plain-{Guid.NewGuid():N}.sqlite");
+        try
+        {
+            await using var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
+            await SeedProjectAsync(db);
+            var rows = new[]
+            {
+                CreateRow(0, "WEAP:FULL", "Iron Sword"),
+                CreateRow(1, "WEAP:FULL", "Iron Sword"),
+                CreateRow(2, "WEAP:FULL", "Iron Mace"),
+                CreateRow(3, "WEAP:FULL", "Iron Dagger"),
+                CreateRow(4, "BOOK:DESC", new string('x', 500)),
+            }.Concat(Enumerable.Range(0, 12).Select(i => CreateRow(5 + i, "REC" + i, "Original row " + i))).ToArray();
+            await db.BulkInsertStringsAsync(rows, CancellationToken.None);
+            var first = (await db.GetStringsAsync(1, 0, CancellationToken.None)).Single();
+            await db.UpdateStringTranslationAsync(first.Id, "번역문은 원문 샘플이 아닙니다", StringEntryStatus.Edited, null, CancellationToken.None);
+
+            var report = await new ProjectContextScanner().ScanAsync(db, null,
+                new ProjectContextScanOptions("Plain.esp", "Plain.esp", "english", "korean", null), CancellationToken.None);
+
+            Assert.Equal(8, report.Samples.Count);
+            Assert.All(report.Samples.GroupBy(sample => sample.Rec), group => Assert.InRange(group.Count(), 1, 2));
+            Assert.Single(report.Samples.Where(sample => sample.Text == "Iron Sword"));
+            Assert.Contains(report.Samples, sample => sample.Text == "Iron Mace");
+            Assert.DoesNotContain(report.Samples, sample => sample.Text == "Iron Dagger");
+            Assert.DoesNotContain(report.Samples, sample => sample.Text.Contains("번역문", StringComparison.Ordinal));
+            Assert.All(report.Samples, sample => Assert.InRange(sample.Text.Length, 1, 221));
+            Assert.Equal(new string('x', 220) + "…", report.Samples.Single(sample => sample.Rec == "BOOK:DESC").Text);
+        }
+        finally
+        {
+            TestDbHelper.ReleaseProjectPoolAndDeleteDbFiles(path);
         }
     }
 

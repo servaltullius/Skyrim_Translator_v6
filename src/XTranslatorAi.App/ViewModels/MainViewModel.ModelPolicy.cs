@@ -14,6 +14,20 @@ public partial class MainViewModel
 
     public string SelectedModelCostSummary => BuildSelectedModelCostSummary();
 
+    public bool SelectedModelSupportsMultipleCandidates
+        => GeminiTranslationPolicy.SupportsMultipleCandidates(SelectedModel ?? "");
+
+    public bool IsRiskyCandidateCountEnabled
+        => SelectedModelSupportsMultipleCandidates && EnableRiskyCandidateRerank;
+
+    public int EffectiveRiskyCandidateCount
+        => IsRiskyCandidateCountEnabled ? Math.Clamp(RiskyCandidateCount, 2, 8) : 1;
+
+    public string EffectiveRiskyCandidateSummary
+        => SelectedModelSupportsMultipleCandidates
+            ? $"기본 모델 적용: {EffectiveRiskyCandidateCount}개 (위험 문장)"
+            : $"기본 모델 적용: 1개 · 다중후보 미지원/미확인 (저장값 {RiskyCandidateCount}개)";
+
     private string BuildGeminiTranslationConfigSummary()
     {
         var model = (SelectedModel ?? "").Trim();
@@ -26,6 +40,7 @@ public partial class MainViewModel
         var thinkingText = DescribeThinkingConfig(thinking);
 
         var maxOutText = MaxOutputTokensOverride > 0 ? $"override({maxOut})" : $"auto({maxOut})";
+        if (EnableAdaptiveOutputBudget) maxOutText = $"adaptive(상한 {maxOut})";
 
         return $"GenCfg: temp={tempText}, think={thinkingText}, maxOut={maxOutText}";
     }
@@ -46,6 +61,8 @@ public partial class MainViewModel
         var modelLimit = GetModelOutputTokenLimit(model);
         var maxOut = ComputeMaxOutputTokens(model);
         AppendMaxOutputLine(sb, maxOut, MaxOutputTokensOverride > 0, modelLimit);
+        if (EnableAdaptiveOutputBudget)
+            sb.AppendLine("실험 옵션: 실제 요청 상한은 원문 길이/보호 토큰 수에 따라 위 상한 이하로 조절됩니다.");
         AppendTranslationConfigNote(sb);
 
         return sb.ToString().TrimEnd();
@@ -215,9 +232,19 @@ public partial class MainViewModel
         OnPropertyChanged(nameof(EffectiveGeminiTranslationConfigSummary));
         OnPropertyChanged(nameof(EffectiveGeminiTranslationConfigToolTip));
         OnPropertyChanged(nameof(SelectedModelCostSummary));
+        OnPropertyChanged(nameof(SelectedModelSupportsMultipleCandidates));
+        OnPropertyChanged(nameof(IsRiskyCandidateCountEnabled));
+        OnPropertyChanged(nameof(EffectiveRiskyCandidateCount));
+        OnPropertyChanged(nameof(EffectiveRiskyCandidateSummary));
     }
 
     partial void OnMaxOutputTokensOverrideChanged(int value)
+    {
+        OnPropertyChanged(nameof(EffectiveGeminiTranslationConfigSummary));
+        OnPropertyChanged(nameof(EffectiveGeminiTranslationConfigToolTip));
+    }
+
+    partial void OnEnableAdaptiveOutputBudgetChanged(bool value)
     {
         OnPropertyChanged(nameof(EffectiveGeminiTranslationConfigSummary));
         OnPropertyChanged(nameof(EffectiveGeminiTranslationConfigToolTip));

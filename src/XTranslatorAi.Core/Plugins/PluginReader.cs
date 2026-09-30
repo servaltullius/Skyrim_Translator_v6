@@ -1,0 +1,272 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace XTranslatorAi.Core.Plugins;
+
+public static class PluginReader
+{
+    public static async Task<PluginDocument> ReadAsync(string path, PluginReadOptions options, CancellationToken cancellationToken)
+    {
+        path = Path.GetFullPath(path);
+        options = options with
+        {
+            StringsDirectory = options.StringsDirectory == null ? null : Path.GetFullPath(options.StringsDirectory),
+            ArchivePaths = options.ArchivePaths?.Select(Path.GetFullPath).Distinct(StringComparer.OrdinalIgnoreCase).ToArray(),
+        };
+        if (options.Game != PluginGame.SkyrimSpecialEdition) throw new NotSupportedException("확인되지 않은 게임 형식입니다.");
+        ValidateLanguage(options.SourceLanguage);
+        _ = PluginBinary.GetEncoding(options.SourceEncoding);
+        _ = PluginBinary.GetEncoding(options.MetadataEncoding);
+        if (!new[] { ".esp", ".esm", ".esl" }.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase))
+            throw new InvalidDataException("ESP/ESM/ESL 파일을 선택하세요.");
+        var bytes = await File.ReadAllBytesAsync(path, cancellationToken).ConfigureAwait(false);
+        var dependencies = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var tables = new Dictionary<PluginStringTableKind, byte[]>();
+        var sources = new Dictionary<PluginStringTableKind, string>();
+        var structure = ParseStructure(bytes, cancellationToken);
+        if (structure.Records[0].Flags.HasFlag(PluginBinary.LocalizedFlag))
+        {
+            var archives = ResolveArchives(path, options).ToArray();
+            var archiveLocks = new Dictionary<string, FileStream>(StringComparer.OrdinalIgnoreCase);
+            try
+            {
+            foreach (var kind in Enum.GetValues<PluginStringTableKind>())
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var name = Path.GetFileNameWithoutExtension(path) + "_" + ValidateLanguage(options.SourceLanguage) + "." + Extension(kind);
+                var folder = options.StringsDirectory ?? Path.Combine(Path.GetDirectoryName(path)!, "Strings");
+                var tablePath = FindFile(folder, name);
+                if (tablePath != null)
+                {
+                    var data = await File.ReadAllBytesAsync(tablePath, cancellationToken).ConfigureAwait(false);
+                    tables[kind] = data;
+                    dependencies[tablePath] = PluginBinary.Hash(data);
+                    sources[kind] = tablePath;
+                    continue;
+                }
+                foreach (var archive in archives)
+                {
+                    if (!archiveLocks.TryGetValue(archive, out var stream))
+                    {
+                        stream = new FileStream(archive, FileMode.Open, FileAccess.Read, FileShare.Read, 65536, useAsync: true);
+                        archiveLocks.Add(archive, stream);
+                    }
+                    var data = await PluginArchiveReader.ReadFileAsync(archive, "strings/" + name, cancellationToken).ConfigureAwait(false);
+                    if (data == null) continue;
+                    if (tables.TryGetValue(kind, out var existing) && !existing.AsSpan().SequenceEqual(data))
+                        throw new InvalidDataException($"{name}의 내용이 BSA마다 다릅니다. 사용할 Strings 폴더 또는 하나의 BSA 경로를 명시하세요: {sources[kind]}, {archive}");
+                    tables[kind] = data;
+                    sources.TryAdd(kind, archive);
+                    // Hold the archive stable while reading all tables, and hash it only once.
+                    if (!dependencies.ContainsKey(archive))
+                        dependencies[archive] = Convert.ToHexString(await System.Security.Cryptography.SHA256.HashDataAsync(stream, cancellationToken));
+                }
+            }
+            }
+            finally
+            {
+                foreach (var stream in archiveLocks.Values) await stream.DisposeAsync();
+            }
+        }
+        return ReadSnapshot(path, bytes, options, tables, dependencies, structure, cancellationToken, sources);
+    }
+
+    internal static PluginDocument ReadSnapshot(string path, byte[] bytes, PluginReadOptions options,
+        IReadOnlyDictionary<PluginStringTableKind, byte[]> tableBytes,
+        IReadOnlyDictionary<string, string>? dependencies = null,
+        (IReadOnlyList<PluginNode> Nodes, IReadOnlyDictionary<int, PluginRecord> Records)? parsed = null,
+        CancellationToken cancellationToken = default,
+        IReadOnlyDictionary<PluginStringTableKind, string>? tableSources = null)
+    {
+        if (options.Game != PluginGame.SkyrimSpecialEdition) throw new NotSupportedException("확인되지 않은 게임 형식입니다.");
+        ValidateLanguage(options.SourceLanguage);
+        var encoding = PluginBinary.GetEncoding(options.SourceEncoding);
+        var metadataEncoding = PluginBinary.GetEncoding(options.MetadataEncoding);
+        var (nodes, records) = parsed ?? ParseStructure(bytes, cancellationToken);
+        var header = records[0];
+        var hedr = header.Subrecords.SingleOrDefault(sub => sub.Type == "HEDR");
+        if (hedr == null || hedr.Data.Length != 12)
+            throw new InvalidDataException("TES4 HEDR 헤더가 잘못되었습니다.");
+        var version = BitConverter.Int32BitsToSingle(unchecked((int)PluginBinary.U32(hedr.Data.Span, 0)));
+        if (!float.IsFinite(version) || (Math.Abs(version - 1.7f) > 0.0001f && Math.Abs(version - 1.71f) > 0.0001f))
+            throw new NotSupportedException($"Skyrim 형식 HEDR 1.7/1.71이 아닙니다({version}). 다른 게임의 파일을 Skyrim 형식으로 저장할 수 없습니다.");
+        var localized = (header.Flags & PluginBinary.LocalizedFlag) != 0;
+        var masters = header.Subrecords.Where(sub => sub.Type == "MAST")
+            .Select(sub => PluginBinary.ReadZString(sub.Data.Span, metadataEncoding, "MAST")).ToArray();
+        var tables = tableBytes.ToDictionary(pair => pair.Key, pair => PluginStringTable.Read(pair.Key, pair.Value, encoding));
+        var fields = new List<PluginField>();
+        var diagnostics = new List<PluginDiagnostic>();
+        var unknown = new HashSet<string>(StringComparer.Ordinal);
+        var identities = new Dictionary<(string, uint), int>();
+        foreach (var record in records.Values)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (record.Index == 0 || (record.Flags & PluginBinary.DeletedFlag) != 0) continue;
+            if (!PluginFieldRegistry.IsKnownRecord(record.Type) && unknown.Add(record.Type))
+                diagnostics.Add(new("unknown_record", $"지원 정의에 없는 레코드 {record.Type}가 있습니다. 원본 데이터는 보존되지만 전체 번역 여부를 확인할 수 없어 저장을 중단합니다.", true));
+            var recordKey = (record.Type, record.FormId);
+            var recordOccurrence = identities.GetValueOrDefault(recordKey);
+            identities[recordKey] = recordOccurrence + 1;
+            var edidSub = record.Subrecords.FirstOrDefault(sub => sub.Type == "EDID");
+            var edid = edidSub == null ? null : PluginBinary.ReadZString(edidSub.Data.Span, metadataEncoding, "EDID");
+            var preceding = new List<PluginSubrecordDescriptor>();
+            var subOccurrences = new Dictionary<string, int>(StringComparer.Ordinal);
+            foreach (var sub in record.Subrecords)
+            {
+                var ordinal = subOccurrences.GetValueOrDefault(sub.Type);
+                subOccurrences[sub.Type] = ordinal + 1;
+                var rule = PluginFieldRegistry.GetRule(record.Type, sub.Type, edid, preceding);
+                if (rule != null)
+                {
+                    string source;
+                    PluginStringTableKind? kind = localized ? rule.LocalizedTable : null;
+                    uint? stringId = null;
+                    if (kind != null)
+                    {
+                        if (sub.Data.Length != 4) throw new InvalidDataException($"localized 필드의 ID 길이가 잘못되었습니다: {record.Type}:{sub.Type}/{record.FormId:X8}");
+                        stringId = PluginBinary.U32(sub.Data.Span, 0);
+                        if (stringId == 0) { preceding.Add(new(sub.Type, sub.Data)); continue; }
+                        if (!tables.TryGetValue(kind.Value, out var table))
+                            throw new FileNotFoundException($"{Path.GetFileName(path)}에 필요한 {Extension(kind.Value)} 원문 테이블이 없습니다. Strings 폴더 또는 BSA 경로를 확인하세요.");
+                        if (!table.Strings.TryGetValue(stringId.Value, out source!))
+                            throw new InvalidDataException($"{kind} 테이블에서 StringID {stringId}를 찾을 수 없습니다.");
+                    }
+                    else source = PluginBinary.ReadZString(sub.Data.Span, encoding, $"{record.Type}:{sub.Type}/{record.FormId:X8}");
+                    // Empty optional fields do not create artificial translation work.
+                    if (source.Length > 0)
+                        fields.Add(new($"{record.Type}/{record.FormId:X8}/{recordOccurrence}/{sub.Type}/{ordinal}", fields.Count,
+                            record.Type, sub.Type, record.FormId, edid, record.Index, sub.Index, source, kind, stringId, rule.RequiresNonEmpty,
+                            record.DialogueTopicFormId));
+                }
+                if (rule == null && ((record.Type == "QUST" && sub.Type == "NNAM") || (record.Type == "SNDR" && sub.Type == "FNAM")))
+                {
+                    var preservation = localized
+                        ? "필드 바이트와 ID는 유지하지만, 다른 번역 항목과 문자열 ID를 공유하면 참조 내용은 함께 바뀔 수 있습니다."
+                        : "해당 필드의 바이트를 유지합니다.";
+                    diagnostics.Add(new("ambiguous_field", $"{record.Type}:{sub.Type}/{record.FormId:X8}는 도구별 필드 정의가 달라 직접 번역하지 않습니다. {preservation}"));
+                }
+                preceding.Add(new(sub.Type, sub.Data));
+            }
+        }
+        options = options with { ArchivePaths = options.ArchivePaths?.ToArray() };
+        return new(new(path, PluginBinary.Hash(bytes), options, localized, Array.AsReadOnly(masters), diagnostics.AsReadOnly(), tableSources),
+            fields.AsReadOnly(), bytes, nodes, records, tables,
+            dependencies ?? new Dictionary<string, string>());
+    }
+
+    internal static (IReadOnlyList<PluginNode> Nodes, IReadOnlyDictionary<int, PluginRecord> Records) ParseStructure(byte[] bytes, CancellationToken ct)
+    {
+        if (bytes.Length < PluginBinary.HeaderSize || PluginBinary.Signature(bytes) != "TES4")
+            throw new InvalidDataException("TES4 헤더가 있는 Bethesda 플러그인이 아닙니다.");
+        var records = new Dictionary<int, PluginRecord>();
+        var formIds = new HashSet<uint>();
+        var nextIndex = 0;
+        var nodes = ParseRange(0, bytes.Length, 0, null);
+        if (nodes[0] is not PluginRecord { Type: "TES4" }) throw new InvalidDataException("TES4 헤더가 첫 레코드가 아닙니다.");
+        return (nodes, records);
+
+        IReadOnlyList<PluginNode> ParseRange(int start, int end, int depth, uint? dialogueTopicFormId)
+        {
+            if (depth > 64) throw new InvalidDataException("GRUP 중첩 깊이가 지원 범위를 초과했습니다.");
+            var result = new List<PluginNode>();
+            var pos = start;
+            while (pos < end)
+            {
+                ct.ThrowIfCancellationRequested();
+                if (end - pos < PluginBinary.HeaderSize) throw new InvalidDataException($"잘린 레코드/GRUP 헤더: {pos}");
+                var type = PluginBinary.Signature(bytes.AsSpan(pos));
+                var size = PluginBinary.U32(bytes, pos + 4);
+                var total = type == "GRUP" ? (long)size : PluginBinary.HeaderSize + (long)size;
+                if (total < PluginBinary.HeaderSize || total > end - pos) throw new InvalidDataException($"{type} 길이가 부모 경계를 벗어납니다: {pos}");
+                var raw = bytes.AsMemory(pos, (int)total);
+                if (type == "GRUP")
+                {
+                    // Topic Children (type 7) stores the owning DIAL FormID in its label.
+                    // An override-only patch need not contain the parent DIAL record itself.
+                    var groupType = PluginBinary.U32(raw.Span, 12);
+                    var label = PluginBinary.U32(raw.Span, 8);
+                    uint? childTopic = groupType == 7 ? (label == 0 ? null : label) : dialogueTopicFormId;
+                    result.Add(new PluginGroup(raw, ParseRange(pos + PluginBinary.HeaderSize, pos + (int)total, depth + 1, childTopic)));
+                }
+                else
+                {
+                    if (type == "TES4" && nextIndex != 0) throw new InvalidDataException("중복 TES4 헤더입니다.");
+                    var flags = PluginBinary.U32(raw.Span, 8);
+                    var formId = PluginBinary.U32(raw.Span, 12);
+                    if (type != "TES4" && formId != 0 && !formIds.Add(formId))
+                        throw new InvalidDataException($"중복 FormID {formId:X8}가 있습니다: {type} (offset {pos})");
+                    ReadOnlyMemory<byte> payload = (flags & PluginBinary.CompressedFlag) != 0 ? PluginBinary.Inflate(raw[PluginBinary.HeaderSize..]) : raw[PluginBinary.HeaderSize..];
+                    IReadOnlyList<PluginSubrecord> subrecords;
+                    try { subrecords = ParseSubrecords(payload); }
+                    catch (Exception ex) when (ex is InvalidDataException or OverflowException)
+                    { throw new InvalidDataException($"{type}/{formId:X8} (offset {pos}) subrecord 해석 실패: {ex.Message}", ex); }
+                    var topic = type == "DIAL" ? (formId == 0 ? (uint?)null : formId)
+                        : type == "INFO" ? dialogueTopicFormId : null;
+                    var record = new PluginRecord(raw, nextIndex++, type, formId, flags, payload, subrecords, topic);
+                    records.Add(record.Index, record);
+                    result.Add(record);
+                }
+                pos += (int)total;
+            }
+            return result.AsReadOnly();
+        }
+    }
+
+    private static IReadOnlyList<PluginSubrecord> ParseSubrecords(ReadOnlyMemory<byte> payload)
+    {
+        var result = new List<PluginSubrecord>();
+        var offset = 0;
+        while (offset < payload.Length)
+        {
+            if (payload.Length - offset < 6) throw new InvalidDataException("잘린 subrecord 헤더입니다.");
+            string type;
+            try { type = PluginBinary.Signature(payload.Span[offset..], allowBinary: true); }
+            catch (InvalidDataException ex) { throw new InvalidDataException($"subrecord offset {offset}, signature {Convert.ToHexString(payload.Span.Slice(offset, 4))}: {ex.Message}", ex); }
+            var length = (uint)PluginBinary.U16(payload.Span, offset + 4);
+            var headerLength = 6;
+            if (type == "XXXX")
+            {
+                if (length != 4 || payload.Length - offset < 16) throw new InvalidDataException("잘못된 XXXX 확장 길이입니다.");
+                length = PluginBinary.U32(payload.Span, offset + 6);
+                type = PluginBinary.Signature(payload.Span[(offset + 10)..], allowBinary: true);
+                if (type == "XXXX") throw new InvalidDataException("중복 XXXX 헤더입니다.");
+                headerLength = 16;
+            }
+            if ((long)offset + headerLength + length > payload.Length) throw new InvalidDataException($"{type} subrecord 길이가 레코드 경계를 벗어납니다.");
+            result.Add(new(type, result.Count, offset, headerLength, payload.Slice(offset + headerLength, (int)length)));
+            offset = checked(offset + headerLength + (int)length);
+        }
+        return result.AsReadOnly();
+    }
+
+    internal static string Extension(PluginStringTableKind kind) => kind switch
+    { PluginStringTableKind.Strings => "STRINGS", PluginStringTableKind.DlStrings => "DLSTRINGS", PluginStringTableKind.IlStrings => "ILSTRINGS", _ => throw new ArgumentOutOfRangeException(nameof(kind)) };
+    internal static string ValidateLanguage(string language)
+    {
+        if (string.IsNullOrWhiteSpace(language) || language.Any(ch => ch is not (>= 'a' and <= 'z') and not (>= 'A' and <= 'Z')))
+            throw new ArgumentException("언어 파일명은 english, korean 같은 영문 이름이어야 합니다.");
+        return language.ToLowerInvariant();
+    }
+    private static string? FindFile(string folder, string name)
+        => Directory.Exists(folder) ? Directory.EnumerateFiles(folder).FirstOrDefault(path => string.Equals(Path.GetFileName(path), name, StringComparison.OrdinalIgnoreCase)) : null;
+    private static IEnumerable<string> ResolveArchives(string path, PluginReadOptions options)
+    {
+        if (options.ArchivePaths != null) return options.ArchivePaths.Select(Path.GetFullPath).ToArray();
+        var dir = Path.GetDirectoryName(path)!;
+        var stem = Path.GetFileNameWithoutExtension(path);
+        return Directory.EnumerateFiles(dir, "*.bsa")
+            .Where(file => string.Equals(Path.GetFileNameWithoutExtension(file), stem, StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileNameWithoutExtension(file).StartsWith(stem + " - ", StringComparison.OrdinalIgnoreCase))
+            .OrderBy(file => file, StringComparer.OrdinalIgnoreCase).ToArray();
+    }
+}
+
+internal static class PluginFlags
+{
+    internal static bool HasFlag(this uint value, uint flag) => (value & flag) != 0;
+}

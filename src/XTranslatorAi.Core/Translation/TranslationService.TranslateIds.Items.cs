@@ -19,6 +19,9 @@ public sealed partial class TranslationService
     {
         Ctx.RowContextById = new Dictionary<long, RowContext>(capacity: request.Ids.Count);
         var rowsById = await _db.GetStringTranslationContextsByIdsAsync(request.Ids, request.CancellationToken);
+        Ctx.BookTitlesByEdid = request.BookTitlesByEdid ?? (Ctx.EnableBookContext
+            ? TranslationBookContext.CollectTitles(rowsById.Values.Select(row => (row.Rec, row.Edid, row.SourceText)))
+            : null);
 
         var items = new List<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>();
         var canonicalIdByMaskedText = new Dictionary<DuplicateKey, long>();
@@ -35,7 +38,7 @@ public sealed partial class TranslationService
             }
 
             Ctx.RowContextById[row.Id] = new RowContext(row.Rec, row.Edid);
-            orderedRows.Add(new DialogueContextRow(row.Id, row.Rec, row.Edid, row.SourceText));
+            orderedRows.Add(new DialogueContextRow(row.Id, row.Rec, row.Edid, row.SourceText, row.DialogueScope));
         }
 
         Ctx.DialogueContextWindowById = Ctx.EnableDialogueContextWindow
@@ -54,10 +57,13 @@ public sealed partial class TranslationService
             }
 
             var sourceKey = TranslationMemoryKey.NormalizeSource(row.SourceText);
-            if (ambiguousTmSources.Contains(sourceKey) && translationMemory.ContainsKey(sourceKey))
+            var hasUnscopedDialogueTm = contextRow.DialogueScope != null && translationMemory.ContainsKey(sourceKey);
+            if (hasUnscopedDialogueTm || (ambiguousTmSources.Contains(sourceKey) && translationMemory.ContainsKey(sourceKey)))
             {
                 await _db.UpsertStringNoteAsync(row.Id, TranslationConstants.TmFallbackNoteKind,
-                    "TM 폴백: 같은 원문의 REC/EDID/대화 문맥이 달라 개별 번역합니다.", request.CancellationToken);
+                    hasUnscopedDialogueTm
+                        ? "TM 폴백: 직접 플러그인의 INFO/DIAL 대화는 기존 원문 전용 TM에서 topic 출처를 확인할 수 없어 개별 번역합니다. 기존 TM과 완료/편집 번역은 유지합니다."
+                        : "TM 폴백: 같은 원문의 REC/EDID/대화 문맥이 달라 개별 번역합니다.", request.CancellationToken);
             }
             else if (await TryApplyTranslationMemoryAsync(
                     row.Id,
@@ -126,12 +132,12 @@ public sealed partial class TranslationService
 
     // Reuse a translation only when both its protected source and prompt context
     // agree. Identical words may be an item name, a command, or different dialogue.
-    private readonly record struct TranslationContextKey(string Rec, string Edid, string Dialogue);
+    private readonly record struct TranslationContextKey(string Rec, string Edid, string Dialogue, string Scope);
     private readonly record struct DuplicateKey(string Source, string TextAndGlossary, TranslationContextKey Context);
 
     private TranslationContextKey GetTranslationContextKey(DialogueContextRow row)
         => new(row.Rec?.Trim().ToUpperInvariant() ?? "", row.Edid?.Trim().ToUpperInvariant() ?? "",
-            GetDialogueContextWindowForId(row.Id) ?? "");
+            GetDialogueContextWindowForId(row.Id) ?? "", row.DialogueScope ?? "");
 
     private HashSet<string> FindAmbiguousTranslationMemorySources(IReadOnlyList<DialogueContextRow> rows)
     {
@@ -176,7 +182,7 @@ public sealed partial class TranslationService
         return sb.ToString();
     }
 
-    private sealed record DialogueContextRow(long Id, string? Rec, string? Edid, string SourceText);
+    private sealed record DialogueContextRow(long Id, string? Rec, string? Edid, string SourceText, string? DialogueScope);
 
     private IReadOnlyDictionary<long, string> BuildDialogueContextWindowMap(IReadOnlyList<DialogueContextRow> orderedRows)
     {
@@ -223,7 +229,11 @@ public sealed partial class TranslationService
         var prev = new List<string>(capacity: prevCount);
         var next = new List<string>(capacity: nextCount);
 
-        if (!string.IsNullOrWhiteSpace(edidStem))
+        if (row.DialogueScope != null)
+        {
+            CollectContextByPluginScope(orderedRows, index, row.DialogueScope, maxLookaround, prev, next);
+        }
+        else if (!string.IsNullOrWhiteSpace(edidStem))
         {
             CollectContextByEdidStem(orderedRows, index, edidStem, maxLookaround, prev, next);
         }
@@ -265,6 +275,27 @@ public sealed partial class TranslationService
         return sb.ToString().Trim();
     }
 
+    private static void CollectContextByPluginScope(
+        IReadOnlyList<DialogueContextRow> orderedRows, int index, string scope, int maxLookaround,
+        List<string> prev, List<string> next)
+    {
+        for (var i = index - 1; i >= Math.Max(0, index - maxLookaround) && prev.Count < 2; i--)
+        {
+            var candidate = orderedRows[i];
+            if (candidate.DialogueScope != scope || !IsDialogueRecBase(candidate.Rec)) continue;
+            var line = TrySanitizeDialogueContextLine(candidate.SourceText);
+            if (line != null) prev.Add(line);
+        }
+        prev.Reverse();
+        for (var i = index + 1; i < Math.Min(orderedRows.Count, index + maxLookaround + 1) && next.Count < 1; i++)
+        {
+            var candidate = orderedRows[i];
+            if (candidate.DialogueScope != scope || !IsDialogueRecBase(candidate.Rec)) continue;
+            var line = TrySanitizeDialogueContextLine(candidate.SourceText);
+            if (line != null) next.Add(line);
+        }
+    }
+
     private static void CollectContextByEdidStem(
         IReadOnlyList<DialogueContextRow> orderedRows,
         int index,
@@ -282,7 +313,7 @@ public sealed partial class TranslationService
             }
 
             var candidate = orderedRows[i];
-            if (!IsDialogueRecBase(candidate.Rec))
+            if (!IsDialogueRecBase(candidate.Rec) || candidate.DialogueScope != null)
             {
                 continue;
             }
@@ -309,7 +340,7 @@ public sealed partial class TranslationService
             }
 
             var candidate = orderedRows[i];
-            if (!IsDialogueRecBase(candidate.Rec))
+            if (!IsDialogueRecBase(candidate.Rec) || candidate.DialogueScope != null)
             {
                 continue;
             }
@@ -338,7 +369,7 @@ public sealed partial class TranslationService
         for (var i = index - 1; i >= 0 && prev.Count < 2; i--)
         {
             var candidate = orderedRows[i];
-            if (!IsDialogueRecBase(candidate.Rec))
+            if (!IsDialogueRecBase(candidate.Rec) || candidate.DialogueScope != null)
             {
                 break;
             }
@@ -359,7 +390,7 @@ public sealed partial class TranslationService
         for (var i = index + 1; i < orderedRows.Count && next.Count < 1; i++)
         {
             var candidate = orderedRows[i];
-            if (!IsDialogueRecBase(candidate.Rec))
+            if (!IsDialogueRecBase(candidate.Rec) || candidate.DialogueScope != null)
             {
                 break;
             }
@@ -490,7 +521,17 @@ public sealed partial class TranslationService
                 OnRowUpdated: request.OnRowUpdated,
                 CancellationToken: request.CancellationToken
             );
-            await TranslateBatchWithSplitFallbackAsync(ctx, batch);
+            try
+            {
+                await TranslateBatchWithSplitFallbackAsync(ctx, batch);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                if (IsRunGenerationLimit(ex) || IsCredentialError(ex)
+                    || (request.EnableApiKeyFailover && IsApiKeyFailoverError(ex, request.CancellationToken)))
+                    throw;
+                await HandleBatchFailureAsync(request, batch, ex, request.CancellationToken);
+            }
             await FlushSessionTermAutoGlossaryInsertsAsync();
         }
 
@@ -501,7 +542,7 @@ public sealed partial class TranslationService
         }
 
         var seedStatuses = await _db.GetStringStatusesByIdsAsync(seedIds, request.CancellationToken);
-        var doneSeedIds = new HashSet<long>();
+        var finishedSeedIds = new HashSet<long>();
         foreach (var it in seedItems)
         {
             if (!seedStatuses.TryGetValue(it.Id, out var status))
@@ -509,23 +550,23 @@ public sealed partial class TranslationService
                 continue;
             }
 
-            if (status == StringEntryStatus.Done || status == StringEntryStatus.Edited)
+            if (status is StringEntryStatus.Done or StringEntryStatus.Edited or StringEntryStatus.Error)
             {
-                doneSeedIds.Add(it.Id);
+                finishedSeedIds.Add(it.Id);
             }
         }
 
-        if (doneSeedIds.Count == 0)
+        if (finishedSeedIds.Count == 0)
         {
             return items;
         }
 
         var remaining = new List<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>(
-            capacity: Math.Max(0, items.Count - doneSeedIds.Count)
+            capacity: Math.Max(0, items.Count - finishedSeedIds.Count)
         );
         foreach (var it in items)
         {
-            if (!doneSeedIds.Contains(it.Id))
+            if (!finishedSeedIds.Contains(it.Id))
             {
                 remaining.Add(it);
             }

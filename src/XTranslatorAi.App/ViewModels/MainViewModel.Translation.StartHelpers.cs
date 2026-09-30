@@ -55,7 +55,7 @@ public partial class MainViewModel
     {
         var db = _projectState.Db;
         var xmlInfo = _projectState.XmlInfo;
-        if (db == null || xmlInfo == null)
+        if (db == null || !_projectState.HasSource)
         {
             return;
         }
@@ -65,13 +65,13 @@ public partial class MainViewModel
             new ProjectInfo(
                 Id: 1,
                 InputXmlPath: _projectState.InputXmlPath ?? "",
-                AddonName: xmlInfo.AddonName,
+                AddonName: _projectState.AddonName,
                 Franchise: SelectedFranchise,
                 SourceLang: SourceLang,
                 DestLang: TargetLang,
-                XmlVersion: xmlInfo.Version,
-                XmlHasBom: xmlInfo.HasBom,
-                XmlPrologLine: xmlInfo.PrologLine,
+                XmlVersion: xmlInfo?.Version ?? "",
+                XmlHasBom: xmlInfo?.HasBom ?? false,
+                XmlPrologLine: xmlInfo?.PrologLine ?? "",
                 ModelName: SelectedModel,
                 BasePromptText: BasePromptText,
                 CustomPromptText: CustomPromptText,

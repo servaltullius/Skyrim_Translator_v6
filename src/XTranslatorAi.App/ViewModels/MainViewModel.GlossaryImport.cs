@@ -64,9 +64,9 @@ public partial class MainViewModel
     private string? ResolveGlossaryImportPath(string dialogTitle)
     {
         var defaultPath = "";
-        if (!string.IsNullOrWhiteSpace(_projectState.InputXmlPath))
+        if (!string.IsNullOrWhiteSpace(_projectState.InputPath))
         {
-            var dir = Path.GetDirectoryName(_projectState.InputXmlPath);
+            var dir = Path.GetDirectoryName(_projectState.InputPath);
             if (!string.IsNullOrWhiteSpace(dir))
             {
                 defaultPath = Path.Combine(dir, "번역용어집 신규.md");
@@ -79,9 +79,9 @@ public partial class MainViewModel
         }
 
         var initialDirectory = (string?)null;
-        if (!string.IsNullOrWhiteSpace(_projectState.InputXmlPath))
+        if (!string.IsNullOrWhiteSpace(_projectState.InputPath))
         {
-            var dir = Path.GetDirectoryName(_projectState.InputXmlPath);
+            var dir = Path.GetDirectoryName(_projectState.InputPath);
             if (!string.IsNullOrWhiteSpace(dir) && Directory.Exists(dir))
             {
                 initialDirectory = dir;

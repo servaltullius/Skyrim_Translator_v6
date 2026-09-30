@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -46,7 +47,7 @@ public static partial class TranslationPrompt
         {
             source_language = sourceLang,
             target_language = targetLang,
-            glossary = promptOnlyGlossary,
+            glossary = promptOnlyGlossary.Select(pair => new { source = pair.Source, target = pair.Target }),
             items = items,
         };
 
@@ -91,6 +92,7 @@ public static partial class TranslationPrompt
         sb.AppendLine("- Translate ALL content. Do not omit, summarize, or add extra sentences.");
         sb.AppendLine("- Keep line breaks as-is; line breaks are represented by placeholder tokens.");
         sb.AppendLine("- Each item may include a 'rec' field (e.g., BOOK:DESC, QUST:FULL, INFO:NAM1). Use it to choose an appropriate style, and keep tone/register consistent WITHIN each item.");
+        sb.AppendLine("- The optional 'style' field supplies the same item-specific style guidance used for individual translations.");
         sb.AppendLine("- Each item may include a 'ctx' field containing neighboring lines for reference only. Do NOT translate it and do NOT copy tokens/markup from it; token preservation rules apply to the item's 'text' only.");
         sb.AppendLine("- Preserve semantic roles in patterns like \"protect X from Y\" (X is protected; Y is the threat). Do not invert roles.");
         sb.AppendLine("- If the source contains patterns like \"Fortify X, Y and Z\", treat it as \"Fortify X, Fortify Y and Fortify Z\" (the prefix applies to each list item).");

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -91,7 +92,7 @@ public static partial class TranslationPrompt
         {
             source_language = sourceLang,
             target_language = targetLang,
-            glossary = promptOnlyGlossary,
+            glossary = promptOnlyGlossary.Select(pair => new { source = pair.Source, target = pair.Target }),
             items = items,
         };
 

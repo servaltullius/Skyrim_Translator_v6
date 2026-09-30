@@ -82,6 +82,7 @@ public sealed partial class TranslationService
 
         try
         {
+            using var recovery = EnterGenerationScope(new[] { row.Id }, recovery: true);
             // Avoid prompt cache calls during escalation to keep request count low and because cache is per-model.
             var escCtx = ctx with { ModelName = escalationModel, PromptCache = null };
 
@@ -110,8 +111,10 @@ public sealed partial class TranslationService
         {
             throw;
         }
-        catch
+        catch (Exception)
         {
+            // Escalation is optional: keep the validated baseline if its request fails
+            // or cannot fit the shared generation budget. Required work still observes the cap.
             return (raw, final);
         }
     }

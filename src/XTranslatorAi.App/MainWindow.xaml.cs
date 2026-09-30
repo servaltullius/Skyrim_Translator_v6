@@ -75,7 +75,7 @@ public partial class MainWindow : Window
             if (_vm != null && !await _vm.TryCloseWorkspaceAsync())
             {
                 _closeRequested = false;
-                IsEnabled = _vm.IsWorkspaceInteractive;
+                IsEnabled = true;
                 return;
             }
             _closeCompleted = true;
@@ -103,16 +103,12 @@ public partial class MainWindow : Window
         }
 
         SyncPasswordBoxesFromViewModel();
-        IsEnabled = !_closeRequested && (_vm?.IsWorkspaceInteractive ?? true);
+        // Workspace controls disable themselves while I/O runs; the status-bar Cancel stays usable.
+        IsEnabled = !_closeRequested;
     }
 
     private void Vm_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(MainViewModel.IsWorkspaceInteractive))
-        {
-            IsEnabled = !_closeRequested && (_vm?.IsWorkspaceInteractive ?? true);
-            return;
-        }
         if (!string.Equals(e.PropertyName, nameof(MainViewModel.ApiKey), System.StringComparison.Ordinal)
         )
         {

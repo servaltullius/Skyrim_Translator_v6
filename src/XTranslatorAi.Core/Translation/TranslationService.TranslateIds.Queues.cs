@@ -153,14 +153,16 @@ public sealed partial class TranslationService
         }
     }
 
-    private static List<IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>> BuildBatches(
+    private List<IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>> BuildBatches(
         IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> items,
         int batchSize,
         int maxChars
     )
     {
         var batches = new List<IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>>();
-        foreach (var batch in TranslationBatching.ChunkBy(items, it => it.Masked.Length, batchSize, maxChars))
+        foreach (var batch in TranslationBatching.ChunkBy(items,
+                     it => it.Masked.Length + (Ctx.EnableAdaptiveOutputBudget ? 8 * TranslationConstants.XtTokenRegex.Matches(it.Masked).Count : 0),
+                     batchSize, maxChars))
         {
             batches.Add(batch);
         }

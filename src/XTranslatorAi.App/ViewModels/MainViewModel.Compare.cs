@@ -184,7 +184,8 @@ public partial class MainViewModel
             RiskyCandidateCount: RiskyCandidateCount,
             IncludeProjectGlossary: CompareIncludeProjectGlossary,
             GlobalGlossary: globalGlossary,
-            GlobalTranslationMemory: franchiseTranslationMemory
+            GlobalTranslationMemory: franchiseTranslationMemory,
+            IsDirectPluginSource: context.Entry.PluginLocation != null
         );
     }
 

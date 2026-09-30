@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Translation;
+using XTranslatorAi.Core.Text;
 using XTranslatorAi.Tests.TestSupport;
 using Xunit;
 
@@ -31,8 +32,12 @@ public class SessionTermAutoGlossaryPersistenceTests
             await service.FlushSessionTermAutoGlossaryInsertsAsync();
 
             var rows = await db.GetGlossaryAsync(CancellationToken.None);
-            Assert.NotEmpty(rows);
-            Assert.Contains(rows, r => r.SourceTerm == "Ancient Dragons' Lightning Spear" && r.TargetTerm == "고룡의 뇌창");
+            var row = Assert.Single(rows);
+            Assert.Equal("Ancient Dragons' Lightning Spear", row.SourceTerm);
+            Assert.Equal("고룡의 뇌창", row.TargetTerm);
+            Assert.False(row.Enabled);
+            Assert.Equal(GlossaryForceMode.PromptOnly, row.ForceMode);
+            Assert.Equal(GlossaryMatchMode.WordBoundary, row.MatchMode);
         }
         finally
         {
@@ -72,6 +77,33 @@ public class SessionTermAutoGlossaryPersistenceTests
             }
 
             Assert.Equal(1, matchCount);
+        }
+        finally
+        {
+            TestDbHelper.TryDeleteDbFiles(path);
+        }
+    }
+
+    [Fact]
+    public async Task FlushSessionTermAutoGlossaryInsertsAsync_PreservesExistingReviewedTerm()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
+        try
+        {
+            await using var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
+            await db.TryInsertGlossaryIfMissingAsync(new GlossaryUpsertRequest(
+                "Manual", "Alduin", "수동 확정", true, 100, GlossaryMatchMode.Substring,
+                GlossaryForceMode.ForceToken, "reviewed"), CancellationToken.None);
+            var before = Assert.Single(await db.GetGlossaryAsync(CancellationToken.None));
+            var queue = new ConcurrentQueue<(string Source, string Target)>();
+            queue.Enqueue(("Alduin", "자동 후보"));
+            var service = new TranslationService(db, new GeminiClient(new HttpClient()));
+            service._ctx = new TranslationRunContext
+            {
+                EnableSessionTermMemory = true, PendingSessionAutoGlossaryInserts = queue,
+            };
+            await service.FlushSessionTermAutoGlossaryInsertsAsync();
+            Assert.Equal(before, Assert.Single(await db.GetGlossaryAsync(CancellationToken.None)));
         }
         finally
         {

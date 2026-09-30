@@ -52,7 +52,13 @@ public sealed class TranslationRunnerService
         bool EnableDialogueContextWindow,
         bool EnablePromptCache,
         bool EnableRiskyCandidateRerank,
-        int RiskyCandidateCount
+        int RiskyCandidateCount,
+        bool EnableBookBodyModelOverride = false,
+        int MaxRetryGenerations = 8,
+        int MaxTotalGenerations = 0,
+        bool EnableAdaptiveOutputBudget = false,
+        bool EnableBookContext = false,
+        IReadOnlyDictionary<string, string>? BookTitlesByEdid = null
     );
 
     public sealed record Result(bool Canceled, Exception? Error);
@@ -65,8 +71,14 @@ public sealed class TranslationRunnerService
         try
         {
             request.CancellationToken.ThrowIfCancellationRequested();
+            if (request.EnableBookContext)
+            {
+                var rows = await request.Db.GetStringTranslationContextsByIdsAsync(request.Ids, request.CancellationToken);
+                request = request with { BookTitlesByEdid = TranslationBookContext.CollectTitles(rows.Values.Select(row => (row.Rec, row.Edid, row.SourceText))) };
+            }
             var runs = await BuildRunsAsync(request);
-            await ExecuteRunsWithFailoverAsync(request, runs, triedApiKeys);
+            var budget = new TranslationGenerationBudget(request.MaxRetryGenerations, request.MaxTotalGenerations);
+            await ExecuteRunsWithFailoverAsync(request, runs, triedApiKeys, budget);
 
             return new Result(Canceled: false, Error: null);
         }
@@ -84,19 +96,21 @@ public sealed class TranslationRunnerService
     private static async Task ExecuteRunsWithFailoverAsync(
         Request request,
         IReadOnlyList<TranslationRun> runs,
-        HashSet<string> triedApiKeys
+        HashSet<string> triedApiKeys,
+        TranslationGenerationBudget budget
     )
     {
         foreach (var run in runs)
         {
-            await ExecuteSingleRunWithFailoverAsync(request, run, triedApiKeys);
+            await ExecuteSingleRunWithFailoverAsync(request, run, triedApiKeys, budget);
         }
     }
 
     private static async Task ExecuteSingleRunWithFailoverAsync(
         Request request,
         TranslationRun run,
-        HashSet<string> triedApiKeys
+        HashSet<string> triedApiKeys,
+        TranslationGenerationBudget budget
     )
     {
         while (true)
@@ -108,7 +122,7 @@ public sealed class TranslationRunnerService
                 triedApiKeys.Add((request.FailoverPort.ApiKey ?? "").Trim());
 
                 await run.Service.TranslateIdsAsync(
-                    BuildTranslateIdsRequest(request, run, request.CancellationToken)
+                    BuildTranslateIdsRequest(request, run, request.CancellationToken) with { GenerationBudget = budget }
                 );
 
                 return;
@@ -182,14 +196,16 @@ public sealed class TranslationRunnerService
     private static List<long> CollectBookFullIds(Request request, IReadOnlyList<long> ids)
     {
         var bookFullIds = new List<long>();
-        if (!request.EnableBookFullModelOverride)
+        if (!request.EnableBookFullModelOverride && !request.EnableBookBodyModelOverride)
         {
             return bookFullIds;
         }
 
         foreach (var id in ids)
         {
-            if (request.IsBookFullRec(request.GetRecById(id)))
+            var rec = request.GetRecById(id);
+            if (BookModelRouting.ShouldOverride(rec, request.IsBookFullRec(rec),
+                request.EnableBookFullModelOverride, request.EnableBookBodyModelOverride))
             {
                 bookFullIds.Add(id);
             }
@@ -207,7 +223,7 @@ public sealed class TranslationRunnerService
     {
         bookModel = "";
 
-        if (!request.EnableBookFullModelOverride || bookFullIds.Count <= 0)
+        if ((!request.EnableBookFullModelOverride && !request.EnableBookBodyModelOverride) || bookFullIds.Count <= 0)
         {
             return false;
         }
@@ -250,7 +266,7 @@ public sealed class TranslationRunnerService
         );
 
         await request.StatusPort.DispatchAsync(
-            () => request.StatusPort.SetStatusMessage($"Translating... (BOOK:FULL uses {bookModel})")
+            () => request.StatusPort.SetStatusMessage($"Translating... (선택한 책 제목/본문 {bookFullIds.Count}개: {bookModel})")
         );
 
         return runs;
@@ -381,7 +397,12 @@ public sealed class TranslationRunnerService
             QualityEscalationModelName: run.QualityEscalationModel,
             EnableRiskyCandidateRerank: request.EnableRiskyCandidateRerank,
             RiskyCandidateCount: request.RiskyCandidateCount,
-            EnableApiKeyFailover: request.FailoverPort.EnableApiKeyFailover
+            EnableApiKeyFailover: request.FailoverPort.EnableApiKeyFailover,
+            MaxRetryGenerations: request.MaxRetryGenerations,
+            MaxTotalGenerations: request.MaxTotalGenerations,
+            EnableAdaptiveOutputBudget: request.EnableAdaptiveOutputBudget,
+            EnableBookContext: request.EnableBookContext,
+            BookTitlesByEdid: request.BookTitlesByEdid
         );
     }
 

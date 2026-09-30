@@ -50,9 +50,10 @@ public sealed partial class TranslationService
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
+            if (IsRunGenerationLimit(ex)) throw;
             if (IsCredentialError(ex))
             {
-                await RevertBatchToPendingAsync(ctx, batch, ct);
+                await RevertBatchToPendingAsync(ctx.Request, batch, ct);
                 throw;
             }
 
@@ -61,7 +62,7 @@ public sealed partial class TranslationService
                 throw;
             }
 
-            await HandleBatchFailureAsync(ctx, batch, ex, ct);
+            await HandleBatchFailureAsync(ctx.Request, batch, ex, ct);
         }
     }
 
@@ -102,7 +103,7 @@ public sealed partial class TranslationService
     }
 
     private async Task RevertBatchToPendingAsync(
-        WorkerRunContext ctx,
+        TranslateIdsRequest request,
         IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> batch,
         CancellationToken ct
     )
@@ -132,19 +133,19 @@ public sealed partial class TranslationService
 
         await _db.UpdateStringStatusesAsync(ids, StringEntryStatus.Pending, errorMessage: null, ct);
 
-        if (ctx.Request.OnRowUpdated == null)
+        if (request.OnRowUpdated == null)
         {
             return;
         }
 
         for (var i = 0; i < ids.Count; i++)
         {
-            NotifyRowUpdated(ctx.Request.OnRowUpdated, ids[i], StringEntryStatus.Pending, "");
+            NotifyRowUpdated(request.OnRowUpdated, ids[i], StringEntryStatus.Pending, "");
         }
     }
 
     private async Task HandleBatchFailureAsync(
-        WorkerRunContext ctx,
+        TranslateIdsRequest request,
         IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> batch,
         Exception ex,
         CancellationToken ct
@@ -174,14 +175,14 @@ public sealed partial class TranslationService
         // Use CancellationToken.None to ensure error status is persisted even during cancellation.
         await _db.UpdateStringStatusesAsync(ids, StringEntryStatus.Error, msg, CancellationToken.None);
 
-        if (ctx.Request.OnRowUpdated == null)
+        if (request.OnRowUpdated == null)
         {
             return;
         }
 
         for (var i = 0; i < ids.Count; i++)
         {
-            NotifyRowUpdated(ctx.Request.OnRowUpdated, ids[i], StringEntryStatus.Error, msg);
+            NotifyRowUpdated(request.OnRowUpdated, ids[i], StringEntryStatus.Error, msg);
         }
     }
 }

@@ -285,6 +285,9 @@ internal static class TokenValidator
 
     internal static void ValidateNotTruncatedOrOmitted(string inputText, string outputText, string context)
     {
+        if (!string.IsNullOrWhiteSpace(inputText) && string.IsNullOrWhiteSpace(outputText))
+            throw new InvalidOperationException($"Translation is empty for {context}.");
+
         SplitByTokens(inputText, out var inputTexts, out _);
         SplitByTokens(outputText, out var outputTexts, out _);
 

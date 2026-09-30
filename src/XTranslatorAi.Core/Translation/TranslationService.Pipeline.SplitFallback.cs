@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Models;
@@ -15,6 +16,7 @@ public sealed partial class TranslationService
     )
     {
         ctx.CancellationToken.ThrowIfCancellationRequested();
+        using var generationScope = EnterGenerationScope(batch.Select(row => row.Id));
 
         batch = PrepareBatchWithSessionTermForceTokens(batch);
 
@@ -40,7 +42,7 @@ public sealed partial class TranslationService
         }
         catch (Exception ex)
         {
-            if (ctx.EnableApiKeyFailover && IsApiKeyFailoverError(ex, ctx.CancellationToken))
+            if (MustStopRecovery(ex) || (ctx.EnableApiKeyFailover && IsApiKeyFailoverError(ex, ctx.CancellationToken)))
             {
                 throw;
             }
@@ -48,6 +50,16 @@ public sealed partial class TranslationService
             // Fall back to smaller batches.
         }
 
+        // Valid rows may already have been committed before a later row failed.
+        var states = await _db.GetStringStatusesByIdsAsync(batch.Select(row => row.Id).ToArray(), ctx.CancellationToken);
+        batch = batch.Where(row => states.GetValueOrDefault(row.Id) == StringEntryStatus.InProgress).ToArray();
+        if (batch.Count == 0) return;
+        using var recovery = EnterGenerationScope(recovery: true);
+        if (batch.Count == 1)
+        {
+            await TranslateSingleRowAsync(ctx, batch[0]);
+            return;
+        }
         var (left, right) = SplitBatchByWeight(batch);
         await TranslateBatchWithSplitFallbackAsync(ctx, left);
         await TranslateBatchWithSplitFallbackAsync(ctx, right);
@@ -84,12 +96,24 @@ public sealed partial class TranslationService
 	        IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> batch
 	    )
 	    {
-	        var batchCtx = CreateBatchTranslateContext(ctx);
-	        var translations = await TranslateBatchWithRetriesAsync(batchCtx, batch);
-	        var batchById = BuildBatchById(batch);
-
-	        var doneUpdates = await BuildDoneUpdatesAsync(ctx, translations, batchById, batch.Count);
-	        await PersistDoneUpdatesAsync(ctx, doneUpdates);
+            var batchCtx = CreateBatchTranslateContext(ctx);
+            var batchById = BuildBatchById(batch);
+            var persisted = new HashSet<long>();
+            async Task PersistProgress(IReadOnlyDictionary<long, string> results)
+            {
+                // Commit each independently verified row before repair/fallback can fail.
+                foreach (var (id, raw) in results)
+                {
+                    if (persisted.Contains(id)) continue;
+                    using var rowScope = EnterGenerationScope(new[] { id });
+                    var updates = await BuildDoneUpdatesAsync(ctx, new Dictionary<long, string> { [id] = raw }, batchById, 1);
+                    await PersistDoneUpdatesAsync(ctx, updates);
+                    persisted.Add(id);
+                }
+            }
+            var translations = await TranslateBatchWithRetriesAsync(batchCtx, batch);
+            // Retry only the original request here; repair has its own bounded retries.
+            await ProcessBatchResultsAsync(batchCtx, batch, translations, PersistProgress);
 	    }
 
 	    private static BatchTranslateContext CreateBatchTranslateContext(PipelineContext ctx)
@@ -181,7 +205,7 @@ public sealed partial class TranslationService
 	        {
 	            throw;
 	        }
-	        catch (Exception ex)
+	        catch (Exception ex) when (!IsRunGenerationLimit(ex) && !IsCredentialError(ex))
 	        {
 	            await HandleRowErrorAsync(id, ex, ctx.OnRowUpdated, awaitNotifications: false, ctx.CancellationToken);
 	        }

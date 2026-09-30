@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text.Lqa.Internal;
 using XTranslatorAi.Core.Text.Lqa.Internal.Rules;
+using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.Core.Text;
 
@@ -114,12 +115,14 @@ public static class LqaScanner
     {
         TmFallbackRule.Apply(entry, sourceText, destText, tmFallbackNotes, issues);
 
+        // Even an otherwise untranslated row can have lost markup or line breaks.
+        // Integrity failures must not disappear behind the untranslated heuristic.
+        TokenMismatchRule.Apply(entry, sourceText, destText, issues);
+
         if (UntranslatedRule.ApplyAndShouldShortCircuit(entry, sourceText, destText, isKorean, issues))
         {
             return;
         }
-
-        TokenMismatchRule.Apply(entry, sourceText, destText, issues);
 
         GlossaryMissingRule.Apply(entry, sourceText, destText, isKorean, forceTokenGlossary, issues);
 
@@ -301,90 +304,23 @@ public static class LqaScanner
         return value;
     }
 
-    internal static bool HasTokenMismatch(string sourceText, string destText)
+    /// <summary>Uses the same protected-text contract as translation and plugin export.</summary>
+    public static bool HasTokenMismatch(string sourceText, string destText)
     {
-        var sourceTokens = CollectUiTokens(sourceText);
-        if (sourceTokens.Count == 0)
+        try
         {
+            TokenValidator.ValidateFinalTextIntegrity(sourceText, destText, "LQA");
             return false;
         }
-
-        var destTokens = CollectUiTokens(destText);
-        if (sourceTokens.Count != destTokens.Count)
+        catch (InvalidOperationException)
         {
             return true;
         }
-
-        foreach (var kvp in sourceTokens)
-        {
-            if (!destTokens.TryGetValue(kvp.Key, out var otherCount) || otherCount != kvp.Value)
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
-    private static Dictionary<string, int> CollectUiTokens(string text)
-    {
-        var dict = new Dictionary<string, int>(StringComparer.Ordinal);
-        if (string.IsNullOrEmpty(text))
-        {
-            return dict;
-        }
-
-        foreach (Match m in UiTagTokenRegex.Matches(text))
-        {
-            var raw = m.Value;
-            if (string.IsNullOrWhiteSpace(raw))
-            {
-                continue;
-            }
-
-            var token = NormalizeUiToken(raw);
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                continue;
-            }
-
-            if (dict.TryGetValue(token, out var count))
-            {
-                dict[token] = count + 1;
-            }
-            else
-            {
-                dict[token] = 1;
-            }
-        }
-
-        return dict;
-    }
-
-    private static string NormalizeUiToken(string token)
-    {
-        var s = token.Trim();
-        if (s.Length == 0)
-        {
-            return "";
-        }
-
-        if (s[0] == '<')
-        {
-            s = Regex.Replace(s, @"\s+", "", RegexOptions.CultureInvariant);
-            return s.ToLowerInvariant();
-        }
-
-        if (s[0] == '[')
-        {
-            return s.ToLowerInvariant();
-        }
-
-        if (s.StartsWith("__XT_", StringComparison.OrdinalIgnoreCase))
-        {
-            return s.ToUpperInvariant();
-        }
-
-        return s;
-    }
+    /// <summary>
+    /// Whether clearing this source would remove protected content. This deliberately
+    /// includes placeholders and line breaks, not only visible angle-bracket tags.
+    /// </summary>
+    public static bool HasProtectedText(string text) => HasTokenMismatch(text, "");
 }

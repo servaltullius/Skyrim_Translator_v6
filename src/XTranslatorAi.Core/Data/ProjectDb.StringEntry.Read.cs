@@ -299,12 +299,12 @@ public sealed partial class ProjectDb
         }
     }
 
-    public async Task<IReadOnlyDictionary<long, (long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)>> GetStringTranslationContextsByIdsAsync(
+    public async Task<IReadOnlyDictionary<long, (long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status, string? DialogueScope)>> GetStringTranslationContextsByIdsAsync(
         IReadOnlyList<long> ids,
         CancellationToken cancellationToken
     )
     {
-        var map = new Dictionary<long, (long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)>(capacity: ids.Count);
+        var map = new Dictionary<long, (long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status, string? DialogueScope)>(capacity: ids.Count);
         if (ids.Count == 0)
         {
             return map;
@@ -326,7 +326,17 @@ public sealed partial class ProjectDb
                     cmd.Parameters.AddWithValue(name, ids[offset + i]);
                 }
 
-                cmd.CommandText = $"SELECT Id, SourceText, REC, EDID, Status FROM StringEntry WHERE Id IN ({string.Join(",", placeholders)});";
+                cmd.CommandText = $"""
+                    SELECT s.Id, s.SourceText, s.REC, s.EDID, s.Status,
+                      CASE WHEN b.StringId IS NOT NULL AND json_extract(b.FieldJson, '$.RecordType') IN ('INFO', 'DIAL')
+                        THEN CASE WHEN json_extract(b.FieldJson, '$.DialogueTopicFormId') > 0
+                          THEN 'plugin:topic:' || printf('%08X', json_extract(b.FieldJson, '$.DialogueTopicFormId'))
+                          ELSE 'plugin:record:' || json_extract(b.FieldJson, '$.RecordIndex')
+                        END
+                        ELSE NULL END AS DialogueScope
+                    FROM StringEntry s LEFT JOIN PluginStringBinding b ON b.StringId=s.Id
+                    WHERE s.Id IN ({string.Join(",", placeholders)});
+                    """;
 
                 await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
                 while (await reader.ReadAsync(cancellationToken))
@@ -337,7 +347,8 @@ public sealed partial class ProjectDb
                         reader.GetString(1),
                         reader.IsDBNull(2) ? null : reader.GetString(2),
                         reader.IsDBNull(3) ? null : reader.GetString(3),
-                        (StringEntryStatus)reader.GetInt32(4)
+                        (StringEntryStatus)reader.GetInt32(4),
+                        reader.IsDBNull(5) ? null : reader.GetString(5)
                     );
                 }
             }

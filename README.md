@@ -1,12 +1,16 @@
 # Tullius Translator
 
-Bethesda/xTranslator XML을 한국어로 번역하고 검수하는 Windows 앱입니다. .NET 10 WPF와 SQLite를 사용하며 Gemini API를 지원합니다.
+Skyrim SE/AE 플러그인과 Bethesda/xTranslator XML을 한국어로 번역하고 검수하는 Windows 앱입니다. .NET 10 WPF와 SQLite를 사용하며 Gemini API를 지원합니다.
 
-현재 유지보수 빌드는 **2026.09.29-maintenance**입니다. 프로젝트 루트의 `TulliusTranslator.exe`가 공식 실행 위치이며 창 제목에서도 빌드 날짜를 확인할 수 있습니다. .NET 런타임을 포함한 Windows x64 단일 파일입니다. 이전 실행 파일과 복구 방법은 `artifacts/maintenance-20260929/README.md`에 기록합니다.
+현재 루트 빌드는 **2026.09.30-esp-preview5**입니다. 프로젝트 루트의 `TulliusTranslator.exe`로 실행하며 창 제목에서도 버전을 확인할 수 있습니다. .NET 런타임을 포함한 Windows x64 단일 파일입니다. 이전 루트 EXE는 `artifacts/direct-plugin-20260929/deployment-20260930-072058/TulliusTranslator.previous.exe.disabled`로 보존합니다.
 
-**현재 입력 형식은 xTranslator XML(`SSTXMLRessources`)입니다.** ESP·ESM·ESL은 xTranslator에서 XML로 내보낸 뒤 번역 결과를 다시 가져옵니다. 직접 플러그인 쓰기의 검토 범위와 도입 조건은 [검토 문서](docs/direct-plugin-feasibility.md)를 참고하세요.
+현재 빌드는 앞서 적용한 번역 파이프라인·기본값 개선을 포함합니다. 그 변경 내용은 [파이프라인 개선 기록](docs/analysis/2026-09-29-pipeline-defaults-implementation.md)에 보존합니다.
+
+**루트 EXE는 Skyrim SE/AE ESP·ESM·ESL 직접 입력과 기존 xTranslator XML(`SSTXMLRessources`) 입력을 지원합니다.** 번역한 플러그인은 새 폴더에 저장합니다. 이전 `esp-preview`는 PERK 기술 변수 오분류로 사용 중지했습니다. 설정·출력 사용법·검증 범위는 [플러그인 직접 번역 안내](docs/direct-plugin-support.md)와 [엘든림 검증 기록](docs/analysis/2026-09-30-eldenrim-validation.md)을 참고하세요. Fallout/Starfield는 기존 XML 경로를 사용합니다.
 
 ## 사용 흐름
+
+아래는 XML 경로입니다. ESP 후보에서는 `Open ESP → 번역·검수 → Save ESP`로 진행합니다.
 
 1. xTranslator에서 원본 플러그인의 문자열을 XML로 내보냅니다.
 2. 앱에서 프랜차이즈(TES / Fallout / Starfield)를 선택하고 `Open XML`로 엽니다.
@@ -20,6 +24,14 @@ Bethesda/xTranslator XML을 한국어로 번역하고 검수하는 Windows 앱�
 현재 정확한 stable 모델 ID에 적용되는 추론 설정은 `gemini-3.8-flash=low`, `gemini-3.1-flash-lite=minimal`입니다. Compare와 비용 샘플도 같은 공통 정책을 사용합니다. 웹 비교와 추론 수준을 맞춘 것이며, 앱의 마스킹·문맥·후처리까지 포함한 품질 우위를 실측한 것은 아닙니다.
 
 비용 추정에서 샘플을 실행하면 추론 포함 API 사용량으로 출력 토큰을 추정합니다. 샘플 사용량이 없으면 **추론 미포함 휴리스틱**으로 표시합니다. 캐시 사용 비용은 요청별 읽기 비용과 2시간 저장을 가정하며, 재시도·TM 적중·후보 재평가 등을 완전히 모사하지 않으므로 최종 비용은 실제 호출 누계로 확인하세요.
+
+일반 `generateContent` API를 사용하며 Batch API·Flex 선택 모드는 제공하지 않습니다. 화면의 BatchSize는 여러 문자열을 한 일반 요청에 묶는 크기입니다. 프롬프트 캐시는 실제 생성 요청이 생길 때 만들고, TM만 재사용하면 생성하지 않습니다. 캐시가 지원되지 않으면 일반 요청으로 진행합니다.
+
+후보 빌드는 번역 옵션을 저장하며, 원본 행별 추가 생성 호출은 기본 8회로 제한합니다. 전체 생성 호출 상한은 0이면 자동이며 양수이면 작업 전체의 고정 상한입니다. 정상 결과를 먼저 저장하고 누락·실패 행만 다시 요청합니다. 이 제한은 금액 상한이 아닙니다. 출력 예산 자동 조절과 책 원문 문맥은 기본 꺼짐 실험 옵션입니다.
+
+`책 제목 모델 분리`는 BOOK:FULL, `책 본문 모델 분리`는 BOOK:DESC에 적용됩니다. 선택한 종류는 오른쪽의 공통 책 모델을 사용하고, 선택하지 않은 종류는 기본 모델을 사용합니다. 예전 책 모델 설정은 제목에만 유지되며 본문 선택은 기본적으로 꺼져 있습니다. 기본 모델과 책 모델이 같으면 별도 실행으로 나누지 않습니다.
+
+API 로그에는 호출 목적, 종료 사유, 추론·캐시 토큰을 표시합니다. `Out+Think`는 추론을 포함하므로 `Think`를 다시 더하지 마세요. 잘리거나 거부된 생성 응답도 서버가 사용량을 제공하면 비용 누계에 포함합니다. 사용량 없는 호출은 미확인으로 남으며 이 누계는 서비스 청구 확정액이 아닙니다. 캐시 보관료 등은 별도로 고려해야 합니다.
 
 ## 번역과 데이터 보호
 
@@ -35,6 +47,8 @@ Bethesda/xTranslator XML을 한국어로 번역하고 검수하는 Windows 앱�
 ## 용어집과 번역 메모리(TM)
 
 Project Glossary/TM은 현재 애드온에 속합니다. 화면의 `Global`은 **선택한 프랜차이즈 안에서 공유**한다는 뜻이며 TES·Fallout·Starfield 데이터를 섞지 않습니다. TM은 원문 중심 조회이므로 모호한 짧은 단어는 문맥을 함께 검토하세요.
+
+세션 용어 메모리는 이름·제목에서 학습한 번역을 실행 중 참고 힌트로 사용합니다. 새 항목은 프로젝트 용어집의 `Auto(Session)`에 **비활성 검수 후보**로 저장됩니다. 검토 후 직접 활성화하세요. 대사는 용어 학습에서 제외하며, 기존 수동 용어와 이미 저장된 용어의 설정은 바꾸지 않습니다.
 
 ### 내장 TM의 실제 범위
 
@@ -70,6 +84,8 @@ XML 왕복 검증 도구는 [Validate CLI](tools/XTranslatorAi.Validate/README.m
 
 ## 문서 구분
 
+- [파이프라인·설정 개선과 후보 빌드 검증](docs/analysis/2026-09-29-pipeline-defaults-implementation.md)
+- [일반 API 최적화 구현과 검증 결과](docs/analysis/2026-09-29-standard-api-implementation.md)
 - [현재 유지보수 계획과 검증 상태](docs/plans/2026-09-29-maintenance.md)
 - [이전 개선 작업](docs/plans/2026-09-28-translator-improvement.md)
 - [현재 코드 검토 기준](docs/review-checklist.md)

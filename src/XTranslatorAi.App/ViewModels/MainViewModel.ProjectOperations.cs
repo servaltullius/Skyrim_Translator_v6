@@ -14,14 +14,20 @@ public partial class MainViewModel
     private CancellationTokenSource? _projectLoadCancellation;
     private bool _isClosing;
 
-    public bool IsWorkspaceInteractive => !_isSwitchingProject && !_isClosing;
+    public bool IsWorkspaceInteractive => !_isSwitchingProject && !_isClosing && !IsPluginIoBusy;
 
     private void NotifyWorkspaceAvailability()
     {
         OnPropertyChanged(nameof(IsWorkspaceInteractive));
+        OpenXmlCommand.NotifyCanExecuteChanged();
+        OpenPluginCommand.NotifyCanExecuteChanged();
         StartTranslationCommand.NotifyCanExecuteChanged();
         EstimateCostCommand.NotifyCanExecuteChanged();
         GenerateProjectContextCommand.NotifyCanExecuteChanged();
+        SaveProjectContextCommand.NotifyCanExecuteChanged();
+        ClearProjectContextCommand.NotifyCanExecuteChanged();
+        ExportXmlCommand.NotifyCanExecuteChanged();
+        ExportPluginCommand.NotifyCanExecuteChanged();
     }
 
     private async Task RunProjectOperationAsync(string name, Func<CancellationToken, Task> action)
@@ -45,7 +51,8 @@ public partial class MainViewModel
         // Discover generated async commands so newly added commands receive the same boundary.
         var tasks = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
             .Where(property => typeof(IAsyncRelayCommand).IsAssignableFrom(property.PropertyType)
-                               && property.Name != nameof(OpenXmlCommand))
+                               && property.Name != nameof(OpenXmlCommand)
+                               && property.Name != nameof(OpenPluginCommand))
             .Select(property => (IAsyncRelayCommand?)property.GetValue(this))
             .Select(command => command?.ExecutionTask)
             .Where(task => task != null && !task.IsCompleted)
@@ -66,6 +73,10 @@ public partial class MainViewModel
             if (OpenXmlCommand.ExecutionTask is { IsCompleted: false } opening)
             {
                 await opening;
+            }
+            if (OpenPluginCommand.ExecutionTask is { IsCompleted: false } openingPlugin)
+            {
+                await openingPlugin;
             }
             await DisposeProjectDbAsync();
             ResetProjectState();

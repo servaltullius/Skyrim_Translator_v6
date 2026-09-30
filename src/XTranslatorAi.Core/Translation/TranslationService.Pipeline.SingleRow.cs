@@ -14,6 +14,7 @@ public sealed partial class TranslationService
     )
     {
         ctx.CancellationToken.ThrowIfCancellationRequested();
+        using var generationScope = EnterGenerationScope(new[] { row.Id });
         row = PrepareRowWithSessionTermForceTokens(row);
 
         try
@@ -24,7 +25,7 @@ public sealed partial class TranslationService
         {
             throw;
         }
-        catch (Exception ex) when (IsCredentialError(ex) || (ctx.EnableApiKeyFailover && IsApiKeyFailoverError(ex, ctx.CancellationToken)))
+        catch (Exception ex) when (IsRunGenerationLimit(ex) || IsCredentialError(ex) || (ctx.EnableApiKeyFailover && IsApiKeyFailoverError(ex, ctx.CancellationToken)))
         {
             throw;
         }
@@ -42,6 +43,7 @@ public sealed partial class TranslationService
         var rec = GetRecForId(row.Id);
         var styleHint = GuessStyleHint(row.Source, Ctx.UseRecStyleHints ? rec : null);
         styleHint = AppendDialogueContextToStyleHint(styleHint, GetDialogueContextWindowForId(row.Id));
+        styleHint = AppendBookTitleReference(row.Id, styleHint);
 
         var raw = await TranslateRowRawAsync(ctx, row, styleHint);
         raw = await TrySemanticRepairAsync(ctx, row, styleHint, raw);
@@ -137,8 +139,9 @@ public sealed partial class TranslationService
         {
             throw;
         }
-        catch (Exception ex) when (!IsCredentialError(ex))
+        catch (Exception ex) when (!MustStopRecovery(ex))
         {
+            using var recovery = EnterGenerationScope(recovery: true);
             return await TranslateLongMaskedTextAsync(ctx, row);
         }
     }
@@ -157,6 +160,7 @@ public sealed partial class TranslationService
 
         try
         {
+            using var recovery = EnterGenerationScope(new[] { row.Id }, recovery: true);
             var repairPrompt = BuildSemanticRepairPrompt(
                 ctx,
                 maskedSource: row.Masked,
@@ -164,7 +168,9 @@ public sealed partial class TranslationService
                 promptOnlyGlossary: row.Glossary.PromptOnlyPairs,
                 styleHint: styleHint
             );
-            var repairRequest = CreateSemanticRepairRequest(ctx);
+            var repairRequest = CreateSemanticRepairRequest(ctx) with { MaxOutputTokens = TranslationOutputBudget.Compute(
+                row.Masked.Length, TranslationConstants.XtTokenRegex.Matches(row.Masked).Count, 1,
+                ctx.MaxOutputTokens, Ctx.EnableAdaptiveOutputBudget) };
             var repairedText = await TranslateUserPromptWithRetriesAsync(repairRequest, repairPrompt);
 
             return TokenSanitizer.EnsureTokensPreservedOrRepair(
@@ -178,7 +184,7 @@ public sealed partial class TranslationService
         {
             throw;
         }
-        catch
+        catch (Exception ex) when (!IsRunGenerationLimit(ex) && !IsCredentialError(ex))
         {
             return raw;
         }
@@ -216,7 +222,8 @@ public sealed partial class TranslationService
             Temperature: 0.0,
             MaxOutputTokens: ctx.MaxOutputTokens,
             MaxRetries: 1,
-            CancellationToken: ctx.CancellationToken
+            CancellationToken: ctx.CancellationToken,
+            Purpose: "repair-semantic"
         );
 
 	    private async Task<string> TranslateLongMaskedTextAsync(
@@ -227,6 +234,7 @@ public sealed partial class TranslationService
 	        var rec = GetRecForId(row.Id);
 	        var styleHint = GuessStyleHint(row.Source, Ctx.UseRecStyleHints ? rec : null);
 	        styleHint = AppendDialogueContextToStyleHint(styleHint, GetDialogueContextWindowForId(row.Id));
+	        styleHint = AppendBookTitleReference(row.Id, styleHint);
 	        var tokenCount = TranslationConstants.XtTokenRegex.Matches(row.Masked).Count;
 	        var initialChunkChars = ComputeLongTextInitialChunkChars(ctx, tokenCount);
 

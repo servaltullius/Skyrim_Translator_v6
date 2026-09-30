@@ -47,6 +47,15 @@ public sealed partial class TranslationService
         return Ctx.DialogueContextWindowById.TryGetValue(id, out var ctx) ? ctx : null;
     }
 
+    private string? AppendBookTitleReference(long id, string? hint)
+    {
+        if (!Ctx.EnableBookContext || !TranslationBookContext.IsBody(GetRecForId(id))) return hint;
+        var edid = GetEdidForId(id)?.Trim();
+        var title = edid != null && Ctx.BookTitlesByEdid?.TryGetValue(edid, out var found) == true ? found : null;
+        var reference = TranslationBookContext.Build(title: title);
+        return reference == null ? hint : string.IsNullOrWhiteSpace(hint) ? reference : hint + "\n\n" + reference;
+    }
+
     private async Task<string> GenerateContentWithGateAsync(
         string apiKey,
         string modelName,
@@ -61,6 +70,7 @@ public sealed partial class TranslationService
         var gate = Ctx.GenerateContentGate;
         if (gate == null && laneGate == null)
         {
+            ConsumeGenerationBudget();
             return await _gemini.GenerateContentAsync(apiKey, modelName, request, cancellationToken);
         }
 
@@ -81,6 +91,7 @@ public sealed partial class TranslationService
             {
                 await Ctx.AdaptiveConcurrency.WaitForSlotAsync(cancellationToken);
                 adaptiveAcquired = true;
+                ConsumeGenerationBudget();
                 var response = await _gemini.GenerateContentAsync(apiKey, modelName, request, cancellationToken);
                 Ctx.AdaptiveConcurrency.RegisterSuccess();
                 return response;
@@ -114,6 +125,7 @@ public sealed partial class TranslationService
         var gate = Ctx.GenerateContentGate;
         if (gate == null && laneGate == null)
         {
+            ConsumeGenerationBudget();
             return await _gemini.GenerateContentCandidatesAsync(apiKey, modelName, request, cancellationToken);
         }
 
@@ -134,6 +146,7 @@ public sealed partial class TranslationService
             {
                 await Ctx.AdaptiveConcurrency.WaitForSlotAsync(cancellationToken);
                 adaptiveAcquired = true;
+                ConsumeGenerationBudget();
                 var response = await _gemini.GenerateContentCandidatesAsync(apiKey, modelName, request, cancellationToken);
                 Ctx.AdaptiveConcurrency.RegisterSuccess();
                 return response;

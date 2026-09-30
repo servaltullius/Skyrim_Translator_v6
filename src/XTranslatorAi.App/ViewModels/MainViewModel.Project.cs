@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
@@ -16,7 +17,9 @@ public partial class MainViewModel
     public string CurrentXmlFileName
         => _projectState.CurrentXmlFileName;
 
-    [RelayCommand]
+    private bool CanOpenProject() => IsWorkspaceInteractive;
+
+    [RelayCommand(CanExecute = nameof(CanOpenProject))]
     private async Task OpenXmlAsync()
     {
         if (!IsWorkspaceInteractive) return;
@@ -83,6 +86,7 @@ public partial class MainViewModel
         IsProjectLoaded = false;
         _projectState.Clear();
         OnPropertyChanged(nameof(CurrentXmlFileName));
+        NotifyWorkspaceAvailability();
         ProjectContextPreview = "";
         SelectedEntry = null;
         TotalCount = 0;
@@ -162,7 +166,7 @@ public partial class MainViewModel
         }
     }
 
-    private bool CanExport() => IsProjectLoaded && !IsTranslating;
+    private bool CanExport() => IsProjectLoaded && !IsTranslating && IsWorkspaceInteractive && _projectState.XmlInfo != null;
 
     [RelayCommand(CanExecute = nameof(CanSaveSelectedDest))]
     private async Task SaveSelectedDestAsync()
@@ -193,10 +197,16 @@ public partial class MainViewModel
             return;
         }
 
-        entry.DestText = newDest ?? "";
+        var savedDest = newDest ?? "";
+        await db.UpdateStringTranslationAsync(entry.Id, savedDest, StringEntryStatus.Edited, null, CancellationToken.None);
+        entry.DestText = savedDest;
         entry.Status = StringEntryStatus.Edited;
         entry.IsTranslationMemoryApplied = false;
-        await db.UpdateStringTranslationAsync(entry.Id, entry.DestText, StringEntryStatus.Edited, null, CancellationToken.None);
+        if (ReferenceEquals(db, _projectState.Db))
+        {
+            DoneCount = Entries.Count(row => row.Status is StringEntryStatus.Done or StringEntryStatus.Edited);
+            PendingCount = Entries.Count(row => row.Status == StringEntryStatus.Pending);
+        }
     }
 
     private async Task LoadEntriesAsync()

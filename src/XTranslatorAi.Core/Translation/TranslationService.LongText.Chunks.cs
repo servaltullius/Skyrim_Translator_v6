@@ -49,8 +49,9 @@ public sealed partial class TranslationService
         {
             throw;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!MustStopRecovery(ex))
         {
+            using var recovery = EnterGenerationScope(recovery: true);
             return await TranslateChunkAfterFailureAsync(
                 chunkContext,
                 new ChunkSplitFailureContext(
@@ -73,7 +74,7 @@ public sealed partial class TranslationService
             chunkContext.Row.Glossary.PromptOnlyPairs,
             new TextWithSentinelContext(
                 GlossaryTokenToReplacement: chunkContext.Row.Glossary.TokenToReplacement,
-                StyleHint: chunkContext.StyleHint,
+                StyleHint: AppendDialogueContextToStyleHint(chunkContext.StyleHint, chunkContext.SourceReference),
                 Context: "chunk",
                 SourceTextForTranslationMemory: chunkContext.Row.Source
             )
@@ -113,7 +114,8 @@ public sealed partial class TranslationService
             Temperature: chunkContext.Temperature,
             MaxOutputTokens: chunkContext.MaxOutputTokens,
             MaxRetries: chunkContext.MaxRetries,
-            CancellationToken: chunkContext.CancellationToken
+            CancellationToken: chunkContext.CancellationToken,
+            Purpose: "translate-chunk"
         );
     }
 
@@ -191,12 +193,12 @@ public sealed partial class TranslationService
     )
     {
         var sb = new StringBuilder(capacity: Math.Min(4096, parts.Count * 2048));
-        foreach (var part in parts)
+        for (var index = 0; index < parts.Count; index++)
         {
             sb.Append(
                 await TranslateChunkWithAdaptiveSplittingAsync(
-                    chunkContext,
-                    part,
+                    WithBookChunkReference(chunkContext, parts, index),
+                    parts[index],
                     chunkChars,
                     minChunkChars
                 )
@@ -227,7 +229,7 @@ public sealed partial class TranslationService
                     try
                     {
                         results[idx] = await TranslateChunkWithAdaptiveSplittingAsync(
-                            chunkContext,
+                            WithBookChunkReference(chunkContext, parts, idx),
                             parts[idx],
                             chunkChars,
                             minChunkChars
@@ -261,6 +263,14 @@ public sealed partial class TranslationService
             sbAll.Append(r);
         }
         return sbAll.ToString();
+    }
+
+    private LongTextChunkContext WithBookChunkReference(LongTextChunkContext context, IReadOnlyList<string> parts, int index)
+    {
+        if (!Ctx.EnableBookContext || !TranslationBookContext.IsBody(GetRecForId(context.Row.Id))) return context;
+        var reference = TranslationBookContext.Build(previous: index > 0 ? parts[index - 1] : null,
+            next: index + 1 < parts.Count ? parts[index + 1] : null);
+        return context with { SourceReference = reference ?? context.SourceReference };
     }
 
     private static IReadOnlyList<string>? TrySplitAtPagebreakBoundaries(

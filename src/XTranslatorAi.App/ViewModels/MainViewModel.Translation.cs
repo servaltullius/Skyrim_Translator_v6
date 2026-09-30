@@ -20,7 +20,7 @@ public partial class MainViewModel
         }
 
         var db = _projectState.Db;
-        if (db == null || _projectState.XmlInfo == null)
+        if (db == null || !_projectState.HasSource)
         {
             return;
         }
@@ -73,6 +73,7 @@ public partial class MainViewModel
                     SystemPrompt: systemPrompt,
                     PrimaryModel: primaryModel,
                     EnableBookFullModelOverride: EnableBookFullModelOverride,
+                    EnableBookBodyModelOverride: EnableBookBodyModelOverride,
                     EnableQualityEscalation: EnableQualityEscalation,
                     QualityEscalationModelName: QualityEscalationModel,
                     BatchSize: BatchSize,
@@ -90,7 +91,11 @@ public partial class MainViewModel
                     EnableDialogueContextWindow: EnableDialogueContextWindow,
                     EnablePromptCache: EnablePromptCache,
                     EnableRiskyCandidateRerank: EnableRiskyCandidateRerank,
-                    RiskyCandidateCount: RiskyCandidateCount
+                    RiskyCandidateCount: RiskyCandidateCount,
+                    MaxRetryGenerations: MaxRetryGenerations,
+                    MaxTotalGenerations: MaxTotalGenerations,
+                    EnableAdaptiveOutputBudget: EnableAdaptiveOutputBudget,
+                    EnableBookContext: EnableBookContext
                 );
 
                 var result = await Task.Run(() => _translationRunnerService.RunAsync(request), cancellationToken);

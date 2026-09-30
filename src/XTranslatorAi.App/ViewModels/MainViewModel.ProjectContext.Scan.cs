@@ -13,15 +13,14 @@ public partial class MainViewModel
     private async Task<ProjectContextScanReport> BuildProjectContextScanReportAsync(CancellationToken cancellationToken)
     {
         var db = _projectState.Db;
-        var xmlInfo = _projectState.XmlInfo;
-        if (db == null || xmlInfo == null)
+        if (db == null || !_projectState.HasSource)
         {
             throw new InvalidOperationException("Project is not loaded.");
         }
 
         var options = new ProjectContextScanOptions(
-            AddonName: xmlInfo.AddonName?.Trim(),
-            InputFile: _projectState.InputXmlPath != null ? Path.GetFileName(_projectState.InputXmlPath) : null,
+            AddonName: _projectState.AddonName?.Trim(),
+            InputFile: _projectState.InputPath != null ? Path.GetFileName(_projectState.InputPath) : null,
             SourceLang: SourceLang?.Trim() ?? "",
             TargetLang: TargetLang?.Trim() ?? "",
             NexusContext: null

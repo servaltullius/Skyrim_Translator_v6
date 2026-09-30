@@ -17,7 +17,7 @@ public partial class MainViewModel
     private async Task GenerateProjectContextCoreAsync(CancellationToken cancellationToken)
     {
         var db = _projectState.Db;
-        if (db == null || _projectState.XmlInfo == null)
+        if (db == null || !_projectState.HasSource)
         {
             return;
         }
@@ -113,7 +113,7 @@ public partial class MainViewModel
                 new("HARM_CATEGORY_SEXUALLY_EXPLICIT", "BLOCK_NONE"),
                 new("HARM_CATEGORY_DANGEROUS_CONTENT", "BLOCK_NONE"),
             }
-        );
+        ) { Purpose = "project-context" };
     }
 
     [RelayCommand(CanExecute = nameof(CanUseProjectContextTools))]
