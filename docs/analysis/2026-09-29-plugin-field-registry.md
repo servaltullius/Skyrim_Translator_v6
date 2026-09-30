@@ -66,12 +66,12 @@ EPFT=6은 Mutagen의 `ParameterType.String`, 함수 11은 `SelectText`다. [Perk
 | TES4:CNAM/SNAM | 작성자/플러그인 설명 메타데이터다. 작성자 이름을 게임 문구와 함께 자동 번역하지 않는다. |
 | EDID, MAST, 모델·텍스처 경로, 스크립트 식별자 | 기술 식별자 또는 자산 참조다. 표시 문자열과 분리하며 원본 바이트를 보존한다. |
 | QUST의 후미 NNAM | xEdit 4.1.5f는 ANAM/aliases 뒤의 NNAM을 일반 개발자 Description으로 정의하지만, Mutagen Quest schema는 DL translated로 정의한다. objective NNAM으로 추측하지 않고 제외한다. |
-| SNDR:FNAM | Mutagen은 Normal translated, xEdit는 cpIgnore, xTranslator의 추출 목록에는 없다. 표시문구 의미가 확정되지 않아 제외한다. |
+| SNDR:FNAM | 폼 버전 35 미만의 비트 플래그다(비트 4 = Loop). 최신 xEdit 정의와 Skyrim.esm 데이터로 확인했다. 표시문구가 아니므로 제외하고 바이트를 유지한다. [SNDR:FNAM 확인](2026-09-30-sndr-fnam.md) |
 | VMAD 안의 문자열, 별도 PEX/MCM 등 | 이 registry는 subrecord 단위의 검증된 표시문구만 분류한다. 중첩 스크립트 데이터와 별도 자산의 번역을 포함한다고 주장하지 않는다. |
 
-QUST 후미 NNAM과 SNDR:FNAM 같은 모호한 필드는 사용자에게 직접 번역하지 않는 사실과 필드 바이트 보존 범위를 알려야 한다. 지역화 파일에서 같은 문자열 ID를 공유하면 참조 내용까지 불변이라는 뜻은 아니다. 단순히 알려진 레코드 안에 있다는 이유로 전체 번역 완료로 표시해서는 안 된다. `FULL`/`DESC`도 모든 레코드에 적용하는 wildcard로 확장하지 않는다.
+QUST 후미 NNAM 같은 모호한 필드는 사용자에게 직접 번역하지 않는 사실과 필드 바이트 보존 범위를 알려야 한다. 지역화 파일에서 같은 문자열 ID를 공유하면 참조 내용까지 불변이라는 뜻은 아니다. 단순히 알려진 레코드 안에 있다는 이유로 전체 번역 완료로 표시해서는 안 된다. `FULL`/`DESC`도 모든 레코드에 적용하는 wildcard로 확장하지 않는다.
 
-Skyrim.esm 전체 문구 편집 검증에서 SNDR:FNAM 바이트/ID는 그대로였지만, 다른 번역 필드와 ID 1·2·20을 공유하는 54개 값은 Mutagen 조회 결과가 함께 바뀌었다. Mutagen의 Normal translated 해석과 xEdit의 localized/cpIgnore 정의만으로 실제 게임 용도나 무영향을 증명할 수 없다. nonzero ID 17·18을 찾지 못한 5건도 실제 조회 실패로 남긴다. 임의의 ID 복제나 오류 무시는 추가하지 않았으며, 앱 안내는 preview4에서 이 구분을 명시한다. 상세 증거는 [지역화 검증 기록](2026-09-29-direct-plugin-validation.md)에 있다.
+Skyrim.esm 전체 문구 편집 검증에서 Mutagen으로 해석한 SNDR 값 54개가 함께 바뀐 것으로 보였다. 후속 [SNDR:FNAM 확인](2026-09-30-sndr-fnam.md)에서 이 필드가 플래그임을 확인해 영향이 없다고 결론지었다. 앱의 SNDR:FNAM 경고도 제거했다. 상세 증거는 [지역화 검증 기록](2026-09-29-direct-plugin-validation.md)에 있다.
 
 ## 추가한 회귀 테스트
 

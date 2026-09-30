@@ -143,7 +143,9 @@ public static class PluginReader
                             record.Type, sub.Type, record.FormId, edid, record.Index, sub.Index, source, kind, stringId, rule.RequiresNonEmpty,
                             record.DialogueTopicFormId));
                 }
-                if (rule == null && ((record.Type == "QUST" && sub.Type == "NNAM") || (record.Type == "SNDR" && sub.Type == "FNAM")))
+                // SNDR:FNAM (form version < 35) is a flags field (bit 4 = Loop), not a string ID, even
+                // though some readers model it as translated text. It is preserved without a warning.
+                if (rule == null && record.Type == "QUST" && sub.Type == "NNAM")
                 {
                     var preservation = localized
                         ? "필드 바이트와 ID는 유지하지만, 다른 번역 항목과 문자열 ID를 공유하면 참조 내용은 함께 바뀔 수 있습니다."

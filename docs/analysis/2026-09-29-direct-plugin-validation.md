@@ -113,6 +113,8 @@ USSEP 원본과 수정본의 xEdit `-check` stdout은 모두 0바이트이며 st
 
 별도 `skyrim-mutagen-scoped-comparison.json`은 이 한계를 그대로 기록하고 SNDR.String을 명시적으로 범위에서 제외한다. 나머지 비어 있지 않은 translated 값과 앱 manifest를 **(record signature, 파일 내부 FormID, StringsKey, 정확한 문자열)** 다중집합으로 비교했다. 원문과 수정문 각각 **67,388개 전부 일치**, 누락/예상 밖 값 0이다. 각 실행의 실제 문자열 테이블 SHA를 Python 보존 검사의 원본/출력 SHA와 결속했다. 전체 표시 문자열의 완전한 누락 검사가 아니라 **앱이 노출한 값의 독립 대조**다.
 
+> 후속 결론(2026-09-30): [SNDR:FNAM 확인](2026-09-30-sndr-fnam.md)에서 SNDR:FNAM이 문자열 ID가 아니라 비트 플래그임을 확인했다. 아래의 54개 간접 변경과 ID 17·18 조회 실패 5건은 Mutagen 해석에서만 생긴 결과이며 게임 영향은 없다.
+
 SNDR:FNAM의 필드 바이트와 참조 ID는 유지되지만, ID 1·2·20을 번역 항목과 공유해 Mutagen으로 해석한 값 54개도 간접적으로 변경됐다. 실제 게임 용도와 영향은 확인하지 않았다. 이를 원문·의미의 완전한 보존으로 표현하면 과장이다. preview4는 앱의 `ambiguous_field` 안내를 필드 바이트 보존과 공유 ID 내용 변경 가능성으로 구분했다. 근거 없이 ID를 복제하거나 reader 오류를 무시하는 동작은 추가하지 않았다. 최종 전체 회귀 **797/797**과 Windows x64 publish를 완료했다. 첫 clean은 RID 자산 부재로 중단됐고, win-x64 restore 후 clean/publish가 정상 완료됐다.
 
 ### SHA256

@@ -38,4 +38,4 @@ Mutagen 0.53.1은 본체 1,279개·전회 3,230개 major record의 끝까지 순
 
 증거는 `artifacts/direct-plugin-20260929`에 있다: `elden-base-read.json`, `elden-base-unchanged-export.json`, `elden-skills-read.json`, `elden-ui-original`, `elden-ui-edited`, `elden-ui-edited-read.json`, `elden-skills-xedit-fields.json` 및 `.jsonl`, 원문/수정 dump, Mutagen raw 보고서 3개와 `elden-independent-comparison.json`, `tests-preview5-final/results.trx`.
 
-유료 API 호출 없이 기존 한글 문구의 수동 편집으로 입출력을 검증했다. 이번 검증은 새 모델의 번역 품질 평가가 아니다. LOTD 자체, 모든 ESP, 원본의 미해석 PERK 효과, 게임 내 글꼴·최종 덮어쓰기·기능 동작까지 무오류로 보증하지 않는다. 특히 이전 Skyrim.esm 지역화 검증에서 발견한 SNDR 공유 ID의 간접 변경 영향은 계속 미확인이다. 게임 확인을 사용자가 맡았으므로 번역기 측 검증 작업을 위해 게임을 실행할 필요는 없다.
+유료 API 호출 없이 기존 한글 문구의 수동 편집으로 입출력을 검증했다. 이번 검증은 새 모델의 번역 품질 평가가 아니다. LOTD 자체, 모든 ESP, 원본의 미해석 PERK 효과, 게임 내 글꼴·최종 덮어쓰기·기능 동작까지 무오류로 보증하지 않는다. 이전 Skyrim.esm 검증의 SNDR 공유 ID 문제는 이후 [SNDR:FNAM 확인](2026-09-30-sndr-fnam.md)에서 영향이 없음을 확인했다. 게임 확인을 사용자가 맡았으므로 번역기 측 검증 작업을 위해 게임을 실행할 필요는 없다.

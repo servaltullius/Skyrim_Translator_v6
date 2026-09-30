@@ -180,6 +180,21 @@ public sealed class PluginReadWriteTests
     }
 
     [Fact]
+    public async Task SoundDescriptorFlags_SharingAStringIdValue_AreNotReportedAsAmbiguousText()
+    {
+        // Skyrim.esm SNDR FNAM values 1, 2 and 20 equal real STRINGS IDs but are loop/unknown flags.
+        using var fixture = new Fixture(Header(localized: true)
+            .Concat(Group(Record("SNDR", 0x800, Sub("EDID", Z("NPCDwarvenSphereEquip")), Sub("FNAM", UInt(1)))))
+            .Concat(Group(Record("WEAP", 0x801, Sub("FULL", UInt(1))))).ToArray());
+        fixture.Table(PluginStringTableKind.Strings, new() { [1] = "Sword" });
+        var document = await PluginReader.ReadAsync(fixture.Input, new(), default);
+
+        Assert.DoesNotContain(document.Info.Diagnostics, diagnostic => diagnostic.Code == "ambiguous_field");
+        var field = Assert.Single(document.Fields);
+        Assert.Equal("WEAP", field.RecordType);
+    }
+
+    [Fact]
     public async Task UnknownRecord_IsReportedAndBlocksExport()
     {
         using var fixture = new Fixture(Header().Concat(Group(Record("ZZZZ", 0x800, Sub("FULL", Z("Unknown"))))).ToArray());
