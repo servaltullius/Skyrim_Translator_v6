@@ -90,7 +90,7 @@ public partial class MainViewModel
             if (previousDb != null) await previousDb.DisposeAsync();
             // A late cancel may skip auxiliary refresh only after the committed DB and rows are visible.
             cancellation.Token.ThrowIfCancellationRequested();
-            await _bundledFranchiseTmSeedService.EnsureSeedAsync(SelectedFranchise, CancellationToken.None);
+            await _bundledFranchiseTmSeedService.EnsureBundledSeedAsync(SelectedFranchise, CancellationToken.None);
             await TryAutoImportFranchiseTranslationMemoryAsync();
             await ReloadGlossaryAsync();
             await ReloadGlobalGlossaryAsync();

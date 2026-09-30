@@ -120,7 +120,7 @@ public partial class MainViewModel
         TargetLang = result.TargetLang;
 
         cancellationToken.ThrowIfCancellationRequested();
-        await _bundledFranchiseTmSeedService.EnsureSeedAsync(SelectedFranchise, cancellationToken);
+        await _bundledFranchiseTmSeedService.EnsureBundledSeedAsync(SelectedFranchise, cancellationToken);
         await TryAutoImportFranchiseTranslationMemoryAsync();
 
         cancellationToken.ThrowIfCancellationRequested();

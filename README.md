@@ -54,9 +54,19 @@ Project Glossary/TM은 현재 애드온에 속합니다. 화면의 `Global`은 *
 
 Fallout TM is currently scoped to Fallout 4 family data.
 Bundled Fallout TM is auto-seeded on first Fallout project load.
+Bundled Skyrim/TES TM is auto-seeded on first Elder Scrolls project load.
+Bundled Starfield TM is auto-seeded on first Starfield project load.
 Operator-provided TSV imports still work through the existing Franchise TM import flow.
 
-현재 내장 Fallout 시드는 `Pip-Boy`, `Vault-Tec`, `Commonwealth`의 **영문 유지 3쌍**입니다. 완성된 Fallout 한글 번역 데이터가 아닙니다. TES와 Starfield의 완성된 번역 TM은 내장되어 있지 않습니다. 직접 보유한 번역 자산을 해당 프랜차이즈로 가져오세요.
+1.6 릴리스부터 TES와 Starfield 번역 TM 시드를 내장합니다. 프로젝트를 처음 열 때 각 프랜차이즈의 `tm-import` 폴더에 복사되고, 기존 자동 가져오기로 프랜차이즈 TM에 들어갑니다. 파일 크기와 SHA-256이 내장본과 다르면 다시 복사합니다.
+
+| 프랜차이즈 | 내장 시드 | 규모 |
+|---|---|---|
+| TES | `bundled-skyrim-tes-franchise-tm.tsv` | 약 24,000쌍 |
+| Starfield | `bundled-starfield-franchise-tm.tsv` | 약 153,000쌍 |
+| Fallout | `bundled-fallout4-franchise-tm.tsv` | `Pip-Boy`, `Vault-Tec`, `Commonwealth`의 **영문 유지 3쌍** |
+
+Fallout 시드는 완성된 한글 번역 데이터가 아닙니다. TM은 원문 중심 조회이므로, 내장 TM도 짧은 문장은 문맥을 함께 검토하세요. 추가 번역 자산은 해당 프랜차이즈로 가져오세요.
 
 - 일반 TSV: 첫 줄 `Source<TAB>Target`, 이후 원문과 번역문 두 열을 지원합니다.
 - 앱의 새 내보내기 형식: 헤더에 `XTranslatorAi-JSON-v1`이 있으며 각 열을 JSON 문자열로 기록합니다. 앱으로 다시 가져올 때 탭·개행·따옴표·역슬래시를 복원합니다. 일반 2열 TSV만 받는 외부 도구와는 형식이 다릅니다.

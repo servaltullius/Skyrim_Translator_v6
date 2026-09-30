@@ -171,6 +171,15 @@ public static class ProjectPaths
         return dir;
     }
 
+    public static string GetBundledFranchiseTmSeedStampPath(BethesdaFranchise franchise, string version)
+        => GetBundledFranchiseTmSeedStampPath(franchise, version, globalRootOverride: null);
+
+    public static string GetBundledFranchiseTmSeedStampPath(BethesdaFranchise franchise, string version, string? globalRootOverride)
+        => Path.Combine(
+            GetGlobalTranslationMemoryImportDir(franchise, globalRootOverride),
+            $".bundled-seed.{franchise.ToString().ToLowerInvariant()}.{version}.stamp"
+        );
+
     private static string GetProjectsBaseDir()
         => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),

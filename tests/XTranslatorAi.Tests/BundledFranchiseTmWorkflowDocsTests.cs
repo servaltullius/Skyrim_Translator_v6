@@ -12,9 +12,10 @@ public class BundledFranchiseTmWorkflowDocsTests
 
         Assert.Contains("Fallout TM is currently scoped to Fallout 4 family data.", readme, StringComparison.Ordinal);
         Assert.Contains("Bundled Fallout TM is auto-seeded on first Fallout project load.", readme, StringComparison.Ordinal);
-        // Only Fallout has an embedded seed. Do not document proposed TES/Starfield data as shipped.
+        Assert.Contains("Bundled Skyrim/TES TM is auto-seeded on first Elder Scrolls project load.", readme, StringComparison.Ordinal);
+        Assert.Contains("Bundled Starfield TM is auto-seeded on first Starfield project load.", readme, StringComparison.Ordinal);
+        // The Fallout seed is only three English-preserving pairs. Do not describe it as a Korean TM.
         Assert.Contains("영문 유지 3쌍", readme, StringComparison.Ordinal);
-        Assert.Contains("TES와 Starfield의 완성된 번역 TM은 내장되어 있지 않습니다.", readme, StringComparison.Ordinal);
         Assert.Contains("Operator-provided TSV imports still work through the existing Franchise TM import flow.", readme, StringComparison.Ordinal);
     }
 

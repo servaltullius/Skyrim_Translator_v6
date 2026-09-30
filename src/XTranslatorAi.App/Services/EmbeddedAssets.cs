@@ -34,9 +34,13 @@ public static class EmbeddedAssets
         );
 
     public static string? LoadBundledFranchiseTmSeed(BethesdaFranchise franchise)
-        => franchise == BethesdaFranchise.Fallout
-            ? LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.fallout4-franchise-tm.tsv")
-            : null;
+        => franchise switch
+        {
+            BethesdaFranchise.ElderScrolls => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm.tsv"),
+            BethesdaFranchise.Fallout => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.fallout4-franchise-tm.tsv"),
+            BethesdaFranchise.Starfield => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.starfield-franchise-tm.tsv"),
+            _ => null,
+        };
 
     private static string LoadTextResource(string resourceName)
     {
