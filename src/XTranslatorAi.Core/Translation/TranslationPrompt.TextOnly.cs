@@ -109,7 +109,7 @@ public static partial class TranslationPrompt
         }
 
         sb.AppendLine();
-        sb.AppendLine("Glossary (preferred translations):");
+        sb.AppendLine("Glossary (preferred translations; apply an entry only where the source word has that meaning, and translate ordinary uses of the same word normally):");
         foreach (var (source, target) in promptOnlyGlossary)
         {
             sb.Append("- ");

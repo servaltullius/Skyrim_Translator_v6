@@ -48,7 +48,12 @@ public sealed class GlossaryApplier
                 continue;
             }
 
-            working = ReplaceAllMatchesTokenSafe(working, compiled, tokenToReplacement, entryIdToToken);
+            working = ReplaceAllMatchesTokenSafe(working, compiled, tokenToReplacement, entryIdToToken, out var skippedCommonWord);
+            if (skippedCommonWord)
+            {
+                // Not forced, but the model may still need the term if the word is used in that sense.
+                promptOnlyPairs.Add((entry.SourceTerm, entry.TargetTerm));
+            }
         }
 
         return new GlossaryApplication(
@@ -62,9 +67,11 @@ public sealed class GlossaryApplier
         string input,
         CompiledGlossaryEntry entry,
         IDictionary<string, string> tokenToReplacement,
-        Dictionary<long, string> entryIdToToken
+        Dictionary<long, string> entryIdToToken,
+        out bool skippedCommonWord
     )
     {
+        skippedCommonWord = false;
         if (string.IsNullOrEmpty(input))
         {
             return input;
@@ -81,7 +88,7 @@ public sealed class GlossaryApplier
                 continue;
             }
 
-            sb.Append(ReplaceAllMatchesInPlainText(text, entry, tokenToReplacement, entryIdToToken));
+            sb.Append(ReplaceAllMatchesInPlainText(text, entry, tokenToReplacement, entryIdToToken, ref skippedCommonWord));
         }
 
         return sb.ToString();
@@ -91,7 +98,8 @@ public sealed class GlossaryApplier
         string input,
         CompiledGlossaryEntry entry,
         IDictionary<string, string> tokenToReplacement,
-        Dictionary<long, string> entryIdToToken
+        Dictionary<long, string> entryIdToToken,
+        ref bool skippedCommonWord
     )
     {
         var matchMode = entry.Entry.MatchMode;
@@ -113,46 +121,73 @@ public sealed class GlossaryApplier
         }
 
         var regex = entry.Regex ?? throw new InvalidOperationException($"Missing regex for match mode: {matchMode}");
-        return regex.Replace(
+        var skipped = false;
+        var replaced = regex.Replace(
             input,
             m =>
             {
-                if (ShouldSuppressBuiltInDefaultGlossaryReplacement(input, entry.Entry, m))
+                switch (ClassifyBuiltInDefaultGlossaryMatch(input, entry.Entry, m))
                 {
-                    return m.Value;
+                    case BuiltInMatch.CommonWord:
+                        skipped = true;
+                        return m.Value;
+                    case BuiltInMatch.NotTheTerm:
+                        return m.Value;
+                    default:
+                        return GetOrCreateEntryToken(entry.Entry, tokenToReplacement, entryIdToToken);
                 }
-
-                return GetOrCreateEntryToken(entry.Entry, tokenToReplacement, entryIdToToken);
             }
         );
+        skippedCommonWord |= skipped;
+        return replaced;
     }
 
-    private static bool ShouldSuppressBuiltInDefaultGlossaryReplacement(string input, GlossaryEntry entry, Match match)
+    private enum BuiltInMatch
+    {
+        Force,
+        CommonWord,
+        NotTheTerm,
+    }
+
+    private static BuiltInMatch ClassifyBuiltInDefaultGlossaryMatch(string input, GlossaryEntry entry, Match match)
     {
         if (string.IsNullOrWhiteSpace(entry.Note)
             || !entry.Note.StartsWith("Built-in default glossary", StringComparison.Ordinal))
         {
-            return false;
+            return BuiltInMatch.Force;
         }
 
-        // "Reach" is a place name in Skyrim, but also a very common English word (reach).
-        // Avoid forcing the place-name translation in common-phrase contexts.
-        if (!string.Equals(entry.SourceTerm, "Reach", StringComparison.OrdinalIgnoreCase))
+        // Many single-word game terms are also ordinary English words: Fine (하급), Master (달인),
+        // Superior (중급), Destruction (파괴마법), Ward (방어막), Sneak (은신), Reach (리치).
+        // Game text writes the term capitalized, so a different casing ("fine blond hair",
+        // "superior officer") is left to the model with the term only as a hint.
+        if (IsCapitalizedSingleWord(entry.SourceTerm)
+            && !string.Equals(match.Value, entry.SourceTerm, StringComparison.Ordinal))
         {
-            return false;
+            return BuiltInMatch.CommonWord;
         }
 
-        // Require exact casing to avoid matching general "reach" occurrences.
-        if (!string.Equals(match.Value, "Reach", StringComparison.Ordinal))
+        // "Reach" is also capitalized at the start of a sentence: "Reach level 10", "Reach of ...".
+        if (string.Equals(entry.SourceTerm, "Reach", StringComparison.OrdinalIgnoreCase))
         {
-            return true;
+            var nextWord = ReadNextAsciiWord(input, match.Index + match.Length);
+            if (string.Equals(nextWord, "of", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(nextWord, "level", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(nextWord, "levels", StringComparison.OrdinalIgnoreCase))
+            {
+                return BuiltInMatch.NotTheTerm;
+            }
         }
 
-        // Suppress obvious verb/common-noun patterns: "reach of", "Reach level ...".
-        var nextWord = ReadNextAsciiWord(input, match.Index + match.Length);
-        return string.Equals(nextWord, "of", StringComparison.OrdinalIgnoreCase)
-               || string.Equals(nextWord, "level", StringComparison.OrdinalIgnoreCase)
-               || string.Equals(nextWord, "levels", StringComparison.OrdinalIgnoreCase);
+        return BuiltInMatch.Force;
+    }
+
+    private static bool IsCapitalizedSingleWord(string term)
+    {
+        var trimmed = term.Trim();
+        return trimmed.Length > 1
+               && trimmed[0] is >= 'A' and <= 'Z'
+               && !trimmed.Any(char.IsWhiteSpace);
     }
 
     private static string ReadNextAsciiWord(string text, int startIndex)

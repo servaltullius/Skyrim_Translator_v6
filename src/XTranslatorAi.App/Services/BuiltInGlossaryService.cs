@@ -17,6 +17,10 @@ public sealed class BuiltInGlossaryService
         // may produce odd trailing fragments (e.g., an extra "드래곤" at the end). Prefer prompt-only hints.
         "Block",
         "Dragon",
+        // Ordinary lowercase English words: forcing them turns "loot the place" or
+        // "he let out a shout" into game jargon.
+        "loot",
+        "shout",
     };
 
     public Task EnsureBuiltInGlossaryAsync(
