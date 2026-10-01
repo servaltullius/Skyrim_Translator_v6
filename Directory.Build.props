@@ -1,0 +1,6 @@
+<Project>
+  <!-- The solution builds with zero compiler warnings; keep it that way. -->
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>

@@ -53,7 +53,7 @@ public sealed partial class ProjectDb
                     : "SELECT b.FieldKey,s.SourceText,s.DestText,s.Status FROM PluginStringBinding b JOIN StringEntry s ON s.Id=b.StringId WHERE s.Status IN ($Done,$Edited,$Skipped);";
                 if (oldSource == null)
                 {
-                    if (Convert.ToInt64(await query.ExecuteScalarAsync(cancellationToken)) != 0)
+                    if (Convert.ToInt64(await query.ExecuteScalarAsync(cancellationToken), System.Globalization.CultureInfo.InvariantCulture) != 0)
                         throw new InvalidOperationException("Cannot import a plugin into an XML project.");
                 }
                 else
@@ -103,7 +103,7 @@ public sealed partial class ProjectDb
                 await insert.ExecuteNonQueryAsync(cancellationToken);
                 keyParameter.Value = field.Key;
                 fieldParameter.Value = JsonSerializer.Serialize(field);
-                var id = Convert.ToInt64(await binding.ExecuteScalarAsync(cancellationToken));
+                var id = Convert.ToInt64(await binding.ExecuteScalarAsync(cancellationToken), System.Globalization.CultureInfo.InvariantCulture);
                 imported.Add(new StringEntry(id, field.OrderIndex, null, null, null, field.EditorId,
                     field.Rec, field.SourceText, dest, status, null, updatedAt));
             }

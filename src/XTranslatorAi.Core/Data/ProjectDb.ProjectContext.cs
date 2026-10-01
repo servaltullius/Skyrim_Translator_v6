@@ -30,7 +30,7 @@ public sealed partial class ProjectDb
 
             return new ProjectContextInfo(
                 ContextText: reader.GetString(0),
-                UpdatedAt: DateTimeOffset.Parse(reader.GetString(1))
+                UpdatedAt: DateTimeOffset.Parse(reader.GetString(1), System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind)
             );
         }
         finally

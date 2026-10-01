@@ -105,11 +105,11 @@ public sealed partial class TranslationCostEstimator
     {
         if (string.IsNullOrWhiteSpace(request.ApiKey))
         {
-            throw new ArgumentException("API key is required.", nameof(request.ApiKey));
+            throw new ArgumentException("API key is required.", nameof(request));
         }
         if (string.IsNullOrWhiteSpace(request.ModelName))
         {
-            throw new ArgumentException("Model name is required.", nameof(request.ModelName));
+            throw new ArgumentException("Model name is required.", nameof(request));
         }
     }
 

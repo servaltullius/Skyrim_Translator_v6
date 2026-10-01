@@ -33,7 +33,7 @@ public sealed partial class ProjectDb
         cmd.Parameters.AddWithValue("$Id", id);
 
         var result = await cmd.ExecuteScalarAsync(cancellationToken);
-        return Convert.ToString(result) ?? "";
+        return Convert.ToString(result, System.Globalization.CultureInfo.InvariantCulture) ?? "";
     }
 
     private async Task<Dictionary<long, string>> GetStringSourceTextsUnsafeAsync(

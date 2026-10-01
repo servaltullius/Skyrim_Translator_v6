@@ -283,7 +283,7 @@ public sealed class GlossaryApplier
             // Use \w-based guards instead so terms like "A skill beyond the reach of most." can still match as a whole.
             GlossaryMatchMode.WordBoundary => $@"(?<!\w){Regex.Escape(entry.SourceTerm)}(?!\w)",
             GlossaryMatchMode.Regex => entry.SourceTerm,
-            _ => throw new ArgumentOutOfRangeException(nameof(entry.MatchMode), entry.MatchMode, null),
+            _ => throw new ArgumentOutOfRangeException(nameof(entry), entry.MatchMode, "Unsupported glossary match mode."),
         };
 
         return new Regex(pattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);

@@ -47,7 +47,7 @@ public sealed partial class ProjectDb
                         DestText: reader.GetString(8),
                         Status: (StringEntryStatus)reader.GetInt32(9),
                         ErrorMessage: reader.IsDBNull(10) ? null : reader.GetString(10),
-                        UpdatedAt: DateTimeOffset.Parse(reader.GetString(11))
+                        UpdatedAt: DateTimeOffset.Parse(reader.GetString(11), System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind)
                     )
                 );
             }
@@ -105,7 +105,7 @@ public sealed partial class ProjectDb
             await using var cmd = _connection.CreateCommand();
             cmd.CommandText = "SELECT COUNT(1) FROM StringEntry;";
             var result = await cmd.ExecuteScalarAsync(cancellationToken);
-            return Convert.ToInt64(result);
+            return Convert.ToInt64(result, System.Globalization.CultureInfo.InvariantCulture);
         }
         finally
         {
@@ -415,7 +415,7 @@ public sealed partial class ProjectDb
             cmd.Parameters.AddWithValue("$Id", id);
 
             var result = await cmd.ExecuteScalarAsync(cancellationToken);
-            return Convert.ToString(result) ?? throw new InvalidDataException("Missing RawStringXml.");
+            return Convert.ToString(result, System.Globalization.CultureInfo.InvariantCulture) ?? throw new InvalidDataException("Missing RawStringXml.");
         }
         finally
         {
