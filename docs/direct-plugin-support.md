@@ -1,6 +1,6 @@
 # Skyrim SE/AE 플러그인 직접 번역
 
-현재 루트 실행 파일: `2026.09.30-quality-preview10`. 동일한 배포본은 `artifacts/quality-preview10-20260930/publish/TulliusTranslator.exe`에 있다. preview9(1.6 내장 TM, [SNDR:FNAM 경고 제거](analysis/2026-09-30-sndr-fnam.md))에 [품질 평가 v2](analysis/2026-09-30-quality-eval-v2.md)의 후처리 결함 수정을 더했다. 번역 결과 후처리와 토큰 검사가 바뀌었고, 플러그인 reader/writer는 preview9와 같다. 설정과 API 키는 이번 교체에서 변경하지 않았다. 이전 preview9는 `artifacts/quality-preview10-20260930/deployment/TulliusTranslator.preview9.exe.disabled`에, preview8 이전 빌드도 기존 `.disabled` 백업에 보존한다.
+현재 루트 실행 파일: `2026.10.01-longbook-preview11`. 동일한 배포본은 `artifacts/longbook-preview11-20261001/publish/TulliusTranslator.exe`에 있다. preview10(1.6 내장 TM, [SNDR:FNAM 경고 제거](analysis/2026-09-30-sndr-fnam.md), [품질 평가 v2](analysis/2026-09-30-quality-eval-v2.md)의 후처리 결함 수정)에 긴 책 조각 번역의 재시도 상한 수정을 더했다. 플러그인 reader/writer는 preview9와 같다. 설정과 API 키는 이번 교체에서 변경하지 않았다. 이전 preview10은 `artifacts/longbook-preview11-20261001/deployment/TulliusTranslator.preview10.exe.disabled`에, preview9 이전 빌드도 기존 `.disabled` 백업에 보존한다.
 
 ## 사용 순서
 
