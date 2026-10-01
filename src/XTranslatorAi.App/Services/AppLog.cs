@@ -32,15 +32,20 @@ public static class AppLog
         Write(ex.ToString());
     }
 
+    /// <summary>Overrides the log folder, e.g. so test runs never write into the user's app.log.</summary>
+    public const string LogDirectoryVariable = "TULLIUS_TRANSLATOR_LOG_DIR";
+
     private static string ResolveLogPath()
     {
         try
         {
-            var dir = System.IO.Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "TulliusTranslator",
-                "logs"
-            );
+            var dir = Environment.GetEnvironmentVariable(LogDirectoryVariable) is { Length: > 0 } custom
+                ? custom
+                : System.IO.Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "TulliusTranslator",
+                    "logs"
+                );
             Directory.CreateDirectory(dir);
             return System.IO.Path.Combine(dir, "app.log");
         }
