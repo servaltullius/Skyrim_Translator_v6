@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using static XTranslatorAi.Core.Text.KoreanSyllables;
 
 namespace XTranslatorAi.Core.Text;
 
@@ -257,17 +258,6 @@ public static class LqaHeuristics
         }
 
         return null;
-    }
-
-    private static bool HasFinalConsonant(char syllable)
-    {
-        if (syllable < '가' || syllable > '힣')
-        {
-            return false;
-        }
-
-        var code = syllable - '가';
-        return (code % 28) != 0;
     }
 
     private static bool IsAsciiVowel(char c)

@@ -1,4 +1,5 @@
 using System;
+using static XTranslatorAi.Core.Text.KoreanSyllables;
 
 namespace XTranslatorAi.Core.Text.KoreanFix.Internal;
 
@@ -303,29 +304,6 @@ internal static class KoreanParticleSelector
         return true;
     }
 
-    private static bool IsLatinVowel(char c) => c is 'a' or 'e' or 'i' or 'o' or 'u' or 'y';
-
-    private static bool DigitHasFinalConsonant(char digit)
-    {
-        // Korean digit readings:
-        // 0=영(ㅇ), 1=일(ㄹ), 2=이(없음), 3=삼(ㅁ), 4=사(없음),
-        // 5=오(없음), 6=육(ㄱ), 7=칠(ㄹ), 8=팔(ㄹ), 9=구(없음)
-        return digit switch
-        {
-            '0' => true,
-            '1' => true,
-            '2' => false,
-            '3' => true,
-            '4' => false,
-            '5' => false,
-            '6' => true,
-            '7' => true,
-            '8' => true,
-            '9' => false,
-            _ => true,
-        };
-    }
-
     private static string FixParticleSafely(
         string noun,
         string particle,
@@ -352,19 +330,4 @@ internal static class KoreanParticleSelector
         return expected;
     }
 
-    private static bool IsHangulSyllable(char c) => c >= 0xAC00 && c <= 0xD7A3;
-
-    private static bool HasFinalConsonant(char hangulSyllable)
-    {
-        var index = hangulSyllable - 0xAC00;
-        var jong = index % 28;
-        return jong != 0;
-    }
-
-    private static bool HasFinalRieul(char hangulSyllable)
-    {
-        var index = hangulSyllable - 0xAC00;
-        var jong = index % 28;
-        return jong == 8;
-    }
 }

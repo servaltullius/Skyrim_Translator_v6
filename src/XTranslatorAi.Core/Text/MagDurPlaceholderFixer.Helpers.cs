@@ -127,8 +127,7 @@ public static partial class MagDurPlaceholderFixer
             return "이";
         }
 
-        // Hangul syllable decomposition: (ch - 0xAC00) % 28 == 0 => no final consonant.
-        var hasFinal = ((ch - '가') % 28) != 0;
+        var hasFinal = KoreanSyllables.HasFinalConsonant(ch);
         return hasFinal ? "이" : "가";
     }
 
@@ -146,7 +145,7 @@ public static partial class MagDurPlaceholderFixer
             return "을";
         }
 
-        var hasFinal = ((ch - '가') % 28) != 0;
+        var hasFinal = KoreanSyllables.HasFinalConsonant(ch);
         return hasFinal ? "을" : "를";
     }
 
