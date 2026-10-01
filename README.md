@@ -2,7 +2,7 @@
 
 Skyrim SE/AE 플러그인과 Bethesda/xTranslator XML을 한국어로 번역하고 검수하는 Windows 앱입니다. .NET 10 WPF와 SQLite를 사용하며 Gemini API를 지원합니다.
 
-현재 루트 빌드는 **2026.10.01-longbook-preview11**입니다. 프로젝트 루트의 `TulliusTranslator.exe`로 실행하며 창 제목에서도 버전을 확인할 수 있습니다. .NET 런타임을 포함한 Windows x64 단일 파일입니다. preview10([품질 평가 v2](docs/analysis/2026-09-30-quality-eval-v2.md)의 후처리 결함 수정)에 더해, 긴 책을 조각으로 나눠 번역할 때 정상적인 조각 호출까지 재시도 상한(8회)으로 세어 오류가 나던 문제를 고쳤습니다. 이전 preview10 EXE는 `artifacts/longbook-preview11-20261001/deployment/TulliusTranslator.preview10.exe.disabled`로 보존합니다. [EDID·용어 기억 개선과 실제 표본 비교](docs/analysis/2026-09-30-edid-session-memory.md), [앞선 프롬프트 개선](docs/analysis/2026-09-30-prompt-improvement.md)에 변경·비용·미해결 범위를 기록했습니다.
+현재 루트 빌드는 **2026.10.01-upgrade-preview12**입니다. 프로젝트 루트의 `TulliusTranslator.exe`로 실행하며 창 제목에서도 버전을 확인할 수 있습니다. .NET 런타임을 포함한 Windows x64 단일 파일입니다. preview11에 더해 화면을 한국어로 통일하고 배치를 정리했으며, 프롬프트 예시가 번역에 새어 나오던 문제를 고쳤습니다. 품질 검사 탭은 이전 빌드의 자동 교정이 남긴 손상을 찾아 줍니다. 변경 내용과 검증은 [2026-10-01 전반 개선](docs/analysis/2026-10-01-upgrade.md)에 정리했습니다. 이전 preview11 EXE는 `artifacts/upgrade-preview12-20261001/deployment/TulliusTranslator.preview11.exe.disabled`로 보존합니다. [EDID·용어 기억 개선과 실제 표본 비교](docs/analysis/2026-09-30-edid-session-memory.md), [앞선 프롬프트 개선](docs/analysis/2026-09-30-prompt-improvement.md)에 변경·비용·미해결 범위를 기록했습니다.
 
 현재 빌드는 앞서 적용한 번역 파이프라인·기본값 개선을 포함합니다. 그 변경 내용은 [파이프라인 개선 기록](docs/analysis/2026-09-29-pipeline-defaults-implementation.md)에 보존합니다.
 
