@@ -1,0 +1,41 @@
+name: ci
+
+# Build and test every push to main and every pull request, so a failing test
+# or a new compiler warning (warnings are errors) shows up before a release.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        shell: pwsh
+        run: dotnet restore tests/XTranslatorAi.Tests/XTranslatorAi.Tests.csproj
+
+      - name: Test
+        shell: pwsh
+        run: dotnet test tests/XTranslatorAi.Tests/XTranslatorAi.Tests.csproj --configuration Release --no-restore
+
+      - name: Build tools
+        shell: pwsh
+        run: |
+          dotnet build tools/XTranslatorAi.TranslationBenchmark/XTranslatorAi.TranslationBenchmark.csproj --configuration Release
+          dotnet build tools/XTranslatorAi.Validate/XTranslatorAi.Validate.csproj --configuration Release
