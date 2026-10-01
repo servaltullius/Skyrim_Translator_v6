@@ -65,7 +65,7 @@ public partial class MainViewModel
     {
         if (entry == null)
         {
-            return "선택된 항목 없음 (Strings 탭에서 행을 선택하세요)";
+            return "선택된 항목 없음 (문자열 탭에서 행을 선택하세요)";
         }
 
         var rec = string.IsNullOrWhiteSpace(entry.Rec) ? "(REC 없음)" : entry.Rec.Trim();
@@ -236,7 +236,7 @@ public partial class MainViewModel
         var entry = SelectedEntry;
         if (entry == null)
         {
-            SetCompareStatus(slot, "Strings 탭에서 비교할 행을 먼저 선택하세요.");
+            SetCompareStatus(slot, "문자열 탭에서 비교할 행을 먼저 선택하세요.");
             return false;
         }
 

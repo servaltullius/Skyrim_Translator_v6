@@ -17,7 +17,7 @@ public partial class MainViewModel
             return true;
         }
 
-        StatusMessage = $"프롬프트 충돌 경고: 차단 {_promptLintBlockingCount}건 / 전체 {_promptLintIssueCount}건. Prompt 탭에서 수정 후 다시 시도하세요.";
+        StatusMessage = $"프롬프트 충돌 경고: 차단 {_promptLintBlockingCount}건 / 전체 {_promptLintIssueCount}건. 프롬프트 탭에서 수정한 뒤 다시 시도하세요.";
         return false;
     }
 
