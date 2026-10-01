@@ -38,7 +38,7 @@ public partial class MainViewModel
             entries: ordered,
             targetLang: TargetLang,
             forceTokenGlossary: forceTokenGlossary,
-            onProgress: pct => StatusMessage = $"LQA: scanning... {pct}%",
+            onProgress: pct => StatusMessage = $"품질 검사 중... {pct}%",
             tmFallbackNotes: tmFallbackNotes
         );
 

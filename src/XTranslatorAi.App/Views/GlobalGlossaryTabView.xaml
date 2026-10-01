@@ -14,45 +14,47 @@
         </Grid.RowDefinitions>
 
         <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
-            <TextBlock Text="Category:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="분류:" VerticalAlignment="Center" Margin="0,0,6,0" />
             <TextBox Text="{Binding GlobalGlossaryCategory}" Width="180" Style="{StaticResource XT.ToolbarTextBox}" Margin="0,0,12,0" />
 
-            <TextBlock Text="Source:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="원문:" VerticalAlignment="Center" Margin="0,0,6,0" />
             <TextBox Text="{Binding GlobalGlossarySourceTerm}" Width="220" Style="{StaticResource XT.ToolbarTextBox}" />
-            <TextBlock Text="Target:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="번역어:" VerticalAlignment="Center" Margin="0,0,6,0" />
             <TextBox Text="{Binding GlobalGlossaryTargetTerm}" Width="220" Style="{StaticResource XT.ToolbarTextBox}" />
 
-            <TextBlock Text="Match:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="일치 방식:" VerticalAlignment="Center" Margin="0,0,6,0" />
             <ComboBox ItemsSource="{Binding GlossaryMatchModeValues}"
+                      ItemTemplate="{StaticResource XT.EnumDisplayTemplate}"
                       SelectedItem="{Binding GlobalGlossaryMatchMode}"
                       Width="160"
                       Margin="0,0,12,0"
                       Style="{StaticResource XT.ToolbarComboBox}" />
-            <TextBlock Text="Force:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="적용 방식:" VerticalAlignment="Center" Margin="0,0,6,0" />
             <ComboBox ItemsSource="{Binding GlossaryForceModeValues}"
+                      ItemTemplate="{StaticResource XT.EnumDisplayTemplate}"
                       SelectedItem="{Binding GlobalGlossaryForceMode}"
                       Width="160"
                       Margin="0,0,12,0"
                       Style="{StaticResource XT.ToolbarComboBox}" />
-            <TextBlock Text="Priority:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="우선순위:" VerticalAlignment="Center" Margin="0,0,6,0" />
             <TextBox Text="{Binding GlobalGlossaryPriority}" Width="60" Style="{StaticResource XT.ToolbarTextBox}" TextAlignment="Center" />
 
-            <Button Content="Add" Command="{Binding AddGlobalGlossaryCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Save" Command="{Binding SaveGlobalGlossaryChangesCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Delete" Command="{Binding DeleteGlobalGlossaryEntryCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Import File" Command="{Binding ImportGlobalGlossaryCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Export File" Command="{Binding ExportGlobalGlossaryCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Open Folder" Command="{Binding OpenGlossaryFolderCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="추가" Command="{Binding AddGlobalGlossaryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="저장" Command="{Binding SaveGlobalGlossaryChangesCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="삭제" Command="{Binding DeleteGlobalGlossaryEntryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="파일 가져오기" Command="{Binding ImportGlobalGlossaryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="파일 내보내기" Command="{Binding ExportGlobalGlossaryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="폴더 열기" Command="{Binding OpenGlossaryFolderCommand}" Style="{StaticResource XT.ToolbarButton}" />
         </WrapPanel>
 
         <WrapPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
-            <TextBlock Text="Filter:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="필터:" VerticalAlignment="Center" Margin="0,0,6,0" />
             <ComboBox ItemsSource="{Binding GlobalGlossaryCategoryFilterValues}"
                       SelectedItem="{Binding GlobalGlossaryFilterCategory}"
                       Width="220"
                       Margin="0,0,12,0"
                       Style="{StaticResource XT.ToolbarComboBox}" />
-            <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="검색:" VerticalAlignment="Center" Margin="0,0,6,0" />
             <TextBox Text="{Binding GlobalGlossaryFilterText, UpdateSourceTrigger=PropertyChanged}"
                      Width="260"
                      Style="{StaticResource XT.ToolbarTextBox}" />
@@ -75,43 +77,45 @@
                 <KeyBinding Key="Delete" Command="{Binding DeleteGlobalGlossaryEntryCommand}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Header="On" Binding="{Binding Enabled, UpdateSourceTrigger=PropertyChanged}" Width="60" />
-                <DataGridTextColumn Header="Category" Binding="{Binding Category, UpdateSourceTrigger=PropertyChanged}" Width="180" />
-                <DataGridTextColumn Header="Source" Binding="{Binding SourceTerm, UpdateSourceTrigger=PropertyChanged}" Width="*" />
-                <DataGridTextColumn Header="Target" Binding="{Binding TargetTerm, UpdateSourceTrigger=PropertyChanged}" Width="*" />
-                <DataGridTemplateColumn Header="MatchMode" Width="140">
+                <DataGridCheckBoxColumn Header="사용" Binding="{Binding Enabled, UpdateSourceTrigger=PropertyChanged}" Width="60" />
+                <DataGridTextColumn Header="분류" Binding="{Binding Category, UpdateSourceTrigger=PropertyChanged}" Width="180" />
+                <DataGridTextColumn Header="원문" Binding="{Binding SourceTerm, UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                <DataGridTextColumn Header="번역어" Binding="{Binding TargetTerm, UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                <DataGridTemplateColumn Header="일치 방식" Width="140">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding MatchMode}" />
+                            <TextBlock Text="{Binding MatchMode, Converter={StaticResource XT.EnumDisplay}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
                             <ComboBox ItemsSource="{Binding DataContext.GlossaryMatchModeValues, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                      ItemTemplate="{StaticResource XT.EnumDisplayTemplate}"
                                       SelectedItem="{Binding MatchMode, UpdateSourceTrigger=PropertyChanged}"
                                       Style="{StaticResource XT.ToolbarComboBox}"
                                       Margin="0" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="ForceMode" Width="140">
+                <DataGridTemplateColumn Header="적용 방식" Width="140">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding ForceMode}" />
+                            <TextBlock Text="{Binding ForceMode, Converter={StaticResource XT.EnumDisplay}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
                             <ComboBox ItemsSource="{Binding DataContext.GlossaryForceModeValues, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                      ItemTemplate="{StaticResource XT.EnumDisplayTemplate}"
                                       SelectedItem="{Binding ForceMode, UpdateSourceTrigger=PropertyChanged}"
                                       Style="{StaticResource XT.ToolbarComboBox}"
                                       Margin="0" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Priority" Binding="{Binding Priority, UpdateSourceTrigger=PropertyChanged}" Width="90" />
-                <DataGridTextColumn Header="Note" Binding="{Binding Note, UpdateSourceTrigger=PropertyChanged}" Width="260" />
-                <DataGridCheckBoxColumn Header="Dirty" Binding="{Binding IsDirty}" IsReadOnly="True" Width="70" />
+                <DataGridTextColumn Header="우선순위" Binding="{Binding Priority, UpdateSourceTrigger=PropertyChanged}" Width="90" />
+                <DataGridTextColumn Header="메모" Binding="{Binding Note, UpdateSourceTrigger=PropertyChanged}" Width="260" />
+                <DataGridCheckBoxColumn Header="변경됨" Binding="{Binding IsDirty}" IsReadOnly="True" Width="70" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

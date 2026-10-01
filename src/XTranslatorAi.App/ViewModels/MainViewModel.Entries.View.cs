@@ -51,7 +51,7 @@ public partial class MainViewModel
                     return false;
                 }
             }
-            else if (Enum.TryParse<StringEntryStatus>(statusFilter, ignoreCase: true, out var status))
+            else if (StringEntryStatusLabels.TryParse(statusFilter, out var status))
             {
                 if (entry.Status != status)
                 {

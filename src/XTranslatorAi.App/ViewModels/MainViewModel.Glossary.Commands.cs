@@ -57,7 +57,7 @@ public partial class MainViewModel
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Glossary update", ex);
+            SetUserFacingError("용어집 수정", ex);
         }
     }
 
@@ -76,7 +76,7 @@ public partial class MainViewModel
 
         await ImportGlossaryFromFileAsync(
             db: db,
-            statusLabel: "Glossary",
+            statusLabel: "용어집",
             dialogTitle: "Import glossary file",
             priority: GlossaryPriority,
             matchMode: GlossaryMatchMode,
@@ -99,7 +99,7 @@ public partial class MainViewModel
         var dirty = Glossary.Where(g => g.IsDirty).ToList();
         if (dirty.Count == 0)
         {
-            StatusMessage = "No glossary changes to save.";
+            StatusMessage = "저장할 용어집 변경 사항이 없습니다.";
             return;
         }
 
@@ -136,7 +136,7 @@ public partial class MainViewModel
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Glossary save", ex);
+            SetUserFacingError("용어집 저장", ex);
         }
     }
 
@@ -170,11 +170,11 @@ public partial class MainViewModel
 
             RebuildGlossaryCategoryFilters();
             GlossaryView.Refresh();
-            StatusMessage = "Glossary entry deleted.";
+            StatusMessage = "용어집 항목을 삭제했습니다.";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Glossary delete", ex);
+            SetUserFacingError("용어집 삭제", ex);
         }
     }
 
@@ -206,11 +206,11 @@ public partial class MainViewModel
                     )
                 );
             await File.WriteAllTextAsync(path, GlossaryFileService.BuildGlossaryTsv(rows), CancellationToken.None);
-            StatusMessage = $"Glossary exported: {Path.GetFileName(path)}";
+            StatusMessage = $"용어집을 내보냈습니다: {Path.GetFileName(path)}";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Glossary export", ex);
+            SetUserFacingError("용어집 내보내기", ex);
         }
     }
 

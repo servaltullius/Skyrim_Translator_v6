@@ -15,12 +15,12 @@
         </Grid.RowDefinitions>
 
         <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
-            <Button Content="Scan" Command="{Binding ScanLqaCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Clear" Command="{Binding ClearLqaCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="검사" Command="{Binding ScanLqaCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="지우기" Command="{Binding ClearLqaCommand}" Style="{StaticResource XT.ToolbarButton}" />
 
             <Separator Margin="12,0,12,0" Width="1" />
 
-            <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="검색:" VerticalAlignment="Center" Margin="0,0,6,0" />
             <TextBox Text="{Binding LqaFilterText, UpdateSourceTrigger=PropertyChanged}"
                      Width="320"
                      Style="{StaticResource XT.ToolbarTextBox}" />
@@ -41,14 +41,14 @@
                   VirtualizingPanel.VirtualizationMode="Recycling"
                   ScrollViewer.IsDeferredScrollingEnabled="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Severity" Binding="{Binding Severity}" Width="80" />
-                <DataGridTextColumn Header="Code" Binding="{Binding Code}" Width="130" />
+                <DataGridTextColumn Header="심각도" Binding="{Binding Severity}" Width="80" />
+                <DataGridTextColumn Header="코드" Binding="{Binding Code}" Width="130" />
                 <DataGridTextColumn Header="#" Binding="{Binding OrderIndex}" Width="70" />
                 <DataGridTextColumn Header="EDID" Binding="{Binding Edid}" Width="140" />
                 <DataGridTextColumn Header="REC" Binding="{Binding Rec}" Width="140" />
-                <DataGridTextColumn Header="Message" Binding="{Binding Message}" Width="240" />
-                <DataGridTextColumn Header="Source" Binding="{Binding SourcePreview}" Width="*" />
-                <DataGridTextColumn Header="Dest" Binding="{Binding DestPreview}" Width="*" />
+                <DataGridTextColumn Header="내용" Binding="{Binding Message}" Width="240" />
+                <DataGridTextColumn Header="원문" Binding="{Binding SourcePreview}" Width="*" />
+                <DataGridTextColumn Header="번역문" Binding="{Binding DestPreview}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
 
@@ -68,7 +68,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <GroupBox Header="Source" Grid.Column="0" Margin="0,0,6,0" Style="{StaticResource XT.GroupBoxCard}">
+            <GroupBox Header="원문" Grid.Column="0" Margin="0,0,6,0" Style="{StaticResource XT.GroupBoxCard}">
                 <TextBox Text="{Binding SelectedEntry.SourceText}"
                          IsReadOnly="True"
                          Style="{StaticResource XT.EditorTextBox}"
@@ -78,10 +78,10 @@
                          HorizontalScrollBarVisibility="Auto" />
             </GroupBox>
 
-            <GroupBox Header="Dest" Grid.Column="1" Margin="6,0,0,0" Style="{StaticResource XT.GroupBoxCard}">
+            <GroupBox Header="번역문" Grid.Column="1" Margin="6,0,0,0" Style="{StaticResource XT.GroupBoxCard}">
                 <DockPanel>
                     <Button DockPanel.Dock="Top"
-                            Content="Save Dest"
+                            Content="번역문 저장"
                             Command="{Binding SaveSelectedDestCommand}"
                             Style="{StaticResource XT.ToolbarButton}"
                             HorizontalAlignment="Left"

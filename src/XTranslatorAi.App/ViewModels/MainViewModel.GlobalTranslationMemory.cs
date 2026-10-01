@@ -46,7 +46,7 @@ public partial class MainViewModel
                     continue;
                 }
 
-                StatusMessage = $"Franchise TM 자동 가져오기: {Path.GetFileName(path)}";
+                StatusMessage = $"시리즈 TM 자동 가져오기: {Path.GetFileName(path)}";
                 var applied = await _globalTranslationMemoryService.ImportFromTsvAsync(
                     SourceLang.Trim(),
                     TargetLang.Trim(),
@@ -64,12 +64,12 @@ public partial class MainViewModel
 
             if (totalApplied > 0)
             {
-                StatusMessage = $"Franchise TM 자동 가져오기 완료: {totalApplied}개 항목";
+                StatusMessage = $"시리즈 TM 자동 가져오기 완료: {totalApplied}개 항목";
             }
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Franchise TM 자동 가져오기", ex);
+            SetUserFacingError("시리즈 TM 자동 가져오기", ex);
         }
     }
 
@@ -80,13 +80,13 @@ public partial class MainViewModel
         {
             FranchiseTranslationMemory.Clear();
             FranchiseTranslationMemoryView.Refresh();
-            StatusMessage = "Franchise TM DB 초기화에 실패했습니다.";
+            StatusMessage = "시리즈 TM DB를 초기화하지 못했습니다.";
             return;
         }
 
         try
         {
-            StatusMessage = "Franchise TM 불러오는 중...";
+            StatusMessage = "시리즈 TM을 불러오는 중...";
             var rows = await _globalTranslationMemoryService.GetEntriesAsync(SourceLang.Trim(), TargetLang.Trim(), CancellationToken.None);
             var list = rows
                 .Select(
@@ -106,11 +106,11 @@ public partial class MainViewModel
 
             FranchiseTranslationMemory.ReplaceAll(list);
             FranchiseTranslationMemoryView.Refresh();
-            StatusMessage = $"Franchise TM 로드: {list.Count}개 항목";
+            StatusMessage = $"시리즈 TM 불러오기: {list.Count}개 항목";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Franchise TM 로드", ex);
+            SetUserFacingError("시리즈 TM 불러오기", ex);
         }
     }
 
@@ -121,7 +121,7 @@ public partial class MainViewModel
     {
         if (await _globalTranslationMemoryService.TryGetDbAsync(CancellationToken.None) == null)
         {
-            StatusMessage = "Franchise TM DB 초기화에 실패했습니다.";
+            StatusMessage = "시리즈 TM DB를 초기화하지 못했습니다.";
             return;
         }
 
@@ -145,11 +145,11 @@ public partial class MainViewModel
             FranchiseTranslationMemoryDestText = "";
 
             await ReloadFranchiseTranslationMemoryAsync();
-            StatusMessage = applied > 0 ? "Franchise TM 추가/갱신 완료." : "Franchise TM 추가/갱신할 항목이 없습니다.";
+            StatusMessage = applied > 0 ? "시리즈 TM 추가·갱신을 마쳤습니다." : "시리즈 TM에 추가·갱신할 항목이 없습니다.";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Franchise TM 추가", ex);
+            SetUserFacingError("시리즈 TM 추가", ex);
         }
     }
 
@@ -162,7 +162,7 @@ public partial class MainViewModel
     {
         if (await _globalTranslationMemoryService.TryGetDbAsync(CancellationToken.None) == null)
         {
-            StatusMessage = "Franchise TM DB 초기화에 실패했습니다.";
+            StatusMessage = "시리즈 TM DB를 초기화하지 못했습니다.";
             return;
         }
 
@@ -181,11 +181,11 @@ public partial class MainViewModel
 
             var applied = await _globalTranslationMemoryService.BulkUpdateAsync(SourceLang.Trim(), TargetLang.Trim(), rows, CancellationToken.None);
             await ReloadFranchiseTranslationMemoryAsync();
-            StatusMessage = $"Franchise TM 저장 완료: {applied}개 항목";
+            StatusMessage = $"시리즈 TM 저장 완료: {applied}개 항목";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Franchise TM 저장", ex);
+            SetUserFacingError("시리즈 TM 저장", ex);
         }
     }
 
@@ -201,8 +201,8 @@ public partial class MainViewModel
         }
 
         var confirm = _uiInteractionService.ShowMessage(
-            $"선택한 Franchise TM 항목을 삭제할까요?\n\n- {SelectedFranchiseTranslationMemoryEntry.SourceText} => {SelectedFranchiseTranslationMemoryEntry.DestText}",
-            "Franchise TM 삭제",
+            $"선택한 시리즈 TM 항목을 삭제할까요?\n\n- {SelectedFranchiseTranslationMemoryEntry.SourceText} => {SelectedFranchiseTranslationMemoryEntry.DestText}",
+            "시리즈 TM 삭제",
             UiMessageBoxButton.YesNo,
             UiMessageBoxImage.Warning
         );
@@ -222,11 +222,11 @@ public partial class MainViewModel
                 FranchiseTranslationMemoryView.Refresh();
             }
 
-            StatusMessage = removed > 0 ? "Franchise TM 항목 삭제 완료." : "삭제할 항목이 없습니다.";
+            StatusMessage = removed > 0 ? "시리즈 TM 항목을 삭제했습니다." : "삭제할 항목이 없습니다.";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Franchise TM 삭제", ex);
+            SetUserFacingError("시리즈 TM 삭제", ex);
         }
     }
 
@@ -246,11 +246,11 @@ public partial class MainViewModel
             var rows = FranchiseTranslationMemory
                 .Select(e => (SourceText: e.SourceText ?? "", DestText: e.DestText ?? ""));
             await File.WriteAllTextAsync(path, TranslationMemoryFileService.BuildTsv(rows), CancellationToken.None);
-            StatusMessage = $"Franchise TM exported: {Path.GetFileName(path)}";
+            StatusMessage = $"시리즈 TM을 내보냈습니다: {Path.GetFileName(path)}";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Franchise TM export", ex);
+            SetUserFacingError("시리즈 TM 내보내기", ex);
         }
     }
 
@@ -298,13 +298,13 @@ public partial class MainViewModel
     {
         if (await _globalTranslationMemoryService.TryGetDbAsync(CancellationToken.None) == null)
         {
-            StatusMessage = "Franchise TM DB 초기화에 실패했습니다.";
+            StatusMessage = "시리즈 TM DB를 초기화하지 못했습니다.";
             return;
         }
 
         try
         {
-            StatusMessage = "Franchise TM 가져오는 중...";
+            StatusMessage = "시리즈 TM을 가져오는 중...";
             var applied = await _globalTranslationMemoryService.ImportFromTsvAsync(SourceLang.Trim(), TargetLang.Trim(), tsvPath, CancellationToken.None);
             if (applied <= 0)
             {
@@ -317,11 +317,11 @@ public partial class MainViewModel
                 await ReloadFranchiseTranslationMemoryAsync();
             }
 
-            StatusMessage = $"Franchise TM 가져오기 완료: {applied}개 항목";
+            StatusMessage = $"시리즈 TM 가져오기 완료: {applied}개 항목";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Franchise TM import", ex);
+            SetUserFacingError("시리즈 TM 가져오기", ex);
         }
     }
 }

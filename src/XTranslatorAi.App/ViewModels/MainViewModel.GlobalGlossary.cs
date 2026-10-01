@@ -50,7 +50,7 @@ public partial class MainViewModel
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Global glossary update", ex);
+            SetUserFacingError("전체 용어집 수정", ex);
         }
     }
 
@@ -66,7 +66,7 @@ public partial class MainViewModel
 
         await ImportGlossaryFromFileAsync(
             db: globalDb,
-            statusLabel: "Global glossary",
+            statusLabel: "전체 용어집",
             dialogTitle: "Import global glossary file",
             priority: GlobalGlossaryPriority,
             matchMode: GlobalGlossaryMatchMode,
@@ -83,7 +83,7 @@ public partial class MainViewModel
         var dirty = GlobalGlossary.Where(g => g.IsDirty).ToList();
         if (dirty.Count == 0)
         {
-            StatusMessage = "No global glossary changes to save.";
+            StatusMessage = "저장할 전체 용어집 변경 사항이 없습니다.";
             return;
         }
 
@@ -120,7 +120,7 @@ public partial class MainViewModel
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Global glossary save", ex);
+            SetUserFacingError("전체 용어집 저장", ex);
         }
     }
 
@@ -150,11 +150,11 @@ public partial class MainViewModel
 
             RebuildGlobalGlossaryCategoryFilters();
             GlobalGlossaryView.Refresh();
-            StatusMessage = "Global glossary entry deleted.";
+            StatusMessage = "전체 용어집 항목을 삭제했습니다.";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Global glossary delete", ex);
+            SetUserFacingError("전체 용어집 삭제", ex);
         }
     }
 
@@ -186,11 +186,11 @@ public partial class MainViewModel
                     )
                 );
             await File.WriteAllTextAsync(path, GlossaryFileService.BuildGlossaryTsv(rows), CancellationToken.None);
-            StatusMessage = $"Global glossary exported: {Path.GetFileName(path)}";
+            StatusMessage = $"전체 용어집을 내보냈습니다: {Path.GetFileName(path)}";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Global glossary export", ex);
+            SetUserFacingError("전체 용어집 내보내기", ex);
         }
     }
 

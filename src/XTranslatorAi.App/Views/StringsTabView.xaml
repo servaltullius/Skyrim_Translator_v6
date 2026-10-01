@@ -16,13 +16,13 @@
         </Grid.RowDefinitions>
 
         <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
-            <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="검색:" VerticalAlignment="Center" Margin="0,0,6,0" />
             <TextBox Text="{Binding EntryFilterText, UpdateSourceTrigger=PropertyChanged}"
                      Width="260"
                      ToolTip="문구·EDID 검색. 정확한 위치: form:01000800 / string:STRINGS/123 / row:0"
                      Style="{StaticResource XT.ToolbarTextBox}" />
 
-            <TextBlock Text="Status:" VerticalAlignment="Center" Margin="12,0,6,0" />
+            <TextBlock Text="상태:" VerticalAlignment="Center" Margin="12,0,6,0" />
             <ComboBox ItemsSource="{Binding EntryStatusFilterValues}"
                       SelectedItem="{Binding EntryFilterStatus}"
                       Width="160"
@@ -86,12 +86,12 @@
             </DataGrid.RowStyle>
 	            <DataGrid.Columns>
 	                <DataGridTextColumn Header="#" Binding="{Binding OrderIndex}" Width="70" />
-	                <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="90" />
+	                <DataGridTextColumn Header="상태" Binding="{Binding StatusText}" Width="90" />
 	                <DataGridTextColumn Header="EDID" Binding="{Binding Edid}" Width="140" />
 	                <DataGridTextColumn Header="REC" Binding="{Binding Rec}" Width="140" />
-	                <DataGridTextColumn Header="Error" Binding="{Binding UserFacingErrorMessage}" Width="220" />
-	                <DataGridTextColumn Header="Source" Binding="{Binding SourcePreview}" Width="*" />
-	                <DataGridTextColumn Header="Dest" Binding="{Binding DestPreview}" Width="*" />
+	                <DataGridTextColumn Header="오류" Binding="{Binding UserFacingErrorMessage}" Width="220" />
+	                <DataGridTextColumn Header="원문" Binding="{Binding SourcePreview}" Width="*" />
+	                <DataGridTextColumn Header="번역문" Binding="{Binding DestPreview}" Width="*" />
 	            </DataGrid.Columns>
 	        </DataGrid>
 
@@ -111,7 +111,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <GroupBox Header="Source" Grid.Column="0" Margin="0,0,6,0" Style="{StaticResource XT.GroupBoxCard}">
+            <GroupBox Header="원문" Grid.Column="0" Margin="0,0,6,0" Style="{StaticResource XT.GroupBoxCard}">
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Top" Text="{Binding SelectedEntry.PluginLocationText}"
                                TextWrapping="Wrap" Margin="0,0,0,6" Foreground="{StaticResource XT.MutedTextBrush}">
@@ -138,16 +138,16 @@
                 </DockPanel>
             </GroupBox>
 
-            <GroupBox Header="Dest" Grid.Column="1" Margin="6,0,0,0" Style="{StaticResource XT.GroupBoxCard}">
+            <GroupBox Header="번역문" Grid.Column="1" Margin="6,0,0,0" Style="{StaticResource XT.GroupBoxCard}">
                 <DockPanel>
                     <Button DockPanel.Dock="Top"
-                            Content="Save Dest"
+                            Content="번역문 저장"
                             Command="{Binding SaveSelectedDestCommand}"
                             Style="{StaticResource XT.ToolbarButton}"
                             HorizontalAlignment="Left"
                             Margin="0,0,0,8" />
                     <TabControl BorderThickness="0" Background="Transparent" ItemContainerStyle="{StaticResource XT.TabItem}">
-                        <TabItem Header="Edit">
+                        <TabItem Header="편집">
                             <TextBox Text="{Binding SelectedEntry.DestText, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{StaticResource XT.EditorTextBox}"
                                      TextWrapping="Wrap"
@@ -156,7 +156,7 @@
                                      HorizontalScrollBarVisibility="Auto" />
                         </TabItem>
 
-                        <TabItem Header="Glossary">
+                        <TabItem Header="용어">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -164,16 +164,16 @@
                                 </Grid.RowDefinitions>
 
                                 <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,8">
-                                    <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                    <TextBlock Text="검색:" VerticalAlignment="Center" Margin="0,0,6,0" />
                                     <TextBox Text="{Binding GlossaryLookupText, UpdateSourceTrigger=PropertyChanged}"
                                              Width="240"
                                              Style="{StaticResource XT.ToolbarTextBox}" />
 
-                                    <CheckBox Content="Project"
+                                    <CheckBox Content="프로젝트"
                                               IsChecked="{Binding GlossaryLookupIncludeProject}"
                                               VerticalAlignment="Center"
                                               Margin="12,0,0,0" />
-                                    <CheckBox Content="Global"
+                                    <CheckBox Content="전체"
                                               IsChecked="{Binding GlossaryLookupIncludeGlobal}"
                                               VerticalAlignment="Center"
                                               Margin="8,0,0,0" />
@@ -193,12 +193,12 @@
                                           VirtualizingPanel.VirtualizationMode="Recycling"
                                           ScrollViewer.IsDeferredScrollingEnabled="True">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Scope" Binding="{Binding Scope}" Width="90" />
-                                        <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="140" />
-                                        <DataGridTextColumn Header="Source" Binding="{Binding SourceTerm}" Width="*" />
-                                        <DataGridTextColumn Header="Target" Binding="{Binding TargetTerm}" Width="*" />
-                                        <DataGridTextColumn Header="Priority" Binding="{Binding Priority}" Width="90" />
-                                        <DataGridTextColumn Header="Note" Binding="{Binding Note}" Width="220" />
+                                        <DataGridTextColumn Header="범위" Binding="{Binding Scope}" Width="90" />
+                                        <DataGridTextColumn Header="분류" Binding="{Binding Category}" Width="140" />
+                                        <DataGridTextColumn Header="원문" Binding="{Binding SourceTerm}" Width="*" />
+                                        <DataGridTextColumn Header="번역어" Binding="{Binding TargetTerm}" Width="*" />
+                                        <DataGridTextColumn Header="우선순위" Binding="{Binding Priority}" Width="90" />
+                                        <DataGridTextColumn Header="메모" Binding="{Binding Note}" Width="220" />
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </Grid>
@@ -207,5 +207,27 @@
                 </DockPanel>
             </GroupBox>
         </Grid>
+
+        <!-- Shown until a project is open, so the empty grid explains where to start. -->
+        <Border Grid.Row="1" Grid.RowSpan="3" Background="{StaticResource XT.SurfaceBrush}">
+            <Border.Style>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsProjectLoaded}" Value="False">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="560">
+                <TextBlock Text="번역할 파일을 열어 주세요" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,10" />
+                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Foreground="{StaticResource XT.MutedTextBrush}" LineHeight="22">
+                    상단의 <Bold>XML 열기</Bold>로 xTranslator XML을, <Bold>ESP 열기</Bold>로 ESP·ESM·ESL 플러그인을 불러옵니다.
+                    <LineBreak />
+                    API 키와 배치 크기 같은 설정은 <Bold>고급 설정</Bold>에서 바꿀 수 있습니다.
+                </TextBlock>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

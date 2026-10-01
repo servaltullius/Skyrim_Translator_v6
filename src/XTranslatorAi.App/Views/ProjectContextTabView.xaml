@@ -13,18 +13,18 @@
         </Grid.RowDefinitions>
 
         <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
-            <CheckBox IsChecked="{Binding EnableProjectContext}" Content="Use generated project context" Margin="0,0,16,0"
+            <CheckBox IsChecked="{Binding EnableProjectContext}" Content="생성한 프로젝트 문맥 사용" Margin="0,0,16,0"
                       ToolTip="번역 시작 전 프로젝트 DB를 스캔하고 Gemini로 통합 컨텍스트(용어/스타일/템플릿)를 생성/저장하여 모든 배치에 동일하게 주입합니다." />
 
-            <Button Content="Generate (Gemini)"
+            <Button Content="생성(Gemini)"
                     Command="{Binding GenerateProjectContextCommand}"
                     Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Save"
+            <Button Content="저장"
                     Command="{Binding SaveProjectContextCommand}"
                     Style="{StaticResource XT.ToolbarButton}"
                     Margin="6,0,0,0"
                     ToolTip="현재 텍스트를 프로젝트 DB에 저장합니다. (수동 편집 후 저장 가능)" />
-            <Button Content="Clear"
+            <Button Content="지우기"
                     Command="{Binding ClearProjectContextCommand}"
                     Style="{StaticResource XT.ToolbarButton}"
                     Margin="6,0,0,0" />

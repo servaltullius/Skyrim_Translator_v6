@@ -10,14 +10,14 @@ Skyrim SE/AE 플러그인과 Bethesda/xTranslator XML을 한국어로 번역하�
 
 ## 사용 흐름
 
-아래는 XML 경로입니다. ESP 후보에서는 `Open ESP → 번역·검수 → Save ESP`로 진행합니다.
+아래는 XML 경로입니다. ESP 후보에서는 `ESP 열기 → 번역·검수 → ESP 저장`로 진행합니다.
 
 1. xTranslator에서 원본 플러그인의 문자열을 XML로 내보냅니다.
-2. 앱에서 프랜차이즈(TES / Fallout / Starfield)를 선택하고 `Open XML`로 엽니다.
+2. 앱의 **게임 시리즈**(TES / Fallout / Starfield)를 선택하고 `XML 열기`로 엽니다.
 3. API 키와 모델을 선택합니다. 기본 모델은 `gemini-3.8-flash`입니다. `Refresh`는 계정에서 사용 가능한 모델 목록을 갱신합니다.
-4. 용어집과 프로젝트 문맥을 확인한 뒤 `Start`로 번역합니다. 기존 완료·수동 편집 결과는 보존하고 미완료/오류 행을 이어서 처리합니다.
+4. 용어집과 프로젝트 문맥을 확인한 뒤 `번역 시작`으로 번역합니다. 기존 완료·수동 편집 결과는 보존하고 미완료/오류 행을 이어서 처리합니다.
 5. `LQA`와 `Compare`에서 검토하고 필요한 행을 수정합니다. Compare와 비용 추정의 API 호출도 선택한 계정의 요금·할당량을 따릅니다.
-6. `Export XML`로 결과를 저장하고 xTranslator에 가져와 확인합니다. 기존 출력 파일이 있으면 `.bak` 백업을 남깁니다.
+6. `XML 내보내기`로 결과를 저장하고 xTranslator에 가져와 확인합니다. 기존 출력 파일이 있으면 `.bak` 백업을 남깁니다.
 
 앱의 API 호출이 항상 무료인 것은 아닙니다. 무료 웹 비교의 실행 조건·실제 출력·한계는 [LOTD 모델 비교](benchmarks/translation/lotd-v1/README.md)에 별도로 기록합니다.
 
@@ -46,7 +46,7 @@ API 로그에는 호출 목적, 종료 사유, 추론·캐시 토큰을 표시�
 
 ## 용어집과 번역 메모리(TM)
 
-Project Glossary/TM은 현재 애드온에 속합니다. 화면의 `Global`은 **선택한 프랜차이즈 안에서 공유**한다는 뜻이며 TES·Fallout·Starfield 데이터를 섞지 않습니다. TM은 원문 중심 조회이므로 모호한 짧은 단어는 문맥을 함께 검토하세요.
+프로젝트 용어집은 현재 애드온에 속합니다. `전체 용어집`과 `시리즈 TM`은 **선택한 게임 시리즈 안에서 공유**한다는 뜻이며 TES·Fallout·Starfield 데이터를 섞지 않습니다. TM은 원문 중심 조회이므로 모호한 짧은 단어는 문맥을 함께 검토하세요.
 
 세션 용어 메모리는 이름·제목에서 학습한 번역을 실행 중 참고 힌트로 사용합니다. 새 항목은 프로젝트 용어집의 `Auto(Session)`에 **비활성 검수 후보**로 저장됩니다. 검토 후 직접 활성화하세요. 대사는 용어 학습에서 제외하며, 기존 수동 용어와 이미 저장된 용어의 설정은 바꾸지 않습니다.
 
@@ -56,7 +56,7 @@ Fallout TM is currently scoped to Fallout 4 family data.
 Bundled Fallout TM is auto-seeded on first Fallout project load.
 Bundled Skyrim/TES TM is auto-seeded on first Elder Scrolls project load.
 Bundled Starfield TM is auto-seeded on first Starfield project load.
-Operator-provided TSV imports still work through the existing Franchise TM import flow.
+직접 만든 TSV는 고급 설정의 `시리즈 TM 가져오기`로 계속 가져올 수 있습니다.
 
 1.6 릴리스부터 TES와 Starfield 번역 TM 시드를 내장합니다. 프로젝트를 처음 열 때 각 프랜차이즈의 `tm-import` 폴더에 복사되고, 기존 자동 가져오기로 프랜차이즈 TM에 들어갑니다. 파일 크기와 SHA-256이 내장본과 다르면 다시 복사합니다.
 

@@ -136,17 +136,17 @@ public partial class App : Application
         try
         {
             var message = new StringBuilder();
-            message.AppendLine("Tullius Translator failed to start.");
+            message.AppendLine("Tullius Translator를 시작하지 못했습니다.");
             message.AppendLine();
             message.AppendLine($"{ex.GetType().FullName}: {ex.Message}");
             message.AppendLine();
-            message.AppendLine($"Log: {_startupLog.LogPath}");
+            message.AppendLine($"로그: {_startupLog.LogPath}");
             message.AppendLine();
             message.AppendLine(ex.ToString());
 
             _uiInteractionService.ShowMessage(
                 message.ToString(),
-                "Tullius Translator - Startup Error",
+                "Tullius Translator - 시작 오류",
                 UiMessageBoxButton.Ok,
                 UiMessageBoxImage.Error
             );

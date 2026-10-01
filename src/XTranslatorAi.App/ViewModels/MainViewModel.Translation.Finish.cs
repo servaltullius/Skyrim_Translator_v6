@@ -21,7 +21,7 @@ public partial class MainViewModel
         }
         else if (error == null)
         {
-            StatusMessage = "Translation finished.";
+            StatusMessage = "번역을 마쳤습니다.";
         }
 
         try

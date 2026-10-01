@@ -14,21 +14,21 @@
         </Grid.RowDefinitions>
 
         <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
-            <TextBlock Text="Source:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="원문:" VerticalAlignment="Center" Margin="0,0,6,0" />
             <TextBox Text="{Binding FranchiseTranslationMemorySourceText}" Width="320" Style="{StaticResource XT.ToolbarTextBox}" />
-            <TextBlock Text="Target:" VerticalAlignment="Center" Margin="12,0,6,0" />
+            <TextBlock Text="번역문:" VerticalAlignment="Center" Margin="12,0,6,0" />
             <TextBox Text="{Binding FranchiseTranslationMemoryDestText}" Width="320" Style="{StaticResource XT.ToolbarTextBox}" />
 
-            <Button Content="Add" Command="{Binding AddFranchiseTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Save" Command="{Binding SaveFranchiseTranslationMemoryChangesCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Delete" Command="{Binding DeleteFranchiseTranslationMemoryEntryCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Reload" Command="{Binding ReloadFranchiseTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Import File" Command="{Binding ImportFranchiseTranslationMemoryFromTabCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Export File" Command="{Binding ExportFranchiseTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="추가" Command="{Binding AddFranchiseTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="저장" Command="{Binding SaveFranchiseTranslationMemoryChangesCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="삭제" Command="{Binding DeleteFranchiseTranslationMemoryEntryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="다시 불러오기" Command="{Binding ReloadFranchiseTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="파일 가져오기" Command="{Binding ImportFranchiseTranslationMemoryFromTabCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="파일 내보내기" Command="{Binding ExportFranchiseTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}" />
         </WrapPanel>
 
         <WrapPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
-            <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="검색:" VerticalAlignment="Center" Margin="0,0,6,0" />
             <TextBox Text="{Binding FranchiseTranslationMemoryFilterText, UpdateSourceTrigger=PropertyChanged}"
                      Width="260"
                      Style="{StaticResource XT.ToolbarTextBox}" />
@@ -51,11 +51,11 @@
                 <KeyBinding Key="Delete" Command="{Binding DeleteFranchiseTranslationMemoryEntryCommand}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True" Width="90" />
-                <DataGridTextColumn Header="Source" Binding="{Binding SourceText}" IsReadOnly="True" Width="*" />
-                <DataGridTextColumn Header="Target" Binding="{Binding DestText, UpdateSourceTrigger=PropertyChanged}" Width="*" />
-                <DataGridTextColumn Header="Updated" Binding="{Binding UpdatedAt}" IsReadOnly="True" Width="220" />
-                <DataGridCheckBoxColumn Header="Dirty" Binding="{Binding IsDirty}" IsReadOnly="True" Width="70" />
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" IsReadOnly="True" Width="90" />
+                <DataGridTextColumn Header="원문" Binding="{Binding SourceText}" IsReadOnly="True" Width="*" />
+                <DataGridTextColumn Header="번역문" Binding="{Binding DestText, UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                <DataGridTextColumn Header="수정 시각" Binding="{Binding UpdatedAt}" IsReadOnly="True" Width="220" />
+                <DataGridCheckBoxColumn Header="변경됨" Binding="{Binding IsDirty}" IsReadOnly="True" Width="70" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

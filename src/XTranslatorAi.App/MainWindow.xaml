@@ -9,6 +9,7 @@
         xmlns:views="clr-namespace:XTranslatorAi.App.Views"
         mc:Ignorable="d"
         Title="Tullius Translator" Height="900" Width="1400" MinHeight="720" MinWidth="1100"
+        Style="{StaticResource XT.Window}"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -34,11 +35,11 @@
                     </Grid.ColumnDefinitions>
 
                     <WrapPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
-                        <Button Content="Open XML" Command="{Binding OpenXmlCommand}" Style="{StaticResource XT.ToolbarButton}" />
-                        <Button Content="Export XML" Command="{Binding ExportXmlCommand}" Style="{StaticResource XT.ToolbarButton}" />
-                        <Button Content="Open ESP" Command="{Binding OpenPluginCommand}" Style="{StaticResource XT.ToolbarButton}"
+                        <Button Content="XML 열기" Command="{Binding OpenXmlCommand}" Style="{StaticResource XT.ToolbarButton}" />
+                        <Button Content="XML 내보내기" Command="{Binding ExportXmlCommand}" Style="{StaticResource XT.ToolbarButton}" />
+                        <Button Content="ESP 열기" Command="{Binding OpenPluginCommand}" Style="{StaticResource XT.ToolbarButton}"
                                 ToolTip="고급 설정의 게임·언어·인코딩으로 ESP/ESM/ESL을 읽습니다. 원본은 수정하지 않습니다." />
-                        <Button Content="Save ESP" Command="{Binding ExportPluginCommand}" Style="{StaticResource XT.ToolbarButton}"
+                        <Button Content="ESP 저장" Command="{Binding ExportPluginCommand}" Style="{StaticResource XT.ToolbarButton}"
                                 ToolTip="새 출력 폴더에 원본 플러그인 이름을 유지하여 저장합니다." />
                         <Button Content="용어집 폴더" Command="{Binding OpenGlossaryFolderCommand}" Style="{StaticResource XT.ToolbarButton}"
                                 ToolTip="%LOCALAPPDATA%\\XTranslatorAi\\ (Projects/Global) 폴더를 엽니다." />
@@ -48,26 +49,17 @@
 
                     <DockPanel Grid.Column="2" VerticalAlignment="Center" LastChildFill="False">
                         <WrapPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
-                            <Button Content="Start" Command="{Binding StartTranslationCommand}" Style="{StaticResource XT.SuccessButton}" Margin="0,0,6,0" />
+                            <Button Content="번역 시작" Command="{Binding StartTranslationCommand}" Style="{StaticResource XT.SuccessButton}" Margin="0,0,6,0" />
                             <Button Content="{Binding PauseButtonText}" Command="{Binding TogglePauseTranslationCommand}" Style="{StaticResource XT.ToolbarButton}" />
-                            <Button Content="Stop" Command="{Binding StopTranslationCommand}" Style="{StaticResource XT.DangerButton}" />
+                            <Button Content="중지" Command="{Binding StopTranslationCommand}" Style="{StaticResource XT.DangerButton}" />
                         </WrapPanel>
 
-                        <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center" Foreground="{StaticResource XT.MutedTextBrush}" TextWrapping="NoWrap" Margin="12,0,0,0">
-                            <Run Text="{Binding DoneCount, StringFormat=Done {0}}" />
-                            <Run Text=" · " />
-                            <Run Text="{Binding PendingCount, StringFormat=Pending {0}}" />
-                            <Run Text=" · " />
-                            <Run Text="{Binding TotalCount, StringFormat=Total {0}}" />
-                            <Run Text=" · " />
-                            <Run Text="{Binding ProgressRatio, Mode=OneWay, StringFormat={}{0:P0}}" />
-                        </TextBlock>
                     </DockPanel>
 
                     <Border Grid.Column="3" Width="1" Margin="12,6,12,6" Background="{StaticResource XT.BorderBrush}" />
 
                     <WrapPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" IsEnabled="{Binding IsWorkspaceInteractive}">
-                        <TextBlock Text="Franchise:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                        <TextBlock Text="게임 시리즈:" VerticalAlignment="Center" Margin="0,0,6,0" />
                         <ComboBox ItemsSource="{Binding FranchiseOptions}"
                                   DisplayMemberPath="DisplayName"
                                   SelectedValuePath="Value"
@@ -76,13 +68,13 @@
                                   VerticalAlignment="Center"
                                   Style="{StaticResource XT.ToolbarComboBox}" />
                         <Border Width="1" Height="18" Margin="12,0,12,0" Background="{StaticResource XT.BorderBrush}" />
-                        <TextBlock Text="Model:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                        <TextBlock Text="모델:" VerticalAlignment="Center" Margin="0,0,6,0" />
                         <ComboBox ItemsSource="{Binding AvailableModels}"
                                   SelectedItem="{Binding SelectedModel}"
                                   Width="220"
                                   VerticalAlignment="Center"
                                   Style="{StaticResource XT.ToolbarComboBox}" />
-                        <Button Content="Refresh" Command="{Binding RefreshModelsCommand}" Style="{StaticResource XT.ToolbarButton}" />
+                        <Button Content="새로고침" Command="{Binding RefreshModelsCommand}" Style="{StaticResource XT.ToolbarButton}" />
                     </WrapPanel>
                 </Grid>
 
@@ -95,14 +87,14 @@
                             </Grid.ColumnDefinitions>
 
                             <TextBlock Text="고급 설정" FontWeight="SemiBold" />
-                            <TextBlock Grid.Column="1" Foreground="{StaticResource XT.MutedTextBrush}" HorizontalAlignment="Right" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis">
-                                <Run Text="{Binding BatchSize, StringFormat=Batch {0}}" />
+                            <TextBlock Grid.Column="1" Margin="12,0,0,0" Foreground="{StaticResource XT.MutedTextBrush}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding BatchSize, StringFormat=배치 {0}}" />
                                 <Run Text=" · " />
-                                <Run Text="{Binding MaxCharsPerBatch, StringFormat=Max {0}}" />
+                                <Run Text="{Binding MaxCharsPerBatch, StringFormat=최대 {0}자}" />
                                 <Run Text=" · " />
-                                <Run Text="{Binding MaxParallelRequests, StringFormat=Parallel {0}}" />
+                                <Run Text="{Binding MaxParallelRequests, StringFormat=동시 {0}}" />
                                 <Run Text=" · " />
-                                <Run Text="{Binding MaxOutputTokensOverride, StringFormat=Max out {0}}" />
+                                <Run Text="{Binding MaxOutputTokensOverride, StringFormat=출력 상한 {0}}" />
                             </TextBlock>
                         </Grid>
                     </Expander.Header>
@@ -129,23 +121,23 @@
                         </WrapPanel>
                         <TextBlock Text="번역 설정" FontWeight="SemiBold" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,4,0,4" />
                         <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="Batch:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                            <TextBlock Text="배치:" VerticalAlignment="Center" Margin="0,0,6,0" />
                             <TextBox Text="{Binding BatchSize, UpdateSourceTrigger=PropertyChanged}"
                                      Width="60"
                                      VerticalAlignment="Center"
                                      Style="{StaticResource XT.ToolbarTextBox}"
                                      TextAlignment="Center" />
-                            <TextBlock Text="Max chars:" VerticalAlignment="Center" Margin="12,0,6,0" />
+                            <TextBlock Text="최대 글자:" VerticalAlignment="Center" Margin="12,0,6,0" />
                             <TextBox Text="{Binding MaxCharsPerBatch, UpdateSourceTrigger=PropertyChanged}" Width="80" VerticalAlignment="Center" Style="{StaticResource XT.ToolbarTextBox}" TextAlignment="Center" />
-                            <TextBlock Text="Parallel:" VerticalAlignment="Center" Margin="12,0,6,0" />
+                            <TextBlock Text="동시 요청:" VerticalAlignment="Center" Margin="12,0,6,0" />
                             <TextBox Text="{Binding MaxParallelRequests, UpdateSourceTrigger=PropertyChanged}"
                                      Width="60"
                                      VerticalAlignment="Center"
                                      Style="{StaticResource XT.ToolbarTextBox}"
                                      TextAlignment="Center" />
 
-                            <TextBlock Text="Max out:" VerticalAlignment="Center" Margin="12,0,6,0" ToolTip="0=Auto (model limit)" />
-                            <TextBox Text="{Binding MaxOutputTokensOverride, UpdateSourceTrigger=PropertyChanged}" Width="80" VerticalAlignment="Center" Style="{StaticResource XT.ToolbarTextBox}" TextAlignment="Center" ToolTip="0=Auto (model limit)" />
+                            <TextBlock Text="출력 상한:" VerticalAlignment="Center" Margin="12,0,6,0" ToolTip="0=자동(모델 한도)" />
+                            <TextBox Text="{Binding MaxOutputTokensOverride, UpdateSourceTrigger=PropertyChanged}" Width="80" VerticalAlignment="Center" Style="{StaticResource XT.ToolbarTextBox}" TextAlignment="Center" ToolTip="0=자동(모델 한도)" />
                         </WrapPanel>
                         <WrapPanel Orientation="Horizontal" Margin="0,6,0,0">
                             <TextBlock Text="행별 추가 요청:" VerticalAlignment="Center" Margin="0,0,6,0" />
@@ -246,12 +238,12 @@
                                       ToolTip="선택한 책 제목·본문에 공통으로 사용할 모델입니다. (예: gemini-3.8-flash)" />
                         </WrapPanel>
 
-                        <TextBlock Text="API Keys" FontWeight="SemiBold" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,12,0,4" />
+                        <TextBlock Text="API 키" FontWeight="SemiBold" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,12,0,4" />
 
                         <TextBlock Text="Gemini" FontWeight="SemiBold" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,4,0,4" />
 
                         <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="Saved:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                            <TextBlock Text="저장된 키:" VerticalAlignment="Center" Margin="0,0,6,0" />
                             <ComboBox ItemsSource="{Binding SavedApiKeys}"
                                       SelectedItem="{Binding SelectedSavedApiKey}"
                                       DisplayMemberPath="DisplayLabel"
@@ -259,22 +251,22 @@
                                       VerticalAlignment="Center"
                                       Style="{StaticResource XT.ToolbarComboBox}"
                                       ToolTip="저장된 API 키 목록입니다. 선택하면 현재 키가 해당 값으로 전환됩니다." />
-                            <TextBlock Text="Name:" VerticalAlignment="Center" Margin="12,0,6,0" />
+                            <TextBlock Text="이름:" VerticalAlignment="Center" Margin="12,0,6,0" />
                             <TextBox Text="{Binding SavedApiKeyName, UpdateSourceTrigger=PropertyChanged}" Width="140" VerticalAlignment="Center" Style="{StaticResource XT.ToolbarTextBox}"
                                      ToolTip="저장할 키의 표시 이름입니다. (예: Paid-Project-A)" />
-                            <TextBlock Text="API Key:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                            <TextBlock Text="API 키:" VerticalAlignment="Center" Margin="0,0,6,0" />
                             <PasswordBox x:Name="ApiKeyBox"
                                          Width="260"
                                          VerticalAlignment="Center"
                                          Style="{StaticResource XT.ToolbarPasswordBox}"
                                          PasswordChanged="ApiKeyBox_OnPasswordChanged" />
 
-                            <Button Content="Save"
+                            <Button Content="저장"
                                     Command="{Binding SaveApiKeyCommand}"
                                     Style="{StaticResource XT.ToolbarButton}"
                                     Margin="6,0,0,0"
                                     ToolTip="현재 입력된 API 키를 저장 목록에 추가합니다." />
-                            <Button Content="Remove"
+                            <Button Content="삭제"
                                     Command="{Binding ClearSavedApiKeyCommand}"
                                     Style="{StaticResource XT.ToolbarButton}"
                                     Margin="6,0,0,0"
@@ -296,8 +288,8 @@
                                     ToolTip="현재 번역 결과에서 &lt;mag&gt;/&lt;dur&gt; 플레이스홀더 오번역(자리/역할)을 자동 교정합니다. (API 호출 없음)" />
                             <Button Content="후처리 재적용" Command="{Binding ReapplyPostEditsCommand}" Style="{StaticResource XT.ToolbarButton}"
                                     ToolTip="이미 번역된 항목에 플레이스홀더/단위/조사 후처리를 다시 적용합니다. (API 호출 없음)" />
-                            <Button Content="Franchise TM 가져오기" Command="{Binding ImportFranchiseTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}"
-                                    ToolTip="TSV(Source&lt;TAB&gt;Target) 파일을 Franchise TM으로 가져옵니다. (API 호출 없음)" />
+                            <Button Content="시리즈 TM 가져오기" Command="{Binding ImportFranchiseTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}"
+                                    ToolTip="TSV(Source&lt;TAB&gt;Target) 파일을 시리즈 TM으로 가져옵니다. (API 호출 없음)" />
                         </WrapPanel>
                     </StackPanel>
                 </Expander>
@@ -306,39 +298,39 @@
 
         <Border Grid.Row="1" Style="{StaticResource XT.CardBorder}" Padding="10">
         <TabControl x:Name="MainTabs" BorderThickness="0" Background="Transparent" ItemContainerStyle="{StaticResource XT.TabItem}" IsEnabled="{Binding IsWorkspaceInteractive}">
-            <TabItem Header="Strings" DataContext="{Binding StringsTab}">
+            <TabItem Header="문자열" DataContext="{Binding StringsTab}">
                 <views:StringsTabView />
             </TabItem>
 
-            <TabItem Header="Compare" DataContext="{Binding CompareTab}">
+            <TabItem Header="모델 비교" DataContext="{Binding CompareTab}">
                 <views:CompareTabView />
             </TabItem>
 
-            <TabItem Header="LQA (Review)" DataContext="{Binding LqaTab}">
+            <TabItem Header="품질 검사" DataContext="{Binding LqaTab}">
                 <views:LqaTabView />
             </TabItem>
 
-            <TabItem Header="Project Glossary (This Addon)" DataContext="{Binding ProjectGlossaryTab}">
+            <TabItem Header="프로젝트 용어집" DataContext="{Binding ProjectGlossaryTab}">
                 <views:ProjectGlossaryTabView />
             </TabItem>
 
-            <TabItem Header="Global Glossary (All projects)" DataContext="{Binding GlobalGlossaryTab}">
+            <TabItem Header="전체 용어집" DataContext="{Binding GlobalGlossaryTab}">
                 <views:GlobalGlossaryTabView />
             </TabItem>
 
-            <TabItem Header="Franchise TM" DataContext="{Binding FranchiseTranslationMemoryTab}">
+            <TabItem Header="시리즈 TM" DataContext="{Binding FranchiseTranslationMemoryTab}">
                 <views:GlobalTranslationMemoryTabView />
             </TabItem>
 
-            <TabItem Header="Prompt" DataContext="{Binding PromptTab}">
+            <TabItem Header="프롬프트" DataContext="{Binding PromptTab}">
                 <views:PromptTabView />
             </TabItem>
 
-            <TabItem Header="Project Context" DataContext="{Binding ProjectContextTab}">
+            <TabItem Header="프로젝트 문맥" DataContext="{Binding ProjectContextTab}">
                 <views:ProjectContextTabView />
             </TabItem>
 
-            <TabItem Header="API Logs" DataContext="{Binding ApiLogsTab}">
+            <TabItem Header="API 기록" DataContext="{Binding ApiLogsTab}">
                 <views:ApiLogsTabView />
             </TabItem>
         </TabControl>
@@ -346,6 +338,16 @@
 
         <StatusBar Grid.Row="2" Margin="0,10,0,0">
             <StatusBarItem>
+                <StatusBarItem.Style>
+                    <Style TargetType="StatusBarItem">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsPluginIoBusy}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StatusBarItem.Style>
                 <Button Content="ESP 읽기/저장 취소" Command="{Binding CancelPluginIoCommand}" IsEnabled="{Binding IsPluginIoBusy}"
                         Style="{StaticResource XT.ToolbarButton}" Margin="0,0,6,0" />
             </StatusBarItem>
@@ -353,13 +355,15 @@
                 <ProgressBar Width="220" Height="16" Minimum="0" Maximum="1" Value="{Binding ProgressRatio, Mode=OneWay}" Style="{StaticResource XT.ProgressBar}" />
             </StatusBarItem>
             <StatusBarItem>
-                <TextBlock Text="{Binding DoneCount, StringFormat=Done: {0}}" />
-            </StatusBarItem>
-            <StatusBarItem>
-                <TextBlock Text="{Binding PendingCount, StringFormat=Pending: {0}}" />
-            </StatusBarItem>
-            <StatusBarItem>
-                <TextBlock Text="{Binding TotalCount, StringFormat=Total: {0}}" />
+                <TextBlock Foreground="{StaticResource XT.MutedTextBrush}" TextWrapping="NoWrap">
+                    <Run Text="{Binding DoneCount, StringFormat=완료 {0}}" />
+                    <Run Text=" · " />
+                    <Run Text="{Binding PendingCount, StringFormat=대기 {0}}" />
+                    <Run Text=" · " />
+                    <Run Text="{Binding TotalCount, StringFormat=전체 {0}}" />
+                    <Run Text=" · " />
+                    <Run Text="{Binding ProgressRatio, Mode=OneWay, StringFormat={}{0:P0}}" />
+                </TextBlock>
             </StatusBarItem>
             <StatusBarItem>
                 <StatusBarItem.Style>
@@ -372,7 +376,7 @@
                         </Style.Triggers>
                     </Style>
                 </StatusBarItem.Style>
-                <TextBlock Text="{Binding CurrentXmlFileName, StringFormat=File: {0}}"
+                <TextBlock Text="{Binding CurrentXmlFileName, StringFormat=파일: {0}}"
                            MaxWidth="360"
                            TextTrimming="CharacterEllipsis" />
             </StatusBarItem>

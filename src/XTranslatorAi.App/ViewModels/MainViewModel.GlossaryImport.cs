@@ -27,12 +27,12 @@ public partial class MainViewModel
         }
 
         var statusLabelTrimmed = (statusLabel ?? "").Trim();
-        var importingLabel = statusLabelTrimmed.ToLowerInvariant();
+        var importingLabel = statusLabelTrimmed;
         var fileName = Path.GetFileName(glossaryPath);
 
         try
         {
-            StatusMessage = $"Importing {importingLabel}: {fileName}...";
+            StatusMessage = $"{importingLabel} 가져오는 중: {fileName}...";
 
             var result = await _projectGlossaryService.ImportFromFileAsync(
                 db,
@@ -47,17 +47,17 @@ public partial class MainViewModel
             );
             if (result == null)
             {
-                StatusMessage = "No glossary pairs found in file.";
+                StatusMessage = "파일에서 용어 쌍을 찾지 못했습니다.";
                 return;
             }
 
             await reloadAsync();
             StatusMessage =
-                $"{statusLabelTrimmed} imported: +{result.Value.InsertedCount}, skipped {result.Value.SkippedExisting}, conflicts {result.Value.ConflictCount}.";
+                $"{statusLabelTrimmed} 가져오기 완료: 추가 {result.Value.InsertedCount}, 기존 항목 건너뜀 {result.Value.SkippedExisting}, 충돌 {result.Value.ConflictCount}.";
         }
         catch (Exception ex)
         {
-            SetUserFacingError($"{statusLabelTrimmed} import", ex);
+            SetUserFacingError($"{statusLabelTrimmed} 가져오기", ex);
         }
     }
 

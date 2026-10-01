@@ -24,7 +24,7 @@ public partial class SelectNexusModWindow : Window
         {
             _uiInteractionService.ShowMessage(
                 "모드를 선택하세요.",
-                "Select Mod",
+                "모드 선택",
                 UiMessageBoxButton.Ok,
                 UiMessageBoxImage.Information
             );

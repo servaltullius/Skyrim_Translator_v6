@@ -31,7 +31,7 @@ public partial class MainViewModel
 
         try
         {
-            StatusMessage = "Generating project context (scan + Gemini)...";
+            StatusMessage = "프로젝트 문맥을 생성하는 중(스캔 + Gemini)...";
 
             var report = await BuildProjectContextScanReportAsync(cancellationToken);
             var translationPrompt = BuildProjectContextTranslationPrompt();
@@ -41,7 +41,7 @@ public partial class MainViewModel
             var raw = await _geminiClient.GenerateContentAsync(apiKey, SelectedModel.Trim(), request, cancellationToken);
             if (!ProjectContextResponseParser.TryParseContext(raw, out var ctx) || string.IsNullOrWhiteSpace(ctx))
             {
-                StatusMessage = "Project context generation: invalid JSON output; retrying...";
+                StatusMessage = "프로젝트 문맥 응답 형식이 올바르지 않아 다시 요청하는 중...";
                 var retryRequest = BuildProjectContextGenerationRequest(userPrompt, isRetry: true);
                 var retryRaw = await _geminiClient.GenerateContentAsync(apiKey, SelectedModel.Trim(), retryRequest, cancellationToken);
                 if (!ProjectContextResponseParser.TryParseContext(retryRaw, out ctx) || string.IsNullOrWhiteSpace(ctx))
@@ -54,7 +54,7 @@ public partial class MainViewModel
 
             await db.UpsertProjectContextAsync(ctx, cancellationToken);
             ProjectContextPreview = ctx;
-            StatusMessage = "Project context updated.";
+            StatusMessage = "프로젝트 문맥을 갱신했습니다.";
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
@@ -62,7 +62,7 @@ public partial class MainViewModel
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Project context", ex);
+            SetUserFacingError("프로젝트 문맥 생성", ex);
         }
     }
 
@@ -135,11 +135,11 @@ public partial class MainViewModel
         try
         {
             await db.UpsertProjectContextAsync(text, CancellationToken.None);
-            StatusMessage = "Project context saved.";
+            StatusMessage = "프로젝트 문맥을 저장했습니다.";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Project context save", ex);
+            SetUserFacingError("프로젝트 문맥 저장", ex);
         }
     }
 
@@ -156,11 +156,11 @@ public partial class MainViewModel
         {
             await db.ClearProjectContextAsync(CancellationToken.None);
             ProjectContextPreview = "";
-            StatusMessage = "Project context cleared.";
+            StatusMessage = "프로젝트 문맥을 지웠습니다.";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Project context clear", ex);
+            SetUserFacingError("프로젝트 문맥 지우기", ex);
         }
     }
 

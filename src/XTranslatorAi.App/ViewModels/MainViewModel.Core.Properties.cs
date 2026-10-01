@@ -8,10 +8,10 @@ namespace XTranslatorAi.App.ViewModels;
 
 public partial class MainViewModel
 {
-    private const string GlossaryCategoryAll = "(All)";
-    private const string GlossaryCategoryNone = "(None)";
-    private const string EntryStatusAll = "(All)";
-    private const string EntryStatusNeedsReview = "(Needs Review)";
+    private const string GlossaryCategoryAll = "(전체)";
+    private const string GlossaryCategoryNone = "(없음)";
+    private const string EntryStatusAll = "(전체)";
+    private const string EntryStatusNeedsReview = "(검토 필요)";
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveSelectedDestCommand))]
@@ -176,7 +176,7 @@ public partial class MainViewModel
     [ObservableProperty] private int _totalCount;
     [ObservableProperty] private int _doneCount;
     [ObservableProperty] private int _pendingCount;
-    [ObservableProperty] private string _statusMessage = "Ready.";
+    [ObservableProperty] private string _statusMessage = "준비됨.";
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(AddGlossaryCommand))]

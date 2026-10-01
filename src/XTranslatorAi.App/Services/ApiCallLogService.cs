@@ -54,7 +54,7 @@ public sealed class ApiCallLogService
             var cost = totals.Calls > 0 && totals.CostRows == 0
                 ? "미확인"
                 : $"${totals.CostUsd:0.####}" + (totals.CostRows < totals.Calls ? " (일부 미확인)" : "");
-            return $"Σ InTok {N(totals.InTok)} · OutTok {N(totals.OutTok)} · Cost {cost}";
+            return $"합계 입력 토큰 {N(totals.InTok)} · 출력 토큰 {N(totals.OutTok)} · 비용 {cost}";
         }
     }
 
@@ -64,10 +64,10 @@ public sealed class ApiCallLogService
         {
             var totals = _totals;
             return
-                $"Calls: {N(totals.Calls)} (OK {N(totals.OkCalls)} / Fail {N(totals.FailCalls)})\n"
-                + $"Σ InTok: {N(totals.InTok)} (rows {N(totals.InTokRows)})\n"
-                + $"Σ OutTok: {N(totals.OutTok)} (rows {N(totals.OutTokRows)})\n"
-                + $"Σ 확인된 Cost: ${totals.CostUsd:0.####} (rows {N(totals.CostRows)}; 비용 정보 없는 호출 {N(totals.Calls - totals.CostRows)}건)\n"
+                $"호출: {N(totals.Calls)}회 (성공 {N(totals.OkCalls)} / 실패 {N(totals.FailCalls)})\n"
+                + $"입력 토큰 합계: {N(totals.InTok)} ({N(totals.InTokRows)}건 기준)\n"
+                + $"출력 토큰 합계: {N(totals.OutTok)} ({N(totals.OutTokRows)}건 기준)\n"
+                + $"확인된 비용 합계: ${totals.CostUsd:0.####} ({N(totals.CostRows)}건 기준, 비용 정보 없는 호출 {N(totals.Calls - totals.CostRows)}건)\n"
                 + $"누계: 로그를 마지막으로 지운 이후 전체 호출. 화면에는 최근 {N(Rows.Count)}건만 표시합니다.";
         }
     }

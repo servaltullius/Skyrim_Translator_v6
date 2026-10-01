@@ -42,19 +42,19 @@ public partial class MainViewModel
         {
             _resumeTcs ??= new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             IsPaused = true;
-            StatusMessage = "Paused (will pause between batches).";
+            StatusMessage = "일시정지했습니다. 진행 중인 묶음이 끝나면 멈춥니다.";
             return;
         }
 
         _resumeTcs?.TrySetResult(true);
         _resumeTcs = null;
         IsPaused = false;
-        StatusMessage = "Resumed.";
+        StatusMessage = "번역을 다시 시작했습니다.";
     }
 
     private bool CanTogglePauseTranslation() => IsTranslating;
 
-    public string PauseButtonText => IsPaused ? "Resume" : "Pause";
+    public string PauseButtonText => IsPaused ? "계속" : "일시정지";
 
     partial void OnIsPausedChanged(bool value) => OnPropertyChanged(nameof(PauseButtonText));
 

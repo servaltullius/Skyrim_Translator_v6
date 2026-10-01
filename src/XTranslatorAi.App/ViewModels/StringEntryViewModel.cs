@@ -24,7 +24,7 @@ public partial class StringEntryViewModel : ObservableObject
         OrderIndex = orderIndex;
     }
 
-    public string StatusText => Status.ToString();
+    public string StatusText => StringEntryStatusLabels.ToLabel(Status);
 
     partial void OnStatusChanged(StringEntryStatus value)
     {

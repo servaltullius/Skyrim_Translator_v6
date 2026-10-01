@@ -14,17 +14,17 @@
         </Grid.RowDefinitions>
 
         <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
-            <Button Content="Run all" Command="{Binding RunCompareAllCommand}" Style="{StaticResource XT.ToolbarButton}" />
-            <Button Content="Clear" Command="{Binding ClearCompareOutputsCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="모두 실행" Command="{Binding RunCompareAllCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Content="지우기" Command="{Binding ClearCompareOutputsCommand}" Style="{StaticResource XT.ToolbarButton}" />
 
             <Separator Margin="12,0,12,0" Width="1" />
 
-            <CheckBox Content="Project glossary" IsChecked="{Binding CompareIncludeProjectGlossary}" VerticalAlignment="Center"
+            <CheckBox Content="프로젝트 용어집" IsChecked="{Binding CompareIncludeProjectGlossary}" VerticalAlignment="Center"
                       ToolTip="Compare용 임시 DB에 현재 프로젝트 용어집을 복사해 적용합니다." />
-            <CheckBox Content="Global glossary" IsChecked="{Binding CompareIncludeGlobalGlossary}" VerticalAlignment="Center" Margin="12,0,0,0"
+            <CheckBox Content="전체 용어집" IsChecked="{Binding CompareIncludeGlobalGlossary}" VerticalAlignment="Center" Margin="12,0,0,0"
                       ToolTip="Global glossary를 적용합니다." />
-            <CheckBox Content="Franchise TM" IsChecked="{Binding CompareIncludeFranchiseTranslationMemory}" VerticalAlignment="Center" Margin="12,0,0,0"
-                      ToolTip="Franchise TM을 적용합니다. (TM hit가 있으면 LLM 호출 없이 Done (TM)으로 끝날 수 있습니다)" />
+            <CheckBox Content="시리즈 TM" IsChecked="{Binding CompareIncludeFranchiseTranslationMemory}" VerticalAlignment="Center" Margin="12,0,0,0"
+                      ToolTip="시리즈 TM을 적용합니다. (TM hit가 있으면 LLM 호출 없이 Done (TM)으로 끝날 수 있습니다)" />
         </WrapPanel>
 
         <GroupBox Grid.Row="1" Header="{Binding CompareSelectedEntrySummary}" Style="{StaticResource XT.GroupBoxCard}" Margin="0,0,0,10">
@@ -44,10 +44,10 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-	            <GroupBox Grid.Column="0" Header="Slot 1" Style="{StaticResource XT.GroupBoxCard}" Margin="0,0,6,0">
+	            <GroupBox Grid.Column="0" Header="슬롯 1" Style="{StaticResource XT.GroupBoxCard}" Margin="0,0,6,0">
 	                <DockPanel>
 	                    <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,8">
-	                        <TextBlock Text="Model:" VerticalAlignment="Center" Margin="0,0,6,0" />
+	                        <TextBlock Text="모델:" VerticalAlignment="Center" Margin="0,0,6,0" />
 	                        <ComboBox ItemsSource="{Binding Compare1AvailableModels}"
 	                                  Text="{Binding Compare1Model, UpdateSourceTrigger=PropertyChanged}"
 	                                  IsEditable="True"
@@ -60,7 +60,7 @@
 	                                  Margin="12,0,0,0"
 	                                  ToolTip="지원되는 낮은 Thinking 설정을 사용합니다. Gemini 3.1 Flash-Lite는 minimal, 다른 Gemini 3 모델은 low, 2.5 Flash 계열은 사고 예산 0으로 비교합니다." />
 
-	                        <Button Content="Run" Command="{Binding RunCompare1Command}" Style="{StaticResource XT.ToolbarButton}" Margin="12,0,0,0" />
+	                        <Button Content="실행" Command="{Binding RunCompare1Command}" Style="{StaticResource XT.ToolbarButton}" Margin="12,0,0,0" />
 	                    </WrapPanel>
 	                    <TextBlock DockPanel.Dock="Top" Text="{Binding Compare1Status}" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,0,0,6" />
 	                    <TextBox Text="{Binding Compare1Output}"
@@ -73,10 +73,10 @@
                 </DockPanel>
             </GroupBox>
 
-	            <GroupBox Grid.Column="1" Header="Slot 2" Style="{StaticResource XT.GroupBoxCard}" Margin="6,0,6,0">
+	            <GroupBox Grid.Column="1" Header="슬롯 2" Style="{StaticResource XT.GroupBoxCard}" Margin="6,0,6,0">
 	                <DockPanel>
 	                    <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,8">
-	                        <TextBlock Text="Model:" VerticalAlignment="Center" Margin="0,0,6,0" />
+	                        <TextBlock Text="모델:" VerticalAlignment="Center" Margin="0,0,6,0" />
 	                        <ComboBox ItemsSource="{Binding Compare2AvailableModels}"
 	                                  Text="{Binding Compare2Model, UpdateSourceTrigger=PropertyChanged}"
 	                                  IsEditable="True"
@@ -89,7 +89,7 @@
 	                                  Margin="12,0,0,0"
 	                                  ToolTip="지원되는 낮은 Thinking 설정을 사용합니다. Gemini 3.1 Flash-Lite는 minimal, 다른 Gemini 3 모델은 low, 2.5 Flash 계열은 사고 예산 0으로 비교합니다." />
 
-	                        <Button Content="Run" Command="{Binding RunCompare2Command}" Style="{StaticResource XT.ToolbarButton}" Margin="12,0,0,0" />
+	                        <Button Content="실행" Command="{Binding RunCompare2Command}" Style="{StaticResource XT.ToolbarButton}" Margin="12,0,0,0" />
 	                    </WrapPanel>
 	                    <TextBlock DockPanel.Dock="Top" Text="{Binding Compare2Status}" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,0,0,6" />
 	                    <TextBox Text="{Binding Compare2Output}"
@@ -102,10 +102,10 @@
                 </DockPanel>
             </GroupBox>
 
-	            <GroupBox Grid.Column="2" Header="Slot 3" Style="{StaticResource XT.GroupBoxCard}" Margin="6,0,0,0">
+	            <GroupBox Grid.Column="2" Header="슬롯 3" Style="{StaticResource XT.GroupBoxCard}" Margin="6,0,0,0">
 	                <DockPanel>
 	                    <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,8">
-	                        <TextBlock Text="Model:" VerticalAlignment="Center" Margin="0,0,6,0" />
+	                        <TextBlock Text="모델:" VerticalAlignment="Center" Margin="0,0,6,0" />
 	                        <ComboBox ItemsSource="{Binding Compare3AvailableModels}"
 	                                  Text="{Binding Compare3Model, UpdateSourceTrigger=PropertyChanged}"
 	                                  IsEditable="True"
@@ -118,7 +118,7 @@
 	                                  Margin="12,0,0,0"
 	                                  ToolTip="지원되는 낮은 Thinking 설정을 사용합니다. Gemini 3.1 Flash-Lite는 minimal, 다른 Gemini 3 모델은 low, 2.5 Flash 계열은 사고 예산 0으로 비교합니다." />
 
-	                        <Button Content="Run" Command="{Binding RunCompare3Command}" Style="{StaticResource XT.ToolbarButton}" Margin="12,0,0,0" />
+	                        <Button Content="실행" Command="{Binding RunCompare3Command}" Style="{StaticResource XT.ToolbarButton}" Margin="12,0,0,0" />
 	                    </WrapPanel>
 	                    <TextBlock DockPanel.Dock="Top" Text="{Binding Compare3Status}" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,0,0,6" />
 	                    <TextBox Text="{Binding Compare3Output}"

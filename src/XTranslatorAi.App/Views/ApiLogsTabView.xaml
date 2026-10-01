@@ -13,8 +13,8 @@
         </Grid.RowDefinitions>
 
         <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
-            <CheckBox IsChecked="{Binding EnableApiCallLogging}" Content="Enable logging" Margin="0,0,16,0" />
-            <Button Content="Clear" Command="{Binding ClearApiCallLogsCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <CheckBox IsChecked="{Binding EnableApiCallLogging}" Content="기록 켜기" Margin="0,0,16,0" />
+            <Button Content="지우기" Command="{Binding ClearApiCallLogsCommand}" Style="{StaticResource XT.ToolbarButton}" />
             <TextBlock Text="{Binding ApiCallLogTotalsSummary}" Margin="16,0,0,0" VerticalAlignment="Center"
                        ToolTip="{Binding ApiCallLogTotalsToolTip}" />
         </WrapPanel>
@@ -33,22 +33,22 @@
                   VirtualizingPanel.VirtualizationMode="Recycling"
                   ScrollViewer.IsDeferredScrollingEnabled="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Time (UTC)" Binding="{Binding StartedAt}" Width="180" />
+                <DataGridTextColumn Header="시각(UTC)" Binding="{Binding StartedAt}" Width="180" />
                 <DataGridTextColumn Header="ms" Binding="{Binding Duration.TotalMilliseconds, StringFormat={}{0:0}}" Width="80" />
-                <DataGridTextColumn Header="Provider" Binding="{Binding Provider}" Width="90" />
-                <DataGridTextColumn Header="Key" Binding="{Binding ApiKeyLabel}" Width="200" />
-                <DataGridTextColumn Header="Op" Binding="{Binding Operation}" Width="140" />
-                <DataGridTextColumn Header="Purpose" Binding="{Binding Purpose}" Width="140" />
-                <DataGridTextColumn Header="Model" Binding="{Binding ModelName}" Width="200" />
-                <DataGridTextColumn Header="InTok" Binding="{Binding PromptTokens}" Width="80" />
-                <DataGridTextColumn Header="Out+Think" Binding="{Binding CompletionTokens}" Width="90" />
-                <DataGridTextColumn Header="Think" Binding="{Binding ThoughtsTokens}" Width="80" />
-                <DataGridTextColumn Header="Cached" Binding="{Binding CachedContentTokens}" Width="80" />
-                <DataGridTextColumn Header="Finish" Binding="{Binding FinishReason}" Width="110" />
-                <DataGridTextColumn Header="Cost($)" Binding="{Binding CostUsd, StringFormat={}{0:0.####}}" Width="90" />
+                <DataGridTextColumn Header="제공자" Binding="{Binding Provider}" Width="90" />
+                <DataGridTextColumn Header="키" Binding="{Binding ApiKeyLabel}" Width="200" />
+                <DataGridTextColumn Header="작업" Binding="{Binding Operation}" Width="140" />
+                <DataGridTextColumn Header="목적" Binding="{Binding Purpose}" Width="140" />
+                <DataGridTextColumn Header="모델" Binding="{Binding ModelName}" Width="200" />
+                <DataGridTextColumn Header="입력 토큰" Binding="{Binding PromptTokens}" Width="80" />
+                <DataGridTextColumn Header="출력+추론" Binding="{Binding CompletionTokens}" Width="90" />
+                <DataGridTextColumn Header="추론" Binding="{Binding ThoughtsTokens}" Width="80" />
+                <DataGridTextColumn Header="캐시" Binding="{Binding CachedContentTokens}" Width="80" />
+                <DataGridTextColumn Header="종료 사유" Binding="{Binding FinishReason}" Width="110" />
+                <DataGridTextColumn Header="비용($)" Binding="{Binding CostUsd, StringFormat={}{0:0.####}}" Width="90" />
                 <DataGridTextColumn Header="HTTP" Binding="{Binding StatusCode}" Width="70" />
-                <DataGridCheckBoxColumn Header="OK" Binding="{Binding Success}" Width="60" />
-                <DataGridTextColumn Header="Error" Binding="{Binding ErrorMessage}" Width="*" />
+                <DataGridCheckBoxColumn Header="성공" Binding="{Binding Success}" Width="60" />
+                <DataGridTextColumn Header="오류" Binding="{Binding ErrorMessage}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

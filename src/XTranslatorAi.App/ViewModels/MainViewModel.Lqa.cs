@@ -17,7 +17,7 @@ public partial class MainViewModel
         IsLqaScanning = true;
         try
         {
-            StatusMessage = "LQA: scanning...";
+            StatusMessage = "품질 검사 중...";
             var issues = await BuildLqaIssuesAsync();
             LqaIssues.ReplaceAll(issues);
             LqaIssuesView.Refresh();
@@ -27,11 +27,11 @@ public partial class MainViewModel
                 SelectedLqaIssue = LqaIssues[0];
             }
 
-            StatusMessage = $"LQA: {LqaIssues.Count} issues.";
+            StatusMessage = $"품질 검사: 문제 {LqaIssues.Count}건";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("LQA", ex);
+            SetUserFacingError("품질 검사", ex);
         }
         finally
         {
@@ -48,7 +48,7 @@ public partial class MainViewModel
     {
         LqaIssues.Clear();
         SelectedLqaIssue = null;
-        StatusMessage = "LQA: cleared.";
+        StatusMessage = "품질 검사 결과를 지웠습니다.";
         ClearLqaCommand.NotifyCanExecuteChanged();
     }
 

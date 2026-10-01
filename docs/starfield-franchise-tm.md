@@ -4,7 +4,7 @@
 
 ## 목적
 - 로컬에 보유한 Starfield 영문 `.strings`와 한국어 패치 `.strings`를 비교해 `Starfield` 전용 TM TSV를 생성한다.
-- 생성된 TSV는 앱의 `Franchise TM` 가져오기로만 적재한다.
+- 생성된 TSV는 앱의 `시리즈 TM 가져오기`로만 적재한다.
 
 ## 데이터 정책
 - 제3자 번역 데이터는 저장소, 릴리즈, 임베디드 리소스에 포함하지 않는다.
@@ -50,4 +50,4 @@ python3 scripts/seed_tm_from_bethesda_strings_dirs.py \
 
 ## 앱 import
 - 가져오기 TSV는 `Source<TAB>Target` 형식이어야 한다.
-- 앱의 `Franchise` 선택기를 `Starfield`로 설정한 뒤 `Franchise TM 가져오기`에서 `artifacts/tm/starfield-franchise-tm.tsv`를 선택한다.
+- 앱의 `게임 시리즈` 선택기를 `Starfield`로 설정한 뒤 고급 설정의 `시리즈 TM 가져오기`에서 `artifacts/tm/starfield-franchise-tm.tsv`를 선택한다.

@@ -37,13 +37,13 @@ public partial class MainViewModel
         {
             await StopAllProjectOperationsAsync();
             loadCancellation.Token.ThrowIfCancellationRequested();
-            StatusMessage = "Importing XML...";
+            StatusMessage = "XML을 불러오는 중...";
             await DisposeProjectDbAsync();
             ResetProjectState();
             await LoadProjectFromXmlAsync(xmlPath, loadCancellation.Token);
 
             IsProjectLoaded = true;
-            StatusMessage = $"Loaded {TotalCount} strings from {Path.GetFileName(xmlPath)}";
+            StatusMessage = $"{Path.GetFileName(xmlPath)}에서 문자열 {TotalCount}개를 불러왔습니다.";
         }
         catch (OperationCanceledException) when (loadCancellation.IsCancellationRequested)
         {
@@ -156,13 +156,13 @@ public partial class MainViewModel
 
         try
         {
-            StatusMessage = "Exporting XML...";
+            StatusMessage = "XML을 내보내는 중...";
             await _projectWorkspaceService.ExportXmlAsync(db, xmlInfo, exportPath, CancellationToken.None);
-            StatusMessage = $"Exported: {exportPath}";
+            StatusMessage = $"내보냈습니다: {exportPath}";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("XML Export", ex);
+            SetUserFacingError("XML 내보내기", ex);
         }
     }
 
@@ -179,11 +179,11 @@ public partial class MainViewModel
         try
         {
             await CommitDestEditAsync(SelectedEntry, SelectedEntry.DestText);
-            StatusMessage = "Saved Dest edit.";
+            StatusMessage = "번역문 수정을 저장했습니다.";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Dest 저장", ex);
+            SetUserFacingError("번역문 저장", ex);
         }
     }
 

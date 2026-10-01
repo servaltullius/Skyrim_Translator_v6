@@ -69,11 +69,11 @@ public partial class MainViewModel
                 throw new InvalidOperationException("Failed to open glossary folder.");
             }
 
-            StatusMessage = "Opened glossary folder.";
+            StatusMessage = "용어집 폴더를 열었습니다.";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Open folder", ex);
+            SetUserFacingError("폴더 열기", ex);
         }
     }
 
@@ -455,7 +455,7 @@ public partial class MainViewModel
     {
         if (await _globalTranslationMemoryService.TryGetDbAsync(CancellationToken.None) == null)
         {
-            StatusMessage = "Franchise TM DB 초기화에 실패했습니다.";
+            StatusMessage = "시리즈 TM DB를 초기화하지 못했습니다.";
             return;
         }
 

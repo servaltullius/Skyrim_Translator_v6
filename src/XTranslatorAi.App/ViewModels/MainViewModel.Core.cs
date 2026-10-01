@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -161,13 +162,7 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
             {
                 EntryStatusAll,
                 EntryStatusNeedsReview,
-                nameof(StringEntryStatus.Pending),
-                nameof(StringEntryStatus.InProgress),
-                nameof(StringEntryStatus.Done),
-                nameof(StringEntryStatus.Skipped),
-                nameof(StringEntryStatus.Error),
-                nameof(StringEntryStatus.Edited),
-            }
+            }.Concat(StringEntryStatusLabels.FilterLabels())
         );
 
         GlossaryView = CollectionViewSource.GetDefaultView(Glossary);
@@ -295,7 +290,7 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
 
         if (IsTranslating)
         {
-            StatusMessage = "Franchise changed. (Restart translation to apply.)";
+            StatusMessage = "게임 시리즈를 바꿨습니다. 번역을 다시 시작하면 적용됩니다.";
             return;
         }
 
@@ -317,11 +312,11 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
 
             await ReloadGlobalGlossaryAsync();
             await ReloadFranchiseTranslationMemoryAsync();
-            StatusMessage = "Franchise changed.";
+            StatusMessage = "게임 시리즈를 바꿨습니다.";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("Franchise switch", ex);
+            SetUserFacingError("게임 시리즈 전환", ex);
         }
     }
 

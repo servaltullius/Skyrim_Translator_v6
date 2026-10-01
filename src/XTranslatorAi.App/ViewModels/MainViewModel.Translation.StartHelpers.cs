@@ -48,7 +48,7 @@ public partial class MainViewModel
         IsPaused = false;
         _resumeTcs = null;
         _inProgressSinceTranslationStart.Clear();
-        StatusMessage = "Translating...";
+        StatusMessage = "번역 중...";
     }
 
     private async Task SaveProjectInfoAsync(CancellationToken cancellationToken = default)

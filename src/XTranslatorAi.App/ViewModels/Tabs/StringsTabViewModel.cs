@@ -28,6 +28,8 @@ public sealed class StringsTabViewModel : ObservableObject, IDisposable
         OnPropertyChanged(e.PropertyName);
     }
 
+    public bool IsProjectLoaded => _host.IsProjectLoaded;
+
     public string EntryFilterText
     {
         get => _host.EntryFilterText;

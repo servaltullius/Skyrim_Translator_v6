@@ -103,7 +103,7 @@ public sealed class FranchiseTranslationMemoryService
         var db = await _globalDbService.GetOrCreateAsync(cancellationToken);
         if (db == null)
         {
-            throw new InvalidOperationException("Franchise TM DB is not available.");
+            throw new InvalidOperationException("시리즈 TM DB를 사용할 수 없습니다.");
         }
 
         return db;

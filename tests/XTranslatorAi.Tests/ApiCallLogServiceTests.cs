@@ -43,7 +43,7 @@ public class ApiCallLogServiceTests
     {
         var service = new ApiCallLogService();
         service.Add(Row(false, -1, null, double.NaN));
-        Assert.Contains("Cost 미확인", service.TotalsSummary);
+        Assert.Contains("비용 미확인", service.TotalsSummary);
         service.Add(Row(true, 0, 0, 0));
 
         Assert.Equal(2, service.UsageTotals.Calls);
