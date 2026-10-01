@@ -135,6 +135,8 @@ public static class LqaScanner
 
         ParticleRules.Apply(entry, sourceText, destText, isKorean, issues);
 
+        LegacyPostEditDamageRule.Apply(entry, sourceText, destText, isKorean, issues);
+
         BracketMismatchRule.Apply(entry, sourceText, destText, issues);
 
         EnglishResidueRule.Apply(entry, sourceText, destText, isKorean, issues);
