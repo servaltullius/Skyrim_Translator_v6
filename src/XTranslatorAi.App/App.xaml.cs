@@ -74,6 +74,16 @@ public partial class App : Application
             _startupLog.Write("Showing MainWindow...");
             window.Show();
             _startupLog.Write("MainWindow shown.");
+
+            if (TryGetSnapshotDirectory(e.Args, out var snapshotDirectory))
+            {
+                window.ContentRendered += async (_, _) =>
+                {
+                    await window.SaveTabSnapshotsAsync(snapshotDirectory);
+                    _startupLog.Write($"UI snapshots saved: {snapshotDirectory}");
+                    Shutdown(0);
+                };
+            }
         }
         catch (Exception ex)
         {
@@ -81,6 +91,16 @@ public partial class App : Application
             TryShowFatalError(ex);
             Shutdown(-1);
         }
+    }
+
+    private static bool TryGetSnapshotDirectory(string[]? args, out string directory)
+    {
+        directory = "";
+        if (args == null) return false;
+        var index = Array.IndexOf(args, "--ui-snapshot");
+        if (index < 0 || index + 1 >= args.Length || string.IsNullOrWhiteSpace(args[index + 1])) return false;
+        directory = Path.GetFullPath(args[index + 1]);
+        return true;
     }
 
     private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

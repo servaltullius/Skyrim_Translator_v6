@@ -305,7 +305,7 @@
         </Border>
 
         <Border Grid.Row="1" Style="{StaticResource XT.CardBorder}" Padding="10">
-        <TabControl BorderThickness="0" Background="Transparent" ItemContainerStyle="{StaticResource XT.TabItem}" IsEnabled="{Binding IsWorkspaceInteractive}">
+        <TabControl x:Name="MainTabs" BorderThickness="0" Background="Transparent" ItemContainerStyle="{StaticResource XT.TabItem}" IsEnabled="{Binding IsWorkspaceInteractive}">
             <TabItem Header="Strings" DataContext="{Binding StringsTab}">
                 <views:StringsTabView />
             </TabItem>
