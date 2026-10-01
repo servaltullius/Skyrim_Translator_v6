@@ -20,7 +20,7 @@ public class SeedTmWorkflowDocsTests
             string.Join('\n', importSection),
             "## 앱 import",
             "- 가져오기 TSV는 `Source<TAB>Target` 형식이어야 한다.",
-            "- 앱의 `Franchise` 선택기를 `Starfield`로 설정한 뒤 `Franchise TM 가져오기`에서 `artifacts/tm/starfield-franchise-tm.tsv`를 선택한다."
+            "- 앱의 `게임 시리즈` 선택기를 `Starfield`로 설정한 뒤 고급 설정의 `시리즈 TM 가져오기`에서 `artifacts/tm/starfield-franchise-tm.tsv`를 선택한다."
         );
     }
 
