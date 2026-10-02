@@ -27,11 +27,11 @@ public static class LqaHeuristics
     );
 
     // Words whose last syllable looks like 을/은 after a vowel but is part of the word:
-    // nouns (마을, 수은) and ㅅ-irregular verb forms (더 나은, 지은, 지을 수).
+    // nouns (마을, 수은), ㅅ-irregular verb forms (더 나은, 지은, 지을 수) and 모으다 (모을 수, 모은 기).
     private static readonly HashSet<string> VowelThenEulEunWords = new(StringComparer.Ordinal)
     {
-        "마을", "가을", "고을", "노을", "나을", "지을", "이을", "부을", "그을", "저을",
-        "수은", "보은", "나은", "지은", "이은", "부은", "그은", "저은",
+        "마을", "가을", "고을", "노을", "나을", "지을", "이을", "부을", "그을", "저을", "모을",
+        "수은", "보은", "나은", "지은", "이은", "부은", "그은", "저은", "모은",
     };
 
     private static readonly Regex RomanVowelConsonantParticleRegex = new(

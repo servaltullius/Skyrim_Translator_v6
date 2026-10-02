@@ -26,6 +26,8 @@ public class LqaFalsePositiveTests
     [InlineData("더 나은 무기를 만든다.")]
     [InlineData("마을 사람들")]
     [InlineData("수은 광석")]
+    [InlineData("전투 돌입 시 기 5중첩을 모을 수 있습니다.")]
+    [InlineData("모은 기를 소모합니다.")]
     [InlineData("기꺼이 돕겠다.")]
     [InlineData("하이 엘프와 그레이 메인")]
     [InlineData("그런가?")]
