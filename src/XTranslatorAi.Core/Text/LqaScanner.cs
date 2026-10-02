@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Models;
@@ -34,12 +35,18 @@ public readonly record struct LqaIssue(
 public static class LqaScanner
 {
     private static readonly Regex UiTagTokenRegex = new(
-        pattern: @"[+-]?<\s*[^>]+\s*>|\[pagebreak\]|__XT_[A-Za-z0-9_]+__",
+        pattern: @"[+-]?<\s*[^>]+\s*>|\[page ?break\]|__XT_[A-Za-z0-9_]+__",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
     private static readonly Regex EnglishResidueRegex = new(
         pattern: @"[A-Za-z]{2,}",
+        options: RegexOptions.CultureInvariant
+    );
+
+    // A whole run of Latin letters and digits, so "05000A6E" in [ARMO:05000A6E] is one identifier.
+    private static readonly Regex LatinWordRegex = new(
+        pattern: @"[A-Za-z0-9]*[A-Za-z][A-Za-z0-9]*",
         options: RegexOptions.CultureInvariant
     );
 
@@ -69,7 +76,9 @@ public static class LqaScanner
         var tmFallbackNotes = context.TmFallbackNotes;
 
         var isKorean = IsKoreanLanguage(targetLang);
+        var particleTerms = LqaHeuristics.BuildParticleCheckTerms(forceTokenGlossary);
         var strongDialogueMajority = DialogueToneConsistencyRule.BuildDialogueGroupMajorities(entries);
+        var fieldToneMajority = RecToneRule.BuildFieldMajorities(entries);
 
         var total = entries.Count;
         for (var i = 0; i < total; i++)
@@ -95,8 +104,10 @@ public static class LqaScanner
                 dest,
                 isKorean,
                 forceTokenGlossary,
+                particleTerms,
                 tmFallbackNotes,
                 strongDialogueMajority,
+                fieldToneMajority,
                 issues
             );
         }
@@ -108,8 +119,10 @@ public static class LqaScanner
         string destText,
         bool isKorean,
         IReadOnlyList<GlossaryEntry> forceTokenGlossary,
+        IReadOnlyList<string> particleTerms,
         IReadOnlyDictionary<long, string>? tmFallbackNotes,
         IReadOnlyDictionary<string, ToneKind> strongDialogueMajority,
+        IReadOnlyDictionary<string, ToneKind> fieldToneMajority,
         List<LqaIssue> issues
     )
     {
@@ -131,9 +144,9 @@ public static class LqaScanner
             issues.Add(lengthIssue);
         }
 
-        RecToneRule.Apply(entry, sourceText, destText, issues);
+        RecToneRule.Apply(entry, sourceText, destText, fieldToneMajority, issues);
 
-        ParticleRules.Apply(entry, sourceText, destText, isKorean, issues);
+        ParticleRules.Apply(entry, sourceText, destText, isKorean, particleTerms, issues);
 
         LegacyPostEditDamageRule.Apply(entry, sourceText, destText, isKorean, issues);
 
@@ -228,6 +241,54 @@ public static class LqaScanner
 
         var cleaned = StripUiTokens(text);
         return EnglishResidueRegex.IsMatch(cleaned);
+    }
+
+    /// <summary>
+    /// The first Latin word left in a translation, or null. Acronyms and identifiers copied from the
+    /// source (NPC, MCO, WASD, Lv3, BloodSword01) are meant to stay and do not count; ordinary words
+    /// such as an untranslated item name do.
+    /// </summary>
+    internal static string? FindEnglishResidue(string destText, string sourceText)
+    {
+        if (string.IsNullOrWhiteSpace(destText))
+        {
+            return null;
+        }
+
+        foreach (Match m in LatinWordRegex.Matches(StripUiTokens(destText)))
+        {
+            var word = m.Value;
+            if (word.Count(char.IsAsciiLetter) >= 2 && !IsAcronymOrIdentifierFromSource(word, sourceText))
+            {
+                return word;
+            }
+        }
+
+        return null;
+    }
+
+    private static bool IsAcronymOrIdentifierFromSource(string word, string sourceText)
+    {
+        var hasLower = word.Any(char.IsLower);
+        var isAcronymOrIdentifier = !hasLower || word.Any(char.IsDigit) || word.Skip(1).Any(char.IsUpper);
+        if (!isAcronymOrIdentifier)
+        {
+            return false;
+        }
+
+        // An all-caps acronym may be cased differently in the source ("npc addition" → "NPC 추가").
+        var comparison = hasLower ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+        for (var idx = sourceText.IndexOf(word, comparison); idx >= 0; idx = sourceText.IndexOf(word, idx + 1, comparison))
+        {
+            var end = idx + word.Length;
+            if ((idx == 0 || !char.IsAsciiLetterOrDigit(sourceText[idx - 1]))
+                && (end >= sourceText.Length || !char.IsAsciiLetterOrDigit(sourceText[end])))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     internal static string StripUiTokens(string text)

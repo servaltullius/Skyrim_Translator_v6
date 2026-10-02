@@ -17,13 +17,14 @@ internal static class TmFallbackRule
             return;
         }
 
+        // The row was translated on its own instead of from TM; nothing is wrong with the text.
         issues.Add(
             new LqaIssue(
                 Id: entry.Id,
                 OrderIndex: entry.OrderIndex,
                 Edid: entry.Edid,
                 Rec: entry.Rec,
-                Severity: "Warn",
+                Severity: "Info",
                 Code: "tm_fallback",
                 Message: note.Trim(),
                 SourceText: sourceText,

@@ -41,8 +41,8 @@
                   VirtualizingPanel.VirtualizationMode="Recycling"
                   ScrollViewer.IsDeferredScrollingEnabled="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="심각도" Binding="{Binding Severity}" Width="80" />
-                <DataGridTextColumn Header="코드" Binding="{Binding Code}" Width="130" />
+                <DataGridTextColumn Header="심각도" Binding="{Binding SeverityDisplay}" Width="70" />
+                <DataGridTextColumn Header="종류" Binding="{Binding CodeDisplay}" Width="130" />
                 <DataGridTextColumn Header="#" Binding="{Binding OrderIndex}" Width="70" />
                 <DataGridTextColumn Header="EDID" Binding="{Binding Edid}" Width="140" />
                 <DataGridTextColumn Header="REC" Binding="{Binding Rec}" Width="140" />

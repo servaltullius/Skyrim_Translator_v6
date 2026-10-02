@@ -14,6 +14,9 @@ internal static class KoreanSyllables
     /// <summary>True when the final consonant is ㄹ, which takes "로" rather than "으로".</summary>
     public static bool HasFinalRieul(char c) => IsHangulSyllable(c) && (c - First) % 28 == 8;
 
+    /// <summary>True when the final consonant is ㅂ, as in the polite endings 합니다, 됩니다, 갑시다.</summary>
+    public static bool HasFinalBieup(char c) => IsHangulSyllable(c) && (c - First) % 28 == 17;
+
     public static bool IsLatinVowel(char c) => char.ToLowerInvariant(c) is 'a' or 'e' or 'i' or 'o' or 'u' or 'y';
 
     /// <summary>

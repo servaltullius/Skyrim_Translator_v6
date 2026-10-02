@@ -10,31 +10,45 @@ internal static class ParticleRules
         options: RegexOptions.CultureInvariant
     );
 
-    public static void Apply(LqaScanEntry entry, string sourceText, string destText, bool isKorean, List<LqaIssue> issues)
+    /// <param name="terms">Glossary target terms from <see cref="LqaHeuristics.BuildParticleCheckTerms"/>.</param>
+    public static void Apply(
+        LqaScanEntry entry,
+        string sourceText,
+        string destText,
+        bool isKorean,
+        IReadOnlyList<string> terms,
+        List<LqaIssue> issues
+    )
     {
         if (!isKorean)
         {
             return;
         }
 
-        AddPrimaryParticleIssue(entry, sourceText, destText, issues);
+        AddPrimaryParticleIssue(entry, sourceText, destText, terms, issues);
         TryAddDuplicationArtifactIssue(entry, sourceText, destText, issues);
         TryAddPercentArtifactIssue(entry, sourceText, destText, issues);
     }
 
-    private static void AddPrimaryParticleIssue(LqaScanEntry entry, string sourceText, string destText, List<LqaIssue> issues)
+    private static void AddPrimaryParticleIssue(
+        LqaScanEntry entry,
+        string sourceText,
+        string destText,
+        IReadOnlyList<string> terms,
+        List<LqaIssue> issues
+    )
     {
         if (TryAddUnresolvedParticleMarkerIssue(entry, sourceText, destText, issues))
         {
             return;
         }
 
-        if (TryAddDoubledParticleIssue(entry, sourceText, destText, issues))
+        if (TryAddDoubledParticleIssue(entry, sourceText, destText, terms, issues))
         {
             return;
         }
 
-        if (TryAddHangulParticleMismatchIssue(entry, sourceText, destText, issues))
+        if (TryAddHangulParticleMismatchIssue(entry, sourceText, destText, terms, issues))
         {
             return;
         }
@@ -53,9 +67,15 @@ internal static class ParticleRules
         return true;
     }
 
-    private static bool TryAddDoubledParticleIssue(LqaScanEntry entry, string sourceText, string destText, List<LqaIssue> issues)
+    private static bool TryAddDoubledParticleIssue(
+        LqaScanEntry entry,
+        string sourceText,
+        string destText,
+        IReadOnlyList<string> terms,
+        List<LqaIssue> issues
+    )
     {
-        var doubled = LqaHeuristics.FindDoubledParticleExample(destText);
+        var doubled = LqaHeuristics.FindDoubledParticleExample(destText, terms);
         if (string.IsNullOrWhiteSpace(doubled))
         {
             return false;
@@ -65,9 +85,15 @@ internal static class ParticleRules
         return true;
     }
 
-    private static bool TryAddHangulParticleMismatchIssue(LqaScanEntry entry, string sourceText, string destText, List<LqaIssue> issues)
+    private static bool TryAddHangulParticleMismatchIssue(
+        LqaScanEntry entry,
+        string sourceText,
+        string destText,
+        IReadOnlyList<string> terms,
+        List<LqaIssue> issues
+    )
     {
-        var mismatch = LqaHeuristics.FindHangulParticleMismatchSuggestion(destText);
+        var mismatch = LqaHeuristics.FindHangulParticleMismatchSuggestion(destText, terms);
         if (string.IsNullOrWhiteSpace(mismatch))
         {
             return false;

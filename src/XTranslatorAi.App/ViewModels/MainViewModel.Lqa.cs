@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 
@@ -27,7 +28,9 @@ public partial class MainViewModel
                 SelectedLqaIssue = LqaIssues[0];
             }
 
-            StatusMessage = $"품질 검사: 문제 {LqaIssues.Count}건";
+            StatusMessage = LqaIssues.Count == 0
+                ? "품질 검사: 문제를 찾지 못했습니다."
+                : $"품질 검사: 오류 {CountSeverity("Error")}건, 경고 {CountSeverity("Warn")}건, 참고 {CountSeverity("Info")}건";
         }
         catch (Exception ex)
         {
@@ -40,6 +43,9 @@ public partial class MainViewModel
             ClearLqaCommand.NotifyCanExecuteChanged();
         }
     }
+
+    private int CountSeverity(string severity)
+        => LqaIssues.Count(i => string.Equals(i.Severity, severity, StringComparison.OrdinalIgnoreCase));
 
     private bool CanScanLqa() => IsProjectLoaded && !IsTranslating && !IsLqaScanning;
 

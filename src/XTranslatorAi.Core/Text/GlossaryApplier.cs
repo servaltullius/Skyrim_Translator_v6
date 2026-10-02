@@ -149,19 +149,27 @@ public sealed class GlossaryApplier
         NotTheTerm,
     }
 
+    internal static bool IsBuiltInDefaultEntry(GlossaryEntry entry)
+        => !string.IsNullOrWhiteSpace(entry.Note)
+           && entry.Note.StartsWith("Built-in default glossary", StringComparison.Ordinal);
+
+    /// <summary>
+    /// Many single-word game terms are also ordinary English words: Fine (하급), Master (달인),
+    /// Superior (중급), Destruction (파괴마법), Ward (방어막), Sneak (은신), Reach (리치).
+    /// Game text writes the term capitalized, so for built-in terms only that exact casing is forced;
+    /// "fine blond hair" or "superior officer" is left to the model with the term only as a hint.
+    /// </summary>
+    internal static bool ForcesOnlyExactCase(GlossaryEntry entry)
+        => IsBuiltInDefaultEntry(entry) && IsCapitalizedSingleWord(entry.SourceTerm);
+
     private static BuiltInMatch ClassifyBuiltInDefaultGlossaryMatch(string input, GlossaryEntry entry, Match match)
     {
-        if (string.IsNullOrWhiteSpace(entry.Note)
-            || !entry.Note.StartsWith("Built-in default glossary", StringComparison.Ordinal))
+        if (!IsBuiltInDefaultEntry(entry))
         {
             return BuiltInMatch.Force;
         }
 
-        // Many single-word game terms are also ordinary English words: Fine (하급), Master (달인),
-        // Superior (중급), Destruction (파괴마법), Ward (방어막), Sneak (은신), Reach (리치).
-        // Game text writes the term capitalized, so a different casing ("fine blond hair",
-        // "superior officer") is left to the model with the term only as a hint.
-        if (IsCapitalizedSingleWord(entry.SourceTerm)
+        if (ForcesOnlyExactCase(entry)
             && !string.Equals(match.Value, entry.SourceTerm, StringComparison.Ordinal))
         {
             return BuiltInMatch.CommonWord;

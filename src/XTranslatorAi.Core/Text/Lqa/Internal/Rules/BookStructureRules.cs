@@ -17,6 +17,8 @@ internal static class BookStructureRules
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
+    private const int MinSourceLengthForShortCheck = 200;
+
     public static void Apply(LqaScanEntry entry, string sourceText, string destText, List<LqaIssue> issues)
     {
         var recBase = LqaScanner.GetRecBase(entry.Rec);
@@ -94,8 +96,11 @@ internal static class BookStructureRules
 
         var ratio = (double)destClean.Length / sourceClean.Length;
 
-        // BOOK is long text, so use a wider ratio range than QUST/MESG.
-        if (ratio < 0.4 || ratio > 2.5)
+        // Korean usually takes about half the characters of English, so a short title such as
+        // "Spell Tome: Thunderbolt" → "마법책: 벼락" falls below 0.4 without anything missing.
+        // A low ratio only suggests dropped text in a long body.
+        var tooShort = ratio < 0.4 && sourceClean.Length >= MinSourceLengthForShortCheck;
+        if (tooShort || ratio > 2.5)
         {
             issues.Add(new LqaIssue(
                 Id: entry.Id,

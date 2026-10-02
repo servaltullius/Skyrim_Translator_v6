@@ -152,11 +152,6 @@ internal static class LqaScannerCharacterizationFixture
             },
             issue =>
             {
-                AssertIssueShape(issue, id: 101, orderIndex: 10, severity: "Warn", code: "tm_fallback");
-                Assert.Equal("TM 폴백 메모", issue.Message);
-            },
-            issue =>
-            {
                 AssertIssueShape(issue, id: 101, orderIndex: 10, severity: "Warn", code: "untranslated");
                 AssertMessageContainsAll(issue.Message, "원문과 동일", "미번역");
             },
@@ -177,11 +172,6 @@ internal static class LqaScannerCharacterizationFixture
             },
             issue =>
             {
-                AssertIssueShape(issue, id: 103, orderIndex: 30, severity: "Warn", code: "rec_tone");
-                AssertMessageContainsAll(issue.Message, "UI/퀘스트 톤", "합니다체", "PlainDa");
-            },
-            issue =>
-            {
                 AssertIssueShape(issue, id: 104, orderIndex: 40, severity: "Warn", code: "bracket_mismatch");
                 AssertMessageContainsAll(issue.Message, "괄호/대괄호", "짝");
             },
@@ -198,7 +188,13 @@ internal static class LqaScannerCharacterizationFixture
             issue =>
             {
                 AssertIssueShape(issue, id: 204, orderIndex: 53, severity: "Warn", code: "tone_inconsistent");
-                AssertMessageContainsAll(issue.Message, "대사 그룹", "말투", "majority=Hamnida");
+                AssertMessageContainsAll(issue.Message, "대화 묶음", "말투", "대부분 합니다체");
+            },
+            issue =>
+            {
+                // A TM fallback note is information about how the row was translated, so it sorts last.
+                AssertIssueShape(issue, id: 101, orderIndex: 10, severity: "Info", code: "tm_fallback");
+                Assert.Equal("TM 폴백 메모", issue.Message);
             }
         );
     }

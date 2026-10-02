@@ -105,7 +105,7 @@ internal static class DialogueToneConsistencyRule
                 Rec: entry.Rec,
                 Severity: "Warn",
                 Code: "tone_inconsistent",
-                Message: $"대사 그룹 내 말투가 섞여있을 수 있습니다. (majority={majority})",
+                Message: $"같은 대화 묶음의 다른 대사와 말투가 다릅니다: 대부분 {LqaToneClassifier.ToDisplay(majority)}, 이 대사 {LqaToneClassifier.ToDisplay(tone)}",
                 SourceText: entry.SourceText ?? "",
                 DestText: entry.DestText ?? ""
             )

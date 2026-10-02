@@ -47,34 +47,49 @@ internal static class LqaToneClassifier
             return ToneKind.Unknown;
         }
 
-        if (EndsWithAny(cleaned, "습니다", "읍니다", "입니다", "합니다", "됩니까", "됩시다", "십시오", "습니까", "나요", "군요"))
+        // Every ㅂ니다/ㅂ니까/ㅂ시다 form: 합니다, 됩니다, 줍니다, 갑니까, 됩시다.
+        if (cleaned.Length >= 3
+            && EndsWithAny(cleaned, "니다", "니까", "시다")
+            && KoreanSyllables.HasFinalBieup(cleaned[^3]))
         {
-            // Note: "나요/군요" can be haeyo-ish; we keep this conservative (only used for majority).
-            if (cleaned.EndsWith("나요", StringComparison.Ordinal) || cleaned.EndsWith("군요", StringComparison.Ordinal))
-            {
-                return ToneKind.Haeyo;
-            }
-
             return ToneKind.Hamnida;
         }
 
-        if (cleaned.EndsWith("요", StringComparison.Ordinal) || cleaned.EndsWith("세요", StringComparison.Ordinal))
+        if (cleaned.EndsWith("시오", StringComparison.Ordinal))
+        {
+            return ToneKind.Hamnida;
+        }
+
+        if (cleaned.EndsWith("요", StringComparison.Ordinal))
         {
             return ToneKind.Haeyo;
         }
 
-        if (cleaned.EndsWith("다", StringComparison.Ordinal) || cleaned.EndsWith("한다", StringComparison.Ordinal))
+        // 해라체: statements in 다 and imperatives in 라 ("넣어라", "보아라", "명심하라").
+        // A bare 라 is often a name ("헤르메우스 모라"), so it is not classified.
+        if (cleaned.EndsWith("다", StringComparison.Ordinal) || EndsWithAny(cleaned, PlainImperativeEndings))
         {
             return ToneKind.PlainDa;
         }
 
-        if (EndsWithAny(cleaned, "해", "야", "지", "냐", "라"))
+        if (EndsWithAny(cleaned, "해", "야", "지", "냐"))
         {
             return ToneKind.Casual;
         }
 
         return ToneKind.Unknown;
     }
+
+    private static readonly string[] PlainImperativeEndings = { "아라", "어라", "여라", "거라", "너라", "해라", "하라" };
+
+    public static string ToDisplay(ToneKind tone) => tone switch
+    {
+        ToneKind.Hamnida => "합니다체",
+        ToneKind.Haeyo => "해요체",
+        ToneKind.PlainDa => "해라체(…다)",
+        ToneKind.Casual => "반말",
+        _ => "알 수 없음",
+    };
 
     public static bool TryGetStrongMajorityTone(IReadOnlyList<ToneKind> tones, out ToneKind majority)
     {

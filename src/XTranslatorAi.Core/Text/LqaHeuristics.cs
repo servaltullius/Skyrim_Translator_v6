@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using System.Text.RegularExpressions;
+using XTranslatorAi.Core.Text.KoreanFix.Internal;
 using static XTranslatorAi.Core.Text.KoreanSyllables;
 
 namespace XTranslatorAi.Core.Text;
@@ -10,15 +12,27 @@ public static class LqaHeuristics
 {
     private static readonly Regex UiTagTokenRegex = TranslationConstants.UiTagTokenRegex;
 
+    // Only pairs that are wrong after any noun. "야를을" (Jarl + 을), "지팡이가", "성과와" and
+    // "그대가 이 책" are correct, so 를을/이가/과와/가이 and spaced pairs are checked after known terms only.
     private static readonly Regex DoubledParticleRegex = new(
-        pattern: @"을\s*를|를\s*을|은\s*는|는\s*은|이\s*가|가\s*이|와\s*과|과\s*와",
+        pattern: @"을를|은는|와과",
         options: RegexOptions.CultureInvariant
     );
 
+    private static readonly string[] DoubledParticlePairs = { "을를", "를을", "은는", "는은", "이가", "가이", "과와", "와과" };
+
     private static readonly Regex HangulParticleRegex = new(
-        pattern: @"(?<word>[가-힣]{1,20})(?<particle>을|를|은|는|이|가|와|과)(?=$|[\s\p{P}])",
+        pattern: @"(?<word>[가-힣]{1,20})(?<particle>을|를|은|와)(?=$|[\s\p{P}])",
         options: RegexOptions.CultureInvariant
     );
+
+    // Words whose last syllable looks like 을/은 after a vowel but is part of the word:
+    // nouns (마을, 수은) and ㅅ-irregular verb forms (더 나은, 지은, 지을 수).
+    private static readonly HashSet<string> VowelThenEulEunWords = new(StringComparer.Ordinal)
+    {
+        "마을", "가을", "고을", "노을", "나을", "지을", "이을", "부을", "그을", "저을",
+        "수은", "보은", "나은", "지은", "이은", "부은", "그은", "저은",
+    };
 
     private static readonly Regex RomanVowelConsonantParticleRegex = new(
         pattern: @"\b(?<word>[A-Za-z][A-Za-z0-9'’\-]{1,})(?<particle>을|은|이|과)(?=$|[\s\p{P}])",
@@ -59,7 +73,8 @@ public static class LqaHeuristics
         return string.Equals(src, dst, StringComparison.Ordinal);
     }
 
-    public static string? FindDoubledParticleExample(string destText)
+    /// <param name="terms">Glossary target terms; right after these the syllables are certainly particles.</param>
+    public static string? FindDoubledParticleExample(string destText, IReadOnlyList<string>? terms = null)
     {
         if (string.IsNullOrWhiteSpace(destText))
         {
@@ -67,38 +82,60 @@ public static class LqaHeuristics
         }
 
         var m = DoubledParticleRegex.Match(destText);
-        if (!m.Success || string.IsNullOrWhiteSpace(m.Value))
+        if (m.Success)
         {
-            return null;
+            return m.Value;
         }
 
-        return Regex.Replace(m.Value, @"\s+", "", RegexOptions.CultureInvariant);
+        foreach (var (term, end) in EnumerateTermEnds(destText, terms))
+        {
+            foreach (var pair in DoubledParticlePairs)
+            {
+                if (string.CompareOrdinal(destText, end, pair, 0, pair.Length) == 0
+                    && (end + pair.Length >= destText.Length || !IsHangulSyllable(destText[end + pair.Length])))
+                {
+                    return term + pair;
+                }
+            }
+        }
+
+        return null;
     }
 
-    public static string? FindHangulParticleMismatchSuggestion(string destText)
+    /// <summary>
+    /// A syllable after a word is usually not a particle: 효과, 증가, 전문가, 아이, 기꺼이 end in 과/가/이,
+    /// and 있는/받는 are verbs. So after an unknown word only the pairs that are rarely part of a word
+    /// are checked (받침 + 를/와, no 받침 + 을/은 outside a few words); after a glossary term,
+    /// where the next syllable is certainly a particle, every particle is checked.
+    /// </summary>
+    /// <param name="terms">Glossary target terms, longest first.</param>
+    public static string? FindHangulParticleMismatchSuggestion(string destText, IReadOnlyList<string>? terms = null)
     {
         if (string.IsNullOrWhiteSpace(destText))
         {
             return null;
         }
 
+        foreach (var (term, end) in EnumerateTermEnds(destText, terms))
+        {
+            if (KoreanParticleSelector.TryFixParticleAfterTerm(term, destText, end, out var expected, out var length)
+                && destText.Substring(end, length) is var written
+                && written != expected)
+            {
+                return $"{term}{written} → {term}{expected}";
+            }
+        }
+
         foreach (Match m in HangulParticleRegex.Matches(destText))
         {
-            if (!m.Success)
-            {
-                continue;
-            }
-
             var word = m.Groups["word"].Value;
             var particle = m.Groups["particle"].Value;
-            if (string.IsNullOrWhiteSpace(word) || string.IsNullOrWhiteSpace(particle))
+            if (word.Length == 0 || VowelThenEulEunWords.Contains(word[^1] + particle))
             {
                 continue;
             }
 
-            var last = word[^1];
-            var hasJongseong = HasFinalConsonant(last);
-            var expected = GetExpectedParticleForHangul(particle, hasJongseong);
+            var expected = GetExpectedParticleForHangul(particle, HasFinalConsonant(word[^1]));
             if (expected == null)
             {
                 continue;
@@ -109,6 +146,42 @@ public static class LqaHeuristics
 
         return null;
     }
+
+    /// <summary>Positions right after each Hangul-final term that starts a word.</summary>
+    private static IEnumerable<(string Term, int End)> EnumerateTermEnds(string text, IReadOnlyList<string>? terms)
+    {
+        if (terms == null)
+        {
+            yield break;
+        }
+
+        foreach (var term in terms)
+        {
+            var idx = 0;
+            while ((idx = text.IndexOf(term, idx, StringComparison.Ordinal)) >= 0)
+            {
+                var end = idx + term.Length;
+                if (idx == 0 || !IsHangulSyllable(text[idx - 1]))
+                {
+                    yield return (term, end);
+                }
+
+                idx = end;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Target terms worth checking particles after: Hangul-final (a Latin or digit ending is read
+    /// differently from how it is spelled, e.g. NPC → 엔피시) and at least two syllables.
+    /// </summary>
+    public static IReadOnlyList<string> BuildParticleCheckTerms(IReadOnlyList<GlossaryEntry> glossary)
+        => glossary
+            .Select(e => (e.TargetTerm ?? "").Trim())
+            .Where(t => t.Length >= 2 && IsHangulSyllable(t[^1]))
+            .Distinct(StringComparer.Ordinal)
+            .OrderByDescending(t => t.Length)
+            .ToList();
 
     public static string? FindRomanVowelParticleMismatchSuggestion(string destText)
     {
@@ -218,6 +291,8 @@ public static class LqaHeuristics
 
         var dst = StripUiTokens(destText);
 
+        // Mirror GlossaryApplier: entries arrive in its order (priority, then longer terms first), and
+        // text an earlier entry replaced is not matched again ("Elder Scroll" before "Scroll").
         foreach (var entry in glossaryEntries)
         {
             if (!entry.Enabled)
@@ -244,17 +319,24 @@ public static class LqaHeuristics
                 continue;
             }
 
-            if (ContainsIgnoreCase(dst, targetTerm))
+            var spans = FindSourceTermSpans(src, sourceTerm, entry);
+            if (spans.Count == 0)
             {
                 continue;
             }
 
-            if (!ContainsSourceTerm(src, sourceTerm, entry))
+            if (!ContainsIgnoreCase(dst, targetTerm))
             {
-                continue;
+                return entry;
             }
 
-            return entry;
+            var masked = src.ToCharArray();
+            foreach (var (start, length) in spans)
+            {
+                Array.Fill(masked, '\u0001', start, length);
+            }
+
+            src = new string(masked);
         }
 
         return null;
@@ -353,72 +435,41 @@ public static class LqaHeuristics
         return false;
     }
 
-    private static bool ContainsSourceTerm(string sourceText, string sourceTerm, GlossaryEntry entry)
+    private static List<(int Start, int Length)> FindSourceTermSpans(string sourceText, string sourceTerm, GlossaryEntry entry)
     {
-        if (entry.MatchMode == GlossaryMatchMode.Substring)
+        var spans = new List<(int Start, int Length)>();
+        if (entry.MatchMode is not (GlossaryMatchMode.Substring or GlossaryMatchMode.WordBoundary))
         {
-            return ContainsIgnoreCase(sourceText, sourceTerm);
+            return spans;
         }
 
-        if (entry.MatchMode != GlossaryMatchMode.WordBoundary)
-        {
-            return false;
-        }
-
-        if (IsBuiltInDefaultGlossary(entry) && string.Equals(sourceTerm, "Reach", StringComparison.OrdinalIgnoreCase))
-        {
-            return ContainsReachPlaceNameOccurrence(sourceText);
-        }
-
-        return ContainsWordBoundaryIgnoreCase(sourceText, sourceTerm);
-    }
-
-    private static bool IsBuiltInDefaultGlossary(GlossaryEntry entry)
-    {
-        return !string.IsNullOrWhiteSpace(entry.Note)
-               && entry.Note.StartsWith("Built-in default glossary", StringComparison.Ordinal);
-    }
-
-    private static bool ContainsReachPlaceNameOccurrence(string sourceText)
-    {
-        const string term = "Reach";
+        var comparison = GlossaryApplier.ForcesOnlyExactCase(entry) ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+        var isBuiltInReach = GlossaryApplier.IsBuiltInDefaultEntry(entry)
+                             && string.Equals(sourceTerm, "Reach", StringComparison.OrdinalIgnoreCase);
         var idx = 0;
-        while (idx < sourceText.Length)
+        while ((idx = sourceText.IndexOf(sourceTerm, idx, comparison)) >= 0)
         {
-            var hit = sourceText.IndexOf(term, idx, StringComparison.OrdinalIgnoreCase);
-            if (hit < 0)
+            var end = idx + sourceTerm.Length;
+            var counts = entry.MatchMode == GlossaryMatchMode.Substring || IsWordBoundary(sourceText, idx, sourceTerm.Length);
+
+            // Same exception as GlossaryApplier: "Reach level 10", "Reach of ..." is the verb, not the hold.
+            if (counts && isBuiltInReach)
             {
-                return false;
+                var nextWord = ReadNextAsciiWord(sourceText, end);
+                counts = !string.Equals(nextWord, "of", StringComparison.OrdinalIgnoreCase)
+                         && !string.Equals(nextWord, "level", StringComparison.OrdinalIgnoreCase)
+                         && !string.Equals(nextWord, "levels", StringComparison.OrdinalIgnoreCase);
             }
 
-            if (!IsWordBoundary(sourceText, hit, term.Length))
+            if (counts)
             {
-                idx = hit + term.Length;
-                continue;
+                spans.Add((idx, sourceTerm.Length));
             }
 
-            // Built-in suppression rules (match GlossaryApplier behavior):
-            // - Require exact casing "Reach" to avoid matching general "reach".
-            if (!string.Equals(sourceText.Substring(hit, term.Length), term, StringComparison.Ordinal))
-            {
-                idx = hit + term.Length;
-                continue;
-            }
-
-            // - Suppress obvious verb/common-noun patterns: "reach of", "Reach level ...".
-            var nextWord = ReadNextAsciiWord(sourceText, hit + term.Length);
-            if (string.Equals(nextWord, "of", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(nextWord, "level", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(nextWord, "levels", StringComparison.OrdinalIgnoreCase))
-            {
-                idx = hit + term.Length;
-                continue;
-            }
-
-            return true;
+            idx = end;
         }
 
-        return false;
+        return spans;
     }
 
     private static string ReadNextAsciiWord(string text, int startIndex)
@@ -441,33 +492,6 @@ public static class LqaHeuristics
         }
 
         return start < i ? text.Substring(start, i - start) : "";
-    }
-
-    private static bool ContainsWordBoundaryIgnoreCase(string text, string term)
-    {
-        if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(term))
-        {
-            return false;
-        }
-
-        var idx = 0;
-        while (idx < text.Length)
-        {
-            var hit = text.IndexOf(term, idx, StringComparison.OrdinalIgnoreCase);
-            if (hit < 0)
-            {
-                return false;
-            }
-
-            if (IsWordBoundary(text, hit, term.Length))
-            {
-                return true;
-            }
-
-            idx = hit + term.Length;
-        }
-
-        return false;
     }
 
     private static bool IsWordBoundary(string text, int matchIndex, int matchLength)

@@ -13,6 +13,9 @@ public sealed class LqaIssueViewModel
     public string Code { get; }
     public string Message { get; }
 
+    public string SeverityDisplay => LqaIssueLabels.Severity(Severity);
+    public string CodeDisplay => LqaIssueLabels.Code(Code);
+
     public string SourcePreview { get; }
     public string DestPreview { get; }
 
@@ -51,7 +54,9 @@ public sealed class LqaIssueViewModel
                || ContainsIgnoreCase(Edid ?? "", q)
                || ContainsIgnoreCase(Rec ?? "", q)
                || ContainsIgnoreCase(Severity, q)
+               || ContainsIgnoreCase(SeverityDisplay, q)
                || ContainsIgnoreCase(Code, q)
+               || ContainsIgnoreCase(CodeDisplay, q)
                || ContainsIgnoreCase(Message, q)
                || ContainsIgnoreCase(SourcePreview, q)
                || ContainsIgnoreCase(DestPreview, q);
