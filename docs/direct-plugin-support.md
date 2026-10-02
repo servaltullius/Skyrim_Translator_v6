@@ -1,6 +1,6 @@
 # Skyrim SE/AE 플러그인 직접 번역
 
-최신 릴리스: `1.8`([GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/1.8)). 1.8에서 아래 "이전 번역 참고"를 더했다. 프로젝트 루트의 `TulliusTranslator.exe`는 미리보기 `1.9-preview2`(프로젝트 문맥 자동 생성 개선, 영문 남음 예외)이다. preview12의 [2026-10-01 전반 개선](analysis/2026-10-01-upgrade.md)(한국어 화면, 프롬프트 예시 누출 수정, 이전 손상 검사)에 [품질 검사 오탐 수정](analysis/2026-10-02-lqa-false-positives.md)과 완료된 행을 대기로 되돌리는 `다시 번역` 버튼을 더했다. 플러그인 reader/writer는 preview9와 같다. 설정과 API 키는 이번 교체에서 변경하지 않았다. 이전 루트 빌드 1.8은 `artifacts/context-1.9-preview1-20261002/deployment/`에, 그 이전 빌드도 기존 `.disabled` 백업에 보존한다.
+최신 릴리스: `1.8`([GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/1.8)). 1.8에서 아래 "이전 번역 참고"를 더했다. 프로젝트 루트의 `TulliusTranslator.exe`는 미리보기 `1.9-preview2`(프로젝트 문맥 자동 생성 개선, 영문 남음 예외)이다. preview12의 [2026-10-01 전반 개선](analysis/2026-10-01-upgrade.md)(한국어 화면, 프롬프트 예시 누출 수정, 이전 손상 검사)에 [품질 검사 오탐 수정](analysis/2026-10-02-lqa-false-positives.md)과 완료된 행을 대기로 되돌리는 `다시 번역` 버튼을 더했다. 플러그인 reader/writer는 preview9와 같다. 설정과 API 키는 이번 교체에서 변경하지 않았다. 이전 루트 빌드 1.9-preview1은 `artifacts/residue-1.9-preview2-20261003/deployment/`에, 1.8은 `artifacts/context-1.9-preview1-20261002/deployment/`에, 그 이전 빌드도 기존 `.disabled` 백업에 보존한다.
 
 ## 사용 순서
 
