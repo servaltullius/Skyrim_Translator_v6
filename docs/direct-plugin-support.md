@@ -1,6 +1,6 @@
 # Skyrim SE/AE 플러그인 직접 번역
 
-현재 루트 실행 파일: `2026.10.01-upgrade-preview12`. 동일한 배포본은 `artifacts/upgrade-preview12-20261001/publish/TulliusTranslator.exe`에 있다. preview11에 [2026-10-01 전반 개선](analysis/2026-10-01-upgrade.md)(한국어 화면, 프롬프트 예시 누출 수정, 이전 손상 검사)을 더했다. 플러그인 reader/writer는 preview9와 같다. 설정과 API 키는 이번 교체에서 변경하지 않았다. 이전 preview11은 `artifacts/upgrade-preview12-20261001/deployment/TulliusTranslator.preview11.exe.disabled`에, preview10 이전 빌드도 기존 `.disabled` 백업에 보존한다.
+현재 루트 실행 파일: `2026.10.02-lqa-preview13`. 동일한 배포본은 `artifacts/lqa-preview13-20261002/publish/TulliusTranslator.exe`에 있다. preview12의 [2026-10-01 전반 개선](analysis/2026-10-01-upgrade.md)(한국어 화면, 프롬프트 예시 누출 수정, 이전 손상 검사)에 [품질 검사 오탐 수정](analysis/2026-10-02-lqa-false-positives.md)을 더했다. 플러그인 reader/writer는 preview9와 같다. 설정과 API 키는 이번 교체에서 변경하지 않았다. 이전 preview12는 `artifacts/lqa-preview13-20261002/deployment/TulliusTranslator.preview12.exe.disabled`에, 그 이전 빌드도 기존 `.disabled` 백업에 보존한다.
 
 ## 사용 순서
 
