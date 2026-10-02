@@ -16,6 +16,8 @@ public interface IStringsTabHost : INotifyPropertyChanged
     ICollectionView EntriesView { get; }
     StringEntryViewModel? SelectedEntry { get; set; }
     IAsyncRelayCommand SaveSelectedDestCommand { get; }
+    IAsyncRelayCommand<System.Collections.IList?> RetranslateSelectedCommand { get; }
+    IAsyncRelayCommand RetranslateVisibleCommand { get; }
 
     string GlossaryLookupText { get; set; }
     bool GlossaryLookupIncludeProject { get; set; }

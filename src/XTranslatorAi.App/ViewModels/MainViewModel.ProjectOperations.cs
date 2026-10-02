@@ -28,6 +28,8 @@ public partial class MainViewModel
         ClearProjectContextCommand.NotifyCanExecuteChanged();
         ExportXmlCommand.NotifyCanExecuteChanged();
         ExportPluginCommand.NotifyCanExecuteChanged();
+        RetranslateSelectedCommand.NotifyCanExecuteChanged();
+        RetranslateVisibleCommand.NotifyCanExecuteChanged();
     }
 
     private async Task RunProjectOperationAsync(string name, Func<CancellationToken, Task> action)

@@ -17,7 +17,7 @@ public partial class MainViewModel
 
         if (canceled)
         {
-            StatusMessage = "번역을 중지했습니다. Start를 누르면 미완료 항목부터 이어서 번역합니다.";
+            StatusMessage = "번역을 중지했습니다. '번역 시작'을 누르면 미완료 항목부터 이어서 번역합니다.";
         }
         else if (error == null)
         {

@@ -66,6 +66,10 @@ public sealed class StringsTabViewModel : ObservableObject, IDisposable
 
     public IAsyncRelayCommand SaveSelectedDestCommand => _host.SaveSelectedDestCommand;
 
+    public IAsyncRelayCommand<System.Collections.IList?> RetranslateSelectedCommand => _host.RetranslateSelectedCommand;
+
+    public IAsyncRelayCommand RetranslateVisibleCommand => _host.RetranslateVisibleCommand;
+
     public string GlossaryLookupText
     {
         get => _host.GlossaryLookupText;

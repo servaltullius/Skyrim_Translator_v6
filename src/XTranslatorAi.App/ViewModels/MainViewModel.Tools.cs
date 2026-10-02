@@ -269,7 +269,7 @@ public partial class MainViewModel
     private bool TryGetEstimateScope(out bool includeCompletedItems)
     {
         var choice = _uiInteractionService.ShowMessage(
-            "비용을 어떤 범위로 추정할까요?\n\n- Yes: 전체 항목(이미 번역된 항목 포함)\n- No: 남은 항목(Pending/Error)\n- Cancel: 취소",
+            "비용을 어떤 범위로 추정할까요?\n\n- 예: 전체 항목(이미 번역된 항목 포함)\n- 아니요: 남은 항목(대기·오류)\n- 취소: 추정하지 않음",
             "비용 추정",
             UiMessageBoxButton.YesNoCancel,
             UiMessageBoxImage.Question
@@ -287,7 +287,7 @@ public partial class MainViewModel
     private bool TryGetEstimateSampleOption(out bool runSample)
     {
         var choice = _uiInteractionService.ShowMessage(
-            "출력 토큰 추정을 위해 소량의 샘플 번역을 실행할까요?\n\n- Yes: 더 정확한 출력/비용 추정 (소량의 API 비용 발생)\n- No: 빠른 추정 (출력 토큰은 범위로만 표시)\n\n※ 대용량 프로젝트에서는 Yes가 오래 걸릴 수 있습니다.",
+            "출력 토큰 추정을 위해 소량의 샘플 번역을 실행할까요?\n\n- 예: 더 정확한 출력/비용 추정 (소량의 API 비용 발생)\n- 아니요: 빠른 추정 (출력 토큰은 범위로만 표시)\n\n※ 대용량 프로젝트에서는 '예'가 오래 걸릴 수 있습니다.",
             "비용 추정",
             UiMessageBoxButton.YesNoCancel,
             UiMessageBoxImage.Question,

@@ -128,6 +128,8 @@ public partial class MainViewModel
     [NotifyCanExecuteChangedFor(nameof(ClearProjectContextCommand))]
     [NotifyCanExecuteChangedFor(nameof(ScanLqaCommand))]
     [NotifyCanExecuteChangedFor(nameof(ClearLqaCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RetranslateSelectedCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RetranslateVisibleCommand))]
     private bool _isProjectLoaded;
 
     [ObservableProperty]
@@ -162,6 +164,8 @@ public partial class MainViewModel
     [NotifyCanExecuteChangedFor(nameof(ClearProjectContextCommand))]
     [NotifyCanExecuteChangedFor(nameof(ScanLqaCommand))]
     [NotifyCanExecuteChangedFor(nameof(ClearLqaCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RetranslateSelectedCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RetranslateVisibleCommand))]
     private bool _isTranslating;
 
     [ObservableProperty]
