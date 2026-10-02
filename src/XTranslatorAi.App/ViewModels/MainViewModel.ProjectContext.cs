@@ -50,7 +50,7 @@ public partial class MainViewModel
                 }
             }
 
-            ctx = TrimAndClamp(ctx, maxChars: 6000);
+            ctx = TrimAndClamp(ProjectContextTermEnforcer.Apply(ctx, report.TopTerms), maxChars: 6000);
 
             await db.UpsertProjectContextAsync(ctx, cancellationToken);
             ProjectContextPreview = ctx;

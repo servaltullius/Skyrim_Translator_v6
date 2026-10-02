@@ -42,6 +42,13 @@ public partial class MainViewModel
         sb.AppendLine("  3) Style rules (especially for effect/perk descriptions)");
         sb.AppendLine("  4) Numeric/template conventions (duration/cooldown/percent/points phrasing)");
         sb.AppendLine("- Use only information present in the report; do not invent lore facts.");
+        // The translation follows this list over its other references, so a guessed entry overrides
+        // the established name (a generated "Deathblow: 치명타" beat the earlier patch's 치명적 일격).
+        sb.AppendLine("- Terminology entries need evidence in the report:");
+        sb.AppendLine("  - If a term has \"target\", use that target exactly.");
+        sb.AppendLine("  - If it has \"previousTranslations\" (names from the earlier translated release), use the Korean those examples consistently use for the term.");
+        sb.AppendLine("  - If it has neither, leave it out of the terminology list. Never guess a translation.");
+        sb.AppendLine("  - Give exactly one target per term. Never list alternatives such as \"A / B\"; if the evidence disagrees, leave the term out.");
         sb.AppendLine();
         sb.AppendLine("Project scan report JSON:");
         sb.AppendLine(json);

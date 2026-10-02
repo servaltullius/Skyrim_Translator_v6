@@ -17,8 +17,15 @@ public sealed class ProjectContextScanner
         Dictionary<string, int> RecCounts,
         Dictionary<string, int> TermCounts,
         List<ProjectContextSample> Samples,
-        Dictionary<string, string> EditedByKey
+        Dictionary<string, string> EditedByKey,
+        Dictionary<string, List<(string Source, string Previous)>> PreviousCandidatesByKey
     );
+
+    private const int MaxPreviousExamplesPerTerm = 2;
+    private const int MaxPreviousCandidatesPerTerm = 40;
+    private const int MaxPreviousExampleSourceChars = 80;
+
+    private static readonly Regex HangulWordRegex = new(@"[가-힣]{2,}", RegexOptions.CultureInvariant);
 
     private static readonly Regex PlaceholderTagRegex = new(
         pattern: @"<\s*(?:mag|dur|\d+)\s*>",
@@ -54,10 +61,11 @@ public sealed class ProjectContextScanner
         var total = (int)Math.Min(int.MaxValue, await db.GetStringCountAsync(cancellationToken));
 
         var glossaryByKey = await BuildGlossaryByKeyAsync(db, globalDb, cancellationToken);
-        var scan = await ScanStringsAsync(db, total, cancellationToken);
+        var previousById = await db.GetPreviousTranslationsByStringIdAsync(cancellationToken);
+        var scan = await ScanStringsAsync(db, total, previousById, cancellationToken);
 
         var topRec = BuildTopRec(scan.RecCounts);
-        var topTerms = BuildTopTerms(scan.TermCounts, glossaryByKey, scan.EditedByKey);
+        var topTerms = BuildTopTerms(scan.TermCounts, glossaryByKey, scan.EditedByKey, scan.PreviousCandidatesByKey);
 
         var nexus = string.IsNullOrWhiteSpace(options.NexusContext) ? null : options.NexusContext.Trim();
 
@@ -117,10 +125,16 @@ public sealed class ProjectContextScanner
         return glossaryByKey;
     }
 
-    private static async Task<ScanAccumulation> ScanStringsAsync(ProjectDb db, int total, CancellationToken cancellationToken)
+    private static async Task<ScanAccumulation> ScanStringsAsync(
+        ProjectDb db,
+        int total,
+        IReadOnlyDictionary<long, string> previousById,
+        CancellationToken cancellationToken
+    )
     {
         var recCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         var termCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        var previousExamples = new Dictionary<string, List<(string Source, string Previous)>>(StringComparer.OrdinalIgnoreCase);
         var editedByKey = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var samples = new List<ProjectContextSample>();
         var seenSamples = new HashSet<string>(StringComparer.Ordinal);
@@ -142,7 +156,12 @@ public sealed class ProjectContextScanner
                     continue;
                 }
 
-                AccumulateTitleCaseTerms(termCounts, source);
+                var terms = AccumulateTitleCaseTerms(termCounts, source);
+                if (previousById.TryGetValue(row.Id, out var previous))
+                {
+                    AccumulatePreviousExamples(previousExamples, terms, source, previous);
+                }
+
                 TryAccumulateSample(samples, seenSamples, row.Rec, source);
                 TryAccumulatePlainSample(plainSamples, row.Rec, source);
             }
@@ -152,7 +171,63 @@ public sealed class ProjectContextScanner
         // frequent title-case terms. Include bounded source evidence instead of asking the model
         // to infer context from only the filename and record counts.
         if (samples.Count == 0) samples.AddRange(plainSamples);
-        return new ScanAccumulation(recCounts, termCounts, samples, editedByKey);
+        return new ScanAccumulation(recCounts, termCounts, samples, editedByKey, previousExamples);
+    }
+
+    private static void AccumulatePreviousExamples(
+        Dictionary<string, List<(string Source, string Previous)>> candidatesByKey,
+        IReadOnlyCollection<string> terms,
+        string source,
+        string previous
+    )
+    {
+        // Short names show how a term was translated; long descriptions bury it.
+        var trimmedSource = source.Trim();
+        if (trimmedSource.Length > MaxPreviousExampleSourceChars || trimmedSource.Contains('\n'))
+        {
+            return;
+        }
+
+        foreach (var term in terms)
+        {
+            if (!candidatesByKey.TryGetValue(term, out var candidates))
+            {
+                candidates = new List<(string Source, string Previous)>();
+                candidatesByKey[term] = candidates;
+            }
+
+            if (candidates.Count < MaxPreviousCandidatesPerTerm)
+            {
+                candidates.Add((trimmedSource, previous.Trim()));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Picks examples that use the term's usual translation: those whose Korean words recur most across the
+    /// candidates. "Annotation" rows mostly say 주석, and the first rows found may be the few with 어노테이션.
+    /// </summary>
+    private static List<string> SelectRepresentativeExamples(List<(string Source, string Previous)> candidates)
+    {
+        var wordsByCandidate = candidates
+            .Select(c => HangulWordRegex.Matches(c.Previous).Select(m => m.Value).Distinct(StringComparer.Ordinal).ToList())
+            .ToList();
+        var wordRows = new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (var word in wordsByCandidate.SelectMany(words => words))
+        {
+            wordRows[word] = wordRows.TryGetValue(word, out var n) ? n + 1 : 1;
+        }
+
+        return candidates
+            // Average, not sum: a long sentence has more words but is not more typical.
+            .Select((c, index) => (c.Source, c.Previous,
+                Score: wordsByCandidate[index].Count == 0 ? 0 : wordsByCandidate[index].Average(word => wordRows[word])))
+            .OrderByDescending(c => c.Score)
+            .ThenBy(c => c.Source.Length)
+            .Select(c => $"{c.Source} => {c.Previous}")
+            .Distinct(StringComparer.Ordinal)
+            .Take(MaxPreviousExamplesPerTerm)
+            .ToList();
     }
 
     private static void TryAccumulatePlainSample(List<ProjectContextSample> samples, string? recRaw, string source)
@@ -202,7 +277,7 @@ public sealed class ProjectContextScanner
         editedByKey[key] = row.DestText.Trim();
     }
 
-    private static void AccumulateTitleCaseTerms(Dictionary<string, int> termCounts, string source)
+    private static HashSet<string> AccumulateTitleCaseTerms(Dictionary<string, int> termCounts, string source)
     {
         var uniqueTerms = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var term in ExtractTitleCaseCandidates(source))
@@ -227,6 +302,8 @@ public sealed class ProjectContextScanner
                 termCounts[t] = 1;
             }
         }
+
+        return uniqueTerms;
     }
 
     private static void TryAccumulateSample(
@@ -273,7 +350,8 @@ public sealed class ProjectContextScanner
     private static List<ProjectContextTermInfo> BuildTopTerms(
         Dictionary<string, int> termCounts,
         Dictionary<string, string> glossaryByKey,
-        Dictionary<string, string> editedByKey
+        Dictionary<string, string> editedByKey,
+        Dictionary<string, List<(string Source, string Previous)>> previousCandidatesByKey
     )
     {
         return termCounts
@@ -296,7 +374,11 @@ public sealed class ProjectContextScanner
                         target = e;
                     }
 
-                    return new ProjectContextTermInfo(Source: key, Count: kv.Value, Target: string.IsNullOrWhiteSpace(target) ? null : target);
+                    var hasTarget = !string.IsNullOrWhiteSpace(target);
+                    var previous = !hasTarget && previousCandidatesByKey.TryGetValue(key, out var candidates) && candidates.Count > 0
+                        ? SelectRepresentativeExamples(candidates)
+                        : null;
+                    return new ProjectContextTermInfo(Source: key, Count: kv.Value, Target: hasTarget ? target : null, PreviousTranslations: previous);
                 }
             )
             .ToList();
