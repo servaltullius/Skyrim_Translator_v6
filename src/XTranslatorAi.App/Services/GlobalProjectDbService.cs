@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
@@ -53,6 +54,7 @@ public sealed class GlobalProjectDbService
                     insertMissingEntries: shouldInsertMissingBuiltInEntries,
                     franchise: franchise
                 );
+                await AddLaterBuiltInEntriesAsync(db, dbPath, franchise, cancellationToken);
                 _dbByFranchise[franchise] = db;
                 return db;
             }
@@ -69,6 +71,20 @@ public sealed class GlobalProjectDbService
         finally
         {
             _initLock.Release();
+        }
+    }
+
+    private async Task AddLaterBuiltInEntriesAsync(ProjectDb db, string dbPath, BethesdaFranchise franchise, CancellationToken cancellationToken)
+    {
+        // Optional: a failure here must not make the whole global glossary unavailable.
+        try
+        {
+            var stampPath = ProjectPaths.GetBuiltInGlossaryAdditionsStampPath(dbPath, BuiltInGlossaryService.LaterAdditionsVersion);
+            await _builtInGlossaryService.AddLaterEntriesOnceAsync(db, stampPath, franchise, cancellationToken);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            AppLog.Write($"WARN 기본 용어집 추가 항목을 반영하지 못했습니다: {ex}");
         }
     }
 }

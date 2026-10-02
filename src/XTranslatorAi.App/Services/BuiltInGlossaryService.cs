@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,6 +23,51 @@ public sealed class BuiltInGlossaryService
         "loot",
         "shout",
     };
+
+    /// <summary>
+    /// Entries added to the built-in glossary after it first shipped. A global glossary is filled from
+    /// the built-in list only when it is created, so that entries a user deleted stay deleted; these are
+    /// offered to older glossaries once (see <see cref="AddLaterEntriesOnceAsync"/>).
+    /// Bump the version when adding sources here.
+    /// </summary>
+    public const string LaterAdditionsVersion = "2026-10-01";
+
+    private static readonly HashSet<string> LaterAdditionSources = new(StringComparer.OrdinalIgnoreCase)
+    {
+        // Without these, "Scroll" (주문서) is forced inside the name: "엘더 주문서".
+        "Elder Scroll",
+        "Elder Scrolls",
+    };
+
+    /// <summary>
+    /// Adds <see cref="LaterAdditionSources"/> that are missing and writes <paramref name="stampPath"/>,
+    /// so a later deletion by the user is not undone on the next start.
+    /// </summary>
+    public async Task AddLaterEntriesOnceAsync(
+        ProjectDb db,
+        string stampPath,
+        BethesdaFranchise franchise,
+        CancellationToken cancellationToken
+    )
+    {
+        if (File.Exists(stampPath))
+        {
+            return;
+        }
+
+        var existing = await db.GetGlossaryAsync(cancellationToken);
+        var existingSources = new HashSet<string>(existing.Select(e => e.SourceTerm.Trim()), StringComparer.OrdinalIgnoreCase);
+        var additions = GlossaryFileParser.ParseEntries(EmbeddedAssets.LoadDefaultGlossary(franchise))
+            .Where(e => LaterAdditionSources.Contains(e.Source.Trim()))
+            .ToList();
+        var rows = BuildBuiltInGlossaryInsertRows(additions, existingSources);
+        if (rows.Count > 0)
+        {
+            await db.BulkInsertGlossaryAsync(rows, cancellationToken);
+        }
+
+        await File.WriteAllTextAsync(stampPath, $"added={rows.Count}{Environment.NewLine}", cancellationToken);
+    }
 
     public Task EnsureBuiltInGlossaryAsync(
         ProjectDb db,

@@ -171,6 +171,13 @@ public static class ProjectPaths
         return dir;
     }
 
+    /// <summary>Marks that the built-in glossary additions of <paramref name="version"/> were offered to this glossary.</summary>
+    public static string GetBuiltInGlossaryAdditionsStampPath(string globalGlossaryDbPath, string version)
+        => Path.Combine(
+            Path.GetDirectoryName(Path.GetFullPath(globalGlossaryDbPath)) ?? GetProjectsBaseDir(),
+            $".builtin-glossary-additions.{version}.stamp"
+        );
+
     public static string GetBundledFranchiseTmSeedStampPath(BethesdaFranchise franchise, string version)
         => GetBundledFranchiseTmSeedStampPath(franchise, version, globalRootOverride: null);
 
