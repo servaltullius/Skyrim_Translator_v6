@@ -1,6 +1,6 @@
 # Skyrim SE/AE 플러그인 직접 번역
 
-현재 버전: `1.7`([GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/1.7)). 프로젝트 루트의 `TulliusTranslator.exe`도 같은 버전이다. preview12의 [2026-10-01 전반 개선](analysis/2026-10-01-upgrade.md)(한국어 화면, 프롬프트 예시 누출 수정, 이전 손상 검사)에 [품질 검사 오탐 수정](analysis/2026-10-02-lqa-false-positives.md)과 완료된 행을 대기로 되돌리는 `다시 번역` 버튼을 더했다. 플러그인 reader/writer는 preview9와 같다. 설정과 API 키는 이번 교체에서 변경하지 않았다. 이전 루트 빌드 preview14는 `artifacts/release-1.7-20261002/deployment/TulliusTranslator.preview14.exe.disabled`에, 그 이전 빌드도 기존 `.disabled` 백업에 보존한다.
+최신 릴리스: `1.7`([GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/1.7)). 프로젝트 루트의 `TulliusTranslator.exe`는 미리보기 `1.8-preview1`(아래 "이전 번역 참고" 추가)이다. preview12의 [2026-10-01 전반 개선](analysis/2026-10-01-upgrade.md)(한국어 화면, 프롬프트 예시 누출 수정, 이전 손상 검사)에 [품질 검사 오탐 수정](analysis/2026-10-02-lqa-false-positives.md)과 완료된 행을 대기로 되돌리는 `다시 번역` 버튼을 더했다. 플러그인 reader/writer는 preview9와 같다. 설정과 API 키는 이번 교체에서 변경하지 않았다. 이전 루트 빌드 1.7은 `artifacts/previous-ref-1.8-preview1-20261002/deployment/TulliusTranslator.1.7.exe.disabled`에, 그 이전 빌드도 기존 `.disabled` 백업에 보존한다.
 
 ## 사용 순서
 
@@ -31,6 +31,15 @@
 영어 슬롯을 사용하는 게임에서 한글을 표시하려면 내용만 한국어인 `_english.*STRINGS`가 필요하므로, 저장할 때 원본 언어 슬롯을 유지한다. `_korean`으로 자동 개명하지 않는다. 공유 StringID를 가진 여러 행의 번역이 다르면 저장을 막고 해당 ID와 관련 행을 알려준다. Search에 오류 메시지의 `string:STRINGS/42` 같은 검색어를 넣고 Status를 `(All)`로 설정한 뒤, 공유 행들의 번역을 일치시킨다. 다른 필터도 해제하면 모든 공유 행을 확인할 수 있다.
 
 선택한 문구의 Source 위와 행 툴팁에 FormID·필드·StringID가 표시된다. `form:01000800`은 정확한 FormID, `row:12`는 행 번호로 검색한다. **보호 요소 불일치만** 필터는 저장 시 검사와 같은 기준으로 태그·페이지 구분·printf·중괄호·줄바꿈 등의 훼손을 찾는다.
+
+## 이전 번역 참고
+
+같은 플러그인의 이전 번역판(예: 모드 업데이트 전의 한글판 ESP)이 있으면 **프로젝트 문맥** 탭의 `이전 번역 불러오기`로 연결한다. 같은 FormID·필드끼리 짝지어, 번역할 때 그 행의 이전 번역을 참고 자료로 함께 보낸다. 모델은 지금 원문에 맞는 범위에서 기존 이름·용어(예: 시산혈해, 참격)를 따르고, 이전 번역의 조사 오류나 미번역은 따라 하지 않는다. 이전 번역을 그대로 복사하지는 않는다.
+
+- 번역판은 저장 인코딩으로 읽고, 문자열은 그 파일 옆 `Strings`나 BSA에서 찾는다. 마스터 구성이 같아야 FormID가 맞는다.
+- 연결은 필드 키로 저장되므로 ESP를 다시 열어도 유지된다. `연결 해제`로 지운다.
+- 이미 번역된 행에 반영하려면 문자열 탭의 `다시 번역`으로 대기 상태로 되돌린 뒤 번역한다.
+- 긴 책을 조각으로 나눠 번역할 때는 붙이지 않는다. 참고 문장은 입력 토큰을 늘린다(실측 약 38%).
 
 ## 대화 문맥과 TM
 
