@@ -88,6 +88,8 @@ public partial class MainViewModel
         OnPropertyChanged(nameof(CurrentXmlFileName));
         NotifyWorkspaceAvailability();
         ProjectContextPreview = "";
+        PreviousTranslationSummary = PreviousTranslationUnavailable;
+        HasPreviousTranslation = false;
         SelectedEntry = null;
         TotalCount = 0;
         DoneCount = 0;

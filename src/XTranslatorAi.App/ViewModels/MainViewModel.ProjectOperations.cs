@@ -30,6 +30,8 @@ public partial class MainViewModel
         ExportPluginCommand.NotifyCanExecuteChanged();
         RetranslateSelectedCommand.NotifyCanExecuteChanged();
         RetranslateVisibleCommand.NotifyCanExecuteChanged();
+        ImportPreviousTranslationCommand.NotifyCanExecuteChanged();
+        ClearPreviousTranslationCommand.NotifyCanExecuteChanged();
     }
 
     private async Task RunProjectOperationAsync(string name, Func<CancellationToken, Task> action)

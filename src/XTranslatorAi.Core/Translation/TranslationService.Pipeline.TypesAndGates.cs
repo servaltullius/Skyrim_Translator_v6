@@ -47,6 +47,16 @@ public sealed partial class TranslationService
         return Ctx.DialogueContextWindowById.TryGetValue(id, out var ctx) ? ctx : null;
     }
 
+    /// <summary>Adds the reference material for a row: its book title and its earlier translation.</summary>
+    private string? AppendReferences(long id, string? hint)
+    {
+        hint = AppendBookTitleReference(id, hint);
+        var previous = Ctx.PreviousTranslationById?.TryGetValue(id, out var text) == true
+            ? TranslationPreviousReference.Build(text)
+            : null;
+        return previous == null ? hint : string.IsNullOrWhiteSpace(hint) ? previous : hint + "\n\n" + previous;
+    }
+
     private string? AppendBookTitleReference(long id, string? hint)
     {
         if (!Ctx.EnableBookContext || !TranslationBookContext.IsBody(GetRecForId(id))) return hint;

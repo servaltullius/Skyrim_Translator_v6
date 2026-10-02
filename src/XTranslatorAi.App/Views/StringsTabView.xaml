@@ -149,6 +149,22 @@
                             </Style>
                         </TextBlock.Style>
                     </TextBlock>
+                    <TextBlock DockPanel.Dock="Top" Text="{Binding SelectedEntry.PreviousTranslationText}"
+                               TextWrapping="Wrap" Margin="0,0,0,6" Foreground="{StaticResource XT.MutedTextBrush}"
+                               ToolTip="이전 번역판의 같은 레코드 번역입니다. 번역할 때 참고 자료로 보냅니다.">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedEntry.PreviousTranslationText}" Value="">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedEntry}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 <TextBox Text="{Binding SelectedEntry.SourceText}"
                          IsReadOnly="True"
                          Style="{StaticResource XT.EditorTextBox}"

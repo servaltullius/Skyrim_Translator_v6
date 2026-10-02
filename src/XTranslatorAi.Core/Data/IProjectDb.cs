@@ -72,6 +72,10 @@ public interface IProjectDb
 
     Task ResetInProgressToPendingAsync(CancellationToken cancellationToken);
 
+    /// <summary>Earlier translations of the current rows, by row id (see <see cref="ProjectDb.ReplacePreviousTranslationsAsync"/>).</summary>
+    Task<IReadOnlyDictionary<long, string>> GetPreviousTranslationsByStringIdAsync(CancellationToken cancellationToken)
+        => Task.FromResult<IReadOnlyDictionary<long, string>>(new Dictionary<long, string>());
+
     Task<IReadOnlyList<(long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)>>
         GetStringSourceContextsByStatusAsync(
             IReadOnlyList<StringEntryStatus> statuses,

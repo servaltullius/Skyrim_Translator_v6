@@ -34,7 +34,7 @@ public sealed partial class TranslationService
         {
             var rec = Ctx.UseRecStyleHints ? GetRecForId(r.Id) : null;
             repairBatchItems.Add(new RepairTranslationItem(r.Id, r.Masked, r.Current, rec,
-                GuessStyleHint(r.Source, rec), AppendBookTitleReference(r.Id, GetDialogueContextWindowForId(r.Id)), GetEdidForId(r.Id)));
+                GuessStyleHint(r.Source, rec), AppendReferences(r.Id, GetDialogueContextWindowForId(r.Id)), GetEdidForId(r.Id)));
         }
         return repairBatchItems;
     }
@@ -174,7 +174,7 @@ public sealed partial class TranslationService
         var rec = Ctx.UseRecStyleHints ? GetRecForId(original.Id) : null;
         var styleHint = GuessStyleHint(original.Source, rec);
         styleHint = AppendDialogueContextToStyleHint(styleHint, GetDialogueContextWindowForId(original.Id));
-        styleHint = AppendBookTitleReference(original.Id, styleHint);
+        styleHint = AppendReferences(original.Id, styleHint);
         var request = new TextRequestContext(
             ApiKey: ctx.ApiKey,
             ModelName: ctx.ModelName,

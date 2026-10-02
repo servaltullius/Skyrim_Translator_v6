@@ -43,7 +43,7 @@ public sealed partial class TranslationService
         var rec = GetRecForId(row.Id);
         var styleHint = GuessStyleHint(row.Source, Ctx.UseRecStyleHints ? rec : null);
         styleHint = AppendDialogueContextToStyleHint(styleHint, GetDialogueContextWindowForId(row.Id));
-        styleHint = AppendBookTitleReference(row.Id, styleHint);
+        styleHint = AppendReferences(row.Id, styleHint);
 
         var raw = await TranslateRowRawAsync(ctx, row, styleHint);
         raw = await TrySemanticRepairAsync(ctx, row, styleHint, raw);
@@ -238,6 +238,7 @@ public sealed partial class TranslationService
 	        var rec = GetRecForId(row.Id);
 	        var styleHint = GuessStyleHint(row.Source, Ctx.UseRecStyleHints ? rec : null);
 	        styleHint = AppendDialogueContextToStyleHint(styleHint, GetDialogueContextWindowForId(row.Id));
+	        // Long texts are split into chunks; a 600-character excerpt of the earlier translation would only fit the first one.
 	        styleHint = AppendBookTitleReference(row.Id, styleHint);
 	        var tokenCount = TranslationConstants.XtTokenRegex.Matches(row.Masked).Count;
 	        var initialChunkChars = ComputeLongTextInitialChunkChars(ctx, tokenCount);

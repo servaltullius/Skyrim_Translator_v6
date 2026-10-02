@@ -42,6 +42,10 @@ public sealed class ProjectContextTabViewModel : ObservableObject, IDisposable
         set => _host.ProjectContextPreview = value;
     }
 
+    public string PreviousTranslationSummary => _host.PreviousTranslationSummary;
+    public IAsyncRelayCommand ImportPreviousTranslationCommand => _host.ImportPreviousTranslationCommand;
+    public IAsyncRelayCommand ClearPreviousTranslationCommand => _host.ClearPreviousTranslationCommand;
+
     private bool _disposed;
 
     public void Dispose()

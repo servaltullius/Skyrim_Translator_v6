@@ -211,7 +211,7 @@ public sealed class PluginProjectIntegrationTests
         Assert.Equal(bytes, await File.ReadAllBytesAsync(input));
     }
 
-    internal static byte[] CreateMinimalPlugin()
+    internal static byte[] CreateMinimalPlugin(string itemName = "Iron Sword")
     {
         using var output = new MemoryStream();
         using var writer = new BinaryWriter(output, Encoding.UTF8, leaveOpen: true);
@@ -225,7 +225,7 @@ public sealed class PluginProjectIntegrationTests
         using var fields = new MemoryStream();
         using (var data = new BinaryWriter(fields, Encoding.UTF8, leaveOpen: true))
         {
-            foreach (var (type, text) in new[] { ("EDID", "TestSword"), ("FULL", "Iron Sword") })
+            foreach (var (type, text) in new[] { ("EDID", "TestSword"), ("FULL", itemName) })
             {
                 var payload = Encoding.UTF8.GetBytes(text + "\0");
                 data.Write(Encoding.ASCII.GetBytes(type)); data.Write((ushort)payload.Length); data.Write(payload);

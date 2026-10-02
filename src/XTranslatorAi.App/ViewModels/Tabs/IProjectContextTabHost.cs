@@ -10,4 +10,7 @@ public interface IProjectContextTabHost : INotifyPropertyChanged
     IAsyncRelayCommand SaveProjectContextCommand { get; }
     IAsyncRelayCommand ClearProjectContextCommand { get; }
     string ProjectContextPreview { get; set; }
+    string PreviousTranslationSummary { get; }
+    IAsyncRelayCommand ImportPreviousTranslationCommand { get; }
+    IAsyncRelayCommand ClearPreviousTranslationCommand { get; }
 }

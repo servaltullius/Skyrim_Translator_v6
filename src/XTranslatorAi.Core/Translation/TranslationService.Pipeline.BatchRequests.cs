@@ -138,7 +138,7 @@ public sealed partial class TranslationService
         foreach (var it in batch)
         {
             var rec = Ctx.UseRecStyleHints ? GetRecForId(it.Id) : null;
-            var dialogueContextWindow = AppendBookTitleReference(it.Id, GetDialogueContextWindowForId(it.Id));
+            var dialogueContextWindow = AppendReferences(it.Id, GetDialogueContextWindowForId(it.Id));
             var maskedForPrompt = PlaceholderSemanticHintInjector.Inject(targetLang, it.Masked);
             maskedForPrompt = GlossarySemanticHintInjector.Inject(targetLang, maskedForPrompt, it.Glossary.TokenToReplacement);
             requestItems.Add(new TranslationItem(it.Id, maskedForPrompt, rec, dialogueContextWindow, GuessStyleHint(it.Source, rec), GetEdidForId(it.Id)));

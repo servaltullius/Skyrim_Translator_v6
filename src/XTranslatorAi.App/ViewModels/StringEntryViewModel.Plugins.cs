@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using CommunityToolkit.Mvvm.ComponentModel;
 using XTranslatorAi.Core.Plugins;
 
 namespace XTranslatorAi.App.ViewModels;
@@ -7,6 +8,13 @@ namespace XTranslatorAi.App.ViewModels;
 public partial class StringEntryViewModel
 {
     public PluginField? PluginLocation { get; init; }
+
+    /// <summary>The same field's text in the earlier translated release the project refers to, if any.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PreviousTranslationText))]
+    private string? _previousTranslation;
+
+    public string PreviousTranslationText => string.IsNullOrWhiteSpace(PreviousTranslation) ? "" : "이전 번역: " + PreviousTranslation;
 
     public string PluginLocationText => PluginLocation is not { } location ? ""
         : $"FormID {location.FormId:X8} · {location.Rec}"

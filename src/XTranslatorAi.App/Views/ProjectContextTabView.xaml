@@ -9,10 +9,25 @@
     <Grid Margin="0,10,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
+            <TextBlock Text="이전 번역 참고:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <TextBlock Text="{Binding PreviousTranslationSummary}" VerticalAlignment="Center" Margin="0,0,12,0"
+                       Foreground="{StaticResource XT.MutedTextBrush}" />
+            <Button Content="이전 번역 불러오기"
+                    Command="{Binding ImportPreviousTranslationCommand}"
+                    Style="{StaticResource XT.ToolbarButton}"
+                    ToolTip="같은 플러그인의 이전 번역판(예: 이전 버전 한글판 ESP)을 고르면 레코드별로 짝지어, 번역할 때 기존 이름·용어를 참고하게 합니다. 이전 번역을 그대로 복사하지는 않습니다." />
+            <Button Content="연결 해제"
+                    Command="{Binding ClearPreviousTranslationCommand}"
+                    Style="{StaticResource XT.ToolbarButton}"
+                    Margin="6,0,0,0" />
+        </WrapPanel>
+
+        <WrapPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
             <CheckBox IsChecked="{Binding EnableProjectContext}" Content="생성한 프로젝트 문맥 사용" Margin="0,0,16,0"
                       ToolTip="번역 시작 전 프로젝트 DB를 스캔하고 Gemini로 통합 컨텍스트(용어/스타일/템플릿)를 생성/저장하여 모든 배치에 동일하게 주입합니다." />
 
@@ -30,7 +45,7 @@
                     Margin="6,0,0,0" />
         </WrapPanel>
 
-        <TextBox Grid.Row="1"
+        <TextBox Grid.Row="2"
                  Text="{Binding ProjectContextPreview, UpdateSourceTrigger=PropertyChanged}"
                  Style="{StaticResource XT.EditorTextBox}"
                  TextWrapping="Wrap"

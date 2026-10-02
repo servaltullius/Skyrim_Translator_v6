@@ -114,6 +114,17 @@ public sealed partial class ProjectDb : IAsyncDisposable, IProjectDb
           FieldKey TEXT NOT NULL UNIQUE,
           FieldJson TEXT NOT NULL
         );
+
+        CREATE TABLE IF NOT EXISTS PreviousTranslation (
+          FieldKey TEXT PRIMARY KEY,
+          Text TEXT NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS PreviousTranslationSource (
+          Id INTEGER PRIMARY KEY CHECK (Id = 1),
+          FileName TEXT NOT NULL,
+          ImportedAt TEXT NOT NULL
+        );
         """;
 
     private ProjectDb(SqliteConnection connection)

@@ -22,6 +22,8 @@ public sealed partial class TranslationService
         Ctx.BookTitlesByEdid = request.BookTitlesByEdid ?? (Ctx.EnableBookContext
             ? TranslationBookContext.CollectTitles(rowsById.Values.Select(row => (row.Rec, row.Edid, row.SourceText)))
             : null);
+        var previousTranslations = await _db.GetPreviousTranslationsByStringIdAsync(request.CancellationToken);
+        Ctx.PreviousTranslationById = previousTranslations.Count == 0 ? null : previousTranslations;
 
         var items = new List<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>();
         var canonicalIdByMaskedText = new Dictionary<DuplicateKey, long>();

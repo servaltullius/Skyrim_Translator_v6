@@ -42,7 +42,7 @@ public partial class MainViewModel
     {
         if (!IsWorkspaceInteractive) return;
         var path = _uiInteractionService.ShowOpenFileDialog(new OpenFileDialogRequest(
-            "Skyrim SE/AE plugins (*.esp;*.esm;*.esl)|*.esp;*.esm;*.esl", "Open Skyrim SE/AE plugin"));
+            "Skyrim SE/AE 플러그인 (*.esp;*.esm;*.esl)|*.esp;*.esm;*.esl", "번역할 Skyrim SE/AE 플러그인 열기"));
         if (string.IsNullOrWhiteSpace(path)) return;
         var options = new PluginReadOptions(PluginGame.SkyrimSpecialEdition, (PluginSourceLanguage ?? "").Trim(),
             PluginSourceEncoding, string.IsNullOrWhiteSpace(PluginStringsDirectory) ? null : PluginStringsDirectory.Trim(),
@@ -95,6 +95,7 @@ public partial class MainViewModel
             await ReloadGlossaryAsync();
             await ReloadGlobalGlossaryAsync();
             await ReloadFranchiseTranslationMemoryAsync();
+            await RefreshPreviousTranslationsAsync(CancellationToken.None);
             var diagnostics = string.Join(" / ", loaded.Document.Info.Diagnostics.Select(item => item.Message));
             StatusMessage = $"플러그인 읽기 완료: {Path.GetFileName(path)} · {TotalCount}개 문자열"
                 + (diagnostics.Length == 0 ? "" : " · " + diagnostics);

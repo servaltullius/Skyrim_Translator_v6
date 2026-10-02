@@ -34,6 +34,7 @@ internal sealed class TranslationRunContext : IDisposable
     public Dictionary<long, TranslationService.RowContext>? RowContextById { get; set; }
     public IReadOnlyDictionary<long, IReadOnlyList<(long Id, string Source, MaskedText Mask)>>? DuplicateRowsByCanonicalId { get; set; }
     public IReadOnlyDictionary<long, string>? DialogueContextWindowById { get; set; }
+    public IReadOnlyDictionary<long, string>? PreviousTranslationById { get; set; }
 
     // Session Term Memory
     public bool EnableSessionTermMemory { get; set; }
