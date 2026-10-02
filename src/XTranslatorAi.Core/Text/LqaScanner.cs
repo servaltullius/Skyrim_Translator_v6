@@ -17,7 +17,9 @@ public readonly record struct LqaScanEntry(
     string? Rec,
     StringEntryStatus Status,
     string SourceText,
-    string DestText
+    string DestText,
+    // The same field in the earlier translated release, when the project refers to one.
+    string? PreviousText = null
 );
 
 public readonly record struct LqaIssue(
@@ -245,20 +247,25 @@ public static class LqaScanner
 
     /// <summary>
     /// The first Latin word left in a translation, or null. Acronyms and identifiers copied from the
-    /// source (NPC, MCO, WASD, Lv3, BloodSword01) are meant to stay and do not count; ordinary words
-    /// such as an untranslated item name do.
+    /// source (NPC, MCO, WASD, Lv3, BloodSword01, 30-ex, EldenRim of EldenRimUpdate) are meant to stay
+    /// and do not count, nor do words the earlier translated release also kept (an author "The One");
+    /// ordinary words such as an untranslated item name do.
     /// </summary>
-    internal static string? FindEnglishResidue(string destText, string sourceText)
+    internal static string? FindEnglishResidue(string destText, string sourceText, string? previousText = null)
     {
         if (string.IsNullOrWhiteSpace(destText))
         {
             return null;
         }
 
-        foreach (Match m in LatinWordRegex.Matches(StripUiTokens(destText)))
+        var dest = StripUiTokens(destText);
+        foreach (Match m in LatinWordRegex.Matches(dest))
         {
             var word = m.Value;
-            if (word.Count(char.IsAsciiLetter) >= 2 && !IsAcronymOrIdentifierFromSource(word, sourceText))
+            if (word.Count(char.IsAsciiLetter) >= 2
+                && !IsAcronymOrIdentifierFromSource(word, sourceText)
+                && !IsPartOfNumberedTokenFromSource(dest, m, sourceText)
+                && !ContainsWholeWord(previousText, word, StringComparison.Ordinal))
             {
                 return word;
             }
@@ -281,8 +288,48 @@ public static class LqaScanner
         for (var idx = sourceText.IndexOf(word, comparison); idx >= 0; idx = sourceText.IndexOf(word, idx + 1, comparison))
         {
             var end = idx + word.Length;
-            if ((idx == 0 || !char.IsAsciiLetterOrDigit(sourceText[idx - 1]))
-                && (end >= sourceText.Length || !char.IsAsciiLetterOrDigit(sourceText[end])))
+            if (IsIdentifierStart(sourceText, idx, word) && IsIdentifierEnd(sourceText, end, word))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // A CamelCase segment counts as a whole part: "EldenRim" of "EldenRimUpdate" → "EldenRim 업데이트".
+    private static bool IsIdentifierStart(string text, int idx, string word)
+        => idx == 0 || !char.IsAsciiLetterOrDigit(text[idx - 1])
+           || (char.IsUpper(word[0]) && char.IsLower(text[idx - 1]));
+
+    private static bool IsIdentifierEnd(string text, int end, string word)
+        => end >= text.Length || !char.IsAsciiLetterOrDigit(text[end])
+           || (char.IsLower(word[^1]) && char.IsUpper(text[end]));
+
+    // A suffix joined to a number by a hyphen, "30-ex" in "Afterglow Qi - 30-ex", is one identifier.
+    private static bool IsPartOfNumberedTokenFromSource(string dest, Match word, string sourceText)
+    {
+        var start = word.Index;
+        var end = word.Index + word.Length;
+        while (start > 0 && (char.IsAsciiLetterOrDigit(dest[start - 1]) || dest[start - 1] == '-')) start--;
+        while (end < dest.Length && (char.IsAsciiLetterOrDigit(dest[end]) || dest[end] == '-')) end++;
+        var token = dest[start..end].Trim('-');
+        return token.Length > word.Length && token.Contains('-') && token.Any(char.IsAsciiDigit)
+               && ContainsWholeWord(sourceText, token, StringComparison.Ordinal);
+    }
+
+    private static bool ContainsWholeWord(string? text, string word, StringComparison comparison)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return false;
+        }
+
+        for (var idx = text.IndexOf(word, comparison); idx >= 0; idx = text.IndexOf(word, idx + 1, comparison))
+        {
+            var end = idx + word.Length;
+            if ((idx == 0 || !char.IsAsciiLetterOrDigit(text[idx - 1]))
+                && (end >= text.Length || !char.IsAsciiLetterOrDigit(text[end])))
             {
                 return true;
             }

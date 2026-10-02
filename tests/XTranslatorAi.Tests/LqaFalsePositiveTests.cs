@@ -70,6 +70,8 @@ public class LqaFalsePositiveTests
     [InlineData("Detectable direction key WASD", "감지 가능한 방향키 WASD")]
     [InlineData("NPC Lv3 Weapon Art", "NPC 전기 Lv3")]
     [InlineData("Page one [page break] Page two", "1쪽 [page break] 2쪽")]
+    [InlineData("Afterglow Qi - 30-ex", "잔광의 투지 - 30-ex")]
+    [InlineData("EldenRimUpdate", "EldenRim 업데이트")]
     public void EnglishResidue_IgnoresAcronymsAndIdentifiersFromSource(string source, string dest)
         => Assert.Null(LqaScanner.FindEnglishResidue(dest, source));
 
@@ -77,8 +79,31 @@ public class LqaFalsePositiveTests
     [InlineData("you can forge the [Hand Strap]", "[Hand Strap]을 제작할 수 있습니다.", "Hand")]
     [InlineData("Meet Aela", "Aela을 만나기", "Aela")]
     [InlineData("what I call the 'Deep Venue'", "'심층 광장(Deep Venue)'이라 부르는 구조", "Deep")]
+    [InlineData("an ex soldier", "ex 군인", "ex")]
+    [InlineData("Afterglow Qi - 30-ex", "잔광의 투지 - ex", "ex")]
+    [InlineData("EldenRimUpdate", "Elden 업데이트", "Elden")]
     public void EnglishResidue_FindsUntranslatedWords(string source, string dest, string expected)
         => Assert.Equal(expected, LqaScanner.FindEnglishResidue(dest, source));
+
+    [Theory]
+    [InlineData("저자:\nThe One", null)]
+    [InlineData("저자:\n유일자", "The")]
+    public void EnglishResidue_AcceptsWordsTheEarlierReleaseAlsoKept(string previous, string? expected)
+        => Assert.Equal(expected, LqaScanner.FindEnglishResidue("저자:\nThe One", "by\nThe One", previous));
+
+    [Fact]
+    public async Task EnglishResidue_ReadsThePreviousTranslationOfEachRow()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            new(1, 1, "EldenBook00", "BOOK:DESC", StringEntryStatus.Done, "by The One", "저자: The One", PreviousText: "저자: The One"),
+            new(2, 2, "EldenBook01", "BOOK:DESC", StringEntryStatus.Done, "by The One", "저자: The One"),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        Assert.Equal(new long[] { 2 }, issues.Where(i => i.Code == "english_residue").Select(i => i.Id));
+    }
 
     [Theory]
     [InlineData("적의 일부 공격은 슈퍼아머 효과를 방해합니다. 효과 역시 해제됩니다.", "Hamnida")]

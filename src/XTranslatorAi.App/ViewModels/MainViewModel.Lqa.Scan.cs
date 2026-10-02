@@ -23,7 +23,8 @@ public partial class MainViewModel
                         Rec: e.Rec,
                         Status: e.Status,
                         SourceText: e.SourceText ?? "",
-                        DestText: e.DestText ?? ""
+                        DestText: e.DestText ?? "",
+                        PreviousText: e.PreviousTranslation
                     )
         )
             .ToList();

@@ -6,7 +6,7 @@ internal static class EnglishResidueRule
 {
     public static void Apply(LqaScanEntry entry, string sourceText, string destText, bool isKorean, List<LqaIssue> issues)
     {
-        var residue = isKorean ? LqaScanner.FindEnglishResidue(destText, sourceText) : null;
+        var residue = isKorean ? LqaScanner.FindEnglishResidue(destText, sourceText, entry.PreviousText) : null;
         if (residue == null)
         {
             return;
