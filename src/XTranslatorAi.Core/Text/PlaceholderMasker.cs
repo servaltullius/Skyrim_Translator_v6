@@ -10,7 +10,7 @@ public sealed record PlaceholderMaskerOptions(bool KeepSkyrimTagsRaw = false);
 public sealed class PlaceholderMasker
 {
     private static readonly Regex PlaceholderRegex = new(
-        pattern: @"(\r\n|\r|\n|[+-]?<[^>]+>[\t ]*%|[+-]?<[^>]+>|\[pagebreak\]|%[A-Za-z0-9_]+%|%(?:[0-9]+\$)?[-+0-9.]*[A-Za-z]|\$[A-Za-z0-9_]+\$|\{\{[A-Za-z0-9_.,:+-]{1,40}\}\}|\{[A-Za-z0-9_.,:+-]{1,40}\}|[+-]?\d+(?:\.\d+)?[\t ]*%|%)",
+        pattern: @"(\r\n|\r|\n|[+-]?<" + TranslationConstants.StageDirectionGuard + @"[^>]+>[\t ]*%|[+-]?<" + TranslationConstants.StageDirectionGuard + @"[^>]+>|\[pagebreak\]|%[A-Za-z0-9_]+%|%(?:[0-9]+\$)?[-+0-9.]*[A-Za-z]|\$[A-Za-z0-9_]+\$|\{\{[A-Za-z0-9_.,:+-]{1,40}\}\}|\{[A-Za-z0-9_.,:+-]{1,40}\}|[+-]?\d+(?:\.\d+)?[\t ]*%|%)",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 

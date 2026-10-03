@@ -37,7 +37,7 @@ public readonly record struct LqaIssue(
 public static class LqaScanner
 {
     private static readonly Regex UiTagTokenRegex = new(
-        pattern: @"[+-]?<\s*[^>]+\s*>|\[page ?break\]|__XT_[A-Za-z0-9_]+__",
+        pattern: @"[+-]?<" + TranslationConstants.StageDirectionGuard + @"\s*[^>]+\s*>|\[page ?break\]|__XT_[A-Za-z0-9_]+__",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 

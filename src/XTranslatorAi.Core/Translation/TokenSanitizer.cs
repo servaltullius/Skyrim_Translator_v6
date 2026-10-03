@@ -11,7 +11,7 @@ internal static class TokenSanitizer
     // ── Regex fields (moved from TranslationService.cs) ──
 
     internal static readonly Regex RawMarkupTagRegex = new(
-        pattern: @"<[^>]+>",
+        pattern: @"<" + TranslationConstants.StageDirectionGuard + @"[^>]+>",
         options: RegexOptions.CultureInvariant
     );
 

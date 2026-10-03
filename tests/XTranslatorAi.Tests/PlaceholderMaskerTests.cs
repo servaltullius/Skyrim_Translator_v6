@@ -231,4 +231,26 @@ public class PlaceholderMaskerTests
         var output = masker.Unmask(masked.Text, masked.TokenToOriginal);
         Assert.Equal(input, output);
     }
+
+    // Serana Dialogue Add-On: "<Take a deep breath>" is a stage direction shown in the subtitle, so it is translated.
+    [Fact]
+    public void Mask_LeavesStageDirectionsAsText_ButKeepsTags()
+    {
+        var masked = new PlaceholderMasker().Mask("<Take a deep breath> Far. <Alias=Player>, deal <mag> damage.<br><font face='$HandwrittenFont'>x</font>");
+
+        Assert.StartsWith("<Take a deep breath> Far.", masked.Text);
+        Assert.DoesNotContain("<Alias=Player>", masked.Text);
+        Assert.DoesNotContain("<mag>", masked.Text);
+        Assert.DoesNotContain("<br>", masked.Text);
+        Assert.DoesNotContain("<font face", masked.Text);
+        // Legacy of the Dragonborn writes its page break as "<page break>".
+        Assert.DoesNotContain("<page break>", new PlaceholderMasker().Mask("One.<page break>Two.").Text);
+    }
+
+    [Fact]
+    public void QualityCheck_ReadsAStageDirectionAsText()
+    {
+        Assert.False(XTranslatorAi.Core.Text.LqaScanner.HasTokenMismatch("<Relieved smile> Thank you, Serana.", "<안도의 미소> 고마워, 세라나."));
+        Assert.Equal("Relieved", XTranslatorAi.Core.Text.LqaScanner.FindEnglishResidue("<Relieved smile> 고마워, 세라나.", "<Relieved smile> Thank you, Serana."));
+    }
 }

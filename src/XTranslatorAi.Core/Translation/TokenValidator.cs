@@ -373,7 +373,7 @@ internal static class TokenValidator
     );
 
     private static readonly Regex RawAngleTagRegex = new(
-        pattern: @"<[^>]*>",
+        pattern: @"<" + TranslationConstants.StageDirectionGuard + @"[^>]*>",
         options: RegexOptions.CultureInvariant
     );
 
