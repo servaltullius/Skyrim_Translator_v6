@@ -1,6 +1,6 @@
 # Skyrim SE/AE 플러그인 직접 번역
 
-최신 릴리스: `1.8`([GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/1.8)). 1.8에서 아래 "이전 번역 참고"를 더했다. 프로젝트 루트의 `TulliusTranslator.exe`는 미리보기 `1.9-preview2`(프로젝트 문맥 자동 생성 개선, 영문 남음 예외)이다. preview12의 [2026-10-01 전반 개선](analysis/2026-10-01-upgrade.md)(한국어 화면, 프롬프트 예시 누출 수정, 이전 손상 검사)에 [품질 검사 오탐 수정](analysis/2026-10-02-lqa-false-positives.md)과 완료된 행을 대기로 되돌리는 `다시 번역` 버튼을 더했다. 플러그인 reader/writer는 preview9와 같다. 설정과 API 키는 이번 교체에서 변경하지 않았다. 이전 루트 빌드 1.9-preview1은 `artifacts/residue-1.9-preview2-20261003/deployment/`에, 1.8은 `artifacts/context-1.9-preview1-20261002/deployment/`에, 그 이전 빌드도 기존 `.disabled` 백업에 보존한다.
+최신 릴리스: `1.8`([GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/1.8)). 1.8에서 아래 "이전 번역 참고"를 더했다. 프로젝트 루트의 `TulliusTranslator.exe`는 미리보기 `1.9-preview3`(프로젝트 문맥 자동 생성 개선, 영문 남음 예외, windows-1252 원문 자동 전환)이다. preview12의 [2026-10-01 전반 개선](analysis/2026-10-01-upgrade.md)(한국어 화면, 프롬프트 예시 누출 수정, 이전 손상 검사)에 [품질 검사 오탐 수정](analysis/2026-10-02-lqa-false-positives.md)과 완료된 행을 대기로 되돌리는 `다시 번역` 버튼을 더했다. 플러그인 reader/writer는 preview9와 같다. 설정과 API 키는 이번 교체에서 변경하지 않았다. 이전 루트 빌드 1.9-preview2는 `artifacts/encoding-1.9-preview3-20261003/deployment/`에, 1.9-preview1은 `artifacts/residue-1.9-preview2-20261003/deployment/`에, 1.8은 `artifacts/context-1.9-preview1-20261002/deployment/`에, 그 이전 빌드도 기존 `.disabled` 백업에 보존한다.
 
 ## 사용 순서
 
@@ -24,7 +24,7 @@
 | 식별자 인코딩 | `windows-1252` | EDID·MAST 읽기. 저장할 때 원본 바이트 유지 |
 | 저장 인코딩 | `utf-8` | 번역본의 표시문구·문자열 테이블 |
 
-오래된 영문 플러그인의 악센트 문자에서 읽기 오류가 나면 원문 인코딩을 `windows-1252`로, CP949 한글 파일은 `ks_c_5601-1987`로 지정하고 다시 연다. 자동 감지나 대체문자로 읽기 실패를 숨기지 않는다. 기술 식별자에 UTF-8/CP949를 사용한 특수 파일만 식별자 인코딩도 변경한다.
+영문 플러그인은 대부분 `windows-1252`로 저장되어 있다. 원문 인코딩이 `utf-8`인데 UTF-8로 읽을 수 없는 글자(예: `cliché`의 é)가 있으면 파일 전체를 `windows-1252`로 다시 읽고, 상태 표시줄에 "원문이 UTF-8이 아니어서 windows-1252로 읽었습니다"를 표시한다. 프로젝트도 실제로 읽은 인코딩 기준으로 만든다. UTF-8로 올바른 글자와 섞인 파일은 어느 쪽으로 읽어도 일부가 깨지므로 자동 전환하지 않고 오류를 낸다. CP949 한글 파일은 `ks_c_5601-1987`로 지정하고 다시 연다. 대체문자로 읽기 실패를 숨기지 않는다. 기술 식별자에 UTF-8/CP949를 사용한 특수 파일만 식별자 인코딩도 변경한다.
 
 지역화 플러그인은 지정한 `Strings` 폴더 또는 플러그인 옆 `Strings`를 먼저 사용한다. 없으면 플러그인과 같은 이름의 BSA 및 `이름 - *.bsa`에서 찾는다. BSA 104/zlib와 105/LZ4를 읽는다. 같은 문자열 파일이 여러 BSA에서 서로 다른 내용으로 나오면 경로 선택을 요구한다. 이때 원하는 문자열을 별도 `Strings` 폴더로 준비하여 지정할 수 있다. 실제 테이블 출처는 프로젝트 메타데이터에 저장한다.
 
