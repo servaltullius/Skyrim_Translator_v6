@@ -25,10 +25,15 @@ public sealed class ReferenceNameIndex
         RegexOptions.CultureInvariant
     );
 
-    // A name, not an objective ("에스번을 찾기") or a sentence.
-    // Inventory names carry a category ("술 - 수자마", "아뮬렛 - 마라") that does not belong in a sentence.
-    private static readonly Regex TargetPattern = new(@"^[가-힣](?:[가-힣 ·]*[가-힣])?$", RegexOptions.CultureInvariant);
+    // A name, not an objective ("에스번을 찾기") or a sentence. Hyphens join words as in 블랙-브라이어.
+    // Inventory names carry a category ("아뮬렛 - 마라", "열쇠 - 블랙-브라이어 저택") that does not belong in a sentence.
+    private static readonly Regex TargetPattern = new(@"^[가-힣]+(?:(?: ?· ?| |-)[가-힣]+)*$", RegexOptions.CultureInvariant);
     private static readonly Regex ObjectiveOrSentence = new(@"(?:을|를|에게|에서|으로|로|와|과)\s|(?:기|다|요|오|까)$", RegexOptions.CultureInvariant);
+
+    // Categories whose remaining name still says everything: "술 - 허닝브루 벌꿀술" names Honningbrew Mead and
+    // "보석 - 완벽한 다이아몬드" a Flawless Diamond. Other categories carry part of the name ("열쇠 - 버려진 감옥" is
+    // the Abandoned Prison Key, "반지 - 하급 궁술" a Ring of Archery), so those entries stay out.
+    private static readonly Regex SelfContainedCategory = new(@"^(?:술|보석) - (?=[가-힣])", RegexOptions.CultureInvariant);
 
     // Ordinary words the memory also uses as names: the Brotherhood (형제), an Imperial (임페리얼) next to
     // "Imperial song", the city of Anvil next to the smithing anvil (모루), the Flames spell, a Keeper.
@@ -49,7 +54,7 @@ public sealed class ReferenceNameIndex
     public static ReferenceNameIndex Build(IEnumerable<(string Source, string Target)> memory)
     {
         var pairs = memory
-            .Select(pair => (Source: (pair.Source ?? "").Trim(), Target: (pair.Target ?? "").Trim()))
+            .Select(pair => (Source: (pair.Source ?? "").Trim(), Target: SelfContainedCategory.Replace((pair.Target ?? "").Trim(), "")))
             .Where(pair => pair.Source.Length > 0 && pair.Target.Length > 0)
             .ToList();
         var lowercaseUse = CollectLowercaseUse(pairs.Select(pair => pair.Source));

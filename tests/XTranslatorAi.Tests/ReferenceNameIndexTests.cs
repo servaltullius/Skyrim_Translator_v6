@@ -32,13 +32,17 @@ public class ReferenceNameIndexTests
         ("Conjure Familiar", "늑대 소환"),
         ("Auriel's Bow", "아우리엘의 활"),
         ("Bleak Falls Barrow", "황량한 폭포 무덤"),
+        ("Maven Black-Briar", "메이븐 블랙-브라이어"),
+        // Drinks and gems keep their whole name after the category.
+        ("Honningbrew Mead", "술 - 허닝브루 벌꿀술"),
         // Ordinary words: used in lowercase elsewhere, or only ever as a whole entry.
         ("Ghost", "유령"),
         ("A ghost appears", "유령이 나타난다"),
         ("Slot", "장치"),
-        // Not names: an objective and an inventory name with its category.
+        // Not names: an objective, and inventory names whose category is part of the name.
         ("Find Esbern", "에스번을 찾기"),
-        ("Colovian Brandy", "술 - 콜로비안 브랜디"),
+        ("Abandoned Prison Key", "열쇠 - 버려진 감옥"),
+        ("Ring of Archery", "반지 - 하급 궁술"),
     };
 
     private static readonly ReferenceNameIndex Index = ReferenceNameIndex.Build(Memory);
@@ -49,6 +53,8 @@ public class ReferenceNameIndexTests
     [InlineData("Cast Conjure Familiar for me.", "Conjure Familiar")]
     [InlineData("I'd like to see Auriel's Bow in person.", "Auriel's Bow")]
     [InlineData("Back at Bleak Falls Barrow, ugh.", "Bleak Falls Barrow")]
+    [InlineData("So Maven Black-Briar invited you?", "Maven Black-Briar")]
+    [InlineData("A bottle of Honningbrew Mead, please.", "Honningbrew Mead")]
     public void FindsNamesInsideSentences(string text, string expected)
         => Assert.Equal(expected, Assert.Single(Index.FindIn(text)).Source);
 
@@ -56,13 +62,18 @@ public class ReferenceNameIndexTests
     [InlineData("Ghost! A ghost appeared.")]
     [InlineData("Put it in the Slot.")]
     [InlineData("Find Esbern for me.")]
-    [InlineData("A bottle of Colovian Brandy.")]
+    [InlineData("Where is the Abandoned Prison Key?")]
+    [InlineData("I found a Ring of Archery.")]
     [InlineData("erandur, in lowercase, is not the name.")]
     [InlineData("Erandurian ruins.")]
     public void LeavesOrdinaryWordsAndNonNamesAlone(string text) => Assert.Empty(Index.FindIn(text));
 
     [Fact]
-    public void BuildsFromNameEntriesOnly() => Assert.Equal(5, Index.Count);
+    public void BuildsFromNameEntriesOnly() => Assert.Equal(7, Index.Count);
+
+    [Fact]
+    public void DropsTheDrinkCategoryFromTheOfficialName()
+        => Assert.Equal("허닝브루 벌꿀술", Assert.Single(Index.FindIn("Honningbrew Mead.")).Target);
 
     [Fact]
     public void ForcesNamesAsTermTokens_LongestFirst()
