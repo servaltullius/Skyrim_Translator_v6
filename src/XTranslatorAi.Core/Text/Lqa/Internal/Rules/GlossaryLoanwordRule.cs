@@ -16,6 +16,8 @@ namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 /// </summary>
 internal static class GlossaryLoanwordRule
 {
+    internal sealed record Term(GlossaryEntry Entry, string FirstVowels);
+
     private const char Vowel = 'V';
 
     private static readonly Regex EnglishTermRegex = new(@"^[A-Za-z]+$", RegexOptions.CultureInvariant);
@@ -38,13 +40,26 @@ internal static class GlossaryLoanwordRule
         '\0', 'K', 'K', 'K', 'N', 'N', 'N', 'T', 'L', 'K', 'M', 'L', 'L', 'L', 'B', 'L', 'M', 'B', 'B', 'T', 'T', 'G', 'T', 'T', 'K', 'T', 'B', '\0',
     };
 
+    private const string Vowels = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ";
+
+    // The first vowel of a borrowed word follows the English spelling: vampire → 뱀, cuirass → 퀴 or 큐 (카리우스 is Carius).
+    private static readonly Dictionary<char, string> FirstVowelsByLetter = new()
+    {
+        ['a'] = "ㅏㅐㅓㅔㅑㅒㅗㅘㅙㅝ",
+        ['e'] = "ㅔㅐㅣㅓㅖㅢㅞㅟ",
+        ['i'] = "ㅣㅏㅓㅟㅢ",
+        ['o'] = "ㅗㅓㅏㅘㅚㅜㅛㅝ",
+        ['u'] = "ㅜㅓㅠㅝㅟㅚ",
+        ['y'] = "ㅣㅏㅐㅠㅟㅢㅑ",
+    };
+
     private const int VowelEu = 18; // ㅡ, the vowel Korean adds between consonants (클로크 for cloak)
     private const int FinalNg = 21;
     private const int SilentInitial = 11;
 
-    public static IReadOnlyDictionary<string, GlossaryEntry> Build(IReadOnlyList<GlossaryEntry> glossary)
+    public static IReadOnlyDictionary<string, Term> Build(IReadOnlyList<GlossaryEntry> glossary)
     {
-        var index = new Dictionary<string, GlossaryEntry>(StringComparer.Ordinal);
+        var index = new Dictionary<string, Term>(StringComparer.Ordinal);
         foreach (var entry in glossary)
         {
             var source = (entry.SourceTerm ?? "").Trim();
@@ -66,7 +81,7 @@ internal static class GlossaryLoanwordRule
                 continue;
             }
 
-            index.TryAdd(sound, entry);
+            index.TryAdd(sound, new Term(entry, FirstVowelsOf(source)));
         }
 
         return index;
@@ -77,7 +92,7 @@ internal static class GlossaryLoanwordRule
         string sourceText,
         string destText,
         bool isKorean,
-        IReadOnlyDictionary<string, GlossaryEntry> index,
+        IReadOnlyDictionary<string, Term> index,
         List<LqaIssue> issues
     )
     {
@@ -97,12 +112,13 @@ internal static class GlossaryLoanwordRule
             }
 
             var sound = KoreanSound(stem);
-            if (sound == null || !index.TryGetValue(sound, out var term))
+            if (sound == null || !index.TryGetValue(sound, out var found))
             {
                 continue;
             }
 
-            if (stem.Contains(term.TargetTerm.Replace(" ", ""), StringComparison.Ordinal))
+            var term = found.Entry;
+            if (stem.Contains(term.TargetTerm.Replace(" ", ""), StringComparison.Ordinal) || !found.FirstVowels.Contains(FirstKoreanVowel(stem)))
             {
                 continue;
             }
@@ -197,6 +213,37 @@ internal static class GlossaryLoanwordRule
         }
 
         return sb.ToString();
+    }
+
+    private static string FirstVowelsOf(string englishWord)
+    {
+        var w = englishWord.ToLowerInvariant();
+        for (var i = 0; i < w.Length; i++)
+        {
+            var c = w[i];
+            var isConsonantY = c == 'y' && i + 1 < w.Length && IsVowelLetter(w[i + 1]);
+            var isQu = c == 'u' && i > 0 && w[i - 1] == 'q';
+            if (FirstVowelsByLetter.TryGetValue(c, out var vowels) && !isConsonantY && !isQu)
+            {
+                return vowels;
+            }
+        }
+
+        return Vowels;
+    }
+
+    private static char FirstKoreanVowel(string word)
+    {
+        foreach (var ch in word)
+        {
+            var vowel = (ch - 0xAC00) % 588 / 28;
+            if (vowel != VowelEu)
+            {
+                return Vowels[vowel];
+            }
+        }
+
+        return Vowels[VowelEu];
     }
 
     internal static string? KoreanSound(string word)

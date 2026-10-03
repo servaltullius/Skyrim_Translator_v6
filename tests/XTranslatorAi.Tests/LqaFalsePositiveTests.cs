@@ -256,6 +256,8 @@ public class LqaFalsePositiveTests
             // Verbs with 되다 or 버리다: 부여될 (Portal), 써버리는 (Superior).
             Dialogue(9, "It will be granted.", "힘이 부여될 거야."),
             Dialogue(10, "He spends it all.", "다 써버리는 사람이야."),
+            // A name whose first vowel does not fit the term: 카리우스 (Carius) is not cuirass (퀴/큐).
+            Dialogue(11, "This \"Falx Caius\" became a vampire.", "이 \"폭스 카리우스\"라는 자가 흡혈귀가 됐어."),
             // A name of the line (Sefirah), and a name the glossary spells out (Saryoni → 사요니, not 세라나).
             Dialogue(6, "Sefirah Missile", "세피라 미사일"),
             Dialogue(7, "Serana, look.", "세라나, 이것 봐."),
@@ -264,6 +266,7 @@ public class LqaFalsePositiveTests
         };
         glossary.Add(Term("Master", "달인"));
         glossary.Add(Term("Portal", "차원문"));
+        glossary.Add(Term("Cuirass", "흉갑"));
 
         var issues = await LqaScanner.ScanAsync(entries, "ko", glossary);
 

@@ -82,7 +82,7 @@ public static class LqaScanner
         var glossaryLatinWords = BuildGlossaryLatinWords(forceTokenGlossary);
         var strongDialogueMajority = DialogueToneConsistencyRule.BuildDialogueGroupMajorities(entries);
         var nameFindings = NameConsistencyRule.Build(entries, isKorean);
-        var loanwordIndex = isKorean ? GlossaryLoanwordRule.Build(forceTokenGlossary) : new Dictionary<string, GlossaryEntry>();
+        var loanwordIndex = isKorean ? GlossaryLoanwordRule.Build(forceTokenGlossary) : new Dictionary<string, GlossaryLoanwordRule.Term>();
         var fieldToneMajority = RecToneRule.BuildFieldMajorities(entries);
 
         var total = entries.Count;
@@ -133,7 +133,7 @@ public static class LqaScanner
         IReadOnlyDictionary<string, ToneKind> strongDialogueMajority,
         IReadOnlyDictionary<string, ToneKind> fieldToneMajority,
         IReadOnlyDictionary<long, string> nameFindings,
-        IReadOnlyDictionary<string, GlossaryEntry> loanwordIndex,
+        IReadOnlyDictionary<string, GlossaryLoanwordRule.Term> loanwordIndex,
         List<LqaIssue> issues
     )
     {

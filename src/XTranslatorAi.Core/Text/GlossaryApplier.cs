@@ -185,11 +185,19 @@ public sealed class GlossaryApplier
 
     private static readonly Regex TheBefore = new(@"\b(?:the|this|that|other)\s+$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
+    // "Master Alteration" and the other skill levels are 달인; before a name, Master is a title.
+    private static readonly HashSet<string> MasterLevelWords = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Alteration", "Conjuration", "Destruction", "Illusion", "Restoration", "Alchemy", "Enchanting", "Smithing", "Archery",
+        "Block", "Sneak", "Lockpicking", "Pickpocket", "Speech", "Trainer", "Level",
+    };
+
     /// <summary>
     /// Built-in terms in a sense the glossary target does not have. Forcing them broke Serana Dialogue
     /// Add-On lines: "What in Oblivion is this place?" became "오블리비언의 여긴 어디야?", "How on Nirn"
     /// became "넌에서", and Harkon's "I trust you have the Scroll?" (the Elder Scroll) became "주문서".
     /// "Reach" is also a verb at the start of a sentence: "Reach level 10", "Reach of ...".
+    /// "Master Neloth" is a title (넬로스 스승, 넬로스 주인 in the official translation), not 달인.
     /// </summary>
     internal static bool IsBuiltInTermUsedOtherwise(string text, GlossaryEntry entry, int index, int length)
     {
@@ -205,6 +213,11 @@ public sealed class GlossaryApplier
             return string.Equals(nextWord, "of", StringComparison.OrdinalIgnoreCase)
                    || string.Equals(nextWord, "level", StringComparison.OrdinalIgnoreCase)
                    || string.Equals(nextWord, "levels", StringComparison.OrdinalIgnoreCase);
+        }
+
+        if (term == "Master")
+        {
+            return text[index] == 'M' && nextWord.Length > 1 && char.IsUpper(nextWord[0]) && !MasterLevelWords.Contains(nextWord);
         }
 
         var start = Math.Max(0, index - 40);

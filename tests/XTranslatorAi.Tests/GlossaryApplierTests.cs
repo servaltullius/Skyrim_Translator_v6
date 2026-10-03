@@ -290,6 +290,9 @@ public class GlossaryApplierTests
     [InlineData("Scroll", "주문서", "Now let's go find that other Scroll.", false)]
     [InlineData("Scroll", "주문서", "Read the Scroll of Fireball.", true)]
     [InlineData("Scroll", "주문서", "Buy a Scroll here.", true)]
+    [InlineData("Master", "달인", "Let's return it to Master Neloth.", false)]
+    [InlineData("Master", "달인", "Bring the Four Master Illusion texts.", true)]
+    [InlineData("Master", "달인", "You are a true Master.", true)]
     public void ForceToken_BuiltInTerm_SkipsSensesItDoesNotHave(string term, string target, string input, bool forced)
     {
         var applier = new GlossaryApplier(new[]
