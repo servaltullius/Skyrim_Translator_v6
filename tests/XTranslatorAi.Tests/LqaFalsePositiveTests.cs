@@ -72,6 +72,9 @@ public class LqaFalsePositiveTests
     [InlineData("Page one [page break] Page two", "1쪽 [page break] 2쪽")]
     [InlineData("Afterglow Qi - 30-ex", "잔광의 투지 - 30-ex")]
     [InlineData("EldenRimUpdate", "EldenRim 업데이트")]
+    [InlineData("DLC1NPCMentalModelCureForeshadowTopic02VampInvisCont", "DLC1 NPC 정신 모델 치료 복선 주제 02 흡혈귀 투명 후속")]
+    [InlineData("SDA_OPResponse2", "SDA_OP반응2")]
+    [InlineData("SDA_NPCBanterMain", "SDA_NPC 만담 메인")]
     public void EnglishResidue_IgnoresAcronymsAndIdentifiersFromSource(string source, string dest)
         => Assert.Null(LqaScanner.FindEnglishResidue(dest, source));
 
@@ -160,6 +163,37 @@ public class LqaFalsePositiveTests
         var missing = LqaHeuristics.FindMissingForceTokenGlossaryTerm("Destruction spells", "파괴 주문", glossary);
         Assert.Equal("Destruction", missing?.SourceTerm);
     }
+
+    [Theory]
+    [InlineData("SDA_CellTrackMGEFTG", true)]
+    [InlineData("SDA_DA05PostTopic02InvisCont", true)]
+    [InlineData("EldenRimUpdate", true)]
+    [InlineData("Dagger of Night", false)]
+    [InlineData("Daggers", false)]
+    public void Untranslated_IgnoresInternalIdentifiers(string text, bool identifier)
+        => Assert.Equal(!identifier, LqaHeuristics.IsLikelyUntranslated(text, text));
+
+    [Fact]
+    public async Task DialogueTone_IgnoresNamesAndPlainStatementsInCasualSpeech()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Dialogue(1, "Hey.", "안녕, 뭐 해?"),
+            Dialogue(2, "Let's go.", "가자, 시간이 없어."),
+            Dialogue(3, "Fine.", "좋아, 그렇게 해."),
+            Dialogue(4, "Really?", "정말 그런 거야?"),
+            Dialogue(5, "Samantha.", "사만다."),
+            Dialogue(6, "I don't know.", "나도 모르겠다."),
+            Dialogue(7, "Is that so?", "그런가요?"),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        Assert.Equal(new long[] { 7 }, issues.Where(i => i.Code == "tone_inconsistent").Select(i => i.Id));
+    }
+
+    private static LqaScanEntry Dialogue(long id, string source, string dest)
+        => new(id, (int)id, "SDA_TalkTopic", "INFO:NAM1", StringEntryStatus.Done, source, dest);
 
     [Fact]
     public async Task TmFallback_IsInformationOnly()

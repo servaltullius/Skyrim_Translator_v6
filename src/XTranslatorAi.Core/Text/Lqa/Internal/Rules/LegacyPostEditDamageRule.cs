@@ -17,7 +17,10 @@ internal static class LegacyPostEditDamageRule
     {
         (new Regex(@"(?:무언|언젠|어딘|누군)이(?![가-힣])", RegexOptions.CultureInvariant), "'~가'로 끝나는 단어가 '~이'로 바뀜"),
         (new Regex(@"(?:인|은|는|던)이\?", RegexOptions.CultureInvariant), "의문형 '~가?'가 '~이?'로 바뀜"),
-        (new Regex(@"(?<!누군|무언|어딘|언젠)(?<=[가-힣])가가 (?=[가-힣])", RegexOptions.CultureInvariant), "지시어 '이'가 앞 조사에 붙어 '~가가'가 됨"),
+        // Only after a word that already ended in 가 as a particle or ending (내가, 우리가, 게다가, 돌아가,
+        // 누군가가). A noun ending in 가 takes 가 normally: 뭔가가, 대가가, 작가가, 헬가가.
+        (new Regex(@"(?:(?<![가-힣])(?:내|네|제|우리|저희|너희|그대|당신|자네|그녀|게다)가|(?<=[가-힣][아어])가|가가)가 (?=[가-힣])",
+            RegexOptions.CultureInvariant), "지시어 '이'가 앞 조사에 붙어 '~가가'가 됨"),
         (new Regex(@"(?:기꺼|가까)가(?![가-힣])", RegexOptions.CultureInvariant), "부사 '~이'가 '~가'로 바뀜"),
         (new Regex(@"[.!?…][""”’')]?[가-힣]{2,}[ \t]*$", RegexOptions.CultureInvariant | RegexOptions.Multiline), "문장 끝 뒤에 용어가 덧붙음"),
     };

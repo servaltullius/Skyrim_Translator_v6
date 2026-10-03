@@ -20,6 +20,10 @@ public sealed class LegacyPostEditDamageRuleTests
     [InlineData("내가 이 무덤의 일부인이?")]
     [InlineData("참으로 기발하지 않은이?")]
     [InlineData("그래서 그대가가 책을 구매한 것이다.")]
+    [InlineData("안 돼, 내가가 보물을 찾지 못하게 하다니.")]
+    [InlineData("게다가가 삽은 어떻게 구한 거지?")]
+    [InlineData("다른 누군가가가 글을 읽고 있다면")]
+    [InlineData("동료들에게 돌아가가 발견을 알려야 한다.")]
     [InlineData("그를 찾을 만큼 가까가 다가가지 못했다.")]
     [InlineData("기꺼가 도전할 수 있어야 한다.")]
     [InlineData("추가적인 침략을 성공적으로 막아냈다.던머노드")]
@@ -36,6 +40,11 @@ public sealed class LegacyPostEditDamageRuleTests
     [InlineData("기꺼이 도전하고, 가까이 다가갔다.")]
     [InlineData("\"좋아.\"라고 그가 말했다.")]
     [InlineData("어린이가 울었다.")]
+    // Serana Dialogue Add-On: nouns ending in 가 followed by the subject particle 가.
+    [InlineData("피의 이름으로! 배후에 뭔가가 더 있어.")]
+    [InlineData("이번엔 얼마나 큰 대가가 걸려 있는지를 보여주려던 걸지도.")]
+    [InlineData("작가가 흡혈귀나 늑대인간이 어떻게 돌아가는지 전혀 몰랐어.")]
+    [InlineData("그러니까 헬가가 디벨라의 광신도라는 거네.")]
     public async Task LeavesCorrectTextAlone(string dest) => Assert.Empty(await ScanAsync(dest));
 
     [Fact]

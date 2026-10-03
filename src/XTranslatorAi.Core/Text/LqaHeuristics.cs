@@ -65,13 +65,18 @@ public static class LqaHeuristics
             return false;
         }
 
-        if (!ContainsAsciiLetter(src))
+        if (!ContainsAsciiLetter(src) || IsInternalIdentifier(sourceText.Trim()))
         {
             return false;
         }
 
         return string.Equals(src, dst, StringComparison.Ordinal);
     }
+
+    // Hidden topic and effect names such as "SDA_CellTrackMGEFTG" are meant to stay as they are.
+    private static bool IsInternalIdentifier(string text)
+        => text.Length > 0 && !text.Any(char.IsWhiteSpace)
+           && (text.Contains('_') || text.Zip(text.Skip(1)).Any(pair => char.IsLower(pair.First) && char.IsUpper(pair.Second)));
 
     /// <param name="terms">Glossary target terms; right after these the syllables are certainly particles.</param>
     public static string? FindDoubledParticleExample(string destText, IReadOnlyList<string>? terms = null)

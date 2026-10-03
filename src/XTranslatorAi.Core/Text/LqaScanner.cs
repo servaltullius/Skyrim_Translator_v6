@@ -300,11 +300,13 @@ public static class LqaScanner
     // A CamelCase segment counts as a whole part: "EldenRim" of "EldenRimUpdate" → "EldenRim 업데이트".
     private static bool IsIdentifierStart(string text, int idx, string word)
         => idx == 0 || !char.IsAsciiLetterOrDigit(text[idx - 1])
-           || (char.IsUpper(word[0]) && char.IsLower(text[idx - 1]));
+           || (char.IsUpper(word[0]) && (char.IsLower(text[idx - 1]) || char.IsDigit(text[idx - 1])));
 
+    // Also "DLC1" of "DLC1NPCMental…" and "OP" of "SDA_OPReaction2" (an acronym before a capitalized word).
     private static bool IsIdentifierEnd(string text, int end, string word)
         => end >= text.Length || !char.IsAsciiLetterOrDigit(text[end])
-           || (char.IsLower(word[^1]) && char.IsUpper(text[end]));
+           || ((char.IsLower(word[^1]) || char.IsDigit(word[^1])) && char.IsUpper(text[end]))
+           || (char.IsUpper(word[^1]) && char.IsUpper(text[end]) && end + 1 < text.Length && char.IsLower(text[end + 1]));
 
     // A suffix joined to a number by a hyphen, "30-ex" in "Afterglow Qi - 30-ex", is one identifier.
     private static bool IsPartOfNumberedTokenFromSource(string dest, Match word, string sourceText)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text.Lqa.Internal;
 
@@ -46,7 +47,7 @@ internal static class DialogueToneConsistencyRule
                 groupKey = "seq:" + seq;
             }
 
-            var tone = LqaToneClassifier.Classify(entry.DestText);
+            var tone = ClassifySpeech(entry.DestText);
             if (!groupToTones.TryGetValue(groupKey, out var list))
             {
                 list = new List<ToneKind>();
@@ -91,7 +92,7 @@ internal static class DialogueToneConsistencyRule
             return;
         }
 
-        var tone = LqaToneClassifier.Classify(entry.DestText);
+        var tone = ClassifySpeech(entry.DestText);
         if (tone == ToneKind.Unknown || tone == majority)
         {
             return;
@@ -110,6 +111,19 @@ internal static class DialogueToneConsistencyRule
                 DestText: entry.DestText ?? ""
             )
         );
+    }
+
+    // In speech, 해라체 statements mix naturally into 반말 ("가자, 나도 모르겠다."), so both count as 반말.
+    // A lone word in 다 or 라 is usually a name ("사만다.", "젤다.", "키아라."), not a speech level.
+    private static ToneKind ClassifySpeech(string? text)
+    {
+        var tone = LqaToneClassifier.Classify(text);
+        if (tone != ToneKind.PlainDa)
+        {
+            return tone;
+        }
+
+        return LqaScanner.StripUiTokens(text ?? "").Trim().Any(char.IsWhiteSpace) ? ToneKind.Casual : ToneKind.Unknown;
     }
 
     private static string ComputeDialogueGroupKeyForIssue(LqaScanEntry entry)
