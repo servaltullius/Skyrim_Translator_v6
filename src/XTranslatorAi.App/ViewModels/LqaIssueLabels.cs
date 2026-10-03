@@ -20,6 +20,7 @@ public static class LqaIssueLabels
         ["length_risk"] = "길이 초과",
         ["rec_tone"] = "말투 불일치",
         ["tone_inconsistent"] = "대사 말투 불일치",
+        ["name_inconsistent"] = "이름 표기 불일치",
         ["particle_marker"] = "조사 괄호 표기",
         ["particle_double"] = "조사 중복",
         ["particle_mismatch"] = "조사 오류",

@@ -204,6 +204,34 @@ public class LqaFalsePositiveTests
         Assert.Equal(new long[] { 7 }, issues.Where(i => i.Code == "tone_inconsistent").Select(i => i.Id));
     }
 
+    [Fact]
+    public async Task NameConsistency_FindsOneNameSpelledTwoWays_ButNotTitlesOrParticles()
+    {
+        // Serana Dialogue Add-On wrote Merovech as 메로베흐, 메로벡 and 메로베크 in different lines.
+        var entries = new List<LqaScanEntry>
+        {
+            Dialogue(1, "Merovech, how do you plan to find him?", "메로베흐, 그를 어떻게 찾을 생각이야?"),
+            Dialogue(2, "I trust Merovech with my life.", "난 메로베흐에게 목숨을 맡길 수 있어."),
+            Dialogue(3, "Merovech said the road is safe.", "메로베흐가 길은 안전하다고 했어."),
+            Dialogue(4, "Ask Merovech about the ship.", "메로벡에게 배에 대해 물어봐."),
+            // A one-syllable name with two particles is the same spelling.
+            Dialogue(5, "How on Nirn did you do that?", "넌에서 그걸 어떻게 했어?"),
+            Dialogue(6, "Across Nirn, nobody knows.", "넌은 넓어서 아무도 몰라."),
+            Dialogue(7, "Nirn is vast.", "넌을 다 돌아볼 순 없어."),
+            // Ordinary words capitalized in titles are not names.
+            Dialogue(8, "Horror Sign", "공포의 징표"),
+            Dialogue(9, "Battle Sign", "전투의 징후"),
+            Dialogue(10, "Storm Sign", "폭풍의 징후"),
+            Dialogue(11, "Frost Sign", "서리의 징후"),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        var issue = Assert.Single(issues, i => i.Code == "name_inconsistent");
+        Assert.Equal(4, issue.Id);
+        Assert.Contains("Merovech → '메로벡' (다른 3행은 '메로베흐')", issue.Message);
+    }
+
     private static LqaScanEntry Dialogue(long id, string source, string dest)
         => new(id, (int)id, "SDA_TalkTopic", "INFO:NAM1", StringEntryStatus.Done, source, dest);
 

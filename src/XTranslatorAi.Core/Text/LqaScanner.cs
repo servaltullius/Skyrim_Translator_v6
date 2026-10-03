@@ -81,6 +81,7 @@ public static class LqaScanner
         var particleTerms = LqaHeuristics.BuildParticleCheckTerms(forceTokenGlossary);
         var glossaryLatinWords = BuildGlossaryLatinWords(forceTokenGlossary);
         var strongDialogueMajority = DialogueToneConsistencyRule.BuildDialogueGroupMajorities(entries);
+        var nameFindings = NameConsistencyRule.Build(entries, isKorean);
         var fieldToneMajority = RecToneRule.BuildFieldMajorities(entries);
 
         var total = entries.Count;
@@ -112,6 +113,7 @@ public static class LqaScanner
                 tmFallbackNotes,
                 strongDialogueMajority,
                 fieldToneMajority,
+                nameFindings,
                 issues
             );
         }
@@ -128,6 +130,7 @@ public static class LqaScanner
         IReadOnlyDictionary<long, string>? tmFallbackNotes,
         IReadOnlyDictionary<string, ToneKind> strongDialogueMajority,
         IReadOnlyDictionary<string, ToneKind> fieldToneMajority,
+        IReadOnlyDictionary<long, string> nameFindings,
         List<LqaIssue> issues
     )
     {
@@ -160,6 +163,8 @@ public static class LqaScanner
         EnglishResidueRule.Apply(entry, sourceText, destText, isKorean, glossaryLatinWords, issues);
 
         DialogueToneConsistencyRule.Apply(entry, strongDialogueMajority, issues);
+
+        NameConsistencyRule.Apply(entry, nameFindings, issues);
 
         BookStructureRules.Apply(entry, sourceText, destText, issues);
 
