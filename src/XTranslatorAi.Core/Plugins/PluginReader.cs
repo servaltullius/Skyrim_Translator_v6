@@ -73,7 +73,71 @@ public static class PluginReader
                 foreach (var stream in archiveLocks.Values) await stream.DisposeAsync();
             }
         }
-        return ReadSnapshot(path, bytes, options, tables, dependencies, structure, cancellationToken, sources);
+        return ReadWithSourceEncodingFallback(path, bytes, options, tables, dependencies, structure, cancellationToken, sources);
+    }
+
+    /// <summary>
+    /// English plugins are usually saved in Windows-1252, while the source encoding defaults to UTF-8, so a
+    /// single "cliché" stopped the whole plugin from opening. When UTF-8 cannot decode the source text, the
+    /// plugin is read again as Windows-1252 — unless some text was valid UTF-8, which a mixed file would
+    /// turn into mojibake ("â€™"); that keeps the original error.
+    /// </summary>
+    private static PluginDocument ReadWithSourceEncodingFallback(string path, byte[] bytes, PluginReadOptions options,
+        IReadOnlyDictionary<PluginStringTableKind, byte[]> tables, IReadOnlyDictionary<string, string> dependencies,
+        (IReadOnlyList<PluginNode> Nodes, IReadOnlyDictionary<int, PluginRecord> Records) structure,
+        CancellationToken cancellationToken, IReadOnlyDictionary<PluginStringTableKind, string> sources)
+    {
+        try
+        {
+            return ReadSnapshot(path, bytes, options, tables, dependencies, structure, cancellationToken, sources);
+        }
+        catch (InvalidDataException utf8Error) when (utf8Error.InnerException is DecoderFallbackException
+                                                      && PluginBinary.GetEncoding(options.SourceEncoding).CodePage == Encoding.UTF8.CodePage)
+        {
+            PluginDocument? fallback = null;
+            try
+            {
+                fallback = ReadSnapshot(path, bytes, options with { SourceEncoding = Windows1252 }, tables, dependencies, structure,
+                    cancellationToken, sources);
+            }
+            catch (InvalidDataException)
+            {
+                // Metadata or structure problems are not about the source encoding; report the original error.
+            }
+
+            var windows1252 = PluginBinary.GetEncoding(Windows1252);
+            if (fallback == null
+                || fallback.Fields.Any(field => WasValidUtf8(field.SourceText, windows1252))
+                || fallback.Tables.Values.SelectMany(table => table.Strings.Values).Any(text => WasValidUtf8(text, windows1252)))
+            {
+                throw;
+            }
+
+            var diagnostics = fallback.Info.Diagnostics.Append(new PluginDiagnostic("source_encoding_fallback",
+                "원문이 UTF-8이 아니어서 windows-1252로 읽었습니다.")).ToArray();
+            return new PluginDocument(fallback.Info with { Diagnostics = Array.AsReadOnly(diagnostics) }, fallback.Fields,
+                fallback.Bytes, fallback.Nodes, fallback.Records, fallback.Tables, fallback.DependencyHashes);
+        }
+    }
+
+    private const string Windows1252 = "windows-1252";
+
+    private static bool WasValidUtf8(string text, Encoding windows1252)
+    {
+        if (text.All(char.IsAscii))
+        {
+            return false;
+        }
+
+        try
+        {
+            _ = PluginBinary.GetEncoding("utf-8").GetString(windows1252.GetBytes(text));
+            return true;
+        }
+        catch (DecoderFallbackException)
+        {
+            return false;
+        }
     }
 
     internal static PluginDocument ReadSnapshot(string path, byte[] bytes, PluginReadOptions options,

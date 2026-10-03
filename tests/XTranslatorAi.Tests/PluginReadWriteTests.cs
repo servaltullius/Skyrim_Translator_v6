@@ -259,6 +259,43 @@ public sealed class PluginReadWriteTests
     }
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Windows1252Plugin_OpenedWithTheUtf8Default_IsReadAsWindows1252(bool localized)
+    {
+        // Serana Dialogue Add-On: 11,668 ASCII strings and five like "cliché" in Windows-1252.
+        var cp1252 = PluginBinary.GetEncoding("windows-1252");
+        var plugin = Header(localized).Concat(Group(
+            Record("WEAP", 0x800, Sub("FULL", localized ? UInt(1) : cp1252.GetBytes("Cliché\0"))),
+            Record("WEAP", 0x801, Sub("FULL", localized ? UInt(2) : Z("Sword"))))).ToArray();
+        using var fixture = new Fixture(plugin);
+        if (localized) fixture.Table(PluginStringTableKind.Strings, new() { [1] = "Cliché", [2] = "Sword" }, cp1252);
+
+        var document = await PluginReader.ReadAsync(fixture.Input, new(), default);
+
+        Assert.Equal(new[] { "Cliché", "Sword" }, document.Fields.Select(field => field.SourceText));
+        Assert.Equal("windows-1252", document.Info.Options.SourceEncoding);
+        Assert.Contains(document.Info.Diagnostics, item => item.Code == "source_encoding_fallback" && !item.BlocksExport);
+        var result = await PluginWriter.ExportAsync(document, new Dictionary<string, string> { [document.Fields[1].Key] = "검" },
+            new(fixture.Output), default);
+        var output = await PluginReader.ReadAsync(result.PluginPath, new(), default);
+        Assert.Equal(new[] { "Cliché", "검" }, output.Fields.Select(field => field.SourceText));
+    }
+
+    [Fact]
+    public async Task PluginMixingUtf8AndWindows1252_KeepsTheEncodingError()
+    {
+        // Reading it as Windows-1252 would turn the valid UTF-8 "Café" into "CafÃ©".
+        using var fixture = new Fixture(Header().Concat(Group(
+            Record("WEAP", 0x800, Sub("FULL", Encoding.UTF8.GetBytes("Café\0"))),
+            Record("WEAP", 0x801, Sub("FULL", PluginBinary.GetEncoding("windows-1252").GetBytes("Cliché\0"))))).ToArray());
+
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() => PluginReader.ReadAsync(fixture.Input, new(), default));
+
+        Assert.IsType<DecoderFallbackException>(error.InnerException);
+    }
+
+    [Theory]
     [InlineData("windows-1252", "windows-1252", "Café", false)]
     [InlineData("windows-1252", "windows-1252", "Café", true)]
     [InlineData("windows-1252", "utf-8", "Café", false)]

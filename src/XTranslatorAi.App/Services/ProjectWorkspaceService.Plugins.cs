@@ -30,7 +30,8 @@ public sealed partial class ProjectWorkspaceService
         ArgumentException.ThrowIfNullOrWhiteSpace(request.TargetEncoding);
         // Parse and validate the complete input before opening or replacing any project DB.
         var document = await PluginReader.ReadAsync(request.InputPath, request.Options, cancellationToken);
-        var dbPath = ProjectPaths.GetPluginProjectDbPath(request.InputPath, request.Options,
+        // The reader may have switched a UTF-8 setting to Windows-1252; the project follows what was read.
+        var dbPath = ProjectPaths.GetPluginProjectDbPath(request.InputPath, document.Info.Options,
             request.TargetLanguage, request.TargetEncoding, _projectsRootOverride);
         var db = await ProjectDb.OpenOrCreateAsync(dbPath, cancellationToken);
         try
