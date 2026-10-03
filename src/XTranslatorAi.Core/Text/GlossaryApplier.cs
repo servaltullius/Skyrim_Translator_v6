@@ -175,19 +175,46 @@ public sealed class GlossaryApplier
             return BuiltInMatch.CommonWord;
         }
 
-        // "Reach" is also capitalized at the start of a sentence: "Reach level 10", "Reach of ...".
-        if (string.Equals(entry.SourceTerm, "Reach", StringComparison.OrdinalIgnoreCase))
+        return IsBuiltInTermUsedOtherwise(input, entry, match.Index, match.Length) ? BuiltInMatch.NotTheTerm : BuiltInMatch.Force;
+    }
+
+    private static readonly Regex ExclamationBeforeRealm = new(
+        @"\b(?:what|why|who|how|where|when)\s+(?:the\s+)?(?:in|on)\s+$",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant
+    );
+
+    private static readonly Regex TheBefore = new(@"\b(?:the|this|that|other)\s+$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+    /// <summary>
+    /// Built-in terms in a sense the glossary target does not have. Forcing them broke Serana Dialogue
+    /// Add-On lines: "What in Oblivion is this place?" became "오블리비언의 여긴 어디야?", "How on Nirn"
+    /// became "넌에서", and Harkon's "I trust you have the Scroll?" (the Elder Scroll) became "주문서".
+    /// "Reach" is also a verb at the start of a sentence: "Reach level 10", "Reach of ...".
+    /// </summary>
+    internal static bool IsBuiltInTermUsedOtherwise(string text, GlossaryEntry entry, int index, int length)
+    {
+        if (!IsBuiltInDefaultEntry(entry))
         {
-            var nextWord = ReadNextAsciiWord(input, match.Index + match.Length);
-            if (string.Equals(nextWord, "of", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(nextWord, "level", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(nextWord, "levels", StringComparison.OrdinalIgnoreCase))
-            {
-                return BuiltInMatch.NotTheTerm;
-            }
+            return false;
         }
 
-        return BuiltInMatch.Force;
+        var term = entry.SourceTerm.Trim();
+        var nextWord = ReadNextAsciiWord(text, index + length);
+        if (string.Equals(term, "Reach", StringComparison.OrdinalIgnoreCase))
+        {
+            return string.Equals(nextWord, "of", StringComparison.OrdinalIgnoreCase)
+                   || string.Equals(nextWord, "level", StringComparison.OrdinalIgnoreCase)
+                   || string.Equals(nextWord, "levels", StringComparison.OrdinalIgnoreCase);
+        }
+
+        var start = Math.Max(0, index - 40);
+        var before = text.Substring(start, index - start);
+        if (term is "Oblivion" or "Nirn")
+        {
+            return ExclamationBeforeRealm.IsMatch(before);
+        }
+
+        return term == "Scroll" && TheBefore.IsMatch(before) && !string.Equals(nextWord, "of", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsCapitalizedSingleWord(string term)

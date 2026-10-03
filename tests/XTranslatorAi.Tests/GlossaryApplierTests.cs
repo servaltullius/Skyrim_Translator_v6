@@ -278,4 +278,47 @@ public class GlossaryApplierTests
         Assert.Equal("Travel in the __XT_TERM_G1_0000__.", applied.Text);
         Assert.Equal("리치", applied.TokenToReplacement["__XT_TERM_G1_0000__"]);
     }
+
+    // Serana Dialogue Add-On: forcing these built-in terms broke exclamations and the Elder Scroll.
+    [Theory]
+    [InlineData("Oblivion", "오블리비언", "What in Oblivion is this place?", false)]
+    [InlineData("Oblivion", "오블리비언", "Who in Oblivion is 'King Bad Suck'?", false)]
+    [InlineData("Oblivion", "오블리비언", "The gates of Oblivion opened.", true)]
+    [InlineData("Nirn", "넌", "How on Nirn do you control the elements?", false)]
+    [InlineData("Nirn", "넌", "Any sentient being in Nirn.", true)]
+    [InlineData("Scroll", "주문서", "I trust you have the Scroll?", false)]
+    [InlineData("Scroll", "주문서", "Now let's go find that other Scroll.", false)]
+    [InlineData("Scroll", "주문서", "Read the Scroll of Fireball.", true)]
+    [InlineData("Scroll", "주문서", "Buy a Scroll here.", true)]
+    public void ForceToken_BuiltInTerm_SkipsSensesItDoesNotHave(string term, string target, string input, bool forced)
+    {
+        var applier = new GlossaryApplier(new[]
+        {
+            new GlossaryEntry(1, null, term, target, true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10,
+                "Built-in default glossary"),
+        });
+
+        var applied = applier.Apply(input);
+
+        Assert.Equal(forced, applied.TokenToReplacement.Count > 0);
+        Assert.Equal(forced, LqaHeuristics.FindMissingForceTokenGlossaryTerm(input, "번역", new[]
+        {
+            new GlossaryEntry(1, null, term, target, true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10,
+                "Built-in default glossary"),
+        }) != null);
+    }
+
+    [Fact]
+    public void LongerBuiltInTerm_KeepsGuildMasterOutOfTheRankMaster()
+    {
+        var entries = new[]
+        {
+            new GlossaryEntry(1, null, "Master", "달인", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, "Built-in default glossary"),
+            new GlossaryEntry(2, null, "Guild Master", "길드 마스터", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, "Built-in default glossary"),
+        };
+
+        var applied = new GlossaryApplier(entries).Apply("You've become the Guild Master of the Thieves Guild.");
+
+        Assert.Equal(new[] { "길드 마스터" }, applied.TokenToReplacement.Values);
+    }
 }

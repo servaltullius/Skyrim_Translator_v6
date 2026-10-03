@@ -449,21 +449,16 @@ public static class LqaHeuristics
         }
 
         var comparison = GlossaryApplier.ForcesOnlyExactCase(entry) ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
-        var isBuiltInReach = GlossaryApplier.IsBuiltInDefaultEntry(entry)
-                             && string.Equals(sourceTerm, "Reach", StringComparison.OrdinalIgnoreCase);
         var idx = 0;
         while ((idx = sourceText.IndexOf(sourceTerm, idx, comparison)) >= 0)
         {
             var end = idx + sourceTerm.Length;
             var counts = entry.MatchMode == GlossaryMatchMode.Substring || IsWordBoundary(sourceText, idx, sourceTerm.Length);
 
-            // Same exception as GlossaryApplier: "Reach level 10", "Reach of ..." is the verb, not the hold.
-            if (counts && isBuiltInReach)
+            // Same exceptions as GlossaryApplier ("Reach level 10", "What in Oblivion", "the Scroll").
+            if (counts && GlossaryApplier.IsBuiltInTermUsedOtherwise(sourceText, entry, idx, sourceTerm.Length))
             {
-                var nextWord = ReadNextAsciiWord(sourceText, end);
-                counts = !string.Equals(nextWord, "of", StringComparison.OrdinalIgnoreCase)
-                         && !string.Equals(nextWord, "level", StringComparison.OrdinalIgnoreCase)
-                         && !string.Equals(nextWord, "levels", StringComparison.OrdinalIgnoreCase);
+                counts = false;
             }
 
             if (counts)
@@ -475,28 +470,6 @@ public static class LqaHeuristics
         }
 
         return spans;
-    }
-
-    private static string ReadNextAsciiWord(string text, int startIndex)
-    {
-        if (string.IsNullOrEmpty(text) || startIndex < 0)
-        {
-            return "";
-        }
-
-        var i = Math.Min(startIndex, text.Length);
-        while (i < text.Length && char.IsWhiteSpace(text[i]))
-        {
-            i++;
-        }
-
-        var start = i;
-        while (i < text.Length && ((text[i] >= 'A' && text[i] <= 'Z') || (text[i] >= 'a' && text[i] <= 'z')))
-        {
-            i++;
-        }
-
-        return start < i ? text.Substring(start, i - start) : "";
     }
 
     private static bool IsWordBoundary(string text, int matchIndex, int matchLength)
