@@ -4,9 +4,10 @@ namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 
 internal static class EnglishResidueRule
 {
-    public static void Apply(LqaScanEntry entry, string sourceText, string destText, bool isKorean, List<LqaIssue> issues)
+    public static void Apply(LqaScanEntry entry, string sourceText, string destText, bool isKorean,
+        IReadOnlySet<string> glossaryLatinWords, List<LqaIssue> issues)
     {
-        var residue = isKorean ? LqaScanner.FindEnglishResidue(destText, sourceText, entry.PreviousText) : null;
+        var residue = isKorean ? LqaScanner.FindEnglishResidue(destText, sourceText, entry.PreviousText, glossaryLatinWords) : null;
         if (residue == null)
         {
             return;

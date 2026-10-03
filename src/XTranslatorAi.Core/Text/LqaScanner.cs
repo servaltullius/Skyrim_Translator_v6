@@ -79,6 +79,7 @@ public static class LqaScanner
 
         var isKorean = IsKoreanLanguage(targetLang);
         var particleTerms = LqaHeuristics.BuildParticleCheckTerms(forceTokenGlossary);
+        var glossaryLatinWords = BuildGlossaryLatinWords(forceTokenGlossary);
         var strongDialogueMajority = DialogueToneConsistencyRule.BuildDialogueGroupMajorities(entries);
         var fieldToneMajority = RecToneRule.BuildFieldMajorities(entries);
 
@@ -107,6 +108,7 @@ public static class LqaScanner
                 isKorean,
                 forceTokenGlossary,
                 particleTerms,
+                glossaryLatinWords,
                 tmFallbackNotes,
                 strongDialogueMajority,
                 fieldToneMajority,
@@ -122,6 +124,7 @@ public static class LqaScanner
         bool isKorean,
         IReadOnlyList<GlossaryEntry> forceTokenGlossary,
         IReadOnlyList<string> particleTerms,
+        IReadOnlySet<string> glossaryLatinWords,
         IReadOnlyDictionary<long, string>? tmFallbackNotes,
         IReadOnlyDictionary<string, ToneKind> strongDialogueMajority,
         IReadOnlyDictionary<string, ToneKind> fieldToneMajority,
@@ -154,7 +157,7 @@ public static class LqaScanner
 
         BracketMismatchRule.Apply(entry, sourceText, destText, issues);
 
-        EnglishResidueRule.Apply(entry, sourceText, destText, isKorean, issues);
+        EnglishResidueRule.Apply(entry, sourceText, destText, isKorean, glossaryLatinWords, issues);
 
         DialogueToneConsistencyRule.Apply(entry, strongDialogueMajority, issues);
 
@@ -251,7 +254,8 @@ public static class LqaScanner
     /// and do not count, nor do words the earlier translated release also kept (an author "The One");
     /// ordinary words such as an untranslated item name do.
     /// </summary>
-    internal static string? FindEnglishResidue(string destText, string sourceText, string? previousText = null)
+    internal static string? FindEnglishResidue(string destText, string sourceText, string? previousText = null,
+        IReadOnlySet<string>? glossaryLatinWords = null)
     {
         if (string.IsNullOrWhiteSpace(destText))
         {
@@ -265,7 +269,8 @@ public static class LqaScanner
             if (word.Count(char.IsAsciiLetter) >= 2
                 && !IsAcronymOrIdentifierFromSource(word, sourceText)
                 && !IsPartOfNumberedTokenFromSource(dest, m, sourceText)
-                && !ContainsWholeWord(previousText, word, StringComparison.Ordinal))
+                && !ContainsWholeWord(previousText, word, StringComparison.Ordinal)
+                && glossaryLatinWords?.Contains(word) != true)
             {
                 return word;
             }
@@ -273,6 +278,11 @@ public static class LqaScanner
 
         return null;
     }
+
+    // The glossary may keep a term in Latin letters ("Thu'um" => "Thu'um"); the translation follows it.
+    private static IReadOnlySet<string> BuildGlossaryLatinWords(IReadOnlyList<GlossaryEntry> glossary)
+        => glossary.SelectMany(entry => LatinWordRegex.Matches(entry.TargetTerm ?? "").Select(match => match.Value))
+            .ToHashSet(StringComparer.Ordinal);
 
     private static bool IsAcronymOrIdentifierFromSource(string word, string sourceText)
     {

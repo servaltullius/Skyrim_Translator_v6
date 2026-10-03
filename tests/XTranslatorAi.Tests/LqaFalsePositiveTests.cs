@@ -95,6 +95,18 @@ public class LqaFalsePositiveTests
         => Assert.Equal(expected, LqaScanner.FindEnglishResidue("저자:\nThe One", "by\nThe One", previous));
 
     [Fact]
+    public async Task EnglishResidue_AcceptsTermsTheGlossaryKeepsInLatin()
+    {
+        // The built-in glossary maps "Thu'um" to "Thu'um", so the translation is meant to keep it.
+        var entries = new List<LqaScanEntry> { Row(1, "INFO:NAM1", "너의 Thu'um과 내 마법이라면 거뜬해.", source: "Your Thu'um and my magic.") };
+        var glossary = new List<GlossaryEntry> { BuiltIn(1, "Thu'um", "Thu'um") };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", glossary);
+
+        Assert.DoesNotContain(issues, i => i.Code == "english_residue");
+    }
+
+    [Fact]
     public async Task EnglishResidue_ReadsThePreviousTranslationOfEachRow()
     {
         var entries = new List<LqaScanEntry>
