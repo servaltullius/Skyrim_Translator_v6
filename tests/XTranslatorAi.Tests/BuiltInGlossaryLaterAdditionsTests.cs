@@ -94,6 +94,9 @@ public class BuiltInGlossaryLaterAdditionsTests : IAsyncLifetime
         Assert.Equal("길드 마스터", Assert.Single(glossary, e => e.SourceTerm == "Guild Master").TargetTerm);
         Assert.Equal("환영마법", Assert.Single(glossary, e => e.SourceTerm == "Illusion magic").TargetTerm);
         Assert.True(File.Exists(StampPathFor("2026-10-03")));
+        Assert.Equal("씨직 오더", Assert.Single(glossary, e => e.SourceTerm == "Psijic Order").TargetTerm);
+        Assert.Equal("블랙-브라이어", Assert.Single(glossary, e => e.SourceTerm == "Black-Briar").TargetTerm);
+        Assert.Equal("허닝브루", Assert.Single(glossary, e => e.SourceTerm == "Honningbrew").TargetTerm);
     }
 
     [Theory]

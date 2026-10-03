@@ -43,6 +43,9 @@ public sealed class BuiltInGlossaryService
             Array.Empty<(string, string)>()),
         // 몰락 발 is the more common Korean name and the one the official translation (built-in TM) uses.
         new("2026-10-03.2", Array.Empty<string>(), new[] { ("Molag Bal", "몰라그 발") }),
+        // Names the official translation (built-in TM) only uses inside sentences, so the name index cannot learn them:
+        // Serana Dialogue Add-On came back with 사이직 오더, 원로평의회, 아르테움, 호닝브루 and 블랙브라이어.
+        new("2026-10-03.3", new[] { "Psijic Order", "Elder Council", "Black-Briar", "Artaeum", "Honningbrew" }, Array.Empty<(string, string)>()),
     };
 
     /// <summary>
