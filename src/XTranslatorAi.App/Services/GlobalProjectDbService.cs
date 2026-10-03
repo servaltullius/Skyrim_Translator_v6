@@ -79,10 +79,10 @@ public sealed class GlobalProjectDbService
         // Optional: a failure here must not make the whole global glossary unavailable.
         try
         {
-            foreach (var (version, _) in BuiltInGlossaryService.LaterAdditions)
+            foreach (var batch in BuiltInGlossaryService.LaterAdditions)
             {
-                var stampPath = ProjectPaths.GetBuiltInGlossaryAdditionsStampPath(dbPath, version);
-                await _builtInGlossaryService.AddLaterEntriesOnceAsync(db, stampPath, version, franchise, cancellationToken);
+                var stampPath = ProjectPaths.GetBuiltInGlossaryAdditionsStampPath(dbPath, batch.Version);
+                await _builtInGlossaryService.AddLaterEntriesOnceAsync(db, stampPath, batch.Version, franchise, cancellationToken);
             }
         }
         catch (Exception ex) when (ex is not OperationCanceledException)

@@ -87,16 +87,36 @@ public class BuiltInGlossaryLaterAdditionsTests : IAsyncLifetime
         var added = Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Elder Scroll");
         await _db.DeleteGlossaryEntryAsync(added.Id, CancellationToken.None);
 
-        foreach (var (version, _) in BuiltInGlossaryService.LaterAdditions)
-        {
-            await new BuiltInGlossaryService().AddLaterEntriesOnceAsync(_db, StampPathFor(version), version, BethesdaFranchise.ElderScrolls, CancellationToken.None);
-        }
+        await AddAllBatchesAsync();
 
         var glossary = await GlossaryAsync();
         Assert.DoesNotContain(glossary, e => e.SourceTerm == "Elder Scroll");
         Assert.Equal("길드 마스터", Assert.Single(glossary, e => e.SourceTerm == "Guild Master").TargetTerm);
         Assert.Equal("환영마법", Assert.Single(glossary, e => e.SourceTerm == "Illusion magic").TargetTerm);
         Assert.True(File.Exists(StampPathFor("2026-10-03")));
+    }
+
+    [Theory]
+    [InlineData("몰라그 발", "Built-in default glossary", "몰락 발")]
+    [InlineData("몰라그발", "Built-in default glossary", "몰라그발")]
+    [InlineData("몰라그 발", null, "몰라그 발")]
+    public async Task ChangedBuiltInTarget_IsCorrectedOnlyWhereTheUserKeptTheOldOne(string target, string? note, string expected)
+    {
+        await _db.BulkInsertGlossaryAsync(
+            new[] { ((string?)"신화 및 주요 존재 (Mythology & Key Beings)", "Molag Bal", target, true, 10, (int)GlossaryMatchMode.WordBoundary, (int)GlossaryForceMode.ForceToken, note) },
+            CancellationToken.None);
+
+        await AddAllBatchesAsync();
+
+        Assert.Equal(expected, Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Molag Bal").TargetTerm);
+    }
+
+    private async Task AddAllBatchesAsync()
+    {
+        foreach (var batch in BuiltInGlossaryService.LaterAdditions)
+        {
+            await new BuiltInGlossaryService().AddLaterEntriesOnceAsync(_db, StampPathFor(batch.Version), batch.Version, BethesdaFranchise.ElderScrolls, CancellationToken.None);
+        }
     }
 
     private Task AddLaterEntriesAsync()

@@ -24,23 +24,30 @@ public sealed class BuiltInGlossaryService
         "shout",
     };
 
+    /// <summary>A batch of entries added to the built-in glossary, and of built-in targets changed, after it first shipped.</summary>
+    /// <param name="Corrections">Built-in entries whose target changed: an entry still holding <c>OldTarget</c> gets the current one.</param>
+    public sealed record LaterGlossaryBatch(string Version, IReadOnlyList<string> Sources,
+        IReadOnlyList<(string Source, string OldTarget)> Corrections);
+
     /// <summary>
-    /// Entries added to the built-in glossary after it first shipped, in batches. A global glossary is
-    /// filled from the built-in list only when it is created, so that entries a user deleted stay deleted;
-    /// each batch is offered to older glossaries once (see <see cref="AddLaterEntriesOnceAsync"/>).
-    /// Add a new batch with a new version instead of editing a released one.
+    /// A global glossary is filled from the built-in list only when it is created, so that entries a user
+    /// deleted or edited stay that way; each batch is offered to older glossaries once
+    /// (see <see cref="AddLaterEntriesOnceAsync"/>). Add a new batch with a new version instead of editing a released one.
     /// </summary>
-    public static readonly IReadOnlyList<(string Version, IReadOnlyList<string> Sources)> LaterAdditions = new (string, IReadOnlyList<string>)[]
+    public static readonly IReadOnlyList<LaterGlossaryBatch> LaterAdditions = new LaterGlossaryBatch[]
     {
         // Without these, "Scroll" (주문서) is forced inside the name: "엘더 주문서".
-        ("2026-10-01", new[] { "Elder Scroll", "Elder Scrolls" }),
+        new("2026-10-01", new[] { "Elder Scroll", "Elder Scrolls" }, Array.Empty<(string, string)>()),
         // Forcing the single words broke these in Serana Dialogue Add-On: "길드 달인", "환영마법 마법".
-        ("2026-10-03", new[] { "Guild Master", "Alteration magic", "Conjuration magic", "Destruction magic", "Illusion magic", "Restoration magic" }),
+        new("2026-10-03", new[] { "Guild Master", "Alteration magic", "Conjuration magic", "Destruction magic", "Illusion magic", "Restoration magic" },
+            Array.Empty<(string, string)>()),
+        // 몰락 발 is the more common Korean name and the one the official translation (built-in TM) uses.
+        new("2026-10-03.2", Array.Empty<string>(), new[] { ("Molag Bal", "몰라그 발") }),
     };
 
     /// <summary>
-    /// Adds the missing entries of one <see cref="LaterAdditions"/> batch and writes <paramref name="stampPath"/>,
-    /// so a later deletion by the user is not undone on the next start.
+    /// Applies one <see cref="LaterAdditions"/> batch (adds its missing entries, corrects built-in targets the user
+    /// has not changed) and writes <paramref name="stampPath"/>, so a later deletion or edit is not undone.
     /// </summary>
     public async Task AddLaterEntriesOnceAsync(
         ProjectDb db,
@@ -55,19 +62,48 @@ public sealed class BuiltInGlossaryService
             return;
         }
 
-        var sources = new HashSet<string>(LaterAdditions.Single(batch => batch.Version == version).Sources, StringComparer.OrdinalIgnoreCase);
+        var batch = LaterAdditions.Single(b => b.Version == version);
+        var sources = new HashSet<string>(batch.Sources, StringComparer.OrdinalIgnoreCase);
         var existing = await db.GetGlossaryAsync(cancellationToken);
         var existingSources = new HashSet<string>(existing.Select(e => e.SourceTerm.Trim()), StringComparer.OrdinalIgnoreCase);
-        var additions = GlossaryFileParser.ParseEntries(EmbeddedAssets.LoadDefaultGlossary(franchise))
-            .Where(e => sources.Contains(e.Source.Trim()))
-            .ToList();
+        var builtIn = GlossaryFileParser.ParseEntries(EmbeddedAssets.LoadDefaultGlossary(franchise));
+        var additions = builtIn.Where(e => sources.Contains(e.Source.Trim())).ToList();
         var rows = BuildBuiltInGlossaryInsertRows(additions, existingSources);
         if (rows.Count > 0)
         {
             await db.BulkInsertGlossaryAsync(rows, cancellationToken);
         }
 
-        await File.WriteAllTextAsync(stampPath, $"added={rows.Count}{Environment.NewLine}", cancellationToken);
+        var corrections = new List<(long Id, string? Category, string SourceTerm, string TargetTerm, bool Enabled, int Priority, int MatchMode, int ForceMode, string? Note)>();
+        foreach (var entry in existing.Where(e => e.Note?.StartsWith("Built-in default glossary", StringComparison.Ordinal) == true))
+        {
+            if (CorrectedTarget(batch, builtIn, entry) is { } target)
+            {
+                corrections.Add((entry.Id, entry.Category, entry.SourceTerm, target, entry.Enabled, entry.Priority,
+                    (int)entry.MatchMode, (int)entry.ForceMode, entry.Note));
+            }
+        }
+
+        if (corrections.Count > 0)
+        {
+            await db.BulkUpdateGlossaryAsync(corrections, cancellationToken);
+        }
+
+        await File.WriteAllTextAsync(stampPath, $"added={rows.Count} corrected={corrections.Count}{Environment.NewLine}", cancellationToken);
+    }
+
+    private static string? CorrectedTarget(LaterGlossaryBatch batch, IReadOnlyList<(string? Category, string Source, string Target)> builtIn, GlossaryEntry entry)
+    {
+        var source = entry.SourceTerm.Trim();
+        var stillOld = batch.Corrections.Any(c => string.Equals(c.Source, source, StringComparison.OrdinalIgnoreCase)
+                                                  && string.Equals(c.OldTarget, entry.TargetTerm.Trim(), StringComparison.Ordinal));
+        if (!stillOld)
+        {
+            return null;
+        }
+
+        var current = builtIn.FirstOrDefault(e => string.Equals(e.Source.Trim(), source, StringComparison.OrdinalIgnoreCase)).Target?.Trim();
+        return string.IsNullOrEmpty(current) || current == entry.TargetTerm.Trim() ? null : current;
     }
 
     public Task EnsureBuiltInGlossaryAsync(
