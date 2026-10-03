@@ -36,6 +36,8 @@ internal sealed class TranslationRunContext : IDisposable
     public IReadOnlyDictionary<long, string>? DialogueContextWindowById { get; set; }
     public IReadOnlyDictionary<long, string>? PreviousTranslationById { get; set; }
 
+    public ReferenceNameIndex? ReferenceNames { get; set; }
+
     // Session Term Memory
     public bool EnableSessionTermMemory { get; set; }
     public TranslationService.SessionTermMemory? SessionTermMemory { get; set; }

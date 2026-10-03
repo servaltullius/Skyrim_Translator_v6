@@ -164,7 +164,8 @@ public sealed class TranslationRunnerService
         int Parallel,
         int MaxOutputTokens,
         IReadOnlyList<GlossaryEntry>? GlobalGlossary,
-        IReadOnlyDictionary<string, string>? GlobalTranslationMemory
+        IReadOnlyDictionary<string, string>? GlobalTranslationMemory,
+        IReadOnlyList<(string Source, string Target)>? ReferenceNameMemory
     );
 
     private async Task<IReadOnlyList<TranslationRun>> BuildRunsAsync(Request request)
@@ -308,6 +309,7 @@ public sealed class TranslationRunnerService
 
         var globalGlossary = await TryLoadGlobalGlossaryAsync(request);
         var globalTranslationMemory = await TryLoadGlobalTranslationMemoryAsync(request);
+        var referenceNameMemory = await TryLoadReferenceNameMemoryAsync(request);
 
         return new TranslationRun(
             Service: service,
@@ -321,7 +323,8 @@ public sealed class TranslationRunnerService
             Parallel: parallel,
             MaxOutputTokens: maxOut,
             GlobalGlossary: globalGlossary,
-            GlobalTranslationMemory: globalTranslationMemory
+            GlobalTranslationMemory: globalTranslationMemory,
+            ReferenceNameMemory: referenceNameMemory
         );
     }
 
@@ -365,6 +368,26 @@ public sealed class TranslationRunnerService
         }
     }
 
+    // The same memory with its original casing, so that names can be told from ordinary words.
+    private async Task<IReadOnlyList<(string Source, string Target)>?> TryLoadReferenceNameMemoryAsync(Request request)
+    {
+        var globalDb = await _globalProjectDbService.GetOrCreateAsync(request.Franchise, request.CancellationToken);
+        if (globalDb == null)
+        {
+            return null;
+        }
+
+        try
+        {
+            var entries = await globalDb.GetTranslationMemoryEntriesAsync(request.SourceLang.Trim(), request.TargetLang.Trim(), request.CancellationToken);
+            return entries.Select(entry => (entry.SourceText, entry.DestText)).ToList();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     private static TranslateIdsRequest BuildTranslateIdsRequest(Request request, TranslationRun run, CancellationToken cancellationToken)
     {
         return new TranslateIdsRequest(
@@ -388,6 +411,7 @@ public sealed class TranslationRunnerService
             CancellationToken: cancellationToken,
             GlobalGlossary: run.GlobalGlossary,
             GlobalTranslationMemory: run.GlobalTranslationMemory,
+            ReferenceNameMemory: run.ReferenceNameMemory,
             SemanticRepairMode: request.SemanticRepairMode,
             EnableTemplateFixer: request.EnableTemplateFixer,
             KeepSkyrimTagsRaw: request.KeepSkyrimTagsRaw,

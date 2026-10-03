@@ -45,5 +45,7 @@ public sealed record TranslateIdsRequest(
     TranslationGenerationBudget? GenerationBudget = null,
     bool EnableAdaptiveOutputBudget = false,
     bool EnableBookContext = false,
-    IReadOnlyDictionary<string, string>? BookTitlesByEdid = null
+    IReadOnlyDictionary<string, string>? BookTitlesByEdid = null,
+    // Translation memory pairs with their original casing; names among them become reference terms (see ReferenceNameIndex).
+    IReadOnlyList<(string Source, string Target)>? ReferenceNameMemory = null
 );

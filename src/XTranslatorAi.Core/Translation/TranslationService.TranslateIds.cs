@@ -115,6 +115,7 @@ public sealed partial class TranslationService
 
         var placeholderMasker = new PlaceholderMasker(new PlaceholderMaskerOptions(KeepSkyrimTagsRaw: request.KeepSkyrimTagsRaw));
         var glossaryApplier = new GlossaryApplier(glossary);
+        Ctx.ReferenceNames = request.ReferenceNameMemory is { Count: > 0 } names ? ReferenceNameIndex.Build(names) : null;
         var translationMemory = MergeTranslationMemory(
             request.GlobalTranslationMemory,
             await LoadTranslationMemoryAsync(request.SourceLang, request.TargetLang, request.CancellationToken)
