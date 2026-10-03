@@ -21,8 +21,10 @@ public class BuiltInGlossaryLaterAdditionsTests : IAsyncLifetime
     private readonly string _root = Path.Combine(Path.GetTempPath(), "xtai-tests", Guid.NewGuid().ToString("N"));
     private ProjectDb _db = null!;
 
-    private string StampPath => ProjectPaths.GetBuiltInGlossaryAdditionsStampPath(
-        Path.Combine(_root, "global-glossary.sqlite"), BuiltInGlossaryService.LaterAdditionsVersion);
+    private string StampPath => StampPathFor("2026-10-01");
+
+    private string StampPathFor(string version) => ProjectPaths.GetBuiltInGlossaryAdditionsStampPath(
+        Path.Combine(_root, "global-glossary.sqlite"), version);
 
     public async Task InitializeAsync()
     {
@@ -78,8 +80,27 @@ public class BuiltInGlossaryLaterAdditionsTests : IAsyncLifetime
         Assert.Equal("엘더 스크롤", Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Elder Scroll").TargetTerm);
     }
 
+    [Fact]
+    public async Task LaterBatch_IsAddedEvenAfterAnEarlierOne_AndKeepsEarlierDeletions()
+    {
+        await AddLaterEntriesAsync();
+        var added = Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Elder Scroll");
+        await _db.DeleteGlossaryEntryAsync(added.Id, CancellationToken.None);
+
+        foreach (var (version, _) in BuiltInGlossaryService.LaterAdditions)
+        {
+            await new BuiltInGlossaryService().AddLaterEntriesOnceAsync(_db, StampPathFor(version), version, BethesdaFranchise.ElderScrolls, CancellationToken.None);
+        }
+
+        var glossary = await GlossaryAsync();
+        Assert.DoesNotContain(glossary, e => e.SourceTerm == "Elder Scroll");
+        Assert.Equal("길드 마스터", Assert.Single(glossary, e => e.SourceTerm == "Guild Master").TargetTerm);
+        Assert.Equal("환영마법", Assert.Single(glossary, e => e.SourceTerm == "Illusion magic").TargetTerm);
+        Assert.True(File.Exists(StampPathFor("2026-10-03")));
+    }
+
     private Task AddLaterEntriesAsync()
-        => new BuiltInGlossaryService().AddLaterEntriesOnceAsync(_db, StampPath, BethesdaFranchise.ElderScrolls, CancellationToken.None);
+        => new BuiltInGlossaryService().AddLaterEntriesOnceAsync(_db, StampPath, "2026-10-01", BethesdaFranchise.ElderScrolls, CancellationToken.None);
 
     private async Task<GlossaryEntry[]> GlossaryAsync()
         => (await _db.GetGlossaryAsync(CancellationToken.None)).ToArray();

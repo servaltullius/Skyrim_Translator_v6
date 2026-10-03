@@ -25,27 +25,27 @@ public sealed class BuiltInGlossaryService
     };
 
     /// <summary>
-    /// Entries added to the built-in glossary after it first shipped. A global glossary is filled from
-    /// the built-in list only when it is created, so that entries a user deleted stay deleted; these are
-    /// offered to older glossaries once (see <see cref="AddLaterEntriesOnceAsync"/>).
-    /// Bump the version when adding sources here.
+    /// Entries added to the built-in glossary after it first shipped, in batches. A global glossary is
+    /// filled from the built-in list only when it is created, so that entries a user deleted stay deleted;
+    /// each batch is offered to older glossaries once (see <see cref="AddLaterEntriesOnceAsync"/>).
+    /// Add a new batch with a new version instead of editing a released one.
     /// </summary>
-    public const string LaterAdditionsVersion = "2026-10-01";
-
-    private static readonly HashSet<string> LaterAdditionSources = new(StringComparer.OrdinalIgnoreCase)
+    public static readonly IReadOnlyList<(string Version, IReadOnlyList<string> Sources)> LaterAdditions = new (string, IReadOnlyList<string>)[]
     {
         // Without these, "Scroll" (주문서) is forced inside the name: "엘더 주문서".
-        "Elder Scroll",
-        "Elder Scrolls",
+        ("2026-10-01", new[] { "Elder Scroll", "Elder Scrolls" }),
+        // Forcing the single words broke these in Serana Dialogue Add-On: "길드 달인", "환영마법 마법".
+        ("2026-10-03", new[] { "Guild Master", "Alteration magic", "Conjuration magic", "Destruction magic", "Illusion magic", "Restoration magic" }),
     };
 
     /// <summary>
-    /// Adds <see cref="LaterAdditionSources"/> that are missing and writes <paramref name="stampPath"/>,
+    /// Adds the missing entries of one <see cref="LaterAdditions"/> batch and writes <paramref name="stampPath"/>,
     /// so a later deletion by the user is not undone on the next start.
     /// </summary>
     public async Task AddLaterEntriesOnceAsync(
         ProjectDb db,
         string stampPath,
+        string version,
         BethesdaFranchise franchise,
         CancellationToken cancellationToken
     )
@@ -55,10 +55,11 @@ public sealed class BuiltInGlossaryService
             return;
         }
 
+        var sources = new HashSet<string>(LaterAdditions.Single(batch => batch.Version == version).Sources, StringComparer.OrdinalIgnoreCase);
         var existing = await db.GetGlossaryAsync(cancellationToken);
         var existingSources = new HashSet<string>(existing.Select(e => e.SourceTerm.Trim()), StringComparer.OrdinalIgnoreCase);
         var additions = GlossaryFileParser.ParseEntries(EmbeddedAssets.LoadDefaultGlossary(franchise))
-            .Where(e => LaterAdditionSources.Contains(e.Source.Trim()))
+            .Where(e => sources.Contains(e.Source.Trim()))
             .ToList();
         var rows = BuildBuiltInGlossaryInsertRows(additions, existingSources);
         if (rows.Count > 0)
