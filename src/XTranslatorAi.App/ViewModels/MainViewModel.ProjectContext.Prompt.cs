@@ -41,6 +41,14 @@ public partial class MainViewModel
         sb.AppendLine("  2) Terminology (source => target) for the most important terms");
         sb.AppendLine("  3) Style rules (especially for effect/perk descriptions)");
         sb.AppendLine("  4) Numeric/template conventions (duration/cooldown/percent/points phrasing)");
+        // Line-by-line translation does not know who speaks to whom; Serana Dialogue Add-On switched between
+        // 반말 and 해요체 in 530 of its lines. An explicit rule keeps each relationship in one speech level.
+        sb.AppendLine("  5) Speech levels (말투), only when dialogue (INFO/DIAL) is a large part of the report: one line per relationship");
+        sb.AppendLine("     between the main speakers and the player, such as \"세라나 → 플레이어: 반말\" and \"플레이어 → 세라나: 반말\".");
+        sb.AppendLine("     Decide from the samples and the summary: companions, lovers and close friends usually use 반말 both ways;");
+        sb.AppendLine("     servants, merchants and guards use 존댓말 (해요체 or 하오체) to the player. Also give the level the main speaker");
+        sb.AppendLine("     uses with strangers or superiors when the samples show such scenes, such as \"세라나 → 처음 만나는 NPC: 해요체\".");
+        sb.AppendLine("     Give one level per relationship, never alternatives.");
         sb.AppendLine("- Use only information present in the report; do not invent lore facts.");
         // The translation follows this list over its other references, so a guessed entry overrides
         // the established name (a generated "Deathblow: 치명타" beat the earlier patch's 치명적 일격).

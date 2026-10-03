@@ -165,6 +165,8 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Contains(":generateContent", request.Path);
             using var requestJson = JsonDocument.Parse(request.Body);
             var prompt = requestJson.RootElement.GetProperty("contents")[0].GetProperty("parts")[0].GetProperty("text").GetString()!;
+            // Dialogue mods get one speech level per relationship (Serana switched between 반말 and 해요체).
+            Assert.Contains("Speech levels (말투)", prompt);
             const string marker = "Project scan report JSON:";
             var reportStart = prompt.IndexOf(marker, StringComparison.Ordinal);
             Assert.True(reportStart >= 0);
