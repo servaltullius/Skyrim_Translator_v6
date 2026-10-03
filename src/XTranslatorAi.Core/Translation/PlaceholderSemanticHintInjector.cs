@@ -20,7 +20,7 @@ internal static class PlaceholderSemanticHintInjector
     );
 
     private static readonly Regex HintRegex = new(
-        pattern: @"⟦XT_(?:MAG|DUR|NUM)=[0-9]+⟧",
+        pattern: @"⟦/?XT_(?:MAG|DUR|NUM)(?:=[0-9]+)?⟧",
         options: RegexOptions.CultureInvariant
     );
 

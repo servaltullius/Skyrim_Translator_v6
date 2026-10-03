@@ -14,8 +14,9 @@ internal static class GlossarySemanticHintInjector
         options: RegexOptions.CultureInvariant
     );
 
+    // The model sometimes closes the hint like markup ("결의⟦/XT_TERM⟧지"), so closing and bare forms go too.
     private static readonly Regex HintRegex = new(
-        pattern: @"⟦XT_TERM=[^⟧]{0,80}⟧",
+        pattern: @"⟦/?XT_TERM(?:=[^⟧]{0,80})?⟧",
         options: RegexOptions.CultureInvariant
     );
 

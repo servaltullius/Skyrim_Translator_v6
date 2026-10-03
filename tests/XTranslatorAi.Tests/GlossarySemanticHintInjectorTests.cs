@@ -30,6 +30,14 @@ public sealed class GlossarySemanticHintInjectorTests
     }
 
     [Fact]
+    public void Strip_RemovesClosingMarkersTheModelInvents()
+    {
+        // Serana Dialogue Add-On: "살아남겠다는 결의⟦/XT_TERM⟧지" reached the saved translation.
+        Assert.Equal("살아남겠다는 결의지.", GlossarySemanticHintInjector.Strip("살아남겠다는 결의⟦/XT_TERM⟧지."));
+        Assert.Equal("결의", GlossarySemanticHintInjector.Strip("⟦XT_TERM⟧결의"));
+    }
+
+    [Fact]
     public void Inject_ForNonKorean_DoesNotAddMarkers()
     {
         var text = "__XT_TERM_G123_0000__";

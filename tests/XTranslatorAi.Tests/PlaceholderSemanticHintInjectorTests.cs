@@ -21,6 +21,7 @@ public sealed class PlaceholderSemanticHintInjectorTests
         var injected = "__XT_PH_MAG_0000__⟦XT_MAG=100⟧ __XT_PH_DUR_0001__⟦XT_DUR=5⟧";
         var stripped = PlaceholderSemanticHintInjector.Strip(injected);
         Assert.Equal("__XT_PH_MAG_0000__ __XT_PH_DUR_0001__", stripped);
+        Assert.Equal("__XT_PH_MAG_0000__초", PlaceholderSemanticHintInjector.Strip("__XT_PH_MAG_0000__⟦/XT_MAG⟧초"));
     }
 
     [Fact]
