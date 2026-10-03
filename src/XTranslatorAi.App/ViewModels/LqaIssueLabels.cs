@@ -17,6 +17,7 @@ public static class LqaIssueLabels
         ["token_mismatch"] = "태그·토큰 불일치",
         ["untranslated"] = "미번역",
         ["glossary_missing"] = "용어 누락",
+        ["glossary_variant"] = "용어집과 다른 표기",
         ["length_risk"] = "길이 초과",
         ["rec_tone"] = "말투 불일치",
         ["tone_inconsistent"] = "대사 말투 불일치",

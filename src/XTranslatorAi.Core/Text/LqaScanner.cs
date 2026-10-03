@@ -82,6 +82,7 @@ public static class LqaScanner
         var glossaryLatinWords = BuildGlossaryLatinWords(forceTokenGlossary);
         var strongDialogueMajority = DialogueToneConsistencyRule.BuildDialogueGroupMajorities(entries);
         var nameFindings = NameConsistencyRule.Build(entries, isKorean);
+        var loanwordIndex = isKorean ? GlossaryLoanwordRule.Build(forceTokenGlossary) : new Dictionary<string, GlossaryEntry>();
         var fieldToneMajority = RecToneRule.BuildFieldMajorities(entries);
 
         var total = entries.Count;
@@ -114,6 +115,7 @@ public static class LqaScanner
                 strongDialogueMajority,
                 fieldToneMajority,
                 nameFindings,
+                loanwordIndex,
                 issues
             );
         }
@@ -131,6 +133,7 @@ public static class LqaScanner
         IReadOnlyDictionary<string, ToneKind> strongDialogueMajority,
         IReadOnlyDictionary<string, ToneKind> fieldToneMajority,
         IReadOnlyDictionary<long, string> nameFindings,
+        IReadOnlyDictionary<string, GlossaryEntry> loanwordIndex,
         List<LqaIssue> issues
     )
     {
@@ -146,6 +149,8 @@ public static class LqaScanner
         }
 
         GlossaryMissingRule.Apply(entry, sourceText, destText, isKorean, forceTokenGlossary, issues);
+
+        GlossaryLoanwordRule.Apply(entry, sourceText, destText, isKorean, loanwordIndex, issues);
 
         if (TryAddLengthRiskIssue(entry, sourceText, destText, out var lengthIssue))
         {

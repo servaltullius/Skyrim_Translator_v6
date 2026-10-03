@@ -232,6 +232,49 @@ public class LqaFalsePositiveTests
         Assert.Contains("Merovech → '메로벡' (다른 3행은 '메로베흐')", issue.Message);
     }
 
+    [Fact]
+    public async Task GlossaryVariant_FindsTheLoanwordForATranslatedTerm_ButNotNativeWordsOrNamesOfTheLine()
+    {
+        // Serana Dialogue Add-On said 뱀파이어로 변한 for "since I was turned"; the glossary says 흡혈귀.
+        var glossary = new List<GlossaryEntry>
+        {
+            Term("Vampire", "흡혈귀"),
+            Term("Illusion", "환영마법"),
+            Term("Superior", "중급"),
+            Term("Cloak", "망토"),
+            Term("Saryoni", "사요니"),
+        };
+        var entries = new List<LqaScanEntry>
+        {
+            Dialogue(1, "I feel like I can breathe again for the first time since I was turned.", "뱀파이어로 변한 이후 처음으로 다시 숨을 쉴 수 있게 된 것만 같아."),
+            // The source names the vampire: a missing glossary term, reported as such.
+            Dialogue(2, "You're a vampire?", "너 흡혈귀야?"),
+            // Native words that sound like a term: 알아선 (Illusion), 수업이라도 (Superior), 그라아악 (Cloak).
+            Dialogue(3, "The wizards know about all kinds of things.", "마법사들은 온갖 걸 다 알아선 안 될 것까지 알아."),
+            Dialogue(4, "Maybe I should take a class.", "나도 수업이라도 들어볼까."),
+            Dialogue(5, "Grrah!", "그라아악!"),
+            // Verbs with 되다 or 버리다: 부여될 (Portal), 써버리는 (Superior).
+            Dialogue(9, "It will be granted.", "힘이 부여될 거야."),
+            Dialogue(10, "He spends it all.", "다 써버리는 사람이야."),
+            // A name of the line (Sefirah), and a name the glossary spells out (Saryoni → 사요니, not 세라나).
+            Dialogue(6, "Sefirah Missile", "세피라 미사일"),
+            Dialogue(7, "Serana, look.", "세라나, 이것 봐."),
+            // The plural names the same word: 마스터 for the Ideal Masters.
+            Dialogue(8, "The Ideal Masters are real.", "이상적인 마스터는 실재해."),
+        };
+        glossary.Add(Term("Master", "달인"));
+        glossary.Add(Term("Portal", "차원문"));
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", glossary);
+
+        var issue = Assert.Single(issues, i => i.Code == "glossary_variant");
+        Assert.Equal(1, issue.Id);
+        Assert.Equal("용어집과 다른 표기: '뱀파이어' → '흡혈귀' (Vampire)", issue.Message);
+    }
+
+    private static GlossaryEntry Term(string source, string target)
+        => new(0, null, source, target, true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null);
+
     private static LqaScanEntry Dialogue(long id, string source, string dest)
         => new(id, (int)id, "SDA_TalkTopic", "INFO:NAM1", StringEntryStatus.Done, source, dest);
 
