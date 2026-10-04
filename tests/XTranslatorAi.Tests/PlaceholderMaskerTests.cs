@@ -254,6 +254,28 @@ public class PlaceholderMaskerTests
         Assert.Equal("Relieved", XTranslatorAi.Core.Text.LqaScanner.FindEnglishResidue("<Relieved smile> 고마워, 세라나.", "<Relieved smile> Thank you, Serana."));
     }
 
+    // "<Clears throat> Fine." keeps the stage direction as text, but the model's one-word "<헛기침>" looked like
+    // a tag missing from the source, so the sanitizer deleted it and the final check rejected the row.
+    [Fact]
+    public void OneWordKoreanStageDirection_IsKeptAsText()
+    {
+        const string source = "<Clears throat> Fine.";
+        const string translated = "<헛기침> 좋아.";
+
+        Assert.Equal(translated, XTranslatorAi.Core.Translation.TokenSanitizer.SanitizeModelTranslationText(translated, source));
+        Assert.Equal(translated, XTranslatorAi.Core.Translation.TokenSanitizer.EnsureTokensPreservedOrRepair(source, translated, "test"));
+        XTranslatorAi.Core.Translation.TokenValidator.ValidateFinalTextIntegrity(source, translated, "test");
+        Assert.False(LqaScanner.HasTokenMismatch(source, translated));
+        Assert.Equal("<헛기침> 좋아.", new PlaceholderMasker().Mask(translated).Text);
+    }
+
+    [Fact]
+    public void Sanitizer_StillDropsMarkupTheSourceDoesNotHave()
+    {
+        Assert.Equal("좋아.", XTranslatorAi.Core.Translation.TokenSanitizer.SanitizeModelTranslationText("<b>좋아.</b>", "<Clears throat> Fine."));
+        Assert.Equal("좋아.", XTranslatorAi.Core.Translation.TokenSanitizer.SanitizeModelTranslationText("<font color='#ff0000'>좋아.", "Fine."));
+    }
+
     // Skyrim help messages: the game replaces "[Sprint]" with the player's key, and the official translation
     // keeps it in English ("이동중에 [Sprint] 키를 누르면 질주 합니다"). 1.8 and 1.9 translated it as "[달리기]".
     [Fact]

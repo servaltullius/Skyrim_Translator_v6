@@ -15,8 +15,11 @@ public static class TranslationConstants
     /// in Serana Dialogue Add-On), not a tag, so they are translated. Tags keep a single word, '=', '/', a quote,
     /// a digit or '%': &lt;mag&gt;, &lt;Alias=Player&gt;, &lt;font face='$HandwrittenFont'&gt;, &lt;br /&gt;, &lt;100%&gt;.
     /// Legacy of the Dragonborn's "&lt;page break&gt;" marker stays a tag.
+    /// Brackets holding Hangul are always text: the model translates "&lt;Clears throat&gt;" to the single word
+    /// "&lt;헛기침&gt;", and reading that as a tag missing from the source deleted it from the translation.
     /// </summary>
-    public const string StageDirectionGuard = @"(?!(?!\s*[Pp]age\s+[Bb]reak\s*>)\s*[^\s<>=/'""\d%]+(?:\s+[^\s<>=/'""\d%]+)+\s*>)";
+    public const string StageDirectionGuard = @"(?!(?!\s*[Pp]age\s+[Bb]reak\s*>)\s*[^\s<>=/'""\d%]+(?:\s+[^\s<>=/'""\d%]+)+\s*>)"
+        + @"(?![^<>]*[ᄀ-ᇿ㄰-㆏가-힣][^<>]*>)";
 
     public static readonly Regex UiTagTokenRegex = new(
         pattern: @"[+-]?<" + StageDirectionGuard + @"\s*[^>]+\s*>|\[pagebreak\]|__XT_[A-Za-z0-9_]+__",
