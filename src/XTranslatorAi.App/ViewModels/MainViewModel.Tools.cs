@@ -378,34 +378,9 @@ public partial class MainViewModel
             return;
         }
 
-        StatusMessage = "플레이스홀더(<mag>/<dur>) 검수·교정 중...";
-        try
-        {
-            var updates = new System.Collections.Generic.List<(long Id, string DestText, StringEntryStatus Status, string? ErrorMessage)>();
-            foreach (var vm in Entries)
-            {
-                if (vm.Status != StringEntryStatus.Done && vm.Status != StringEntryStatus.Edited)
-                {
-                    continue;
-                }
-
-                var fixedText = MagDurPlaceholderFixer.Fix(vm.SourceText, vm.DestText, TargetLang);
-                if (string.Equals(fixedText, vm.DestText, StringComparison.Ordinal))
-                {
-                    continue;
-                }
-
-                vm.DestText = fixedText;
-                updates.Add((vm.Id, fixedText, vm.Status, vm.ErrorMessage));
-            }
-
-            await db.UpdateStringTranslationsAsync(updates, CancellationToken.None);
-            StatusMessage = updates.Count == 0 ? "교정할 항목이 없습니다." : $"교정 완료: {updates.Count}개 항목을 수정했습니다.";
-        }
-        catch (Exception ex)
-        {
-            SetUserFacingError("태그 교정", ex);
-        }
+        var targetLang = TargetLang;
+        await RewriteFinishedRowsAsync(db, "태그 교정", "플레이스홀더(<mag>/<dur>) 검수·교정 중...", "교정 완료",
+            row => MagDurPlaceholderFixer.Fix(row.Source, row.Dest, targetLang));
     }
 
     private bool CanFixMagDurPlaceholders() => IsProjectLoaded && !IsTranslating;
@@ -425,40 +400,70 @@ public partial class MainViewModel
             return;
         }
 
-        StatusMessage = "후처리(플레이스홀더/단위/조사) 재적용 중...";
+        var targetLang = TargetLang;
+        var templateFixer = EnableTemplateFixer;
+        await RewriteFinishedRowsAsync(db, "후처리 재적용", "후처리(플레이스홀더/단위/조사) 재적용 중...", "후처리 재적용 완료",
+            row => string.IsNullOrWhiteSpace(row.Dest) ? row.Dest : TranslationPostEdits.Apply(targetLang, row.Source, row.Dest, templateFixer));
+    }
+
+    /// <summary>
+    /// Rewrites the text of finished rows. Both tools used to rewrite rows a person had corrected (직접 수정) without
+    /// asking, and kept the 직접 수정 status on machine-changed text. When such rows would change, the user now
+    /// chooses whether to include them. The rewrite runs off the UI thread on a snapshot of the rows.
+    /// </summary>
+    private async Task RewriteFinishedRowsAsync(ProjectDb db, string operation, string progressMessage, string doneMessage,
+        Func<(string Source, string Dest), string> rewrite)
+    {
+        StatusMessage = progressMessage;
         try
         {
-            var updates = new System.Collections.Generic.List<(long Id, string DestText, StringEntryStatus Status, string? ErrorMessage)>();
-            foreach (var vm in Entries)
+            var rows = Entries
+                .Where(vm => vm.Status is StringEntryStatus.Done or StringEntryStatus.Edited)
+                .Select(vm => (Row: vm, Source: vm.SourceText ?? "", Dest: vm.DestText ?? ""))
+                .ToList();
+            var changes = await Task.Run(() => rows
+                .Select(r => (r.Row, Fixed: rewrite((r.Source, r.Dest)), r.Dest))
+                .Where(c => !string.Equals(c.Fixed, c.Dest, StringComparison.Ordinal))
+                .ToList());
+
+            var edited = changes.Count(c => c.Row.Status == StringEntryStatus.Edited);
+            if (edited > 0)
             {
-                if (vm.Status != StringEntryStatus.Done && vm.Status != StringEntryStatus.Edited)
+                var answer = _uiInteractionService.ShowMessage(
+                    $"바뀌는 행: 완료 {changes.Count - edited}개, 직접 수정 {edited}개.\n\n"
+                    + "직접 수정한 행도 바꿀까요?\n\n"
+                    + "- 예: 직접 수정한 행도 바꾸기\n"
+                    + "- 아니요: 완료 행만 바꾸기\n"
+                    + "- 취소: 아무것도 바꾸지 않기",
+                    operation,
+                    UiMessageBoxButton.YesNoCancel,
+                    UiMessageBoxImage.Question,
+                    UiMessageBoxResult.No
+                );
+                if (answer is not (UiMessageBoxResult.Yes or UiMessageBoxResult.No))
                 {
-                    continue;
+                    StatusMessage = $"{operation}을 취소했습니다.";
+                    return;
                 }
 
-                var sourceText = vm.SourceText ?? "";
-                var destText = vm.DestText ?? "";
-                if (string.IsNullOrWhiteSpace(destText))
+                if (answer == UiMessageBoxResult.No)
                 {
-                    continue;
+                    changes = changes.Where(c => c.Row.Status != StringEntryStatus.Edited).ToList();
                 }
-
-                var fixedText = TranslationPostEdits.Apply(TargetLang, sourceText, destText, EnableTemplateFixer);
-                if (string.Equals(fixedText, destText, StringComparison.Ordinal))
-                {
-                    continue;
-                }
-
-                vm.DestText = fixedText;
-                updates.Add((vm.Id, fixedText, vm.Status, vm.ErrorMessage));
             }
 
+            var updates = changes.Select(c => (c.Row.Id, c.Fixed, c.Row.Status, c.Row.ErrorMessage)).ToList();
             await db.UpdateStringTranslationsAsync(updates, CancellationToken.None);
-            StatusMessage = updates.Count == 0 ? "교정할 항목이 없습니다." : $"후처리 재적용 완료: {updates.Count}개 항목을 수정했습니다.";
+            foreach (var (row, fixedText, _) in changes)
+            {
+                row.DestText = fixedText;
+            }
+
+            StatusMessage = updates.Count == 0 ? "교정할 항목이 없습니다." : $"{doneMessage}: {updates.Count}개 항목을 수정했습니다.";
         }
         catch (Exception ex)
         {
-            SetUserFacingError("후처리 재적용", ex);
+            SetUserFacingError(operation, ex);
         }
     }
 
