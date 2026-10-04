@@ -351,7 +351,9 @@ public sealed partial class PluginUiLifecycleTests
             Settings = new AppSettingsStore(Path.Combine(Root, "settings.json"));
             if (initialSettings != null) Settings.Save(initialSettings);
             var builtIn = new BuiltInGlossaryService();
-            var globalDb = new GlobalProjectDbService(builtIn);
+            // Any global DB the commands open (another game series, a cache miss) stays under the test root:
+            // without the override a test run created stamps next to the user's real global glossary.
+            var globalDb = new GlobalProjectDbService(builtIn, Path.Combine(Root, "global"));
             _globalDbService = globalDb;
             var glossary = new ProjectGlossaryService(new GlossaryImportService(new GlossaryFileService()));
             Vm = new MainViewModel(_client, new MainViewModelServices(Settings, new ApiCallLogService(), new SystemPromptBuilder(), Ui,
@@ -396,6 +398,7 @@ public sealed partial class PluginUiLifecycleTests
         {
             await State.DisposeDbAsync();
             if (_globalDb != null) await _globalDb.DisposeAsync();
+            await _globalDbService.DisposeAsync();
             _client.Dispose();
             TestDbHelper.ReleaseProjectPoolAndDeleteDbFiles(DbPath);
             TestDbHelper.ReleaseProjectPoolAndDeleteDbFiles(Path.Combine(Root, "global.sqlite"));

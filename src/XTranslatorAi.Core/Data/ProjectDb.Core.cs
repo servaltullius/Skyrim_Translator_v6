@@ -276,8 +276,16 @@ public sealed partial class ProjectDb : IAsyncDisposable, IProjectDb
     /// nothing could move or delete a project after closing it. The pool for this file is cleared, which closes
     /// idle connections and makes ones still open elsewhere close instead of returning to the pool.
     /// </summary>
+    private int _disposed;
+
+    // Idempotent: a DB cached by a service may also be disposed by its owner.
     public async ValueTask DisposeAsync()
     {
+        if (Interlocked.Exchange(ref _disposed, 1) != 0)
+        {
+            return;
+        }
+
         await _gate.WaitAsync(CancellationToken.None);
         try
         {
