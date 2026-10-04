@@ -244,6 +244,34 @@ public class LqaFalsePositiveTests
         Assert.Equal(new long[] { 7 }, issues.Where(i => i.Code == "tone_inconsistent").Select(i => i.Id));
     }
 
+    /// <summary>
+    /// Plugin dialogue has no EDID, so the tone check never ran: Serana Dialogue Add-On had 359 lines in 해요체 among
+    /// her 반말 lines and the review changed them by hand with no warning. Such lines are now compared with the
+    /// plugin's dialogue as a whole, as information only, since another speaker may talk differently.
+    /// </summary>
+    [Fact]
+    public async Task DialogueTone_WithoutEditorIds_IsComparedWithThePluginsDialogue()
+    {
+        static LqaScanEntry Line(long id, string dest, string rec = "INFO:NAM1")
+            => new(id, (int)id, null, rec, StringEntryStatus.Done, "x", dest);
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "가자, 시간이 없어."),
+            Line(2, "그건 내가 할게. 걱정하지 마."),
+            Line(3, "정말 그런 거야?"),
+            Line(4, "좋아, 그렇게 해."),
+            Line(5, "넌 여기 있어야 해."),
+            Line(6, "저도 같이 갈게요."),
+            Line(7, "무엇을 도와드릴까요?", rec: "DIAL:FULL"),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        var issue = Assert.Single(issues, i => i.Code == "tone_differs_from_plugin");
+        Assert.Equal((6L, "Info"), (issue.Id, issue.Severity));
+        Assert.DoesNotContain(issues, i => i.Code == "tone_inconsistent");
+    }
+
     [Fact]
     public async Task NameConsistency_FindsOneNameSpelledTwoWays_ButNotTitlesOrParticles()
     {

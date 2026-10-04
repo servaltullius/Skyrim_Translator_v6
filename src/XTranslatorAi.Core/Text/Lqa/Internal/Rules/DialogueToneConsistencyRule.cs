@@ -55,6 +55,16 @@ internal static class DialogueToneConsistencyRule
             }
 
             list.Add(tone);
+            if (IsPluginWideLine(entry))
+            {
+                if (!groupToTones.TryGetValue(PluginWideKey, out var pluginWide))
+                {
+                    pluginWide = new List<ToneKind>();
+                    groupToTones[PluginWideKey] = pluginWide;
+                }
+
+                pluginWide.Add(tone);
+            }
         }
 
         var majorityByGroup = new Dictionary<string, ToneKind>(StringComparer.Ordinal);
@@ -87,7 +97,13 @@ internal static class DialogueToneConsistencyRule
         }
 
         var groupKey = ComputeDialogueGroupKeyForIssue(entry);
-        if (string.IsNullOrWhiteSpace(groupKey) || !strongDialogueMajority.TryGetValue(groupKey, out var majority))
+        if (string.IsNullOrWhiteSpace(groupKey))
+        {
+            ApplyPluginWide(entry, strongDialogueMajority, issues);
+            return;
+        }
+
+        if (!strongDialogueMajority.TryGetValue(groupKey, out var majority))
         {
             return;
         }
@@ -107,6 +123,39 @@ internal static class DialogueToneConsistencyRule
                 Severity: "Warn",
                 Code: "tone_inconsistent",
                 Message: $"같은 대화 묶음의 다른 대사와 말투가 다릅니다: 대부분 {LqaToneClassifier.ToDisplay(majority)}, 이 대사 {LqaToneClassifier.ToDisplay(tone)}",
+                SourceText: entry.SourceText ?? "",
+                DestText: entry.DestText ?? ""
+            )
+        );
+    }
+
+    private const string PluginWideKey = "plugin-info";
+
+    private static bool IsPluginWideLine(LqaScanEntry entry)
+        => LqaScanner.GetRecBase(entry.Rec) == "INFO" && string.IsNullOrWhiteSpace(LqaScanner.NormalizeEdidStem(entry.Edid));
+
+    private static void ApplyPluginWide(LqaScanEntry entry, IReadOnlyDictionary<string, ToneKind> strongDialogueMajority, List<LqaIssue> issues)
+    {
+        if (!IsPluginWideLine(entry) || !strongDialogueMajority.TryGetValue(PluginWideKey, out var majority))
+        {
+            return;
+        }
+
+        var tone = ClassifySpeech(entry.DestText);
+        if (tone == ToneKind.Unknown || tone == majority)
+        {
+            return;
+        }
+
+        issues.Add(
+            new LqaIssue(
+                Id: entry.Id,
+                OrderIndex: entry.OrderIndex,
+                Edid: entry.Edid,
+                Rec: entry.Rec,
+                Severity: "Info",
+                Code: "tone_differs_from_plugin",
+                Message: $"이 플러그인 대사 대부분과 말투가 다릅니다(다른 화자일 수 있음): 대부분 {LqaToneClassifier.ToDisplay(majority)}, 이 대사 {LqaToneClassifier.ToDisplay(tone)}",
                 SourceText: entry.SourceText ?? "",
                 DestText: entry.DestText ?? ""
             )
