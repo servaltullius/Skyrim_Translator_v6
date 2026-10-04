@@ -37,7 +37,7 @@ public sealed partial class TranslationCostEstimator
             if (batch.Count == 1)
             {
                 var it = batch[0];
-                var styleHint = GuessStyleHint(it.Source);
+                var styleHint = GuessStyleHint(it.Source, contextById.TryGetValue(it.Id, out var hintContext) ? hintContext.Rec : null);
                 var withSentinel = it.Masked + " " + TranslationConstants.EndSentinelToken;
                 textPrompts.Add(TranslationPrompt.BuildTextOnlyUserPrompt(sourceLang, targetLang, withSentinel, it.PromptOnlyPairs, styleHint,
                     contextById.TryGetValue(it.Id, out var context) ? context.Edid : null));
@@ -85,7 +85,7 @@ public sealed partial class TranslationCostEstimator
             );
 
             var parts = TokenAwareTextSplitter.Split(it.Masked, chunkChars, maxTokensPerChunk);
-            var styleHint = GuessStyleHint(it.Source);
+            var styleHint = GuessStyleHint(it.Source, contextById.TryGetValue(it.Id, out var hintContext) ? hintContext.Rec : null);
             foreach (var part in parts)
             {
                 var withSentinel = part + " " + TranslationConstants.EndSentinelToken;
@@ -290,16 +290,7 @@ public sealed partial class TranslationCostEstimator
             );
     }
 
-    private static bool IsCjkLanguage(string lang)
-    {
-        if (string.IsNullOrWhiteSpace(lang))
-        {
-            return false;
-        }
-
-        var s = lang.Trim().ToLowerInvariant();
-        return s is "korean" or "japanese" or "chinese" or "zh" or "ja" or "ko";
-    }
+    private static bool IsCjkLanguage(string lang) => TranslationService.IsCjkLanguage(lang);
 
     private static bool IsGemini3Model(string modelName)
     {
@@ -308,71 +299,8 @@ public sealed partial class TranslationCostEstimator
     }
 
     private static int GetLongTextTargetOutputTokens(int maxOutputTokens)
-    {
-        if (maxOutputTokens <= 0)
-        {
-            return 2048;
-        }
+        => TranslationService.GetLongTextTargetOutputTokens(maxOutputTokens);
 
-        var target = (int)Math.Floor(maxOutputTokens * 0.35);
-        target = Math.Clamp(target, 512, 6000);
-
-        var headroom = Math.Min(512, Math.Max(128, maxOutputTokens / 10));
-        target = Math.Min(target, Math.Max(256, maxOutputTokens - headroom));
-
-        return Math.Max(256, target);
-    }
-
-    private static string? GuessStyleHint(string sourceText)
-    {
-        if (string.IsNullOrWhiteSpace(sourceText))
-        {
-            return null;
-        }
-
-        string? styleHint = null;
-
-        if (sourceText.IndexOf("[pagebreak]", StringComparison.OrdinalIgnoreCase) >= 0
-            || sourceText.IndexOf("img://Textures/Interface/Books", StringComparison.OrdinalIgnoreCase) >= 0)
-        {
-            styleHint =
-                "This is an in-game book/lore/guide text. Use a neutral written narrative tone in Korean and keep sentence endings consistent. Avoid chatty fillers like \"말이지/야/해\" outside of quoted dialogue. Avoid adding explanatory parentheses like \"(English term)\" unless they exist in the source; prefer natural in-universe rendering for proper nouns.";
-        }
-
-        if (styleHint == null)
-        {
-            return null;
-        }
-
-        if (ContainsMultilineItalicBlock(sourceText))
-        {
-            styleHint +=
-                "\n\nFor any <i>...</i> block that is a poem/riddle/inscription, use a solemn archaic literary register (예언/주문/비문 느낌). Prefer endings like \"…리라\", \"…지어다\", \"…것이요/…보여주리라\" and keep line breaks inside the <i> block as-is.";
-        }
-
-        return styleHint;
-    }
-
-    private static bool ContainsMultilineItalicBlock(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-        {
-            return false;
-        }
-
-        var start = text.IndexOf("<i>", StringComparison.OrdinalIgnoreCase);
-        if (start < 0)
-        {
-            return false;
-        }
-
-        var end = text.IndexOf("</i>", start + 3, StringComparison.OrdinalIgnoreCase);
-        if (end < 0)
-        {
-            return false;
-        }
-
-        var inner = text.Substring(start + 3, end - (start + 3));
-        return inner.IndexOf('\n') >= 0 || inner.IndexOf('\r') >= 0;
-    }
+    // The same hint the translation request carries, by record type (book title, dialogue, ...).
+    private static string? GuessStyleHint(string sourceText, string? rec) => TranslationStyleHints.Get(sourceText, rec);
 }

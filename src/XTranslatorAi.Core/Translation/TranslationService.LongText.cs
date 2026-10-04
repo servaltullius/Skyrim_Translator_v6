@@ -38,7 +38,7 @@ public sealed partial class TranslationService
             : isCjk ? 30 : 40;
     }
 
-    private static bool IsCjkLanguage(string lang)
+    internal static bool IsCjkLanguage(string lang)
     {
         if (string.IsNullOrWhiteSpace(lang))
         {
@@ -56,7 +56,7 @@ public sealed partial class TranslationService
                || s.StartsWith("zh", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static int GetLongTextTargetOutputTokens(int maxOutputTokens)
+    internal static int GetLongTextTargetOutputTokens(int maxOutputTokens)
     {
         if (maxOutputTokens <= 0)
         {
