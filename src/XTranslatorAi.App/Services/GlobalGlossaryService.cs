@@ -32,10 +32,10 @@ public sealed class GlobalGlossaryService
         return await _projectGlossaryService.GetAsync(db, cancellationToken);
     }
 
-    public async Task UpsertAsync(GlossaryUpsertRequest request, CancellationToken cancellationToken)
+    public async Task<GlossaryUpsertOutcome> UpsertAsync(GlossaryUpsertRequest request, CancellationToken cancellationToken)
     {
         var db = await RequireDbAsync(cancellationToken);
-        await _projectGlossaryService.UpsertAsync(db, request, cancellationToken);
+        return await _projectGlossaryService.UpsertAsync(db, request, cancellationToken);
     }
 
     public async Task BulkUpdateAsync(

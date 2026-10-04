@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
@@ -17,6 +18,10 @@ public readonly record struct GlossaryUpsertRequest(
     GlossaryForceMode ForceMode,
     string? Note
 );
+
+/// <param name="Updated">An entry with the same source was changed instead of a row being added.</param>
+/// <param name="PreviousTarget">The target that entry had before the change.</param>
+public readonly record struct GlossaryUpsertOutcome(bool Updated, string? PreviousTarget);
 
 public sealed partial class ProjectDb
 {
@@ -83,19 +88,71 @@ public sealed partial class ProjectDb
         }
     }
 
-    public async Task UpsertGlossaryAsync(GlossaryUpsertRequest request, CancellationToken cancellationToken)
+    /// <summary>
+    /// Adds a term, or updates the entry already holding its source (case-insensitive). This used to be a plain
+    /// INSERT: adding "Whiterun → 화이트런" when "Whiterun → 화이트 런" existed made a second row that never applied,
+    /// because rows are applied by priority, then length, then age, so the older one replaced the text first,
+    /// while the screen said the glossary was updated. The entry that currently applies (enabled, highest
+    /// priority, oldest) takes the new target and settings. Prompt-only terms are the exception: every one is
+    /// sent to the model as a hint, so a new prompt-only target for a source that has only prompt-only targets
+    /// (Hearthfire → 9월 / 허스파이어) is added beside them, and a target already present is updated in place.
+    /// </summary>
+    public async Task<GlossaryUpsertOutcome> UpsertGlossaryAsync(GlossaryUpsertRequest request, CancellationToken cancellationToken)
     {
         await _gate.WaitAsync(cancellationToken);
         try
         {
-            await using var cmd = _connection.CreateCommand();
-            cmd.CommandText =
-                """
-                INSERT INTO Glossary (Category, SrcTerm, DstTerm, Enabled, MatchMode, ForceMode, Priority, Note)
-                VALUES ($Category, $SrcTerm, $DstTerm, $Enabled, $MatchMode, $ForceMode, $Priority, $Note);
-                """;
+            await using var tx = (SqliteTransaction)await _connection.BeginTransactionAsync(cancellationToken);
+            var sameSource = new List<(long Id, string? Category, string Target, bool Enabled, int Priority, GlossaryForceMode ForceMode)>();
+            await using (var read = _connection.CreateCommand())
+            {
+                read.Transaction = tx;
+                read.CommandText = "SELECT Id, Category, SrcTerm, DstTerm, Enabled, Priority, ForceMode FROM Glossary;";
+                await using var reader = await read.ExecuteReaderAsync(cancellationToken);
+                while (await reader.ReadAsync(cancellationToken))
+                {
+                    if (string.Equals(reader.GetString(2).Trim(), request.SourceTerm.Trim(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        sameSource.Add((reader.GetInt64(0), reader.IsDBNull(1) ? null : reader.GetString(1), reader.GetString(3),
+                            reader.GetInt32(4) != 0, reader.GetInt32(5), (GlossaryForceMode)reader.GetInt32(6)));
+                    }
+                }
+            }
 
-            cmd.Parameters.AddWithValue("$Category", (object?)request.Category ?? DBNull.Value);
+            var sameTarget = sameSource.FindIndex(e => string.Equals(e.Target.Trim(), request.TargetTerm.Trim(), StringComparison.OrdinalIgnoreCase));
+            var addHint = request.ForceMode == GlossaryForceMode.PromptOnly && sameSource.TrueForAll(e => e.ForceMode == GlossaryForceMode.PromptOnly);
+            GlossaryUpsertOutcome outcome;
+            await using var cmd = _connection.CreateCommand();
+            cmd.Transaction = tx;
+            if (sameSource.Count == 0 || (addHint && sameTarget < 0))
+            {
+                cmd.CommandText =
+                    """
+                    INSERT INTO Glossary (Category, SrcTerm, DstTerm, Enabled, MatchMode, ForceMode, Priority, Note)
+                    VALUES ($Category, $SrcTerm, $DstTerm, $Enabled, $MatchMode, $ForceMode, $Priority, $Note);
+                    """;
+                cmd.Parameters.AddWithValue("$Category", (object?)request.Category ?? DBNull.Value);
+                outcome = new GlossaryUpsertOutcome(Updated: false, PreviousTarget: null);
+            }
+            else
+            {
+                var existing = addHint
+                    ? sameSource[sameTarget]
+                    : sameSource.OrderByDescending(e => e.Enabled).ThenByDescending(e => e.Priority).ThenBy(e => e.Id).First();
+                // The row now holds the user's entry: an empty category keeps the old one, but the built-in or
+                // auto-learned note goes, so later built-in corrections no longer treat it as untouched.
+                cmd.CommandText =
+                    """
+                    UPDATE Glossary
+                    SET Category=$Category, SrcTerm=$SrcTerm, DstTerm=$DstTerm, Enabled=$Enabled,
+                        MatchMode=$MatchMode, ForceMode=$ForceMode, Priority=$Priority, Note=$Note
+                    WHERE Id=$Id;
+                    """;
+                cmd.Parameters.AddWithValue("$Id", existing.Id);
+                cmd.Parameters.AddWithValue("$Category", (object?)(request.Category ?? existing.Category) ?? DBNull.Value);
+                outcome = new GlossaryUpsertOutcome(Updated: true, PreviousTarget: existing.Target);
+            }
+
             cmd.Parameters.AddWithValue("$SrcTerm", request.SourceTerm);
             cmd.Parameters.AddWithValue("$DstTerm", request.TargetTerm);
             cmd.Parameters.AddWithValue("$Enabled", request.Enabled ? 1 : 0);
@@ -103,8 +160,9 @@ public sealed partial class ProjectDb
             cmd.Parameters.AddWithValue("$ForceMode", (int)request.ForceMode);
             cmd.Parameters.AddWithValue("$Priority", request.Priority);
             cmd.Parameters.AddWithValue("$Note", (object?)request.Note ?? DBNull.Value);
-
             await cmd.ExecuteNonQueryAsync(cancellationToken);
+            await tx.CommitAsync(cancellationToken);
+            return outcome;
         }
         finally
         {

@@ -19,7 +19,8 @@ public sealed class ProjectGlossaryService
     public Task<IReadOnlyList<GlossaryEntry>> GetAsync(ProjectDb db, CancellationToken cancellationToken)
         => db.GetGlossaryAsync(cancellationToken);
 
-    public Task UpsertAsync(ProjectDb db, GlossaryUpsertRequest request, CancellationToken cancellationToken)
+    /// <summary>Adds a term, or updates the entry already holding its source (see <see cref="ProjectDb.UpsertGlossaryAsync"/>).</summary>
+    public Task<GlossaryUpsertOutcome> UpsertAsync(ProjectDb db, GlossaryUpsertRequest request, CancellationToken cancellationToken)
         => db.UpsertGlossaryAsync(request, cancellationToken);
 
     public Task BulkUpdateAsync(

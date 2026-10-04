@@ -37,7 +37,7 @@ public partial class MainViewModel
 
         try
         {
-            await _projectGlossaryService.UpsertAsync(
+            var outcome = await _projectGlossaryService.UpsertAsync(
                 db,
                 request: new GlossaryUpsertRequest(
                     Category: string.IsNullOrWhiteSpace(category) ? null : category,
@@ -56,14 +56,23 @@ public partial class MainViewModel
             GlossaryTargetTerm = "";
             GlossaryCategory = "";
             await ReloadGlossaryAsync();
-            StatusMessage = IsTranslating
-                ? "Glossary updated. (Restart translation to apply.)"
-                : "Glossary updated.";
+            StatusMessage = DescribeGlossaryUpsert("용어집", src, dst, outcome);
         }
         catch (Exception ex)
         {
             SetUserFacingError("용어집 수정", ex);
         }
+    }
+
+    /// <summary>Says whether the term was added or replaced an entry with the same source, so no change looks like a no-op.</summary>
+    private string DescribeGlossaryUpsert(string glossaryLabel, string source, string target, GlossaryUpsertOutcome outcome)
+    {
+        var message = !outcome.Updated
+            ? $"{glossaryLabel}에 추가했습니다: {source} → {target}"
+            : string.Equals((outcome.PreviousTarget ?? "").Trim(), target, StringComparison.OrdinalIgnoreCase)
+                ? $"{glossaryLabel}에 이미 있는 용어의 설정을 바꿨습니다: {source} → {target}"
+                : $"{glossaryLabel}에 같은 원문이 있어 번역어를 바꿨습니다: {source} → {target} (이전: {outcome.PreviousTarget})";
+        return IsTranslating ? message + " 번역을 다시 시작하면 적용됩니다." : message;
     }
 
     private bool CanAddGlossary() => IsProjectLoaded

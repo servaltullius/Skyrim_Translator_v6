@@ -48,7 +48,7 @@ public partial class MainViewModel
 
         try
         {
-            await _globalGlossaryService.UpsertAsync(
+            var outcome = await _globalGlossaryService.UpsertAsync(
                 request: new GlossaryUpsertRequest(
                     Category: string.IsNullOrWhiteSpace(category) ? null : category,
                     SourceTerm: src,
@@ -66,9 +66,7 @@ public partial class MainViewModel
             GlobalGlossaryTargetTerm = "";
             GlobalGlossaryCategory = "";
             await ReloadGlobalGlossaryAsync();
-            StatusMessage = IsTranslating
-                ? "Global glossary updated. (Restart translation to apply.)"
-                : "Global glossary updated.";
+            StatusMessage = DescribeGlossaryUpsert("전체 용어집", src, dst, outcome);
         }
         catch (Exception ex)
         {

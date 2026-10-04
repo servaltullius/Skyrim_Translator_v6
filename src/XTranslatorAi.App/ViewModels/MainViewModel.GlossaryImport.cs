@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Data;
@@ -58,13 +60,28 @@ public partial class MainViewModel
             }
 
             await reloadAsync();
+            var imported = result.Value;
             StatusMessage =
-                $"{statusLabelTrimmed} 가져오기 완료: 추가 {result.Value.InsertedCount}, 기존 항목 건너뜀 {result.Value.SkippedExisting}, 충돌 {result.Value.ConflictCount}.";
+                $"{statusLabelTrimmed} 가져오기 완료: 추가 {imported.InsertedCount}, 같은 항목 건너뜀 {imported.SkippedExisting}, 파일 안 충돌 {imported.ConflictCount}."
+                + DescribeExistingGlossaryConflicts(imported.ExistingConflicts);
         }
         catch (Exception ex)
         {
             SetUserFacingError($"{statusLabelTrimmed} 가져오기", ex);
         }
+    }
+
+    /// <summary>Names a few sources that were not imported because the glossary already gives them another target.</summary>
+    private static string DescribeExistingGlossaryConflicts(IReadOnlyList<string>? conflicts)
+    {
+        var sources = (conflicts ?? Array.Empty<string>()).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        if (sources.Count == 0)
+        {
+            return "";
+        }
+
+        var sample = string.Join(", ", sources.Take(5)) + (sources.Count > 5 ? " 등" : "");
+        return $" 이미 다른 번역어로 있는 원문 {sources.Count}개는 가져오지 않았습니다({sample}). 바꾸려면 표에서 직접 고치세요.";
     }
 
     private string? ResolveGlossaryImportPath(string dialogTitle)
