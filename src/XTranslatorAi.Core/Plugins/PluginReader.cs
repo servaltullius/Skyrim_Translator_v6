@@ -422,11 +422,22 @@ public static class PluginReader
         if (options.ArchivePaths != null) return options.ArchivePaths.Select(Path.GetFullPath).ToArray();
         var dir = Path.GetDirectoryName(path)!;
         var stem = Path.GetFileNameWithoutExtension(path);
-        return Directory.EnumerateFiles(dir, "*.bsa")
+        var own = Directory.EnumerateFiles(dir, "*.bsa")
             .Where(file => string.Equals(Path.GetFileNameWithoutExtension(file), stem, StringComparison.OrdinalIgnoreCase)
                 || Path.GetFileNameWithoutExtension(file).StartsWith(stem + " - ", StringComparison.OrdinalIgnoreCase))
-            .OrderBy(file => file, StringComparer.OrdinalIgnoreCase).ToArray();
+            .OrderBy(file => file, StringComparer.OrdinalIgnoreCase).ToList();
+        // Skyrim SE keeps the tables of Update, Dawnguard, HearthFires and Dragonborn in the game's interface archive.
+        // Tables are looked up by the plugin's own file name, so another plugin's tables are never taken from it.
+        var gameInterface = FindFile(dir, GameInterfaceArchive);
+        if (gameInterface != null && !own.Contains(gameInterface, StringComparer.OrdinalIgnoreCase))
+        {
+            own.Add(gameInterface);
+        }
+
+        return own;
     }
+
+    private const string GameInterfaceArchive = "Skyrim - Interface.bsa";
 }
 
 internal static class PluginFlags

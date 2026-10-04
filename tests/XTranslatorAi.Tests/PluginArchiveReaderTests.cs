@@ -227,6 +227,23 @@ public sealed class PluginArchiveReaderTests
             await Assert.ThrowsAsync<InvalidDataException>(() => PluginArchiveReader.ReadFileAsync(path, TargetPath, default)));
     }
 
+    /// <summary>
+    /// In Skyrim SE the string tables of Update, Dawnguard, HearthFires and Dragonborn are inside
+    /// "Skyrim - Interface.bsa", which the default archive search (same name, or "name - …") did not include, so
+    /// those masters could not be opened from the Data folder without naming the archive.
+    /// </summary>
+    [Fact]
+    public async Task LocalizedReader_FindsTablesInTheInterfaceArchiveOfTheSameFolder()
+    {
+        using var fixture = new LocalizedFixture();
+        var archive = fixture.Archive("Skyrim - Interface.bsa", "Interface title");
+
+        var document = await PluginReader.ReadAsync(fixture.Input, new(), default);
+
+        Assert.Equal("Interface title", document.Fields.Single(field => field.TableKind == PluginStringTableKind.Strings).SourceText);
+        Assert.Equal(archive.Path, document.Info.StringTableSources![PluginStringTableKind.Strings]);
+    }
+
     [Fact]
     public async Task LocalizedReader_LooseTableOverridesConflictingArchives_AndTracksEachSource()
     {
