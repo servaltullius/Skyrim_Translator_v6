@@ -116,7 +116,36 @@ public static class UserFacingErrorClassifier
             );
         }
 
-        if (FindInChain<IOException>(ex) != null || FindInChain<UnauthorizedAccessException>(ex) != null)
+        // A missing or denied file said "다른 프로그램에서 사용 중인지 확인하세요" like a locked one.
+        if (FindInChain<FileNotFoundException>(ex) is { } missingFile)
+        {
+            var name = string.IsNullOrWhiteSpace(missingFile.FileName) ? "" : $": {Path.GetFileName(missingFile.FileName)}";
+            return new UserFacingError(
+                "E411",
+                $"파일을 찾을 수 없습니다{name}. 옮겼거나 지웠는지 확인하세요.",
+                DetailsInApiLogs: false
+            );
+        }
+
+        if (FindInChain<DirectoryNotFoundException>(ex) != null)
+        {
+            return new UserFacingError(
+                "E411",
+                "폴더를 찾을 수 없습니다. 옮겼거나 지웠는지 확인하세요.",
+                DetailsInApiLogs: false
+            );
+        }
+
+        if (FindInChain<UnauthorizedAccessException>(ex) != null)
+        {
+            return new UserFacingError(
+                "E412",
+                "파일에 접근할 권한이 없습니다. 읽기 전용 파일이거나 Program Files처럼 쓰기가 막힌 폴더인지 확인하세요.",
+                DetailsInApiLogs: false
+            );
+        }
+
+        if (FindInChain<IOException>(ex) != null)
         {
             return new UserFacingError(
                 "E410",

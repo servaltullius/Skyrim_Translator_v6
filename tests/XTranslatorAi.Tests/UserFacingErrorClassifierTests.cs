@@ -149,4 +149,21 @@ public class UserFacingErrorClassifierTests
         Assert.Equal("E201", error.Code);
         Assert.True(error.DetailsInApiLogs);
     }
+
+    // A missing file and a denied one both said "다른 프로그램에서 사용 중인지 확인하세요", which fits neither.
+    [Fact]
+    public void Classify_MissingAndDeniedFiles_SayWhatHappened()
+    {
+        var missing = UserFacingErrorClassifier.Classify(new FileNotFoundException("Could not find file.", "C:/mods/Terms.tsv"));
+        Assert.Equal("E411", missing.Code);
+        Assert.Contains("Terms.tsv", missing.Message);
+        Assert.Contains("찾을 수 없습니다", missing.Message);
+        Assert.Equal("E411", UserFacingErrorClassifier.Classify(new DirectoryNotFoundException("Could not find a part of the path.")).Code);
+
+        var denied = UserFacingErrorClassifier.Classify(new UnauthorizedAccessException("Access to the path is denied."));
+        Assert.Equal("E412", denied.Code);
+        Assert.Contains("권한", denied.Message);
+
+        Assert.Equal("E410", UserFacingErrorClassifier.Classify(new IOException("being used by another process")).Code);
+    }
 }
