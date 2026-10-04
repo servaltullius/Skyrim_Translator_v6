@@ -62,10 +62,13 @@ public partial class MainViewModel
             StatusMessage = "XML을 불러오는 중...";
             await DisposeProjectDbAsync();
             ResetProjectState();
-            await LoadProjectFromXmlAsync(xmlPath, loadCancellation.Token);
+            var retained = await LoadProjectFromXmlAsync(xmlPath, loadCancellation.Token);
 
             IsProjectLoaded = true;
-            StatusMessage = $"{Path.GetFileName(xmlPath)}에서 문자열 {TotalCount}개를 불러왔습니다.";
+            StatusMessage = $"{Path.GetFileName(xmlPath)}에서 문자열 {TotalCount}개를 불러왔습니다."
+                + (retained > 0
+                    ? $" 이 파일에 없는 행의 번역 {retained}개는 지우지 않고 보관 중이며, 그 행이 든 XML을 다시 열면 복원됩니다."
+                    : "");
         }
         catch (OperationCanceledException) when (loadCancellation.IsCancellationRequested)
         {
@@ -150,7 +153,8 @@ public partial class MainViewModel
         await _projectState.DisposeDbAsync();
     }
 
-    private async Task LoadProjectFromXmlAsync(string xmlPath, CancellationToken cancellationToken = default)
+    /// <returns>The number of translations kept from rows this XML does not contain.</returns>
+    private async Task<int> LoadProjectFromXmlAsync(string xmlPath, CancellationToken cancellationToken = default)
     {
         var result = await _projectWorkspaceService.LoadFromXmlAsync(
             new ProjectWorkspaceService.LoadFromXmlRequest(
@@ -181,6 +185,7 @@ public partial class MainViewModel
         await ReloadProjectContextAsync();
         await LoadEntriesAsync();
         cancellationToken.ThrowIfCancellationRequested();
+        return result.RetainedTranslationCount;
     }
 
     [RelayCommand(CanExecute = nameof(CanExport))]

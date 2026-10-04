@@ -39,7 +39,8 @@ public sealed partial class ProjectWorkspaceService
         string InputXmlPath,
         string SourceLang,
         string TargetLang,
-        BethesdaFranchise Franchise
+        BethesdaFranchise Franchise,
+        int RetainedTranslationCount = 0
     );
 
     /// @critical: Load XML → Project DB import.
@@ -81,7 +82,9 @@ public sealed partial class ProjectWorkspaceService
             await _builtInGlossaryService.EnsureBuiltInGlossaryAsync(db, cancellationToken,
                 insertMissingEntries: globalDb == null, franchise: franchise, applyMigrations: globalDb == null);
 
-            return new LoadFromXmlResult(db, info, xmlPath, info.SourceLang, info.DestLang, franchise);
+            // Translations of rows this file lacks (e.g. a partial export with the same Addon) are kept, not deleted.
+            var retained = await db.GetRetiredTranslationCountAsync(cancellationToken);
+            return new LoadFromXmlResult(db, info, xmlPath, info.SourceLang, info.DestLang, franchise, retained);
         }
         catch
         {
