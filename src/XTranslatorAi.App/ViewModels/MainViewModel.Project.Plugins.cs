@@ -141,6 +141,23 @@ public partial class MainViewModel
         }
     }
 
+    internal static string FindFreeOutputDirectory(string path)
+    {
+        if (!File.Exists(path) && !Directory.Exists(path))
+        {
+            return path;
+        }
+
+        for (var n = 2; ; n++)
+        {
+            var candidate = $"{path} ({n})";
+            if (!File.Exists(candidate) && !Directory.Exists(candidate))
+            {
+                return candidate;
+            }
+        }
+    }
+
     private bool CanExportPlugin() => IsProjectLoaded && !IsTranslating && IsWorkspaceInteractive
         && !_projectOperations.IsRunning && _projectState.PluginDocument != null
         && !_projectState.PluginDocument.Info.Diagnostics.Any(item => item.BlocksExport);
@@ -159,11 +176,9 @@ public partial class MainViewModel
             "새 출력 폴더 이름|*.*", "새 출력 폴더 이름을 지정하세요 (폴더 안에 원본 파일명으로 저장)",
             Path.GetFileNameWithoutExtension(document.Info.InputPath) + ".translated"));
         if (string.IsNullOrWhiteSpace(outputDirectory)) return;
-        if (File.Exists(outputDirectory) || Directory.Exists(outputDirectory))
-        {
-            StatusMessage = "출력에는 아직 존재하지 않는 새 폴더를 지정하세요.";
-            return;
-        }
+        // An existing folder used to end the save with a message, after the dialog had closed, so the whole save had
+        // to be started again. The output still never goes into an existing folder: a free name is chosen instead.
+        outputDirectory = FindFreeOutputDirectory(outputDirectory);
         // Translation language and the game's localized filename slot are different:
         // keep the source slot (e.g. _english) unless a future explicit export option requests another.
         var options = new PluginExportOptions(outputDirectory, _projectState.PluginTargetEncoding ?? "utf-8");

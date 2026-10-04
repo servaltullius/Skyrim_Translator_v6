@@ -111,7 +111,6 @@ public sealed partial class PluginUiLifecycleTests
     [Theory]
     [InlineData("empty-target", "E454", "WEAP:FULL/00000800")]
     [InlineData("source-changed", "E455", "다시 열어")]
-    [InlineData("output-exists", "새 폴더", "출력")]
     [InlineData("target-encoding", "E457", "출력 인코딩")]
     public Task PluginSaveValidation_ShowsReason_AndRecoversBusyWithoutPublishing(string scenario, string code, string detail)
         => RunOnSta(async () =>
@@ -129,11 +128,7 @@ public sealed partial class PluginUiLifecycleTests
                 await db.UpdateStringTranslationAsync(row.Id, "철검", StringEntryStatus.Edited, null, CancellationToken.None);
             else if (scenario == "source-changed")
                 await File.AppendAllTextAsync(document.Info.InputPath, "changed");
-            else
-            {
-                Directory.CreateDirectory(output);
-                await File.WriteAllTextAsync(Path.Combine(output, "keep.txt"), "existing output");
-            }
+
             var before = await File.ReadAllBytesAsync(document.Info.InputPath);
             var entriesBefore = await db.GetStringsAsync(10, 0, CancellationToken.None);
 
@@ -146,9 +141,29 @@ public sealed partial class PluginUiLifecycleTests
             Assert.True(fixture.Vm.ExportPluginCommand.CanExecute(null));
             Assert.Equal(before, await File.ReadAllBytesAsync(document.Info.InputPath));
             Assert.Equal(entriesBefore, await db.GetStringsAsync(10, 0, CancellationToken.None));
-            if (scenario == "output-exists")
-                Assert.Equal("existing output", await File.ReadAllTextAsync(Path.Combine(output, "keep.txt")));
-            else Assert.False(Directory.Exists(output));
+            Assert.False(Directory.Exists(output));
+        });
+
+    // An existing output folder used to end the save after the dialog closed; a free name is now used instead,
+    // and the existing folder is left as it was.
+    [Fact]
+    public Task PluginSave_IntoAnExistingFolderName_SavesNextToIt()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            await fixture.LoadPluginWorkspaceAsync();
+            var row = Assert.Single(fixture.Vm.Entries);
+            await fixture.State.Db!.UpdateStringTranslationAsync(row.Id, "철검", StringEntryStatus.Edited, null, CancellationToken.None);
+            var output = Path.Combine(fixture.Root, "translated");
+            Directory.CreateDirectory(output);
+            await File.WriteAllTextAsync(Path.Combine(output, "keep.txt"), "existing output");
+            fixture.Ui.SavePath = output;
+
+            await fixture.Vm.ExportPluginCommand.ExecuteAsync(null);
+
+            Assert.Equal("existing output", await File.ReadAllTextAsync(Path.Combine(output, "keep.txt")));
+            Assert.True(File.Exists(Path.Combine(output + " (2)", "Test.esp")));
+            Assert.Contains("translated (2)", fixture.Vm.StatusMessage);
         });
 
     [Fact]
