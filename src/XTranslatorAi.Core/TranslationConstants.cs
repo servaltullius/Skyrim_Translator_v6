@@ -19,7 +19,7 @@ public static class TranslationConstants
     /// "&lt;헛기침&gt;", and reading that as a tag missing from the source deleted it from the translation.
     /// </summary>
     public const string StageDirectionGuard = @"(?!(?!\s*[Pp]age\s+[Bb]reak\s*>)\s*[^\s<>=/'""\d%]+(?:\s+[^\s<>=/'""\d%]+)+\s*>)"
-        + @"(?![^<>]*[ᄀ-ᇿ㄰-㆏가-힣][^<>]*>)";
+        + @"(?![^<>]*[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7A3][^<>]*>)";
 
     public static readonly Regex UiTagTokenRegex = new(
         pattern: @"[+-]?<" + StageDirectionGuard + @"\s*[^>]+\s*>|\[pagebreak\]|__XT_[A-Za-z0-9_]+__",
