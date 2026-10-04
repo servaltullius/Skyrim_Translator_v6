@@ -154,7 +154,7 @@ public sealed class GlossaryApplier
            && entry.Note.StartsWith("Built-in default glossary", StringComparison.Ordinal);
 
     /// <summary>
-    /// Many single-word game terms are also ordinary English words: Fine (하급), Master (달인),
+    /// Many single-word game terms are also ordinary English words: Fine (초급), Master (달인),
     /// Superior (중급), Destruction (파괴마법), Ward (방어막), Sneak (은신), Reach (리치).
     /// Game text writes the term capitalized, so for built-in terms only that exact casing is forced;
     /// "fine blond hair" or "superior officer" is left to the model with the term only as a hint.

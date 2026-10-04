@@ -144,6 +144,30 @@ public class BuiltInGlossaryLaterAdditionsTests : IAsyncLifetime
         Assert.Equal(expected, Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Molag Bal").TargetTerm);
     }
 
+    // The official translation (built-in TM) has Fine 초급, matching Superior 중급 and Exquisite 상급.
+    [Theory]
+    [InlineData("하급", "Built-in default glossary", "초급")]
+    [InlineData("하급", null, "하급")]
+    [InlineData("하등급", "Built-in default glossary", "하등급")]
+    public async Task FineTier_IsCorrectedToTheOfficialName_OnlyWhereTheUserKeptTheOldOne(string target, string? note, string expected)
+    {
+        await _db.BulkInsertGlossaryAsync(
+            new[] { ((string?)null, "Fine", target, true, 10, (int)GlossaryMatchMode.WordBoundary, (int)GlossaryForceMode.ForceToken, note) },
+            CancellationToken.None);
+
+        await AddAllBatchesAsync();
+
+        Assert.Equal(expected, Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Fine").TargetTerm);
+    }
+
+    [Fact]
+    public async Task NewGlossary_GetsTheOfficialFineTier()
+    {
+        await new BuiltInGlossaryService().EnsureBuiltInGlossaryAsync(_db, CancellationToken.None);
+
+        Assert.Equal("초급", Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Fine").TargetTerm);
+    }
+
     private async Task AddAllBatchesAsync()
     {
         foreach (var batch in BuiltInGlossaryService.LaterAdditions)

@@ -46,6 +46,8 @@ public sealed class BuiltInGlossaryService
         // Names the official translation (built-in TM) only uses inside sentences, so the name index cannot learn them:
         // Serana Dialogue Add-On came back with 사이직 오더, 원로평의회, 아르테움, 호닝브루 and 블랙브라이어.
         new("2026-10-03.3", new[] { "Psijic Order", "Elder Council", "Black-Briar", "Artaeum", "Honningbrew" }, Array.Empty<(string, string)>()),
+        // The official translation (built-in TM) names the smithing tiers 초급, 중급, 상급; 하급 for Fine broke the set.
+        new("2026-10-04", Array.Empty<string>(), new[] { ("Fine", "하급") }),
     };
 
     /// <summary>
