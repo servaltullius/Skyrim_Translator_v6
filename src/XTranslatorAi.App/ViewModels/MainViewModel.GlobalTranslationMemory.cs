@@ -55,6 +55,7 @@ public partial class MainViewModel
             Directory.CreateDirectory(importedDir);
 
             var totalApplied = 0;
+            string? unreadable = null;
             foreach (var path in files)
             {
                 if (!File.Exists(path))
@@ -63,12 +64,23 @@ public partial class MainViewModel
                 }
 
                 StatusMessage = $"시리즈 TM 자동 가져오기: {Path.GetFileName(path)}";
-                var applied = await _globalTranslationMemoryService.ImportFromTsvAsync(
-                    SourceLang.Trim(),
-                    TargetLang.Trim(),
-                    path,
-                    CancellationToken.None
-                );
+                int applied;
+                try
+                {
+                    applied = await _globalTranslationMemoryService.ImportFromTsvAsync(
+                        SourceLang.Trim(),
+                        TargetLang.Trim(),
+                        path,
+                        CancellationToken.None
+                    );
+                }
+                catch (ImportFileEncodingException ex)
+                {
+                    // Left in tm-import for the user to re-save; the other files are still imported.
+                    unreadable ??= ex.Message;
+                    continue;
+                }
+
                 totalApplied += Math.Max(0, applied);
 
                 var stem = Path.GetFileNameWithoutExtension(path);
@@ -78,7 +90,11 @@ public partial class MainViewModel
                 File.Move(path, destPath, overwrite: false);
             }
 
-            if (totalApplied > 0)
+            if (unreadable != null)
+            {
+                StatusMessage = $"시리즈 TM 자동 가져오기: {unreadable}";
+            }
+            else if (totalApplied > 0)
             {
                 StatusMessage = $"시리즈 TM 자동 가져오기 완료: {totalApplied}개 항목";
             }
@@ -369,6 +385,11 @@ public partial class MainViewModel
             }
 
             StatusMessage = $"시리즈 TM 가져오기 완료: {applied}개 항목";
+        }
+        catch (ImportFileEncodingException ex)
+        {
+            // The generic classifier would hide this behind "예상치 못한 오류(E999)".
+            StatusMessage = $"시리즈 TM 가져오기: {ex.Message}";
         }
         catch (Exception ex)
         {

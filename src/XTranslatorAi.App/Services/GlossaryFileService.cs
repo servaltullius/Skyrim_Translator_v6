@@ -20,7 +20,8 @@ public sealed class GlossaryFileService
         CancellationToken cancellationToken
     )
     {
-        var text = await File.ReadAllTextAsync(glossaryPath, cancellationToken);
+        // Not File.ReadAllTextAsync: an Excel TSV from Korean Windows is CP949 (see ImportTextFileReader).
+        var text = await ImportTextFileReader.ReadAllTextAsync(glossaryPath, cancellationToken);
         return string.Equals(Path.GetExtension(glossaryPath), ".tsv", StringComparison.OrdinalIgnoreCase)
             ? ParseTsvGlossaryEntries(text)
             : GlossaryFileParser.ParseEntries(text).Select(e => new GlossaryFileEntry(e.Category, e.Source, e.Target)).ToList();

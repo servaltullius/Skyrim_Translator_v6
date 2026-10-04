@@ -65,6 +65,11 @@ public partial class MainViewModel
                 $"{statusLabelTrimmed} 가져오기 완료: 추가 {imported.InsertedCount}, 같은 항목 건너뜀 {imported.SkippedExisting}, 파일 안 충돌 {imported.ConflictCount}."
                 + DescribeExistingGlossaryConflicts(imported.ExistingConflicts);
         }
+        catch (ImportFileEncodingException ex)
+        {
+            // The generic classifier would hide this behind "예상치 못한 오류(E999)".
+            StatusMessage = $"{statusLabelTrimmed} 가져오기: {ex.Message}";
+        }
         catch (Exception ex)
         {
             SetUserFacingError($"{statusLabelTrimmed} 가져오기", ex);

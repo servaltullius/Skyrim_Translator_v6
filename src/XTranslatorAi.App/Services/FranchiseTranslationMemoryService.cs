@@ -89,7 +89,8 @@ public sealed class FranchiseTranslationMemoryService
         CancellationToken cancellationToken
     )
     {
-        var pairs = TranslationMemoryFileService.ParseTsvPairs(await File.ReadAllLinesAsync(tsvPath, cancellationToken));
+        // Not File.ReadAllLinesAsync: an Excel TSV from Korean Windows is CP949 (see ImportTextFileReader).
+        var pairs = TranslationMemoryFileService.ParseTsvPairs(await ImportTextFileReader.ReadAllLinesAsync(tsvPath, cancellationToken));
         if (pairs.Count == 0)
         {
             return 0;
