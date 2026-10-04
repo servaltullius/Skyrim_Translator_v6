@@ -205,6 +205,11 @@ public partial class MainViewModel
             return;
         }
 
+        if (!ConfirmExportWithUnfinishedRows())
+        {
+            return;
+        }
+
         var exportPath = _uiInteractionService.ShowSaveFileDialog(
             new SaveFileDialogRequest(
                 Filter: "xTranslator XML (*.xml)|*.xml|All files (*.*)|*.*",
@@ -227,6 +232,42 @@ public partial class MainViewModel
         {
             SetUserFacingError("XML 내보내기", ex);
         }
+    }
+
+    /// <summary>
+    /// Saving with rows still in error or pending used to finish silently, so a half-translated file went out
+    /// looking complete. Unfinished rows keep their source text in the output.
+    /// </summary>
+    private bool ConfirmExportWithUnfinishedRows()
+    {
+        var errors = 0;
+        var pending = 0;
+        foreach (var entry in Entries)
+        {
+            if (entry.Status == StringEntryStatus.Error) errors++;
+            else if (entry.Status is StringEntryStatus.Pending or StringEntryStatus.InProgress) pending++;
+        }
+
+        if (errors + pending == 0)
+        {
+            return true;
+        }
+
+        var answer = _uiInteractionService.ShowMessage(
+            $"번역이 끝나지 않은 행이 있습니다: 오류 {errors}개, 대기 {pending}개.{Environment.NewLine}{Environment.NewLine}"
+            + "이 행들은 원문 그대로 저장됩니다. 그래도 저장할까요?",
+            "저장 확인",
+            UiMessageBoxButton.YesNo,
+            UiMessageBoxImage.Warning,
+            UiMessageBoxResult.No
+        );
+        if (answer == UiMessageBoxResult.Yes)
+        {
+            return true;
+        }
+
+        StatusMessage = "저장하지 않았습니다. 상태 필터에서 '오류'·'대기' 행을 확인하세요.";
+        return false;
     }
 
     private bool CanExport() => IsProjectLoaded && !IsTranslating && IsWorkspaceInteractive && _projectState.XmlInfo != null;
