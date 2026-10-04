@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Text;
@@ -9,7 +10,12 @@ namespace XTranslatorAi.App.Services;
 
 public sealed class GlossaryFileService
 {
-    public async Task<IReadOnlyList<(string? Category, string Source, string Target)>> ReadGlossaryEntriesAsync(
+    /// <summary>A term read from a glossary file. Settings are present only in the app's own TSV export.</summary>
+    public readonly record struct GlossaryFileEntry(string? Category, string Source, string Target, GlossaryFileSettings? Settings = null);
+
+    public readonly record struct GlossaryFileSettings(bool Enabled, int Priority, GlossaryMatchMode MatchMode, GlossaryForceMode ForceMode, string? Note);
+
+    public async Task<IReadOnlyList<GlossaryFileEntry>> ReadGlossaryEntriesAsync(
         string glossaryPath,
         CancellationToken cancellationToken
     )
@@ -17,27 +23,33 @@ public sealed class GlossaryFileService
         var text = await File.ReadAllTextAsync(glossaryPath, cancellationToken);
         return string.Equals(Path.GetExtension(glossaryPath), ".tsv", StringComparison.OrdinalIgnoreCase)
             ? ParseTsvGlossaryEntries(text)
-            : GlossaryFileParser.ParseEntries(text);
+            : GlossaryFileParser.ParseEntries(text).Select(e => new GlossaryFileEntry(e.Category, e.Source, e.Target)).ToList();
     }
 
-    public static IReadOnlyList<(string? Category, string Source, string Target)> ParseTsvGlossaryEntries(string text)
+    /// <summary>
+    /// Reads "Source, Target", "Category, Source, Target" or the app's own export (<see cref="BuildGlossaryTsv"/>).
+    /// The export starts uncategorized rows with a tab; trimming the whole line first shifted every column
+    /// left, so "Elder Scroll → 엘더스크롤" came back as source 엘더스크롤 and target "1", and the export's
+    /// Enabled, Priority, MatchMode, ForceMode and Note were replaced by the import dialog's choices.
+    /// </summary>
+    public static IReadOnlyList<GlossaryFileEntry> ParseTsvGlossaryEntries(string text)
     {
-        var list = new List<(string? Category, string Source, string Target)>();
+        var list = new List<GlossaryFileEntry>();
         if (string.IsNullOrWhiteSpace(text))
         {
             return list;
         }
 
+        var hasExportSettings = false;
         var lines = text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n');
         foreach (var raw in lines)
         {
-            var line = raw.Trim();
-            if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#", StringComparison.Ordinal))
+            if (string.IsNullOrWhiteSpace(raw) || raw.TrimStart().StartsWith("#", StringComparison.Ordinal))
             {
                 continue;
             }
 
-            var cols = line.Split('\t');
+            var cols = raw.TrimEnd('\r').Split('\t').Select(c => c.Trim()).ToArray();
             if (cols.Length < 2)
             {
                 continue;
@@ -45,47 +57,52 @@ public sealed class GlossaryFileService
 
             // Optional header row: Source<TAB>Target
             if (cols.Length == 2
-                && string.Equals(cols[0].Trim(), "Source", StringComparison.OrdinalIgnoreCase)
-                && string.Equals(cols[1].Trim(), "Target", StringComparison.OrdinalIgnoreCase))
+                && string.Equals(cols[0], "Source", StringComparison.OrdinalIgnoreCase)
+                && string.Equals(cols[1], "Target", StringComparison.OrdinalIgnoreCase))
             {
                 continue;
             }
 
-            // Optional header row: Category<TAB>Source<TAB>Target...
+            // Optional header row: Category<TAB>Source<TAB>Target..., with the export's settings columns after it.
             if (cols.Length >= 3
-                && string.Equals(cols[1].Trim(), "Source", StringComparison.OrdinalIgnoreCase)
-                && string.Equals(cols[2].Trim(), "Target", StringComparison.OrdinalIgnoreCase))
+                && string.Equals(cols[1], "Source", StringComparison.OrdinalIgnoreCase)
+                && string.Equals(cols[2], "Target", StringComparison.OrdinalIgnoreCase))
             {
+                hasExportSettings = cols.Length >= 7
+                    && string.Equals(cols[3], "Enabled", StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(cols[4], "Priority", StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(cols[5], "MatchMode", StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(cols[6], "ForceMode", StringComparison.OrdinalIgnoreCase);
                 continue;
             }
 
-            string? category;
-            string source;
-            string target;
-
-            if (cols.Length == 2)
-            {
-                category = null;
-                source = cols[0].Trim();
-                target = cols[1].Trim();
-            }
-            else
-            {
-                var categoryRaw = cols[0].Trim();
-                category = string.IsNullOrWhiteSpace(categoryRaw) ? null : categoryRaw;
-                source = cols[1].Trim();
-                target = cols[2].Trim();
-            }
-
+            var (category, source, target) = cols.Length == 2
+                ? ((string?)null, cols[0], cols[1])
+                : (string.IsNullOrWhiteSpace(cols[0]) ? null : cols[0], cols[1], cols[2]);
             if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(target))
             {
                 continue;
             }
 
-            list.Add((category, source, target));
+            list.Add(new GlossaryFileEntry(category, source, target, hasExportSettings ? TryReadExportSettings(cols) : null));
         }
 
         return list;
+    }
+
+    private static GlossaryFileSettings? TryReadExportSettings(string[] cols)
+    {
+        if (cols.Length < 7
+            || !int.TryParse(cols[4], out var priority)
+            || !Enum.TryParse<GlossaryMatchMode>(cols[5], ignoreCase: true, out var matchMode)
+            || !Enum.TryParse<GlossaryForceMode>(cols[6], ignoreCase: true, out var forceMode))
+        {
+            return null;
+        }
+
+        var enabled = cols[3] is "1" || string.Equals(cols[3], "true", StringComparison.OrdinalIgnoreCase);
+        var note = cols.Length > 7 && cols[7].Length > 0 ? cols[7] : null;
+        return new GlossaryFileSettings(enabled, priority, matchMode, forceMode, note);
     }
 
     public static string BuildGlossaryTsv(

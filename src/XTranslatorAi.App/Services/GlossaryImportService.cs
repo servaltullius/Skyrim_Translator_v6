@@ -39,17 +39,13 @@ public sealed class GlossaryImportService
             return null;
         }
 
-        var (toImport, conflictCount) = CollapseGlossaryEntriesBySource(entries);
+        // The app's own export keeps each entry's settings, including sources that deliberately have two
+        // prompt-only targets (Hearthfire → 9월 / 허스파이어), so those rows are restored as they were.
+        var (toImport, conflictCount) = CollapseGlossaryEntriesBySource(entries.Where(e => e.Settings == null).ToList());
+        toImport.AddRange(entries.Where(e => e.Settings != null));
 
         var existing = await db.GetGlossaryAsync(cancellationToken);
-        var (rows, skippedExisting) = BuildGlossaryImportRows(
-            toImport,
-            existing,
-            options.Priority,
-            options.MatchMode,
-            options.ForceMode,
-            note: options.Note
-        );
+        var (rows, skippedExisting) = BuildGlossaryImportRows(toImport, existing, options);
 
         if (rows.Count > 0)
         {
@@ -59,12 +55,12 @@ public sealed class GlossaryImportService
         return new GlossaryImportResult(rows.Count, skippedExisting, conflictCount);
     }
 
-    private static (List<(string? Category, string Source, string Target)> ToImport, int ConflictCount) CollapseGlossaryEntriesBySource(
-        IReadOnlyList<(string? Category, string Source, string Target)> entries
+    private static (List<GlossaryFileService.GlossaryFileEntry> ToImport, int ConflictCount) CollapseGlossaryEntriesBySource(
+        IReadOnlyList<GlossaryFileService.GlossaryFileEntry> entries
     )
     {
         var bySource = entries.GroupBy(p => p.Source, StringComparer.OrdinalIgnoreCase);
-        var toImport = new List<(string? Category, string Source, string Target)>();
+        var toImport = new List<GlossaryFileService.GlossaryFileEntry>();
         var conflictCount = 0;
 
         foreach (var group in bySource)
@@ -93,7 +89,7 @@ public sealed class GlossaryImportService
                 _ => string.Join(" | ", categories),
             };
 
-            toImport.Add((category, group.Key.Trim(), distinctTargets[0]));
+            toImport.Add(new GlossaryFileService.GlossaryFileEntry(category, group.Key.Trim(), distinctTargets[0]));
         }
 
         return (toImport, conflictCount);
@@ -103,12 +99,9 @@ public sealed class GlossaryImportService
         List<(string? Category, string SourceTerm, string TargetTerm, bool Enabled, int Priority, int MatchMode, int ForceMode, string? Note)> Rows,
         int SkippedExisting
     ) BuildGlossaryImportRows(
-        IReadOnlyList<(string? Category, string Source, string Target)> toImport,
+        IReadOnlyList<GlossaryFileService.GlossaryFileEntry> toImport,
         IReadOnlyList<GlossaryEntry> existing,
-        int priority,
-        GlossaryMatchMode matchMode,
-        GlossaryForceMode forceMode,
-        string? note
+        GlossaryImportOptions options
     )
     {
         var existingSet = new HashSet<(string Source, string Target)>(new SourceTargetComparer());
@@ -120,7 +113,7 @@ public sealed class GlossaryImportService
         var rows = new List<(string? Category, string SourceTerm, string TargetTerm, bool Enabled, int Priority, int MatchMode, int ForceMode, string? Note)>();
         var skippedExisting = 0;
 
-        foreach (var (category, src, dst) in toImport)
+        foreach (var (category, src, dst, settings) in toImport)
         {
             var key = (src, dst);
             if (existingSet.Contains(key))
@@ -134,11 +127,11 @@ public sealed class GlossaryImportService
                     Category: category,
                     SourceTerm: src,
                     TargetTerm: dst,
-                    Enabled: true,
-                    Priority: priority,
-                    MatchMode: (int)matchMode,
-                    ForceMode: (int)forceMode,
-                    Note: note
+                    Enabled: settings?.Enabled ?? true,
+                    Priority: settings?.Priority ?? options.Priority,
+                    MatchMode: (int)(settings?.MatchMode ?? options.MatchMode),
+                    ForceMode: (int)(settings?.ForceMode ?? options.ForceMode),
+                    Note: settings != null ? settings.Value.Note : options.Note
                 )
             );
             existingSet.Add(key);
