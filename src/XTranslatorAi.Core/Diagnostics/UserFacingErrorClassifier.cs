@@ -48,6 +48,11 @@ public static class UserFacingErrorClassifier
         if (gemini != null)
         {
             var msg = gemini.Message ?? "";
+            if (IsSafetyBlock(msg))
+            {
+                return SafetyBlocked;
+            }
+
             if (Contains(msg, "MAX_TOKENS"))
             {
                 return new UserFacingError(
@@ -131,6 +136,11 @@ public static class UserFacingErrorClassifier
             );
         }
 
+        if (IsSafetyBlock(msgChain))
+        {
+            return SafetyBlocked;
+        }
+
         if (ContainsAny(msgChain, "MAX_TOKENS", "output truncated"))
         {
             return new UserFacingError(
@@ -180,7 +190,10 @@ public static class UserFacingErrorClassifier
                 msgChain,
                 "Model output did not contain",
                 "Model JSON missing",
-                "missing candidates",
+                // GeminiClient's texts for a response without a usable answer.
+                "no complete candidates",
+                "missing final text",
+                "incomplete response",
                 "missing 'context'",
                 "Batch size mismatch",
                 "Model output missing id",
@@ -255,6 +268,16 @@ public static class UserFacingErrorClassifier
             DetailsInApiLogs: true
         );
     }
+
+    // Retrying the row or switching the key sends the same text, which is refused again.
+    private static readonly UserFacingError SafetyBlocked = new(
+        "E340",
+        "Gemini 안전 필터가 요청을 막았습니다(성인 내용 등). 같은 글로 다시 시도해도 막히니 이 행은 직접 번역하세요.",
+        DetailsInApiLogs: true
+    );
+
+    private static bool IsSafetyBlock(string msg)
+        => Contains(msg, GeminiClient.SafetyBlockedText);
 
     private static bool Contains(string haystack, string needle)
         => haystack.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0;

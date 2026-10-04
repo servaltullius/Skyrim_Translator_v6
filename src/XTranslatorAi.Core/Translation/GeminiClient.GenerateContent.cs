@@ -79,15 +79,44 @@ public sealed partial class GeminiClient
                 CachedContentTokens: usage?.CachedContentTokenCount,
                 CostUsd: GeminiUsageCost.TryEstimateUsd(modelName, promptTokens, completionTokens, usage?.CachedContentTokenCount),
                 Purpose: request.Purpose, FinishReason: reasons is { Length: > 0 } ? string.Join(", ", reasons) : null,
-                OutputTokens: usage?.CandidatesTokenCount, ThoughtsTokens: usage?.ThoughtsTokenCount));
+                OutputTokens: usage?.CandidatesTokenCount, ThoughtsTokens: usage?.ThoughtsTokenCount,
+                BlockReason: GetBlockReason(parsed)));
         }
+    }
+
+    /// <summary>
+    /// Start of the exception text for a response Gemini's safety filter blocked. Stored row errors keep only
+    /// the text, so UserFacingErrorClassifier recognizes the block by it.
+    /// </summary>
+    internal const string SafetyBlockedText = "blocked by Gemini safety filter";
+
+    // Finish reasons that mean the safety filter stopped the answer. RECITATION and OTHER are not content
+    // judgements and stay "incomplete response".
+    private static readonly string[] SafetyFinishReasons = { "SAFETY", "PROHIBITED_CONTENT", "BLOCKLIST", "SPII", "IMAGE_SAFETY" };
+
+    private static string? GetBlockReason(GeminiGenerateContentResponse? parsed)
+        => string.IsNullOrWhiteSpace(parsed?.PromptFeedback?.BlockReason) ? null : parsed.PromptFeedback.BlockReason.Trim();
+
+    private static bool IsSafetyFinishReason(string? finishReason)
+        => finishReason != null && SafetyFinishReasons.Contains(finishReason.Trim(), StringComparer.OrdinalIgnoreCase);
+
+    // An adult mod line can make Gemini refuse the prompt (promptFeedback.blockReason=PROHIBITED_CONTENT) with no
+    // candidates at all. Reading only the candidates threw "finishReason= (incomplete response)", which the row
+    // showed as E999 without pointing at the API log.
+    private static void ThrowIfPromptBlocked(GeminiGenerateContentResponse? parsed)
+    {
+        if (GetBlockReason(parsed) is { } reason)
+            throw new GeminiException($"GenerateContent: {SafetyBlockedText} (blockReason={reason}).");
     }
 
     private static string ExtractSingleTextOrThrow(GeminiGenerateContentResponse? parsed)
     {
+        ThrowIfPromptBlocked(parsed);
         var candidate = parsed?.Candidates?.FirstOrDefault();
         if (string.Equals(candidate?.FinishReason, "MAX_TOKENS", StringComparison.OrdinalIgnoreCase))
             throw new GeminiException("GenerateContent: finishReason=MAX_TOKENS (output truncated).");
+        if (IsSafetyFinishReason(candidate?.FinishReason))
+            throw new GeminiException($"GenerateContent: {SafetyBlockedText} (finishReason={candidate!.FinishReason}).");
         if (!IsCompletedCandidate(candidate))
             throw new GeminiException($"GenerateContent: finishReason={candidate?.FinishReason} (incomplete response).");
         var text = ExtractFinalText(candidate);
@@ -98,8 +127,10 @@ public sealed partial class GeminiClient
 
     private static IReadOnlyList<string> ExtractCandidateTextsOrThrow(GeminiGenerateContentResponse? parsed)
     {
+        ThrowIfPromptBlocked(parsed);
         var texts = new List<string>();
         var sawMaxTokens = false;
+        string? safetyReason = null;
         var sawIncomplete = false;
 
         var candidates = parsed?.Candidates;
@@ -117,6 +148,12 @@ public sealed partial class GeminiClient
                     && string.Equals(candidate.FinishReason, "MAX_TOKENS", StringComparison.OrdinalIgnoreCase))
                 {
                     sawMaxTokens = true;
+                    continue;
+                }
+
+                if (IsSafetyFinishReason(candidate.FinishReason))
+                {
+                    safetyReason ??= candidate.FinishReason;
                     continue;
                 }
 
@@ -143,6 +180,8 @@ public sealed partial class GeminiClient
             throw new GeminiException("GenerateContent: finishReason=MAX_TOKENS (all candidates truncated).");
         }
 
+        if (safetyReason != null)
+            throw new GeminiException($"GenerateContent: {SafetyBlockedText} (finishReason={safetyReason}).");
         if (sawIncomplete)
             throw new GeminiException("GenerateContent: no complete candidates were returned.");
         throw new GeminiException("GenerateContent: missing final text in response parts.");

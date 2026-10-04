@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using XTranslatorAi.Core.Diagnostics;
 using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.Tests;
@@ -93,6 +94,36 @@ public class GeminiResponseIntegrityTests
         Assert.Equal(134, entry.TotalTokens);
         Assert.Equal(80, entry.CachedContentTokens);
         Assert.True(entry.CostUsd > 0);
+    }
+
+    // An adult mod line can make Gemini refuse the prompt itself: no candidates, only promptFeedback.blockReason.
+    // The error used to read "finishReason= (incomplete response)" and the row showed E999 with no API-log pointer.
+    [Theory]
+    [InlineData(false, """{"promptFeedback":{"blockReason":"PROHIBITED_CONTENT"},"usageMetadata":{"promptTokenCount":12,"totalTokenCount":12}}""", "blockReason=PROHIBITED_CONTENT")]
+    [InlineData(true, """{"promptFeedback":{"blockReason":"PROHIBITED_CONTENT"},"usageMetadata":{"promptTokenCount":12,"totalTokenCount":12}}""", "blockReason=PROHIBITED_CONTENT")]
+    [InlineData(false, """{"candidates":[{"finishReason":"SAFETY"}]}""", "finishReason=SAFETY")]
+    [InlineData(true, """{"candidates":[{"finishReason":"PROHIBITED_CONTENT"}]}""", "finishReason=PROHIBITED_CONTENT")]
+    public async Task SafetyBlock_NamesTheReasonInTheErrorAndTheLog(bool multiple, string body, string reason)
+    {
+        using var http = new HttpClient(new JsonHandler(body));
+        var logger = new CaptureLogger();
+        var client = new GeminiClient(http, logger);
+        var ex = await Assert.ThrowsAsync<GeminiException>(async () =>
+        {
+            if (multiple)
+                await client.GenerateContentCandidatesAsync("fixture-key", "gemini-3.8-flash", Request(), CancellationToken.None);
+            else
+                await client.GenerateContentAsync("fixture-key", "gemini-3.8-flash", Request(), CancellationToken.None);
+        });
+
+        Assert.Contains(reason, ex.Message);
+        var entry = Assert.Single(logger.Entries);
+        Assert.False(entry.Success);
+        Assert.Contains(reason, entry.ErrorMessage);
+        Assert.Equal(reason.StartsWith("blockReason", StringComparison.Ordinal) ? "PROHIBITED_CONTENT" : null, entry.BlockReason);
+        var error = UserFacingErrorClassifier.Classify(new InvalidOperationException($"Translate text failed: {ex.Message}", ex));
+        Assert.Equal("E340", error.Code);
+        Assert.True(error.DetailsInApiLogs);
     }
 
     [Theory]

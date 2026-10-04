@@ -34,6 +34,21 @@ public class UserFacingErrorClassifierTests
     public void ClassifyErrorMessage_ReadsStatusesOnlyWhereTheyAreStatuses(string message, string code)
         => Assert.Equal(code, UserFacingErrorClassifier.ClassifyErrorMessage(message).Code);
 
+    // Stored row errors as FormatError writes them. The E320 texts are GeminiClient's own; the pattern
+    // "missing candidates" matched none of them, so these rows showed E999.
+    [Theory]
+    [InlineData("InvalidOperationException: Translate text failed: GenerateContent: blocked by Gemini safety filter (blockReason=PROHIBITED_CONTENT). | GeminiException: GenerateContent: blocked by Gemini safety filter (blockReason=PROHIBITED_CONTENT).", "E340")]
+    [InlineData("InvalidOperationException: Translate batch failed: GenerateContent: blocked by Gemini safety filter (finishReason=SAFETY). | GeminiException: GenerateContent: blocked by Gemini safety filter (finishReason=SAFETY).", "E340")]
+    [InlineData("InvalidOperationException: Translate text candidates failed: GenerateContent: no complete candidates were returned. | GeminiException: GenerateContent: no complete candidates were returned.", "E320")]
+    [InlineData("InvalidOperationException: Translate text failed: GenerateContent: missing final text in response parts. | GeminiException: GenerateContent: missing final text in response parts.", "E320")]
+    [InlineData("InvalidOperationException: Translate text failed: GenerateContent: finishReason=RECITATION (incomplete response). | GeminiException: GenerateContent: finishReason=RECITATION (incomplete response).", "E320")]
+    public void ClassifyErrorMessage_ReadsGeminiClientResponseErrors(string message, string code)
+    {
+        var error = UserFacingErrorClassifier.ClassifyErrorMessage(message);
+        Assert.Equal(code, error.Code);
+        Assert.True(error.DetailsInApiLogs);
+    }
+
     [Theory]
     [InlineData("{\"error\":{\"code\":400,\"message\":\"API key expired. Please renew the API key.\",\"status\":\"INVALID_ARGUMENT\"}}", "E201")]
     [InlineData("{\"error\":{\"code\":400,\"message\":\"Request contains an invalid argument.\",\"status\":\"INVALID_ARGUMENT\"}}", "E299")]

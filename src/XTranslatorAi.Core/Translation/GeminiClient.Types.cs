@@ -59,7 +59,9 @@ public sealed record GeminiCallLogEntry(
     string? Purpose = null,
     string? FinishReason = null,
     int? OutputTokens = null,
-    int? ThoughtsTokens = null
+    int? ThoughtsTokens = null,
+    // promptFeedback.blockReason: Gemini refused the prompt itself, so there is no candidate and no finish reason.
+    string? BlockReason = null
 );
 
 public interface IGeminiCallLogger
@@ -113,7 +115,12 @@ public sealed record GeminiSafetySetting(
 
 public sealed record GeminiGenerateContentResponse(
     [property: JsonPropertyName("candidates")] List<GeminiCandidate>? Candidates,
-    [property: JsonPropertyName("usageMetadata")] GeminiUsageMetadata? UsageMetadata = null
+    [property: JsonPropertyName("usageMetadata")] GeminiUsageMetadata? UsageMetadata = null,
+    [property: JsonPropertyName("promptFeedback")] GeminiPromptFeedback? PromptFeedback = null
+);
+
+public sealed record GeminiPromptFeedback(
+    [property: JsonPropertyName("blockReason")] string? BlockReason
 );
 
 public sealed record GeminiUsageMetadata(

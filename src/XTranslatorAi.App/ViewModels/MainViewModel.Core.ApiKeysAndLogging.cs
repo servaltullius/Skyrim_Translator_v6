@@ -116,7 +116,8 @@ public partial class MainViewModel
                 TotalTokens: entry.TotalTokens,
                 CostUsd: entry.CostUsd,
                 Purpose: entry.Purpose,
-                FinishReason: entry.FinishReason,
+                // A blocked prompt has no candidate, so the block reason is the only "why it ended".
+                FinishReason: entry.BlockReason is { } blockReason ? $"blockReason={blockReason}" : entry.FinishReason,
                 OutputTokens: entry.OutputTokens,
                 ThoughtsTokens: entry.ThoughtsTokens,
                 CachedContentTokens: entry.CachedContentTokens
