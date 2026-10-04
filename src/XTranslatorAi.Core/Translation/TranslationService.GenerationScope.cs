@@ -109,5 +109,5 @@ public sealed partial class TranslationService
     // Their bounded transport retries have already run before reaching recovery.
     private static bool MustStopRecovery(Exception ex)
         => ExceptionTraversal.Enumerate(ex).Any(e => e is TranslationGenerationLimitException
-            or GeminiHttpException or HttpRequestException);
+            or TranslationRateLimitAbortException or GeminiHttpException or HttpRequestException);
 }

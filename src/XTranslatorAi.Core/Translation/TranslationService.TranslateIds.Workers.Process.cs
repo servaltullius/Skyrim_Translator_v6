@@ -16,6 +16,12 @@ public sealed partial class TranslationService
         {
             ct.ThrowIfCancellationRequested();
 
+            // Another worker stopped the run on a rate-limit streak; the queued rows stay Pending.
+            if (Ctx.RateLimitAborted)
+            {
+                return;
+            }
+
             if (!TryDequeueBatch(ctx.Queues, preference, out var batch, out var source))
             {
                 return;
@@ -39,6 +45,11 @@ public sealed partial class TranslationService
             await ctx.Request.WaitIfPaused(ct);
         }
 
+        if (Ctx.RateLimitAborted)
+        {
+            return;
+        }
+
         await MarkInProgressAsync(batch, ct, ctx.Request.OnRowUpdated);
 
         try
@@ -50,7 +61,8 @@ public sealed partial class TranslationService
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            if (IsRunGenerationLimit(ex)) throw;
+            // Both stop the run; TranslateIdsCoreAsync puts this batch's unfinished rows back to Pending.
+            if (IsRunGenerationLimit(ex) || IsRateLimitAbort(ex)) throw;
             if (IsCredentialError(ex))
             {
                 await RevertBatchToPendingAsync(ctx.Request, batch, ct);
@@ -62,6 +74,7 @@ public sealed partial class TranslationService
                 throw;
             }
 
+            ThrowIfRateLimitStreakReached(ex, ctx.Request.EnableApiKeyFailover);
             await HandleBatchFailureAsync(ctx.Request, batch, ex, ct);
         }
     }

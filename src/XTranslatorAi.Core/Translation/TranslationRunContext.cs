@@ -30,6 +30,11 @@ internal sealed class TranslationRunContext : IDisposable
     public AdaptiveConcurrencyController AdaptiveConcurrency { get; } = new();
     public double? MaskedTokensPerCharHint { get; set; }
 
+    // Batches and rows that ended on a rate limit since the last successful generation call (see
+    // TranslationService.MaxConsecutiveRateLimitFailures). Fields so that workers can update them atomically.
+    public int ConsecutiveRateLimitFailures;
+    public volatile bool RateLimitAborted;
+
     // Data built during run
     public Dictionary<long, TranslationService.RowContext>? RowContextById { get; set; }
     public IReadOnlyDictionary<long, IReadOnlyList<(long Id, string Source, MaskedText Mask)>>? DuplicateRowsByCanonicalId { get; set; }

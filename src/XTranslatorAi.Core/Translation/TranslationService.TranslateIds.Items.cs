@@ -530,9 +530,10 @@ public sealed partial class TranslationService
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                if (IsRunGenerationLimit(ex) || IsCredentialError(ex)
+                if (IsRunGenerationLimit(ex) || IsRateLimitAbort(ex) || IsCredentialError(ex)
                     || (request.EnableApiKeyFailover && IsApiKeyFailoverError(ex, request.CancellationToken)))
                     throw;
+                ThrowIfRateLimitStreakReached(ex, request.EnableApiKeyFailover);
                 await HandleBatchFailureAsync(request, batch, ex, request.CancellationToken);
             }
             await FlushSessionTermAutoGlossaryInsertsAsync();

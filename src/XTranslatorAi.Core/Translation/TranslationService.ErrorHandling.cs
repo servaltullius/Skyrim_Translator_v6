@@ -61,6 +61,48 @@ public sealed partial class TranslationService
         return false;
     }
 
+    /// <summary>
+    /// With API-key failover off, a spent daily quota made every remaining batch wait through its rate-limit retries
+    /// and end as Error, which took hours on a large project. After this many batches or rows in a row end on a
+    /// rate limit, with no successful generation call between them, the run stops and leaves the rest Pending.
+    /// </summary>
+    internal const int MaxConsecutiveRateLimitFailures = 3;
+
+    /// <summary>Called where a batch or a row has failed for good, before it is marked Error.</summary>
+    private void ThrowIfRateLimitStreakReached(Exception ex, bool apiKeyFailover)
+    {
+        // With failover on, the first rate limit already stops the run to switch keys.
+        if (apiKeyFailover || !IsRateLimit(ex))
+        {
+            return;
+        }
+
+        var streak = Interlocked.Increment(ref Ctx.ConsecutiveRateLimitFailures);
+        if (streak < MaxConsecutiveRateLimitFailures && !Ctx.RateLimitAborted)
+        {
+            return;
+        }
+
+        // Batches still in flight that end on a rate limit stop too, so their rows go back to Pending as well.
+        Ctx.RateLimitAborted = true;
+        throw new TranslationRateLimitAbortException(MaxConsecutiveRateLimitFailures, ex);
+    }
+
+    private void ResetRateLimitStreak() => Interlocked.Exchange(ref Ctx.ConsecutiveRateLimitFailures, 0);
+
+    private static bool IsRateLimitAbort(Exception ex)
+    {
+        foreach (var current in ExceptionTraversal.Enumerate(ex))
+        {
+            if (current is TranslationRateLimitAbortException)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static bool IsCredentialError(Exception ex)
     {
         foreach (var current in ExceptionTraversal.Enumerate(ex))

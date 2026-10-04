@@ -81,7 +81,9 @@ public sealed partial class TranslationService
         if (gate == null && laneGate == null)
         {
             ConsumeGenerationBudget();
-            return await _gemini.GenerateContentAsync(apiKey, modelName, request, cancellationToken);
+            var ungated = await _gemini.GenerateContentAsync(apiKey, modelName, request, cancellationToken);
+            ResetRateLimitStreak();
+            return ungated;
         }
 
         if (laneGate != null)
@@ -104,6 +106,7 @@ public sealed partial class TranslationService
                 ConsumeGenerationBudget();
                 var response = await _gemini.GenerateContentAsync(apiKey, modelName, request, cancellationToken);
                 Ctx.AdaptiveConcurrency.RegisterSuccess();
+                ResetRateLimitStreak();
                 return response;
             }
             finally
@@ -136,7 +139,9 @@ public sealed partial class TranslationService
         if (gate == null && laneGate == null)
         {
             ConsumeGenerationBudget();
-            return await _gemini.GenerateContentCandidatesAsync(apiKey, modelName, request, cancellationToken);
+            var ungated = await _gemini.GenerateContentCandidatesAsync(apiKey, modelName, request, cancellationToken);
+            ResetRateLimitStreak();
+            return ungated;
         }
 
         if (laneGate != null)
@@ -159,6 +164,7 @@ public sealed partial class TranslationService
                 ConsumeGenerationBudget();
                 var response = await _gemini.GenerateContentCandidatesAsync(apiKey, modelName, request, cancellationToken);
                 Ctx.AdaptiveConcurrency.RegisterSuccess();
+                ResetRateLimitStreak();
                 return response;
             }
             finally

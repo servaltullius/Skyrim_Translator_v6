@@ -38,6 +38,16 @@ public static class UserFacingErrorClassifier
             return new UserFacingError("E000", "작업이 취소되었습니다.", DetailsInApiLogs: false);
         }
 
+        // Wraps the last 429, which alone would only suggest waiting a moment; the run has already stopped.
+        if (FindInChain<TranslationRateLimitAbortException>(ex) != null)
+        {
+            return new UserFacingError(
+                "E202",
+                "요청 제한이 계속되어 번역을 멈췄습니다(일일 할당량 소진 등). 남은 행은 대기 상태로 두었으니 나중에 이어서 번역하세요.",
+                DetailsInApiLogs: true
+            );
+        }
+
         var geminiHttp = FindInChain<GeminiHttpException>(ex);
         if (geminiHttp != null)
         {

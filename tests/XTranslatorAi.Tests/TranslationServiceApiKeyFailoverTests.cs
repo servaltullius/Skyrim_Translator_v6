@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Data;
+using XTranslatorAi.Core.Diagnostics;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Translation;
 using XTranslatorAi.Tests.TestSupport;
@@ -60,6 +61,68 @@ public sealed class TranslationServiceApiKeyFailoverTests
 
             var state = await db.GetStringTranslationStateAsync(id, CancellationToken.None);
             Assert.Equal(StringEntryStatus.Pending, state.Status);
+        }
+        finally
+        {
+            TestDbHelper.TryDeleteDbFiles(path);
+        }
+    }
+
+    // With failover off, a spent daily quota made each remaining batch wait through its 429 retries and end as
+    // Error, for hours on a large project. Three failed batches in a row now stop the run; the batch that tripped
+    // the limit and the rows never sent stay Pending so the run can be resumed later.
+    [Theory]
+    [InlineData(1, 5, 2, 3)]
+    [InlineData(2, 8, 4, 4)]
+    public async Task TranslateIdsAsync_WhenFailoverDisabled_StopsAfterThreeRateLimitedBatches(int batchSize, int rows, int errors, int pending)
+    {
+        var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
+        try
+        {
+            await using var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
+            await SeedProjectAsync(db);
+            var ids = await InsertPendingStringsAsync(db, rows);
+
+            var handler = new Always429Handler();
+            var service = new TranslationService(db, new GeminiClient(new HttpClient(handler)));
+
+            var ex = await Assert.ThrowsAsync<TranslationRateLimitAbortException>(
+                () => service.TranslateIdsAsync(CreateRequest(ids, enableApiKeyFailover: false) with { BatchSize = batchSize }));
+
+            Assert.Equal(3, handler.Calls);
+            var statuses = await db.GetStringStatusesByIdsAsync(ids, CancellationToken.None);
+            Assert.Equal(errors, statuses.Values.Count(status => status == StringEntryStatus.Error));
+            Assert.Equal(pending, statuses.Values.Count(status => status == StringEntryStatus.Pending));
+            var error = UserFacingErrorClassifier.Classify(ex);
+            Assert.Equal("E202", error.Code);
+            Assert.Contains("멈췄습니다", error.Message);
+        }
+        finally
+        {
+            TestDbHelper.TryDeleteDbFiles(path);
+        }
+    }
+
+    // A per-minute limit that lets calls through between failures is not a spent quota.
+    [Fact]
+    public async Task TranslateIdsAsync_WhenFailoverDisabled_ASuccessfulCallResetsTheRateLimitStreak()
+    {
+        var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
+        try
+        {
+            await using var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
+            await SeedProjectAsync(db);
+            var ids = await InsertPendingStringsAsync(db, 5);
+
+            var handler = new ScriptedHandler(true, true, false, true, true);
+            var service = new TranslationService(db, new GeminiClient(new HttpClient(handler)));
+
+            await service.TranslateIdsAsync(CreateRequest(ids, enableApiKeyFailover: false));
+
+            Assert.Equal(5, handler.Calls);
+            var statuses = await db.GetStringStatusesByIdsAsync(ids, CancellationToken.None);
+            Assert.Equal(4, statuses.Values.Count(status => status == StringEntryStatus.Error));
+            Assert.Equal(1, statuses.Values.Count(status => status == StringEntryStatus.Done));
         }
         finally
         {
@@ -227,6 +290,62 @@ public sealed class TranslationServiceApiKeyFailoverTests
         var ids = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending }, CancellationToken.None);
         Assert.Single(ids);
         return ids[0];
+    }
+
+    private static async Task<IReadOnlyList<long>> InsertPendingStringsAsync(ProjectDb db, int count)
+    {
+        await db.BulkInsertStringsAsync(
+            Enumerable.Range(1, count).Select(i => (
+                OrderIndex: i,
+                ListAttr: (string?)null,
+                PartialAttr: (string?)null,
+                AttributesJson: (string?)null,
+                Edid: (string?)$"Test{i:00}",
+                Rec: (string?)"MGEF:FULL",
+                SourceText: $"Hello {i}",
+                DestText: "",
+                Status: StringEntryStatus.Pending,
+                RawStringXml: "<r/>"
+            )).ToArray(),
+            CancellationToken.None
+        );
+
+        return await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending }, CancellationToken.None);
+    }
+
+    /// <summary>Answers each generateContent call with 429 (true) or with the source text echoed back (false).</summary>
+    private sealed class ScriptedHandler(params bool[] rateLimited) : HttpMessageHandler
+    {
+        public int Calls { get; private set; }
+
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            var url = request.RequestUri?.ToString() ?? "";
+            if (url.IndexOf(":generateContent", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                return new HttpResponseMessage(HttpStatusCode.NotFound) { Content = new StringContent("{}") };
+            }
+
+            var call = Calls++;
+            if (call < rateLimited.Length && rateLimited[call])
+            {
+                return new HttpResponseMessage((HttpStatusCode)429)
+                {
+                    ReasonPhrase = "Too Many Requests",
+                    Content = new StringContent("{\"error\":{\"code\":429,\"message\":\"quota exceeded\",\"status\":\"RESOURCE_EXHAUSTED\"}}"),
+                };
+            }
+
+            var body = await request.Content!.ReadAsStringAsync(cancellationToken);
+            var prompt = System.Text.Json.JsonDocument.Parse(body).RootElement.GetProperty("contents")[0].GetProperty("parts")[0].GetProperty("text").GetString()!;
+            var start = prompt.IndexOf("<<<TEXT", StringComparison.Ordinal) + "<<<TEXT".Length;
+            var text = prompt[start..prompt.LastIndexOf("TEXT>>>", StringComparison.Ordinal)].Trim();
+            var response = System.Text.Json.JsonSerializer.Serialize(new
+            {
+                candidates = new[] { new { finishReason = "STOP", content = new { parts = new[] { new { text } } } } },
+            });
+            return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(response) };
+        }
     }
 
     private sealed class FixedErrorHandler(HttpStatusCode status, string reason, string body) : HttpMessageHandler

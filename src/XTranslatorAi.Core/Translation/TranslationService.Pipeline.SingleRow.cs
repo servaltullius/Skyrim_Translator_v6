@@ -25,12 +25,14 @@ public sealed partial class TranslationService
         {
             throw;
         }
-        catch (Exception ex) when (IsRunGenerationLimit(ex) || IsCredentialError(ex) || (ctx.EnableApiKeyFailover && IsApiKeyFailoverError(ex, ctx.CancellationToken)))
+        catch (Exception ex) when (IsRunGenerationLimit(ex) || IsRateLimitAbort(ex) || IsCredentialError(ex) || (ctx.EnableApiKeyFailover && IsApiKeyFailoverError(ex, ctx.CancellationToken)))
         {
             throw;
         }
         catch (Exception ex)
         {
+            // A one-row batch ends here, not in ProcessBatchAsync, so it counts toward the rate-limit streak here.
+            ThrowIfRateLimitStreakReached(ex, ctx.EnableApiKeyFailover);
             await HandleRowErrorAsync(row.Id, ex, ctx.OnRowUpdated, awaitNotifications: true, ctx.CancellationToken);
         }
     }
