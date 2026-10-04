@@ -113,6 +113,7 @@ public partial class MainViewModel
             await RefreshPreviousTranslationsAsync(CancellationToken.None);
             var diagnostics = string.Join(" / ", loaded.Document.Info.Diagnostics.Select(item => item.Message));
             StatusMessage = $"플러그인 읽기 완료: {Path.GetFileName(path)} · {TotalCount}개 문자열"
+                + (loaded.MovedFromPath == null ? "" : $" · 옮기기 전 위치({loaded.MovedFromPath})의 프로젝트를 이어서 엽니다")
                 + (diagnostics.Length == 0 ? "" : " · " + diagnostics)
                 + DescribeUnavailableGlobalDb();
         }
