@@ -57,6 +57,17 @@ public static class UserFacingErrorClassifier
             return new UserFacingError("E000", "작업이 취소되었습니다.", DetailsInApiLogs: false);
         }
 
+        // A truncated or hand-edited XML showed as E999 "예상치 못한 오류 … 잠시 후 다시 시도하세요".
+        if (FindInChain<System.Xml.XmlException>(ex) is { } xml)
+        {
+            var where = xml.LineNumber > 0 ? $" {xml.LineNumber}번째 줄 {xml.LinePosition}번째 글자 근처" : "";
+            return new UserFacingError(
+                "E430",
+                $"XML 파일의 형식이 깨져 읽을 수 없습니다{(where.Length == 0 ? "" : "(" + where.Trim() + ")")}. 파일이 중간에 잘렸거나 직접 고치다 태그가 어긋났는지 확인하고, xTranslator에서 다시 내보내세요.",
+                DetailsInApiLogs: false
+            );
+        }
+
         var geminiHttp = FindInChain<GeminiHttpException>(ex);
         if (geminiHttp != null)
         {
