@@ -18,6 +18,12 @@ public partial class StringEntryViewModel : ObservableObject
     [ObservableProperty] private string? _errorMessage;
     [ObservableProperty] private bool _isTranslationMemoryApplied;
 
+    /// <summary>
+    /// True while this is the selected row, whose text the editor shows. The strings grid keeps it visible even when
+    /// its text or status stops matching the filter, and filters it again when this turns false.
+    /// </summary>
+    [ObservableProperty] private bool _isOpenInEditor;
+
     public StringEntryViewModel(long id, int orderIndex)
     {
         Id = id;

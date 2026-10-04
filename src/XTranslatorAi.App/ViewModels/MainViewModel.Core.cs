@@ -155,6 +155,8 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
             live.LiveFilteringProperties.Add(nameof(StringEntryViewModel.DestText));
             live.LiveFilteringProperties.Add(nameof(StringEntryViewModel.Status));
             live.LiveFilteringProperties.Add(nameof(StringEntryViewModel.ErrorMessage));
+            // Re-filters the row the selection just left; see EntryFilter.
+            live.LiveFilteringProperties.Add(nameof(StringEntryViewModel.IsOpenInEditor));
             live.IsLiveFiltering = true;
         }
         EntryStatusFilterValues.ReplaceAll(

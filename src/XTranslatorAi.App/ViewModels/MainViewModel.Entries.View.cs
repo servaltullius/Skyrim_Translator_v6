@@ -6,9 +6,15 @@ namespace XTranslatorAi.App.ViewModels;
 
 public partial class MainViewModel
 {
-    partial void OnEntryFilterTextChanged(string value) => EntriesView.Refresh();
+    // The grid filters live on the translation text and status. Typing a fix into the editor under a search or
+    // "보호 요소 불일치만" used to remove the row mid-edit, which cleared the selection and blanked the editor. The
+    // selected row therefore stays visible until the selection moves (IsOpenInEditor turns false and the live
+    // filter checks the row again), or until the user changes the filter itself.
+    private bool _isApplyingEntryFilterChange;
 
-    partial void OnEntryFilterStatusChanged(string value) => EntriesView.Refresh();
+    partial void OnEntryFilterTextChanged(string value) => ApplyEntryFilterChange();
+
+    partial void OnEntryFilterStatusChanged(string value) => ApplyEntryFilterChange();
 
     partial void OnEntryFilterTagsOnlyChanged(bool value)
     {
@@ -18,7 +24,7 @@ public partial class MainViewModel
             return;
         }
 
-        EntriesView.Refresh();
+        ApplyEntryFilterChange();
     }
 
     partial void OnEntryFilterTagMismatchOnlyChanged(bool value)
@@ -29,12 +35,43 @@ public partial class MainViewModel
             return;
         }
 
-        EntriesView.Refresh();
+        ApplyEntryFilterChange();
+    }
+
+    private void ApplyEntryFilterChange()
+    {
+        _isApplyingEntryFilterChange = true;
+        try
+        {
+            EntriesView.Refresh();
+        }
+        finally
+        {
+            _isApplyingEntryFilterChange = false;
+        }
+    }
+
+    private static void KeepSelectedEntryInView(StringEntryViewModel? oldValue, StringEntryViewModel? newValue)
+    {
+        if (oldValue != null)
+        {
+            oldValue.IsOpenInEditor = false;
+        }
+
+        if (newValue != null)
+        {
+            newValue.IsOpenInEditor = true;
+        }
     }
 
     private bool EntryFilter(object obj)
     {
         if (obj is not StringEntryViewModel entry)
+        {
+            return true;
+        }
+
+        if (entry.IsOpenInEditor && !_isApplyingEntryFilterChange)
         {
             return true;
         }

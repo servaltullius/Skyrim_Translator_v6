@@ -20,6 +20,8 @@ public partial class MainViewModel
 
     partial void OnSelectedEntryChanged(StringEntryViewModel? oldValue, StringEntryViewModel? newValue)
     {
+        KeepSelectedEntryInView(oldValue, newValue);
+
         // Resolve the DB now: when the project is being replaced, the row no longer belongs to the open
         // project and its edit must not be written into the new project's row with the same Id.
         if (oldValue is not { HasUnsavedDestEdit: true } || !TryGetOwningDb(oldValue, out var db))
