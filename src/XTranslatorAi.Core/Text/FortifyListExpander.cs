@@ -8,11 +8,22 @@ namespace XTranslatorAi.Core.Text;
 
 public static class FortifyListExpander
 {
+    // A list item is a short capitalized term ("Smithing", "Light Armor", "One-handed"). Items used to be any
+    // run of words, so "Fortify Sneak is active, and enemies and guards are less alert." read "Sneak is active",
+    // "and enemies" and "guards" as a list and became "…, Fortify and enemies and Fortify guards are…".
+    private const string ListItemPattern = @"[A-Z][A-Za-z0-9'\-]*(?: [A-Z][A-Za-z0-9'\-]*){0,2}";
+
     private static readonly Regex FortifySharedPrefixListRegex = new(
         pattern:
-        @"\b(?<fortify>Fortify)\s+(?<list>[A-Za-z][A-Za-z0-9\-' ]*(?:\s*,\s*[A-Za-z0-9][A-Za-z0-9\-' ]*)*(?:\s*,?\s*(?:and|or)\s*[A-Za-z0-9][A-Za-z0-9\-' ]*)?)\s+(?<verb>is|are)\b",
-        options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
+        @"\b(?<fortify>[Ff]ortify)\s+(?<list>" + ListItemPattern + @"(?:\s*,\s*" + ListItemPattern + @")*(?:\s*,?\s+(?i:and|or)\s+" + ListItemPattern + @")?)\s+(?<verb>(?i:is|are))\b",
+        options: RegexOptions.CultureInvariant
     );
+
+    private static readonly HashSet<string> NonTermWords = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "and", "or", "is", "are", "was", "were", "be", "been", "being", "has", "have", "had", "do", "does", "did",
+        "can", "will", "get", "gets", "become", "becomes",
+    };
 
     public static string Expand(string text)
     {
@@ -58,7 +69,7 @@ public static class FortifyListExpander
                         return m.Value;
                     }
 
-                    if (items.Count <= 1)
+                    if (items.Count <= 1 || !items.All(IsShortCapitalizedTerm))
                     {
                         return m.Value;
                     }
@@ -129,6 +140,17 @@ public static class FortifyListExpander
         }
 
         return items.Count > 0;
+    }
+
+    /// <summary>
+    /// One to three capitalized words, none of them a verb or a conjunction: title-case text such as
+    /// "Fortify Sneak Is Active, And Enemies Are…" still fits the pattern.
+    /// </summary>
+    private static bool IsShortCapitalizedTerm(string item)
+    {
+        var words = item.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        return words.Length is >= 1 and <= 3
+               && words.All(w => char.IsUpper(w[0]) && !NonTermWords.Contains(w));
     }
 
     private static IEnumerable<string> SplitCommaItems(string segment)

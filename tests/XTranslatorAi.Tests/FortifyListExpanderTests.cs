@@ -39,6 +39,25 @@ public class FortifyListExpanderTests
         Assert.Equal(input, FortifyListExpander.Expand(input));
     }
 
+    // The list ran across clauses: "Fortify Sneak is active, Fortify and enemies and Fortify guards are less alert."
+    [Theory]
+    [InlineData("Fortify Sneak is active, and enemies and guards are less alert.")]
+    [InlineData("While Fortify Sneak is active, guards and enemies are less alert.")]
+    [InlineData("Fortify Sneak Is Active, And Enemies Are Less Alert.")]
+    [InlineData("Fortify Health regenerates faster, and Stamina and Magicka are restored.")]
+    public void Expand_DoesNotChange_WhenTheWordsAfterFortifyAreAClause(string input)
+    {
+        Assert.Equal(input, FortifyListExpander.Expand(input));
+    }
+
+    [Fact]
+    public void Expand_ExpandsMultiWordTerms()
+    {
+        Assert.Equal(
+            "Fortify Light Armor, Fortify Heavy Armor and Fortify Block are __XT_PH_NUM_0000__ better.",
+            FortifyListExpander.Expand("Fortify Light Armor, Heavy Armor and Block are __XT_PH_NUM_0000__ better."));
+    }
+
     [Fact]
     public void Expand_DoesNotChange_WhenAlreadyExpanded()
     {
