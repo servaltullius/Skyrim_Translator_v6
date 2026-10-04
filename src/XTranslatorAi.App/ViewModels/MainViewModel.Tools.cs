@@ -339,7 +339,9 @@ public partial class MainViewModel
         try
         {
             var estimator = new TranslationCostEstimator(db, _geminiClient);
-            var estimate = await estimator.EstimateAsync(estimateRequest, cancellationToken);
+            // Masking and the glossary run before the first network call, and SQLite's async calls finish
+            // synchronously, so on the UI thread the window froze for seconds on a large project.
+            var estimate = await Task.Run(() => estimator.EstimateAsync(estimateRequest, cancellationToken), cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
 
             _uiInteractionService.ShowMessage(
