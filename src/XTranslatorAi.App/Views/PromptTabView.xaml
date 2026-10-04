@@ -26,7 +26,7 @@
                  HorizontalScrollBarVisibility="Auto" />
 
         <WrapPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10,0,6" VerticalAlignment="Center">
-            <CheckBox IsChecked="{Binding UseCustomPrompt}" Content="사용자 프롬프트 사용(선택)" Margin="0,0,16,0" />
+            <CheckBox IsChecked="{Binding UseCustomPrompt}" Content="사용자 프롬프트 사용(선택): 맨 아래 칸의 내용을 기본 프롬프트 뒤에 붙입니다" Margin="0,0,16,0" />
             <CheckBox IsChecked="{Binding UseRecStyleHints}" Content="레코드 종류별 문체 힌트(추천)" Margin="0,0,16,0" />
         </WrapPanel>
         <Border Grid.Row="3"
@@ -53,8 +53,12 @@
                 <TextBlock Text="{Binding PromptLintDetails}" Margin="0,4,0,0" TextWrapping="Wrap" />
             </StackPanel>
         </Border>
+        <!-- Unlabeled and always editable, text typed here was ignored without a word while the box was unchecked. -->
         <TextBox Grid.Row="4"
                  Text="{Binding CustomPromptText}"
+                 IsEnabled="{Binding UseCustomPrompt}"
+                 ToolTip="사용자 프롬프트: 기본 프롬프트 뒤에 붙습니다. 위의 '사용자 프롬프트 사용'을 켜야 편집하고 적용할 수 있습니다."
+                 ToolTipService.ShowOnDisabled="True"
                  Style="{StaticResource XT.EditorTextBox}"
                  TextWrapping="Wrap"
                  AcceptsReturn="True"
