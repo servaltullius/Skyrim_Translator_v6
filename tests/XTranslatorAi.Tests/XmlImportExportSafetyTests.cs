@@ -170,6 +170,52 @@ public sealed class XmlImportExportSafetyTests : IAsyncLifetime
         info.AddonName, BethesdaFranchise.ElderScrolls, info.SourceLang, info.DestLang, info.Version,
         info.HasBom, info.PrologLine, model, "base", "custom", true, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow);
 
+    // The exporter pages through the DB 500 rows at a time; rows past the first page were never tested.
+    [Fact]
+    public async Task Export_1201Rows_KeepsEveryRowInOrder()
+    {
+        var rows = Enumerable.Range(1, 1201).Select(i => Row(i.ToString(), "source " + i, "번역 " + i));
+        await File.WriteAllTextAsync(XmlPath, Document(string.Concat(rows)), new UTF8Encoding(false));
+        var info = await XTranslatorXmlImporter.ImportToDbAsync(_db, XmlPath, CancellationToken.None);
+        var output = Path.Combine(_root, "output.xml");
+
+        await XTranslatorXmlExporter.ExportAsync(_db, info, output, CancellationToken.None);
+
+        var dests = XDocument.Load(output).Descendants("String").Select(e => e.Element("Dest")!.Value).ToList();
+        Assert.Equal(Enumerable.Range(1, 1201).Select(i => "번역 " + i), dests);
+    }
+
+    [Fact]
+    public async Task Export_AddsAMissingDestElement()
+    {
+        var row = "<String List=\"0\" Partial=\"1\"><EDID>Record</EDID><REC id=\"1\">FULL</REC><Source>Iron Sword</Source></String>";
+        await File.WriteAllTextAsync(XmlPath, Document(row), new UTF8Encoding(false));
+        var info = await XTranslatorXmlImporter.ImportToDbAsync(_db, XmlPath, CancellationToken.None);
+        var stored = Assert.Single(await _db.GetStringsAsync(10, 0, CancellationToken.None));
+        await _db.UpdateStringTranslationAsync(stored.Id, "철검", XTranslatorAi.Core.Models.StringEntryStatus.Edited, null, CancellationToken.None);
+        var output = Path.Combine(_root, "output.xml");
+
+        await XTranslatorXmlExporter.ExportAsync(_db, info, output, CancellationToken.None);
+
+        Assert.Equal("철검", XDocument.Load(output).Descendants("Dest").Last().Value);
+    }
+
+    [Fact]
+    public async Task CanceledExport_LeavesThePreviousFileAndNoTemporaryFile()
+    {
+        await File.WriteAllTextAsync(XmlPath, Document(Row("1", "Iron Sword", "철검")), new UTF8Encoding(false));
+        var info = await XTranslatorXmlImporter.ImportToDbAsync(_db, XmlPath, CancellationToken.None);
+        var output = Path.Combine(_root, "output.xml");
+        await File.WriteAllTextAsync(output, "previous export");
+        using var canceled = new CancellationTokenSource();
+        canceled.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => XTranslatorXmlExporter.ExportAsync(_db, info, output, canceled.Token));
+
+        Assert.Equal("previous export", await File.ReadAllTextAsync(output));
+        Assert.Empty(Directory.EnumerateFiles(_root, "output.xml.*.tmp"));
+    }
+
     private static string Document(string rows) => "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
         + "<SSTXMLRessources><Params><Addon>Test.esp</Addon><Source>english</Source><Dest>korean</Dest><Version>2</Version></Params><Content>"
         + rows + "</Content></SSTXMLRessources>";
