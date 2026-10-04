@@ -13,6 +13,22 @@ public sealed class PercentSignFixerTests
         Assert.Equal("A%0f", PercentSignFixer.FixDuplicatePercents("A% %0f"));
     }
 
+    // The stray-percent rule cut "%PLAYERNAME%." to "%PLAYERNAME." and the duplicate rule turned "%d%%" into
+    // "%d%", so the final check failed those rows on every retry.
+    [Theory]
+    [InlineData("안녕 %PLAYERNAME%.", "Hello %PLAYERNAME%.")]
+    [InlineData("%d%% 확률로 발동합니다.", "%d%% chance to trigger.")]
+    [InlineData("%s의 %d%% 확률", "%d%% chance of %s")]
+    public void FixDuplicatePercents_KeepsTheSourcesProtectedPercentText(string translated, string source)
+    {
+        Assert.Equal(translated, PercentSignFixer.FixDuplicatePercents(translated, source));
+        Assert.False(LqaScanner.HasTokenMismatch(source, PercentSignFixer.FixDuplicatePercents(translated, source)));
+    }
+
+    [Fact]
+    public void FixDuplicatePercents_KeepsNamedVariablesWithoutTheSource()
+        => Assert.Equal("안녕 %PLAYERNAME%.", PercentSignFixer.FixDuplicatePercents("안녕 %PLAYERNAME%."));
+
     [Fact]
     public void FixDuplicatePercents_DoesNotChangeSinglePercent()
     {

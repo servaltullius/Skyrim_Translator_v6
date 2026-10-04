@@ -99,7 +99,7 @@ public sealed partial class TranslationService
 
         var unmasked = masker.Unmask(text, masked.TokenToOriginal);
         unmasked = PlaceholderUnitBinder.ReplaceUnitsAfterUnmask(targetLang, unmasked);
-        return PercentSignFixer.FixDuplicatePercents(unmasked);
+        return PercentSignFixer.FixDuplicatePercents(unmasked, masker.Unmask(masked.Text, masked.TokenToOriginal));
     }
 
     private async Task<List<(long Id, string DestText, StringEntryStatus Status, string? ErrorMessage)>> BuildDuplicateDoneUpdatesAsync(

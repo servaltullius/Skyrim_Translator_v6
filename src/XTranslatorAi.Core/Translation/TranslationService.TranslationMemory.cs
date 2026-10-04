@@ -82,7 +82,7 @@ public sealed partial class TranslationService
         final = PlaceholderUnitBinder.EnforceUnitsFromSource(targetLang, sourceText, final);
         final = KoreanProtectFromFixer.Fix(targetLang, sourceText, final);
         final = KoreanTranslationFixer.Fix(targetLang, final);
-        final = PercentSignFixer.FixDuplicatePercents(final);
+        final = PercentSignFixer.FixDuplicatePercents(final, sourceText);
         try
         {
             TokenValidator.ValidateFinalTextIntegrity(sourceText, final, context: $"id={id} tm post-edits");

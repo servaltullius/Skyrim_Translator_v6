@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace XTranslatorAi.Core.Text;
@@ -28,12 +29,52 @@ internal static class PercentSignFixer
         options: RegexOptions.CultureInvariant
     );
 
-    internal static string FixDuplicatePercents(string text)
+    // Protected percent text: named variables (%PLAYERNAME%) and printf specs (%d, %.1f, %s).
+    private static readonly Regex ProtectedPercentRegex = new(
+        pattern: @"%[A-Za-z0-9_]+%|%(?:[0-9]+\$)?[-+0-9.]*[A-Za-z]",
+        options: RegexOptions.CultureInvariant
+    );
+
+    private const char ShieldOpen = '\uE000';
+    private const char ShieldClose = '\uE001';
+
+    /// <param name="sourceText">
+    /// The source, so its protected percent text survives: the stray-percent rule cut "%PLAYERNAME%." to
+    /// "%PLAYERNAME." and the duplicate rule turned "%d%%" into "%d%", and the final check then failed those rows
+    /// on every retry.
+    /// </param>
+    internal static string FixDuplicatePercents(string text, string? sourceText = null)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
             return text;
         }
+
+        var shielded = new List<string>();
+        var working = ProtectedPercentRegex.Replace(text, m =>
+        {
+            var isNamedVariable = m.Value.Length > 2 && m.Value[^1] == '%';
+            if (sourceText == null ? !isNamedVariable : sourceText.IndexOf(m.Value, StringComparison.Ordinal) < 0)
+            {
+                return m.Value;
+            }
+
+            shielded.Add(m.Value);
+            return $"{ShieldOpen}{shielded.Count - 1}{ShieldClose}";
+        });
+
+        var keepDoubledPercent = sourceText?.Contains("%%", StringComparison.Ordinal) == true;
+        working = FixUnprotectedPercents(working, keepDoubledPercent);
+        for (var i = shielded.Count - 1; i >= 0; i--)
+        {
+            working = working.Replace($"{ShieldOpen}{i}{ShieldClose}", shielded[i], StringComparison.Ordinal);
+        }
+
+        return working;
+    }
+
+    private static string FixUnprotectedPercents(string text, bool keepDoubledPercent)
+    {
 
         // Some LLM outputs contain invisible Unicode separators that break simple regex matching
         // (e.g., "<25%>​%" where the zero-width char prevents stray-percent cleanup).
@@ -44,7 +85,7 @@ internal static class PercentSignFixer
             return text;
         }
 
-        var working = DuplicatePercentRegex.Replace(text, "%");
+        var working = keepDoubledPercent ? text : DuplicatePercentRegex.Replace(text, "%");
         working = StrayPercentAfterPercentPlaceholderRegex.Replace(
             working,
             m => m.Groups["ph"].Value
