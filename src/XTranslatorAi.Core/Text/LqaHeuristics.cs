@@ -37,8 +37,11 @@ public static class LqaHeuristics
         "을/를", "를/을", "은/는", "는/은", "이/가", "가/이", "과/와", "와/과", "으로/로", "로/으로",
     };
 
+    // The second word must end there, alone or with a particle ("효과 효과가", "<dur>초 초 동안").
+    // Without that, "<dur>초 초과하면", "60초 초과입니다" and "효과 효과적으로" were reported, and
+    // quality escalation paid for a re-translation of a correct row.
     private static readonly Regex DuplicationArtifactRegex = new(
-        pattern: @"(?:효과\s+효과|초\s+초)",
+        pattern: @"(?:효과\s+효과|초\s+초)(?=$|[^가-힣]|(?:가|는|를|와|로|의|에|에서|도|만)(?![가-힣]))",
         options: RegexOptions.CultureInvariant
     );
 

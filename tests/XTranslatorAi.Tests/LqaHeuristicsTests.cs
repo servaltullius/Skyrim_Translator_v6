@@ -99,7 +99,18 @@ public class LqaHeuristicsTests
 
         var none = LqaHeuristics.FindDuplicationArtifactExample("<dur>초 동안 마비시킵니다.");
         Assert.Null(none);
+
+        Assert.Equal("초 초", LqaHeuristics.FindDuplicationArtifactExample("<dur>초 초가 지나면 폭발합니다."));
+        Assert.Equal("효과 효과", LqaHeuristics.FindDuplicationArtifactExample("효과 효과."));
     }
+
+    [Theory]
+    [InlineData("<dur>초 초과하면 해제됩니다.")]
+    [InlineData("지속시간이 60초 초과입니다.")]
+    [InlineData("<dur>초 초기화됩니다.")]
+    [InlineData("이 효과 효과적으로 막아냅니다.")]
+    public void FindDuplicationArtifactExample_IgnoresWordsThatOnlyStartWithTheRepeatedSyllable(string dest)
+        => Assert.Null(LqaHeuristics.FindDuplicationArtifactExample(dest));
 
     [Fact]
     public void FindPercentArtifactExample_ReturnsExample_ForPercentNoise()
