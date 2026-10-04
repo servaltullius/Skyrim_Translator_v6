@@ -227,6 +227,26 @@ public static class GlossaryFileParser
             if (ch == '\\' && i + 1 < text.Length)
             {
                 var next = text[i + 1];
+                // "드": tools like Python's json.dump escape every Hangul syllable. A surrogate pair is two
+                // escapes in a row and joins up in the builder. A malformed escape is kept as written.
+                if (next == 'u')
+                {
+                    if (i + 6 <= text.Length
+                        && int.TryParse(text.AsSpan(i + 2, 4), System.Globalization.NumberStyles.AllowHexSpecifier,
+                            System.Globalization.CultureInfo.InvariantCulture, out var code))
+                    {
+                        sb.Append((char)code);
+                        i += 6;
+                    }
+                    else
+                    {
+                        sb.Append(ch);
+                        i++;
+                    }
+
+                    continue;
+                }
+
                 i += 2;
                 sb.Append(
                     next switch
