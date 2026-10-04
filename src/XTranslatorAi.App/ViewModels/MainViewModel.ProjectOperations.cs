@@ -32,11 +32,25 @@ public partial class MainViewModel
         RetranslateVisibleCommand.NotifyCanExecuteChanged();
         ImportPreviousTranslationCommand.NotifyCanExecuteChanged();
         ClearPreviousTranslationCommand.NotifyCanExecuteChanged();
+        NotifyProjectOperationCommands();
     }
+
+    private void NotifyProjectOperationCommands()
+    {
+        RunCompare1Command.NotifyCanExecuteChanged();
+        RunCompare2Command.NotifyCanExecuteChanged();
+        RunCompare3Command.NotifyCanExecuteChanged();
+        RunCompareAllCommand.NotifyCanExecuteChanged();
+        RefreshModelsCommand.NotifyCanExecuteChanged();
+    }
+
+    // Project tools do not start during a run or while a project is being switched or closed. Compare and the
+    // model list "새로고침" have no other condition, and used to stay enabled and silently do nothing then.
+    private bool CanStartProjectOperation() => IsWorkspaceInteractive && !IsTranslating;
 
     private async Task RunProjectOperationAsync(string name, Func<CancellationToken, Task> action)
     {
-        if (!IsWorkspaceInteractive || IsTranslating) return;
+        if (!CanStartProjectOperation()) return;
         var task = _projectOperations.RunAsync(action);
         NotifyWorkspaceAvailability();
         try { await task; }

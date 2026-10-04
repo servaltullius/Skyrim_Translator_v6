@@ -75,16 +75,16 @@ public partial class MainViewModel
 
     private string BuildCompareSelectedEntrySummary() => BuildCompareSelectedEntrySummary(SelectedEntry);
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanStartProjectOperation))]
     private Task RunCompare1Async() => RunProjectOperationAsync("Compare", token => RunCompareSlotAsync(1, token));
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanStartProjectOperation))]
     private Task RunCompare2Async() => RunProjectOperationAsync("Compare", token => RunCompareSlotAsync(2, token));
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanStartProjectOperation))]
     private Task RunCompare3Async() => RunProjectOperationAsync("Compare", token => RunCompareSlotAsync(3, token));
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanStartProjectOperation))]
     private Task RunCompareAllAsync() => RunProjectOperationAsync("Compare", async token =>
     {
         for (var slot = 1; slot <= 3; slot++)

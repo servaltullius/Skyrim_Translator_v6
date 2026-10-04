@@ -172,6 +172,11 @@ public partial class MainViewModel
     [NotifyCanExecuteChangedFor(nameof(ClearPreviousTranslationCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenXmlCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenPluginCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RunCompare1Command))]
+    [NotifyCanExecuteChangedFor(nameof(RunCompare2Command))]
+    [NotifyCanExecuteChangedFor(nameof(RunCompare3Command))]
+    [NotifyCanExecuteChangedFor(nameof(RunCompareAllCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RefreshModelsCommand))]
     [NotifyPropertyChangedFor(nameof(CanChangeFranchise))]
     private bool _isTranslating;
 

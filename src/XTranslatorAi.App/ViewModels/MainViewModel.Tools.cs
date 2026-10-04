@@ -77,7 +77,7 @@ public partial class MainViewModel
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanStartProjectOperation))]
     private Task RefreshModelsAsync() => RunProjectOperationAsync("모델 목록", RefreshModelsCoreAsync);
 
     private async Task RefreshModelsCoreAsync(CancellationToken cancellationToken)
