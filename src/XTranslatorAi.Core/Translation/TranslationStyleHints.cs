@@ -58,6 +58,17 @@ public static class TranslationStyleHints
                 styleHint = "REC=MESG (UI message). Keep it short, clear, and game-UI friendly. Avoid long literary phrasing.";
             }
 
+            // Effect and item descriptions mixed 합니다체 with noun endings ("…도약합니다. 대검에 사용 가능.") in
+            // 48 of 50 War Ash rows; the reviews and the official descriptions use 합니다체 throughout.
+            if (styleHint == null && GetRecSubtype(rec) is "DESC" or "DNAM"
+                && r is "MGEF" or "SPEL" or "PERK" or "ENCH" or "SCRL" or "SHOU" or "WEAP" or "ARMO" or "AMMO" or "ALCH" or "INGR" or "MISC")
+            {
+                styleHint = "REC=*:DESC/DNAM (effect or item description shown in menus). Write every sentence in 합니다체 "
+                            + "(-ㅂ니다/-습니다), including short fragments: 'Usable on two-handed weapons.' → '양손 무기에 사용할 수 있습니다.' "
+                            + "Do not end a sentence with a bare noun such as '사용 가능.' "
+                            + "'N% of X' is a share, not an increase: '80% of the effect' → '효과의 80%'.";
+            }
+
             // Item/object name records: ACTI, MISC, WEAP, ARMO, AMMO, INGR, ALCH, FLOR, CONT, FURN, DOOR
             // with :FULL or :NAME subtype → short noun phrase style.
             // Exclude QUST (quest names can be verb-like) and NPC_ (nicknames).
