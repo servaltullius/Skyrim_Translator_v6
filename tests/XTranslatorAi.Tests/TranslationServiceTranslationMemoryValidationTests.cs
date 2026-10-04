@@ -246,10 +246,10 @@ public class TranslationServiceTranslationMemoryValidationTests
         }
 
         private static bool IsCreateCachedContent(string url)
-            => url.Contains("/cachedContents?", StringComparison.OrdinalIgnoreCase);
+            => url.Contains("/cachedContents", StringComparison.OrdinalIgnoreCase);
 
         private static bool IsGenerateContent(string url)
-            => url.Contains(":generateContent?", StringComparison.OrdinalIgnoreCase);
+            => url.Contains(":generateContent", StringComparison.OrdinalIgnoreCase);
 
         private static bool IsDeleteCachedContent(HttpMethod method, string url)
             => method == HttpMethod.Delete && url.Contains("/cachedContents/", StringComparison.OrdinalIgnoreCase);

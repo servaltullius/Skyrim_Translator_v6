@@ -62,9 +62,6 @@ public sealed partial class GeminiClient
         RequireApiKey(apiKey);
         RequireModelName(modelName);
 
-        var url =
-            $"https://generativelanguage.googleapis.com/v1beta/models/{Uri.EscapeDataString(modelName)}:countTokens?key={Uri.EscapeDataString(apiKey)}";
-
         var request = new GeminiCountTokensRequest(
             Contents: new List<GeminiContent>
             {
@@ -72,7 +69,8 @@ public sealed partial class GeminiClient
             }
         );
 
-        using var resp = await _httpClient.PostAsJsonAsync(url, request, JsonOptions, cancellationToken);
+        using var resp = await SendAsync(HttpMethod.Post, $"models/{Uri.EscapeDataString(modelName)}:countTokens", apiKey, request,
+            cancellationToken);
         var statusCode = (int)resp.StatusCode;
         var body = await resp.Content.ReadAsStringAsync(cancellationToken);
         if (!resp.IsSuccessStatusCode)

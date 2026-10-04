@@ -42,8 +42,8 @@ public sealed partial class GeminiClient
         GeminiGenerateContentResponse? parsed = null;
         try
         {
-            var url = $"https://generativelanguage.googleapis.com/v1beta/models/{Uri.EscapeDataString(modelName)}:generateContent?key={Uri.EscapeDataString(apiKey)}";
-            using var response = await _httpClient.PostAsJsonAsync(url, request, JsonOptions, cancellationToken);
+            using var response = await SendAsync(HttpMethod.Post, $"models/{Uri.EscapeDataString(modelName)}:generateContent", apiKey,
+                request, cancellationToken);
             statusCode = (int)response.StatusCode;
             var body = await response.Content.ReadAsStringAsync(cancellationToken);
             if (!response.IsSuccessStatusCode)

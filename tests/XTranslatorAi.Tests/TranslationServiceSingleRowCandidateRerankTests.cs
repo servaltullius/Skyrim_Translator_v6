@@ -129,7 +129,7 @@ public sealed class TranslationServiceSingleRowCandidateRerankTests
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var url = request.RequestUri?.ToString() ?? "";
-            if (!url.Contains(":generateContent?", StringComparison.OrdinalIgnoreCase))
+            if (!url.Contains(":generateContent", StringComparison.OrdinalIgnoreCase))
             {
                 return new HttpResponseMessage(HttpStatusCode.NotFound)
                 {

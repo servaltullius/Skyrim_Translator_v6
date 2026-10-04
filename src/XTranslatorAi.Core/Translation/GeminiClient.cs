@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -25,6 +26,26 @@ public sealed partial class GeminiClient : IGeminiClient
     }
 
     private static string Truncate(string s, int max = 500) => s.Length <= max ? s : s[..max];
+
+    private const string ApiBase = "https://generativelanguage.googleapis.com/v1beta/";
+
+    /// <summary>
+    /// Sends a request with the key in the x-goog-api-key header. In the URL query (?key=…) the key was visible to
+    /// HTTP debuggers and TLS-inspecting proxies, and a proxy error page echoing the URL ended up in the exception
+    /// message, the API log, app.log and the row error saved in the project DB.
+    /// </summary>
+    private async Task<HttpResponseMessage> SendAsync<T>(HttpMethod method, string path, string apiKey, T? body,
+        CancellationToken cancellationToken)
+    {
+        using var request = new HttpRequestMessage(method, ApiBase + path);
+        request.Headers.Add("x-goog-api-key", apiKey);
+        if (body != null)
+        {
+            request.Content = JsonContent.Create(body, options: JsonOptions);
+        }
+
+        return await _httpClient.SendAsync(request, cancellationToken);
+    }
 
     private static void RequireApiKey(string apiKey)
     {

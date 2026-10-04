@@ -280,12 +280,12 @@ public class TranslationServiceDuplicateDedupTests
         {
             var url = request.RequestUri?.ToString() ?? "";
 
-            if (url.Contains("/cachedContents?", StringComparison.OrdinalIgnoreCase))
+            if (url.Contains("/cachedContents", StringComparison.OrdinalIgnoreCase))
             {
                 return OkJson(new { name = "cachedContents/test" });
             }
 
-            if (url.Contains(":generateContent?", StringComparison.OrdinalIgnoreCase))
+            if (url.Contains(":generateContent", StringComparison.OrdinalIgnoreCase))
             {
                 var body = await request.Content!.ReadAsStringAsync(cancellationToken);
                 var userPrompt = ExtractUserPrompt(body);
@@ -379,12 +379,12 @@ public class TranslationServiceDuplicateDedupTests
         {
             var url = request.RequestUri?.ToString() ?? "";
 
-            if (url.Contains("/cachedContents?", StringComparison.OrdinalIgnoreCase))
+            if (url.Contains("/cachedContents", StringComparison.OrdinalIgnoreCase))
             {
                 return OkJson(new { name = "cachedContents/test" });
             }
 
-            if (url.Contains(":generateContent?", StringComparison.OrdinalIgnoreCase))
+            if (url.Contains(":generateContent", StringComparison.OrdinalIgnoreCase))
             {
                 var body = await request.Content!.ReadAsStringAsync(cancellationToken);
                 var userPrompt = ExtractUserPrompt(body);

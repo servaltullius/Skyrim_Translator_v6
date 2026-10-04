@@ -297,12 +297,12 @@ public class TranslationServicePromptCacheRecoveryTests
         {
             var url = request.RequestUri?.ToString() ?? "";
 
-            if (url.Contains("/cachedContents?", StringComparison.OrdinalIgnoreCase))
+            if (url.Contains("/cachedContents", StringComparison.OrdinalIgnoreCase))
             {
                 return OkJson(new { name = "cachedContents/test" });
             }
 
-            if (url.Contains(":generateContent?", StringComparison.OrdinalIgnoreCase))
+            if (url.Contains(":generateContent", StringComparison.OrdinalIgnoreCase))
             {
                 var body = await request.Content!.ReadAsStringAsync(cancellationToken);
                 if (body.IndexOf("\"cachedContent\"", StringComparison.Ordinal) >= 0)

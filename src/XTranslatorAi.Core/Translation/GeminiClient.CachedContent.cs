@@ -75,8 +75,7 @@ public sealed partial class GeminiClient
             DisplayName: "Tullius Translator prompt cache"
         );
 
-        var url = $"https://generativelanguage.googleapis.com/v1beta/cachedContents?key={Uri.EscapeDataString(apiKey)}";
-        using var resp = await _httpClient.PostAsJsonAsync(url, request, JsonOptions, cancellationToken);
+        using var resp = await SendAsync(HttpMethod.Post, "cachedContents", apiKey, request, cancellationToken);
         var statusCode = (int)resp.StatusCode;
         var body = await resp.Content.ReadAsStringAsync(cancellationToken);
         if (!resp.IsSuccessStatusCode)
@@ -153,8 +152,7 @@ public sealed partial class GeminiClient
         }
 
         var normalized = NormalizeCachedContentResourceName(cacheName);
-        var url = $"https://generativelanguage.googleapis.com/v1beta/{normalized}?key={Uri.EscapeDataString(apiKey)}";
-        using var resp = await _httpClient.DeleteAsync(url, cancellationToken);
+        using var resp = await SendAsync<object>(HttpMethod.Delete, normalized, apiKey, null, cancellationToken);
         var statusCode = (int)resp.StatusCode;
         if (!resp.IsSuccessStatusCode)
         {

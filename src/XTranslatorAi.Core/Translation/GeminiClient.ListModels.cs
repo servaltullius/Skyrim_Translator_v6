@@ -24,12 +24,12 @@ public sealed partial class GeminiClient
             do
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var url = $"https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key={Uri.EscapeDataString(apiKey)}";
+                var path = "models?pageSize=1000";
                 if (pageToken != null)
                 {
-                    url += $"&pageToken={Uri.EscapeDataString(pageToken)}";
+                    path += $"&pageToken={Uri.EscapeDataString(pageToken)}";
                 }
-                using var resp = await _httpClient.GetAsync(url, cancellationToken);
+                using var resp = await SendAsync<object>(HttpMethod.Get, path, apiKey, null, cancellationToken);
                 statusCode = (int)resp.StatusCode;
                 var body = await resp.Content.ReadAsStringAsync(cancellationToken);
                 if (!resp.IsSuccessStatusCode)
