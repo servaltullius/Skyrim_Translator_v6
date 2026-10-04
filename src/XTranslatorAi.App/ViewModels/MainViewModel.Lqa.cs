@@ -22,10 +22,19 @@ public partial class MainViewModel
         }
 
         IsLqaScanning = true;
+        var db = _projectState.Db;
         try
         {
             StatusMessage = "품질 검사 중...";
             var issues = await BuildLqaIssuesAsync();
+
+            // The scan runs off the UI thread, so the window stays usable; row Ids restart at 1 in every
+            // project, so results of a project the user has since left must not be shown over the new one.
+            if (!ReferenceEquals(db, _projectState.Db))
+            {
+                return;
+            }
+
             LqaIssues.ReplaceAll(issues);
             LqaIssuesView.Refresh();
 
