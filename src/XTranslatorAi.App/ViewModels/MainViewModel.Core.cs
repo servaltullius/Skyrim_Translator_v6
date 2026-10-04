@@ -96,6 +96,7 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
         BasePromptText = EmbeddedAssets.LoadMetaPrompt(SelectedFranchise);
 
         var settings = _appSettings.Load();
+        var settingsWarning = _appSettings.LoadWarning;
         if (!string.IsNullOrWhiteSpace(settings.ApiKey))
         {
             ApiKey = settings.ApiKey.Trim();
@@ -194,6 +195,12 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
         ApiLogsTab = new ApiLogsTabViewModel(this);
 
         RefreshPromptLint();
+        if (settingsWarning != null)
+        {
+            // Settings, including the API keys, may look missing; say why instead of starting silently from defaults.
+            StatusMessage = settingsWarning;
+        }
+
         _isUpdatingTranslationPreferences = false;
         PropertyChanged += SaveChangedTranslationPreference;
     }

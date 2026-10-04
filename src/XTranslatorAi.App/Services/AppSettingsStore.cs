@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.App.Services;
@@ -22,6 +23,8 @@ public sealed class AppSettingsStore
 
     private readonly string _settingsPath;
     private readonly bool _canUseDpapi;
+    private readonly object _sync = new();
+    private bool _existingFileUnread;
 
     public AppSettingsStore(string? settingsPath = null)
     {
@@ -29,17 +32,57 @@ public sealed class AppSettingsStore
         _canUseDpapi = OperatingSystem.IsWindows();
     }
 
+    /// <summary>Why the last <see cref="Load"/> started from defaults although a settings file exists; null otherwise.</summary>
+    public string? LoadWarning { get; private set; }
+
+    /// <summary>
+    /// Every caller saves by Load → change → Save. Load used to return defaults on any error, so a settings file
+    /// that was briefly locked (antivirus, a sync client) or cut short by a crash during a save came back as
+    /// defaults and the next save wrote them over it, deleting the stored API keys. A missing file still means
+    /// defaults. A file that cannot be read is left alone and saving is refused until it can be read again; a
+    /// file that reads but is not valid settings is moved aside to settings.json.corrupt-&lt;time&gt; first.
+    /// </summary>
     public AppSettings Load()
     {
-        try
+        lock (_sync)
         {
+            LoadWarning = null;
+            _existingFileUnread = false;
             if (!File.Exists(_settingsPath))
             {
                 return new AppSettings();
             }
 
-            var json = File.ReadAllText(_settingsPath);
-            var persisted = JsonSerializer.Deserialize<PersistedAppSettings>(json, JsonOptions) ?? new PersistedAppSettings();
+            string json;
+            try
+            {
+                json = ReadSettingsText();
+            }
+            catch (Exception ex) when (ex is FileNotFoundException or DirectoryNotFoundException)
+            {
+                return new AppSettings();
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                _existingFileUnread = true;
+                LoadWarning = "설정 파일을 읽지 못해(다른 프로그램이 사용 중일 수 있음) 기본 설정으로 시작했습니다. "
+                    + "저장된 API 키와 설정을 지키려고, 파일을 다시 읽을 수 있을 때까지 설정을 저장하지 않습니다.";
+                AppLog.Write($"WARN 설정 파일을 읽지 못해 저장을 보류합니다: {_settingsPath}: {ex.Message}");
+                return new AppSettings();
+            }
+
+            PersistedAppSettings persisted;
+            try
+            {
+                persisted = JsonSerializer.Deserialize<PersistedAppSettings>(json, JsonOptions)
+                    ?? throw new JsonException("settings.json holds no settings object.");
+            }
+            catch (JsonException ex)
+            {
+                MoveAsideUnreadableFile(ex);
+                return new AppSettings();
+            }
+
             var settings = NormalizeTranslationPreferences(ConvertFromPersisted(persisted, out var needsMigration));
             if (needsMigration)
             {
@@ -55,23 +98,101 @@ public sealed class AppSettingsStore
 
             return settings;
         }
-        catch
+    }
+
+    /// <summary>
+    /// Writes a temporary file next to the settings and swaps it in, so a crash or a full disk during the write
+    /// leaves the previous file intact instead of an empty or half-written one.
+    /// </summary>
+    public void Save(AppSettings settings)
+    {
+        lock (_sync)
         {
-            return new AppSettings();
+            if (_existingFileUnread)
+            {
+                // These settings started from defaults; writing them would replace the stored API keys.
+                throw new IOException("설정 파일을 읽지 못해 저장하지 않았습니다. 기존 API 키를 덮어쓰지 않으려는 것입니다.");
+            }
+
+            var dir = Path.GetDirectoryName(Path.GetFullPath(_settingsPath));
+            if (!string.IsNullOrWhiteSpace(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            var persisted = ConvertToPersisted(NormalizeTranslationPreferences(settings));
+            var bytes = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false).GetBytes(JsonSerializer.Serialize(persisted, JsonOptions));
+            var temporary = _settingsPath + "." + Guid.NewGuid().ToString("N") + ".tmp";
+            try
+            {
+                using (var stream = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.WriteThrough))
+                {
+                    stream.Write(bytes);
+                    stream.Flush(flushToDisk: true);
+                }
+
+                File.Move(temporary, _settingsPath, overwrite: true);
+            }
+            finally
+            {
+                TryDelete(temporary);
+            }
         }
     }
 
-    public void Save(AppSettings settings)
+    private string ReadSettingsText()
     {
-        var dir = Path.GetDirectoryName(_settingsPath);
-        if (!string.IsNullOrWhiteSpace(dir))
+        // A sharing violation from a scanner or sync client usually clears within moments.
+        for (var attempt = 1; ; attempt++)
         {
-            Directory.CreateDirectory(dir);
+            try
+            {
+                return File.ReadAllText(_settingsPath);
+            }
+            catch (IOException ex) when (attempt < 3 && ex is not (FileNotFoundException or DirectoryNotFoundException))
+            {
+                Thread.Sleep(50 * attempt);
+            }
+        }
+    }
+
+    private void MoveAsideUnreadableFile(Exception parseError)
+    {
+        var backup = $"{_settingsPath}.corrupt-{DateTime.Now:yyyyMMdd-HHmmss}";
+        if (File.Exists(backup))
+        {
+            backup += "-" + Guid.NewGuid().ToString("N")[..8];
         }
 
-        var persisted = ConvertToPersisted(NormalizeTranslationPreferences(settings));
-        var json = JsonSerializer.Serialize(persisted, JsonOptions);
-        File.WriteAllText(_settingsPath, json);
+        try
+        {
+            File.Move(_settingsPath, backup);
+            LoadWarning = $"설정 파일을 읽을 수 없어 {Path.GetFileName(backup)}(으)로 옮겨 두고 기본 설정으로 시작했습니다. "
+                + "저장했던 API 키는 다시 입력해야 할 수 있습니다.";
+            AppLog.Write($"WARN 설정 파일이 손상돼 {backup}(으)로 옮겼습니다: {parseError.Message}");
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            // Not moved, so not backed up: keep it and refuse to save over it.
+            _existingFileUnread = true;
+            LoadWarning = "설정 파일을 읽을 수 없고 옮기지도 못해 기본 설정으로 시작했습니다. 그 파일을 덮어쓰지 않도록 설정을 저장하지 않습니다.";
+            AppLog.Write($"WARN 손상된 설정 파일을 옮기지 못해 저장을 보류합니다: {_settingsPath}: {parseError.Message}; {ex.Message}");
+        }
+    }
+
+    private static void TryDelete(string path)
+    {
+        try
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            // A leftover temporary file is harmless.
+        }
     }
 
     public void SaveApiKey(string apiKey)
