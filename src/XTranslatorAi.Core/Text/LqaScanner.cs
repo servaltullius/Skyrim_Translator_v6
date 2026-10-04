@@ -172,6 +172,8 @@ public static class LqaScanner
 
         HiddenTopicRule.Apply(entry, sourceText, destText, issues);
 
+        MixedDescriptionToneRule.Apply(entry, destText, isKorean, issues);
+
         DialogueToneConsistencyRule.Apply(entry, strongDialogueMajority, issues);
 
         NameConsistencyRule.Apply(entry, nameFindings, issues);

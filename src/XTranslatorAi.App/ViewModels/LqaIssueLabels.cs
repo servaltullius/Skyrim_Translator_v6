@@ -33,6 +33,7 @@ public static class LqaIssueLabels
         ["english_residue"] = "영문 남음",
         ["foreign_script_residue"] = "한자·가나 남음",
         ["hidden_topic_translated"] = "숨은 토픽 번역됨",
+        ["mixed_description_tone"] = "설명 말투 섞임",
         ["book_pagebreak_mismatch"] = "책 쪽 나눔 불일치",
         ["book_html_tag_mismatch"] = "책 HTML 태그 불일치",
         ["book_length_ratio"] = "책 길이 비율",
