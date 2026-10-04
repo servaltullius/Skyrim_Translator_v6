@@ -470,7 +470,7 @@ public sealed partial class TranslationService
                 sentinelContext.GlossaryTokenToReplacement
             );
 
-            return ensured.TrimEnd();
+            return RestoreSourceEdgeWhitespace(text, ensured);
         }
 
         var validated = TokenSanitizer.EnsureTokensPreservedOrRepair(
@@ -480,7 +480,27 @@ public sealed partial class TranslationService
             sentinelContext.GlossaryTokenToReplacement
         );
         var withoutSentinel = validated.Replace(TranslationConstants.EndSentinelToken, "", StringComparison.Ordinal);
-        return withoutSentinel.TrimEnd();
+        return RestoreSourceEdgeWhitespace(text, withoutSentinel);
+    }
+
+    /// <summary>
+    /// The model output loses the source's edge whitespace (the sentinel sits after a space and is cut off with
+    /// it). Trimming alone saved "Gold: " as "골드:", so a UI label ran into the value the game appends; a long
+    /// text's chunks would join two words. Newline/pagebreak tokens are not whitespace and stay as translated.
+    /// </summary>
+    internal static string RestoreSourceEdgeWhitespace(string source, string translated)
+    {
+        var leading = 0;
+        while (leading < source.Length && char.IsWhiteSpace(source[leading]))
+        {
+            leading++;
+        }
+        var trailing = source.Length;
+        while (trailing > leading && char.IsWhiteSpace(source[trailing - 1]))
+        {
+            trailing--;
+        }
+        return source[..leading] + translated.Trim() + source[trailing..];
     }
 
     private static string NormalizeTextOnlyOutput(string modelText)

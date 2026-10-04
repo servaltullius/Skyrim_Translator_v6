@@ -68,7 +68,9 @@ public sealed partial class TranslationService
     private async Task<string> TranslateChunkTextAsync(LongTextChunkContext chunkContext, string chunkText)
     {
         var request = CreateLongTextChunkRequestContext(chunkContext);
-        var translated = await TranslateTextWithSentinelAsync(
+        // The result carries the chunk's edge whitespace (RestoreSourceEdgeWhitespace), so a split
+        // within a sentence cannot silently join two words when the chunks are concatenated.
+        return await TranslateTextWithSentinelAsync(
             request,
             chunkText,
             chunkContext.Row.Glossary.PromptOnlyPairs,
@@ -79,26 +81,6 @@ public sealed partial class TranslationService
                 SourceTextForTranslationMemory: chunkContext.Row.Source
             )
         );
-
-        // Sentinel cleanup trims model output. Restore the source chunk's edge
-        // whitespace before concatenation so a split within a sentence cannot
-        // silently join two words. Newline/pagebreak tokens remain untouched.
-        return RestoreChunkBoundaryWhitespace(chunkText, translated);
-    }
-
-    internal static string RestoreChunkBoundaryWhitespace(string source, string translated)
-    {
-        var leading = 0;
-        while (leading < source.Length && char.IsWhiteSpace(source[leading]))
-        {
-            leading++;
-        }
-        var trailing = source.Length;
-        while (trailing > leading && char.IsWhiteSpace(source[trailing - 1]))
-        {
-            trailing--;
-        }
-        return source[..leading] + translated.Trim() + source[trailing..];
     }
 
     private TextRequestContext CreateLongTextChunkRequestContext(LongTextChunkContext chunkContext)
