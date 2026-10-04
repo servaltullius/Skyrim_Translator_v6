@@ -238,7 +238,6 @@ public sealed class PluginReadWriteTests
 
     [Theory]
     [InlineData("truncated-footer")]
-    [InlineData("trailing-data")]
     [InlineData("wrong-checksum")]
     [InlineData("wrong-size")]
     public async Task DamagedCompressedRecord_IsRejected(string fault)
@@ -251,6 +250,32 @@ public sealed class PluginReadWriteTests
         BinaryPrimitives.WriteUInt32LittleEndian(record.AsSpan(4), (uint)(record.Length - 24));
         using var fixture = new Fixture(Header().Concat(Group(record)).ToArray());
         await Assert.ThrowsAnyAsync<InvalidDataException>(() => PluginReader.ReadAsync(fixture.Input, new(), default));
+    }
+
+    /// <summary>
+    /// The Great Town of Karthwasten has 10 compressed records with 1-27 bytes after a complete zlib stream; the whole
+    /// plugin could not be opened. The stream itself is intact (checksum and declared length match).
+    /// </summary>
+    [Fact]
+    public async Task CompressedRecordWithTrailingBytes_IsReadKeptAndReported()
+    {
+        var record = Record("WEAP", 0x800, true, Sub("EDID", Z("Sword01")), Sub("FULL", Z("Sword")));
+        record = record.Concat(new byte[] { 1, 2, 3 }).ToArray();
+        BinaryPrimitives.WriteUInt32LittleEndian(record.AsSpan(4), (uint)(record.Length - 24));
+        var other = Record("WEAP", 0x801, true, Sub("EDID", Z("Axe01")), Sub("FULL", Z("Axe")));
+        using var fixture = new Fixture(Header().Concat(Group(record, other)).ToArray());
+
+        var document = await PluginReader.ReadAsync(fixture.Input, new(), default);
+
+        Assert.Equal(new[] { "Sword", "Axe" }, document.Fields.Select(field => field.SourceText));
+        var diagnostic = Assert.Single(document.Info.Diagnostics, d => d.Code == "compressed_trailing_bytes");
+        Assert.False(diagnostic.BlocksExport);
+        var unchanged = await PluginWriter.ExportAsync(document, new Dictionary<string, string>(), new(Path.Combine(fixture.Output, "same")), default);
+        Assert.Equal(File.ReadAllBytes(fixture.Input), File.ReadAllBytes(unchanged.PluginPath));
+        var translated = await PluginWriter.ExportAsync(document, new Dictionary<string, string> { [document.Fields[0].Key] = "검" }, new(Path.Combine(fixture.Output, "ko")), default);
+        var output = await PluginReader.ReadAsync(translated.PluginPath, new(), default);
+        Assert.Equal(new[] { "검", "Axe" }, output.Fields.Select(field => field.SourceText));
+        Assert.DoesNotContain(output.Info.Diagnostics, d => d.Code == "compressed_trailing_bytes");
     }
 
     [Fact]

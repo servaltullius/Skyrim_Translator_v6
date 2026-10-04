@@ -55,8 +55,16 @@ internal static class PluginBinary
         encoding.GetBytes(text, bytes);
         return bytes;
     }
-    internal static byte[] Inflate(ReadOnlyMemory<byte> bytes)
+    internal static byte[] Inflate(ReadOnlyMemory<byte> bytes) => Inflate(bytes, allowTrailingBytes: false, out _);
+
+    /// <summary>
+    /// With <paramref name="allowTrailingBytes"/>, bytes after a complete stream whose checksum and declared length
+    /// match are accepted and counted instead of rejected. Some plugins ship records like that (The Great Town of
+    /// Karthwasten: 10 records with 1-27 extra bytes) and the game reads them.
+    /// </summary>
+    internal static byte[] Inflate(ReadOnlyMemory<byte> bytes, bool allowTrailingBytes, out int trailingBytes)
     {
+        trailingBytes = 0;
         if (bytes.Length < 6) throw new InvalidDataException("잘린 압축 레코드입니다.");
         var length = U32(bytes.Span, 0);
         if (length > MaxDecompressedRecord) throw new InvalidDataException("압축 해제 레코드가 지원 크기(256 MiB)를 초과합니다.");
@@ -80,7 +88,9 @@ internal static class PluginBinary
             }
         }
         catch (SharpZipBaseException ex) { throw new InvalidDataException("zlib 레코드의 압축 데이터/체크섬이 잘못되었습니다.", ex); }
-        if (offset != result.Length || inflater.RemainingInput != 0)
+        if (offset == result.Length && inflater.RemainingInput != 0 && allowTrailingBytes)
+            trailingBytes = inflater.RemainingInput;
+        else if (offset != result.Length || inflater.RemainingInput != 0)
             throw new InvalidDataException("압축 레코드의 길이 또는 종료 위치가 일치하지 않습니다.");
         return result;
     }

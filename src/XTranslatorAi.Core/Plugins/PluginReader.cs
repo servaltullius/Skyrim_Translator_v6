@@ -241,6 +241,9 @@ public static class PluginReader
         var fields = new List<PluginField>();
         var diagnostics = new List<PluginDiagnostic>();
         var unknown = new HashSet<string>(StringComparer.Ordinal);
+        var withTrailingBytes = records.Values.Count(record => record.TrailingCompressedBytes > 0);
+        if (withTrailingBytes > 0)
+            diagnostics.Add(new("compressed_trailing_bytes", $"압축 레코드 {withTrailingBytes}개의 끝에 쓰이지 않는 바이트가 붙어 있습니다. 원본 그대로 두고 읽었습니다(번역해 저장하는 레코드는 다시 압축되어 그 바이트가 빠집니다)."));
         var identities = new Dictionary<(string, uint), int>();
         foreach (var record in records.Values)
         {
@@ -342,14 +345,17 @@ public static class PluginReader
                     var formId = PluginBinary.U32(raw.Span, 12);
                     if (type != "TES4" && formId != 0 && !formIds.Add(formId))
                         throw new InvalidDataException($"중복 FormID {formId:X8}가 있습니다: {type} (offset {pos})");
-                    ReadOnlyMemory<byte> payload = (flags & PluginBinary.CompressedFlag) != 0 ? PluginBinary.Inflate(raw[PluginBinary.HeaderSize..]) : raw[PluginBinary.HeaderSize..];
+                    var trailing = 0;
+                    ReadOnlyMemory<byte> payload = (flags & PluginBinary.CompressedFlag) != 0
+                        ? PluginBinary.Inflate(raw[PluginBinary.HeaderSize..], allowTrailingBytes: true, out trailing)
+                        : raw[PluginBinary.HeaderSize..];
                     IReadOnlyList<PluginSubrecord> subrecords;
                     try { subrecords = ParseSubrecords(payload); }
                     catch (Exception ex) when (ex is InvalidDataException or OverflowException)
                     { throw new InvalidDataException($"{type}/{formId:X8} (offset {pos}) subrecord 해석 실패: {ex.Message}", ex); }
                     var topic = type == "DIAL" ? (formId == 0 ? (uint?)null : formId)
                         : type == "INFO" ? dialogueTopicFormId : null;
-                    var record = new PluginRecord(raw, nextIndex++, type, formId, flags, payload, subrecords, topic);
+                    var record = new PluginRecord(raw, nextIndex++, type, formId, flags, payload, subrecords, topic, trailing);
                     records.Add(record.Index, record);
                     result.Add(record);
                 }

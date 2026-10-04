@@ -28,7 +28,7 @@ internal abstract record PluginNode(ReadOnlyMemory<byte> Raw);
 internal sealed record PluginGroup(ReadOnlyMemory<byte> Raw, IReadOnlyList<PluginNode> Children) : PluginNode(Raw);
 internal sealed record PluginRecord(ReadOnlyMemory<byte> Raw, int Index, string Type, uint FormId,
     uint Flags, ReadOnlyMemory<byte> Payload, IReadOnlyList<PluginSubrecord> Subrecords,
-    uint? DialogueTopicFormId = null) : PluginNode(Raw);
+    uint? DialogueTopicFormId = null, int TrailingCompressedBytes = 0) : PluginNode(Raw);
 internal sealed record PluginSubrecord(string Type, int Index, int Offset, int HeaderLength, ReadOnlyMemory<byte> Data)
 {
     public int Length => HeaderLength + Data.Length;
