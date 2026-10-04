@@ -32,6 +32,22 @@ public class TranslationGenerationBudgetTests
         Assert.Equal(5, budget.TotalCalls);
     }
 
+    // A batch mixing a row sent before with a new row is a retry only for the first.
+    [Fact]
+    public void RecoveryCalls_AreCountedOnlyForTheRetriedRows()
+    {
+        var budget = new TranslationGenerationBudget(1, 100);
+        budget.Consume(new long[] { 1 }, recovery: false);
+        Assert.Equal(new long[] { 1 }, budget.GetAttempted(new long[] { 1, 2 }));
+
+        budget.Consume(new long[] { 1, 2 }, retriedRowIds: new long[] { 1 });
+
+        Assert.Equal(new long[] { 1 }, budget.GetRowsOutOfRecoveryCalls(new long[] { 1, 2 }));
+        Assert.Throws<TranslationGenerationLimitException>(() => budget.Consume(new long[] { 1, 2 }, retriedRowIds: new long[] { 1 }));
+        budget.Consume(new long[] { 2 }, recovery: true);
+        Assert.Equal(3, budget.TotalCalls);
+    }
+
     [Fact]
     public void MixedBatch_RejectionDoesNotConsumeOtherRowsOrTotal()
     {

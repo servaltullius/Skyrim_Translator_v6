@@ -16,6 +16,7 @@ public sealed partial class TranslationService
     )
     {
         ctx.CancellationToken.ThrowIfCancellationRequested();
+        batch = await SkipRowsOutOfRetriesAsync(ctx, batch);
         using var generationScope = EnterGenerationScope(batch.Select(row => row.Id));
 
         batch = PrepareBatchWithSessionTermForceTokens(batch);
@@ -42,7 +43,9 @@ public sealed partial class TranslationService
         }
         catch (Exception ex)
         {
-            if (MustStopRecovery(ex) || (ctx.EnableApiKeyFailover && IsApiKeyFailoverError(ex, ctx.CancellationToken)))
+            // A row reaching its retry limit stops this request, not its peers: the halves below skip that row.
+            if ((MustStopRecovery(ex) && !IsRowGenerationLimit(ex))
+                || (ctx.EnableApiKeyFailover && IsApiKeyFailoverError(ex, ctx.CancellationToken)))
             {
                 throw;
             }

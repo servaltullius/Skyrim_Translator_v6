@@ -24,10 +24,21 @@ public sealed class TranslationGenerationBudget
 
     public long TotalCalls { get { lock (_gate) return _totalCalls; } }
     public long TotalLimit { get { lock (_gate) return GetTotalLimit(); } }
-    internal bool HasAttemptedAny(IEnumerable<long> ids)
+
+    /// <summary>The rows among <paramref name="ids"/> that an earlier request already carried.</summary>
+    internal IReadOnlySet<long> GetAttempted(IEnumerable<long> ids)
     {
-        lock (_gate) return ids.Any(_attemptedRows.Contains);
+        lock (_gate) return ids.Where(_attemptedRows.Contains).ToHashSet();
     }
+
+    /// <summary>The rows among <paramref name="ids"/> that have no recovery call left.</summary>
+    internal IReadOnlySet<long> GetRowsOutOfRecoveryCalls(IEnumerable<long> ids)
+    {
+        lock (_gate) return ids.Where(id => _recoveryCalls.GetValueOrDefault(id) >= _maxRecoveryCallsPerRow).ToHashSet();
+    }
+
+    internal TranslationGenerationLimitException CreateRowLimitException(long rowId)
+        => new(false, $"행 {rowId}의 추가 생성 호출 상한({_maxRecoveryCallsPerRow})에 도달했습니다.");
 
     public void RegisterRow(long rowId, int maskedChars, int protectedTokens)
     {
@@ -47,22 +58,32 @@ public sealed class TranslationGenerationBudget
     }
 
     internal void Consume(IReadOnlyList<long> rowIds, bool recovery)
+        => Consume(rowIds, recovery ? rowIds : Array.Empty<long>());
+
+    /// <summary>
+    /// Counts one call carrying <paramref name="rowIds"/>; it is a recovery call only for <paramref name="retriedRowIds"/>.
+    /// After an API-key switch a batch mixes rows tried under the old key with rows never sent, and the new rows'
+    /// first attempt must not use up their recovery allowance.
+    /// </summary>
+    internal void Consume(IReadOnlyList<long> rowIds, IReadOnlyCollection<long> retriedRowIds)
     {
         var ids = rowIds.Distinct().ToArray();
+        var retried = retriedRowIds.Distinct().ToArray();
         lock (_gate)
         {
             if (_totalCalls >= GetTotalLimit())
                 throw new TranslationGenerationLimitException(true, $"작업 생성 호출 상한({GetTotalLimit()})에 도달했습니다. 완료 결과는 보존됩니다.");
-            if (recovery)
-                foreach (var id in ids)
-                    if (_recoveryCalls.GetValueOrDefault(id) >= _maxRecoveryCallsPerRow)
-                        throw new TranslationGenerationLimitException(false, $"행 {id}의 추가 생성 호출 상한({_maxRecoveryCallsPerRow})에 도달했습니다.");
+            foreach (var id in retried)
+                if (_recoveryCalls.GetValueOrDefault(id) >= _maxRecoveryCallsPerRow)
+                    throw CreateRowLimitException(id);
 
             _totalCalls++;
             foreach (var id in ids) _attemptedRows.Add(id);
-            if (recovery)
-                foreach (var id in ids)
-                    _recoveryCalls[id] = _recoveryCalls.GetValueOrDefault(id) + 1;
+            foreach (var id in retried)
+            {
+                _attemptedRows.Add(id);
+                _recoveryCalls[id] = _recoveryCalls.GetValueOrDefault(id) + 1;
+            }
         }
     }
 
