@@ -65,7 +65,7 @@ internal static class RecToneRule
         }
 
         var tone = LqaToneClassifier.Classify(destText);
-        if (tone == ToneKind.Unknown || tone == majority)
+        if (tone == ToneKind.Unknown || tone == majority || IsRhetoricalQuestionAfterHamnida(destText, tone, majority))
         {
             return;
         }
@@ -83,6 +83,27 @@ internal static class RecToneRule
                 DestText: destText
             )
         );
+    }
+
+    /// <summary>
+    /// "…살려두었습니다. 어째서 그녀를 도왔던 걸까요?": written 합니다체 narration may close with a rhetorical
+    /// -ㄹ까요 question. Only the last sentence is classified, so the sentence before it decides here.
+    /// </summary>
+    private static bool IsRhetoricalQuestionAfterHamnida(string destText, ToneKind tone, ToneKind majority)
+    {
+        if (tone != ToneKind.Haeyo || majority != ToneKind.Hamnida)
+        {
+            return false;
+        }
+
+        var text = destText.TrimEnd(' ', '\t', '\r', '\n', '"', '\'', '”', '’');
+        if (!text.EndsWith("까요?", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        var lastStart = text.LastIndexOfAny(new[] { '.', '!', '?', '\n' }, text.Length - 2);
+        return lastStart > 0 && LqaToneClassifier.Classify(text[..(lastStart + 1)]) == ToneKind.Hamnida;
     }
 
     private static string? GetCheckedField(string? rec)
