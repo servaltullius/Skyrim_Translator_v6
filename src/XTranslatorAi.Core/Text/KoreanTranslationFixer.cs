@@ -12,7 +12,9 @@ namespace XTranslatorAi.Core.Text;
 internal static class KoreanTranslationFixer
 {
     private static readonly Regex DuplicateEffectWordRegex = new(
-        pattern: @"효과\s+효과",
+        // The second word must end there, alone or with a particle, as in the quality check's duplicate rule:
+        // "효과 효과적으로" is a different word and became "효과적으로".
+        pattern: @"효과\s+효과(?=$|[^가-힣]|(?:가|는|를|와|로|의|에|에서|도|만)(?![가-힣]))",
         options: RegexOptions.CultureInvariant
     );
 

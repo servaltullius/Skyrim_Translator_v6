@@ -274,6 +274,7 @@ public class KoreanTranslationFixerTests
     [Fact]
     public void Fix_CollapsesDuplicateEffectWord()
     {
+        Assert.Equal("이 효과 효과적으로 막아냅니다.", KoreanTranslationFixer.Fix("korean", "이 효과 효과적으로 막아냅니다."));
         var input = "치명적인 마법부여 효과 효과가 적을 비틀거리게 합니다.";
         var output = KoreanTranslationFixer.Fix("korean", input);
         Assert.Equal("치명적인 마법부여 효과가 적을 비틀거리게 합니다.", output);
