@@ -19,10 +19,6 @@ public partial class MainViewModel
         {
             StatusMessage = "번역을 중지했습니다. '번역 시작'을 누르면 미완료 항목부터 이어서 번역합니다.";
         }
-        else if (error == null)
-        {
-            StatusMessage = "번역을 마쳤습니다.";
-        }
 
         try
         {
@@ -47,6 +43,11 @@ public partial class MainViewModel
         // The run adjusted the counters row by row; recount once the stopped rows are back to pending.
         RecountProgress();
 
+        if (!canceled && error == null)
+        {
+            StatusMessage = DescribeFinishedRun();
+        }
+
         if (!HasDirtyGlossary())
         {
             try
@@ -58,6 +59,31 @@ public partial class MainViewModel
                 // ignore
             }
         }
+    }
+
+    /// <summary>
+    /// "번역을 마쳤습니다." alone hid failed rows: a run that left 300 rows in error looked like a clean finish.
+    /// </summary>
+    private string DescribeFinishedRun()
+    {
+        var errors = 0;
+        var pending = 0;
+        foreach (var entry in Entries)
+        {
+            if (entry.Status == StringEntryStatus.Error) errors++;
+            else if (entry.Status == StringEntryStatus.Pending) pending++;
+        }
+
+        if (errors == 0 && pending == 0)
+        {
+            return "번역을 마쳤습니다.";
+        }
+
+        var parts = new System.Collections.Generic.List<string>();
+        if (errors > 0) parts.Add($"오류 {errors}개");
+        if (pending > 0) parts.Add($"남은 행 {pending}개");
+        return $"번역을 마쳤습니다. {string.Join(", ", parts)}가 있습니다."
+            + (errors > 0 ? " 상태 필터에서 '오류'를 골라 확인하거나 '번역 시작'으로 다시 번역하세요." : " '번역 시작'을 누르면 이어서 번역합니다.");
     }
 
     private bool HasDirtyGlossary()
