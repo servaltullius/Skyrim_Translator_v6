@@ -275,7 +275,8 @@ public static class PluginReader
                         if (!table.Strings.TryGetValue(stringId.Value, out source!))
                             throw new InvalidDataException($"{kind} 테이블에서 StringID {stringId}를 찾을 수 없습니다.");
                     }
-                    else source = PluginBinary.ReadZString(sub.Data.Span, encoding, $"{record.Type}:{sub.Type}/{record.FormId:X8}");
+                    // A subrecord with no bytes at all (not even the terminator) is an empty field; some mods ship them.
+                    else source = sub.Data.Length == 0 ? "" : PluginBinary.ReadZString(sub.Data.Span, encoding, $"{record.Type}:{sub.Type}/{record.FormId:X8}");
                     // Empty optional fields do not create artificial translation work.
                     if (source.Length > 0)
                         fields.Add(new($"{record.Type}/{record.FormId:X8}/{recordOccurrence}/{sub.Type}/{ordinal}", fields.Count,

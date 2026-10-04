@@ -69,6 +69,26 @@ public sealed class PluginReadWriteTests
         Assert.Equal(16, output.Records[1].Subrecords[1].HeaderLength);
     }
 
+    /// <summary>
+    /// MoreNastyCritters.esp has 72 DESC subrecords with no bytes at all (not even the terminator). One of them made
+    /// the whole plugin unreadable ("문자열 종료/길이가 잘못되었습니다"); they are empty fields and stay as they were.
+    /// </summary>
+    [Fact]
+    public async Task ZeroLengthStringSubrecord_IsReadAsEmptyAndKeptOnExport()
+    {
+        using var fixture = new Fixture(Header().Concat(Group(Record("ARMO", 0x800,
+            Sub("EDID", Z("Armor01")), Sub("FULL", Z("Hide Armor")), Sub("DESC", Array.Empty<byte>())))).ToArray());
+        var document = await PluginReader.ReadAsync(fixture.Input, new(), default);
+        var field = Assert.Single(document.Fields);
+        Assert.Equal("FULL", field.SubrecordType);
+
+        var result = await PluginWriter.ExportAsync(document, new Dictionary<string, string> { [field.Key] = "가죽 갑옷" }, new(fixture.Output), default);
+
+        var output = await PluginReader.ReadAsync(result.PluginPath, new(), default);
+        Assert.Equal("가죽 갑옷", Assert.Single(output.Fields).SourceText);
+        Assert.Equal(0, output.Records[1].Subrecords.Single(s => s.Type == "DESC").Data.Length);
+    }
+
     [Fact]
     public async Task LocalizedExport_PreservesPluginAndAllTableIdsIncludingUnusedStrings()
     {
