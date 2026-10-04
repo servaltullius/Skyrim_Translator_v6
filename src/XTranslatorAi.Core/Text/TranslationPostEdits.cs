@@ -30,6 +30,7 @@ public static class TranslationPostEdits
 
         working = PlaceholderUnitBinder.EnforceUnitsFromSource(targetLang, src, working);
         working = KoreanProtectFromFixer.Fix(targetLang, src, working);
+        working = KoreanSourceAwareFixes.Apply(targetLang, src, working);
         working = KoreanTranslationFixer.Fix(targetLang, working);
         working = PercentSignFixer.FixDuplicatePercents(working, src);
 

@@ -97,6 +97,7 @@ public sealed partial class TranslationService
 
             escFinal = PlaceholderUnitBinder.EnforceUnitsFromSource(escCtx.TargetLang, row.Source, escFinal);
             escFinal = KoreanProtectFromFixer.Fix(escCtx.TargetLang, row.Source, escFinal);
+            escFinal = KoreanSourceAwareFixes.Apply(escCtx.TargetLang, row.Source, escFinal);
             escFinal = KoreanTranslationFixer.Fix(escCtx.TargetLang, escFinal);
             TokenValidator.ValidateFinalTextIntegrity(row.Source, escFinal, context: $"id={row.Id} quality-escalation post-edits");
 

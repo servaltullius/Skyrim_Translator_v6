@@ -174,6 +174,7 @@ public sealed partial class TranslationService
 	            }
 	            final = PlaceholderUnitBinder.EnforceUnitsFromSource(ctx.TargetLang, batchItem.Source, final);
 	            final = KoreanProtectFromFixer.Fix(ctx.TargetLang, batchItem.Source, final);
+	            final = KoreanSourceAwareFixes.Apply(ctx.TargetLang, batchItem.Source, final);
 	            final = KoreanTranslationFixer.Fix(ctx.TargetLang, final);
 	            TokenValidator.ValidateFinalTextIntegrity(batchItem.Source, final, context: $"id={id} post-edits");
 
