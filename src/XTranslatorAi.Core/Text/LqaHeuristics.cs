@@ -76,7 +76,7 @@ public static class LqaHeuristics
     }
 
     // Hidden topic and effect names such as "SDA_CellTrackMGEFTG" are meant to stay as they are.
-    private static bool IsInternalIdentifier(string text)
+    internal static bool IsInternalIdentifier(string text)
         => text.Length > 0 && !text.Any(char.IsWhiteSpace)
            && (text.Contains('_') || text.Zip(text.Skip(1)).Any(pair => char.IsLower(pair.First) && char.IsUpper(pair.Second)));
 
