@@ -270,11 +270,19 @@ public sealed partial class ProjectDb : IAsyncDisposable, IProjectDb
         }
     }
 
+    /// <summary>
+    /// Disposing returned the connection to the SQLite pool, which kept the file open: Compare's temporary DB
+    /// could never be deleted (thousands of compare-*.sqlite were left in %TEMP%\TulliusTranslator\compare), and
+    /// nothing could move or delete a project after closing it. The pool for this file is cleared, which closes
+    /// idle connections and makes ones still open elsewhere close instead of returning to the pool.
+    /// </summary>
     public async ValueTask DisposeAsync()
     {
         await _gate.WaitAsync(CancellationToken.None);
         try
         {
+            await _connection.CloseAsync();
+            SqliteConnection.ClearPool(_connection);
             await _connection.DisposeAsync();
         }
         finally
