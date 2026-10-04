@@ -114,6 +114,7 @@ public class LqaFalsePositiveTests
     [InlineData("DLC1NPCMentalModelCureForeshadowTopic02VampInvisCont", "DLC1 NPC 정신 모델 치료 복선 주제 02 흡혈귀 투명 후속")]
     [InlineData("SDA_OPResponse2", "SDA_OP반응2")]
     [InlineData("SDA_NPCBanterMain", "SDA_NPC 만담 메인")]
+    [InlineData("Launch - Rune Impact lv2", "발동 - 룬 임팩트 Lv2")]
     public void EnglishResidue_IgnoresAcronymsAndIdentifiersFromSource(string source, string dest)
         => Assert.Null(LqaScanner.FindEnglishResidue(dest, source));
 
@@ -429,6 +430,22 @@ public class LqaFalsePositiveTests
 
     private static LqaScanEntry Row(long id, string rec, string dest, string source = "Source text.")
         => new(id, (int)id, $"EDID{id:000}", rec, StringEntryStatus.Done, source, dest);
+
+    // A runtime number's last digit is unknown, so writing the particle both ways after it is right.
+    [Fact]
+    public async System.Threading.Tasks.Task ParticleMarker_AfterARuntimeNumber_IsNotReported()
+    {
+        Assert.False(LqaHeuristics.HasUnresolvedParticleMarkers("기가 %.0f/%.0f(으)로 상승했습니다"));
+        Assert.False(LqaHeuristics.HasUnresolvedParticleMarkers("<mag>을(를) 회복합니다"));
+        Assert.True(LqaHeuristics.HasUnresolvedParticleMarkers("검을(를) 휘두릅니다"));
+
+        var issues = await LqaScanner.ScanAsync(new[]
+        {
+            new LqaScanEntry(1, 1, "WarAshPointUP", "MESG:DESC", XTranslatorAi.Core.Models.StringEntryStatus.Done,
+                "Qi is raised to %.0f/%.0f", "기가 %.0f/%.0f(으)로 상승했습니다", null),
+        }, "korean", Array.Empty<GlossaryEntry>());
+        Assert.DoesNotContain(issues, i => i.Code == "particle_marker");
+    }
 
     private static GlossaryEntry BuiltIn(long id, string source, string target)
         => new(id, null, source, target, true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10,

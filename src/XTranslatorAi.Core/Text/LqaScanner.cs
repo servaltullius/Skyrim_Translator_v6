@@ -304,8 +304,9 @@ public static class LqaScanner
             return false;
         }
 
-        // An all-caps acronym may be cased differently in the source ("npc addition" → "NPC 추가").
-        var comparison = hasLower ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+        // An all-caps acronym or a word with digits may be cased differently in the source ("npc addition" →
+        // "NPC 추가", Elden Rim's "Rune Impact lv2" → "룬 임팩트 Lv2").
+        var comparison = hasLower && !word.Any(char.IsDigit) ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
         for (var idx = sourceText.IndexOf(word, comparison); idx >= 0; idx = sourceText.IndexOf(word, idx + 1, comparison))
         {
             var end = idx + word.Length;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
@@ -58,7 +59,7 @@ internal static class ParticleRules
 
     private static bool TryAddUnresolvedParticleMarkerIssue(LqaScanEntry entry, string sourceText, string destText, List<LqaIssue> issues)
     {
-        if (!UnresolvedParticleMarkerRegex.IsMatch(destText))
+        if (!UnresolvedParticleMarkerRegex.Matches(destText).Any(m => !LqaHeuristics.IsAfterRuntimeNumber(destText, m.Index)))
         {
             return false;
         }

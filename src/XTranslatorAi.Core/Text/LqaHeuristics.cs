@@ -225,14 +225,27 @@ public static class LqaHeuristics
 
         foreach (var marker in UnresolvedParticleMarkers)
         {
-            if (destText.Contains(marker, StringComparison.Ordinal))
+            for (var at = destText.IndexOf(marker, StringComparison.Ordinal); at >= 0; at = destText.IndexOf(marker, at + 1, StringComparison.Ordinal))
             {
-                return true;
+                if (!IsAfterRuntimeNumber(destText, at))
+                {
+                    return true;
+                }
             }
         }
 
         return false;
     }
+
+    // A value the game fills in (%d, %.0f, <mag>, <dur>, <25>): its last digit, and so the particle, is unknown, and
+    // Elden Rim's "기가 %.0f/%.0f(으)로 상승했습니다" writes it both ways on purpose.
+    private static readonly Regex RuntimeNumberAtEndRegex = new(
+        pattern: @"(?:%(?:[0-9]+\$)?[-+0-9.]*[dfFiueEgGxX]|<\s*(?:mag|dur|bur|[0-9.]+%?)\s*>)\s*$",
+        options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
+    );
+
+    internal static bool IsAfterRuntimeNumber(string text, int index)
+        => index > 0 && RuntimeNumberAtEndRegex.IsMatch(text.AsSpan(Math.Max(0, index - 24), index - Math.Max(0, index - 24)).ToString());
 
     public static string? FindDuplicationArtifactExample(string destText)
     {
