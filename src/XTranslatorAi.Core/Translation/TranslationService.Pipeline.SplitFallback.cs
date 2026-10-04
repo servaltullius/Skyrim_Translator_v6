@@ -10,9 +10,15 @@ namespace XTranslatorAi.Core.Translation;
 
 public sealed partial class TranslationService
 {
+    /// <param name="splitAfterTimeout">
+    /// This batch is a half of one that timed out. A timeout is split once (a large payload can be the cause), not
+    /// again: with the 15-minute HTTP timeout each further level cost another quarter hour per call, and a server
+    /// that does not answer produced 236 calls for 40 rows.
+    /// </param>
     private async Task TranslateBatchWithSplitFallbackAsync(
         PipelineContext ctx,
-        IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> batch
+        IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> batch,
+        bool splitAfterTimeout = false
     )
     {
         ctx.CancellationToken.ThrowIfCancellationRequested();
@@ -50,6 +56,16 @@ public sealed partial class TranslationService
                 throw;
             }
 
+            if (IsTimeout(ex, ctx.CancellationToken))
+            {
+                if (splitAfterTimeout)
+                {
+                    throw;
+                }
+
+                splitAfterTimeout = true;
+            }
+
             // Fall back to smaller batches.
         }
 
@@ -64,8 +80,8 @@ public sealed partial class TranslationService
             return;
         }
         var (left, right) = SplitBatchByWeight(batch);
-        await TranslateBatchWithSplitFallbackAsync(ctx, left);
-        await TranslateBatchWithSplitFallbackAsync(ctx, right);
+        await TranslateBatchWithSplitFallbackAsync(ctx, left, splitAfterTimeout);
+        await TranslateBatchWithSplitFallbackAsync(ctx, right, splitAfterTimeout);
     }
 
     private static (IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> Left,

@@ -71,8 +71,12 @@ public sealed partial class TranslationService
     /// <summary>Called where a batch or a row has failed for good, before it is marked Error.</summary>
     private void ThrowIfRateLimitStreakReached(Exception ex, bool apiKeyFailover)
     {
+        // A lost connection or a timeout is the same for every key: without this, failover off marked every
+        // remaining row Error within seconds (connection refused) or hours (15-minute timeouts).
+        var connection = IsConnectionFailure(ex);
+
         // With failover on, the first rate limit already stops the run to switch keys.
-        if (apiKeyFailover || !IsRateLimit(ex))
+        if (!connection && (apiKeyFailover || !IsRateLimit(ex)))
         {
             return;
         }
@@ -85,7 +89,43 @@ public sealed partial class TranslationService
 
         // Batches still in flight that end on a rate limit stop too, so their rows go back to Pending as well.
         Ctx.RateLimitAborted = true;
-        throw new TranslationRateLimitAbortException(MaxConsecutiveRateLimitFailures, ex);
+        throw new TranslationRateLimitAbortException(MaxConsecutiveRateLimitFailures, ex, connection);
+    }
+
+    /// <summary>The request timed out (HttpClient.Timeout), as opposed to the user stopping the run.</summary>
+    private static bool IsTimeout(Exception ex, CancellationToken cancellationToken)
+    {
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return false;
+        }
+
+        foreach (var current in ExceptionTraversal.Enumerate(ex))
+        {
+            if (current is TimeoutException or TaskCanceledException)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>No answer from the API at all: the connection failed or the request timed out.</summary>
+    private static bool IsConnectionFailure(Exception ex)
+    {
+        var sawHttpRequest = false;
+        foreach (var current in ExceptionTraversal.Enumerate(ex))
+        {
+            if (current is GeminiHttpException)
+            {
+                return false; // The API answered with an error status.
+            }
+
+            sawHttpRequest |= current is HttpRequestException or TimeoutException;
+        }
+
+        return sawHttpRequest;
     }
 
     private void ResetRateLimitStreak() => Interlocked.Exchange(ref Ctx.ConsecutiveRateLimitFailures, 0);

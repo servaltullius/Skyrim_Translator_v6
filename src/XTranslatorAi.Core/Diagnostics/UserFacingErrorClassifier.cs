@@ -24,6 +24,25 @@ public static class UserFacingErrorClassifier
 
     public static UserFacingError Classify(Exception ex)
     {
+        // Wraps the last 429 or timeout, which alone would only suggest waiting a moment; the run has already stopped.
+        if (FindInChain<TranslationRateLimitAbortException>(ex) is { } abort)
+        {
+            if (abort.IsConnectionFailure)
+            {
+                return new UserFacingError(
+                    "E211",
+                    "네트워크 연결 문제나 응답 시간 초과가 계속되어 번역을 멈췄습니다. 남은 행은 대기 상태로 두었으니 연결을 확인한 뒤 이어서 번역하세요.",
+                    DetailsInApiLogs: true
+                );
+            }
+
+            return new UserFacingError(
+                "E202",
+                "요청 제한이 계속되어 번역을 멈췄습니다(일일 할당량 소진 등). 남은 행은 대기 상태로 두었으니 나중에 이어서 번역하세요.",
+                DetailsInApiLogs: true
+            );
+        }
+
         if (FindInChain<TaskCanceledException>(ex) != null)
         {
             return new UserFacingError(
@@ -36,16 +55,6 @@ public static class UserFacingErrorClassifier
         if (ex is OperationCanceledException)
         {
             return new UserFacingError("E000", "작업이 취소되었습니다.", DetailsInApiLogs: false);
-        }
-
-        // Wraps the last 429, which alone would only suggest waiting a moment; the run has already stopped.
-        if (FindInChain<TranslationRateLimitAbortException>(ex) != null)
-        {
-            return new UserFacingError(
-                "E202",
-                "요청 제한이 계속되어 번역을 멈췄습니다(일일 할당량 소진 등). 남은 행은 대기 상태로 두었으니 나중에 이어서 번역하세요.",
-                DetailsInApiLogs: true
-            );
         }
 
         var geminiHttp = FindInChain<GeminiHttpException>(ex);

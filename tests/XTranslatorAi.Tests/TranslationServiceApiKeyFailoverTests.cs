@@ -365,6 +365,63 @@ public sealed class TranslationServiceApiKeyFailoverTests
         }
     }
 
+    // A lost connection or a timeout used to make every remaining row Error (connection refused: 40 rows in 16 s;
+    // 15-minute timeouts: 236 calls for 40 rows, as each timed-out batch was split again and again). Three failures
+    // in a row now stop the run like a spent quota does, and leave the rest Pending.
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task TranslateIdsAsync_WhenFailoverDisabled_StopsAfterThreeConnectionFailures(bool timeout)
+    {
+        var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
+        try
+        {
+            await using var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
+            await SeedProjectAsync(db);
+            var ids = await InsertPendingStringsAsync(db, 12);
+
+            var handler = new NoAnswerHandler(timeout);
+            var service = new TranslationService(db, new GeminiClient(new HttpClient(handler)));
+
+            var ex = await Assert.ThrowsAsync<TranslationRateLimitAbortException>(
+                () => service.TranslateIdsAsync(CreateRequest(ids, enableApiKeyFailover: false) with { BatchSize = 4 }));
+
+            Assert.Equal(timeout ? 6 : 3, handler.Calls);
+            var statuses = await db.GetStringStatusesByIdsAsync(ids, CancellationToken.None);
+            Assert.True(statuses.Values.Count(status => status == StringEntryStatus.Pending) >= 4);
+            var error = UserFacingErrorClassifier.Classify(ex);
+            Assert.Equal("E211", error.Code);
+            Assert.Contains("멈췄습니다", error.Message);
+        }
+        finally
+        {
+            TestDbHelper.TryDeleteDbFiles(path);
+        }
+    }
+
+    private sealed class NoAnswerHandler(bool timeout) : HttpMessageHandler
+    {
+        public int Calls { get; private set; }
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            var url = request.RequestUri?.ToString() ?? "";
+            if (url.IndexOf(":generateContent", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound) { Content = new StringContent("{}") });
+            }
+
+            Calls++;
+            if (timeout)
+            {
+                // What HttpClient throws when its Timeout elapses.
+                throw new TaskCanceledException("The request was canceled due to the configured HttpClient.Timeout.",
+                    new TimeoutException("The operation was canceled."));
+            }
+
+            throw new HttpRequestException("No connection could be made because the target machine actively refused it.");
+        }
+    }
+
     private sealed class Always429Handler : HttpMessageHandler
     {
         public int Calls { get; private set; }

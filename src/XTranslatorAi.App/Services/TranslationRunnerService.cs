@@ -443,8 +443,10 @@ public sealed class TranslationRunnerService
         );
     }
 
+    // Not E210/E211 (timeout, network): no other key fixes a lost connection, and a switch left the next saved key,
+    // possibly a paid one, in use after a moment of Wi-Fi trouble.
     private static bool ShouldFailover(UserFacingError error)
-        => error.Code is "E201" or "E202" or "E203" or "E210" or "E211";
+        => error.Code is "E201" or "E202" or "E203";
 
     private static async Task<bool> TryFailoverToNextSavedKeyAsync(Request request, HashSet<string> triedApiKeys, Exception ex)
     {
