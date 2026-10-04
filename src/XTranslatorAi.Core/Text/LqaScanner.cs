@@ -47,6 +47,11 @@ public static class LqaScanner
         options: RegexOptions.CultureInvariant
     );
 
+    private static readonly Regex CjkRegex = new(
+        pattern: @"[\u3040-\u30FF\u3400-\u4DBF\u4E00-\u9FFF]",
+        options: RegexOptions.CultureInvariant
+    );
+
     // A whole run of Latin letters and digits, so "05000A6E" in [ARMO:05000A6E] is one identifier.
     private static readonly Regex LatinWordRegex = new(
         pattern: @"[A-Za-z0-9]*[A-Za-z][A-Za-z0-9]*",
@@ -285,10 +290,17 @@ public static class LqaScanner
         }
 
         var dest = StripUiTokens(destText);
+        // A source written in Chinese or Japanese keeps its few Latin words on purpose ("战技-动作执行-新-Npc").
+        var cjkSource = CjkRegex.IsMatch(sourceText);
         foreach (Match m in LatinWordRegex.Matches(dest))
         {
             var word = m.Value;
+            // "@thecrimsonfucker": a user handle, never translated.
+            var isHandle = m.Index > 0 && dest[m.Index - 1] == '@';
+            var keptFromCjkSource = cjkSource && ContainsWholeWord(sourceText, word, StringComparison.Ordinal);
             if (word.Count(char.IsAsciiLetter) >= 2
+                && !isHandle
+                && !keptFromCjkSource
                 && !IsAcronymOrIdentifierFromSource(word, sourceText)
                 && !IsPartOfNumberedTokenFromSource(dest, m, sourceText)
                 && !ContainsWholeWord(previousText, word, StringComparison.Ordinal)
