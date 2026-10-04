@@ -8,15 +8,18 @@ using XTranslatorAi.Core.Models;
 
 namespace XTranslatorAi.App.Services;
 
-public sealed class GlobalProjectDbService
+public sealed class GlobalProjectDbService : IAsyncDisposable
 {
     private readonly BuiltInGlossaryService _builtInGlossaryService;
     private readonly SemaphoreSlim _initLock = new(1, 1);
     private readonly ConcurrentDictionary<BethesdaFranchise, ProjectDb> _dbByFranchise = new();
+    private readonly string? _globalRootOverride;
 
-    public GlobalProjectDbService(BuiltInGlossaryService builtInGlossaryService)
+    /// <param name="globalRootOverride">Folder used instead of %LOCALAPPDATA%\XTranslatorAi\Global, so tests never open the user's global DB.</param>
+    public GlobalProjectDbService(BuiltInGlossaryService builtInGlossaryService, string? globalRootOverride = null)
     {
         _builtInGlossaryService = builtInGlossaryService;
+        _globalRootOverride = globalRootOverride;
     }
 
     public BethesdaFranchise SelectedFranchise { get; set; } = BethesdaFranchise.ElderScrolls;
@@ -45,7 +48,7 @@ public sealed class GlobalProjectDbService
             ProjectDb? db = null;
             try
             {
-                var dbPath = ProjectPaths.GetGlobalGlossaryDbPath(franchise);
+                var dbPath = ProjectPaths.GetGlobalGlossaryDbPath(franchise, _globalRootOverride);
                 var shouldInsertMissingBuiltInEntries = !File.Exists(dbPath);
                 var migrationStampPath = ProjectPaths.GetBuiltInGlossaryAdditionsStampPath(dbPath, BuiltInGlossaryService.MigrationStampVersion);
                 db = await ProjectDb.OpenOrCreateAsync(dbPath, cancellationToken);
@@ -74,6 +77,17 @@ public sealed class GlobalProjectDbService
         finally
         {
             _initLock.Release();
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        foreach (var franchise in _dbByFranchise.Keys)
+        {
+            if (_dbByFranchise.TryRemove(franchise, out var db))
+            {
+                await db.DisposeAsync();
+            }
         }
     }
 
