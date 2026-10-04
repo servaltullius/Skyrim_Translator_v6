@@ -91,7 +91,9 @@ public static class UserFacingErrorClassifier
 
     private static UserFacingError ClassifyMessageChain(string msgChain)
     {
-        if (ContainsAny(msgChain, "HTTP 429", "RESOURCE_EXHAUSTED", "rate limit", "too many requests", "429"))
+        // Stored row errors are message chains that also carry row ids and token names, so a bare "429" or
+        // " 401" would match "Model output missing id: 1429" or "id: 401".
+        if (ContainsAny(msgChain, "HTTP 429", "RESOURCE_EXHAUSTED", "rate limit", "too many requests"))
         {
             return new UserFacingError(
                 "E202",
@@ -108,8 +110,9 @@ public static class UserFacingErrorClassifier
                 "statuscode=403",
                 "unauthorized",
                 "forbidden",
-                " 401",
-                " 403"
+                "API_KEY_INVALID",
+                "API key not valid",
+                "API key expired"
             ))
         {
             return new UserFacingError(
@@ -219,7 +222,7 @@ public static class UserFacingErrorClassifier
     private static UserFacingError ClassifyGeminiHttp(GeminiHttpException http)
     {
         var status = http.StatusCode;
-        if (status == 429)
+        if (GeminiErrorKinds.IsRateLimit(http))
         {
             return new UserFacingError(
                 "E202",
@@ -228,7 +231,7 @@ public static class UserFacingErrorClassifier
             );
         }
 
-        if (status is 401 or 403)
+        if (GeminiErrorKinds.IsInvalidApiKey(http))
         {
             return new UserFacingError(
                 "E201",
@@ -242,15 +245,6 @@ public static class UserFacingErrorClassifier
             return new UserFacingError(
                 "E203",
                 "Gemini 서버 오류입니다. 잠시 후 다시 시도하세요.",
-                DetailsInApiLogs: true
-            );
-        }
-
-        if (status == 400 && ContainsAny(http.Message ?? "", "API key", "key", "invalid"))
-        {
-            return new UserFacingError(
-                "E201",
-                "API 키가 유효하지 않거나 권한이 없습니다. 고급 설정에서 Gemini API 키를 확인하세요.",
                 DetailsInApiLogs: true
             );
         }

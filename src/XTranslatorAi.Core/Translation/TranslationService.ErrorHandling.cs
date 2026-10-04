@@ -52,25 +52,7 @@ public sealed partial class TranslationService
     {
         foreach (var current in ExceptionTraversal.Enumerate(ex))
         {
-            if (current is GeminiHttpException http && http.StatusCode == 429)
-            {
-                return true;
-            }
-
-            var msg = current.Message;
-            if (msg.IndexOf("429", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                return true;
-            }
-            if (msg.IndexOf("too many", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                return true;
-            }
-            if (msg.IndexOf("rate", StringComparison.OrdinalIgnoreCase) >= 0 && msg.IndexOf("limit", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                return true;
-            }
-            if (msg.IndexOf("RESOURCE_EXHAUSTED", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (current is GeminiHttpException http && GeminiErrorKinds.IsRateLimit(http))
             {
                 return true;
             }
@@ -83,7 +65,7 @@ public sealed partial class TranslationService
     {
         foreach (var current in ExceptionTraversal.Enumerate(ex))
         {
-            if (current is GeminiHttpException http && http.StatusCode is 401 or 403)
+            if (current is GeminiHttpException http && GeminiErrorKinds.IsInvalidApiKey(http))
             {
                 return true;
             }

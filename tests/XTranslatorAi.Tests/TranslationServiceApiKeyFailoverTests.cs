@@ -67,6 +67,61 @@ public sealed class TranslationServiceApiKeyFailoverTests
         }
     }
 
+    // Gemini answers a wrong or expired key with 400 API_KEY_INVALID, not 401. Treated as a plain batch
+    // failure, every remaining row of a large project became Error and the next saved key was never tried.
+    [Fact]
+    public async Task TranslateIdsAsync_InvalidKeyAnsweredWith400_StopsAndRestoresPending()
+    {
+        var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
+        try
+        {
+            await using var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
+            await SeedProjectAsync(db);
+            var id = await InsertPendingStringAsync(db);
+
+            var handler = new FixedErrorHandler(HttpStatusCode.BadRequest, "Bad Request",
+                "{\"error\":{\"code\":400,\"message\":\"API key not valid. Please pass a valid API key.\",\"status\":\"INVALID_ARGUMENT\","
+                + "\"details\":[{\"reason\":\"API_KEY_INVALID\"}]}}");
+            var service = new TranslationService(db, new GeminiClient(new HttpClient(handler)));
+
+            await Assert.ThrowsAnyAsync<Exception>(() => service.TranslateIdsAsync(CreateRequest(new[] { id }, enableApiKeyFailover: false)));
+
+            var state = await db.GetStringTranslationStateAsync(id, CancellationToken.None);
+            Assert.Equal(StringEntryStatus.Pending, state.Status);
+            Assert.Equal(1, handler.Calls);
+        }
+        finally
+        {
+            TestDbHelper.TryDeleteDbFiles(path);
+        }
+    }
+
+    // Any other 400 (here a bad parameter) is a row failure, not a key problem.
+    [Fact]
+    public async Task TranslateIdsAsync_Other400_MarksTheRowError()
+    {
+        var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
+        try
+        {
+            await using var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
+            await SeedProjectAsync(db);
+            var id = await InsertPendingStringAsync(db);
+
+            var handler = new FixedErrorHandler(HttpStatusCode.BadRequest, "Bad Request",
+                "{\"error\":{\"code\":400,\"message\":\"Invalid value at 'generation_config.temperature'\",\"status\":\"INVALID_ARGUMENT\"}}");
+            var service = new TranslationService(db, new GeminiClient(new HttpClient(handler)));
+
+            await service.TranslateIdsAsync(CreateRequest(new[] { id }, enableApiKeyFailover: true));
+
+            var state = await db.GetStringTranslationStateAsync(id, CancellationToken.None);
+            Assert.Equal(StringEntryStatus.Error, state.Status);
+        }
+        finally
+        {
+            TestDbHelper.TryDeleteDbFiles(path);
+        }
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -172,6 +227,23 @@ public sealed class TranslationServiceApiKeyFailoverTests
         var ids = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending }, CancellationToken.None);
         Assert.Single(ids);
         return ids[0];
+    }
+
+    private sealed class FixedErrorHandler(HttpStatusCode status, string reason, string body) : HttpMessageHandler
+    {
+        public int Calls { get; private set; }
+
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            var url = request.RequestUri?.ToString() ?? "";
+            if (url.IndexOf(":generateContent", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound) { Content = new StringContent("{}") });
+            }
+
+            Calls++;
+            return Task.FromResult(new HttpResponseMessage(status) { ReasonPhrase = reason, Content = new StringContent(body) });
+        }
     }
 
     private sealed class Always429Handler : HttpMessageHandler

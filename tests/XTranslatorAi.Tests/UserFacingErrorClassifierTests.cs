@@ -25,6 +25,25 @@ public class UserFacingErrorClassifierTests
         Assert.True(error.DetailsInApiLogs);
     }
 
+    // Row errors keep the whole message chain, including row ids; "1429" and "id: 401" are not HTTP statuses.
+    [Theory]
+    [InlineData("Translate batch failed: Model output missing id: 1429", "E320")]
+    [InlineData("Translate batch failed: Model output missing id: 401", "E320")]
+    [InlineData("GenerateContent failed: HTTP 429 Too Many Requests. {\"error\":{\"status\":\"RESOURCE_EXHAUSTED\"}}", "E202")]
+    [InlineData("GenerateContent failed: HTTP 400 Bad Request. {\"error\":{\"message\":\"API key not valid. Please pass a valid API key.\"}}", "E201")]
+    public void ClassifyErrorMessage_ReadsStatusesOnlyWhereTheyAreStatuses(string message, string code)
+        => Assert.Equal(code, UserFacingErrorClassifier.ClassifyErrorMessage(message).Code);
+
+    [Theory]
+    [InlineData("{\"error\":{\"code\":400,\"message\":\"API key expired. Please renew the API key.\",\"status\":\"INVALID_ARGUMENT\"}}", "E201")]
+    [InlineData("{\"error\":{\"code\":400,\"message\":\"Request contains an invalid argument.\",\"status\":\"INVALID_ARGUMENT\"}}", "E299")]
+    public void Classify_TellsAnInvalidKeyFromOtherBadRequests(string body, string code)
+    {
+        var ex = new GeminiHttpException("GenerateContent", 400, "Bad Request", null, $"GenerateContent failed: HTTP 400 Bad Request. {body}");
+
+        Assert.Equal(code, UserFacingErrorClassifier.Classify(ex).Code);
+    }
+
     [Fact]
     public void Classify_MapsMaxTokens_ToGuidance()
     {
