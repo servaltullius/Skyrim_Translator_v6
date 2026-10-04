@@ -11,6 +11,37 @@ public sealed partial class ProjectDb
 {
     private const int MaxIdChunkSize = 900;
 
+    public async Task<IReadOnlyList<(string SourceText, string DestText)>> GetTranslatedPairsAsync(CancellationToken cancellationToken)
+    {
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            var list = new List<(string SourceText, string DestText)>();
+            await using var cmd = _connection.CreateCommand();
+            cmd.CommandText =
+                """
+                SELECT SourceText, DestText
+                FROM StringEntry
+                WHERE Status IN ($Done, $Edited) AND DestText <> ''
+                ORDER BY OrderIndex;
+                """;
+            cmd.Parameters.AddWithValue("$Done", (int)StringEntryStatus.Done);
+            cmd.Parameters.AddWithValue("$Edited", (int)StringEntryStatus.Edited);
+
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                list.Add((reader.GetString(0), reader.GetString(1)));
+            }
+
+            return list;
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
     public async Task<IReadOnlyList<StringEntry>> GetStringsAsync(int limit, int offset, CancellationToken cancellationToken)
     {
         await _gate.WaitAsync(cancellationToken);

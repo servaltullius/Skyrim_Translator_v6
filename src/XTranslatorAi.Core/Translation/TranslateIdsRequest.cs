@@ -47,5 +47,7 @@ public sealed record TranslateIdsRequest(
     bool EnableBookContext = false,
     IReadOnlyDictionary<string, string>? BookTitlesByEdid = null,
     // Translation memory pairs with their original casing; names among them become reference terms (see ReferenceNameIndex).
-    IReadOnlyList<(string Source, string Target)>? ReferenceNameMemory = null
+    IReadOnlyList<(string Source, string Target)>? ReferenceNameMemory = null,
+    // Names spelled once in a run are written the same way in later rows (see RunNameMemory).
+    bool EnableRunNameMemory = true
 );

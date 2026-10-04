@@ -76,6 +76,10 @@ public interface IProjectDb
     Task<IReadOnlyDictionary<long, string>> GetPreviousTranslationsByStringIdAsync(CancellationToken cancellationToken)
         => Task.FromResult<IReadOnlyDictionary<long, string>>(new Dictionary<long, string>());
 
+    /// <summary>Source and translation of the rows already translated (Done or Edited).</summary>
+    Task<IReadOnlyList<(string SourceText, string DestText)>> GetTranslatedPairsAsync(CancellationToken cancellationToken)
+        => Task.FromResult<IReadOnlyList<(string SourceText, string DestText)>>(new List<(string, string)>());
+
     Task<IReadOnlyList<(long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)>>
         GetStringSourceContextsByStatusAsync(
             IReadOnlyList<StringEntryStatus> statuses,

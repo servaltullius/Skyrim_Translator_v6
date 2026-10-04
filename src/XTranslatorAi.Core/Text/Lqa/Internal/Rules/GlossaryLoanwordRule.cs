@@ -274,7 +274,7 @@ internal static class GlossaryLoanwordRule
 
     // Korean writes a consonant before a vowel into the next syllable in borrowed words (일루전, not 일우전), and
     // does not repeat a vowel (그라아악). Both happen in native words and particles: 알아선, 수업이라.
-    private static bool IsWrittenLikeNativeWord(string stem)
+    internal static bool IsWrittenLikeNativeWord(string stem)
     {
         if (VerbEndings.Any(ending => stem.EndsWith(ending, StringComparison.Ordinal)))
         {

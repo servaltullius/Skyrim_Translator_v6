@@ -12,6 +12,8 @@ public sealed partial class TranslationService
 {
     private void TryLearnSessionTermMemory(long id, string sourceText, string translatedText)
     {
+        Ctx.RunNames?.Learn(sourceText, translatedText);
+
         if (!Ctx.EnableSessionTermMemory || Ctx.SessionTermMemory == null)
         {
             return;

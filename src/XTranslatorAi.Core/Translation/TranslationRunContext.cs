@@ -37,6 +37,7 @@ internal sealed class TranslationRunContext : IDisposable
     public IReadOnlyDictionary<long, string>? PreviousTranslationById { get; set; }
 
     public ReferenceNameIndex? ReferenceNames { get; set; }
+    public RunNameMemory? RunNames { get; set; }
 
     // Session Term Memory
     public bool EnableSessionTermMemory { get; set; }

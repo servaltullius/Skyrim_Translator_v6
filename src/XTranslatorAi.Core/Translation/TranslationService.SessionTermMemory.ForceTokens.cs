@@ -10,6 +10,15 @@ public sealed partial class TranslationService
         (long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary) row
     )
     {
+        if (Ctx.RunNames is { IsEmpty: false } runNames && !string.IsNullOrWhiteSpace(row.Masked))
+        {
+            var named = runNames.Force(new GlossaryApplication(row.Masked, row.Glossary.TokenToReplacement, row.Glossary.PromptOnlyPairs));
+            if (!string.Equals(named.Text, row.Masked, StringComparison.Ordinal))
+            {
+                row = (row.Id, row.Source, named.Text, row.Mask, named);
+            }
+        }
+
         if (!Ctx.EnableSessionTermMemory || Ctx.SessionTermMemory == null)
         {
             return row;
@@ -42,7 +51,8 @@ public sealed partial class TranslationService
         IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> batch
     )
     {
-        if (!Ctx.EnableSessionTermMemory || Ctx.SessionTermMemory == null || Ctx.SessionTermMemory.IsEmpty)
+        var hasRunNames = Ctx.RunNames is { IsEmpty: false };
+        if (!hasRunNames && (!Ctx.EnableSessionTermMemory || Ctx.SessionTermMemory == null || Ctx.SessionTermMemory.IsEmpty))
         {
             return batch;
         }

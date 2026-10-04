@@ -128,6 +128,11 @@ public sealed partial class TranslationService
             translationMemory
         );
 
+        if (request.EnableRunNameMemory)
+        {
+            await InitializeRunNameMemoryAsync(items, request.CancellationToken);
+        }
+
         var schema = TranslationPrompt.BuildResponseSchema();
         foreach (var item in items)
             Ctx.GenerationBudget!.RegisterRow(item.Id, item.Masked.Length, TranslationConstants.XtTokenRegex.Matches(item.Masked).Count);
