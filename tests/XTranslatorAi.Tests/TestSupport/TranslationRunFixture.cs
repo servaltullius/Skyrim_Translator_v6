@@ -65,10 +65,12 @@ internal sealed class EchoGeminiClient : IGeminiClient
     public List<string> DeletedCaches { get; } = new();
     public List<GeminiGenerateContentRequest> Requests { get; } = new();
     public Func<int, GeminiGenerateContentRequest, string?>? ResponseOverride { get; set; }
+    /// <summary>Runs before the n-th generation is answered (from 1); it may delay, throw or observe cancellation.</summary>
+    public Func<int, GeminiGenerateContentRequest, CancellationToken, Task>? BeforeGenerate { get; set; }
     /// <summary>Answers the n-th cache creation (from 1); by default a new name each time.</summary>
     public Func<int, Task<string>>? CreateCache { get; set; }
 
-    public Task<string> GenerateContentAsync(string apiKey, string modelName, GeminiGenerateContentRequest request, CancellationToken cancellationToken)
+    public async Task<string> GenerateContentAsync(string apiKey, string modelName, GeminiGenerateContentRequest request, CancellationToken cancellationToken)
     {
         int call;
         lock (_gate)
@@ -77,7 +79,8 @@ internal sealed class EchoGeminiClient : IGeminiClient
             Requests.Add(request);
         }
 
-        if (ResponseOverride?.Invoke(call, request) is { } response) return Task.FromResult(response);
+        if (BeforeGenerate != null) await BeforeGenerate(call, request, cancellationToken);
+        if (ResponseOverride?.Invoke(call, request) is { } response) return response;
         var prompt = request.Contents[0].Parts[0].Text!;
         const string jsonMarker = "Input JSON:";
         var json = prompt.IndexOf(jsonMarker, StringComparison.Ordinal);
@@ -87,10 +90,10 @@ internal sealed class EchoGeminiClient : IGeminiClient
             var translations = payload.RootElement.GetProperty("items").EnumerateArray()
                 .Select(item => new { id = item.GetProperty("id").GetInt64(), text = Strip(item.GetProperty("text").GetString()!) })
                 .ToArray();
-            return Task.FromResult(JsonSerializer.Serialize(new { translations }));
+            return JsonSerializer.Serialize(new { translations });
         }
 
-        return Task.FromResult(Strip(GetTextOnlySource(prompt)));
+        return Strip(GetTextOnlySource(prompt));
     }
 
     /// <summary>The text between the text-only prompt's markers, as the model sees it (with the end sentinel).</summary>
