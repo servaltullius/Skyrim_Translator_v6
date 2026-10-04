@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Models;
@@ -85,4 +87,13 @@ public interface IProjectDb
             IReadOnlyList<StringEntryStatus> statuses,
             CancellationToken cancellationToken
         );
+
+    /// <summary>Record, EditorID and source of every BOOK:FULL row, whatever its status.</summary>
+    async Task<IReadOnlyList<(string? Rec, string? Edid, string SourceText)>> GetBookTitleRowsAsync(CancellationToken cancellationToken)
+    {
+        var rows = await GetStringSourceContextsByStatusAsync(Enum.GetValues<StringEntryStatus>(), cancellationToken);
+        return rows.Where(row => string.Equals(row.Rec?.Trim(), "BOOK:FULL", StringComparison.OrdinalIgnoreCase))
+            .Select(row => (row.Rec, row.Edid, row.SourceText))
+            .ToList();
+    }
 }

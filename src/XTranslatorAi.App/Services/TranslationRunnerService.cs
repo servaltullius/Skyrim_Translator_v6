@@ -73,8 +73,7 @@ public sealed class TranslationRunnerService
             request.CancellationToken.ThrowIfCancellationRequested();
             if (request.EnableBookContext)
             {
-                var rows = await request.Db.GetStringTranslationContextsByIdsAsync(request.Ids, request.CancellationToken);
-                request = request with { BookTitlesByEdid = TranslationBookContext.CollectTitles(rows.Values.Select(row => (row.Rec, row.Edid, row.SourceText))) };
+                request = request with { BookTitlesByEdid = await CollectBookTitlesAsync(request.Db, request.CancellationToken) };
             }
             var runs = await BuildRunsAsync(request);
             var budget = new TranslationGenerationBudget(request.MaxRetryGenerations, request.MaxTotalGenerations);
@@ -91,6 +90,17 @@ public sealed class TranslationRunnerService
             await request.StatusPort.DispatchAsync(() => request.StatusPort.SetUserFacingError("번역", ex));
             return new Result(Canceled: false, Error: ex);
         }
+    }
+
+    /// <summary>
+    /// Book titles by EditorID, for the body rows of the same books. They were collected only from the rows this
+    /// run translates, so a book whose title was translated in an earlier run, edited by hand or skipped had its
+    /// body translated without the title. Every BOOK:FULL row of the project counts.
+    /// </summary>
+    public static async Task<IReadOnlyDictionary<string, string>> CollectBookTitlesAsync(IProjectDb db, CancellationToken cancellationToken)
+    {
+        var rows = await db.GetBookTitleRowsAsync(cancellationToken);
+        return TranslationBookContext.CollectTitles(rows.Select(row => (row.Rec, row.Edid, row.SourceText)));
     }
 
     private static async Task ExecuteRunsWithFailoverAsync(

@@ -224,6 +224,28 @@ public sealed partial class ProjectDb
         }
     }
 
+    public async Task<IReadOnlyList<(string? Rec, string? Edid, string SourceText)>> GetBookTitleRowsAsync(CancellationToken cancellationToken)
+    {
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            await using var cmd = _connection.CreateCommand();
+            cmd.CommandText = "SELECT REC, EDID, SourceText FROM StringEntry WHERE UPPER(TRIM(REC)) = 'BOOK:FULL' ORDER BY OrderIndex;";
+            var list = new List<(string?, string?, string)>();
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                list.Add((reader.IsDBNull(0) ? null : reader.GetString(0), reader.IsDBNull(1) ? null : reader.GetString(1), reader.GetString(2)));
+            }
+
+            return list;
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
     public async Task<IReadOnlyList<(long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)>> GetStringSourceContextsByStatusAsync(
         IReadOnlyList<StringEntryStatus> statuses,
         CancellationToken cancellationToken
