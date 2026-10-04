@@ -72,12 +72,25 @@ public sealed partial class ProjectDb
                 }
             }
 
+            var sourceByKey = new Dictionary<string, string>(StringComparer.Ordinal);
+            foreach (var field in fields)
+            {
+                sourceByKey.TryAdd(field.Key, field.SourceText);
+            }
+
+            RejectTranslatedPluginAsSource(saved, sourceByKey);
+            var retired = oldSource == null
+                ? new Dictionary<(string Key, string Source), (string Dest, StringEntryStatus Status)>()
+                : await ReadRetiredPluginTranslationsAsync(tx, cancellationToken);
+
             await using (var clear = _connection.CreateCommand())
             {
                 clear.Transaction = tx;
                 clear.CommandText = "DELETE FROM PluginStringBinding; DELETE FROM StringNote; DELETE FROM StringEntry;";
                 await clear.ExecuteNonQueryAsync(cancellationToken);
             }
+
+            await RetireChangedPluginTranslationsAsync(tx, saved, sourceByKey, cancellationToken);
             await using var insert = CreateBulkInsertStringsCommand(_connection, tx, out var parameters);
             await using var binding = _connection.CreateCommand();
             binding.Transaction = tx;
@@ -97,6 +110,13 @@ public sealed partial class ProjectDb
                 {
                     dest = previous.Dest;
                     status = previous.Status;
+                }
+                else if (retired.TryGetValue((field.Key, field.SourceText), out var kept))
+                {
+                    // The source is back to a text this row had before (the earlier plugin version reopened).
+                    dest = kept.Dest;
+                    status = kept.Status;
+                    await DeleteRetiredPluginTranslationAsync(tx, field.Key, field.SourceText, cancellationToken);
                 }
                 parameters.BindRow((field.OrderIndex, null, null, null, field.EditorId, field.Rec,
                     field.SourceText, dest, status, ""), now);
@@ -121,10 +141,131 @@ public sealed partial class ProjectDb
                 saveSource.Parameters.AddWithValue("$encoding", targetEncoding);
                 await saveSource.ExecuteNonQueryAsync(cancellationToken);
             }
+            int retiredCount;
+            await using (var count = _connection.CreateCommand())
+            {
+                count.Transaction = tx;
+                count.CommandText = "SELECT COUNT(*) FROM PluginRetiredTranslation;";
+                retiredCount = Convert.ToInt32(await count.ExecuteScalarAsync(cancellationToken), System.Globalization.CultureInfo.InvariantCulture);
+            }
             cancellationToken.ThrowIfCancellationRequested();
             await tx.CommitAsync(cancellationToken);
+            LastPluginImportRetiredCount = retiredCount;
             // Return the exact committed rows so callers can adopt without another fallible/cancelable DB read.
             return imported;
+        }
+        finally { _gate.Release(); }
+    }
+
+    /// <summary>
+    /// The export writes the translated plugin with the same file and Strings names, so it can be opened again as
+    /// the source by mistake. Every translated row then looks changed (its source is now its translation) and the
+    /// whole project would be retired. Refused when most changed rows have their old translation as the new source.
+    /// </summary>
+    private static void RejectTranslatedPluginAsSource(
+        IReadOnlyDictionary<string, (string Source, string Dest, StringEntryStatus Status)> saved,
+        IReadOnlyDictionary<string, string> sourceByKey)
+    {
+        var changed = 0;
+        var translatedAsSource = 0;
+        foreach (var (key, previous) in saved)
+        {
+            if (!sourceByKey.TryGetValue(key, out var source) || string.Equals(source, previous.Source, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            changed++;
+            if (string.Equals(source, previous.Dest, StringComparison.Ordinal))
+            {
+                translatedAsSource++;
+            }
+        }
+
+        if (translatedAsSource >= 3 && translatedAsSource * 2 >= changed)
+        {
+            throw new InvalidDataException($"번역된 플러그인을 원문으로 열 수 없습니다: {translatedAsSource}행");
+        }
+    }
+
+    /// <summary>
+    /// A row whose source changed (a mod update) or that the plugin no longer has used to lose its translation for
+    /// good, reviewed ones included. It is kept aside by field key and source, and comes back when that source does.
+    /// </summary>
+    private async Task RetireChangedPluginTranslationsAsync(
+        SqliteTransaction tx,
+        IReadOnlyDictionary<string, (string Source, string Dest, StringEntryStatus Status)> saved,
+        IReadOnlyDictionary<string, string> sourceByKey,
+        CancellationToken ct)
+    {
+        await using var retire = _connection.CreateCommand();
+        retire.Transaction = tx;
+        retire.CommandText = """
+            INSERT INTO PluginRetiredTranslation(FieldKey, SourceText, DestText, Status, RetiredAt)
+            VALUES ($key, $source, $dest, $status, $at)
+            ON CONFLICT(FieldKey, SourceText) DO UPDATE SET DestText=$dest, Status=$status, RetiredAt=$at;
+            """;
+        var key = retire.Parameters.Add("$key", SqliteType.Text);
+        var source = retire.Parameters.Add("$source", SqliteType.Text);
+        var dest = retire.Parameters.Add("$dest", SqliteType.Text);
+        var status = retire.Parameters.Add("$status", SqliteType.Integer);
+        retire.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O"));
+        foreach (var (fieldKey, previous) in saved)
+        {
+            if (sourceByKey.TryGetValue(fieldKey, out var current) && string.Equals(current, previous.Source, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            key.Value = fieldKey;
+            source.Value = previous.Source;
+            dest.Value = previous.Dest;
+            status.Value = (int)previous.Status;
+            await retire.ExecuteNonQueryAsync(ct);
+        }
+    }
+
+    private async Task<Dictionary<(string Key, string Source), (string Dest, StringEntryStatus Status)>> ReadRetiredPluginTranslationsAsync(
+        SqliteTransaction tx, CancellationToken ct)
+    {
+        var retired = new Dictionary<(string Key, string Source), (string Dest, StringEntryStatus Status)>();
+        await using var query = _connection.CreateCommand();
+        query.Transaction = tx;
+        query.CommandText = "SELECT FieldKey, SourceText, DestText, Status FROM PluginRetiredTranslation;";
+        await using var reader = await query.ExecuteReaderAsync(ct);
+        while (await reader.ReadAsync(ct))
+        {
+            retired[(reader.GetString(0), reader.GetString(1))] = (reader.GetString(2), (StringEntryStatus)reader.GetInt32(3));
+        }
+
+        return retired;
+    }
+
+    private async Task DeleteRetiredPluginTranslationAsync(SqliteTransaction tx, string fieldKey, string source, CancellationToken ct)
+    {
+        await using var delete = _connection.CreateCommand();
+        delete.Transaction = tx;
+        delete.CommandText = "DELETE FROM PluginRetiredTranslation WHERE FieldKey=$key AND SourceText=$source;";
+        delete.Parameters.AddWithValue("$key", fieldKey);
+        delete.Parameters.AddWithValue("$source", source);
+        await delete.ExecuteNonQueryAsync(ct);
+    }
+
+    /// <summary>
+    /// Translations kept aside after the last successful <see cref="ReplaceImportedPluginStringsAsync"/>, counted inside
+    /// its transaction so the caller needs no fallible read after the commit.
+    /// </summary>
+    public int LastPluginImportRetiredCount { get; private set; }
+
+    /// <summary>Translations kept aside because their row's source changed or the row left the plugin.</summary>
+    public async Task<int> GetRetiredPluginTranslationCountAsync(CancellationToken cancellationToken)
+    {
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            await using var cmd = _connection.CreateCommand();
+            cmd.CommandText = "SELECT COUNT(*) FROM PluginRetiredTranslation;";
+            return Convert.ToInt32(await cmd.ExecuteScalarAsync(cancellationToken), System.Globalization.CultureInfo.InvariantCulture);
         }
         finally { _gate.Release(); }
     }

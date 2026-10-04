@@ -134,6 +134,15 @@ public sealed partial class ProjectDb : IAsyncDisposable, IProjectDb
           RetiredAt TEXT NOT NULL,
           PRIMARY KEY (ImportIdentity, OrderIndex)
         );
+
+        CREATE TABLE IF NOT EXISTS PluginRetiredTranslation (
+          FieldKey TEXT NOT NULL,
+          SourceText TEXT NOT NULL,
+          DestText TEXT NOT NULL,
+          Status INTEGER NOT NULL,
+          RetiredAt TEXT NOT NULL,
+          PRIMARY KEY (FieldKey, SourceText)
+        );
         """;
 
     private ProjectDb(SqliteConnection connection)

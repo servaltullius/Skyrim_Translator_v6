@@ -23,7 +23,7 @@ public sealed partial class ProjectWorkspaceService
     public sealed record LoadFromPluginResult(ProjectDb Db, PluginDocument Document,
         string SourceLanguage, string TargetLanguage, string TargetEncoding,
         IReadOnlyList<StringEntry> Entries, string ProjectContext, string? MovedFromPath = null,
-        (int Count, IReadOnlyList<string> FromPlugins) InheritedGlossary = default);
+        (int Count, IReadOnlyList<string> FromPlugins) InheritedGlossary = default, int RetiredTranslations = 0);
 
     public Task<LoadFromPluginResult> LoadFromPluginAsync(LoadFromPluginRequest request, CancellationToken cancellationToken)
         // SQLite's async methods execute synchronously. Keep the complete parse/import operation
@@ -56,8 +56,9 @@ public sealed partial class ProjectWorkspaceService
             // the old visible workspace can share this database when reopening the same plugin.
             var entries = await db.ReplaceImportedPluginStringsAsync(document.Info, document.Fields, project,
                 request.TargetEncoding, cancellationToken);
+            var retired = db.LastPluginImportRetiredCount;
             return new LoadFromPluginResult(db, document, request.Options.SourceLanguage,
-                request.TargetLanguage, request.TargetEncoding, entries, context?.ContextText ?? "", movedFrom, inherited);
+                request.TargetLanguage, request.TargetEncoding, entries, context?.ContextText ?? "", movedFrom, inherited, retired);
         }
         catch
         {

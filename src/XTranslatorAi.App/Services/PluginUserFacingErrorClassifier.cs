@@ -54,6 +54,9 @@ public static class PluginUserFacingErrorClassifier
                 return Error("E451", $"{missingId.Groups["table"].Value} 테이블에 StringID {missingId.Groups["id"].Value}가 없습니다. 플러그인 버전과 일치하는 원문 Strings/BSA를 선택하세요.");
             if (message.StartsWith("불러온 뒤 원본이 변경되었습니다. 다시 열어주세요: ", StringComparison.Ordinal))
                 return SourceChanged();
+            var translatedSource = Match(message, @"^번역된 플러그인을 원문으로 열 수 없습니다: (?<rows>[0-9]{1,7})행$");
+            if (translatedSource.Success)
+                return Error("E460", $"이 프로젝트에서 번역해 저장한 플러그인으로 보입니다(원문 자리에 번역문이 있는 행 {translatedSource.Groups["rows"].Value}개). 번역 전 원본 플러그인을 여세요. 기존 번역은 그대로 남아 있습니다.");
             if (message == "번역문 안에 NUL 문자를 저장할 수 없습니다.")
                 return Error("E459", "번역문에 저장할 수 없는 NUL 문자가 있습니다. 해당 제어 문자를 제거한 뒤 다시 저장하세요.");
             if (message is "TES4 헤더가 있는 Bethesda 플러그인이 아닙니다." or "TES4 HEDR 헤더가 잘못되었습니다." or "ESP/ESM/ESL 파일을 선택하세요.")

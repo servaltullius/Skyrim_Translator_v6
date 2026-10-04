@@ -241,6 +241,72 @@ public sealed class PluginProjectIntegrationTests
         }
     }
 
+    // A mod update that changes one source string used to delete that row's translation, reviewed ones included,
+    // and reopening the earlier file did not bring it back.
+    [Fact]
+    public async Task ChangedSource_KeepsTheOldTranslationAside_AndRestoresItWhenTheSourceComesBack()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        await fixture.ImportAsync(Field("sword", 0, "Iron Sword"), Field("shield", 1, "Iron Shield"));
+        var rows = await fixture.Db.GetStringsAsync(20, 0, CancellationToken.None);
+        await fixture.Db.UpdateStringTranslationAsync(rows[0].Id, "철 검", StringEntryStatus.Edited, null, CancellationToken.None);
+        await fixture.Db.UpdateStringTranslationAsync(rows[1].Id, "철 방패", StringEntryStatus.Done, null, CancellationToken.None);
+
+        var updated = await fixture.Db.ReplaceImportedPluginStringsAsync(fixture.Source with { Sha256 = "v2" },
+            new[] { Field("sword", 0, "Iron Sword of Doom"), Field("shield", 1, "Iron Shield") }, fixture.Project, "utf-8", CancellationToken.None);
+        Assert.Equal(StringEntryStatus.Pending, updated[0].Status);
+        Assert.Equal("철 방패", updated[1].DestText);
+        Assert.Equal(1, await fixture.Db.GetRetiredPluginTranslationCountAsync(CancellationToken.None));
+
+        var reverted = await fixture.Db.ReplaceImportedPluginStringsAsync(fixture.Source,
+            new[] { Field("sword", 0, "Iron Sword"), Field("shield", 1, "Iron Shield") }, fixture.Project, "utf-8", CancellationToken.None);
+        Assert.Equal("철 검", reverted[0].DestText);
+        Assert.Equal(StringEntryStatus.Edited, reverted[0].Status);
+        Assert.Equal(0, await fixture.Db.GetRetiredPluginTranslationCountAsync(CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task RemovedField_KeepsItsTranslationAside()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        await fixture.ImportAsync(Field("sword", 0, "Iron Sword"), Field("shield", 1, "Iron Shield"));
+        var rows = await fixture.Db.GetStringsAsync(20, 0, CancellationToken.None);
+        await fixture.Db.UpdateStringTranslationAsync(rows[1].Id, "철 방패", StringEntryStatus.Done, null, CancellationToken.None);
+
+        await fixture.ImportAsync(Field("sword", 0, "Iron Sword"));
+        Assert.Equal(1, await fixture.Db.GetRetiredPluginTranslationCountAsync(CancellationToken.None));
+
+        var back = await fixture.Db.ReplaceImportedPluginStringsAsync(fixture.Source,
+            new[] { Field("sword", 0, "Iron Sword"), Field("shield", 1, "Iron Shield") }, fixture.Project, "utf-8", CancellationToken.None);
+        Assert.Equal("철 방패", back[1].DestText);
+    }
+
+    // Exporting writes the translated plugin next to the original with the same file names; opening that file as the
+    // source made every translated row look changed and wiped the whole project.
+    [Fact]
+    public async Task OpeningTheTranslatedPluginAsSource_IsRefused_AndKeepsTheProject()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        var english = Enumerable.Range(0, 6).Select(i => Field($"k{i}", i, $"Sword {i}")).ToArray();
+        await fixture.ImportAsync(english);
+        foreach (var row in await fixture.Db.GetStringsAsync(20, 0, CancellationToken.None))
+            await fixture.Db.UpdateStringTranslationAsync(row.Id, $"검 {row.OrderIndex}", StringEntryStatus.Done, null, CancellationToken.None);
+
+        var korean = Enumerable.Range(0, 6).Select(i => Field($"k{i}", i, $"검 {i}")).ToArray();
+        var ex = await Assert.ThrowsAsync<InvalidDataException>(() => fixture.Db.ReplaceImportedPluginStringsAsync(
+            fixture.Source with { Sha256 = "translated" }, korean, fixture.Project, "utf-8", CancellationToken.None));
+        Assert.StartsWith("번역된 플러그인을 원문으로 열 수 없습니다", ex.Message);
+        Assert.All(await fixture.Db.GetStringsAsync(20, 0, CancellationToken.None), r => Assert.StartsWith("검 ", r.DestText));
+    }
+
+    [Fact]
+    public void TranslatedPluginAsSource_HasItsOwnUserFacingMessage()
+    {
+        var error = PluginUserFacingErrorClassifier.Classify(new InvalidDataException("번역된 플러그인을 원문으로 열 수 없습니다: 6행"));
+        Assert.Equal("E460", error!.Value.Code);
+        Assert.Contains("원본 플러그인", error.Value.Message);
+    }
+
     private static PluginField Field(string key, int index, string source)
         => new(key, index, "WEAP", "FULL", (uint)(0x800 + index), "TestSword", index + 1, 1, source);
 

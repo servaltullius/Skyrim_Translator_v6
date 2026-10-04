@@ -116,6 +116,8 @@ public partial class MainViewModel
                 + (loaded.MovedFromPath == null ? "" : $" · 옮기기 전 위치({loaded.MovedFromPath})의 프로젝트를 이어서 엽니다")
                 + (loaded.InheritedGlossary.Count == 0 ? ""
                     : $" · 같은 모드의 다른 프로젝트({string.Join(", ", loaded.InheritedGlossary.FromPlugins.Take(3))})에서 용어 {loaded.InheritedGlossary.Count}개를 가져왔습니다")
+                + (loaded.RetiredTranslations == 0 ? ""
+                    : $" · 원문이 바뀌었거나 없어진 행의 번역 {loaded.RetiredTranslations}개를 보관해 두었습니다(같은 원문이 다시 나오면 되살립니다)")
                 + (diagnostics.Length == 0 ? "" : " · " + diagnostics)
                 + DescribeUnavailableGlobalDb();
         }
