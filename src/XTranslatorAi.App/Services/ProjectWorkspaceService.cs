@@ -14,14 +14,11 @@ namespace XTranslatorAi.App.Services;
 public sealed partial class ProjectWorkspaceService
 {
     private readonly GlobalProjectDbService _globalProjectDbService;
-    private readonly BuiltInGlossaryService _builtInGlossaryService;
     private readonly string? _projectsRootOverride;
 
-    public ProjectWorkspaceService(GlobalProjectDbService globalProjectDbService, BuiltInGlossaryService builtInGlossaryService,
-        string? projectsRootOverride = null)
+    public ProjectWorkspaceService(GlobalProjectDbService globalProjectDbService, string? projectsRootOverride = null)
     {
         _globalProjectDbService = globalProjectDbService;
-        _builtInGlossaryService = builtInGlossaryService;
         _projectsRootOverride = projectsRootOverride;
     }
 
@@ -77,10 +74,9 @@ public sealed partial class ProjectWorkspaceService
                 projectFactory: xml => CreateProjectInfo(xml, xmlPath, franchise, request.SelectedModel,
                     request.CustomPromptText, request.UseCustomPrompt));
 
-            // Seed only after the complete input has been accepted; parse failures leave the old DB intact.
-            var globalDb = await _globalProjectDbService.GetOrCreateAsync(franchise, cancellationToken);
-            await _builtInGlossaryService.EnsureBuiltInGlossaryAsync(db, cancellationToken,
-                insertMissingEntries: globalDb == null, franchise: franchise, applyMigrations: globalDb == null);
+            // Create and seed the game's global DB only after the complete input has been accepted; parse failures
+            // leave the old DB intact. See OpenGlobalDbAsync for why a failure no longer fills the project glossary.
+            await OpenGlobalDbAsync(franchise, cancellationToken);
 
             // Translations of rows this file lacks (e.g. a partial export with the same Addon) are kept, not deleted.
             var retained = await db.GetRetiredTranslationCountAsync(cancellationToken);
@@ -93,6 +89,16 @@ public sealed partial class ProjectWorkspaceService
             throw;
         }
     }
+
+    /// <summary>
+    /// When the global DB could not be opened, the whole built-in glossary used to be copied into the project
+    /// glossary, silently. Those copies outlived the failure (a lock clears, the DB comes back) and, as project
+    /// entries override global ones by source, hid the user's later global glossary edits in that project. The
+    /// failure is now logged and reported (<see cref="GlobalProjectDbService.GetLastOpenError"/>), and translation
+    /// asks before running without global data.
+    /// </summary>
+    private async Task OpenGlobalDbAsync(BethesdaFranchise franchise, CancellationToken cancellationToken)
+        => await _globalProjectDbService.GetOrCreateAsync(franchise, cancellationToken);
 
     /// <summary>
     /// An XML project's folder is the game series selected when it was first opened, but the selection starts as

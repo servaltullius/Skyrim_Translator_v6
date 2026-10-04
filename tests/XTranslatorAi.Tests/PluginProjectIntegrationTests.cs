@@ -183,7 +183,7 @@ public sealed class PluginProjectIntegrationTests
         await fixture.Db.ReplaceImportedPluginStringsAsync(document.Info, document.Fields, fixture.Project, "utf-8", CancellationToken.None);
         var row = Assert.Single(await fixture.Db.GetStringsAsync(20, 0, CancellationToken.None));
         await fixture.Db.UpdateStringTranslationAsync(row.Id, "철검", StringEntryStatus.Edited, null, CancellationToken.None);
-        var workspace = new ProjectWorkspaceService(new GlobalProjectDbService(new BuiltInGlossaryService()), new BuiltInGlossaryService(), fixture.DirectoryPath);
+        var workspace = new ProjectWorkspaceService(new GlobalProjectDbService(new BuiltInGlossaryService(), fixture.DirectoryPath), fixture.DirectoryPath);
         var output = Path.Combine(fixture.DirectoryPath, "translated");
         var result = await workspace.ExportPluginAsync(fixture.Db, document, new PluginExportOptions(output), CancellationToken.None);
         Assert.Equal(Path.Combine(output, "Test.esp"), result.PluginPath);
@@ -204,7 +204,7 @@ public sealed class PluginProjectIntegrationTests
         await fixture.Db.ReplaceImportedPluginStringsAsync(document.Info, document.Fields, fixture.Project, "utf-8", CancellationToken.None);
         using var canceled = new CancellationTokenSource();
         canceled.Cancel();
-        var workspace = new ProjectWorkspaceService(new GlobalProjectDbService(new BuiltInGlossaryService()), new BuiltInGlossaryService(), fixture.DirectoryPath);
+        var workspace = new ProjectWorkspaceService(new GlobalProjectDbService(new BuiltInGlossaryService(), fixture.DirectoryPath), fixture.DirectoryPath);
         var output = Path.Combine(fixture.DirectoryPath, "canceled");
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => workspace.ExportPluginAsync(fixture.Db, document, new PluginExportOptions(output), canceled.Token));
         Assert.False(Directory.Exists(output));

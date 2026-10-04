@@ -113,7 +113,8 @@ public partial class MainViewModel
             await RefreshPreviousTranslationsAsync(CancellationToken.None);
             var diagnostics = string.Join(" / ", loaded.Document.Info.Diagnostics.Select(item => item.Message));
             StatusMessage = $"플러그인 읽기 완료: {Path.GetFileName(path)} · {TotalCount}개 문자열"
-                + (diagnostics.Length == 0 ? "" : " · " + diagnostics);
+                + (diagnostics.Length == 0 ? "" : " · " + diagnostics)
+                + DescribeUnavailableGlobalDb();
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
         {

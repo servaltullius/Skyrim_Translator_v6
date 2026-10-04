@@ -178,6 +178,13 @@ public static class ProjectPaths
             $".builtin-glossary-additions.{version}.stamp"
         );
 
+    /// <summary>Marks that the built-in glossary was offered to this (then empty) global glossary.</summary>
+    public static string GetBuiltInGlossarySeedStampPath(string globalGlossaryDbPath)
+        => Path.Combine(
+            Path.GetDirectoryName(Path.GetFullPath(globalGlossaryDbPath)) ?? GetProjectsBaseDir(),
+            ".builtin-glossary-seeded.stamp"
+        );
+
     public static string GetBundledFranchiseTmSeedStampPath(BethesdaFranchise franchise, string version)
         => GetBundledFranchiseTmSeedStampPath(franchise, version, globalRootOverride: null);
 

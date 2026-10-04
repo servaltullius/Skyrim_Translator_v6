@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using XTranslatorAi.App.Services;
 using XTranslatorAi.Core;
 using XTranslatorAi.Core.Models;
 
@@ -8,6 +9,48 @@ namespace XTranslatorAi.App.ViewModels;
 
 public partial class MainViewModel
 {
+    /// <summary>
+    /// The global glossary, series TM and official-name index all come from the game's global DB. When it could
+    /// not be opened (locked, damaged, out of disk), runs used to go ahead with none of them and nothing said.
+    /// Opening is retried here, since a lock may have cleared; if it still fails the user decides.
+    /// </summary>
+    private async Task<bool> ConfirmTranslateWithoutGlobalDbAsync()
+    {
+        if (await _globalProjectDbService.GetOrCreateAsync(SelectedFranchise, CancellationToken.None) != null)
+        {
+            return true;
+        }
+
+        var error = _globalProjectDbService.GetLastOpenError(SelectedFranchise) ?? "원인을 알 수 없습니다.";
+        var proceed = _uiInteractionService.ShowMessage(
+            $"전체 용어집·시리즈 TM DB를 열지 못했습니다.\n\n{error}\n\n"
+            + "계속하면 전체 용어집, 시리즈 TM, 공식 이름 색인 없이 번역합니다. 계속할까요?\n\n"
+            + $"자세한 내용: {AppLog.PathForUser}",
+            "전체 DB를 열 수 없음",
+            UiMessageBoxButton.YesNo,
+            UiMessageBoxImage.Warning,
+            UiMessageBoxResult.No
+        ) == UiMessageBoxResult.Yes;
+        if (!proceed)
+        {
+            StatusMessage = "번역을 시작하지 않았습니다. 전체 용어집·시리즈 TM DB를 열 수 없습니다.";
+        }
+
+        return proceed;
+    }
+
+    /// <summary>Status line addition after opening a project whose game's global DB could not be opened.</summary>
+    private string DescribeUnavailableGlobalDb()
+    {
+        if (_globalProjectDbService.IsOpen(SelectedFranchise))
+        {
+            return "";
+        }
+
+        var error = _globalProjectDbService.GetLastOpenError(SelectedFranchise);
+        return $" 전체 용어집·시리즈 TM DB를 열지 못했습니다{(error == null ? "" : $"({error})")}. 번역을 시작할 때 다시 시도합니다.";
+    }
+
     private bool TryValidateApiKey()
     {
         if (!string.IsNullOrWhiteSpace(ApiKey))

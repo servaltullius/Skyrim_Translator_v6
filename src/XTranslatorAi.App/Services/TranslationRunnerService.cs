@@ -340,8 +340,9 @@ public sealed class TranslationRunnerService
         {
             return await globalDb.GetGlossaryAsync(request.CancellationToken);
         }
-        catch
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
+            AppLog.Write($"WARN 전체 용어집을 읽지 못해 없이 번역합니다: {ex}");
             return null;
         }
     }
@@ -362,8 +363,9 @@ public sealed class TranslationRunnerService
                 request.CancellationToken
             );
         }
-        catch
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
+            AppLog.Write($"WARN 시리즈 TM을 읽지 못해 없이 번역합니다: {ex}");
             return null;
         }
     }
@@ -382,8 +384,9 @@ public sealed class TranslationRunnerService
             var entries = await globalDb.GetTranslationMemoryEntriesAsync(request.SourceLang.Trim(), request.TargetLang.Trim(), request.CancellationToken);
             return entries.Select(entry => (entry.SourceText, entry.DestText)).ToList();
         }
-        catch
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
+            AppLog.Write($"WARN 공식 이름 색인을 읽지 못해 없이 번역합니다: {ex}");
             return null;
         }
     }

@@ -68,7 +68,8 @@ public partial class MainViewModel
             StatusMessage = $"{Path.GetFileName(xmlPath)}에서 문자열 {TotalCount}개를 불러왔습니다."
                 + (retained > 0
                     ? $" 이 파일에 없는 행의 번역 {retained}개는 지우지 않고 보관 중이며, 그 행이 든 XML을 다시 열면 복원됩니다."
-                    : "");
+                    : "")
+                + DescribeUnavailableGlobalDb();
         }
         catch (OperationCanceledException) when (loadCancellation.IsCancellationRequested)
         {

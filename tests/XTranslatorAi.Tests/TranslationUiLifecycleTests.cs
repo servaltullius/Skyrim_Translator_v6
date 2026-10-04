@@ -6,6 +6,7 @@ using XTranslatorAi.App.ViewModels;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Xml;
+using XTranslatorAi.Tests.TestSupport;
 
 namespace XTranslatorAi.Tests;
 
@@ -203,6 +204,28 @@ public class TranslationUiLifecycleTests
             Assert.Equal(new[] { "Running...", "중지됨", "" }, statuses);
         });
 
+    /// <summary>Translating without the global glossary, series TM and official names used to happen silently.</summary>
+    [Fact]
+    public Task StartTranslation_AsksBeforeTranslatingWithoutTheGlobalDb()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new ViewModelFixture(unopenableGlobalDb: true);
+            var vm = fixture.ViewModel;
+            var db = await ProjectDb.OpenOrCreateAsync(Path.Combine(fixture.DirectoryPath, "no-global.sqlite"), CancellationToken.None);
+            fixture.State.SetWorkspace(db, new XTranslatorXmlInfo("test.esp", "english", "korean", "2", false, ""), "test.xml");
+            await db.BulkInsertStringsAsync(new[] { (0, (string?)null, (string?)null, (string?)null,
+                (string?)null, (string?)"WEAP:FULL", "Iron Sword", "", StringEntryStatus.Pending, "<String />") }, CancellationToken.None);
+            vm.ApiKey = "unit-test-key";
+            vm.IsProjectLoaded = true;
+
+            await vm.StartTranslationCommand.ExecuteAsync(null);
+
+            Assert.Equal(new[] { "전체 DB를 열 수 없음" }, fixture.Ui.Titles);
+            Assert.StartsWith("번역을 시작하지 않았습니다", vm.StatusMessage);
+            Assert.False(vm.IsTranslating);
+            Assert.Equal(StringEntryStatus.Pending, Assert.Single(await db.GetStringsAsync(10, 0, CancellationToken.None)).Status);
+        });
+
     private static void Enqueue(MainViewModel vm, long generation, string text)
         => typeof(MainViewModel).GetMethod("OnRowUpdatedAsync", BindingFlags.NonPublic | BindingFlags.Instance,
             null, new[] { typeof(long), typeof(long), typeof(StringEntryStatus), typeof(string) }, null)!
@@ -250,28 +273,44 @@ public class TranslationUiLifecycleTests
     private sealed class ViewModelFixture : IAsyncDisposable
     {
         private readonly HttpClient _httpClient;
+        private readonly GlobalProjectDbService _globalDb;
         public string DirectoryPath { get; } = Path.Combine(Path.GetTempPath(), "TulliusTranslator-tests", Guid.NewGuid().ToString("N"));
         public MainViewModel ViewModel { get; }
         public ProjectState State => (ProjectState)typeof(MainViewModel).GetField("_projectState", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(ViewModel)!;
 
-        public ViewModelFixture(HttpMessageHandler? handler = null)
+        public NoUi Ui { get; } = new();
+
+        public ViewModelFixture(HttpMessageHandler? handler = null, bool unopenableGlobalDb = false)
         {
             _httpClient = new HttpClient(handler ?? new NoNetworkHandler());
             Directory.CreateDirectory(DirectoryPath);
+            if (unopenableGlobalDb)
+            {
+                // A folder where the global DB file should be: SQLite cannot open it.
+                Directory.CreateDirectory(Path.Combine(DirectoryPath, "global", "global-glossary.sqlite"));
+            }
+
             var builtIn = new BuiltInGlossaryService();
-            var globalDb = new GlobalProjectDbService(builtIn);
+            // Never the user's global DB under %LOCALAPPDATA%.
+            var globalDb = _globalDb = new GlobalProjectDbService(builtIn, Path.Combine(DirectoryPath, "global"));
             var glossary = new ProjectGlossaryService(new GlossaryImportService(new GlossaryFileService()));
             ViewModel = new MainViewModel(_httpClient, new MainViewModelServices(
                 new AppSettingsStore(Path.Combine(DirectoryPath, "settings.json")), new ApiCallLogService(),
-                new SystemPromptBuilder(), new NoUi(), new BundledFranchiseTmSeedService(DirectoryPath), globalDb,
+                new SystemPromptBuilder(), Ui, new BundledFranchiseTmSeedService(DirectoryPath), globalDb,
                 glossary, new GlobalGlossaryService(globalDb, glossary), new FranchiseTranslationMemoryService(globalDb),
-                new ProjectWorkspaceService(globalDb, builtIn), new TranslationRunnerService(globalDb), new CompareTranslationService(glossary)));
+                new ProjectWorkspaceService(globalDb), new TranslationRunnerService(globalDb), new CompareTranslationService(glossary)));
         }
 
         public async ValueTask DisposeAsync()
         {
             await State.DisposeDbAsync();
+            await _globalDb.DisposeAsync();
             _httpClient.Dispose();
+            foreach (var db in Directory.GetFiles(DirectoryPath, "*.sqlite", SearchOption.AllDirectories))
+            {
+                TestDbHelper.ReleaseProjectPoolAndDeleteDbFiles(db);
+            }
+
             try { Directory.Delete(DirectoryPath, recursive: true); } catch (IOException) { }
         }
     }
@@ -297,7 +336,12 @@ public class TranslationUiLifecycleTests
 
     private sealed class NoUi : IUiInteractionService
     {
-        public UiMessageBoxResult ShowMessage(string message, string title, UiMessageBoxButton button, UiMessageBoxImage image, UiMessageBoxResult defaultResult) => UiMessageBoxResult.Ok;
+        public List<string> Titles { get; } = new();
+        public UiMessageBoxResult ShowMessage(string message, string title, UiMessageBoxButton button, UiMessageBoxImage image, UiMessageBoxResult defaultResult)
+        {
+            Titles.Add(title);
+            return UiMessageBoxResult.Ok;
+        }
         public string? ShowOpenFileDialog(OpenFileDialogRequest request) => null;
         public string? ShowSaveFileDialog(SaveFileDialogRequest request) => null;
         public bool TryOpenFolder(string path) => false;

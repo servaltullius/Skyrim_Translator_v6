@@ -263,20 +263,26 @@ public sealed class TranslationPreferenceTests
     private sealed class ViewModelFixture : IDisposable
     {
         private readonly HttpClient _httpClient = new(new NoNetworkHandler());
+        private readonly GlobalProjectDbService _globalDb;
         public MainViewModel ViewModel { get; }
         public ViewModelFixture(SettingsFixture settings)
         {
             var builtIn = new BuiltInGlossaryService();
-            var globalDb = new GlobalProjectDbService(builtIn);
+            // Never the user's global DB under %LOCALAPPDATA%.
+            var globalDb = _globalDb = new GlobalProjectDbService(builtIn, System.IO.Path.Combine(settings.DirectoryPath, "global"));
             var glossary = new ProjectGlossaryService(new GlossaryImportService(new GlossaryFileService()));
             ViewModel = new MainViewModel(_httpClient, new MainViewModelServices(
                 settings.Store, new ApiCallLogService(), new SystemPromptBuilder(), new NoUi(),
                 new BundledFranchiseTmSeedService(settings.DirectoryPath), globalDb, glossary,
                 new GlobalGlossaryService(globalDb, glossary), new FranchiseTranslationMemoryService(globalDb),
-                new ProjectWorkspaceService(globalDb, builtIn), new TranslationRunnerService(globalDb),
+                new ProjectWorkspaceService(globalDb), new TranslationRunnerService(globalDb),
                 new CompareTranslationService(glossary)));
         }
-        public void Dispose() => _httpClient.Dispose();
+        public void Dispose()
+        {
+            _globalDb.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            _httpClient.Dispose();
+        }
     }
 
     private sealed class NoNetworkHandler : HttpMessageHandler

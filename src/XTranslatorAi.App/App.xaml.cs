@@ -50,7 +50,7 @@ public partial class App : Application
             var projectGlossaryService = new ProjectGlossaryService(glossaryImportService);
             var globalGlossaryService = new GlobalGlossaryService(globalProjectDbService, projectGlossaryService);
             var franchiseTranslationMemoryService = new FranchiseTranslationMemoryService(globalProjectDbService);
-            var projectWorkspaceService = new ProjectWorkspaceService(globalProjectDbService, builtInGlossaryService);
+            var projectWorkspaceService = new ProjectWorkspaceService(globalProjectDbService);
             var translationRunnerService = new TranslationRunnerService(globalProjectDbService);
             var compareTranslationService = new CompareTranslationService(projectGlossaryService);
             var services = new MainViewModelServices(

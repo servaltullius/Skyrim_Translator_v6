@@ -42,6 +42,11 @@ public partial class MainViewModel
             return;
         }
 
+        if (!await ConfirmTranslateWithoutGlobalDbAsync())
+        {
+            return;
+        }
+
         await _translationOperation.RunAsync(async cancellationToken =>
         {
             var generation = Interlocked.Increment(ref _rowUpdateGeneration);

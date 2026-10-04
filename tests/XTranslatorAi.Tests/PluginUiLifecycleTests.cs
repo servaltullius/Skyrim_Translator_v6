@@ -280,8 +280,10 @@ public sealed partial class PluginUiLifecycleTests
             var connection = (SqliteConnection)typeof(ProjectDb).GetField("_connection", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(originalDb)!;
             await using (var command = connection.CreateCommand())
             {
-                // An unreadable auxiliary table reproduces failure after the original implementation's import.
-                command.CommandText = "ALTER TABLE Glossary RENAME COLUMN SrcTerm TO InvalidSourceColumn; UPDATE StringEntry SET SourceText='Saved source', DestText='Saved working text';";
+                // An unreadable auxiliary table reproduces failure after the original implementation's import. The
+                // load no longer reads the project glossary (built-in entries are not copied into projects), so the
+                // project context it still reads before the import is the table made unreadable.
+                command.CommandText = "ALTER TABLE ProjectContext RENAME COLUMN ContextText TO InvalidContextColumn; UPDATE StringEntry SET SourceText='Saved source', DestText='Saved working text';";
                 await command.ExecuteNonQueryAsync();
             }
             originalVm.SourceText = "Saved source";
@@ -354,7 +356,7 @@ public sealed partial class PluginUiLifecycleTests
             var glossary = new ProjectGlossaryService(new GlossaryImportService(new GlossaryFileService()));
             Vm = new MainViewModel(_client, new MainViewModelServices(Settings, new ApiCallLogService(), new SystemPromptBuilder(), Ui,
                 new BundledFranchiseTmSeedService(Root), globalDb, glossary, new GlobalGlossaryService(globalDb, glossary),
-                new FranchiseTranslationMemoryService(globalDb), new ProjectWorkspaceService(globalDb, builtIn, Root),
+                new FranchiseTranslationMemoryService(globalDb), new ProjectWorkspaceService(globalDb, Root),
                 new TranslationRunnerService(globalDb), new CompareTranslationService(glossary)));
         }
         public async Task LoadPluginWorkspaceAsync(byte[]? plugin = null, Action<string>? prepareFiles = null, string targetEncoding = "utf-8")
