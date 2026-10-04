@@ -12,12 +12,15 @@ public static class PromptLeakCleaner
         }
 
         // If the source itself contains these concepts, don't try to strip them from the translation.
-        if (ContainsAny(sourceText, "placeholder", "__XT_", "자리표시자"))
+        // The translation pipeline passes the masked source, which holds "__XT_" tokens whenever a row has a
+        // tag or a term, so checking it as-is turned the cleanup off on those rows and an echoed
+        // "Do not modify placeholder tokens such as …" stayed in the translation. Only the source's own words count.
+        if (ContainsAny(TranslationConstants.XtTokenRegex.Replace(sourceText, ""), "placeholder", "__XT_", "자리표시자"))
         {
             return translatedText;
         }
 
-        var idx = FindLeakStartIndex(translatedText);
+        var idx = FindLeakStartIndex(translatedText, sourceText);
         if (idx < 0)
         {
             return translatedText;
@@ -34,7 +37,7 @@ public static class PromptLeakCleaner
         return prefix;
     }
 
-    private static int FindLeakStartIndex(string text)
+    private static int FindLeakStartIndex(string text, string sourceText)
     {
         var idx = IndexOfIgnoreCase(text, "Do NOT modify");
         if (idx >= 0)
@@ -60,13 +63,13 @@ public static class PromptLeakCleaner
             return idx;
         }
 
-        idx = IndexOfIgnoreCase(text, "__XT_PH_");
+        idx = IndexOfEchoedToken(text, "__XT_PH_", sourceText);
         if (idx >= 0)
         {
             return idx;
         }
 
-        idx = IndexOfIgnoreCase(text, "__XT_TERM_");
+        idx = IndexOfEchoedToken(text, "__XT_TERM_", sourceText);
         if (idx >= 0)
         {
             return idx;
@@ -82,6 +85,27 @@ public static class PromptLeakCleaner
         if (idx >= 0)
         {
             return idx;
+        }
+
+        return -1;
+    }
+
+    /// <summary>
+    /// A token the masked source has is the translation's own placeholder, not the start of an echoed
+    /// instruction: "__XT_TERM_0000__을 가져와. 자리표시자 토큰은 유지하세요." must lose only the second sentence.
+    /// </summary>
+    private static int IndexOfEchoedToken(string text, string prefix, string sourceText)
+    {
+        var idx = IndexOfIgnoreCase(text, prefix);
+        while (idx >= 0)
+        {
+            var token = TranslationConstants.XtTokenRegex.Match(text, idx);
+            if (!token.Success || token.Index != idx || !sourceText.Contains(token.Value, StringComparison.Ordinal))
+            {
+                return idx;
+            }
+
+            idx = text.IndexOf(prefix, idx + token.Length, StringComparison.OrdinalIgnoreCase);
         }
 
         return -1;
