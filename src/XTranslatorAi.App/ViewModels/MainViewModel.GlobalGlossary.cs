@@ -41,6 +41,12 @@ public partial class MainViewModel
             return;
         }
 
+        if (GlobalGlossaryMatchMode == GlossaryMatchMode.Regex && !GlossaryApplier.IsValidRegexPattern(src))
+        {
+            StatusMessage = $"정규식이 올바르지 않아 추가하지 않았습니다: {src}";
+            return;
+        }
+
         if (!await TrySaveListEditsBeforeReloadAsync(EditableLists.GlobalGlossary, "용어를 추가하면"))
         {
             return;

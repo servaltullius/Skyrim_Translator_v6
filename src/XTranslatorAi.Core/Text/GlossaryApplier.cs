@@ -8,16 +8,54 @@ namespace XTranslatorAi.Core.Text;
 
 public sealed class GlossaryApplier
 {
+    private static readonly TimeSpan UserRegexTimeout = TimeSpan.FromMilliseconds(250);
+
     private readonly IReadOnlyList<CompiledGlossaryEntry> _entries;
 
     public GlossaryApplier(IEnumerable<GlossaryEntry> entries)
     {
-        _entries = entries
-            .Where(e => e.Enabled)
-            .OrderByDescending(e => e.Priority)
-            .ThenByDescending(e => e.SourceTerm.Length)
-            .Select(e => new CompiledGlossaryEntry(e, CreateRegex(e)))
-            .ToList();
+        var compiled = new List<CompiledGlossaryEntry>();
+        var invalid = new List<string>();
+        foreach (var entry in entries
+                     .Where(e => e.Enabled)
+                     .OrderByDescending(e => e.Priority)
+                     .ThenByDescending(e => e.SourceTerm.Length))
+        {
+            // A user-written pattern ("[Dragon") must not fail the whole run; it is skipped and reported.
+            if (entry.MatchMode == GlossaryMatchMode.Regex
+                && entry.ForceMode != GlossaryForceMode.PromptOnly
+                && !IsValidRegexPattern(entry.SourceTerm))
+            {
+                invalid.Add(entry.SourceTerm);
+                continue;
+            }
+
+            compiled.Add(new CompiledGlossaryEntry(entry, CreateRegex(entry)));
+        }
+
+        _entries = compiled;
+        InvalidRegexTerms = invalid;
+    }
+
+    /// <summary>Enabled regex entries whose pattern does not compile; they are left out of <see cref="Apply"/>.</summary>
+    public IReadOnlyList<string> InvalidRegexTerms { get; }
+
+    public static bool IsValidRegexPattern(string? pattern)
+    {
+        if (string.IsNullOrEmpty(pattern))
+        {
+            return false;
+        }
+
+        try
+        {
+            _ = new Regex(pattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase, UserRegexTimeout);
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
     }
 
     public GlossaryApplication Apply(string text)
@@ -121,6 +159,31 @@ public sealed class GlossaryApplier
         }
 
         var regex = entry.Regex ?? throw new InvalidOperationException($"Missing regex for match mode: {matchMode}");
+        var skipped = false;
+        string replaced;
+        try
+        {
+            replaced = ReplaceMatches(input, entry, regex, tokenToReplacement, entryIdToToken, ref skipped);
+        }
+        catch (RegexMatchTimeoutException)
+        {
+            // A user pattern with catastrophic backtracking: leave this text alone rather than hang the run.
+            return input;
+        }
+
+        skippedCommonWord |= skipped;
+        return replaced;
+    }
+
+    private static string ReplaceMatches(
+        string input,
+        CompiledGlossaryEntry entry,
+        Regex regex,
+        IDictionary<string, string> tokenToReplacement,
+        Dictionary<long, string> entryIdToToken,
+        ref bool skippedCommonWord
+    )
+    {
         var skipped = false;
         var replaced = regex.Replace(
             input,
@@ -421,7 +484,9 @@ public sealed class GlossaryApplier
             _ => throw new ArgumentOutOfRangeException(nameof(entry), entry.MatchMode, "Unsupported glossary match mode."),
         };
 
-        return new Regex(pattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        return matchMode == GlossaryMatchMode.Regex
+            ? new Regex(pattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase, UserRegexTimeout)
+            : new Regex(pattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
     }
 
     private static bool ContainsInPlainText(string text, string needle)
