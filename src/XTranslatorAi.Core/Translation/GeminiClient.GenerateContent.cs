@@ -85,8 +85,8 @@ public sealed partial class GeminiClient
     }
 
     /// <summary>
-    /// Start of the exception text for a response Gemini's safety filter blocked. Stored row errors keep only
-    /// the text, so UserFacingErrorClassifier recognizes the block by it.
+    /// In the exception text for a response Gemini's safety filter blocked. Stored row errors keep only the
+    /// text, so UserFacingErrorClassifier recognizes the block by it.
     /// </summary>
     internal const string SafetyBlockedText = "blocked by Gemini safety filter";
 
