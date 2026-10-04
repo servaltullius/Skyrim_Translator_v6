@@ -66,6 +66,20 @@ public partial class MainViewModel
 
     private bool CanClearLqa() => IsProjectLoaded && !IsLqaScanning && LqaIssues.Count > 0;
 
+    /// <summary>
+    /// Quality-check issues and compare outputs describe rows of the project they came from. Row Ids restart at 1
+    /// in every project, so after a switch a leftover issue selected an unrelated row of the new project with the
+    /// same Id, and the compare slots showed the old row's translations under the new selection.
+    /// </summary>
+    private void ClearProjectResults()
+    {
+        SelectedLqaIssue = null;
+        LqaIssues.Clear();
+        LqaIssuesView.Refresh();
+        ClearLqaCommand.NotifyCanExecuteChanged();
+        ClearCompareOutputs();
+    }
+
     partial void OnLqaFilterTextChanged(string value) => LqaIssuesView.Refresh();
 
     private bool LqaIssueFilter(object obj)

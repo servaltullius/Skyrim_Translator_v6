@@ -111,6 +111,7 @@ public partial class MainViewModel
         DoneCount = 0;
         PendingCount = 0;
         ClearProjectLists();
+        ClearProjectResults();
     }
 
     /// <summary>

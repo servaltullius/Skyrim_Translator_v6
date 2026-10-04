@@ -187,6 +187,11 @@ public class TranslationUiLifecycleTests
             vm.CompareIncludeFranchiseTranslationMemory = false;
             vm.EnablePromptCache = false;
             vm.EnableRepairPass = false;
+            var statuses = new List<string>();
+            vm.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(MainViewModel.Compare1Status)) statuses.Add(vm.Compare1Status);
+            };
             var comparing = vm.RunCompare1Command.ExecuteAsync(null);
             await handler.Started.Task;
 
@@ -194,7 +199,8 @@ public class TranslationUiLifecycleTests
             await comparing;
             Assert.True(handler.CancellationObserved);
             Assert.False(vm.Compare1IsRunning);
-            Assert.Equal("중지됨", vm.Compare1Status);
+            // The slot reported the stop before closing cleared the closed project's compare results.
+            Assert.Equal(new[] { "Running...", "중지됨", "" }, statuses);
         });
 
     private static void Enqueue(MainViewModel vm, long generation, string text)
