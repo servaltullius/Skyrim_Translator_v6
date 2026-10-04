@@ -104,13 +104,12 @@ public partial class MainViewModel
         try
         {
             await StopAllProjectOperationsAsync();
-            if (OpenXmlCommand.ExecutionTask is { IsCompleted: false } opening)
+            foreach (var opening in new[] { OpenXmlCommand.ExecutionTask, OpenPluginCommand.ExecutionTask, _droppedFileOpen })
             {
-                await opening;
-            }
-            if (OpenPluginCommand.ExecutionTask is { IsCompleted: false } openingPlugin)
-            {
-                await openingPlugin;
+                if (opening is { IsCompleted: false })
+                {
+                    await opening;
+                }
             }
             await DisposeProjectDbAsync();
             ResetProjectState();

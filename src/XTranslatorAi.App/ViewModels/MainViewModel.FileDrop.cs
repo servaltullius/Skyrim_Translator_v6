@@ -23,6 +23,10 @@ public partial class MainViewModel
     public bool CanOpenDroppedFile(string? path)
         => (IsPluginFile(path) || IsXmlFile(path)) && File.Exists(path) && CanOpenProject();
 
+    // A dropped file opens outside OpenXmlCommand/OpenPluginCommand, whose ExecutionTask closing waits for. Without
+    // this, closing the window during a dropped open disposed the project while the open was still running.
+    private Task _droppedFileOpen = Task.CompletedTask;
+
     public Task OpenDroppedFileAsync(string path)
     {
         if (!CanOpenDroppedFile(path))
@@ -30,7 +34,9 @@ public partial class MainViewModel
             return Task.CompletedTask;
         }
 
-        return IsPluginFile(path) ? OpenPluginPathAsync(path) : OpenXmlPathAsync(path);
+        var opening = IsPluginFile(path) ? OpenPluginPathAsync(path) : OpenXmlPathAsync(path);
+        _droppedFileOpen = opening;
+        return opening;
     }
 
     public bool CanLinkDroppedPreviousTranslation(string? path)

@@ -1,5 +1,10 @@
+using System.Collections.Concurrent;
+using System.ComponentModel;
+using System.Reflection;
 using XTranslatorAi.App.ViewModels;
 using XTranslatorAi.App.Services;
+using XTranslatorAi.Core.Data;
+using XTranslatorAi.Core.Models;
 using XTranslatorAi.Tests.TestSupport;
 
 namespace XTranslatorAi.Tests;
@@ -85,6 +90,64 @@ public sealed partial class PluginUiLifecycleTests
             fixture.Vm.IsTranslating = false;
             Assert.True(fixture.Vm.CanOpenDroppedFile(dropped));
             Assert.True(fixture.Vm.OpenPluginCommand.CanExecute(null));
+        });
+
+    [Fact]
+    public Task Close_WaitsForAFileStillOpeningFromADrop()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            await fixture.LoadPluginWorkspaceAsync();
+            var path = await WriteReplacementPluginAsync(fixture);
+            var globalDbs = (ConcurrentDictionary<BethesdaFranchise, ProjectDb>)typeof(GlobalProjectDbService)
+                .GetField("_dbByFranchise", BindingFlags.NonPublic | BindingFlags.Instance)!
+                .GetValue(typeof(MainViewModel).GetField("_globalProjectDbService", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(fixture.Vm))!;
+            var globalGate = (SemaphoreSlim)typeof(ProjectDb).GetField("_gate", BindingFlags.NonPublic | BindingFlags.Instance)!
+                .GetValue(globalDbs[BethesdaFranchise.ElderScrolls])!;
+            // Once the dropped plugin is adopted, hold the game DB so its list reload (which closing cannot cancel)
+            // is still running when the window closes.
+            var adopted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            PropertyChangedEventHandler holdGlobalDb = (_, e) =>
+            {
+                if (e.PropertyName == nameof(MainViewModel.IsProjectLoaded) && fixture.Vm.IsProjectLoaded && !adopted.Task.IsCompleted)
+                {
+                    globalGate.Wait();
+                    adopted.SetResult();
+                }
+            };
+            fixture.Vm.PropertyChanged += holdGlobalDb;
+            var opening = fixture.Vm.OpenDroppedFileAsync(path);
+            try
+            {
+                await adopted.Task;
+                fixture.Vm.PropertyChanged -= holdGlobalDb;
+                await Task.Delay(300);
+
+                Task<bool> closing;
+                bool closedWhileOpening;
+                try
+                {
+                    closing = fixture.Vm.TryCloseWorkspaceAsync();
+                    await Task.WhenAny(closing, Task.Delay(300));
+                    closedWhileOpening = closing.IsCompleted && !opening.IsCompleted;
+                }
+                finally
+                {
+                    globalGate.Release();
+                }
+
+                // Closing used to dispose the project here while the dropped open was still loading into it.
+                Assert.False(closedWhileOpening);
+                Assert.True(await closing.WaitAsync(TimeSpan.FromSeconds(10)));
+                Assert.True(opening.IsCompletedSuccessfully);
+                Assert.Null(fixture.State.Db);
+                Assert.False(fixture.Vm.IsProjectLoaded);
+            }
+            finally
+            {
+                await opening.WaitAsync(TimeSpan.FromSeconds(10));
+                await ReleaseReplacementPluginDbAsync(fixture, path);
+            }
         });
 
     [Fact]
