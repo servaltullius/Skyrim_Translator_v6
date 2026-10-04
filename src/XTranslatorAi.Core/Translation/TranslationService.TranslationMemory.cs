@@ -74,7 +74,7 @@ public sealed partial class TranslationService
             return false;
         }
 
-        var final = tmText;
+        var final = MatchSourceLineEndings(sourceText, tmText);
         if (Ctx.EnableTemplateFixer)
         {
             final = MagDurPlaceholderFixer.Fix(sourceText, final, targetLang);
@@ -109,5 +109,57 @@ public sealed partial class TranslationService
         }
 
         return true;
+    }
+
+    // The TM key folds CRLF, CR and LF together, so an entry saved from one row also matches the same source
+    // written with another line-ending style. Line breaks are protected text, so the stored translation takes
+    // the source's style; otherwise the integrity check rejects the hit and the row goes to the model.
+    // A source that mixes styles keeps the stored text as it is.
+    private static string MatchSourceLineEndings(string sourceText, string tmText)
+    {
+        var lineEnding = GetUniformLineEnding(sourceText);
+        if (lineEnding == null || tmText.IndexOfAny(LineBreakChars) < 0)
+        {
+            return tmText;
+        }
+
+        var lf = tmText.Replace("\r\n", "\n", StringComparison.Ordinal).Replace('\r', '\n');
+        return lineEnding == "\n" ? lf : lf.Replace("\n", lineEnding, StringComparison.Ordinal);
+    }
+
+    private static readonly char[] LineBreakChars = { '\r', '\n' };
+
+    private static string? GetUniformLineEnding(string text)
+    {
+        string? found = null;
+        for (var i = 0; i < text.Length; i++)
+        {
+            string current;
+            if (text[i] == '\r')
+            {
+                current = i + 1 < text.Length && text[i + 1] == '\n' ? "\r\n" : "\r";
+                if (current.Length == 2)
+                {
+                    i++;
+                }
+            }
+            else if (text[i] == '\n')
+            {
+                current = "\n";
+            }
+            else
+            {
+                continue;
+            }
+
+            if (found != null && !string.Equals(found, current, StringComparison.Ordinal))
+            {
+                return null;
+            }
+
+            found = current;
+        }
+
+        return found;
     }
 }
