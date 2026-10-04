@@ -110,6 +110,32 @@ public partial class MainViewModel
         TotalCount = 0;
         DoneCount = 0;
         PendingCount = 0;
+        ClearProjectLists();
+    }
+
+    /// <summary>
+    /// The glossary and TM grids hold rows of the DBs they were read from, and an open refills them only after
+    /// the new project is in place. An ESP open cancelled at that point, or whose reload failed, left the previous
+    /// project's rows over the new DB: saving one wrote its Id (they restart at 1) into the new project's glossary,
+    /// and the quality check used the old terms. The lists now go with the project and come back with the reloads.
+    /// </summary>
+    private void ClearProjectLists()
+    {
+        SelectedGlossaryEntry = null;
+        Glossary.Clear();
+        RebuildGlossaryCategoryFilters();
+        GlossaryView.Refresh();
+
+        SelectedGlobalGlossaryEntry = null;
+        GlobalGlossary.Clear();
+        RebuildGlobalGlossaryCategoryFilters();
+        GlobalGlossaryView.Refresh();
+
+        SelectedFranchiseTranslationMemoryEntry = null;
+        FranchiseTranslationMemory.Clear();
+        FranchiseTranslationMemoryView.Refresh();
+
+        RebuildGlossaryLookupResults();
     }
 
     private async Task DisposeProjectDbAsync()
