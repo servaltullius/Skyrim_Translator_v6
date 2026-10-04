@@ -229,6 +229,12 @@ public partial class MainWindow : Window
 
     private void Vm_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (string.Equals(e.PropertyName, nameof(MainViewModel.IsTranslating), System.StringComparison.Ordinal))
+        {
+            FlashTaskbarWhenRunEnds();
+            return;
+        }
+
         if (!string.Equals(e.PropertyName, nameof(MainViewModel.ApiKey), System.StringComparison.Ordinal)
         )
         {
@@ -237,6 +243,46 @@ public partial class MainWindow : Window
 
         SyncPasswordBoxesFromViewModel();
     }
+
+    /// <summary>A long run ended without any sign outside the window; the taskbar button now flashes until it is clicked.</summary>
+    private void FlashTaskbarWhenRunEnds()
+    {
+        if (_vm == null || _vm.IsTranslating || IsActive)
+        {
+            return;
+        }
+
+        var handle = new System.Windows.Interop.WindowInteropHelper(this).Handle;
+        if (handle == System.IntPtr.Zero)
+        {
+            return;
+        }
+
+        var info = new FlashWindowInfo
+        {
+            Size = (uint)System.Runtime.InteropServices.Marshal.SizeOf<FlashWindowInfo>(),
+            Window = handle,
+            Flags = FlashTray | FlashUntilForeground,
+        };
+        FlashWindowEx(ref info);
+    }
+
+    private const uint FlashTray = 0x2;
+    private const uint FlashUntilForeground = 0xC;
+
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    private struct FlashWindowInfo
+    {
+        public uint Size;
+        public System.IntPtr Window;
+        public uint Flags;
+        public uint Count;
+        public uint Timeout;
+    }
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+    private static extern bool FlashWindowEx(ref FlashWindowInfo info);
 
     private void SyncPasswordBoxesFromViewModel()
     {
