@@ -321,6 +321,14 @@ public partial class MainViewModel
         if (ReferenceEquals(db, _projectState.Db))
         {
             RecountProgress();
+            try
+            {
+                await RecheckLqaRowAsync(entry);
+            }
+            catch (Exception ex)
+            {
+                AppLog.Write($"WARN 저장한 행을 다시 검사하지 못했습니다: {ex.Message}");
+            }
         }
     }
 

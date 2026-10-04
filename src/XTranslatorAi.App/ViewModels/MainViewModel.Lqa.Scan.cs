@@ -50,22 +50,7 @@ public partial class MainViewModel
             referenceNames: referenceMemory is { Count: > 0 } ? XTranslatorAi.Core.Translation.ReferenceNameIndex.Build(referenceMemory) : null
         ));
 
-        return issues
-            .Select(
-                i =>
-                    new LqaIssueViewModel(
-                        id: i.Id,
-                        orderIndex: i.OrderIndex,
-                        edid: i.Edid,
-                        rec: i.Rec,
-                        severity: i.Severity,
-                        code: i.Code,
-                        message: i.Message,
-                        sourceText: i.SourceText,
-                        destText: i.DestText
-                    )
-            )
-            .ToList();
+        return issues.Select(ToIssueViewModel).ToList();
     }
 
     /// <summary>The series TM the translation's official-name index is built from; null when it cannot be read.</summary>
@@ -92,6 +77,52 @@ public partial class MainViewModel
             XTranslatorAi.App.Services.AppLog.Write($"WARN 품질 검사용 공식 이름 색인을 읽지 못했습니다: {ex.Message}");
             return null;
         }
+    }
+
+    private static LqaIssueViewModel ToIssueViewModel(LqaIssue i)
+        => new(id: i.Id, orderIndex: i.OrderIndex, edid: i.Edid, rec: i.Rec, severity: i.Severity, code: i.Code,
+            message: i.Message, sourceText: i.SourceText, destText: i.DestText);
+
+    // Codes that compare a row with the rest of the project; a re-check of one row cannot judge them.
+    private static readonly HashSet<string> ProjectWideLqaCodes = new(StringComparer.Ordinal)
+    {
+        "name_inconsistent", "tone_inconsistent", "rec_tone", "same_source_variant", "tm_fallback", "official_name_missing",
+    };
+
+    /// <summary>
+    /// After a row is saved, its quality-check results are recomputed from the new text. The list kept showing the
+    /// old translation and its problems until the next full scan, so working through it meant guessing which rows
+    /// were already fixed. Checks that compare rows across the project stay until the next full scan.
+    /// </summary>
+    private async Task RecheckLqaRowAsync(StringEntryViewModel entry)
+    {
+        if (IsLqaScanning || !LqaIssues.Any(i => i.Id == entry.Id))
+        {
+            return;
+        }
+
+        var db = _projectState.Db;
+        var scanEntry = new LqaScanEntry(entry.Id, entry.OrderIndex, entry.Edid, entry.Rec, entry.Status,
+            entry.SourceText ?? "", entry.DestText ?? "", entry.PreviousTranslation);
+        var glossary = LanguageHelper.IsKoreanLanguage(TargetLang) ? BuildLqaForceTokenGlossary() : Array.Empty<GlossaryEntry>();
+        var targetLang = TargetLang;
+        var fresh = await Task.Run(() => LqaScanner.ScanAsync(new[] { scanEntry }, targetLang, glossary));
+        if (!ReferenceEquals(db, _projectState.Db))
+        {
+            return;
+        }
+
+        var kept = LqaIssues.Where(i => i.Id != entry.Id || ProjectWideLqaCodes.Contains(i.Code)).ToList();
+        var replacements = fresh.Where(i => !ProjectWideLqaCodes.Contains(i.Code)).Select(ToIssueViewModel);
+        var selected = SelectedLqaIssue;
+        LqaIssues.ReplaceAll(kept.Concat(replacements).OrderBy(i => i.OrderIndex).ToList());
+        LqaIssuesView.Refresh();
+        if (selected != null && LqaIssues.Contains(selected))
+        {
+            SelectedLqaIssue = selected;
+        }
+
+        ClearLqaCommand.NotifyCanExecuteChanged();
     }
 
     private IReadOnlyList<GlossaryEntry> BuildLqaForceTokenGlossary()
