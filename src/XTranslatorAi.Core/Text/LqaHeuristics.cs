@@ -455,8 +455,9 @@ public static class LqaHeuristics
             var end = idx + sourceTerm.Length;
             var counts = entry.MatchMode == GlossaryMatchMode.Substring || IsWordBoundary(sourceText, idx, sourceTerm.Length);
 
-            // Same exceptions as GlossaryApplier ("Reach level 10", "What in Oblivion", "the Scroll").
-            if (counts && GlossaryApplier.IsBuiltInTermUsedOtherwise(sourceText, entry, idx, sourceTerm.Length))
+            // Same exceptions as GlossaryApplier ("Reach level 10", "What in Oblivion", "the Scroll", "Yes, Master.").
+            if (counts && (GlossaryApplier.IsBuiltInTermUsedOtherwise(sourceText, entry, idx, sourceTerm.Length)
+                           || GlossaryApplier.IsCapitalizedOnlyByPosition(sourceText, entry, idx, sourceTerm.Length)))
             {
                 counts = false;
             }

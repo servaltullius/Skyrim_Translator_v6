@@ -42,10 +42,36 @@ public class BuiltInGlossaryCommonWordTests
         Assert.Contains((source, target), applied.PromptOnlyPairs);
     }
 
+    // Capitalized only because of where they stand: "Fine. I'll do it." became "하급.", "Yes, Master." "네, 달인.".
+    [Theory]
+    [InlineData("Fine", "하급", "Fine. I'll do it.")]
+    [InlineData("Fine", "하급", "Trying to be romantic now? Fine, lead the way.")]
+    [InlineData("Master", "달인", "Yes, Master.")]
+    [InlineData("Master", "달인", "Master, I have returned.")]
+    [InlineData("Reach", "리치", "\"Reach the summit before dawn,\" he said.")]
+    [InlineData("Pale", "페일", "Pale light shines through the window.")]
+    [InlineData("Fortify", "강화", "Guards! Fortify the gates!")]
+    [InlineData("Block", "막기", "Block the next attack, then strike.")]
+    public void WordCapitalizedByPosition_IsNotForced_ButOfferedAsHint(string source, string target, string input)
+    {
+        var applied = BuiltIn(source, target).Apply(input);
+
+        Assert.Equal(input, applied.Text);
+        Assert.Contains((source, target), applied.PromptOnlyPairs);
+    }
+
     [Theory]
     [InlineData("Fine", "하급", "Fine Iron Sword")]
+    [InlineData("Fine", "하급", "Fine")]
     [InlineData("Master", "달인", "Master of Stealth achievement display")]
     [InlineData("Destruction", "파괴마법", "Increases Destruction spell damage.")]
+    [InlineData("Fortify", "강화", "Fortify Health")]
+    [InlineData("Resist", "저항", "Resist __XT_PH_MAG_0000__% of magic.")]
+    [InlineData("Reach", "리치", "Travel to the Reach. It is dangerous.")]
+    [InlineData("Destruction", "파괴마법", "Destruction spells cost 15% less magicka.")]
+    [InlineData("Talos", "탈로스", "Talos, guide my hand.")]
+    [InlineData("Master", "달인", "Lockpicking rank: Master")]
+    [InlineData("Master", "달인", "Apprentice, Adept, Expert, Master, and so on.")]
     public void GameTermCasing_IsStillForced(string source, string target, string input)
     {
         var applied = BuiltIn(source, target).Apply(input);

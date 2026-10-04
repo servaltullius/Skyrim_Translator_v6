@@ -170,7 +170,8 @@ public sealed class GlossaryApplier
         }
 
         if (ForcesOnlyExactCase(entry)
-            && !string.Equals(match.Value, entry.SourceTerm, StringComparison.Ordinal))
+            && (!string.Equals(match.Value, entry.SourceTerm, StringComparison.Ordinal)
+                || IsCapitalizedOnlyByPosition(input, entry, match.Index, match.Length)))
         {
             return BuiltInMatch.CommonWord;
         }
@@ -228,6 +229,92 @@ public sealed class GlossaryApplier
         }
 
         return term == "Scroll" && TheBefore.IsMatch(before) && !string.Equals(nextWord, "of", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static readonly Regex LayoutTokenAtEnd = new(@"__XT_PH_[0-9]{4}__$", RegexOptions.CultureInvariant);
+
+    // Built-in terms that are also ordinary English words. Names (Talos, Keening, Sanguine), skills and attributes
+    // ("Shalidor's Insights: Illusion", "Health, Magicka, and Stamina") are forced wherever they stand.
+    private static readonly HashSet<string> OrdinaryWordTerms = new(StringComparer.Ordinal)
+    {
+        "Fine", "Superior", "Exquisite", "Flawless", "Epic", "Legendary", "Pale", "Master", "Expert", "Adept", "Apprentice",
+        "Champion", "Reach", "Fortify", "Resist", "Block", "Sneak", "Barter", "Ward", "Flesh", "Bash", "Parry", "Perk",
+        "Hood", "Cape", "Cloak", "Boots", "Mace",
+    };
+
+    // Of those, adjectives: before any lowercase word they describe it ("Pale light", "Fine work").
+    private static readonly HashSet<string> AdjectiveTerms = new(StringComparer.Ordinal)
+    {
+        "Fine", "Superior", "Exquisite", "Flawless", "Epic", "Legendary", "Pale",
+    };
+
+    // Words after a sentence-initial verb or noun that show it is not the game term ("Reach the summit", "Resist the urge").
+    // "and"/"or" are left out: a line can start a list of skills ("Sneak and Speech").
+    private static readonly HashSet<string> FunctionWords = new(StringComparer.Ordinal)
+    {
+        "the", "a", "an", "your", "my", "his", "her", "its", "our", "their", "this", "that", "these", "those", "it", "me",
+        "you", "him", "us", "them", "yourself", "myself", "to", "with", "up", "down", "out", "back",
+        "now", "all", "every", "some", "any", "no", "not", "past", "over", "away",
+    };
+
+    /// <summary>
+    /// A built-in term that is also an ordinary word, capitalized only because of where it stands: the first word of a
+    /// sentence used in its ordinary sense ("Fine. I'll do it." became "하급.", "Reach the summit" 리치, "Pale light"
+    /// 페일) or a word of address ("Yes, Master." became "네, 달인."). Item, effect and skill uses stay forced: a
+    /// capitalized next word or a value ("Fine Iron Sword", "Fortify Health", "Master of Stealth", "Resist &lt;mag&gt;%"),
+    /// a skill before its noun ("Destruction spells"), or a text that is the term alone (an item tier, a skill level).
+    /// </summary>
+    internal static bool IsCapitalizedOnlyByPosition(string text, GlossaryEntry entry, int index, int length)
+    {
+        var term = entry.SourceTerm.Trim();
+        if (!ForcesOnlyExactCase(entry) || !OrdinaryWordTerms.Contains(term) || text.Trim().Length == length)
+        {
+            return false;
+        }
+
+        var after = index + length;
+        var next = after;
+        while (next < text.Length && text[next] == ' ')
+        {
+            next++;
+        }
+
+        if (next > after && next < text.Length && StartsName(text, next))
+        {
+            return false;
+        }
+
+        // Address ends the sentence ("Yes, Master."); "A, B, and C" is a list.
+        var endsSentence = next >= text.Length || text[next] is '.' or '!' or '?' or '…';
+        var before = text.AsSpan(0, index).TrimEnd();
+        if (before.EndsWith(",") && endsSentence)
+        {
+            return true;
+        }
+
+        // A colon introduces a label or title ("Rank: Master"), so it does not start a sentence here.
+        before = before.TrimEnd("\"'“‘([*-—".AsSpan()).TrimEnd();
+        var startsSentence = before.IsEmpty || before[^1] is '.' or '!' or '?' or '…' || LayoutTokenAtEnd.IsMatch(before.ToString());
+        if (!startsSentence)
+        {
+            return false;
+        }
+
+        var nextWord = ReadNextAsciiWord(text, after);
+        return endsSentence || next < text.Length && text[next] == ','
+               || FunctionWords.Contains(nextWord)
+               || AdjectiveTerms.Contains(term) && nextWord.Length > 0 && char.IsAsciiLetterLower(nextWord[0]);
+    }
+
+    // A capitalized word, a value or a token; "of" counts when a capitalized word follows it ("Master of Stealth").
+    private static bool StartsName(string text, int at)
+    {
+        if (char.IsAsciiLetterUpper(text[at]) || char.IsAsciiDigit(text[at]) || text.AsSpan(at).StartsWith("__XT_") || text[at] == '<')
+        {
+            return true;
+        }
+
+        return text.AsSpan(at).StartsWith("of ") && at + 3 < text.Length && char.IsAsciiLetterUpper(text[at + 3]);
     }
 
     private static bool IsCapitalizedSingleWord(string term)
