@@ -81,4 +81,66 @@ public sealed class AppSettingsStoreTests : IDisposable
         store.Save(new AppSettings(BatchSize: 5));
         Assert.Equal(5, store.Load().BatchSize);
     }
+
+    [Fact]
+    public void Save_NeverWritesTheKeyInPlainText()
+    {
+        var store = new AppSettingsStore(SettingsPath);
+        store.Save(new AppSettings(ApiKey: "plain-key-123", ApiKeys: new[] { new SavedApiKey("second", "other-key-456") }));
+
+        var text = File.ReadAllText(SettingsPath);
+
+        Assert.DoesNotContain("plain-key-123", text);
+        Assert.DoesNotContain("other-key-456", text);
+        Assert.Contains("dpapi:", text);
+        var loaded = new AppSettingsStore(SettingsPath).Load();
+        Assert.Equal("plain-key-123", loaded.ApiKey);
+        Assert.Equal("other-key-456", Assert.Single(loaded.ApiKeys!).ApiKey);
+    }
+
+    [Fact]
+    public void LegacyPlainTextKey_IsReadAndRewrittenProtected()
+    {
+        File.WriteAllText(SettingsPath, "{\"apiKey\":\"legacy-key-789\",\"apiKeys\":[{\"name\":\"old\",\"apiKey\":\"legacy-key-000\"}]}");
+
+        var loaded = new AppSettingsStore(SettingsPath).Load();
+
+        Assert.Equal("legacy-key-789", loaded.ApiKey);
+        Assert.Equal("legacy-key-000", Assert.Single(loaded.ApiKeys!).ApiKey);
+        var text = File.ReadAllText(SettingsPath);
+        Assert.DoesNotContain("legacy-key-789", text);
+        Assert.DoesNotContain("legacy-key-000", text);
+    }
+
+    [Fact]
+    public void DeleteApiKey_RemovesOnlyTheMainKey()
+    {
+        var store = new AppSettingsStore(SettingsPath);
+        store.Save(new AppSettings(ApiKey: "main-key", ApiKeys: new[] { new SavedApiKey("spare", "spare-key") }, BatchSize: 7));
+
+        store.DeleteApiKey();
+
+        var loaded = new AppSettingsStore(SettingsPath).Load();
+        Assert.Null(loaded.ApiKey);
+        Assert.Equal("spare-key", Assert.Single(loaded.ApiKeys!).ApiKey);
+        Assert.Equal(7, loaded.BatchSize);
+    }
+
+    /// <summary>
+    /// A key protected under another Windows account or PC cannot be decrypted here. It was dropped without a word,
+    /// so the user saw an empty key box and no reason; the next save then erased it.
+    /// </summary>
+    [Fact]
+    public void KeyThatCannotBeDecrypted_IsReported()
+    {
+        File.WriteAllText(SettingsPath, "{\"apiKeyProtected\":\"dpapi:AAAAAAAA\",\"apiKeys\":[{\"name\":\"x\",\"apiKeyProtected\":\"dpapi:AAAAAAAA\"}],\"batchSize\":9}");
+        var store = new AppSettingsStore(SettingsPath);
+
+        var loaded = store.Load();
+
+        Assert.Null(loaded.ApiKey);
+        Assert.Equal(9, loaded.BatchSize);
+        Assert.NotNull(store.LoadWarning);
+        Assert.Contains("API 키 2개", store.LoadWarning);
+    }
 }

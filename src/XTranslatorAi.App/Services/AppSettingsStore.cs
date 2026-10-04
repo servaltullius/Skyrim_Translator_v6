@@ -23,6 +23,7 @@ public sealed class AppSettingsStore
 
     private readonly string _settingsPath;
     private readonly bool _canUseDpapi;
+    private int _undecryptableKeyCount;
     private readonly object _sync = new();
     private bool _existingFileUnread;
 
@@ -83,7 +84,15 @@ public sealed class AppSettingsStore
                 return new AppSettings();
             }
 
+            _undecryptableKeyCount = 0;
             var settings = NormalizeTranslationPreferences(ConvertFromPersisted(persisted, out var needsMigration));
+            if (_undecryptableKeyCount > 0)
+            {
+                LoadWarning = $"저장된 API 키 {_undecryptableKeyCount}개를 이 Windows 계정에서 풀 수 없어 비워 두었습니다"
+                    + "(다른 PC나 계정에서 옮긴 설정일 수 있음). 키를 다시 입력하세요.";
+                AppLog.Write($"WARN 저장된 API 키 {_undecryptableKeyCount}개를 DPAPI로 풀지 못했습니다: {_settingsPath}");
+            }
+
             if (needsMigration)
             {
                 try
@@ -412,6 +421,11 @@ public sealed class AppSettingsStore
         {
             needsMigration |= _canUseDpapi;
             return legacy;
+        }
+
+        if (!string.IsNullOrWhiteSpace(protectedValue))
+        {
+            _undecryptableKeyCount++;
         }
 
         return null;
