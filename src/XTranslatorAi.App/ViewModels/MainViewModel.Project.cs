@@ -17,12 +17,16 @@ public partial class MainViewModel
     public string CurrentXmlFileName
         => _projectState.CurrentXmlFileName;
 
-    private bool CanOpenProject() => IsWorkspaceInteractive;
+    // Opening a file replaces the project, which stops a running translation. XML 열기/ESP 열기 and window drops
+    // stayed available during a run and stopped it without asking; a plugin dropped on "이전 번역 참고" (which
+    // refuses to link while translating) even fell through to the window and was opened as the project.
+    // Opening now waits until the run is stopped or finished.
+    private bool CanOpenProject() => IsWorkspaceInteractive && !IsTranslating;
 
     [RelayCommand(CanExecute = nameof(CanOpenProject))]
     private async Task OpenXmlAsync()
     {
-        if (!IsWorkspaceInteractive) return;
+        if (!CanOpenProject()) return;
         var xmlPath = PromptOpenXmlPath();
         if (xmlPath == null)
         {
@@ -35,7 +39,7 @@ public partial class MainViewModel
     /// <summary>Opens <paramref name="xmlPath"/> as an xTranslator XML project, from the open dialog or a dropped file.</summary>
     private async Task OpenXmlPathAsync(string xmlPath)
     {
-        if (!IsWorkspaceInteractive) return;
+        if (!CanOpenProject()) return;
         _isSwitchingProject = true;
         NotifyWorkspaceAvailability();
         // The current project's edits belong to its DB, which is disposed below. The workspace is already

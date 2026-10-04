@@ -53,6 +53,41 @@ public sealed partial class PluginUiLifecycleTests
         });
 
     [Fact]
+    public Task OpeningFiles_IsUnavailableWhileTranslating_SoADropNeverStopsTheRun()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            await fixture.LoadPluginWorkspaceAsync();
+            var originalDb = fixture.State.Db;
+            var dropped = Path.Combine(fixture.Root, "old", "Test.esp");
+            Directory.CreateDirectory(Path.GetDirectoryName(dropped)!);
+            await File.WriteAllBytesAsync(dropped, PluginProjectIntegrationTests.CreateMinimalPlugin("강철 장검"));
+            fixture.Ui.OpenPath = dropped;
+            var notified = 0;
+            fixture.Vm.OpenXmlCommand.CanExecuteChanged += (_, _) => notified++;
+            fixture.Vm.OpenPluginCommand.CanExecuteChanged += (_, _) => notified++;
+
+            fixture.Vm.IsTranslating = true;
+            Assert.Equal(2, notified);
+            Assert.False(fixture.Vm.OpenXmlCommand.CanExecute(null));
+            Assert.False(fixture.Vm.OpenPluginCommand.CanExecute(null));
+            // The old Korean release dropped on "이전 번역 참고" cannot be linked during a run either; the window
+            // shows "지금은 열 수 없습니다" instead of opening it as the project.
+            Assert.False(fixture.Vm.CanLinkDroppedPreviousTranslation(dropped));
+            Assert.False(fixture.Vm.CanOpenDroppedFile(dropped));
+
+            await fixture.Vm.OpenDroppedFileAsync(dropped).WaitAsync(TimeSpan.FromSeconds(10));
+            await fixture.Vm.OpenPluginCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+            Assert.Same(originalDb, fixture.State.Db);
+            Assert.True(fixture.Vm.IsTranslating);
+            Assert.False(fixture.Ui.NetworkOrDialogUsed);
+
+            fixture.Vm.IsTranslating = false;
+            Assert.True(fixture.Vm.CanOpenDroppedFile(dropped));
+            Assert.True(fixture.Vm.OpenPluginCommand.CanExecute(null));
+        });
+
+    [Fact]
     public Task DroppedPlugin_OnThePreviousTranslationRow_IsLinkedAsTheEarlierTranslation()
         => RunOnSta(async () =>
         {

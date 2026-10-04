@@ -40,7 +40,7 @@ public partial class MainViewModel
     [RelayCommand(CanExecute = nameof(CanOpenProject))]
     private async Task OpenPluginAsync()
     {
-        if (!IsWorkspaceInteractive) return;
+        if (!CanOpenProject()) return;
         var path = _uiInteractionService.ShowOpenFileDialog(new OpenFileDialogRequest(
             "Skyrim SE/AE 플러그인 (*.esp;*.esm;*.esl)|*.esp;*.esm;*.esl", "번역할 Skyrim SE/AE 플러그인 열기"));
         if (string.IsNullOrWhiteSpace(path)) return;
@@ -50,7 +50,7 @@ public partial class MainViewModel
     /// <summary>Opens <paramref name="path"/> as a plugin project, from the open dialog or a dropped file.</summary>
     private async Task OpenPluginPathAsync(string path)
     {
-        if (!IsWorkspaceInteractive) return;
+        if (!CanOpenProject()) return;
         var options = new PluginReadOptions(PluginGame.SkyrimSpecialEdition, (PluginSourceLanguage ?? "").Trim(),
             PluginSourceEncoding, string.IsNullOrWhiteSpace(PluginStringsDirectory) ? null : PluginStringsDirectory.Trim(),
             MetadataEncoding: PluginMetadataEncoding);
