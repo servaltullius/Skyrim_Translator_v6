@@ -24,6 +24,8 @@ public sealed partial class TranslationService
 
         public bool IsEmpty => _termToEntry.IsEmpty;
 
+        public bool Knows(string term) => _termToEntry.ContainsKey(NormalizeSessionTermKey(term));
+
         public bool TryLearn(string sourceTerm, string targetTranslation, bool allowForce = true)
         {
             if (_maxTerms <= 0)

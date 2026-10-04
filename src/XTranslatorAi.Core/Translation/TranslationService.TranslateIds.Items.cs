@@ -502,6 +502,8 @@ public sealed partial class TranslationService
             return items;
         }
 
+        await SeedSubtermsAsync(request, promptCache, placeholderMasker, responseSchema, items);
+
         var seedItems = SelectSessionTermSeedItems(items, DefaultSessionTermSeedCount);
         if (seedItems.Count == 0)
         {
