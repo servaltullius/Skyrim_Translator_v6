@@ -42,6 +42,9 @@ internal sealed class TranslationRunContext : IDisposable
     public IReadOnlyDictionary<long, string>? PreviousTranslationById { get; set; }
 
     public ReferenceNameIndex? ReferenceNames { get; set; }
+
+    // Sentences that recur across description rows, translated once before the run (TranslationService.SentenceMemory).
+    public System.Collections.Concurrent.ConcurrentDictionary<string, string> RepeatedSentences { get; } = new(StringComparer.Ordinal);
     public RunNameMemory? RunNames { get; set; }
 
     // Session Term Memory

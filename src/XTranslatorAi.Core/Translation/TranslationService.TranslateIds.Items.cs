@@ -503,6 +503,7 @@ public sealed partial class TranslationService
         }
 
         await SeedSubtermsAsync(request, promptCache, placeholderMasker, responseSchema, items);
+        await SeedRepeatedSentencesAsync(request, promptCache, placeholderMasker, responseSchema, items);
 
         var seedItems = SelectSessionTermSeedItems(items, DefaultSessionTermSeedCount);
         if (seedItems.Count == 0)
