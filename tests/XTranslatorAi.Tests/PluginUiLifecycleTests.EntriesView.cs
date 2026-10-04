@@ -37,9 +37,11 @@ public sealed partial class PluginUiLifecycleTests
             var saved = await fixture.State.Db!.GetStringsAsync(10, 0, CancellationToken.None);
             Assert.Equal((StringEntryStatus.Edited, "쇠로 만든 검"), (saved[0].Status, saved[0].DestText));
 
-            // Changing the filter itself applies to the selected row too.
+            // Changing the filter itself applies to the selected row too, which then is no longer open.
             fixture.Vm.EntryFilterText = "Elven";
             Assert.Equal(new[] { rows[2] }, VisibleRows(fixture.Vm));
+            Assert.Null(fixture.Vm.SelectedEntry);
+            Assert.False(rows[1].IsOpenInEditor);
         });
 
     [Fact]

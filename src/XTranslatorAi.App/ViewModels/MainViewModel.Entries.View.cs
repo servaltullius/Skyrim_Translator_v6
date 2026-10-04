@@ -49,6 +49,12 @@ public partial class MainViewModel
         {
             _isApplyingEntryFilterChange = false;
         }
+
+        // The new filter hides the open row, so it is no longer kept for the editor (leaving it saves its edit).
+        if (SelectedEntry is { } selected && !MatchesEntryFilter(selected))
+        {
+            SelectedEntry = null;
+        }
     }
 
     private static void KeepSelectedEntryInView(StringEntryViewModel? oldValue, StringEntryViewModel? newValue)
@@ -76,6 +82,11 @@ public partial class MainViewModel
             return true;
         }
 
+        return MatchesEntryFilter(entry);
+    }
+
+    private bool MatchesEntryFilter(StringEntryViewModel entry)
+    {
         var statusFilter = (EntryFilterStatus ?? "").Trim();
         if (!string.IsNullOrWhiteSpace(statusFilter) && statusFilter != EntryStatusAll)
         {
