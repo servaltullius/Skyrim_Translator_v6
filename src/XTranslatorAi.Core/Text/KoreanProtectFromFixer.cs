@@ -28,6 +28,16 @@ internal static class KoreanProtectFromFixer
         "드래곤", "흡혈귀", "광신도", "거인", "늑대인간",
     };
 
+    // Attacker nouns count only as a whole word, optionally followed by 들 and/or a particle.
+    // A substring match treated "드래곤본" (Dragonborn) as "드래곤" and swapped the correct
+    // "탈모르의 공격으로부터 드래곤본을 보호하라" into "드래곤본의 공격으로부터 탈모르를 보호하라".
+    private static readonly Regex LikelyAttackerWordRegex = new(
+        pattern: @"(?<![\p{L}\p{N}])(?:" + string.Join("|", LikelyAttackersKo) + @")"
+                 + @"(?:들)?(?:의|이|가|은|는|을|를|과|와|도)?(?![\p{L}\p{N}])",
+        options: RegexOptions.CultureInvariant,
+        matchTimeout: RegexTimeout
+    );
+
     private static readonly Regex DestProtectFromAttackRegex = new(
         pattern: @"(?<incoming>" + IncomingKoPattern + @"\s+)?"
                  + @"(?<attacker>[\p{L}\p{N} \-'\u2019]{1,60}?)의\s*"
@@ -116,11 +126,11 @@ internal static class KoreanProtectFromFixer
             var attacker2 = (dm.Groups["attacker"].Value + dm.Groups["attackerPlural"].Value).Trim();
             var protected2 = dm.Groups["protected"].Value.Trim();
 
-            if (!ContainsAny(protected2, LikelyAttackersKo))
+            if (!ContainsLikelyAttacker(protected2))
             {
                 return normalized;
             }
-            if (ContainsAny(attacker2, LikelyAttackersKo))
+            if (ContainsLikelyAttacker(attacker2))
             {
                 return normalized;
             }
@@ -147,11 +157,11 @@ internal static class KoreanProtectFromFixer
 
         // Swap only when the protected noun phrase strongly looks like an attacker group (e.g., "산적"),
         // and the attacker side does NOT already look like an attacker group.
-        if (!ContainsAny(protectedNoun, LikelyAttackersKo))
+        if (!ContainsLikelyAttacker(protectedNoun))
         {
             return normalized;
         }
-        if (ContainsAny(attacker, LikelyAttackersKo))
+        if (ContainsLikelyAttacker(attacker))
         {
             return normalized;
         }
@@ -163,6 +173,9 @@ internal static class KoreanProtectFromFixer
         var replacement = incoming + newAttacker + "의 " + attackNoun + from + " " + newProtected + objParticle + " 보호";
         return normalized.Substring(0, m.Index) + replacement + normalized.Substring(m.Index + m.Length);
     }
+
+    private static bool ContainsLikelyAttacker(string text)
+        => !string.IsNullOrWhiteSpace(text) && LikelyAttackerWordRegex.IsMatch(text);
 
     private static bool ContainsAny(string text, IReadOnlyList<string> needles)
     {
