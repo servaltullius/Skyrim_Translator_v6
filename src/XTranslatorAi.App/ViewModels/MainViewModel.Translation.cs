@@ -35,6 +35,13 @@ public partial class MainViewModel
             return;
         }
 
+        // A typed edit on a pending row would otherwise be translated and replaced by the model's text.
+        // Saved, it is an edited row the run leaves alone.
+        if (!await TryCommitPendingDestEditsAsync())
+        {
+            return;
+        }
+
         await _translationOperation.RunAsync(async cancellationToken =>
         {
             var generation = Interlocked.Increment(ref _rowUpdateGeneration);

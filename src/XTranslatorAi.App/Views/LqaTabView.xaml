@@ -86,7 +86,9 @@
                             Style="{StaticResource XT.ToolbarButton}"
                             HorizontalAlignment="Left"
                             Margin="0,0,0,8" />
-                    <TextBox Text="{Binding SelectedEntry.DestText, UpdateSourceTrigger=PropertyChanged}"
+                    <!-- EditableDestText marks typed text as unsaved; leaving the row saves it. -->
+                    <TextBox Text="{Binding SelectedEntry.EditableDestText, UpdateSourceTrigger=PropertyChanged}"
+                             IsReadOnly="{Binding IsTranslating}"
                              Style="{StaticResource XT.EditorTextBox}"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"

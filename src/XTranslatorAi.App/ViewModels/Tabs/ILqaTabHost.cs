@@ -14,6 +14,7 @@ public interface ILqaTabHost : INotifyPropertyChanged
 
     LqaIssueViewModel? SelectedLqaIssue { get; set; }
     StringEntryViewModel? SelectedEntry { get; set; }
+    bool IsTranslating { get; }
 
     IAsyncRelayCommand SaveSelectedDestCommand { get; }
 }

@@ -52,6 +52,9 @@ public sealed class LqaTabViewModel : ObservableObject, IDisposable
 
     public IAsyncRelayCommand SaveSelectedDestCommand => _host.SaveSelectedDestCommand;
 
+    // Read-only editor during a run, as in the strings tab.
+    public bool IsTranslating => _host.IsTranslating;
+
     private bool _disposed;
 
     public void Dispose()

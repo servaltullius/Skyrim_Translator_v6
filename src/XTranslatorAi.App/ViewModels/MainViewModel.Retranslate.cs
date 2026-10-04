@@ -27,6 +27,13 @@ public partial class MainViewModel
 
     private async Task RetranslateAsync(IReadOnlyList<StringEntryViewModel> rows, string scope)
     {
+        // Save a typed edit first: it then counts as a manual edit the confirmation asks about, instead of
+        // a finished row whose unsaved text is silently cleared.
+        if (!await TryCommitPendingDestEditsAsync())
+        {
+            return;
+        }
+
         var resettable = rows.Where(row => row.Status is StringEntryStatus.Done or StringEntryStatus.Error or StringEntryStatus.Skipped).ToList();
         var edited = rows.Where(row => row.Status == StringEntryStatus.Edited).ToList();
         if (resettable.Count == 0 && edited.Count == 0)

@@ -370,6 +370,12 @@ public partial class MainViewModel
             return;
         }
 
+        // The fix rewrites row text with its current status; a typed edit is saved as edited first.
+        if (!await TryCommitPendingDestEditsAsync())
+        {
+            return;
+        }
+
         StatusMessage = "플레이스홀더(<mag>/<dur>) 검수·교정 중...";
         try
         {
@@ -407,6 +413,12 @@ public partial class MainViewModel
     {
         var db = _projectState.Db;
         if (db == null)
+        {
+            return;
+        }
+
+        // Same as FixMagDurPlaceholdersAsync: save a typed edit as edited before rewriting row text.
+        if (!await TryCommitPendingDestEditsAsync())
         {
             return;
         }

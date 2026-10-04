@@ -38,6 +38,15 @@ public partial class MainViewModel
         if (!IsWorkspaceInteractive) return;
         _isSwitchingProject = true;
         NotifyWorkspaceAvailability();
+        // The current project's edits belong to its DB, which is disposed below. The workspace is already
+        // disabled, so no row can be edited or left between this save and the switch.
+        if (!await TryCommitPendingDestEditsAsync())
+        {
+            _isSwitchingProject = false;
+            NotifyWorkspaceAvailability();
+            return;
+        }
+
         using var loadCancellation = new CancellationTokenSource();
         _projectLoadCancellation = loadCancellation;
         try
@@ -151,6 +160,12 @@ public partial class MainViewModel
             return;
         }
 
+        // The exporter reads the DB; an edit still only in the editor would be missing from the XML.
+        if (!await TryCommitPendingDestEditsAsync())
+        {
+            return;
+        }
+
         var exportPath = _uiInteractionService.ShowSaveFileDialog(
             new SaveFileDialogRequest(
                 Filter: "xTranslator XML (*.xml)|*.xml|All files (*.*)|*.*",
@@ -206,9 +221,21 @@ public partial class MainViewModel
             return;
         }
 
+        await CommitDestEditAsync(db, entry, newDest);
+    }
+
+    private async Task CommitDestEditAsync(ProjectDb db, StringEntryViewModel entry, string newDest)
+    {
         var savedDest = newDest ?? "";
+        var shownWhenSaving = entry.DestText;
         await db.UpdateStringTranslationAsync(entry.Id, savedDest, StringEntryStatus.Edited, null, CancellationToken.None);
-        entry.DestText = savedDest;
+        // A row saved because the user left it can be reselected and typed into before this write finishes;
+        // that newer text stays as the next unsaved edit instead of being replaced by the older saved text.
+        if (string.Equals(entry.DestText, shownWhenSaving, StringComparison.Ordinal))
+        {
+            entry.DestText = savedDest;
+        }
+        entry.MarkDestTextSaved(savedDest);
         entry.Status = StringEntryStatus.Edited;
         entry.IsTranslationMemoryApplied = false;
         if (ReferenceEquals(db, _projectState.Db))

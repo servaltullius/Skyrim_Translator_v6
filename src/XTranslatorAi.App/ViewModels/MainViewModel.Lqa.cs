@@ -15,6 +15,12 @@ public partial class MainViewModel
             return;
         }
 
+        // The check reads the rows' text; save a typed edit first so it judges what export will write.
+        if (!await TryCommitPendingDestEditsAsync())
+        {
+            return;
+        }
+
         IsLqaScanning = true;
         try
         {

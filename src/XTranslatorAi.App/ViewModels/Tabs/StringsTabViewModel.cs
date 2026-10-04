@@ -30,6 +30,9 @@ public sealed class StringsTabViewModel : ObservableObject, IDisposable
 
     public bool IsProjectLoaded => _host.IsProjectLoaded;
 
+    // The editor is read-only during a run: a row the run finishes would replace the typed text.
+    public bool IsTranslating => _host.IsTranslating;
+
     public string EntryFilterText
     {
         get => _host.EntryFilterText;

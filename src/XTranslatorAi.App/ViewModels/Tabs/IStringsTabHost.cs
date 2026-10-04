@@ -8,6 +8,7 @@ namespace XTranslatorAi.App.ViewModels.Tabs;
 public interface IStringsTabHost : INotifyPropertyChanged
 {
     bool IsProjectLoaded { get; }
+    bool IsTranslating { get; }
     string EntryFilterText { get; set; }
     ObservableRangeCollection<string> EntryStatusFilterValues { get; }
     string EntryFilterStatus { get; set; }

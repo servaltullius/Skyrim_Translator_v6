@@ -70,6 +70,22 @@ public partial class MainViewModel
     {
         _isClosing = true;
         NotifyWorkspaceAvailability();
+        // Closing used to drop an edit that was never saved with "번역문 저장". If the DB refuses the save,
+        // let the user decide rather than either losing the edit silently or never being able to close.
+        if (!await TryCommitPendingDestEditsAsync()
+            && _uiInteractionService.ShowMessage(
+                "번역문 수정을 저장하지 못했습니다.\n\n저장하지 않고 닫을까요?",
+                "번역문 저장",
+                UiMessageBoxButton.YesNo,
+                UiMessageBoxImage.Warning,
+                UiMessageBoxResult.No
+            ) != UiMessageBoxResult.Yes)
+        {
+            _isClosing = false;
+            NotifyWorkspaceAvailability();
+            return false;
+        }
+
         _projectLoadCancellation?.Cancel();
         try
         {

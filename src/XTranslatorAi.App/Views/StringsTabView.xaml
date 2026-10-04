@@ -185,7 +185,9 @@
                             Margin="0,0,0,8" />
                     <TabControl BorderThickness="0" Background="Transparent" ItemContainerStyle="{StaticResource XT.TabItem}">
                         <TabItem Header="편집">
-                            <TextBox Text="{Binding SelectedEntry.DestText, UpdateSourceTrigger=PropertyChanged}"
+                            <!-- EditableDestText marks typed text as unsaved; leaving the row saves it. -->
+                            <TextBox Text="{Binding SelectedEntry.EditableDestText, UpdateSourceTrigger=PropertyChanged}"
+                                     IsReadOnly="{Binding IsTranslating}"
                                      Style="{StaticResource XT.EditorTextBox}"
                                      TextWrapping="Wrap"
                                      AcceptsReturn="True"

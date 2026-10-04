@@ -59,6 +59,14 @@ public partial class MainViewModel
 
         _isSwitchingProject = true;
         IsPluginIoBusy = true;
+        // The current project's edits belong to its DB, which this open replaces (see OpenXmlPathAsync).
+        if (!await TryCommitPendingDestEditsAsync())
+        {
+            _isSwitchingProject = false;
+            IsPluginIoBusy = false;
+            return;
+        }
+
         using var cancellation = new CancellationTokenSource();
         _projectLoadCancellation = cancellation;
         ProjectDb? incomingDb = null;
@@ -138,6 +146,8 @@ public partial class MainViewModel
         var db = _projectState.Db;
         var document = _projectState.PluginDocument;
         if (db == null || document == null) return;
+        // The plugin writer reads the DB; an edit still only in the editor would be missing from the ESP.
+        if (!await TryCommitPendingDestEditsAsync()) return;
         var outputDirectory = _uiInteractionService.ShowSaveFileDialog(new SaveFileDialogRequest(
             "새 출력 폴더 이름|*.*", "새 출력 폴더 이름을 지정하세요 (폴더 안에 원본 파일명으로 저장)",
             Path.GetFileNameWithoutExtension(document.Info.InputPath) + ".translated"));
