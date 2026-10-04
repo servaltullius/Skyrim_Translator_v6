@@ -47,7 +47,7 @@ public static partial class XTranslatorXmlImporter
             if (reader.NodeType == XmlNodeType.Element && reader.Depth == 0)
             {
                 if (rootSeen || reader.Name != "SSTXMLRessources" || reader.NamespaceURI.Length != 0)
-                    throw new InvalidDataException("Expected an xTranslator SSTXMLRessources document.");
+                    throw XTranslatorXmlFormatError.Create("xTranslator XML이 아닙니다(최상위 요소가 SSTXMLRessources가 아님). xTranslator에서 내보낸 XML을 여세요.");
                 rootSeen = true;
             }
             else if (reader.NodeType == XmlNodeType.Element && reader.Depth == 1 && reader.Name == "Params")
@@ -58,7 +58,7 @@ public static partial class XTranslatorXmlImporter
             }
             else if (reader.NodeType == XmlNodeType.Element && reader.Depth == 1 && reader.Name == "Content")
             {
-                if (contentSeen) throw new InvalidDataException("The XML contains more than one Content element.");
+                if (contentSeen) throw XTranslatorXmlFormatError.Create("xTranslator XML에 Content 요소가 둘 이상 있습니다. 파일을 xTranslator에서 다시 내보내세요.");
                 contentSeen = true;
                 contentDepth = reader.IsEmptyElement ? -1 : reader.Depth;
             }
@@ -70,16 +70,16 @@ public static partial class XTranslatorXmlImporter
                      && reader.Depth == contentDepth + 1)
             {
                 if (reader.Name != "String" || reader.NamespaceURI.Length != 0)
-                    throw new InvalidDataException("Content contains an unsupported string element.");
+                    throw XTranslatorXmlFormatError.Create("xTranslator XML의 Content 안에 String이 아닌 요소가 있습니다. 파일을 xTranslator에서 다시 내보내세요.");
                 var element = (XElement)await XElement.ReadFromAsync(reader, cancellationToken);
                 if (element.Element("Source") == null)
-                    throw new InvalidDataException("A String element is missing its Source element.");
+                    throw XTranslatorXmlFormatError.Create("xTranslator XML의 String 요소에 Source가 없습니다. 파일을 xTranslator에서 다시 내보내세요.");
                 yield return TryParseStringRow(element, orderIndex++, ignoreDestText)!;
                 continue;
             }
             await reader.ReadAsync();
         }
         if (!rootSeen || !contentSeen)
-            throw new InvalidDataException("The XML must contain SSTXMLRessources/Content.");
+            throw XTranslatorXmlFormatError.Create("xTranslator XML이 아니거나 문자열 목록(SSTXMLRessources/Content)이 없습니다. xTranslator에서 내보낸 XML을 여세요.");
     }
 }

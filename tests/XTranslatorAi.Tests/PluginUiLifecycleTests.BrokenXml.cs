@@ -21,4 +21,20 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Contains("6", fixture.Vm.StatusMessage);
             Assert.DoesNotContain("Unexpected end of file", fixture.Vm.StatusMessage);
         });
+
+    /// <summary>An XML that is not an xTranslator file (a fomod ModuleConfig.xml) also ended as E999.</summary>
+    [Fact]
+    public Task OpeningAnotherKindOfXml_SaysItIsNotAnXTranslatorFile()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            var xml = Path.Combine(fixture.Root, "ModuleConfig.xml");
+            await File.WriteAllTextAsync(xml, "<?xml version=\"1.0\"?><config><moduleName>Test</moduleName></config>");
+
+            await fixture.Vm.OpenDroppedFileAsync(xml);
+
+            Assert.False(fixture.Vm.IsProjectLoaded);
+            Assert.Contains("xTranslator", fixture.Vm.StatusMessage);
+            Assert.DoesNotContain("E999", fixture.Vm.StatusMessage);
+        });
 }

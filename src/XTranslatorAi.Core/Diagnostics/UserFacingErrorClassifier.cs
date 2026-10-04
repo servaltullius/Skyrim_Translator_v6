@@ -57,6 +57,11 @@ public static class UserFacingErrorClassifier
             return new UserFacingError("E000", "작업이 취소되었습니다.", DetailsInApiLogs: false);
         }
 
+        if (FindInChain<InvalidDataException>(ex) is { } notXTranslator && XTranslatorAi.Core.Xml.XTranslatorXmlFormatError.IsFormatError(notXTranslator))
+        {
+            return new UserFacingError("E431", notXTranslator.Message, DetailsInApiLogs: false);
+        }
+
         // A truncated or hand-edited XML showed as E999 "예상치 못한 오류 … 잠시 후 다시 시도하세요".
         if (FindInChain<System.Xml.XmlException>(ex) is { } xml)
         {
