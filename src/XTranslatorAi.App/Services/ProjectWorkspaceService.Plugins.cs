@@ -23,7 +23,8 @@ public sealed partial class ProjectWorkspaceService
     public sealed record LoadFromPluginResult(ProjectDb Db, PluginDocument Document,
         string SourceLanguage, string TargetLanguage, string TargetEncoding,
         IReadOnlyList<StringEntry> Entries, string ProjectContext, string? MovedFromPath = null,
-        (int Count, IReadOnlyList<string> FromPlugins) InheritedGlossary = default, int RetiredTranslations = 0);
+        (int Count, IReadOnlyList<string> FromPlugins) InheritedGlossary = default, int RetiredTranslations = 0,
+        string? ContinuedFromTargetEncoding = null);
 
     public Task<LoadFromPluginResult> LoadFromPluginAsync(LoadFromPluginRequest request, CancellationToken cancellationToken)
         // SQLite's async methods execute synchronously. Keep the complete parse/import operation
@@ -38,7 +39,10 @@ public sealed partial class ProjectWorkspaceService
         var document = await PluginReader.ReadAsync(request.InputPath, request.Options, cancellationToken);
         var dbPath = ResolvePluginProjectDbPath(request, document);
         var isNewProject = !File.Exists(dbPath);
-        var movedFrom = isNewProject ? TryContinueMovedProject(request, document, dbPath) : null;
+        var continued = isNewProject ? TryContinueMovedProject(request, document, dbPath) : null;
+        // The same plugin opened with another output encoding continues that project rather than being "moved".
+        var movedFrom = continued is { EarlierTargetEncoding: null } ? continued.Value.InputPath : null;
+        var continuedFromEncoding = continued?.EarlierTargetEncoding;
         var db = await ProjectDb.OpenOrCreateAsync(dbPath, cancellationToken);
         try
         {
@@ -48,7 +52,7 @@ public sealed partial class ProjectWorkspaceService
                 EmbeddedAssets.LoadMetaPrompt(BethesdaFranchise.ElderScrolls), request.CustomPromptText,
                 request.UseCustomPrompt, now, now);
             await OpenGlobalDbAsync(BethesdaFranchise.ElderScrolls, cancellationToken);
-            var inherited = isNewProject && movedFrom == null
+            var inherited = isNewProject && continued == null
                 ? await InheritModFamilyGlossaryAsync(db, request.InputPath, dbPath, cancellationToken)
                 : default;
             var context = await db.TryGetProjectContextAsync(cancellationToken);
@@ -58,7 +62,8 @@ public sealed partial class ProjectWorkspaceService
                 request.TargetEncoding, cancellationToken);
             var retired = db.LastPluginImportRetiredCount;
             return new LoadFromPluginResult(db, document, request.Options.SourceLanguage,
-                request.TargetLanguage, request.TargetEncoding, entries, context?.ContextText ?? "", movedFrom, inherited, retired);
+                request.TargetLanguage, request.TargetEncoding, entries, context?.ContextText ?? "", movedFrom, inherited, retired,
+                continuedFromEncoding);
         }
         catch
         {
@@ -96,8 +101,11 @@ public sealed partial class ProjectWorkspaceService
     /// project for the same file name and settings is continued if it holds the same file (SHA-256) or its file is
     /// no longer where it was. It is copied to the new path, so the earlier project stays as it was, and the import
     /// that follows restores its translations by field key. Returns the earlier plugin path, or null.
+    /// The output encoding is part of the project key too, so following E457's advice (choose UTF-8 and reopen)
+    /// opened an empty project; a project of the same plugin with another output encoding is continued the same
+    /// way, and <c>EarlierTargetEncoding</c> names its encoding.
     /// </summary>
-    private static string? TryContinueMovedProject(LoadFromPluginRequest request, PluginDocument document, string newDbPath)
+    private static (string InputPath, string? EarlierTargetEncoding)? TryContinueMovedProject(LoadFromPluginRequest request, PluginDocument document, string newDbPath)
     {
         var directory = Path.GetDirectoryName(newDbPath);
         var stem = Path.GetFileNameWithoutExtension(newDbPath);
@@ -107,7 +115,7 @@ public sealed partial class ProjectWorkspaceService
             return null;
         }
 
-        var candidates = new List<(string DbPath, string InputPath, bool SameFile, DateTime Written)>();
+        var candidates = new List<(string DbPath, string InputPath, bool SameFile, DateTime Written, string? Encoding)>();
         foreach (var file in Directory.EnumerateFiles(directory, stem[..(hashDot + 1)] + "*.sqlite"))
         {
             var hash = Path.GetFileNameWithoutExtension(file)[(hashDot + 1)..];
@@ -119,8 +127,20 @@ public sealed partial class ProjectWorkspaceService
             }
 
             var info = earlier.Source;
+            var samePath = string.Equals(Path.GetFullPath(info.InputPath), Path.GetFullPath(request.InputPath), StringComparison.OrdinalIgnoreCase);
+            var otherEncoding = !string.Equals(earlier.TargetEncoding, request.TargetEncoding, StringComparison.OrdinalIgnoreCase);
+            var sameOther = info.Options.Game == document.Info.Options.Game
+                && string.Equals(info.Options.SourceLanguage, request.Options.SourceLanguage, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(info.Options.SourceEncoding, document.Info.Options.SourceEncoding, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(earlier.TargetLanguage, request.TargetLanguage, StringComparison.OrdinalIgnoreCase);
+            if (samePath && otherEncoding && sameOther)
+            {
+                candidates.Add((file, info.InputPath, true, File.GetLastWriteTimeUtc(file), earlier.TargetEncoding));
+                continue;
+            }
+
             var sameSettings = string.Equals(Path.GetFileName(info.InputPath), Path.GetFileName(request.InputPath), StringComparison.OrdinalIgnoreCase)
-                && !string.Equals(Path.GetFullPath(info.InputPath), Path.GetFullPath(request.InputPath), StringComparison.OrdinalIgnoreCase)
+                && !samePath
                 && info.Options.Game == document.Info.Options.Game
                 && string.Equals(info.Options.SourceLanguage, request.Options.SourceLanguage, StringComparison.OrdinalIgnoreCase)
                 && string.Equals(info.Options.SourceEncoding, document.Info.Options.SourceEncoding, StringComparison.OrdinalIgnoreCase)
@@ -129,11 +149,13 @@ public sealed partial class ProjectWorkspaceService
             var sameFile = string.Equals(info.Sha256, document.Info.Sha256, StringComparison.OrdinalIgnoreCase);
             if (sameSettings && (sameFile || !File.Exists(info.InputPath)))
             {
-                candidates.Add((file, info.InputPath, sameFile, File.GetLastWriteTimeUtc(file)));
+                candidates.Add((file, info.InputPath, sameFile, File.GetLastWriteTimeUtc(file), null));
             }
         }
 
-        var chosen = candidates.OrderByDescending(c => c.SameFile).ThenByDescending(c => c.Written).FirstOrDefault();
+        // The same plugin under another output encoding first, then a moved copy of the same file, newest first.
+        var chosen = candidates.OrderByDescending(c => c.Encoding != null).ThenByDescending(c => c.SameFile)
+            .ThenByDescending(c => c.Written).FirstOrDefault();
         if (chosen.DbPath == null)
         {
             return null;
@@ -148,7 +170,7 @@ public sealed partial class ProjectWorkspaceService
             source.BackupDatabase(target);
         }
 
-        return chosen.InputPath;
+        return (chosen.InputPath, chosen.Encoding);
     }
 
     /// <summary>

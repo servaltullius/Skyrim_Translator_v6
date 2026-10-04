@@ -36,9 +36,9 @@ public sealed class PluginMovedProjectTests : IAsyncLifetime
         try { Directory.Delete(_root, recursive: true); } catch (IOException) { }
     }
 
-    private async Task<ProjectWorkspaceService.LoadFromPluginResult> OpenAsync(string path)
+    private async Task<ProjectWorkspaceService.LoadFromPluginResult> OpenAsync(string path, string targetEncoding = "utf-8")
         => await _workspace.LoadFromPluginAsync(new ProjectWorkspaceService.LoadFromPluginRequest(path, new PluginReadOptions(),
-            "korean", "utf-8", "gemini-3.8-flash", "", false), CancellationToken.None);
+            "korean", targetEncoding, "gemini-3.8-flash", "", false), CancellationToken.None);
 
     private async Task<string> TranslateOnlyRowAsync(string pluginPath)
     {
@@ -81,6 +81,22 @@ public sealed class PluginMovedProjectTests : IAsyncLifetime
 
         // The earlier project is copied, not moved.
         Assert.Equal(2, Directory.EnumerateFiles(Path.Combine(_root, "projects"), "Test.*.sqlite", SearchOption.AllDirectories).Count());
+    }
+
+    // The output encoding is part of the project key; following E457's advice (choose another output encoding and
+    // reopen) opened an empty project.
+    [Fact]
+    public async Task ReopeningWithAnotherOutputEncoding_ContinuesTheProject()
+    {
+        var plugin = await TranslateOnlyRowAsync(WritePlugin("a"));
+
+        var reopened = await OpenAsync(plugin, targetEncoding: "windows-1252");
+        await using (reopened.Db)
+        {
+            Assert.Null(reopened.MovedFromPath);
+            Assert.Equal("utf-8", reopened.ContinuedFromTargetEncoding);
+            Assert.Equal(("철검", StringEntryStatus.Edited), (Assert.Single(reopened.Entries).DestText, Assert.Single(reopened.Entries).Status));
+        }
     }
 
     [Fact]

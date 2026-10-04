@@ -114,6 +114,7 @@ public partial class MainViewModel
             var diagnostics = string.Join(" / ", loaded.Document.Info.Diagnostics.Select(item => item.Message));
             StatusMessage = $"플러그인 읽기 완료: {Path.GetFileName(path)} · {TotalCount}개 문자열"
                 + (loaded.MovedFromPath == null ? "" : $" · 옮기기 전 위치({loaded.MovedFromPath})의 프로젝트를 이어서 엽니다")
+                + (loaded.ContinuedFromTargetEncoding == null ? "" : $" · 출력 인코딩 {loaded.ContinuedFromTargetEncoding}로 작업하던 프로젝트를 이어서 엽니다")
                 + (loaded.InheritedGlossary.Count == 0 ? ""
                     : $" · 같은 모드의 다른 프로젝트({string.Join(", ", loaded.InheritedGlossary.FromPlugins.Take(3))})에서 용어 {loaded.InheritedGlossary.Count}개를 가져왔습니다")
                 + (loaded.RetiredTranslations == 0 ? ""
