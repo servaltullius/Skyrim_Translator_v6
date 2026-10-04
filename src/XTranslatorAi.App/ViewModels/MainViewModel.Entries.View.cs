@@ -258,8 +258,9 @@ public partial class MainViewModel
     private static bool MatchesEntryQuery(StringEntryViewModel entry, string q)
     {
         if (entry.TryMatchLocationQuery(q, out var locationMatch)) return locationMatch;
-        return ContainsIgnoreCase(entry.OrderIndex.ToString(), q)
-               || ContainsIgnoreCase(entry.Id.ToString(), q)
+        // A number finds that row number or Id exactly; "50" used to bring #150 and #500-#509 along.
+        return string.Equals(entry.OrderIndex.ToString(), q, StringComparison.Ordinal)
+               || string.Equals(entry.Id.ToString(), q, StringComparison.Ordinal)
                || ContainsIgnoreCase(entry.Edid ?? "", q)
                || ContainsIgnoreCase(entry.Rec ?? "", q)
                || ContainsIgnoreCase(entry.SourceText, q)

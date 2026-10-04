@@ -50,3 +50,21 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Equal("표시 2 / 전체 3행", fixture.Vm.VisibleEntrySummary);
         });
 }
+
+public sealed partial class PluginUiLifecycleTests
+{
+    [Fact]
+    public Task SearchingANumber_FindsThatRowAndTextsWithTheNumber_NotLongerRowNumbers()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            var sources = Enumerable.Range(0, 16).Select(i => i == 3 ? "Deals 15 damage" : $"Item {(char)('A' + i)}").ToArray();
+            var rows = await LoadXmlWorkspaceAsync(fixture, sources);
+            fixture.Vm.SelectedEntry = null;
+
+            fixture.Vm.EntryFilterText = "15";
+
+            // The text containing 15, row #15 and the row whose Id is 15 (#14); not #1, #10-#13 by digits alone.
+            Assert.Equal(new[] { rows[3], rows[14], rows[15] }, VisibleRows(fixture.Vm));
+        });
+}
