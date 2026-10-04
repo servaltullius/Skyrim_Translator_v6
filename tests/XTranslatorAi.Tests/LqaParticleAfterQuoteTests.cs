@@ -28,3 +28,28 @@ public class LqaParticleAfterQuoteTests
     public void CorrectOrUnrelated_IsNotReported(string dest)
         => Assert.Null(LqaHeuristics.FindHangulParticleMismatchSuggestion(dest));
 }
+
+/// <summary>
+/// Copula forms after a glossary term: "최초의 드래곤본였다고", "델핀였다는" were corrected in review. After a final
+/// consonant the copula keeps its 이 (이었, 이야, 이에요).
+/// </summary>
+public class LqaCopulaAfterTermTests
+{
+    private static readonly string[] Terms = { "드래곤본", "델핀", "세라나" };
+
+    [Theory]
+    [InlineData("최초의 드래곤본였다고 해.", "드래곤본였 → 드래곤본이었")]
+    [InlineData("다름 아닌 델핀였다는 거야.", "델핀였 → 델핀이었")]
+    [InlineData("네가 드래곤본야?", "드래곤본야 → 드래곤본이야")]
+    [InlineData("그게 드래곤본예요.", "드래곤본예요 → 드래곤본이에요")]
+    public void VowelCopulaAfterFinalConsonant_IsReported(string dest, string expected)
+        => Assert.Equal(expected, LqaHeuristics.FindHangulParticleMismatchSuggestion(dest, Terms));
+
+    [Theory]
+    [InlineData("최초의 드래곤본이었다고 해.")]
+    [InlineData("세라나였다.")]
+    [InlineData("세라나야?")]
+    [InlineData("세라나예요.")]
+    public void CorrectForms_AreNotReported(string dest)
+        => Assert.Null(LqaHeuristics.FindHangulParticleMismatchSuggestion(dest, Terms));
+}

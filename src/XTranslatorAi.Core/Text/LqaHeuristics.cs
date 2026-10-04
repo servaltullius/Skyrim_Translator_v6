@@ -131,6 +131,11 @@ public static class LqaHeuristics
             {
                 return $"{term}{written} → {term}{expected}";
             }
+
+            if (FindCopulaAfterConsonant(term, destText, end) is { } copula)
+            {
+                return copula;
+            }
         }
 
         foreach (Match m in QuotedWordEndRegex.Matches(destText))
@@ -164,6 +169,39 @@ public static class LqaHeuristics
             }
 
             return $"{word}{particle} → {word}{expected}";
+        }
+
+        return null;
+    }
+
+    // Copula forms written as after a vowel ("드래곤본였다", "델핀야?"). After a vowel, 이었/이야 are also correct,
+    // so only a term ending in a final consonant is checked.
+    private static readonly (string Vowel, string Consonant)[] CopulaForms =
+    {
+        ("예요", "이에요"), ("였", "이었"), ("야", "이야"),
+    };
+
+    private static string? FindCopulaAfterConsonant(string term, string text, int end)
+    {
+        if (!HasFinalConsonant(term[^1]))
+        {
+            return null;
+        }
+
+        foreach (var (vowelForm, consonantForm) in CopulaForms)
+        {
+            if (string.CompareOrdinal(text, end, vowelForm, 0, vowelForm.Length) != 0)
+            {
+                continue;
+            }
+
+            // 였 is always followed by an ending (였다, 였어); 야 and 예요 end the word ("야말로" also takes 이).
+            var after = end + vowelForm.Length;
+            if (vowelForm == "였" || after >= text.Length || !IsHangulSyllable(text[after])
+                || string.CompareOrdinal(text, after, "말로", 0, 2) == 0)
+            {
+                return $"{term}{vowelForm} → {term}{consonantForm}";
+            }
         }
 
         return null;
