@@ -100,6 +100,13 @@ public partial class MainViewModel
             return false;
         }
 
+        if (!await TrySaveListEditsBeforeReloadAsync(EditableLists.All, "창을 닫으면", closing: true))
+        {
+            _isClosing = false;
+            NotifyWorkspaceAvailability();
+            return false;
+        }
+
         _projectLoadCancellation?.Cancel();
         try
         {

@@ -43,6 +43,31 @@ public sealed partial class PluginUiLifecycleTests
             Assert.DoesNotContain(fixture.Vm.Glossary, g => g.IsDirty);
         });
 
+    // Closing the window dropped unsaved glossary edits without asking.
+    [Theory]
+    [InlineData(UiMessageBoxResult.Cancel, false, "철")]
+    [InlineData(UiMessageBoxResult.No, true, "철")]
+    [InlineData(UiMessageBoxResult.Yes, true, "철제")]
+    public Task Closing_WithUnsavedGlossaryEdits_AsksToSaveDiscardOrStay(UiMessageBoxResult answer, bool closed, string saved)
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            await LoadXmlWorkspaceAsync(fixture, "Iron Sword");
+            fixture.Vm.GlossarySourceTerm = "Iron";
+            fixture.Vm.GlossaryTargetTerm = "철";
+            await fixture.Vm.AddGlossaryCommand.ExecuteAsync(null);
+            Assert.Single(fixture.Vm.Glossary).TargetTerm = "철제";
+
+            fixture.Ui.Responses.Enqueue(answer);
+            Assert.Equal(closed, await fixture.Vm.TryCloseWorkspaceAsync());
+
+            await using var reopened = closed
+                ? await ProjectDb.OpenOrCreateAsync(fixture.DbPath, CancellationToken.None)
+                : null;
+            var db = reopened ?? fixture.State.Db!;
+            Assert.Equal(new[] { ("Iron", saved) }, Terms(await db.GetGlossaryAsync(CancellationToken.None)));
+        });
+
     [Fact]
     public Task AddingToTheSeriesTm_WithUnsavedTmEdits_AsksFirst_AndSavesThemOrCancels()
         => RunOnSta(async () =>

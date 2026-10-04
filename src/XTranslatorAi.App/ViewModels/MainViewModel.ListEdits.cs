@@ -31,7 +31,8 @@ public partial class MainViewModel
     /// user cancelled or a save failed; the caller then stops instead of reloading.
     /// </summary>
     /// <param name="whenReloading">What reloads the lists, as "…하면" (e.g. "용어를 추가하면").</param>
-    private async Task<bool> TrySaveListEditsBeforeReloadAsync(EditableLists lists, string whenReloading)
+    /// <param name="closing">Closing the window: 아니요 then discards the edits and closes, 취소 keeps the window.</param>
+    private async Task<bool> TrySaveListEditsBeforeReloadAsync(EditableLists lists, string whenReloading, bool closing = false)
     {
         var glossary = lists.HasFlag(EditableLists.ProjectGlossary) ? Glossary.Where(g => g.IsDirty).ToList() : new();
         var global = lists.HasFlag(EditableLists.GlobalGlossary) ? GlobalGlossary.Where(g => g.IsDirty).ToList() : new();
@@ -48,16 +49,33 @@ public partial class MainViewModel
         if (global.Count > 0) counts.Add($"전체 용어집 {global.Count}개");
         if (memory.Count > 0) counts.Add($"시리즈 TM {memory.Count}개");
 
-        var answer = _uiInteractionService.ShowMessage(
-            $"저장하지 않은 수정이 있습니다: {string.Join(", ", counts)}.\n\n"
-            + $"{whenReloading} 목록을 다시 불러오므로 저장하지 않으면 이 수정은 사라집니다.\n\n"
-            + "- 예: 수정을 저장한 뒤 진행\n"
-            + "- 아니요: 취소",
-            "저장하지 않은 수정",
-            UiMessageBoxButton.YesNo,
-            UiMessageBoxImage.Warning,
-            UiMessageBoxResult.Yes
-        );
+        // Closing the window used to drop these edits without a word; there the user may also discard them.
+        var answer = closing
+            ? _uiInteractionService.ShowMessage(
+                $"저장하지 않은 수정이 있습니다: {string.Join(", ", counts)}.\n\n"
+                + "- 예: 수정을 저장하고 닫기\n"
+                + "- 아니요: 저장하지 않고 닫기\n"
+                + "- 취소: 닫지 않기",
+                "저장하지 않은 수정",
+                UiMessageBoxButton.YesNoCancel,
+                UiMessageBoxImage.Warning,
+                UiMessageBoxResult.Yes
+            )
+            : _uiInteractionService.ShowMessage(
+                $"저장하지 않은 수정이 있습니다: {string.Join(", ", counts)}.\n\n"
+                + $"{whenReloading} 목록을 다시 불러오므로 저장하지 않으면 이 수정은 사라집니다.\n\n"
+                + "- 예: 수정을 저장한 뒤 진행\n"
+                + "- 아니요: 취소",
+                "저장하지 않은 수정",
+                UiMessageBoxButton.YesNo,
+                UiMessageBoxImage.Warning,
+                UiMessageBoxResult.Yes
+            );
+        if (closing && answer == UiMessageBoxResult.No)
+        {
+            return true;
+        }
+
         if (answer != UiMessageBoxResult.Yes)
         {
             StatusMessage = "저장하지 않은 용어집·TM 수정이 있어 진행하지 않았습니다.";
