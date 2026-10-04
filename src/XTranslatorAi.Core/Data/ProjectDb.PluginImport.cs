@@ -96,7 +96,7 @@ public sealed partial class ProjectDb
                 await clear.ExecuteNonQueryAsync(cancellationToken);
             }
 
-            await RetireChangedPluginTranslationsAsync(tx, saved, sourceByKey, cancellationToken);
+            var retiredCount = await RetireChangedPluginTranslationsAsync(tx, saved, sourceByKey, cancellationToken);
             await using var insert = CreateBulkInsertStringsCommand(_connection, tx, out var parameters);
             await using var binding = _connection.CreateCommand();
             binding.Transaction = tx;
@@ -111,11 +111,13 @@ public sealed partial class ProjectDb
                 cancellationToken.ThrowIfCancellationRequested();
                 var dest = field.SourceText;
                 var status = StringEntryStatus.Pending;
+                var keptTranslation = false;
                 if (saved.TryGetValue(field.Key, out var previous)
                     && string.Equals(previous.Source, field.SourceText, StringComparison.Ordinal))
                 {
                     dest = previous.Dest;
                     status = previous.Status;
+                    keptTranslation = true;
                 }
                 else if (retired.TryGetValue((field.Key, field.SourceText), out var kept))
                 {
@@ -130,7 +132,7 @@ public sealed partial class ProjectDb
                 keyParameter.Value = field.Key;
                 fieldParameter.Value = JsonSerializer.Serialize(field);
                 var id = Convert.ToInt64(await binding.ExecuteScalarAsync(cancellationToken), System.Globalization.CultureInfo.InvariantCulture);
-                if (notesByKey.TryGetValue(field.Key, out var notes) && string.Equals(notes.Source, field.SourceText, StringComparison.Ordinal))
+                if (keptTranslation && notesByKey.TryGetValue(field.Key, out var notes) && string.Equals(notes.Source, field.SourceText, StringComparison.Ordinal))
                 {
                     await RestorePluginStringNotesAsync(tx, id, notes.Notes, cancellationToken);
                 }
@@ -150,13 +152,6 @@ public sealed partial class ProjectDb
                 saveSource.Parameters.AddWithValue("$info", JsonSerializer.Serialize(source));
                 saveSource.Parameters.AddWithValue("$encoding", targetEncoding);
                 await saveSource.ExecuteNonQueryAsync(cancellationToken);
-            }
-            int retiredCount;
-            await using (var count = _connection.CreateCommand())
-            {
-                count.Transaction = tx;
-                count.CommandText = "SELECT COUNT(*) FROM PluginRetiredTranslation;";
-                retiredCount = Convert.ToInt32(await count.ExecuteScalarAsync(cancellationToken), System.Globalization.CultureInfo.InvariantCulture);
             }
             cancellationToken.ThrowIfCancellationRequested();
             await tx.CommitAsync(cancellationToken);
@@ -243,7 +238,8 @@ public sealed partial class ProjectDb
     /// A row whose source changed (a mod update) or that the plugin no longer has used to lose its translation for
     /// good, reviewed ones included. It is kept aside by field key and source, and comes back when that source does.
     /// </summary>
-    private async Task RetireChangedPluginTranslationsAsync(
+    /// <summary>Sets aside the translations of rows whose source changed or that are gone; returns how many this import set aside.</summary>
+    private async Task<int> RetireChangedPluginTranslationsAsync(
         SqliteTransaction tx,
         IReadOnlyDictionary<string, (string Source, string Dest, StringEntryStatus Status)> saved,
         IReadOnlyDictionary<string, string> sourceByKey,
@@ -261,6 +257,7 @@ public sealed partial class ProjectDb
         var dest = retire.Parameters.Add("$dest", SqliteType.Text);
         var status = retire.Parameters.Add("$status", SqliteType.Integer);
         retire.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O"));
+        var count = 0;
         foreach (var (fieldKey, previous) in saved)
         {
             if (sourceByKey.TryGetValue(fieldKey, out var current) && string.Equals(current, previous.Source, StringComparison.Ordinal))
@@ -273,7 +270,10 @@ public sealed partial class ProjectDb
             dest.Value = previous.Dest;
             status.Value = (int)previous.Status;
             await retire.ExecuteNonQueryAsync(ct);
+            count++;
         }
+
+        return count;
     }
 
     private async Task<Dictionary<(string Key, string Source), (string Dest, StringEntryStatus Status)>> ReadRetiredPluginTranslationsAsync(
@@ -303,8 +303,8 @@ public sealed partial class ProjectDb
     }
 
     /// <summary>
-    /// Translations kept aside after the last successful <see cref="ReplaceImportedPluginStringsAsync"/>, counted inside
-    /// its transaction so the caller needs no fallible read after the commit.
+    /// Translations the last successful <see cref="ReplaceImportedPluginStringsAsync"/> set aside (not the ones kept
+    /// from earlier imports), counted inside its transaction so the caller needs no fallible read after the commit.
     /// </summary>
     public int LastPluginImportRetiredCount { get; private set; }
 

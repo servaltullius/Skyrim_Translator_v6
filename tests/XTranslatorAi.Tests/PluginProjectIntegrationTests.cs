@@ -314,6 +314,8 @@ public sealed class PluginProjectIntegrationTests
         await using var fixture = await Fixture.CreateAsync();
         await fixture.ImportAsync(Field("sword", 0, "Iron Sword"), Field("shield", 1, "Iron Shield"));
         var rows = await fixture.Db.GetStringsAsync(20, 0, CancellationToken.None);
+        await fixture.Db.UpdateStringTranslationAsync(rows[0].Id, "철 검", StringEntryStatus.Done, null, CancellationToken.None);
+        await fixture.Db.UpdateStringTranslationAsync(rows[1].Id, "철 방패", StringEntryStatus.Done, null, CancellationToken.None);
         await fixture.Db.UpsertStringNoteAsync(rows[0].Id, "tm_hit", "TM 적용", CancellationToken.None);
         await fixture.Db.UpsertStringNoteAsync(rows[1].Id, "tm_hit", "TM 적용", CancellationToken.None);
 
@@ -322,6 +324,42 @@ public sealed class PluginProjectIntegrationTests
 
         var notes = await fixture.Db.GetStringNotesByKindAsync("tm_hit", CancellationToken.None);
         Assert.Equal(new[] { reopened[0].Id }, notes.Keys.ToArray());
+    }
+
+    // A row whose translation is not kept (it failed, so it reopens as Pending) showed a stale TM mark.
+    [Fact]
+    public async Task Reopening_DropsTheNotesOfRowsWhoseTranslationIsNotKept()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        await fixture.ImportAsync(Field("sword", 0, "Iron Sword"));
+        var row = (await fixture.Db.GetStringsAsync(20, 0, CancellationToken.None))[0];
+        await fixture.Db.UpdateStringTranslationAsync(row.Id, "", StringEntryStatus.Error, "boom", CancellationToken.None);
+        await fixture.Db.UpsertStringNoteAsync(row.Id, "tm_fallback", "TM 대체", CancellationToken.None);
+
+        var reopened = await fixture.Db.ReplaceImportedPluginStringsAsync(fixture.Source with { Sha256 = "v2" },
+            new[] { Field("sword", 0, "Iron Sword") }, fixture.Project, "utf-8", CancellationToken.None);
+
+        Assert.Equal(StringEntryStatus.Pending, reopened[0].Status);
+        Assert.Empty(await fixture.Db.GetStringNotesByKindAsync("tm_fallback", CancellationToken.None));
+    }
+
+    // The status bar said "번역 N개를 보관해 두었습니다" on every later reopen, counting all translations kept so far.
+    [Fact]
+    public async Task RetiredCount_CountsOnlyWhatThisImportSetAside()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        await fixture.ImportAsync(Field("sword", 0, "Iron Sword"));
+        var row = (await fixture.Db.GetStringsAsync(20, 0, CancellationToken.None))[0];
+        await fixture.Db.UpdateStringTranslationAsync(row.Id, "철 검", StringEntryStatus.Done, null, CancellationToken.None);
+
+        await fixture.Db.ReplaceImportedPluginStringsAsync(fixture.Source with { Sha256 = "v2" },
+            new[] { Field("sword", 0, "Iron Sword of Doom") }, fixture.Project, "utf-8", CancellationToken.None);
+        Assert.Equal(1, fixture.Db.LastPluginImportRetiredCount);
+
+        await fixture.Db.ReplaceImportedPluginStringsAsync(fixture.Source with { Sha256 = "v2" },
+            new[] { Field("sword", 0, "Iron Sword of Doom") }, fixture.Project, "utf-8", CancellationToken.None);
+        Assert.Equal(0, fixture.Db.LastPluginImportRetiredCount);
+        Assert.Equal(1, await fixture.Db.GetRetiredPluginTranslationCountAsync(CancellationToken.None));
     }
 
     // E457 said only that some character somewhere could not be written in the output encoding.
