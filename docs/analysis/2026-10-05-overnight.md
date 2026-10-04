@@ -152,6 +152,7 @@
 | 82 | 589fd34 | 결정 8: 처음부터 연결되지 않은 Nexus Mods 기능(클라이언트, 모드 선택 창, NexusContext 테이블 접근, 검사 옵션)을 지웠다(425줄). 기존 DB에는 빈 NexusContext 테이블이 남는다. | 사용자 결정 |
 | 83 | 165c9be | 결정 6: XML을 열 때 "건너뜀" 상태가 되는 기존 번역(원문과 다른 행)도 품질 검사한다(전체 검사와 행 재검사). | 사용자 결정 |
 | 84 | 4aadcd3 | 결정 3: 기본 용어집에 "Activate Button" → 활성화 버튼, "Sprint Button" → 질주 버튼(엘든림 검수 표기). 기존 용어집에는 2026-10-05.2 묶음으로 한 번 더한다. `[Activate]`·`[Sprint]` 단독은 게임 키 이름이라 계속 영어로 둔다. | 사용자 결정 |
+| — | 877ffc5 | 버전 1.11-preview9, 루트 EXE 배포(백업 preview8 `artifacts/overnight-1.11-preview9-20261005/deployment/`, SHA-256 06925152…A9CE, `--ui-snapshot` 9개 탭 정상, Nexus 삭제 뒤 프로젝트 문맥 탭 확인). | |
 
 ## 검토했지만 바꾸지 않은 것
 
