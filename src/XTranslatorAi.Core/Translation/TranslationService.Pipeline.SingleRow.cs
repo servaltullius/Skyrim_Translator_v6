@@ -174,7 +174,7 @@ public sealed partial class TranslationService
             );
             var repairRequest = CreateSemanticRepairRequest(ctx) with { MaxOutputTokens = TranslationOutputBudget.Compute(
                 row.Masked.Length, TranslationConstants.XtTokenRegex.Matches(row.Masked).Count, 1,
-                ctx.MaxOutputTokens, Ctx.EnableAdaptiveOutputBudget) };
+                ctx.MaxOutputTokens, Ctx.EnableAdaptiveOutputBudget), SourceText = row.Masked };
             var repairedText = await TranslateUserPromptWithRetriesAsync(repairRequest, repairPrompt);
 
             return TokenSanitizer.EnsureTokensPreservedOrRepair(

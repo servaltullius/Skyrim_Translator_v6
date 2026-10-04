@@ -24,4 +24,23 @@ public sealed class TranslationServiceTextOutputTests
         Assert.Equal(StringEntryStatus.Done, row.Status);
         Assert.Equal(expected, row.DestText);
     }
+
+    // A quoted line comes back quoted, often without the end sentinel, and was then read as a JSON string literal:
+    // "\"Never again.\"" was saved without its quotes. An answer the model put in JSON quotes on its own is still unwrapped.
+    [Theory]
+    [InlineData("\"Never again.\"", "\"다시는 안 돼.\"", "\"다시는 안 돼.\"")]
+    [InlineData("“Never again.”", "\"다시는 안 돼.\"", "\"다시는 안 돼.\"")]
+    [InlineData("\"Never again.\"", "\"다시는 안 돼.\" __XT_PH_9999__", "\"다시는 안 돼.\"")]
+    [InlineData("Never again.", "\"다시는 안 돼.\"", "다시는 안 돼.")]
+    public async Task SingleRow_UnwrapsAJsonStringOnlyWhenTheSourceIsNotQuoted(string source, string modelOutput, string expected)
+    {
+        await using var fixture = await TranslationRunFixture.CreateAsync((source, "INFO:NAM1"));
+        fixture.Client.ResponseOverride = (_, _) => modelOutput;
+
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { TargetLang = "korean" });
+
+        var row = Assert.Single((await fixture.RowsAsync()).Values);
+        Assert.Equal(StringEntryStatus.Done, row.Status);
+        Assert.Equal(expected, row.DestText);
+    }
 }

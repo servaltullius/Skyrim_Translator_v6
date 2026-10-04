@@ -22,7 +22,9 @@ public sealed partial class TranslationService
         CancellationToken CancellationToken,
         int CandidateCount = 1,
         string Purpose = "translate-text",
-        string? Edid = null
+        string? Edid = null,
+        // The (masked) text being translated; NormalizeTextOnlyOutput compares the answer's quotes with it.
+        string? SourceText = null
     );
 
     private readonly record struct TextWithSentinelContext(
@@ -137,7 +139,7 @@ public sealed partial class TranslationService
             request.Lane,
             request.CancellationToken
         );
-        return NormalizeTextOnlyOutput(modelText);
+        return NormalizeTextOnlyOutput(modelText, request.SourceText);
     }
 
     private async Task<IReadOnlyList<string>> TranslateUserPromptCandidatesWithRetriesAsync(
@@ -216,7 +218,7 @@ public sealed partial class TranslationService
                 continue;
             }
 
-            results.Add(NormalizeTextOnlyOutput(text));
+            results.Add(NormalizeTextOnlyOutput(text, request.SourceText));
         }
 
         if (results.Count == 0)
@@ -291,7 +293,8 @@ public sealed partial class TranslationService
     {
         // Add a small separator so the sentinel doesn't end up adjacent to another __XT_* token,
         request = request with { MaxOutputTokens = TranslationOutputBudget.Compute(text.Length,
-            TranslationConstants.XtTokenRegex.Matches(text).Count, 1, request.MaxOutputTokens, Ctx.EnableAdaptiveOutputBudget) };
+            TranslationConstants.XtTokenRegex.Matches(text).Count, 1, request.MaxOutputTokens, Ctx.EnableAdaptiveOutputBudget),
+            SourceText = text };
         // which some models occasionally mangle at chunk boundaries.
         var textForPrompt = PlaceholderSemanticHintInjector.Inject(request.TargetLang, text);
         textForPrompt = GlossarySemanticHintInjector.Inject(request.TargetLang, textForPrompt, sentinelContext.GlossaryTokenToReplacement);
@@ -503,7 +506,7 @@ public sealed partial class TranslationService
         return source[..leading] + translated.Trim() + source[trailing..];
     }
 
-    private static string NormalizeTextOnlyOutput(string modelText)
+    private static string NormalizeTextOnlyOutput(string modelText, string? sourceText)
     {
         var raw = modelText;
         if (raw.StartsWith("```", StringComparison.Ordinal))
@@ -533,8 +536,10 @@ public sealed partial class TranslationService
             }
         }
 
-        // Sometimes it's a quoted JSON string.
-        if (trimmed.StartsWith("\"", StringComparison.Ordinal) && trimmed.EndsWith("\"", StringComparison.Ordinal))
+        // Sometimes it's a quoted JSON string. Not when the source is itself a quotation: "\"Never again.\"" comes
+        // back as "\"다시는 안 돼.\"" (often without the sentinel), and reading that as JSON dropped the quotes.
+        if (trimmed.StartsWith("\"", StringComparison.Ordinal) && trimmed.EndsWith("\"", StringComparison.Ordinal)
+            && !IsWrappedInQuotes(sourceText))
         {
             try
             {
@@ -551,6 +556,12 @@ public sealed partial class TranslationService
         }
 
         return raw;
+    }
+
+    private static bool IsWrappedInQuotes(string? text)
+    {
+        var trimmed = text?.Trim();
+        return trimmed is { Length: >= 2 } && trimmed[0] is '"' or '“' && trimmed[^1] is '"' or '”';
     }
 
     private static string StripCodeFence(string raw)
