@@ -50,6 +50,14 @@ public class KoreanParticleOverCorrectionTests
         yield return new object[] { "리프튼", "로 향했다.", "리프튼으로 향했다." };
         yield return new object[] { "Skyrim", "가 좋다.", "Skyrim이 좋다." };
         yield return new object[] { "야를", "과의 대화", "야를과의 대화" };
+        // Both forms written after the token (1.9 evaluation: "히얄마치를(를)", "요새는(는)", "자리-라가(가)").
+        yield return new object[] { "히얄마치", "을(를) 탈환하면", "히얄마치를 탈환하면" };
+        yield return new object[] { "프로스트모스 요새", "은(는) 한때", "프로스트모스 요새는 한때" };
+        yield return new object[] { "자리-라", "이(가) 제안했다.", "자리-라가 제안했다." };
+        yield return new object[] { "리프튼", "(으)로 향했다.", "리프튼으로 향했다." };
+        yield return new object[] { "화이트런", "과/와 싸웠다.", "화이트런과 싸웠다." };
+        yield return new object[] { "세계의 목", "(이)라 부른다.", "세계의 목이라 부른다." };
+        yield return new object[] { "노드", "는(은) 강하다.", "노드는 강하다." };
         // Not a particle: the syllable starts the next word.
         yield return new object[] { "달인", "과거를 회상했다.", "달인과거를 회상했다." };
     }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using static XTranslatorAi.Core.Text.KoreanSyllables;
 
 namespace XTranslatorAi.Core.Text.KoreanFix.Internal;
@@ -189,7 +191,9 @@ internal static class KoreanParticleSelector
 
         foreach (var (consonantForm, vowelForm) in TermParticlePairs)
         {
-            foreach (var written in new[] { consonantForm, vowelForm })
+            // Written both ways ("을(를)", "(이)가", "을/를"): the model could not see the term behind its token.
+            // Fixing only the first form left "히얄마치를(를)".
+            foreach (var written in BothForms(consonantForm, vowelForm).Concat(new[] { consonantForm, vowelForm }))
             {
                 if (string.CompareOrdinal(text, start, written, 0, written.Length) != 0)
                 {
@@ -210,6 +214,22 @@ internal static class KoreanParticleSelector
         }
 
         return false;
+    }
+
+    private static IEnumerable<string> BothForms(string consonantForm, string vowelForm)
+    {
+        foreach (var (first, second) in new[] { (consonantForm, vowelForm), (vowelForm, consonantForm) })
+        {
+            yield return first + "(" + second + ")";
+            yield return "(" + first + ")" + second;
+            yield return first + "/" + second;
+        }
+
+        // "(으)로", "(이)라", "(이)나": the extra syllable in parentheses.
+        if (consonantForm.Length == vowelForm.Length + 1 && consonantForm.EndsWith(vowelForm, StringComparison.Ordinal))
+        {
+            yield return "(" + consonantForm[0] + ")" + vowelForm;
+        }
     }
 
     private static string[] ContinuationsFor(string consonantForm) => consonantForm switch
