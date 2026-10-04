@@ -26,6 +26,13 @@ public static class LqaHeuristics
         options: RegexOptions.CultureInvariant
     );
 
+    // A Hangul word closed by a quote or bracket: the particle after it certainly belongs to that word.
+    // A closing parenthesis is left out ("도끼(양손)를" takes the particle of the word before the parenthesis).
+    private static readonly Regex QuotedWordEndRegex = new(
+        pattern: @"(?<word>[가-힣]+)(?<close>['""’”\]」』])",
+        options: RegexOptions.CultureInvariant
+    );
+
     private static readonly Regex RomanParticleRegex = new(
         pattern: @"\b(?<word>[A-Za-z][A-Za-z0-9'’\-]*)(?<particle>을|를|은|는|이|가|과|와)(?=$|[\s\p{P}])",
         options: RegexOptions.CultureInvariant
@@ -123,6 +130,21 @@ public static class LqaHeuristics
                 && written != expected)
             {
                 return $"{term}{written} → {term}{expected}";
+            }
+        }
+
+        foreach (Match m in QuotedWordEndRegex.Matches(destText))
+        {
+            var word = m.Groups["word"].Value;
+            var end = m.Index + m.Length;
+            if (KoreanParticleSelector.TryFixParticleAfterTerm(word, destText, end, out var expected, out var length)
+                && destText.Substring(end, length) is var written
+                && written != expected
+                // Direct quotation takes 라고 whatever the final sound ("가자"라고, "안녕"이라고 for naming).
+                && !written.EndsWith("라", StringComparison.Ordinal))
+            {
+                var close = m.Groups["close"].Value;
+                return $"{word}{close}{written} → {word}{close}{expected}";
             }
         }
 
