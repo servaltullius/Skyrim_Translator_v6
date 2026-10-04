@@ -30,10 +30,14 @@ public static partial class TranslationPrompt
         }
         """;
 
+    // The default encoder wrote every Hangul syllable and every '<', '>', '&' and apostrophe as an escape sequence, so
+    // a Korean style hint or "<mag>" cost several tokens per character. The payload is prompt text, not HTML, so only
+    // what JSON itself requires is escaped.
     private static readonly JsonSerializerOptions PayloadJsonOptions = new(JsonSerializerDefaults.Web)
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         WriteIndented = false,
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
     };
 
     public static string BuildUserPrompt(
