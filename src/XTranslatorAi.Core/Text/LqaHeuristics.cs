@@ -298,14 +298,16 @@ public static class LqaHeuristics
     }
 
     // A value the game fills in (%d, %.0f, <mag>, <dur>, <25>): its last digit, and so the particle, is unknown, and
-    // Elden Rim's "기가 %.0f/%.0f(으)로 상승했습니다" writes it both ways on purpose.
+    // Elden Rim's "기가 %.0f/%.0f(으)로 상승했습니다" writes it both ways on purpose. A name the game fills in
+    // (<Alias=Victim>, <Alias.ShortName=Target>, <BaseName>) is unknown as well; the official translation writes
+    // "<Alias=Victim>을/를" on purpose.
     private static readonly Regex RuntimeNumberAtEndRegex = new(
-        pattern: @"(?:%(?:[0-9]+\$)?[-+0-9.]*[dfFiueEgGxX]|<\s*(?:mag|dur|bur|[0-9.]+%?)\s*>)\s*$",
+        pattern: @"(?:%(?:[0-9]+\$)?[-+0-9.]*[dfFiueEgGxX]|<\s*(?:mag|dur|bur|[0-9.]+%?)\s*>|<\s*(?:Alias|BaseName)\b[^<>]{0,80}>)\s*$",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
     internal static bool IsAfterRuntimeNumber(string text, int index)
-        => index > 0 && RuntimeNumberAtEndRegex.IsMatch(text.AsSpan(Math.Max(0, index - 24), index - Math.Max(0, index - 24)).ToString());
+        => index > 0 && RuntimeNumberAtEndRegex.IsMatch(text.AsSpan(Math.Max(0, index - 96), index - Math.Max(0, index - 96)).ToString());
 
     public static string? FindDuplicationArtifactExample(string destText)
     {

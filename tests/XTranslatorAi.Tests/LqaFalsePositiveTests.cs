@@ -479,6 +479,18 @@ public class LqaFalsePositiveTests
     private static LqaScanEntry Row(long id, string rec, string dest, string source = "Source text.")
         => new(id, (int)id, $"EDID{id:000}", rec, StringEntryStatus.Done, source, dest);
 
+    // A name the game fills in is unknown too; the official translation writes "<Alias=Victim>을/를" on purpose.
+    [Theory]
+    [InlineData("<Alias=Victim>을/를 죽인 것에 대한 감사표시?")]
+    [InlineData("동의하오. 제국은 <Alias=ImperialMinorHold2>을/를 넘겨주어야 합니다.")]
+    [InlineData("<Alias.ShortName=Target> 이/가 당신들에게 더 지불해 줄 것이다.")]
+    [InlineData("<BaseName>을(를) 얻었습니다.")]
+    public void ParticleMarker_AfterARuntimeName_IsNotReported(string text)
+    {
+        Assert.False(LqaHeuristics.HasUnresolvedParticleMarkers(text));
+        Assert.Equal(text, KoreanTranslationFixer.Fix("korean", text));
+    }
+
     // A runtime number's last digit is unknown, so writing the particle both ways after it is right.
     [Fact]
     public async System.Threading.Tasks.Task ParticleMarker_AfterARuntimeNumber_IsNotReported()
