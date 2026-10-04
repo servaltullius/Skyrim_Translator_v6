@@ -91,11 +91,36 @@ public partial class MainViewModel
 
     partial void OnLqaFilterTextChanged(string value) => LqaIssuesView.Refresh();
 
+    partial void OnLqaHideInfoChanged(bool value) => LqaIssuesView.Refresh();
+
+    /// <summary>
+    /// How many results the search and "참고 숨기기" leave. Information-only results can outnumber the warnings
+    /// many times over (442 on the pre-review Serana project), so they can be hidden.
+    /// </summary>
+    public string LqaVisibleSummary
+    {
+        get
+        {
+            if (LqaIssues.Count == 0)
+            {
+                return "";
+            }
+
+            var visible = LqaIssuesView is System.Windows.Data.CollectionView view ? view.Count : LqaIssues.Count;
+            return visible == LqaIssues.Count ? $"전체 {LqaIssues.Count}건" : $"표시 {visible} / 전체 {LqaIssues.Count}건";
+        }
+    }
+
     private bool LqaIssueFilter(object obj)
     {
         if (obj is not LqaIssueViewModel issue)
         {
             return true;
+        }
+
+        if (LqaHideInfo && string.Equals(issue.Severity, "Info", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
         }
 
         var q = (LqaFilterText ?? "").Trim();

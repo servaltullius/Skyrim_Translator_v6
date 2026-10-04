@@ -24,6 +24,12 @@
             <TextBox Text="{Binding LqaFilterText, UpdateSourceTrigger=PropertyChanged}"
                      Width="320"
                      Style="{StaticResource XT.ToolbarTextBox}" />
+            <CheckBox Content="참고 숨기기"
+                      IsChecked="{Binding LqaHideInfo}"
+                      VerticalAlignment="Center"
+                      Margin="12,0,0,0"
+                      ToolTip="오류·경고만 보입니다. 참고는 다른 화자의 말투, 공식 이름, TM 대체처럼 확인만 하면 되는 결과입니다." />
+            <TextBlock Text="{Binding LqaVisibleSummary, Mode=OneWay}" VerticalAlignment="Center" Margin="12,0,0,0" />
         </WrapPanel>
 
         <DataGrid Grid.Row="1"

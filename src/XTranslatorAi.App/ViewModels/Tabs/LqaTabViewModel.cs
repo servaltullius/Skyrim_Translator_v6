@@ -36,6 +36,14 @@ public sealed class LqaTabViewModel : ObservableObject, IDisposable
         set => _host.LqaFilterText = value;
     }
 
+    public bool LqaHideInfo
+    {
+        get => _host.LqaHideInfo;
+        set => _host.LqaHideInfo = value;
+    }
+
+    public string LqaVisibleSummary => _host.LqaVisibleSummary;
+
     public ICollectionView LqaIssuesView => _host.LqaIssuesView;
 
     public LqaIssueViewModel? SelectedLqaIssue

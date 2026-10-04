@@ -175,6 +175,7 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
 
         LqaIssuesView = CollectionViewSource.GetDefaultView(LqaIssues);
         LqaIssuesView.Filter = LqaIssueFilter;
+        ((System.Collections.Specialized.INotifyCollectionChanged)LqaIssuesView).CollectionChanged += (_, _) => OnPropertyChanged(nameof(LqaVisibleSummary));
 
         StringsTab = new StringsTabViewModel(this);
         CompareTab = new CompareTabViewModel(this);

@@ -10,6 +10,8 @@ public interface ILqaTabHost : INotifyPropertyChanged
     IRelayCommand ClearLqaCommand { get; }
 
     string LqaFilterText { get; set; }
+    bool LqaHideInfo { get; set; }
+    string LqaVisibleSummary { get; }
     ICollectionView LqaIssuesView { get; }
 
     LqaIssueViewModel? SelectedLqaIssue { get; set; }

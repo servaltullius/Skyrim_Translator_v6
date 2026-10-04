@@ -67,6 +67,7 @@ public partial class MainViewModel
     [ObservableProperty] private string _entryFilterStatus = EntryStatusAll;
 
     [ObservableProperty] private string _lqaFilterText = "";
+    [ObservableProperty] private bool _lqaHideInfo;
 
     [ObservableProperty] private string _glossaryLookupText = "";
     [ObservableProperty] private bool _glossaryLookupIncludeProject = true;
