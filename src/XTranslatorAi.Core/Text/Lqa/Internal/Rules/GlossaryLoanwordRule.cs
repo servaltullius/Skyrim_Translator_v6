@@ -74,7 +74,7 @@ internal static class GlossaryLoanwordRule
                 continue;
             }
 
-            var target = new string((entry.TargetTerm ?? "").Where(IsHangulSyllable).ToArray());
+            var target = new string((entry.TargetTerm ?? "").Where(KoreanSyllables.IsHangulSyllable).ToArray());
             var targetSound = target.Length == 0 ? null : KoreanSound(target);
             if (targetSound == null || (double)Distance(targetSound, sound) / Math.Max(targetSound.Length, sound.Length) <= 0.5)
             {
@@ -250,7 +250,7 @@ internal static class GlossaryLoanwordRule
         var sb = new StringBuilder();
         foreach (var ch in word)
         {
-            if (!IsHangulSyllable(ch))
+            if (!KoreanSyllables.IsHangulSyllable(ch))
             {
                 return null;
             }
@@ -375,7 +375,6 @@ internal static class GlossaryLoanwordRule
 
     private static bool IsVowelLetter(char c) => c is 'a' or 'e' or 'i' or 'o' or 'u' or 'y';
 
-    private static bool IsHangulSyllable(char c) => c is >= '가' and <= '힣';
 
     private static int Distance(string a, string b)
     {
