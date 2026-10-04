@@ -368,10 +368,14 @@ public sealed class TranslationServiceApiKeyFailoverTests
     // A lost connection or a timeout used to make every remaining row Error (connection refused: 40 rows in 16 s;
     // 15-minute timeouts: 236 calls for 40 rows, as each timed-out batch was split again and again). Three failures
     // in a row now stop the run like a spent quota does, and leave the rest Pending.
+    // With key failover on, the first connection failure was rethrown as a failover error, but the runner no longer
+    // switches keys for E210/E211, so a moment of Wi-Fi trouble ended the whole run. Both settings now behave alike.
     [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public async Task TranslateIdsAsync_WhenFailoverDisabled_StopsAfterThreeConnectionFailures(bool timeout)
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    public async Task TranslateIdsAsync_StopsAfterThreeConnectionFailures_WithOrWithoutFailover(bool timeout, bool failover)
     {
         var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
         try
@@ -384,7 +388,7 @@ public sealed class TranslationServiceApiKeyFailoverTests
             var service = new TranslationService(db, new GeminiClient(new HttpClient(handler)));
 
             var ex = await Assert.ThrowsAsync<TranslationRateLimitAbortException>(
-                () => service.TranslateIdsAsync(CreateRequest(ids, enableApiKeyFailover: false) with { BatchSize = 4 }));
+                () => service.TranslateIdsAsync(CreateRequest(ids, enableApiKeyFailover: failover) with { BatchSize = 4 }));
 
             Assert.Equal(timeout ? 6 : 3, handler.Calls);
             var statuses = await db.GetStringStatusesByIdsAsync(ids, CancellationToken.None);

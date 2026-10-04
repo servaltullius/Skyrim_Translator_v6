@@ -194,20 +194,10 @@ public sealed partial class TranslationService
             return false;
         }
 
-        if (IsCredentialError(ex) || IsRateLimit(ex) || IsServerError(ex))
-        {
-            return true;
-        }
-
-        foreach (var current in ExceptionTraversal.Enumerate(ex))
-        {
-            if (current is HttpRequestException || current is TaskCanceledException)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        // Not a lost connection or a timeout: no other key fixes those, and the runner does not switch keys for them
+        // (E210/E211). Handing them up as failover errors ended the whole run at the first moment of Wi-Fi trouble;
+        // they now go through the connection-failure streak like with failover off.
+        return IsCredentialError(ex) || IsRateLimit(ex) || IsServerError(ex);
     }
 
     private static bool TryGetRetryAfter(Exception ex, out TimeSpan retryAfter)
