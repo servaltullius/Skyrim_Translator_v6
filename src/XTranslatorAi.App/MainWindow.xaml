@@ -11,6 +11,7 @@
         Title="Tullius Translator" Height="900" Width="1400" MinHeight="720" MinWidth="1100"
         Style="{StaticResource XT.Window}"
         AllowDrop="True"
+        PreviewKeyDown="OnWindowPreviewKeyDown"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -304,7 +305,7 @@
         <Border Grid.Row="1" Style="{StaticResource XT.CardBorder}" Padding="10">
         <TabControl x:Name="MainTabs" BorderThickness="0" Background="Transparent" ItemContainerStyle="{StaticResource XT.TabItem}" IsEnabled="{Binding IsWorkspaceInteractive}">
             <TabItem Header="문자열" DataContext="{Binding StringsTab}">
-                <views:StringsTabView />
+                <views:StringsTabView x:Name="StringsView" />
             </TabItem>
 
             <TabItem Header="모델 비교" DataContext="{Binding CompareTab}">

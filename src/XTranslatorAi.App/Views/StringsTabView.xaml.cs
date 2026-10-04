@@ -8,4 +8,11 @@ public partial class StringsTabView : UserControl
     {
         InitializeComponent();
     }
+
+    /// <summary>Ctrl+F from the window: focus the search box and select its text.</summary>
+    public void FocusSearch()
+    {
+        SearchBox.Focus();
+        SearchBox.SelectAll();
+    }
 }

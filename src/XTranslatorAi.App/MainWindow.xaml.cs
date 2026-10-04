@@ -114,6 +114,43 @@ public partial class MainWindow : Window
 
     private MainViewModel Vm => (MainViewModel)DataContext;
 
+    /// <summary>Review shortcuts on the strings tab; see MainViewModel.Navigation.</summary>
+    private void OnWindowPreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+        if (DataContext is not MainViewModel vm || MainTabs.SelectedIndex != 0)
+        {
+            return;
+        }
+
+        var key = e.Key == System.Windows.Input.Key.System ? e.SystemKey : e.Key;
+        var modifiers = System.Windows.Input.Keyboard.Modifiers;
+        System.Windows.Input.ICommand? command = (key, modifiers) switch
+        {
+            (System.Windows.Input.Key.S, System.Windows.Input.ModifierKeys.Control) => vm.SaveSelectedDestCommand,
+            (System.Windows.Input.Key.Enter, System.Windows.Input.ModifierKeys.Control) => vm.SaveAndNextCommand,
+            (System.Windows.Input.Key.F8, System.Windows.Input.ModifierKeys.None) => vm.NextUnfinishedCommand,
+            (System.Windows.Input.Key.F8, System.Windows.Input.ModifierKeys.Shift) => vm.PreviousUnfinishedCommand,
+            _ => null,
+        };
+
+        if (key == System.Windows.Input.Key.F && modifiers == System.Windows.Input.ModifierKeys.Control)
+        {
+            StringsView.FocusSearch();
+            e.Handled = true;
+            return;
+        }
+
+        if (command != null)
+        {
+            if (command.CanExecute(null))
+            {
+                command.Execute(null);
+            }
+
+            e.Handled = true;
+        }
+    }
+
     private void ApiKeyBox_OnPasswordChanged(object sender, RoutedEventArgs e)
     {
         if (sender is PasswordBox pb)

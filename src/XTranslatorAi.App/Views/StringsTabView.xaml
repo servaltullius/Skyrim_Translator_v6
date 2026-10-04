@@ -17,9 +17,9 @@
 
         <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
             <TextBlock Text="검색:" VerticalAlignment="Center" Margin="0,0,6,0" />
-            <TextBox Text="{Binding EntryFilterText, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox x:Name="SearchBox" Text="{Binding EntryFilterText, UpdateSourceTrigger=PropertyChanged}"
                      Width="260"
-                     ToolTip="문구·EDID 검색. 정확한 위치: form:01000800 / string:STRINGS/123 / row:0"
+                     ToolTip="문구·EDID 검색(Ctrl+F). 정확한 위치: form:01000800 / string:STRINGS/123 / row:0"
                      Style="{StaticResource XT.ToolbarTextBox}" />
 
             <TextBlock Text="상태:" VerticalAlignment="Center" Margin="12,0,6,0" />
@@ -180,6 +180,7 @@
                     <Button DockPanel.Dock="Top"
                             Content="번역문 저장"
                             Command="{Binding SaveSelectedDestCommand}"
+                            ToolTip="Ctrl+S: 저장 · Ctrl+Enter: 저장하고 다음 행 · F8 / Shift+F8: 다음·이전 대기·오류 행"
                             Style="{StaticResource XT.ToolbarButton}"
                             HorizontalAlignment="Left"
                             Margin="0,0,0,8" />
