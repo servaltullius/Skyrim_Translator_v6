@@ -51,6 +51,19 @@ public class EnchantmentNameIndexTests
         Assert.Equal(2, index.Count);
     }
 
+    /// <summary>An ending the official translation mostly writes another way ("X의 Y") is not an enchantment form.</summary>
+    [Fact]
+    public void SuffixMostlyTranslatedOtherwise_IsNotUsed()
+    {
+        var memory = new[]
+        {
+            ("Shield of Kings", "방패 - 왕"), ("Helm of Kings", "투구 - 왕"),
+            ("Crown of Kings", "왕들의 왕관"), ("Sword of Kings", "왕들의 검"), ("Hall of Kings", "왕들의 전당"),
+        };
+
+        Assert.Null(EnchantmentNameIndex.Build(memory).GetHint("Vagrant Boots of Kings", "ARMO:FULL"));
+    }
+
     [Fact]
     public async Task ItemNameWithAKnownEnchantment_SendsTheHintWithTheRow()
     {

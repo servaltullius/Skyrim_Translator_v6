@@ -29,16 +29,24 @@ public sealed class EnchantmentNameIndex
     public static EnchantmentNameIndex Build(IEnumerable<(string Source, string Target)> memory)
     {
         var counts = new Dictionary<string, Dictionary<string, int>>(StringComparer.Ordinal);
+        // Every "… of X" counts against agreement, also the ones not written "base - X" ("왕들의 왕관").
+        var occurrences = new Dictionary<string, int>(StringComparer.Ordinal);
         foreach (var (source, target) in memory)
         {
             var s = SourceNamePattern.Match((source ?? "").Trim());
-            var t = TargetNamePattern.Match((target ?? "").Trim());
-            if (!s.Success || !t.Success)
+            if (!s.Success)
             {
                 continue;
             }
 
             var suffix = s.Groups["suffix"].Value;
+            occurrences[suffix] = occurrences.GetValueOrDefault(suffix) + 1;
+            var t = TargetNamePattern.Match((target ?? "").Trim());
+            if (!t.Success)
+            {
+                continue;
+            }
+
             if (!counts.TryGetValue(suffix, out var targets))
             {
                 targets = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -53,9 +61,8 @@ public sealed class EnchantmentNameIndex
         var suffixes = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var (suffix, targets) in counts)
         {
-            var total = targets.Values.Sum();
             var (best, bestCount) = targets.OrderByDescending(p => p.Value).ThenBy(p => p.Key, StringComparer.Ordinal).First();
-            if (total >= MinEntries && bestCount >= MinAgreement * total)
+            if (bestCount >= MinEntries && bestCount >= MinAgreement * occurrences[suffix])
             {
                 suffixes[suffix] = best;
             }
