@@ -200,6 +200,11 @@ public sealed partial class TranslationService
     {
         var results = new string[parts.Count];
         using var gate = new SemaphoreSlim(parallelism, parallelism);
+        // One chunk that fails for good fails the whole row, so the chunks still waiting are not sent and the one
+        // in flight is cancelled; before, every remaining chunk (and its smaller retries) was paid for nothing.
+        using var stop = CancellationTokenSource.CreateLinkedTokenSource(chunkContext.CancellationToken);
+        var context = chunkContext with { CancellationToken = stop.Token };
+        Exception? firstFailure = null;
         var tasks = new Task[parts.Count];
 
         for (var i = 0; i < parts.Count; i++)
@@ -208,26 +213,39 @@ public sealed partial class TranslationService
             tasks[idx] = Task.Run(
                 async () =>
                 {
-                    await gate.WaitAsync(chunkContext.CancellationToken);
+                    await gate.WaitAsync(stop.Token);
                     try
                     {
                         results[idx] = await TranslateChunkWithAdaptiveSplittingAsync(
-                            WithBookChunkReference(chunkContext, parts, idx),
+                            WithBookChunkReference(context, parts, idx),
                             parts[idx],
                             chunkChars,
                             minChunkChars
                         );
+                    }
+                    catch (Exception ex) when (!stop.IsCancellationRequested)
+                    {
+                        Interlocked.CompareExchange(ref firstFailure, ex, null);
+                        stop.Cancel();
+                        throw;
                     }
                     finally
                     {
                         gate.Release();
                     }
                 },
-                chunkContext.CancellationToken
+                stop.Token
             );
         }
 
-        await Task.WhenAll(tasks);
+        try
+        {
+            await Task.WhenAll(tasks);
+        }
+        catch when (firstFailure != null && !chunkContext.CancellationToken.IsCancellationRequested)
+        {
+            ExceptionDispatchInfo.Capture(firstFailure).Throw();
+        }
 
         return CombineChunkPartResults(results);
     }

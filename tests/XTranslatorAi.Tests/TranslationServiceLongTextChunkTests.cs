@@ -110,6 +110,37 @@ public sealed class TranslationServiceLongTextChunkTests
         else Assert.True(failingRequests > 1, $"expected smaller retries, got {failingRequests}");
     }
 
+    /// <summary>
+    /// When one chunk failed for good, the parallel path still sent every remaining chunk (and their smaller
+    /// retries) although the row ends in Error and none of it is saved. Those requests were paid for nothing.
+    /// </summary>
+    [Fact]
+    public async Task ParallelChunks_StopSendingAfterAChunkFailsForGood()
+    {
+        var source = BuildBook("\n\n");
+        await using var fixture = await TranslationRunFixture.CreateAsync((source, "BOOK:DESC"));
+        fixture.Client.BeforeGenerate = async (_, request, ct) =>
+        {
+            var chunk = ChunkOf(request);
+            if (chunk.Contains(Marker(1), StringComparison.Ordinal))
+            {
+                throw new GeminiHttpException("generateContent", 500, "fixture", null, "fixture");
+            }
+
+            // The other slot is still busy when the first chunk fails.
+            await Task.Delay(300, ct);
+        };
+        fixture.Client.ResponseOverride = (_, request) => Translate(ChunkOf(request));
+
+        await fixture.Service.TranslateIdsAsync(ParallelRequest(fixture));
+
+        var row = Assert.Single((await fixture.RowsAsync()).Values);
+        Assert.Equal(StringEntryStatus.Error, row.Status);
+        Assert.DoesNotContain("cancel", row.ErrorMessage, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(fixture.Client.Requests, r => ChunkOf(r).Contains(Marker(Paragraphs), StringComparison.Ordinal));
+        Assert.True(fixture.Client.Requests.Count <= 2, $"expected at most the two chunks in flight, got {fixture.Client.Requests.Count}");
+    }
+
     [Theory]
     [InlineData(5)]
     [InlineData(1)]
