@@ -93,20 +93,16 @@ public partial class MainViewModel
 
         // Resume unfinished rows without discarding completed translations or manual edits.
         await db.ResetInProgressToPendingAsync(cancellationToken);
-        DoneCount = 0;
         foreach (var vm in Entries)
         {
-            if (vm.Status == StringEntryStatus.Done || vm.Status == StringEntryStatus.Edited)
-            {
-                DoneCount++;
-                continue;
-            }
             if (vm.Status == StringEntryStatus.InProgress)
             {
                 vm.Status = StringEntryStatus.Pending;
                 vm.ErrorMessage = null;
             }
         }
+
+        RecountProgress();
     }
 
     private async Task<IReadOnlyList<long>> LoadPendingIdsAsync(CancellationToken cancellationToken)
@@ -118,6 +114,8 @@ public partial class MainViewModel
         }
 
         var ids = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending, StringEntryStatus.Error }, cancellationToken);
+        // The rows this run translates, which are the rows RecountProgress counts as 대기; each finished row
+        // then takes one off.
         PendingCount = ids.Count;
         return ids;
     }

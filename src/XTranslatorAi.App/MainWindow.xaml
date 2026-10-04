@@ -360,7 +360,8 @@
                 <ProgressBar Width="220" Height="16" Minimum="0" Maximum="1" Value="{Binding ProgressRatio, Mode=OneWay}" Style="{StaticResource XT.ProgressBar}" />
             </StatusBarItem>
             <StatusBarItem>
-                <TextBlock Foreground="{StaticResource XT.MutedTextBrush}" TextWrapping="NoWrap">
+                <TextBlock Foreground="{StaticResource XT.MutedTextBrush}" TextWrapping="NoWrap"
+                           ToolTip="완료: 번역을 마쳤거나 직접 수정한 행 · 대기: '번역 시작'을 누르면 번역할 행(대기·오류)">
                     <Run Text="{Binding DoneCount, StringFormat=완료 {0}}" />
                     <Run Text=" · " />
                     <Run Text="{Binding PendingCount, StringFormat=대기 {0}}" />

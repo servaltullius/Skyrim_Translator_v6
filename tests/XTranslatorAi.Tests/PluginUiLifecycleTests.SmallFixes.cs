@@ -1,5 +1,8 @@
+using System.Reflection;
 using System.Windows.Input;
 using System.Xml.Linq;
+using XTranslatorAi.App.ViewModels;
+using XTranslatorAi.Core.Models;
 
 namespace XTranslatorAi.Tests;
 
@@ -22,6 +25,31 @@ public sealed partial class PluginUiLifecycleTests
                        || (string?)element.Attribute("Text") == "{Binding " + property + "}");
         Assert.Equal("{Binding " + property + ", UpdateSourceTrigger=PropertyChanged}", (string?)box.Attribute("Text"));
     }
+
+    [Fact]
+    public Task WaitingCount_IsTheRowsTheNextRunTranslates_AfterAnEditAndWhenARunEnds()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            var rows = await LoadXmlWorkspaceAsync(fixture, "Iron Sword", "Steel Sword", "Elven Sword");
+            await fixture.State.Db!.UpdateStringTranslationAsync(rows[2].Id, "", StringEntryStatus.Error, "E999", CancellationToken.None);
+            rows[2].Status = StringEntryStatus.Error;
+
+            // The start of a run counts failed rows as waiting (it translates them again); saving an edit used
+            // to recount only pending rows, so 대기 dropped from 2 to 1 here.
+            rows[0].EditableDestText = "철검";
+            fixture.Vm.SelectedEntry = rows[1];
+            await LeftRowCommits(fixture.Vm);
+            Assert.Equal((1, 2), (fixture.Vm.DoneCount, fixture.Vm.PendingCount));
+
+            // A stopped run leaves its unfinished rows pending; the counters are recounted from the rows.
+            rows[1].Status = StringEntryStatus.InProgress;
+            fixture.Vm.PendingCount = 0;
+            await (Task)typeof(MainViewModel).GetMethod("FinishTranslationUiStateAsync", BindingFlags.NonPublic | BindingFlags.Instance)!
+                .Invoke(fixture.Vm, new object?[] { true, null })!;
+            Assert.Equal(StringEntryStatus.Pending, rows[1].Status);
+            Assert.Equal((1, 2), (fixture.Vm.DoneCount, fixture.Vm.PendingCount));
+        });
 
     [Fact]
     public Task CompareAndModelListRefresh_AreDisabledWhileTranslatingOrSwitching()

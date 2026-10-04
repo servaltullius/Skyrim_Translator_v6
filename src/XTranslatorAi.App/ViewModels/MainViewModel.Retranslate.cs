@@ -78,8 +78,7 @@ public partial class MainViewModel
                 row.IsTranslationMemoryApplied = false;
             }
 
-            DoneCount = Entries.Count(row => row.Status is StringEntryStatus.Done or StringEntryStatus.Edited);
-            PendingCount = Entries.Count(row => row.Status == StringEntryStatus.Pending);
+            RecountProgress();
             EntriesView.Refresh();
             StatusMessage = $"{reset}개 행을 다시 번역 대기로 돌렸습니다. '번역 시작'을 누르면 번역합니다.";
         });

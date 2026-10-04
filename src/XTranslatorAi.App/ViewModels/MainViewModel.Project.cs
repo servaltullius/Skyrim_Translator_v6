@@ -273,9 +273,20 @@ public partial class MainViewModel
         entry.IsTranslationMemoryApplied = false;
         if (ReferenceEquals(db, _projectState.Db))
         {
-            DoneCount = Entries.Count(row => row.Status is StringEntryStatus.Done or StringEntryStatus.Edited);
-            PendingCount = Entries.Count(row => row.Status == StringEntryStatus.Pending);
+            RecountProgress();
         }
+    }
+
+    /// <summary>
+    /// 완료 counts translated and hand-edited rows; 대기 counts the rows the next "번역 시작" translates: pending and
+    /// failed rows, and rows a run is still working on. The start of a run counted failed rows as waiting, while
+    /// opening a project, saving an edit and retranslating counted only pending ones, so the same project showed
+    /// a different 대기 depending on what happened last.
+    /// </summary>
+    private void RecountProgress()
+    {
+        DoneCount = Entries.Count(row => row.Status is StringEntryStatus.Done or StringEntryStatus.Edited);
+        PendingCount = Entries.Count(row => row.Status is StringEntryStatus.Pending or StringEntryStatus.Error or StringEntryStatus.InProgress);
     }
 
     private async Task LoadEntriesAsync()
@@ -295,8 +306,6 @@ public partial class MainViewModel
 
         const int pageSize = 500;
         var loaded = new List<StringEntryViewModel>(capacity: total);
-        var done = 0;
-        var pending = 0;
 
         for (var offset = 0; offset < total; offset += pageSize)
         {
@@ -315,21 +324,11 @@ public partial class MainViewModel
                 };
 
                 loaded.Add(vm);
-
-                if (row.Status == StringEntryStatus.Done || row.Status == StringEntryStatus.Edited)
-                {
-                    done++;
-                }
-                if (row.Status == StringEntryStatus.Pending)
-                {
-                    pending++;
-                }
             }
         }
 
         _projectState.SetEntries(loaded);
-        DoneCount = done;
-        PendingCount = pending;
+        RecountProgress();
         SelectedEntry = Entries.Count > 0 ? Entries[0] : null;
     }
 }

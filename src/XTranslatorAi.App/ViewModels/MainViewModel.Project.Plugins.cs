@@ -94,8 +94,7 @@ public partial class MainViewModel
             adopted = true;
             _projectState.SetEntries(entries);
             TotalCount = entries.Count;
-            DoneCount = entries.Count(row => row.Status is StringEntryStatus.Done or StringEntryStatus.Edited);
-            PendingCount = entries.Count(row => row.Status == StringEntryStatus.Pending);
+            RecountProgress();
             SelectedEntry = entries.FirstOrDefault();
             ProjectContextPreview = loaded.ProjectContext;
             OnPropertyChanged(nameof(CurrentXmlFileName));

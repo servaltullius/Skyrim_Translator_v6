@@ -44,6 +44,9 @@ public partial class MainViewModel
             // ignore
         }
 
+        // The run adjusted the counters row by row; recount once the stopped rows are back to pending.
+        RecountProgress();
+
         if (!HasDirtyGlossary())
         {
             try
