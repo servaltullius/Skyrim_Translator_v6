@@ -253,4 +253,37 @@ public class PlaceholderMaskerTests
         Assert.False(XTranslatorAi.Core.Text.LqaScanner.HasTokenMismatch("<Relieved smile> Thank you, Serana.", "<안도의 미소> 고마워, 세라나."));
         Assert.Equal("Relieved", XTranslatorAi.Core.Text.LqaScanner.FindEnglishResidue("<Relieved smile> 고마워, 세라나.", "<Relieved smile> Thank you, Serana."));
     }
+
+    // Skyrim help messages: the game replaces "[Sprint]" with the player's key, and the official translation
+    // keeps it in English ("이동중에 [Sprint] 키를 누르면 질주 합니다"). 1.8 and 1.9 translated it as "[달리기]".
+    [Fact]
+    public void Mask_ProtectsControlKeysInHelpMessages()
+    {
+        var masker = new PlaceholderMasker();
+        var input = "Press [Ready Weapon], [Left Attack/Block], or [Right Attack/Block] to draw your weapons. Hold [Sprint] to sprint.";
+
+        var masked = masker.Mask(input);
+
+        Assert.Equal("Press __XT_PH_KEY_0000__, __XT_PH_KEY_0001__, or __XT_PH_KEY_0002__ to draw your weapons. Hold __XT_PH_KEY_0003__ to sprint.", masked.Text);
+        Assert.Equal("[Sprint]", masked.TokenToOriginal["__XT_PH_KEY_0003__"]);
+        Assert.Equal(input, masker.Unmask(masked.Text, masked.TokenToOriginal));
+    }
+
+    // Elden Rim writes its own skill names in brackets and translates them ("[Hand Strap]" → "[핸드 스트랩]").
+    [Fact]
+    public void Mask_LeavesOtherBracketsAndButtonLabelsAsText()
+    {
+        var masker = new PlaceholderMasker();
+
+        Assert.Equal("Use [Hand Strap] with [sprint] and [Weapon Switch].", masker.Mask("Use [Hand Strap] with [sprint] and [Weapon Switch].").Text);
+        Assert.Equal("[Back]", masker.Mask("[Back]").Text);
+        Assert.Equal("[pagebreak]", masker.Mask("[pagebreak]").TokenToOriginal["__XT_PH_0000__"]);
+    }
+
+    [Fact]
+    public void QualityCheck_ReportsATranslatedControlKey()
+    {
+        Assert.True(XTranslatorAi.Core.Text.LqaScanner.HasTokenMismatch("Hold [Sprint] to sprint while moving.", "이동 중에 [달리기] 키를 누르고 있으면 질주합니다."));
+        Assert.False(XTranslatorAi.Core.Text.LqaScanner.HasTokenMismatch("Hold [Sprint] to sprint while moving.", "이동 중에 [Sprint] 키를 누르고 있으면 질주합니다."));
+    }
 }

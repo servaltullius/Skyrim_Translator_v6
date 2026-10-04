@@ -30,6 +30,11 @@ public static partial class TranslationPrompt
             {
                 AppendKoreanProbabilityExamples(sb);
             }
+
+            if (text.Contains(ControlKeyTokenPrefix, StringComparison.Ordinal))
+            {
+                AppendKoreanControlKeyRule(sb);
+            }
         }
 
         if (isKorean && hasSemanticPlaceholders)

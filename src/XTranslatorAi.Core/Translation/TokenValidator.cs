@@ -753,6 +753,7 @@ internal static class TokenValidator
 
     private static bool IsFreeToken(string token)
         => token.StartsWith("__XT_PH_VAR_", StringComparison.Ordinal)
+            || token.StartsWith("__XT_PH_KEY_", StringComparison.Ordinal)
             || token.StartsWith("__XT_TERM_", StringComparison.Ordinal);
 
     private static List<string> WithoutFreeTokens(IReadOnlyList<string> tokens)
@@ -775,6 +776,7 @@ internal static class TokenValidator
             || token.StartsWith("__XT_PH_DUR_", StringComparison.Ordinal)
             || token.StartsWith("__XT_PH_NUM_", StringComparison.Ordinal)
             || token.StartsWith("__XT_PH_VAR_", StringComparison.Ordinal)
+            || token.StartsWith("__XT_PH_KEY_", StringComparison.Ordinal)
             || token.StartsWith("__XT_TERM_", StringComparison.Ordinal);
 
     // ── Repair helpers ──

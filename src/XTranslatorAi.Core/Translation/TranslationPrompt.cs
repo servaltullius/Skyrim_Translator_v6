@@ -68,6 +68,11 @@ public static partial class TranslationPrompt
             {
                 AppendKoreanProbabilityExamples(sb);
             }
+
+            if (items.Any(i => i.Text.Contains(ControlKeyTokenPrefix, StringComparison.Ordinal)))
+            {
+                AppendKoreanControlKeyRule(sb);
+            }
         }
 
         if (hasPairedSlashList)

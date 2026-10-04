@@ -9,8 +9,29 @@ public sealed record PlaceholderMaskerOptions(bool KeepSkyrimTagsRaw = false);
 
 public sealed class PlaceholderMasker
 {
+    /// <summary>
+    /// Control names that Skyrim replaces with the player's key in help messages ("Hold [Sprint] to sprint").
+    /// The official translation keeps them in English ("이동중에 [Sprint] 키를 누르면 질주 합니다"); a translated
+    /// one ("[달리기]") is shown as written. These are the names in Skyrim.esm help messages and the game's
+    /// control map, matched with their exact casing.
+    /// </summary>
+    internal static readonly string[] ControlKeyNames =
+    {
+        "Activate", "Ready Weapon", "Left Attack/Block", "Right Attack/Block", "Shout", "Sprint", "Sneak", "Jump", "Run",
+        "Toggle Always Run", "Auto-Move", "Forward", "Back", "Strafe Left", "Strafe Right", "Move", "Look", "Mouse Move",
+        "Left Thumbstick", "Right Thumbstick", "Tween Menu", "Favorites", "Journal", "Wait", "Pause", "Toggle POV",
+        "Zoom In", "Zoom Out", "Quicksave", "Quickload", "Quick Inventory", "Quick Magic", "Quick Stats", "Quick Map",
+        "Hotkey1", "Hotkey2", "Hotkey3", "Hotkey4", "Hotkey5", "Hotkey6", "Hotkey7", "Hotkey8",
+        "Accept", "Cancel", "Up", "Down", "Left", "Right", "LeftEquip", "RightEquip", "XButton", "YButton", "Rotate",
+        "Item Zoom", "ChargeItem", "RotateLock", "RotatePick", "ShowOnMap", "LocalMap", "PlayerPosition",
+        "PlacePlayerMarker", "MapLookMode", "NextPage", "PrevPage",
+    };
+
+    private static readonly string ControlKeyPattern =
+        @"\[(?-i:" + string.Join("|", ControlKeyNames.OrderByDescending(name => name.Length).Select(Regex.Escape)) + @")\]";
+
     private static readonly Regex PlaceholderRegex = new(
-        pattern: @"(\r\n|\r|\n|[+-]?<" + TranslationConstants.StageDirectionGuard + @"[^>]+>[\t ]*%|[+-]?<" + TranslationConstants.StageDirectionGuard + @"[^>]+>|\[pagebreak\]|%[A-Za-z0-9_]+%|%(?:[0-9]+\$)?[-+0-9.]*[A-Za-z]|\$[A-Za-z0-9_]+\$|\{\{[A-Za-z0-9_.,:+-]{1,40}\}\}|\{[A-Za-z0-9_.,:+-]{1,40}\}|[+-]?\d+(?:\.\d+)?[\t ]*%|%)",
+        pattern: @"(\r\n|\r|\n|[+-]?<" + TranslationConstants.StageDirectionGuard + @"[^>]+>[\t ]*%|[+-]?<" + TranslationConstants.StageDirectionGuard + @"[^>]+>|\[pagebreak\]|" + ControlKeyPattern + @"|%[A-Za-z0-9_]+%|%(?:[0-9]+\$)?[-+0-9.]*[A-Za-z]|\$[A-Za-z0-9_]+\$|\{\{[A-Za-z0-9_.,:+-]{1,40}\}\}|\{[A-Za-z0-9_.,:+-]{1,40}\}|[+-]?\d+(?:\.\d+)?[\t ]*%|%)",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
@@ -47,6 +68,12 @@ public sealed class PlaceholderMasker
                     return original;
                 }
 
+                // A text that is only "[Back]" is a button or choice label, not a key in a help message.
+                if (IsControlKey(original) && original.Length == text.Trim().Length)
+                {
+                    return original;
+                }
+
                 var idx = tokenToOriginal.Count;
 
                 // Reserve __XT_PH_9999__ for the end-of-text sentinel used during translation.
@@ -67,6 +94,9 @@ public sealed class PlaceholderMasker
 
         return new MaskedText(masked, tokenToOriginal);
     }
+
+    private static bool IsControlKey(string placeholder)
+        => placeholder.Length > 2 && placeholder[0] == '[' && !placeholder.Equals("[pagebreak]", StringComparison.OrdinalIgnoreCase);
 
     private static bool ShouldKeepRawSkyrimTag(string placeholder)
     {
@@ -94,6 +124,11 @@ public sealed class PlaceholderMasker
         if (string.IsNullOrEmpty(placeholder))
         {
             return null;
+        }
+
+        if (IsControlKey(placeholder))
+        {
+            return "KEY";
         }
 
         var s = StripLeadingSign(placeholder.AsSpan());
