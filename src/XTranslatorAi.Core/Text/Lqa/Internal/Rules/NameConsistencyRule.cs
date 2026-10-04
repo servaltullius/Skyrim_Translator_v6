@@ -41,6 +41,7 @@ internal static class NameConsistencyRule
             .ToList();
         var lowercaseWords = new HashSet<string>(StringComparer.Ordinal);
         var rowsByName = new Dictionary<string, List<int>>(StringComparer.Ordinal);
+        var titleRowsByName = new Dictionary<string, List<int>>(StringComparer.Ordinal);
         for (var i = 0; i < rows.Count; i++)
         {
             var source = LqaScanner.StripUiTokens(rows[i].SourceText);
@@ -56,12 +57,13 @@ internal static class NameConsistencyRule
                 {
                     lowercaseWords.Add(word);
                 }
-                else if (word.Length >= 3 && word.Skip(1).All(char.IsLower) && !titleRow)
+                else if (word.Length >= 3 && word.Skip(1).All(char.IsLower) && (!titleRow || IsGreetedName(matches, m)))
                 {
-                    if (!rowsByName.TryGetValue(word, out var list))
+                    var byName = titleRow ? titleRowsByName : rowsByName;
+                    if (!byName.TryGetValue(word, out var list))
                     {
                         list = new List<int>();
-                        rowsByName[word] = list;
+                        byName[word] = list;
                     }
 
                     if (list.Count == 0 || list[^1] != i)
@@ -102,6 +104,18 @@ internal static class NameConsistencyRule
             foreach (var core in CoresOf(row))
             {
                 rowsByCore[core] = rowsByCore.GetValueOrDefault(core) + 1;
+            }
+        }
+
+        // A word used as a name in a sentence or on its own is a name when a short title-case row ends with it:
+        // Serana Dialogue Add-On greets each player name ("Hey Drelorea!") and spelled it 드렐로레아 there but
+        // 드렐로리아 in its lines. Item names put the word first ("Daedric Armor", "Guard Tower") and stay out.
+        foreach (var (name, titleRows) in titleRowsByName)
+        {
+            if (rowsByName.TryGetValue(name, out var list))
+            {
+                list.AddRange(titleRows);
+                list.Sort();
             }
         }
 
@@ -160,6 +174,8 @@ internal static class NameConsistencyRule
 
         return findings;
     }
+
+    private static bool IsGreetedName(MatchCollection words, int index) => words.Count <= 3 && index == words.Count - 1 && index > 0;
 
     // Titles capitalize ordinary words ("Horror Sign", "The End Maneuver"), so their words are not taken for
     // names. A sentence ("Ask Merovech about the ship.") or a lone name ("Selene.") is used.

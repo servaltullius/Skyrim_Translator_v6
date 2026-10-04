@@ -233,6 +233,26 @@ public class LqaFalsePositiveTests
     }
 
     [Fact]
+    public async Task NameConsistency_CountsTitleCaseRowsForWordsUsedAsNames()
+    {
+        // Serana Dialogue Add-On greets each player name ("Hey Drelorea!") and spelled it 드렐로레아 there but
+        // 드렐로리아 in a line; greetings are title-case rows, which alone do not make a word a name.
+        var entries = new List<LqaScanEntry>
+        {
+            Dialogue(1, "Drelorea, are you okay?", "드렐로리아, 괜찮아?"),
+            Dialogue(2, "Hey Drelorea!", "안녕, 드렐로레아!"),
+            Dialogue(3, "Thanks Drelorea!", "고마워, 드렐로레아!"),
+            Dialogue(4, "Bye Drelorea!", "잘 가, 드렐로레아!"),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        var issue = Assert.Single(issues, i => i.Code == "name_inconsistent");
+        Assert.Equal(1, issue.Id);
+        Assert.Contains("Drelorea → '드렐로리아' (다른 3행은 '드렐로레아')", issue.Message);
+    }
+
+    [Fact]
     public async Task GlossaryVariant_FindsTheLoanwordForATranslatedTerm_ButNotNativeWordsOrNamesOfTheLine()
     {
         // Serana Dialogue Add-On said 뱀파이어로 변한 for "since I was turned"; the glossary says 흡혈귀.
