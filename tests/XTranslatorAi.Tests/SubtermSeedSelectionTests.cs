@@ -38,6 +38,25 @@ public class SubtermSeedSelectionTests
         Assert.Equal(new[] { "Deathblow" }, seeds);
     }
 
+    /// <summary>
+    /// Every candidate part was searched for in every row: 10k rows took 2 s and 40k rows 15 s before the first
+    /// request of each run. Rows are now found through their words.
+    /// </summary>
+    [Fact]
+    public void LargeProject_IsSelectedQuickly_WithTheSameResult()
+    {
+        var rows = Enumerable.Range(1, 20000)
+            .Select(i => Row($"Skill{i} Name{i % 5000} - Effect{i} Deathblow", "SPEL:FULL"))
+            .ToList();
+
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        var seeds = TranslationService.SelectSubtermSeeds(rows, _ => false, 24);
+        watch.Stop();
+
+        Assert.Contains("Deathblow", seeds);
+        Assert.True(watch.Elapsed < System.TimeSpan.FromSeconds(2), $"took {watch.Elapsed.TotalSeconds:F1} s");
+    }
+
     [Fact]
     public void PartAlreadyTokenizedByTheGlossary_IsNotSelected()
     {

@@ -69,6 +69,10 @@ public sealed partial class TranslationService
             }
         }
 
+        // Searching every row for every part took 15 s on 40k rows before each run. A match starts with a whole
+        // word of the row (the term's first word, as the boundaries of ContainsSessionTerm require), so only the
+        // rows holding that word are searched.
+        var rowsByWord = IndexRowsByWord(rows);
         var counted = new List<(string Term, int Rows)>();
         foreach (var term in parts)
         {
@@ -81,7 +85,7 @@ public sealed partial class TranslationService
 
             var count = 0;
             var stillPlain = false;
-            foreach (var row in rows)
+            foreach (var row in CandidateRows(rows, rowsByWord, term))
             {
                 if (!ContainsSessionTerm(row.Source ?? "", term))
                 {
@@ -117,6 +121,55 @@ public sealed partial class TranslationService
         }
 
         return chosen;
+    }
+
+    private static Dictionary<string, List<int>> IndexRowsByWord(IReadOnlyList<(string Source, string Rec, string Masked)> rows)
+    {
+        var index = new Dictionary<string, List<int>>(StringComparer.OrdinalIgnoreCase);
+        for (var i = 0; i < rows.Count; i++)
+        {
+            var text = rows[i].Source ?? "";
+            var start = -1;
+            for (var at = 0; at <= text.Length; at++)
+            {
+                if (at < text.Length && IsSessionTermWordChar(text[at]))
+                {
+                    if (start < 0) start = at;
+                    continue;
+                }
+
+                if (start < 0) continue;
+                var word = text[start..at];
+                start = -1;
+                if (!index.TryGetValue(word, out var list))
+                {
+                    list = new List<int>();
+                    index[word] = list;
+                }
+
+                if (list.Count == 0 || list[^1] != i) list.Add(i);
+            }
+        }
+
+        return index;
+    }
+
+    private static IEnumerable<(string Source, string Rec, string Masked)> CandidateRows(
+        IReadOnlyList<(string Source, string Rec, string Masked)> rows,
+        Dictionary<string, List<int>> rowsByWord,
+        string term)
+    {
+        var end = 0;
+        while (end < term.Length && IsSessionTermWordChar(term[end])) end++;
+        if (end == 0)
+        {
+            // A term starting with punctuation has no first word to look up.
+            return rows;
+        }
+
+        return rowsByWord.TryGetValue(term[..end], out var indexes)
+            ? indexes.Select(i => rows[i])
+            : Enumerable.Empty<(string Source, string Rec, string Masked)>();
     }
 
     /// <summary>
