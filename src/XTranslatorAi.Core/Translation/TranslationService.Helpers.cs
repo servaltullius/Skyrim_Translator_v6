@@ -85,10 +85,11 @@ public sealed partial class TranslationService
             {
                 continue;
             }
-            else if (!string.IsNullOrEmpty(replacement)
+            else if (replacement.Length > 1
                      && text.Contains(replacement, StringComparison.Ordinal))
             {
                 // Model dropped the token but already output the correct translation directly — accept as-is.
+                // Not for one syllable: any Korean text contains the material 은 (Silver) or 철 (Iron).
             }
             else
             {
@@ -260,14 +261,15 @@ public sealed partial class TranslationService
             }
             var afterStart = pos + token.Length;
 
-            if (replacement.Length > 0 && TryMatchDupAfterToken(text, afterStart, replacement, out var afterStripLen))
+            // One syllable is also a particle or part of a word: "네 검은 __N1__ 검이지" (Silver) lost 은 as a duplicate.
+            if (replacement.Length > 1 && TryMatchDupAfterToken(text, afterStart, replacement, out var afterStripLen))
             {
                 result.Append(text, cursor, pos - cursor).Append(replacement);
                 cursor = afterStart + afterStripLen;
                 continue;
             }
 
-            if (replacement.Length > 0
+            if (replacement.Length > 1
                 && TryMatchDupBeforeToken(text, pos, replacement, out var beforeStripLen)
                 && pos - beforeStripLen >= cursor)
             {
@@ -337,9 +339,10 @@ public sealed partial class TranslationService
             i -= 2;
         }
 
-        // Match replacement (backwards)
+        // Match replacement (backwards), as a whole word: "초강철" does not end with a written-out 강철.
         if (i < replacement.Length
-            || string.Compare(text, i - replacement.Length, replacement, 0, replacement.Length, StringComparison.Ordinal) != 0)
+            || string.Compare(text, i - replacement.Length, replacement, 0, replacement.Length, StringComparison.Ordinal) != 0
+            || i - replacement.Length > 0 && char.IsLetterOrDigit(text[i - replacement.Length - 1]))
         {
             return false;
         }

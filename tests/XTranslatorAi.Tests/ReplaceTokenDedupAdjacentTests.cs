@@ -45,6 +45,17 @@ public class ReplaceTokenDedupAdjacentTests
         Assert.Equal($"{Replacement} \uce74\uc6b4\ud130", result);
     }
 
+    // Silver is 은 in the official translation; the topic particle before or after the token is not a duplicate.
+    [Theory]
+    [InlineData("네 검은 __XT_TERM_N1_0000__ 검이지.", "네 검은 은 검이지.")]
+    [InlineData("__XT_TERM_N1_0000__은 희귀하다.", "은은 희귀하다.")]
+    public void OneSyllableReplacement_IsNeverTreatedAsADuplicate(string input, string expected)
+        => Assert.Equal(expected, TranslationService.ReplaceTokenDedupAdjacent(input, "__XT_TERM_N1_0000__", "은"));
+
+    [Fact]
+    public void DuplicateBefore_MustBeAWholeWord()
+        => Assert.Equal("초강철 강철 검", TranslationService.ReplaceTokenDedupAdjacent("초강철 __XT_TERM_N1_0000__ 검", "__XT_TERM_N1_0000__", "강철"));
+
     [Fact]
     public void NoDuplicate_NormalReplacement()
     {
