@@ -138,7 +138,12 @@ public sealed partial class TranslationCostEstimator
             }
             : new[] { StringEntryStatus.Pending, StringEntryStatus.Error };
 
-        return await _db.GetStringSourceContextsByStatusAsync(statuses, cancellationToken);
+        // The run keeps rows without letters and hidden topic identifiers as they are, without a request.
+        var rows = await _db.GetStringSourceContextsByStatusAsync(statuses, cancellationToken);
+        return rows
+            .Where(row => TranslationService.HasLettersToTranslate(row.SourceText)
+                && !XTranslatorAi.Core.Text.Lqa.Internal.Rules.HiddenTopicRule.IsHiddenTopicIdentifier(row.Rec, row.SourceText))
+            .ToList();
     }
 
     private async Task<PreparedEstimationInput> PrepareEstimationInputAsync(

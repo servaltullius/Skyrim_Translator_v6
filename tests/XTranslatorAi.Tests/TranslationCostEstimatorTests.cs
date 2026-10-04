@@ -27,6 +27,17 @@ public class TranslationCostEstimatorTests
         Assert.Equal(new[] { GeminiModelCatalog.DefaultModel, GeminiModelCatalog.LowCostModel }, result.CostEstimates.Select(c => c.ModelName));
     }
 
+    // Rows without letters and hidden topic identifiers are kept without a request (b81cf4b, 05ef695); the estimate
+    // counted them as work.
+    [Fact]
+    public async Task RowsTheRunKeepsAsIs_AreNotEstimated()
+    {
+        var db = new StubProjectDb { RowCount = 2, ExtraRows = new[] { ("...", "MESG:DESC"), (" ", "WEAP:FULL"), ("SDA_DA09IntroTopic00", "DIAL:FULL") } };
+        var result = await new TranslationCostEstimator(db, new StubGeminiClient())
+            .EstimateAsync(MakeRequest("fixture", GeminiModelCatalog.DefaultModel) with { BatchSize = 1 }, CancellationToken.None);
+        Assert.Equal(2, result.ItemCount);
+    }
+
     [Fact]
     public async Task EmptyWork_HasNoCacheStorageOrGenerationCost()
     {
@@ -230,6 +241,7 @@ public class TranslationCostEstimatorTests
     private sealed class StubProjectDb : IProjectDb
     {
         public int RowCount { get; init; }
+        public (string Source, string Rec)[] ExtraRows { get; init; } = Array.Empty<(string, string)>();
         public Task<IReadOnlyList<GlossaryEntry>> GetGlossaryAsync(CancellationToken cancellationToken)
             => Task.FromResult<IReadOnlyList<GlossaryEntry>>(Array.Empty<GlossaryEntry>());
 
@@ -271,7 +283,9 @@ public class TranslationCostEstimatorTests
         public Task<IReadOnlyList<(long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)>>
             GetStringSourceContextsByStatusAsync(IReadOnlyList<StringEntryStatus> statuses, CancellationToken cancellationToken)
             => Task.FromResult<IReadOnlyList<(long, string, string?, string?, StringEntryStatus)>>(
-                Enumerable.Range(1, RowCount).Select(i => ((long)i, "source " + i, (string?)"INFO:NAM1", (string?)null, StringEntryStatus.Pending)).ToArray());
+                Enumerable.Range(1, RowCount).Select(i => ((long)i, "source " + i, (string?)"INFO:NAM1", (string?)null, StringEntryStatus.Pending))
+                    .Concat(ExtraRows.Select((r, i) => ((long)(1000 + i), r.Source, (string?)r.Rec, (string?)null, StringEntryStatus.Pending)))
+                    .ToArray());
     }
 
     private sealed class StubGeminiClient : IGeminiClient
