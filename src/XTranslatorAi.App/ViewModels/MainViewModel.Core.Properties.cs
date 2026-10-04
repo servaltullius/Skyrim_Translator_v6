@@ -170,6 +170,7 @@ public partial class MainViewModel
     [NotifyCanExecuteChangedFor(nameof(RetranslateVisibleCommand))]
     [NotifyCanExecuteChangedFor(nameof(ImportPreviousTranslationCommand))]
     [NotifyCanExecuteChangedFor(nameof(ClearPreviousTranslationCommand))]
+    [NotifyPropertyChangedFor(nameof(CanChangeFranchise))]
     private bool _isTranslating;
 
     [ObservableProperty]

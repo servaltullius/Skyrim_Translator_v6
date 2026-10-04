@@ -6,11 +6,27 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using XTranslatorAi.App.Services;
+using XTranslatorAi.Core.Models;
 
 namespace XTranslatorAi.App.ViewModels;
 
 public partial class MainViewModel
 {
+    // The game DB the listed TM rows were read from; their Ids mean nothing in another game's DB
+    // (see _globalGlossaryRowsFranchise).
+    private BethesdaFranchise _franchiseTmRowsFranchise = BethesdaFranchise.ElderScrolls;
+
+    private bool AreFranchiseTmRowsFromSelectedFranchise()
+    {
+        if (_franchiseTmRowsFranchise == _globalProjectDbService.SelectedFranchise)
+        {
+            return true;
+        }
+
+        StatusMessage = "시리즈 TM 목록이 이전 게임 시리즈의 것이라 저장·삭제하지 않았습니다. 새로고침한 뒤 다시 시도하세요.";
+        return false;
+    }
+
     private async Task TryAutoImportFranchiseTranslationMemoryAsync()
     {
         if (IsTranslating)
@@ -76,6 +92,7 @@ public partial class MainViewModel
     [RelayCommand(CanExecute = nameof(CanReloadFranchiseTranslationMemory))]
     private async Task ReloadFranchiseTranslationMemoryAsync()
     {
+        var franchise = _globalProjectDbService.SelectedFranchise;
         if (await _globalTranslationMemoryService.TryGetDbAsync(CancellationToken.None) == null)
         {
             FranchiseTranslationMemory.Clear();
@@ -88,6 +105,12 @@ public partial class MainViewModel
         {
             StatusMessage = "시리즈 TM을 불러오는 중...";
             var rows = await _globalTranslationMemoryService.GetEntriesAsync(SourceLang.Trim(), TargetLang.Trim(), CancellationToken.None);
+            // A later game-series switch started its own reload; the earlier game's rows must not replace it.
+            if (franchise != _globalProjectDbService.SelectedFranchise)
+            {
+                return;
+            }
+
             var list = rows
                 .Select(
                     r =>
@@ -105,6 +128,7 @@ public partial class MainViewModel
                 .ToList();
 
             FranchiseTranslationMemory.ReplaceAll(list);
+            _franchiseTmRowsFranchise = franchise;
             FranchiseTranslationMemoryView.Refresh();
             StatusMessage = $"시리즈 TM 불러오기: {list.Count}개 항목";
         }
@@ -173,6 +197,11 @@ public partial class MainViewModel
             return;
         }
 
+        if (!AreFranchiseTmRowsFromSelectedFranchise())
+        {
+            return;
+        }
+
         try
         {
             var rows = dirty
@@ -195,6 +224,7 @@ public partial class MainViewModel
     private async Task DeleteFranchiseTranslationMemoryEntryAsync()
     {
         if (SelectedFranchiseTranslationMemoryEntry == null
+            || !AreFranchiseTmRowsFromSelectedFranchise()
             || await _globalTranslationMemoryService.TryGetDbAsync(CancellationToken.None) == null)
         {
             return;

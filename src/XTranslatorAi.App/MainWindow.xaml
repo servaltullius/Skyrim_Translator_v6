@@ -66,6 +66,9 @@
                                   DisplayMemberPath="DisplayName"
                                   SelectedValuePath="Value"
                                   SelectedValue="{Binding SelectedFranchise}"
+                                  IsEnabled="{Binding CanChangeFranchise}"
+                                  ToolTipService.ShowOnDisabled="True"
+                                  ToolTip="전체 용어집·시리즈 TM·프롬프트를 이 게임 기준으로 씁니다. 번역 중에는 바꿀 수 없습니다."
                                   Width="140"
                                   VerticalAlignment="Center"
                                   Style="{StaticResource XT.ToolbarComboBox}" />

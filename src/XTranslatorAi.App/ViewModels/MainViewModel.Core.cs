@@ -263,38 +263,98 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
         if (value < 0) MaxTotalGenerations = 0;
     }
 
-    partial void OnSelectedFranchiseChanged(BethesdaFranchise value)
+    // The game series picks the global DB behind 전체 용어집 and 시리즈 TM. A run keeps the glossary, TM and
+    // prompt it started with, and global glossary edits saved during the run would go to whichever game is
+    // selected, so the selector is disabled while translating and a change that still arrives is undone.
+    public bool CanChangeFranchise => !IsTranslating;
+
+    private bool _isRevertingFranchise;
+    private Task _franchiseReload = Task.CompletedTask;
+
+    partial void OnSelectedFranchiseChanged(BethesdaFranchise oldValue, BethesdaFranchise newValue)
     {
-        if (_projectState.PluginDocument != null)
-        {
-            _globalProjectDbService.SelectedFranchise = BethesdaFranchise.ElderScrolls;
-            BasePromptText = EmbeddedAssets.LoadMetaPrompt(BethesdaFranchise.ElderScrolls);
-            if (value != BethesdaFranchise.ElderScrolls) SelectedFranchise = BethesdaFranchise.ElderScrolls;
-            return;
-        }
-        _globalProjectDbService.SelectedFranchise = value;
-
-        try
-        {
-            BasePromptText = EmbeddedAssets.LoadMetaPrompt(value);
-        }
-        catch
-        {
-            BasePromptText = EmbeddedAssets.LoadMetaPrompt(BethesdaFranchise.ElderScrolls);
-        }
-
-        if (!IsProjectLoaded)
+        if (_isRevertingFranchise)
         {
             return;
         }
 
         if (IsTranslating)
         {
-            StatusMessage = "게임 시리즈를 바꿨습니다. 번역을 다시 시작하면 적용됩니다.";
+            RevertFranchise(oldValue);
+            StatusMessage = "번역 중에는 게임 시리즈를 바꿀 수 없습니다. 번역을 중지한 뒤 바꾸세요.";
             return;
         }
 
-        _ = ReloadAfterFranchiseChangeAsync();
+        if (_projectState.PluginDocument != null)
+        {
+            _globalProjectDbService.SelectedFranchise = BethesdaFranchise.ElderScrolls;
+            BasePromptText = EmbeddedAssets.LoadMetaPrompt(BethesdaFranchise.ElderScrolls);
+            if (newValue != BethesdaFranchise.ElderScrolls) SelectedFranchise = BethesdaFranchise.ElderScrolls;
+            return;
+        }
+
+        // Opening a project sets its game and reloads both lists itself.
+        if (!_isSwitchingProject && !ConfirmDiscardGlobalListEdits())
+        {
+            RevertFranchise(oldValue);
+            StatusMessage = "게임 시리즈를 바꾸지 않았습니다. 전체 용어집·시리즈 TM 수정을 먼저 저장하세요.";
+            return;
+        }
+
+        _globalProjectDbService.SelectedFranchise = newValue;
+
+        try
+        {
+            BasePromptText = EmbeddedAssets.LoadMetaPrompt(newValue);
+        }
+        catch
+        {
+            BasePromptText = EmbeddedAssets.LoadMetaPrompt(BethesdaFranchise.ElderScrolls);
+        }
+
+        if (_isSwitchingProject)
+        {
+            return;
+        }
+
+        // Also without a project: the series TM tab works without one, and rows of the previous game left in
+        // either list would send their Ids to the new game's DB on save or delete.
+        _franchiseReload = ReloadAfterFranchiseChangeAsync();
+    }
+
+    private void RevertFranchise(BethesdaFranchise previous)
+    {
+        _isRevertingFranchise = true;
+        try
+        {
+            SelectedFranchise = previous;
+        }
+        finally
+        {
+            _isRevertingFranchise = false;
+        }
+    }
+
+    /// <summary>
+    /// Unsaved grid edits belong to the game they were loaded from; switching reloads both lists and drops them.
+    /// Asks first instead of discarding them silently, and never saves them into the other game's DB.
+    /// </summary>
+    private bool ConfirmDiscardGlobalListEdits()
+    {
+        var dirty = GlobalGlossary.Count(g => g.IsDirty) + FranchiseTranslationMemory.Count(e => e.IsDirty);
+        if (dirty == 0)
+        {
+            return true;
+        }
+
+        return _uiInteractionService.ShowMessage(
+            $"저장하지 않은 전체 용어집·시리즈 TM 수정이 {dirty}개 있습니다.\n\n"
+            + "게임 시리즈를 바꾸면 새 게임의 목록을 불러오므로 이 수정은 버려집니다. 바꿀까요?",
+            "게임 시리즈 변경",
+            UiMessageBoxButton.YesNo,
+            UiMessageBoxImage.Warning,
+            UiMessageBoxResult.No
+        ) == UiMessageBoxResult.Yes;
     }
 
     private async Task ReloadAfterFranchiseChangeAsync()

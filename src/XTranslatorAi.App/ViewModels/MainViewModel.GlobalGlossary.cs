@@ -7,12 +7,29 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using XTranslatorAi.App.Services;
 using XTranslatorAi.Core.Data;
+using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text;
 
 namespace XTranslatorAi.App.ViewModels;
 
 public partial class MainViewModel
 {
+    // Row Ids are only meaningful in the game DB the rows were read from. Saving or deleting rows of the
+    // previous game after a switch (before the reload finished, or when it failed) changed unrelated rows of
+    // the new game's glossary that happened to share those Ids.
+    private BethesdaFranchise _globalGlossaryRowsFranchise = BethesdaFranchise.ElderScrolls;
+
+    private bool AreGlobalGlossaryRowsFromSelectedFranchise()
+    {
+        if (_globalGlossaryRowsFranchise == _globalProjectDbService.SelectedFranchise)
+        {
+            return true;
+        }
+
+        StatusMessage = "전체 용어집 목록이 이전 게임 시리즈의 것이라 저장·삭제하지 않았습니다. 게임 시리즈를 다시 선택해 목록을 불러오세요.";
+        return false;
+    }
+
     [RelayCommand(CanExecute = nameof(CanAddGlobalGlossary))]
     private async Task AddGlobalGlossaryAsync()
     {
@@ -87,6 +104,11 @@ public partial class MainViewModel
             return;
         }
 
+        if (!AreGlobalGlossaryRowsFromSelectedFranchise())
+        {
+            return;
+        }
+
         try
         {
             var rows = dirty.Select(
@@ -129,7 +151,7 @@ public partial class MainViewModel
     [RelayCommand(CanExecute = nameof(CanDeleteGlobalGlossaryEntry))]
     private async Task DeleteGlobalGlossaryEntryAsync()
     {
-        if (SelectedGlobalGlossaryEntry == null) return;
+        if (SelectedGlobalGlossaryEntry == null || !AreGlobalGlossaryRowsFromSelectedFranchise()) return;
 
         var confirm = _uiInteractionService.ShowMessage(
             $"선택한 전역 용어집 항목을 삭제할까요?\n\n- {SelectedGlobalGlossaryEntry.SourceTerm} => {SelectedGlobalGlossaryEntry.TargetTerm}",
@@ -198,10 +220,18 @@ public partial class MainViewModel
 
     private async Task ReloadGlobalGlossaryAsync()
     {
+        var franchise = _globalProjectDbService.SelectedFranchise;
         var rows = await _globalGlossaryService.GetAsync(CancellationToken.None);
+        // A later game-series switch started its own reload; the earlier game's rows must not replace it.
+        if (franchise != _globalProjectDbService.SelectedFranchise)
+        {
+            return;
+        }
+
         var list = rows.Select(MapGlossaryToViewModel).ToList();
 
         GlobalGlossary.ReplaceAll(list);
+        _globalGlossaryRowsFranchise = franchise;
         RebuildGlobalGlossaryCategoryFilters();
         GlobalGlossaryView.Refresh();
         RebuildGlossaryLookupResults();
