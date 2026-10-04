@@ -82,6 +82,47 @@ public sealed class AppSettingsStoreTests : IDisposable
         Assert.Equal(5, store.Load().BatchSize);
     }
 
+    /// <summary>
+    /// Every setting is listed three times (AppSettings, the stored record and two converters); one forgotten line
+    /// silently drops a setting on restart. Each setting gets a non-default value and must come back after a reload.
+    /// </summary>
+    [Fact]
+    public void EverySetting_SurvivesSaveAndLoad()
+    {
+        var clamped = new Dictionary<string, object>
+        {
+            [nameof(AppSettings.MaxOutputTokensOverride)] = 512,
+            [nameof(AppSettings.MaxTotalGenerations)] = 40,
+        };
+        var constructor = typeof(AppSettings).GetConstructors().Single(c => c.GetParameters().Length > 1);
+        var defaults = new AppSettings();
+        var values = constructor.GetParameters().Select(parameter =>
+        {
+            var current = typeof(AppSettings).GetProperty(parameter.Name!)!.GetValue(defaults);
+            if (clamped.TryGetValue(parameter.Name!, out var fixedValue)) return fixedValue;
+            var type = Nullable.GetUnderlyingType(parameter.ParameterType) ?? parameter.ParameterType;
+            if (parameter.Name == nameof(AppSettings.ApiKey)) return "round-trip-key";
+            if (parameter.Name == nameof(AppSettings.ApiKeys)) return new[] { new SavedApiKey("spare", "spare-key") };
+            if (type == typeof(bool)) return !(bool)current!;
+            if (type == typeof(int)) return (int)current! + 1;
+            if (type == typeof(string)) return "value-" + parameter.Name;
+            if (type.IsEnum) return Enum.GetValues(type).Cast<object>().First(value => !value.Equals(current));
+            throw new InvalidOperationException($"No test value for {parameter.Name} ({type.Name}).");
+        }).ToArray();
+        var expected = (AppSettings)constructor.Invoke(values);
+
+        new AppSettingsStore(SettingsPath).Save(expected);
+        var loaded = new AppSettingsStore(SettingsPath).Load();
+
+        foreach (var property in typeof(AppSettings).GetProperties().Where(p => p.Name is not ("ApiKeys" or "EqualityContract")))
+        {
+            Assert.True(Equals(property.GetValue(expected), property.GetValue(loaded)),
+                $"{property.Name}: saved {property.GetValue(expected)}, loaded {property.GetValue(loaded)}");
+        }
+
+        Assert.Equal(("spare", "spare-key"), (loaded.ApiKeys!.Single().Name, loaded.ApiKeys!.Single().ApiKey));
+    }
+
     [Fact]
     public void Save_NeverWritesTheKeyInPlainText()
     {

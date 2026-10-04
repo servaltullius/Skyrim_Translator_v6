@@ -277,85 +277,53 @@ public sealed class AppSettingsStore
         var normalizedApiKey = NormalizeApiKey(settings.ApiKey);
         var normalizedApiKeys = NormalizeApiKeys(settings.ApiKeys);
 
-        if (_canUseDpapi)
-        {
-            return new PersistedAppSettings(
-                ApiKey: null,
-                ApiKeyProtected: string.IsNullOrWhiteSpace(normalizedApiKey) ? null : ProtectApiKey(normalizedApiKey),
-                ApiKeys: normalizedApiKeys.Count == 0 ? null : BuildProtectedApiKeys(normalizedApiKeys).ToArray(),
-                EnableApiKeyFailover: settings.EnableApiKeyFailover,
-                EnableBookFullModelOverride: settings.EnableBookFullModelOverride,
-                EnableBookBodyModelOverride: settings.EnableBookBodyModelOverride,
-                BookFullModel: settings.BookFullModel,
-                EnablePromptCache: settings.EnablePromptCache,
-                EnableQualityEscalation: settings.EnableQualityEscalation,
-                QualityEscalationModel: settings.QualityEscalationModel,
-                EnableRiskyCandidateRerank: settings.EnableRiskyCandidateRerank,
-                RiskyCandidateCount: settings.RiskyCandidateCount,
-                SelectedModel: settings.SelectedModel,
-                BatchSize: settings.BatchSize,
-                MaxCharsPerBatch: settings.MaxCharsPerBatch,
-                MaxParallelRequests: settings.MaxParallelRequests,
-                MaxOutputTokensOverride: settings.MaxOutputTokensOverride,
-                EnableRepairPass: settings.EnableRepairPass,
-                SemanticRepairMode: settings.SemanticRepairMode,
-                KeepSkyrimTagsRaw: settings.KeepSkyrimTagsRaw,
-                EnableDialogueContextWindow: settings.EnableDialogueContextWindow,
-                EnableSessionTermMemory: settings.EnableSessionTermMemory,
-                UseRecStyleHints: settings.UseRecStyleHints,
-                EnableTemplateFixer: settings.EnableTemplateFixer,
-                EnableProjectContext: settings.EnableProjectContext,
-                EnableAdaptiveOutputBudget: settings.EnableAdaptiveOutputBudget,
-                EnableBookContext: settings.EnableBookContext,
-                MaxRetryGenerations: settings.MaxRetryGenerations,
-                MaxTotalGenerations: settings.MaxTotalGenerations,
-                PluginSourceLanguage: settings.PluginSourceLanguage,
-                PluginTargetLanguage: settings.PluginTargetLanguage,
-                PluginSourceEncoding: settings.PluginSourceEncoding,
-                PluginMetadataEncoding: settings.PluginMetadataEncoding,
-                PluginTargetEncoding: settings.PluginTargetEncoding,
-                PluginStringsDirectory: settings.PluginStringsDirectory
-            );
-        }
-
-        // Fallback for non-Windows environments where DPAPI is unavailable.
-        return new PersistedAppSettings(
-            ApiKey: normalizedApiKey,
-            ApiKeyProtected: null,
-            ApiKeys: normalizedApiKeys.Count == 0 ? null : BuildLegacyApiKeys(normalizedApiKeys).ToArray(),
-            EnableApiKeyFailover: settings.EnableApiKeyFailover,
-            EnableBookFullModelOverride: settings.EnableBookFullModelOverride,
-            EnableBookBodyModelOverride: settings.EnableBookBodyModelOverride,
-            BookFullModel: settings.BookFullModel,
-            EnablePromptCache: settings.EnablePromptCache,
-            EnableQualityEscalation: settings.EnableQualityEscalation,
-            QualityEscalationModel: settings.QualityEscalationModel,
-            EnableRiskyCandidateRerank: settings.EnableRiskyCandidateRerank,
-            RiskyCandidateCount: settings.RiskyCandidateCount,
-            SelectedModel: settings.SelectedModel,
-            BatchSize: settings.BatchSize,
-            MaxCharsPerBatch: settings.MaxCharsPerBatch,
-            MaxParallelRequests: settings.MaxParallelRequests,
-            MaxOutputTokensOverride: settings.MaxOutputTokensOverride,
-            EnableRepairPass: settings.EnableRepairPass,
-            SemanticRepairMode: settings.SemanticRepairMode,
-            KeepSkyrimTagsRaw: settings.KeepSkyrimTagsRaw,
-            EnableDialogueContextWindow: settings.EnableDialogueContextWindow,
-            EnableSessionTermMemory: settings.EnableSessionTermMemory,
-            UseRecStyleHints: settings.UseRecStyleHints,
-            EnableTemplateFixer: settings.EnableTemplateFixer,
-            EnableProjectContext: settings.EnableProjectContext,
-            EnableAdaptiveOutputBudget: settings.EnableAdaptiveOutputBudget,
-            EnableBookContext: settings.EnableBookContext,
-            MaxRetryGenerations: settings.MaxRetryGenerations,
-            MaxTotalGenerations: settings.MaxTotalGenerations,
-            PluginSourceLanguage: settings.PluginSourceLanguage,
-            PluginTargetLanguage: settings.PluginTargetLanguage,
-            PluginSourceEncoding: settings.PluginSourceEncoding,
-            PluginMetadataEncoding: settings.PluginMetadataEncoding,
-            PluginTargetEncoding: settings.PluginTargetEncoding,
+        // Keys are stored DPAPI-protected on Windows and as plain text elsewhere; every other field is the same.
+        var persisted = new PersistedAppSettings(
+            EnableApiKeyFailover: settings.EnableApiKeyFailover,
+            EnableBookFullModelOverride: settings.EnableBookFullModelOverride,
+            EnableBookBodyModelOverride: settings.EnableBookBodyModelOverride,
+            BookFullModel: settings.BookFullModel,
+            EnablePromptCache: settings.EnablePromptCache,
+            EnableQualityEscalation: settings.EnableQualityEscalation,
+            QualityEscalationModel: settings.QualityEscalationModel,
+            EnableRiskyCandidateRerank: settings.EnableRiskyCandidateRerank,
+            RiskyCandidateCount: settings.RiskyCandidateCount,
+            SelectedModel: settings.SelectedModel,
+            BatchSize: settings.BatchSize,
+            MaxCharsPerBatch: settings.MaxCharsPerBatch,
+            MaxParallelRequests: settings.MaxParallelRequests,
+            MaxOutputTokensOverride: settings.MaxOutputTokensOverride,
+            EnableRepairPass: settings.EnableRepairPass,
+            SemanticRepairMode: settings.SemanticRepairMode,
+            KeepSkyrimTagsRaw: settings.KeepSkyrimTagsRaw,
+            EnableDialogueContextWindow: settings.EnableDialogueContextWindow,
+            EnableSessionTermMemory: settings.EnableSessionTermMemory,
+            UseRecStyleHints: settings.UseRecStyleHints,
+            EnableTemplateFixer: settings.EnableTemplateFixer,
+            EnableProjectContext: settings.EnableProjectContext,
+            EnableAdaptiveOutputBudget: settings.EnableAdaptiveOutputBudget,
+            EnableBookContext: settings.EnableBookContext,
+            MaxRetryGenerations: settings.MaxRetryGenerations,
+            MaxTotalGenerations: settings.MaxTotalGenerations,
+            PluginSourceLanguage: settings.PluginSourceLanguage,
+            PluginTargetLanguage: settings.PluginTargetLanguage,
+            PluginSourceEncoding: settings.PluginSourceEncoding,
+            PluginMetadataEncoding: settings.PluginMetadataEncoding,
+            PluginTargetEncoding: settings.PluginTargetEncoding,
             PluginStringsDirectory: settings.PluginStringsDirectory
         );
+
+        return _canUseDpapi
+            ? persisted with
+            {
+                ApiKeyProtected = string.IsNullOrWhiteSpace(normalizedApiKey) ? null : ProtectApiKey(normalizedApiKey),
+                ApiKeys = normalizedApiKeys.Count == 0 ? null : BuildProtectedApiKeys(normalizedApiKeys).ToArray(),
+            }
+            : persisted with
+            {
+                ApiKey = normalizedApiKey,
+                ApiKeys = normalizedApiKeys.Count == 0 ? null : BuildLegacyApiKeys(normalizedApiKeys).ToArray(),
+            };
     }
 
     private static AppSettings NormalizeTranslationPreferences(AppSettings settings) => settings with
