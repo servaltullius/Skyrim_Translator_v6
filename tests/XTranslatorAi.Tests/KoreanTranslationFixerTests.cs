@@ -224,6 +224,17 @@ public class KoreanTranslationFixerTests
         Assert.Equal("<150>초 동안 늑대인간의 형상을 취합니다.", output);
     }
 
+    [Theory]
+    [InlineData("모든 적은 3초 동안 <25>포인트의 피해를 입습니다.")]
+    [InlineData("모든 적은 3 초 동안 <25>포인트의 피해를 입습니다.")]
+    [InlineData("적은 10초 동안 <5>의 냉기 피해를 입습니다.")]
+    public void Fix_KeepsCorrectLiteralDurationBeforeValueToken(string input)
+    {
+        // "N초 동안" with a literal number is already a correct duration; the token after it is the magnitude.
+        var output = KoreanTranslationFixer.Fix("korean", input);
+        Assert.Equal(input, output);
+    }
+
     [Fact]
     public void Fix_DurationAndArtifactExtraction_KeepsComplexStringsStable()
     {

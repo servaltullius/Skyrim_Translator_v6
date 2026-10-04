@@ -9,14 +9,18 @@ internal sealed class DurationProbabilityStep : IKoreanFixStep
     private const string ParticleBoundary = @"(?=$|[\s\p{P}])";
     private static readonly TimeSpan RegexTimeout = TimeSpan.FromMilliseconds(250);
 
+    // The subject must not end in a number: "모든 적은 3초 동안 <25>포인트의 피해" already has a correct
+    // "3초 동안", and moving <25> in front of it produced "<25>초 동안 모든 적은 3포인트의 피해".
+    private const string SubjectNotEndingInNumber = @"(?<!\p{N}\s*)";
+
     private static readonly Regex RawDurationMisplacementWithEuiRegex = new(
-        pattern: @"(?<subject>[\p{L}][\p{L}\p{N} \-'\u2019]{0,40})\s*초\s*동안\s*(?<dur>[+-]?<\s*(?:dur|[0-9]+)\s*>)\s*초?\s*의",
+        pattern: @"(?<subject>[\p{L}][\p{L}\p{N} \-'\u2019]{0,40})" + SubjectNotEndingInNumber + @"\s*초\s*동안\s*(?<dur>[+-]?<\s*(?:dur|[0-9]+)\s*>)\s*초?\s*의",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase,
         matchTimeout: RegexTimeout
     );
 
     private static readonly Regex RawDurationMisplacementRegex = new(
-        pattern: @"(?<subject>[\p{L}][\p{L}\p{N} \-'\u2019]{0,40})\s*초\s*동안\s*(?<dur>[+-]?<\s*(?:dur|[0-9]+)\s*>)\s*초?\b",
+        pattern: @"(?<subject>[\p{L}][\p{L}\p{N} \-'\u2019]{0,40})" + SubjectNotEndingInNumber + @"\s*초\s*동안\s*(?<dur>[+-]?<\s*(?:dur|[0-9]+)\s*>)\s*초?\b",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase,
         matchTimeout: RegexTimeout
     );
