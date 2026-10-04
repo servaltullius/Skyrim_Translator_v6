@@ -47,13 +47,16 @@ public sealed class GlobalProjectDbService
             {
                 var dbPath = ProjectPaths.GetGlobalGlossaryDbPath(franchise);
                 var shouldInsertMissingBuiltInEntries = !File.Exists(dbPath);
+                var migrationStampPath = ProjectPaths.GetBuiltInGlossaryAdditionsStampPath(dbPath, BuiltInGlossaryService.MigrationStampVersion);
                 db = await ProjectDb.OpenOrCreateAsync(dbPath, cancellationToken);
                 await _builtInGlossaryService.EnsureBuiltInGlossaryAsync(
                     db,
                     cancellationToken,
                     insertMissingEntries: shouldInsertMissingBuiltInEntries,
-                    franchise: franchise
+                    franchise: franchise,
+                    applyMigrations: !File.Exists(migrationStampPath)
                 );
+                await WriteStampAsync(migrationStampPath, cancellationToken);
                 await AddLaterBuiltInEntriesAsync(db, dbPath, franchise, cancellationToken);
                 _dbByFranchise[franchise] = db;
                 return db;
@@ -71,6 +74,21 @@ public sealed class GlobalProjectDbService
         finally
         {
             _initLock.Release();
+        }
+    }
+
+    private static async Task WriteStampAsync(string stampPath, CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (!File.Exists(stampPath))
+            {
+                await File.WriteAllTextAsync(stampPath, $"applied={DateTimeOffset.UtcNow:O}{Environment.NewLine}", cancellationToken);
+            }
+        }
+        catch (IOException ex)
+        {
+            AppLog.Write($"WARN 기본 용어집 보정 기록을 저장하지 못했습니다: {ex.Message}");
         }
     }
 

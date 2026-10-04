@@ -109,19 +109,29 @@ public sealed class BuiltInGlossaryService
         return string.IsNullOrEmpty(current) || current == entry.TargetTerm.Trim() ? null : current;
     }
 
+    /// <summary>Stamp version of the one-time pass that updates built-in entries (<see cref="BuildBuiltInGlossaryUpdates"/>).</summary>
+    public const string MigrationStampVersion = "migrations-2026-10-04";
+
+    /// <param name="applyMigrations">
+    /// Update old built-in entries (targets, categories, prompt-only defaults). The pass used to run on every open,
+    /// and the entries a user edited keep the built-in note, so a user's ForceToken for Dragon, 제련 for Smithing or a
+    /// cleared category came back on the next launch. Callers run it once per glossary.
+    /// </param>
     public Task EnsureBuiltInGlossaryAsync(
         ProjectDb db,
         CancellationToken cancellationToken,
         bool insertMissingEntries = true,
-        BethesdaFranchise franchise = BethesdaFranchise.ElderScrolls
+        BethesdaFranchise franchise = BethesdaFranchise.ElderScrolls,
+        bool applyMigrations = true
     )
-        => EnsureBuiltInGlossaryCoreAsync(db, cancellationToken, insertMissingEntries, franchise);
+        => EnsureBuiltInGlossaryCoreAsync(db, cancellationToken, insertMissingEntries, franchise, applyMigrations);
 
     private static async Task EnsureBuiltInGlossaryCoreAsync(
         ProjectDb db,
         CancellationToken cancellationToken,
         bool insertMissingEntries,
-        BethesdaFranchise franchise
+        BethesdaFranchise franchise,
+        bool applyMigrations
     )
     {
         var existing = await db.GetGlossaryAsync(cancellationToken);
@@ -137,7 +147,7 @@ public sealed class BuiltInGlossaryService
 
         var categoryByPair = BuildBuiltInGlossaryCategoryByPair(entries);
 
-        var toUpdate = BuildBuiltInGlossaryUpdates(existing, categoryByPair);
+        var toUpdate = applyMigrations ? BuildBuiltInGlossaryUpdates(existing, categoryByPair) : new();
         if (toUpdate.Count > 0)
         {
             await db.BulkUpdateGlossaryAsync(toUpdate, cancellationToken);
@@ -215,8 +225,11 @@ public sealed class BuiltInGlossaryService
                 updatedCategory = cat;
             }
 
+            // Only entries never switched before: a switched one carries the prompt-only note, so a user's later
+            // ForceToken for it stays.
             var updatedForceMode = e.ForceMode;
-            if (ShouldDefaultGlossaryUsePromptOnly(e.SourceTerm) && updatedForceMode != GlossaryForceMode.PromptOnly)
+            if (ShouldDefaultGlossaryUsePromptOnly(e.SourceTerm) && updatedForceMode != GlossaryForceMode.PromptOnly
+                && string.Equals(e.Note, "Built-in default glossary", StringComparison.Ordinal))
             {
                 updatedForceMode = GlossaryForceMode.PromptOnly;
             }

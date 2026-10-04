@@ -56,6 +56,36 @@ public class BuiltInGlossaryLaterAdditionsTests : IAsyncLifetime
         Assert.True(File.Exists(StampPath));
     }
 
+    // The update pass for old built-in entries ran on every open, so a user's choices came back on each launch.
+    [Fact]
+    public async Task UpdatePass_SwitchesAnUntouchedEntryOnce_AndKeepsTheUsersLaterChoice()
+    {
+        await _db.BulkInsertGlossaryAsync(new[]
+        {
+            ((string?)null, "Dragon", "드래곤", true, 10, (int)GlossaryMatchMode.WordBoundary, (int)GlossaryForceMode.ForceToken, (string?)"Built-in default glossary"),
+            ((string?)null, "Block", "막기", true, 10, (int)GlossaryMatchMode.WordBoundary, (int)GlossaryForceMode.ForceToken, (string?)"Built-in default glossary (prompt-only default)"),
+        }, CancellationToken.None);
+
+        await new BuiltInGlossaryService().EnsureBuiltInGlossaryAsync(_db, CancellationToken.None, insertMissingEntries: false);
+
+        // Dragon was never switched; Block was switched earlier and the user set it back to ForceToken.
+        Assert.Equal(GlossaryForceMode.PromptOnly, Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Dragon").ForceMode);
+        Assert.Equal(GlossaryForceMode.ForceToken, Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Block").ForceMode);
+    }
+
+    [Fact]
+    public async Task UpdatePass_IsSkippedOnceStamped()
+    {
+        await _db.BulkInsertGlossaryAsync(new[]
+        {
+            ((string?)null, "Smithing", "제련", true, 10, (int)GlossaryMatchMode.WordBoundary, (int)GlossaryForceMode.ForceToken, (string?)"Built-in default glossary"),
+        }, CancellationToken.None);
+
+        await new BuiltInGlossaryService().EnsureBuiltInGlossaryAsync(_db, CancellationToken.None, insertMissingEntries: false, applyMigrations: false);
+
+        Assert.Equal("제련", Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Smithing").TargetTerm);
+    }
+
     [Fact]
     public async Task EntryDeletedByTheUser_IsNotAddedAgain()
     {

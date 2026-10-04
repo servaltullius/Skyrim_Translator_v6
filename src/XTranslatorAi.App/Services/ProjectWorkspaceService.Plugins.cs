@@ -43,7 +43,7 @@ public sealed partial class ProjectWorkspaceService
                 request.UseCustomPrompt, now, now);
             var globalDb = await _globalProjectDbService.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, cancellationToken);
             await _builtInGlossaryService.EnsureBuiltInGlossaryAsync(db, cancellationToken,
-                insertMissingEntries: globalDb == null, franchise: BethesdaFranchise.ElderScrolls);
+                insertMissingEntries: globalDb == null, franchise: BethesdaFranchise.ElderScrolls, applyMigrations: globalDb == null);
             var context = await db.TryGetProjectContextAsync(cancellationToken);
             // Import commit is the ownership-transfer point. No fallible/cancelable work may follow it:
             // the old visible workspace can share this database when reopening the same plugin.

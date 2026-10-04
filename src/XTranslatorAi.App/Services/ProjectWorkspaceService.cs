@@ -76,7 +76,7 @@ public sealed partial class ProjectWorkspaceService
             // Seed only after the complete input has been accepted; parse failures leave the old DB intact.
             var globalDb = await _globalProjectDbService.GetOrCreateAsync(franchise, cancellationToken);
             await _builtInGlossaryService.EnsureBuiltInGlossaryAsync(db, cancellationToken,
-                insertMissingEntries: globalDb == null, franchise: franchise);
+                insertMissingEntries: globalDb == null, franchise: franchise, applyMigrations: globalDb == null);
 
             return new LoadFromXmlResult(db, info, xmlPath, info.SourceLang, info.DestLang, franchise);
         }
