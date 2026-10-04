@@ -32,6 +32,7 @@ public static class PluginReader
         if (structure.Records[0].Flags.HasFlag(PluginBinary.LocalizedFlag))
         {
             var archives = ResolveArchives(path, options).ToArray();
+            var gameInterface = FindGameInterfaceArchive(path, options, archives);
             var archiveLocks = new Dictionary<string, FileStream>(StringComparer.OrdinalIgnoreCase);
             try
             {
@@ -65,6 +66,31 @@ public static class PluginReader
                     // Hold the archive stable while reading all tables, and hash it only once.
                     if (!dependencies.ContainsKey(archive))
                         dependencies[archive] = Convert.ToHexString(await System.Security.Cryptography.SHA256.HashDataAsync(stream, cancellationToken));
+                }
+                if (!tables.ContainsKey(kind) && gameInterface != null)
+                {
+                    // Skyrim SE keeps the tables of Update, Dawnguard, HearthFires and Dragonborn in the game's interface
+                    // archive. It is only a fallback: read when no own archive has the table, and an archive the reader
+                    // cannot handle (replaced by a mod) is skipped instead of stopping the plugin.
+                    byte[]? data;
+                    FileStream? stream = null;
+                    try
+                    {
+                        stream = new FileStream(gameInterface, FileMode.Open, FileAccess.Read, FileShare.Read, 65536, useAsync: true);
+                        data = await PluginArchiveReader.ReadFileAsync(gameInterface, "strings/" + name, cancellationToken).ConfigureAwait(false);
+                    }
+                    catch (Exception ex) when (ex is InvalidDataException or IOException or NotSupportedException)
+                    {
+                        data = null;
+                    }
+                    if (data != null && stream != null)
+                    {
+                        tables[kind] = data;
+                        sources[kind] = gameInterface;
+                        if (!dependencies.ContainsKey(gameInterface))
+                            dependencies[gameInterface] = Convert.ToHexString(await System.Security.Cryptography.SHA256.HashDataAsync(stream, cancellationToken));
+                    }
+                    if (stream != null && !archiveLocks.TryAdd(gameInterface, stream)) await stream.DisposeAsync();
                 }
             }
             }
@@ -422,19 +448,18 @@ public static class PluginReader
         if (options.ArchivePaths != null) return options.ArchivePaths.Select(Path.GetFullPath).ToArray();
         var dir = Path.GetDirectoryName(path)!;
         var stem = Path.GetFileNameWithoutExtension(path);
-        var own = Directory.EnumerateFiles(dir, "*.bsa")
+        return Directory.EnumerateFiles(dir, "*.bsa")
             .Where(file => string.Equals(Path.GetFileNameWithoutExtension(file), stem, StringComparison.OrdinalIgnoreCase)
                 || Path.GetFileNameWithoutExtension(file).StartsWith(stem + " - ", StringComparison.OrdinalIgnoreCase))
-            .OrderBy(file => file, StringComparer.OrdinalIgnoreCase).ToList();
-        // Skyrim SE keeps the tables of Update, Dawnguard, HearthFires and Dragonborn in the game's interface archive.
-        // Tables are looked up by the plugin's own file name, so another plugin's tables are never taken from it.
-        var gameInterface = FindFile(dir, GameInterfaceArchive);
-        if (gameInterface != null && !own.Contains(gameInterface, StringComparer.OrdinalIgnoreCase))
-        {
-            own.Add(gameInterface);
-        }
+            .OrderBy(file => file, StringComparer.OrdinalIgnoreCase).ToArray();
+    }
 
-        return own;
+    // Tables are looked up by the plugin's own file name, so another plugin's tables are never taken from it.
+    private static string? FindGameInterfaceArchive(string path, PluginReadOptions options, IReadOnlyCollection<string> archives)
+    {
+        if (options.ArchivePaths != null) return null;
+        var found = FindFile(Path.GetDirectoryName(path)!, GameInterfaceArchive);
+        return found == null || archives.Contains(found, StringComparer.OrdinalIgnoreCase) ? null : found;
     }
 
     private const string GameInterfaceArchive = "Skyrim - Interface.bsa";

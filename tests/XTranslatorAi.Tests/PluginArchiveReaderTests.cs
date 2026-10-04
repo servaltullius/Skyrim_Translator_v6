@@ -244,6 +244,22 @@ public sealed class PluginArchiveReaderTests
         Assert.Equal(archive.Path, document.Info.StringTableSources![PluginStringTableKind.Strings]);
     }
 
+    /// <summary>
+    /// The interface archive is only a fallback: an unreadable or replaced one must not stop a plugin that has its own
+    /// archive from opening, and is not read for tables the plugin's own archive already holds.
+    /// </summary>
+    [Fact]
+    public async Task LocalizedReader_UnreadableInterfaceArchive_DoesNotStopAPluginWithItsOwnArchive()
+    {
+        using var fixture = new LocalizedFixture();
+        fixture.Archive("example.bsa", "Own title");
+        File.WriteAllBytes(Path.Combine(fixture.Root, "Skyrim - Interface.bsa"), new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 });
+
+        var document = await PluginReader.ReadAsync(fixture.Input, new(), default);
+
+        Assert.Equal("Own title", document.Fields.Single(field => field.TableKind == PluginStringTableKind.Strings).SourceText);
+    }
+
     [Fact]
     public async Task LocalizedReader_LooseTableOverridesConflictingArchives_AndTracksEachSource()
     {
