@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:app="clr-namespace:XTranslatorAi.App"
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800">
@@ -13,7 +14,14 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
+        <!-- A plugin dropped here is linked as the earlier translation (see MainViewModel.FileDrop). -->
+        <Border x:Name="PreviousTranslationDropZone" Grid.Row="0" Margin="0,0,0,10" Padding="8,6"
+                AllowDrop="True" app:FileDrop.IsDropZone="True" Background="Transparent" CornerRadius="4" BorderThickness="1"
+                BorderBrush="{StaticResource XT.BorderBrush}"
+                DragOver="PreviousTranslationDropZone_OnDragOver"
+                DragLeave="PreviousTranslationDropZone_OnDragLeave"
+                Drop="PreviousTranslationDropZone_OnDrop">
+        <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
             <TextBlock Text="이전 번역 참고:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0" />
             <TextBlock Text="{Binding PreviousTranslationSummary}" VerticalAlignment="Center" Margin="0,0,12,0"
                        Foreground="{StaticResource XT.MutedTextBrush}" />
@@ -25,7 +33,10 @@
                     Command="{Binding ClearPreviousTranslationCommand}"
                     Style="{StaticResource XT.ToolbarButton}"
                     Margin="6,0,0,0" />
+            <TextBlock Text="이전 번역판 ESP를 이 줄에 끌어다 놓아도 연결됩니다." VerticalAlignment="Center" Margin="12,0,0,0"
+                       Foreground="{StaticResource XT.MutedTextBrush}" />
         </WrapPanel>
+        </Border>
 
         <WrapPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
             <CheckBox IsChecked="{Binding EnableProjectContext}" Content="생성한 프로젝트 문맥 사용" Margin="0,0,16,0"

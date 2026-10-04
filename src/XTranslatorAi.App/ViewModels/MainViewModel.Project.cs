@@ -29,6 +29,13 @@ public partial class MainViewModel
             return;
         }
 
+        await OpenXmlPathAsync(xmlPath);
+    }
+
+    /// <summary>Opens <paramref name="xmlPath"/> as an xTranslator XML project, from the open dialog or a dropped file.</summary>
+    private async Task OpenXmlPathAsync(string xmlPath)
+    {
+        if (!IsWorkspaceInteractive) return;
         _isSwitchingProject = true;
         NotifyWorkspaceAvailability();
         using var loadCancellation = new CancellationTokenSource();

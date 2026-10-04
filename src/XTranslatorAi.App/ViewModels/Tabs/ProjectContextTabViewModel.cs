@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -45,6 +46,10 @@ public sealed class ProjectContextTabViewModel : ObservableObject, IDisposable
     public string PreviousTranslationSummary => _host.PreviousTranslationSummary;
     public IAsyncRelayCommand ImportPreviousTranslationCommand => _host.ImportPreviousTranslationCommand;
     public IAsyncRelayCommand ClearPreviousTranslationCommand => _host.ClearPreviousTranslationCommand;
+
+    public bool CanLinkDroppedPreviousTranslation(string? path) => _host.CanLinkDroppedPreviousTranslation(path);
+
+    public Task LinkDroppedPreviousTranslationAsync(string path) => _host.LinkDroppedPreviousTranslationAsync(path);
 
     private bool _disposed;
 

@@ -47,6 +47,18 @@ public partial class MainViewModel
             return;
         }
 
+        await ImportPreviousTranslationFromPathAsync(path);
+    }
+
+    /// <summary>Links <paramref name="path"/> as the earlier translation, from the open dialog or a dropped file.</summary>
+    private async Task ImportPreviousTranslationFromPathAsync(string path)
+    {
+        var document = _projectState.PluginDocument;
+        if (document == null || !CanImportPreviousTranslation())
+        {
+            return;
+        }
+
         await RunProjectOperationAsync("이전 번역 불러오기", async cancellationToken =>
         {
             var db = _projectState.Db;

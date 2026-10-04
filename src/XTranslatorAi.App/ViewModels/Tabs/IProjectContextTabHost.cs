@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 
 namespace XTranslatorAi.App.ViewModels.Tabs;
@@ -13,4 +14,6 @@ public interface IProjectContextTabHost : INotifyPropertyChanged
     string PreviousTranslationSummary { get; }
     IAsyncRelayCommand ImportPreviousTranslationCommand { get; }
     IAsyncRelayCommand ClearPreviousTranslationCommand { get; }
+    bool CanLinkDroppedPreviousTranslation(string? path);
+    Task LinkDroppedPreviousTranslationAsync(string path);
 }
