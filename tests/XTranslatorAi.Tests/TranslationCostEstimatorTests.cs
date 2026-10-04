@@ -48,6 +48,35 @@ public class TranslationCostEstimatorTests
         Assert.Contains("추론 포함 사용량", result.ToHumanReadableString());
     }
 
+    // countTokens failures fell back to "characters / 4" silently while the result still said countTokens.
+    [Fact]
+    public async Task FailedTokenCounts_AreEstimatedAndReported()
+    {
+        var client = new StubGeminiClient
+        {
+            CountTokensError = new GeminiHttpException("CountTokens", 503, "Service Unavailable", null, "CountTokens failed: HTTP 503"),
+        };
+        var result = await new TranslationCostEstimator(new StubProjectDb { RowCount = 3 }, client)
+            .EstimateAsync(MakeRequest("fixture", GeminiModelCatalog.DefaultModel), CancellationToken.None);
+
+        Assert.True(result.CountTokensFallbacks > 0);
+        Assert.True(result.SystemPromptTokens > 0);
+        Assert.Contains("문자 수로 추정했습니다", result.ToHumanReadableString());
+    }
+
+    [Fact]
+    public async Task InvalidApiKey_IsNotHiddenByTheCharacterEstimate()
+    {
+        var client = new StubGeminiClient
+        {
+            CountTokensError = new GeminiHttpException("CountTokens", 400, "Bad Request", null,
+                "CountTokens failed: HTTP 400 Bad Request. {\"error\":{\"message\":\"API key not valid. Please pass a valid API key.\"}}"),
+        };
+
+        await Assert.ThrowsAsync<GeminiHttpException>(() => new TranslationCostEstimator(new StubProjectDb { RowCount = 3 }, client)
+            .EstimateAsync(MakeRequest("fixture", GeminiModelCatalog.DefaultModel), CancellationToken.None));
+    }
+
     [Fact]
     public async Task SampleWithoutUsage_FallsBackToExplicitlyLabelledHeuristic()
     {
@@ -263,8 +292,10 @@ public class TranslationCostEstimatorTests
         public Task<IReadOnlyList<string>> GenerateContentCandidatesAsync(string apiKey, string modelName, GeminiGenerateContentRequest request, CancellationToken cancellationToken)
             => Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
 
+        public Exception? CountTokensError { get; init; }
+
         public Task<int> CountTokensAsync(string apiKey, string modelName, string text, CancellationToken cancellationToken)
-            => Task.FromResult(text.Length / 4);
+            => CountTokensError != null ? Task.FromException<int>(CountTokensError) : Task.FromResult(text.Length / 4);
 
         public Task<IReadOnlyList<GeminiModel>> ListModelsAsync(string apiKey, CancellationToken cancellationToken)
             => Task.FromResult<IReadOnlyList<GeminiModel>>(Array.Empty<GeminiModel>());

@@ -65,7 +65,7 @@ public sealed partial class TranslationCostEstimator
         var resultInputs = new TranslationCostEstimateBuildInputs(
             request, prepared, batchSize, maxChars, requestCountBatch, requestCountText, tokenCounts, outputEstimate, costEstimates
         );
-        return BuildTranslationCostEstimate(resultInputs);
+        return BuildTranslationCostEstimate(resultInputs) with { CountTokensFallbacks = _countTokensFallbacks };
     }
 
     private readonly record struct TranslationCostEstimateBuildInputs(

@@ -22,6 +22,9 @@ public sealed record TranslationCostEstimate(
     IReadOnlyList<ModelCostEstimate> CostEstimates
 )
 {
+    /// <summary>countTokens calls that failed (rate limit, server error) and were estimated from character counts.</summary>
+    public int CountTokensFallbacks { get; init; }
+
     public string ToHumanReadableString()
     {
         static string N(long v) => v.ToString("N0", CultureInfo.InvariantCulture);
@@ -36,7 +39,9 @@ public sealed record TranslationCostEstimate(
         sb.AppendLine(
             $"입력 토큰(countTokens, 실패 시 문자수 추정): 배치={N(InputTokensBatchPrompts)}, 텍스트/청크={N(InputTokensTextPrompts)}, 합계={N(InputTokensBatchPrompts + InputTokensTextPrompts)}"
         );
-        sb.AppendLine($"시스템 프롬프트 토큰(countTokens): {N(SystemPromptTokens)}");
+        sb.AppendLine(CountTokensFallbacks > 0
+            ? $"시스템 프롬프트 토큰(countTokens, 실패 시 문자수 추정): {N(SystemPromptTokens)}"
+            : $"시스템 프롬프트 토큰(countTokens): {N(SystemPromptTokens)}");
         sb.AppendLine(
             OutputTokens.UsedSample
                 ? $"예상 출력 토큰(샘플 기반, 추론 포함 사용량): {N(OutputTokens.Point)} (범위 {N(OutputTokens.Low)} ~ {N(OutputTokens.High)})"
@@ -52,6 +57,11 @@ public sealed record TranslationCostEstimate(
 
         AppendCostEstimates(sb);
         AppendNotes(sb);
+        if (CountTokensFallbacks > 0)
+        {
+            sb.AppendLine($"- countTokens 호출 {N(CountTokensFallbacks)}회가 실패해(요청 제한·서버 오류 등) 그 부분은 문자 수로 추정했습니다. 실제 입력 토큰과 비용은 다를 수 있습니다.");
+        }
+
         return sb.ToString();
     }
 
