@@ -79,7 +79,7 @@ public partial class MainViewModel
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(StartTranslationCommand))]
     private bool _hasPromptLintBlockingIssues;
-    [ObservableProperty] private string _promptLintSummary = "Prompt lint: no obvious conflicts detected.";
+    [ObservableProperty] private string _promptLintSummary = "프롬프트 검사: 눈에 띄는 충돌이 없습니다.";
     [ObservableProperty] private string _promptLintDetails = "";
 
     [ObservableProperty] private bool _useRecStyleHints = true;

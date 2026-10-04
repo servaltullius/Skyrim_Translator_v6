@@ -99,12 +99,12 @@
                                 <Run Text=" · " />
                                 <Run Text="{Binding MaxParallelRequests, StringFormat=동시 {0}}" />
                                 <Run Text=" · " />
-                                <Run Text="{Binding MaxOutputTokensOverride, StringFormat=출력 상한 {0}}" />
+                                <Run Text="{Binding MaxOutputTokensSummary, Mode=OneWay}" />
                             </TextBlock>
                         </Grid>
                     </Expander.Header>
                     <StackPanel>
-                        <TextBlock Text="ESP 불러오기 설정 (다음 Open ESP에 적용)" FontWeight="SemiBold" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,4,0,4" />
+                        <TextBlock Text="ESP 불러오기 설정 (다음에 ESP를 열 때 적용)" FontWeight="SemiBold" Foreground="{StaticResource XT.MutedTextBrush}" Margin="0,4,0,4" />
                         <WrapPanel IsEnabled="{Binding IsWorkspaceInteractive}" Margin="0,0,0,4">
                             <TextBlock Text="게임:" VerticalAlignment="Center" Margin="0,0,6,0" />
                             <ComboBox ItemsSource="{Binding PluginGameChoices}" SelectedItem="{Binding PluginGameSelection}" Width="310" Style="{StaticResource XT.ToolbarComboBox}" />
@@ -225,7 +225,7 @@
                                        Foreground="{StaticResource XT.MutedTextBrush}" />
 
                             <CheckBox Content="출력 예산 자동 조절(실험)" IsChecked="{Binding EnableAdaptiveOutputBudget}" VerticalAlignment="Center" Margin="12,0,0,0"
-                                      ToolTip="요청 길이에 맞춰 출력 상한을 보수적으로 조절합니다. 직접 지정한 Max out을 넘지 않습니다. 기본은 꺼짐이며 번역 표본 비교 후 사용하세요." />
+                                      ToolTip="요청 길이에 맞춰 출력 상한을 보수적으로 조절합니다. 직접 지정한 출력 상한을 넘지 않습니다. 기본은 꺼짐이며 번역 표본 비교 후 사용하세요." />
                             <CheckBox Content="책 원문 문맥(실험)" IsChecked="{Binding EnableBookContext}" VerticalAlignment="Center" Margin="12,0,0,0"
                                       ToolTip="책 본문 번역에 확인 가능한 제목과 인접한 원문 일부를 참고로 전달합니다. 이전 생성 번역은 전달하지 않습니다. 기본은 꺼짐이며 입력 토큰이 늘어날 수 있습니다." />
 

@@ -57,7 +57,7 @@ public partial class StringEntryViewModel : ObservableObject
                 return "";
             }
 
-            var suffix = error.DetailsInApiLogs ? " (API Logs)" : "";
+            var suffix = error.DetailsInApiLogs ? " (API 기록 탭 참고)" : "";
             return $"{error.Code}: {error.Message}{suffix}";
         }
     }

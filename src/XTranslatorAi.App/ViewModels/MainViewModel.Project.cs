@@ -102,7 +102,7 @@ public partial class MainViewModel
         => _uiInteractionService.ShowOpenFileDialog(
             new OpenFileDialogRequest(
                 Filter: "xTranslator XML (*.xml)|*.xml|All files (*.*)|*.*",
-                Title: "Open xTranslator XML"
+                Title: "xTranslator XML 열기"
             )
         );
 
@@ -213,7 +213,7 @@ public partial class MainViewModel
         var exportPath = _uiInteractionService.ShowSaveFileDialog(
             new SaveFileDialogRequest(
                 Filter: "xTranslator XML (*.xml)|*.xml|All files (*.*)|*.*",
-                Title: "Export translated XML",
+                Title: "번역한 XML 내보내기",
                 FileName: Path.GetFileNameWithoutExtension(xmlInfo.AddonName) + ".translated.xml"
             )
         );

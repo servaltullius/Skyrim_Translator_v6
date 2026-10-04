@@ -27,7 +27,7 @@ public partial class MainViewModel
             AppLog.WriteError(error.Code, operation, ex);
         }
 
-        var suffix = error.DetailsInApiLogs ? " (API Logs)" : "";
+        var suffix = error.DetailsInApiLogs ? " (API 기록 탭 참고)" : "";
         StatusMessage = $"{operation}({error.Code}): {error.Message}{suffix}";
     }
 }

@@ -27,7 +27,7 @@
 
         <WrapPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10,0,6" VerticalAlignment="Center">
             <CheckBox IsChecked="{Binding UseCustomPrompt}" Content="사용자 프롬프트 사용(선택)" Margin="0,0,16,0" />
-            <CheckBox IsChecked="{Binding UseRecStyleHints}" Content="REC 스타일 힌트(추천)" Margin="0,0,16,0" />
+            <CheckBox IsChecked="{Binding UseRecStyleHints}" Content="레코드 종류별 문체 힌트(추천)" Margin="0,0,16,0" />
         </WrapPanel>
         <Border Grid.Row="3"
                 Margin="0,0,0,8"

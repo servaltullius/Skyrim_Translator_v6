@@ -277,7 +277,7 @@ public sealed class TranslationRunnerService
         );
 
         await request.StatusPort.DispatchAsync(
-            () => request.StatusPort.SetStatusMessage($"Translating... (선택한 책 제목/본문 {bookFullIds.Count}개: {bookModel})")
+            () => request.StatusPort.SetStatusMessage($"번역 중... (선택한 책 제목/본문 {bookFullIds.Count}개: {bookModel})")
         );
 
         return runs;

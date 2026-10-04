@@ -119,7 +119,7 @@ public partial class MainViewModel
         }
 
         SetCompareIsRunning(slot, true);
-        SetCompareStatus(slot, "Running...");
+        SetCompareStatus(slot, "실행 중...");
         try
         {
             var globalGlossary = CompareIncludeGlobalGlossary ? await TryLoadGlobalGlossaryAsync(cancellationToken) : null;
@@ -206,7 +206,7 @@ public partial class MainViewModel
         if (result.Status == StringEntryStatus.Done)
         {
             SetCompareOutput(slot, result.DestText);
-            SetCompareStatus(slot, result.TranslationMemoryHit ? "Done (TM)" : "Done");
+            SetCompareStatus(slot, result.TranslationMemoryHit ? "완료(TM)" : "완료");
             return;
         }
 

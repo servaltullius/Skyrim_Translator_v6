@@ -201,7 +201,7 @@ public class TranslationUiLifecycleTests
             Assert.True(handler.CancellationObserved);
             Assert.False(vm.Compare1IsRunning);
             // The slot reported the stop before closing cleared the closed project's compare results.
-            Assert.Equal(new[] { "Running...", "중지됨", "" }, statuses);
+            Assert.Equal(new[] { "실행 중...", "중지됨", "" }, statuses);
         });
 
     /// <summary>Translating without the global glossary, series TM and official names used to happen silently.</summary>

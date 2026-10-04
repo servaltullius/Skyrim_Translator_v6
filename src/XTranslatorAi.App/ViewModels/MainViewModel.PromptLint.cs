@@ -45,20 +45,20 @@ public partial class MainViewModel
 
         if (issues.Count == 0)
         {
-            PromptLintSummary = "Prompt lint: no obvious conflicts detected.";
+            PromptLintSummary = "프롬프트 검사: 눈에 띄는 충돌이 없습니다.";
             PromptLintDetails = "";
             return;
         }
 
         PromptLintSummary = HasPromptLintBlockingIssues
-            ? $"Prompt lint: {_promptLintIssueCount} issue(s), {_promptLintBlockingCount} blocking."
-            : $"Prompt lint: {_promptLintIssueCount} warning(s).";
+            ? $"프롬프트 검사: 문제 {_promptLintIssueCount}개, 그중 번역을 막는 것 {_promptLintBlockingCount}개."
+            : $"프롬프트 검사: 경고 {_promptLintIssueCount}개.";
 
         var lines = new List<string>(capacity: issues.Count);
         for (var i = 0; i < issues.Count; i++)
         {
             var issue = issues[i];
-            var level = issue.Severity == PromptLintSeverity.Error ? "[BLOCK]" : "[WARN]";
+            var level = issue.Severity == PromptLintSeverity.Error ? "[차단]" : "[경고]";
             lines.Add($"{level} {issue.Source}: {issue.Message} (matched: \"{issue.MatchedText}\")");
         }
 

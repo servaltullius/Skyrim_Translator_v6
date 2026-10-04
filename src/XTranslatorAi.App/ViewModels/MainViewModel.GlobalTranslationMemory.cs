@@ -343,7 +343,7 @@ public partial class MainViewModel
         var filePath = _uiInteractionService.ShowOpenFileDialog(
             new OpenFileDialogRequest(
                 Filter: "TSV files (*.tsv)|*.tsv|All files (*.*)|*.*",
-                Title: "Import franchise TM (TSV: Source<TAB>Target)"
+                Title: "시리즈 TM 가져오기 (TSV: 원문<탭>번역문)"
             )
         );
         if (string.IsNullOrWhiteSpace(filePath))

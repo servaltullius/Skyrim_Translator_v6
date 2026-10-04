@@ -97,7 +97,7 @@ public partial class MainViewModel
         await ImportGlossaryFromFileAsync(
             db: db,
             statusLabel: "용어집",
-            dialogTitle: "Import glossary file",
+            dialogTitle: "용어집 파일 가져오기",
             priority: GlossaryPriority,
             matchMode: GlossaryMatchMode,
             forceMode: GlossaryForceMode,
@@ -128,8 +128,8 @@ public partial class MainViewModel
         {
             await SaveGlossaryRowsAsync(db, dirty);
             StatusMessage = IsTranslating
-                ? $"Glossary saved: {dirty.Count} updated. (Restart translation to apply.)"
-                : $"Glossary saved: {dirty.Count} updated.";
+                ? $"용어집 저장: {dirty.Count}개 수정. (진행 중인 번역에는 다시 시작해야 적용됩니다.)"
+                : $"용어집 저장: {dirty.Count}개 수정.";
         }
         catch (Exception ex)
         {
@@ -193,7 +193,7 @@ public partial class MainViewModel
     [RelayCommand(CanExecute = nameof(CanExportGlossary))]
     private async Task ExportGlossaryAsync()
     {
-        var path = ResolveGlossaryExportPath(title: "Export glossary", defaultFileName: "glossary.tsv");
+        var path = ResolveGlossaryExportPath(title: "용어집 내보내기", defaultFileName: "glossary.tsv");
         if (string.IsNullOrWhiteSpace(path))
         {
             return;

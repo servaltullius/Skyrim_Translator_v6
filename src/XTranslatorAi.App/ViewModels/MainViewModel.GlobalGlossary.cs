@@ -93,7 +93,7 @@ public partial class MainViewModel
         await ImportGlossaryFromFileAsync(
             db: globalDb,
             statusLabel: "전체 용어집",
-            dialogTitle: "Import global glossary file",
+            dialogTitle: "전체 용어집 파일 가져오기",
             priority: GlobalGlossaryPriority,
             matchMode: GlobalGlossaryMatchMode,
             forceMode: GlobalGlossaryForceMode,
@@ -123,8 +123,8 @@ public partial class MainViewModel
         {
             await SaveGlobalGlossaryRowsAsync(dirty);
             StatusMessage = IsTranslating
-                ? $"Global glossary saved: {dirty.Count} updated. (Restart translation to apply.)"
-                : $"Global glossary saved: {dirty.Count} updated.";
+                ? $"전체 용어집 저장: {dirty.Count}개 수정. (진행 중인 번역에는 다시 시작해야 적용됩니다.)"
+                : $"전체 용어집 저장: {dirty.Count}개 수정.";
         }
         catch (Exception ex)
         {
@@ -184,7 +184,7 @@ public partial class MainViewModel
     [RelayCommand(CanExecute = nameof(CanExportGlobalGlossary))]
     private async Task ExportGlobalGlossaryAsync()
     {
-        var path = ResolveGlossaryExportPath(title: "Export global glossary", defaultFileName: "global-glossary.tsv");
+        var path = ResolveGlossaryExportPath(title: "전체 용어집 내보내기", defaultFileName: "global-glossary.tsv");
         if (string.IsNullOrWhiteSpace(path))
         {
             return;

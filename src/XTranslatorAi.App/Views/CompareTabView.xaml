@@ -54,7 +54,7 @@
 	                                  Width="190"
 	                                  VerticalAlignment="Center"
 	                                  Style="{StaticResource XT.ToolbarComboBox}" />
-	                        <CheckBox Content="Thinking 최소화"
+	                        <CheckBox Content="생각(thinking) 최소화"
 	                                  IsChecked="{Binding Compare1ThinkingOff}"
 	                                  VerticalAlignment="Center"
 	                                  Margin="12,0,0,0"
@@ -83,7 +83,7 @@
 	                                  Width="190"
 	                                  VerticalAlignment="Center"
 	                                  Style="{StaticResource XT.ToolbarComboBox}" />
-	                        <CheckBox Content="Thinking 최소화"
+	                        <CheckBox Content="생각(thinking) 최소화"
 	                                  IsChecked="{Binding Compare2ThinkingOff}"
 	                                  VerticalAlignment="Center"
 	                                  Margin="12,0,0,0"
@@ -112,7 +112,7 @@
 	                                  Width="190"
 	                                  VerticalAlignment="Center"
 	                                  Style="{StaticResource XT.ToolbarComboBox}" />
-	                        <CheckBox Content="Thinking 최소화"
+	                        <CheckBox Content="생각(thinking) 최소화"
 	                                  IsChecked="{Binding Compare3ThinkingOff}"
 	                                  VerticalAlignment="Center"
 	                                  Margin="12,0,0,0"

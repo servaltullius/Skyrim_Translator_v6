@@ -238,8 +238,12 @@ public partial class MainViewModel
         OnPropertyChanged(nameof(EffectiveRiskyCandidateSummary));
     }
 
+    /// <summary>The advanced-settings header: 0 means the model's own limit, which "출력 상한 0" did not say.</summary>
+    public string MaxOutputTokensSummary => MaxOutputTokensOverride > 0 ? $"출력 상한 {MaxOutputTokensOverride}" : "출력 상한 자동";
+
     partial void OnMaxOutputTokensOverrideChanged(int value)
     {
+        OnPropertyChanged(nameof(MaxOutputTokensSummary));
         OnPropertyChanged(nameof(EffectiveGeminiTranslationConfigSummary));
         OnPropertyChanged(nameof(EffectiveGeminiTranslationConfigToolTip));
     }
