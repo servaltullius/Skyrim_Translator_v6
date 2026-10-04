@@ -74,6 +74,10 @@ public sealed partial class TranslationService
         return Math.Max(256, target);
     }
 
-    private static string? GuessStyleHint(string sourceText, string? rec)
-        => TranslationStyleHints.Get(sourceText, rec);
+    private string? GuessStyleHint(string sourceText, string? rec)
+    {
+        var hint = TranslationStyleHints.Get(sourceText, rec);
+        var enchantment = _ctx?.EnchantmentNames?.GetHint(sourceText, rec);
+        return enchantment == null ? hint : string.IsNullOrEmpty(hint) ? enchantment : hint + " " + enchantment;
+    }
 }

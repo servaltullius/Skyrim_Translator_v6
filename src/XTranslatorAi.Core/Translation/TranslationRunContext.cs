@@ -42,6 +42,7 @@ internal sealed class TranslationRunContext : IDisposable
     public IReadOnlyDictionary<long, string>? PreviousTranslationById { get; set; }
 
     public ReferenceNameIndex? ReferenceNames { get; set; }
+    public EnchantmentNameIndex? EnchantmentNames { get; set; }
 
     // The run's glossary, so seeding leaves glossary terms (and their plurals) to it.
     public GlossaryApplier? Glossary { get; set; }
