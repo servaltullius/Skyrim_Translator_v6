@@ -27,7 +27,7 @@ internal static class EvalRunCommand
     {
         if (args.Length < 3 || !Variants.TryGetValue(args[1], out var variant))
         {
-            Console.Error.WriteLine("Usage: eval-run DATASET.json baseline|lite|bookctx RUN-FOLDER --budget-usd N [--every K] [--estimate-only] [--resume]");
+            Console.Error.WriteLine("Usage: eval-run DATASET.json baseline|lite|bookctx RUN-FOLDER --budget-usd N [--every K] [--estimate-only] [--resume] [--reference-tm GLOBAL.sqlite]");
             return 2;
         }
         var datasetPath = Path.GetFullPath(args[0]);
@@ -40,6 +40,8 @@ internal static class EvalRunCommand
         // --resume continues an interrupted run: only never-attempted rows are sent, so rows that
         // already failed keep their result and variants stay comparable.
         var resume = args.Contains("--resume");
+        // The franchise translation memory the app passes for official names in sentences (see ReferenceNameIndex).
+        var referenceTmPath = ReadOption(args, "--reference-tm") is { } tm ? Path.GetFullPath(tm) : null;
         var hasContent = Directory.Exists(root) && Directory.EnumerateFileSystemEntries(root).Any();
         if (hasContent && !resume) throw new InvalidDataException("Use a new, empty run folder, or --resume.");
         if (resume && !File.Exists(Path.Combine(root, "provenance.json")))
@@ -91,6 +93,7 @@ internal static class EvalRunCommand
             DatasetSha256 = Hash(datasetBytes), SystemPromptSha256 = Hash(Encoding.UTF8.GetBytes(systemPrompt)),
             CoreAssemblySha256 = Hash(await File.ReadAllBytesAsync(typeof(TranslationService).Assembly.Location)),
             Options = "App defaults: batch 12 / 15000 chars / parallel 2, REC hints, soft semantic repair, raw Skyrim tags, dialogue context, session term memory, risky rerank x3, built-in TES glossary. Off: prompt cache, TM, project context, quality escalation.",
+            ReferenceTm = referenceTmPath,
         }, JsonOptions));
 
         using var handler = new SafeApiHandler(Path.Combine(root, "requests.jsonl"), variant.Model);
@@ -103,6 +106,13 @@ internal static class EvalRunCommand
         await using var globalDb = await ProjectDb.OpenOrCreateAsync(Path.Combine(root, "global.sqlite"), cancellation.Token);
         await new BuiltInGlossaryService().EnsureBuiltInGlossaryAsync(globalDb, cancellation.Token);
         var globalGlossary = await globalDb.GetGlossaryAsync(cancellation.Token);
+        IReadOnlyList<(string Source, string Target)>? referenceNames = null;
+        if (referenceTmPath != null)
+        {
+            await using var tmDb = await ProjectDb.OpenOrCreateAsync(referenceTmPath, cancellation.Token);
+            referenceNames = (await tmDb.GetTranslationMemoryEntriesAsync("english", "korean", cancellation.Token))
+                .Select(e => (e.SourceText, e.DestText)).ToList();
+        }
         var titles = rows.Where(r => r.BookTitle != null && !string.IsNullOrEmpty(r.Edid))
             .GroupBy(r => r.Edid!).ToDictionary(g => g.Key, g => g.First().BookTitle!);
 
@@ -149,7 +159,7 @@ internal static class EvalRunCommand
                     SemanticRepairMode: PlaceholderSemanticRepairMode.Soft, KeepSkyrimTagsRaw: true,
                     EnableDialogueContextWindow: true, EnablePromptCache: false, EnableQualityEscalation: false,
                     EnableRiskyCandidateRerank: true, RiskyCandidateCount: 3,
-                    EnableBookContext: variant.BookContext, BookTitlesByEdid: titles));
+                    EnableBookContext: variant.BookContext, BookTitlesByEdid: titles, ReferenceNameMemory: referenceNames));
             }
             catch (OperationCanceledException)
             {
