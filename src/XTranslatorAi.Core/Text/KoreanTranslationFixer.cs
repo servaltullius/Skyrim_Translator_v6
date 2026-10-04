@@ -23,6 +23,7 @@ internal static class KoreanTranslationFixer
         new ParenthesizedParticleStep(),
         new AttachedSeparatedParticleStep(),
         new StatAndSubjectParticleStep(),
+        new AcronymParticleStep(),
         new DurationProbabilityStep(),
         new ArtifactCleanupStep(),
         new SpellingFixStep(),

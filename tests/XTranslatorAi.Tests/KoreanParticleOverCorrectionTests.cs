@@ -50,8 +50,6 @@ public class KoreanParticleOverCorrectionTests
     [InlineData("Rune을 새겼다.")]
     [InlineData("Rune Stone을 찾았다.")]
     [InlineData("Aela가 말했다.")]
-    // A wrong particle after an acronym is left for the quality check to report, not rewritten.
-    [InlineData("NPC을 고용할 수 있다.")]
     // The demonstrative 이 before a number or tag (내가가, 그에게가, 어서가, 나는이 before).
     [InlineData("내가 이 7년 동안 기다렸다.")]
     [InlineData("그에게 이 100골드를 건네라.")]
