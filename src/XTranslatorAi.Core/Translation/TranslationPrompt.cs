@@ -130,7 +130,10 @@ public static partial class TranslationPrompt
         sb.AppendLine("- __XT_PH_DUR_####__ or <dur> = duration in seconds. Use time phrasing (e.g., \"__XT_PH_DUR_####__초 동안\" / \"<dur>초 동안\").");
         sb.AppendLine("- __XT_PH_MAG_####__ or <mag> = magnitude/amount (a NUMBER). Do not treat it as the word \"Magicka\".");
         sb.AppendLine("- __XT_PH_NUM_####__ or <숫자>/<100%> = another numeric value (points/%/amount). It is NOT a duration.");
-        sb.AppendLine("- You MAY reorder numeric placeholder tokens (__XT_PH_MAG_####__, __XT_PH_NUM_####__, __XT_PH_DUR_####__) for natural Korean grammar, but do not reorder other tokens.");
+        // Same contract as the system prompt and TokenValidator. This rule used to forbid moving anything but
+        // numbers, and the rules above say this prompt wins over the system prompt, so with "Jarl" and "Whiterun"
+        // both masked as terms the model was told to keep 야를 before 화이트런 instead of writing "화이트런의 야를".
+        sb.AppendLine("- Tokens may follow natural Korean word order: numeric tokens (__XT_PH_MAG_####__, __XT_PH_NUM_####__, __XT_PH_DUR_####__) within their line, and term, value and key tokens (__XT_TERM_*, __XT_PH_VAR_####__, __XT_PH_KEY_####__) anywhere. Keep plain layout tokens (__XT_PH_####__: line breaks, page breaks, formatting tags) in their source order and position.");
         sb.AppendLine(
             "- Do NOT attach particles directly to numeric tokens (__XT_PH_MAG_####__/__XT_PH_NUM_####__). Avoid forms like \"__XT_PH_MAG_0000__을(를)\", \"__XT_PH_MAG_0000__와(과)\", or \"__XT_PH_MAG_0000__에게\"."
         );

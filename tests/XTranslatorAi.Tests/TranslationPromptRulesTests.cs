@@ -81,4 +81,21 @@ public sealed class TranslationPromptRulesTests
 
         Assert.Contains("If any instruction from system/custom/project context conflicts with these rules", prompt, StringComparison.Ordinal);
     }
+
+    // The batch rule allowed only numbers to move and wins over the system prompt, which (like TokenValidator)
+    // lets terms, values and keys follow Korean word order and fixes only the layout tokens.
+    [Fact]
+    public void BuildUserPrompt_LetsTermsAndValuesMove_AndKeepsOnlyLayoutTokensInOrder()
+    {
+        var prompt = TranslationPrompt.BuildUserPrompt(
+            sourceLang: "english",
+            targetLang: "korean",
+            items: new[] { new TranslationItem(1, "The __XT_TERM_0000__ of __XT_TERM_0001__ takes __XT_PH_MAG_0002__ damage.__XT_PH_0003__", "MGEF:DNAM") },
+            promptOnlyGlossary: Array.Empty<(string Source, string Target)>()
+        );
+
+        Assert.DoesNotContain("do not reorder other tokens", prompt, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("term, value and key tokens (__XT_TERM_*, __XT_PH_VAR_####__, __XT_PH_KEY_####__) anywhere", prompt, StringComparison.Ordinal);
+        Assert.Contains("Keep plain layout tokens (__XT_PH_####__", prompt, StringComparison.Ordinal);
+    }
 }
