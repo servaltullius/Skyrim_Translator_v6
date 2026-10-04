@@ -36,13 +36,9 @@ internal sealed class SpellingFixStep : IKoreanFixStep
         matchTimeout: RegexTimeout
     );
 
-    // 않되 → 안 돼 / 안되 → 안 돼 (common AI error: 되/돼 after 안)
-    // 안 + 되 + 어미 없음 → 안 돼 (standalone "안되" at word boundary)
-    private static readonly Regex AnDoeRegex = new(
-        pattern: @"않되(?![었어])",
-        options: RegexOptions.CultureInvariant,
-        matchTimeout: RegexTimeout
-    );
+    // "않되"는 고치지 않는다. 대부분 맞는 연결 어미 "-지 않되"("해치지 않되, 놓아주지도 마라")이고,
+    // 예전 규칙이 만들던 "않돼"는 어떤 경우에도 맞춤법이 아니다(틀린 "않되"의 바른 형태는 "안 돼").
+    // 띄어쓰기까지 판단해야 하는 교정이라 결정적 후처리에서는 손대지 않는다.
 
     public string Apply(KoreanFixContext context, string text)
     {
@@ -58,12 +54,6 @@ internal sealed class SpellingFixStep : IKoreanFixStep
         if (working.IndexOf("몇일", StringComparison.Ordinal) >= 0)
         {
             working = MyeotIlRegex.Replace(working, "며칠");
-        }
-
-        // 않되 → 않돼 (안 되다의 준말)
-        if (working.IndexOf("않되", StringComparison.Ordinal) >= 0)
-        {
-            working = AnDoeRegex.Replace(working, "않돼");
         }
 
         // 되었 → 됐

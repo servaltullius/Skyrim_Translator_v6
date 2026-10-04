@@ -419,6 +419,16 @@ public class KoreanTranslationFixerTests
         Assert.Equal("이렇게 하면 안 돼.", output);
     }
 
+    [Theory]
+    [InlineData("해치지 않되, 놓아주지도 마라.")]
+    [InlineData("값을 깎아 주지는 않되 덤은 주겠다.")]
+    public void Fix_KeepsConnective_지않되(string input)
+    {
+        // "-지 않되"는 맞는 연결 어미다. 예전 규칙은 이를 맞춤법에도 없는 "않돼"로 바꿨다.
+        var output = KoreanTranslationFixer.Fix("korean", input);
+        Assert.Equal(input, output);
+    }
+
     [Fact]
     public void Fix_DoesNotChange_되다_Standalone()
     {
