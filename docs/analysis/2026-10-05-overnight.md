@@ -145,6 +145,7 @@
 | — | 1c17586 | 버전 1.11-preview7, 루트 EXE 배포(백업 preview6 `artifacts/overnight-1.11-preview7-20261005/deployment/`, SHA-256 242FD612…3D6E, `--ui-snapshot` 9개 탭 정상). | |
 | 77 | 83bcb76 | xTranslator 파일이 아닌 XML(옆에 있던 fomod `ModuleConfig.xml` 등)을 열면 영어 오류가 E999 "예상치 못한 오류" 뒤에 숨었다. 구조 오류를 한국어로 바꾸고(xTranslator XML이 아님, Content·Source 없음) E431로 그대로 보여 준다. 예외 형식(InvalidDataException)은 그대로 둔다. | 오류 처리 |
 | 78 | d67c8c5 | 파일 오류가 모두 "다른 프로그램에서 사용 중인지 확인하세요"(E410)였다. 없는 파일·폴더는 E411(파일 이름 포함, 옮겼거나 지웠는지), 권한 없음은 E412(읽기 전용·보호 폴더)로 나눴다. 근거: 흔한 예외 형식을 분류기에 넣어 본 결과(InvalidDataException·형식 오류는 E999, 없는 파일도 "사용 중" 안내). | 오류 처리 |
+| — | aef6b53 | 버전 1.11-preview8, 루트 EXE 배포(백업 preview7 `artifacts/overnight-1.11-preview8-20261005/deployment/`, SHA-256 10893289…FE11, `--ui-snapshot` 9개 탭 정상). | |
 
 ## 검토했지만 바꾸지 않은 것
 
