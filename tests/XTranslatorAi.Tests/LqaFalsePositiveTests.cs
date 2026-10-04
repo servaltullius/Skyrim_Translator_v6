@@ -378,6 +378,26 @@ public class LqaFalsePositiveTests
         Assert.Equal("용어집과 다른 표기: '뱀파이어' → '흡혈귀' (Vampire)", issue.Message);
     }
 
+    [Fact]
+    public async Task GlossaryVariant_TermWordInSourceUsedAsCommonNoun_IsStillReported()
+    {
+        // Serana: "vampires are powerful" → 뱀파이어는 강력하지만 (43 rows, all corrected to 흡혈귀). The loanword spells
+        // a word of the source, but that word is the glossary term itself, used as a common noun.
+        var glossary = new List<GlossaryEntry> { Term("Vampire", "흡혈귀"), Term("Master", "달인") };
+        var entries = new List<LqaScanEntry>
+        {
+            Dialogue(1, "Even if vampires are powerful, they can die.", "뱀파이어는 강력하지만 죽을 수 있어."),
+            Dialogue(2, "Vampires are powerful.", "뱀파이어는 강력해."),
+            Dialogue(3, "Are you a pure-blooded vampire?", "너 순혈 뱀파이어야?"),
+            // A capitalized name inside the line stays as written: the Ideal Masters.
+            Dialogue(4, "The Ideal Masters are real.", "이상적인 마스터는 실재해."),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", glossary);
+
+        Assert.Equal(new long[] { 1, 2, 3 }, issues.Where(i => i.Code == "glossary_variant").Select(i => i.Id).OrderBy(i => i).ToArray());
+    }
+
     private static GlossaryEntry Term(string source, string target)
         => new(0, null, source, target, true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null);
 

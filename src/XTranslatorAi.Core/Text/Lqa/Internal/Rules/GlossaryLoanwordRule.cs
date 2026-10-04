@@ -101,7 +101,6 @@ internal static class GlossaryLoanwordRule
             return;
         }
 
-        HashSet<string>? sourceSounds = null;
         foreach (var word in HangulWordRegex.Matches(destText).Select(m => m.Value).Distinct(StringComparer.Ordinal))
         {
             var levels = StripLevels(word);
@@ -123,7 +122,7 @@ internal static class GlossaryLoanwordRule
                 continue;
             }
 
-            sourceSounds ??= SourceSounds(sourceText);
+            var sourceSounds = SourceSounds(sourceText, term.SourceTerm);
             if (levels.Any(level => KoreanSound(level) is { } s && sourceSounds.Contains(s)))
             {
                 continue;
@@ -318,11 +317,19 @@ internal static class GlossaryLoanwordRule
     }
 
     // "the Ideal Masters" names 마스터: plural words are also matched without their s.
-    private static HashSet<string> SourceSounds(string sourceText)
+    // The glossary term itself used as a common noun ("vampires are powerful", "Vampires are…" at the start)
+    // does not count: that is the word the glossary translates, so 뱀파이어 there is the variant to report.
+    private static HashSet<string> SourceSounds(string sourceText, string termSource)
     {
         var sounds = new HashSet<string>(StringComparer.Ordinal);
-        foreach (Match match in EnglishWordRegex.Matches(sourceText ?? ""))
+        var text = sourceText ?? "";
+        foreach (Match match in EnglishWordRegex.Matches(text))
         {
+            if (IsTermUsedAsCommonNoun(text, match, termSource))
+            {
+                continue;
+            }
+
             sounds.Add(EnglishSound(match.Value));
             if (match.Length > 3 && match.Value.EndsWith("s", StringComparison.OrdinalIgnoreCase))
             {
@@ -331,6 +338,31 @@ internal static class GlossaryLoanwordRule
         }
 
         return sounds;
+    }
+
+    private static bool IsTermUsedAsCommonNoun(string text, Match word, string termSource)
+    {
+        var value = word.Value;
+        var isTerm = string.Equals(value, termSource, StringComparison.OrdinalIgnoreCase)
+                     || string.Equals(value, termSource + "s", StringComparison.OrdinalIgnoreCase)
+                     || string.Equals(value, termSource + "es", StringComparison.OrdinalIgnoreCase);
+        if (!isTerm)
+        {
+            return false;
+        }
+
+        if (char.IsLower(value[0]))
+        {
+            return true;
+        }
+
+        var i = word.Index - 1;
+        while (i >= 0 && (char.IsWhiteSpace(text[i]) || text[i] is '"' or '\'' or '“' or '‘'))
+        {
+            i--;
+        }
+
+        return i < 0 || text[i] is '.' or '!' or '?';
     }
 
     private static void Append(StringBuilder sb, char sound)
