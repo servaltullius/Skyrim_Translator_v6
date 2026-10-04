@@ -27,4 +27,26 @@ public sealed partial class PluginUiLifecycleTests
             Assert.DoesNotContain(fixture.Vm.LqaIssues, i => i.Id == rows[0].Id && i.Code == "english_residue");
             Assert.Contains(fixture.Vm.LqaIssues, i => i.Id == rows[1].Id && i.Code == "english_residue");
         });
+
+    /// <summary>The full scan lists errors first; a re-check after a save re-sorted the whole list by row number.</summary>
+    [Fact]
+    public Task SavingARow_KeepsErrorsAtTheTopOfTheList()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            var rows = await LoadXmlWorkspaceAsync(fixture, "Hand Strap Attack", "Iron Sword");
+            var db = fixture.State.Db!;
+            await db.UpdateStringTranslationAsync(rows[0].Id, "Hand Strap 공격", StringEntryStatus.Done, null, CancellationToken.None);
+            (rows[0].DestText, rows[0].Status) = ("Hand Strap 공격", StringEntryStatus.Done);
+            fixture.Vm.SelectedEntry = null;
+            await fixture.Vm.ScanLqaCommand.ExecuteAsync(null);
+            var error = new XTranslatorAi.App.ViewModels.LqaIssueViewModel(rows[1].Id, rows[1].OrderIndex, null, "WEAP:FULL",
+                "Error", "token_mismatch", "m", "Iron Sword", "검");
+            fixture.Vm.LqaIssues.ReplaceAll(new[] { error }.Concat(fixture.Vm.LqaIssues).ToList());
+
+            await fixture.Vm.CommitDestEditAsync(rows[0], "Hand Strap 공격 개선");
+
+            Assert.Equal("Error", fixture.Vm.LqaIssues[0].Severity);
+            Assert.Contains(fixture.Vm.LqaIssues, i => i.Id == rows[0].Id && i.Code == "english_residue");
+        });
 }

@@ -38,7 +38,8 @@ public partial class MainViewModel
         // The rules read only this snapshot, so they run on a worker thread. On the UI thread the
         // project-wide rules (name consistency, tone majorities) ran before the first progress report
         // and froze the window for seconds on large projects. Progress is posted back to the UI thread.
-        var referenceMemory = await TryLoadLqaReferenceMemoryAsync();
+        // The series TM holds tens of thousands of entries, and SQLite's async calls complete synchronously.
+        var referenceMemory = await Task.Run(TryLoadLqaReferenceMemoryAsync);
         var targetLang = TargetLang;
         IProgress<int> progress = new Progress<int>(pct => StatusMessage = $"품질 검사 중... {pct}%");
         var issues = await Task.Run(() => LqaScanner.ScanAsync(
@@ -115,7 +116,10 @@ public partial class MainViewModel
         var kept = LqaIssues.Where(i => i.Id != entry.Id || ProjectWideLqaCodes.Contains(i.Code)).ToList();
         var replacements = fresh.Where(i => !ProjectWideLqaCodes.Contains(i.Code)).Select(ToIssueViewModel);
         var selected = SelectedLqaIssue;
-        LqaIssues.ReplaceAll(kept.Concat(replacements).OrderBy(i => i.OrderIndex).ToList());
+        // The order of the full scan: errors, warnings, information, each by row.
+        LqaIssues.ReplaceAll(kept.Concat(replacements)
+            .OrderBy(i => LqaSeverityWeight(i.Severity)).ThenBy(i => i.OrderIndex).ThenBy(i => i.Code, StringComparer.OrdinalIgnoreCase)
+            .ToList());
         LqaIssuesView.Refresh();
         if (selected != null && LqaIssues.Contains(selected))
         {
@@ -124,6 +128,11 @@ public partial class MainViewModel
 
         ClearLqaCommand.NotifyCanExecuteChanged();
     }
+
+    private static int LqaSeverityWeight(string severity)
+        => string.Equals(severity, "Error", StringComparison.OrdinalIgnoreCase) ? 0
+            : string.Equals(severity, "Warn", StringComparison.OrdinalIgnoreCase) ? 1
+            : 2;
 
     private IReadOnlyList<GlossaryEntry> BuildLqaForceTokenGlossary()
     {
