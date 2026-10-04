@@ -320,38 +320,6 @@ public sealed partial class ProjectDb
         }
     }
 
-    public async Task<(long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)> GetStringTranslationContextAsync(
-        long id,
-        CancellationToken cancellationToken
-    )
-    {
-        await _gate.WaitAsync(cancellationToken);
-        try
-        {
-            await using var cmd = _connection.CreateCommand();
-            cmd.CommandText = "SELECT Id, SourceText, REC, EDID, Status FROM StringEntry WHERE Id=$Id;";
-            cmd.Parameters.AddWithValue("$Id", id);
-
-            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
-            if (!await reader.ReadAsync(cancellationToken))
-            {
-                throw new InvalidOperationException($"Missing row id={id}");
-            }
-
-            return (
-                reader.GetInt64(0),
-                reader.GetString(1),
-                reader.IsDBNull(2) ? null : reader.GetString(2),
-                reader.IsDBNull(3) ? null : reader.GetString(3),
-                (StringEntryStatus)reader.GetInt32(4)
-            );
-        }
-        finally
-        {
-            _gate.Release();
-        }
-    }
-
     public async Task<IReadOnlyDictionary<long, (long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status, string? DialogueScope)>> GetStringTranslationContextsByIdsAsync(
         IReadOnlyList<long> ids,
         CancellationToken cancellationToken
@@ -458,21 +426,4 @@ public sealed partial class ProjectDb
         }
     }
 
-    public async Task<string> GetRawStringXmlAsync(long id, CancellationToken cancellationToken)
-    {
-        await _gate.WaitAsync(cancellationToken);
-        try
-        {
-            await using var cmd = _connection.CreateCommand();
-            cmd.CommandText = "SELECT RawStringXml FROM StringEntry WHERE Id=$Id;";
-            cmd.Parameters.AddWithValue("$Id", id);
-
-            var result = await cmd.ExecuteScalarAsync(cancellationToken);
-            return Convert.ToString(result, System.Globalization.CultureInfo.InvariantCulture) ?? throw new InvalidDataException("Missing RawStringXml.");
-        }
-        finally
-        {
-            _gate.Release();
-        }
-    }
 }

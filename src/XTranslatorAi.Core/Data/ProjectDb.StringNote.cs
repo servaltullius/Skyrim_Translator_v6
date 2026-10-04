@@ -72,28 +72,6 @@ public sealed partial class ProjectDb
         }
     }
 
-    public async Task DeleteStringNotesByKindAsync(string kind, CancellationToken cancellationToken)
-    {
-        var normalizedKind = (kind ?? "").Trim().ToLowerInvariant();
-        if (string.IsNullOrWhiteSpace(normalizedKind))
-        {
-            return;
-        }
-
-        await _gate.WaitAsync(cancellationToken);
-        try
-        {
-            await using var cmd = _connection.CreateCommand();
-            cmd.CommandText = "DELETE FROM StringNote WHERE Kind=$Kind;";
-            cmd.Parameters.AddWithValue("$Kind", normalizedKind);
-            await cmd.ExecuteNonQueryAsync(cancellationToken);
-        }
-        finally
-        {
-            _gate.Release();
-        }
-    }
-
     public async Task<IReadOnlyDictionary<long, string>> GetStringNotesByKindAsync(string kind, CancellationToken cancellationToken)
     {
         var normalizedKind = (kind ?? "").Trim().ToLowerInvariant();

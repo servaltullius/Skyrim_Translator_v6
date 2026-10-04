@@ -183,27 +183,6 @@ internal static class TokenSanitizer
 
     // ── Ensure / Validate wrappers ──
 
-    internal static void EnsureChunkTokensPreserved(string inputChunk, string outputChunk)
-    {
-        TokenValidator.ValidateTokensPreserved(inputChunk, outputChunk, context: "chunk");
-    }
-
-    internal static void ValidateTokenIntegrity(
-        IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> batch,
-        IReadOnlyDictionary<long, string> translations
-    )
-    {
-        foreach (var it in batch)
-        {
-            if (!translations.TryGetValue(it.Id, out var output))
-            {
-                throw new InvalidOperationException($"Model output missing id: {it.Id}");
-            }
-
-            TokenValidator.ValidateTokensPreserved(it.Masked, output, context: $"id={it.Id}");
-        }
-    }
-
     internal static string EnsureTokensPreservedOrRepair(
         string inputText,
         string outputText,
@@ -242,30 +221,6 @@ internal static class TokenSanitizer
 
             throw;
         }
-    }
-
-    internal static string EnsureTokensPreservedOrThrow(
-        string inputText,
-        string outputText,
-        string context
-    )
-    {
-        outputText = SanitizeModelTranslationText(outputText, inputText);
-
-        var cleanedOutput = RemoveBrokenXtTokenMarkers(outputText);
-        if (!ReferenceEquals(cleanedOutput, outputText) && !string.Equals(cleanedOutput, outputText, StringComparison.Ordinal))
-        {
-            outputText = cleanedOutput;
-        }
-
-        outputText = RepairMagDurSemanticMixups(outputText, inputText);
-        outputText = RepairDurTokenMisplacedAfterKoreanTimePhrase(outputText, inputText);
-        outputText = RepairKoreanBadParticlesOnNumericPlaceholders(outputText, inputText);
-
-        TokenValidator.ValidateTokensPreserved(inputText, outputText, context);
-        TokenValidator.ValidateNotTruncatedOrOmitted(inputText, outputText, context);
-        TokenValidator.ValidateRawTagsPreserved(inputText, outputText, context);
-        return outputText;
     }
 
     // ── Semantic repair trigger ──

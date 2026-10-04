@@ -27,10 +27,7 @@ public sealed class GlossaryImportService
     /// <param name="ConflictCount">Sources the file itself gives different targets.</param>
     /// <param name="ExistingConflicts">Sources the glossary already holds with another target, which were not imported.</param>
     public readonly record struct GlossaryImportResult(int InsertedCount, int SkippedExisting, int ConflictCount,
-        IReadOnlyList<string>? ExistingConflicts = null)
-    {
-        public int ExistingConflictCount => ExistingConflicts?.Count ?? 0;
-    }
+        IReadOnlyList<string>? ExistingConflicts = null);
 
     public async Task<GlossaryImportResult?> ImportFromFileAsync(
         ProjectDb db,

@@ -31,21 +31,6 @@ internal static class PlaceholderUnitBinder
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
-    private static readonly Regex NumberSecondsRegex = new(
-        pattern: @"(?<n>\b[0-9]+(?:\.[0-9]+)?\b)\s*seconds?\b",
-        options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
-    );
-
-    private static readonly Regex PlaceholderPointsRegex = new(
-        pattern: @"(?<ph>[+-]?<[^>]+>)\s*points?\b",
-        options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
-    );
-
-    private static readonly Regex NumberPointsRegex = new(
-        pattern: @"(?<n>\b[0-9]+(?:\.[0-9]+)?\b)\s*points?\b",
-        options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
-    );
-
     private static readonly Regex TightenValueUnitSpacingRegex = new(
         pattern: @"(?<v>[+-]?<[^>]+>|\b[0-9]+(?:\.[0-9]+)?\b)\s+(?<unit>초|포인트)\b",
         options: RegexOptions.CultureInvariant
@@ -343,29 +328,6 @@ internal static class PlaceholderUnitBinder
             @"(?<tok>"
             + tokenPattern
             + @")(?<ws>(?>\s*))(?!(초간|초|분|시간|일|주|개월|년))";
-
-        return Regex.Replace(
-            text,
-            pattern,
-            m => m.Groups["tok"].Value + unitWord + m.Groups["ws"].Value,
-            RegexOptions.CultureInvariant
-        );
-    }
-
-    private static string EnsureAmountUnitAfterToken(string text, string tokenPattern, string unitWord)
-    {
-        if (string.IsNullOrWhiteSpace(text) || string.IsNullOrWhiteSpace(tokenPattern) || string.IsNullOrWhiteSpace(unitWord))
-        {
-            return text;
-        }
-
-        // If the token is already followed by '%' or the amount unit, keep it.
-        var pattern =
-            @"(?<tok>"
-            + tokenPattern
-            + @")(?<ws>\s*)(?!(?:%|"
-            + Regex.Escape(unitWord)
-            + @"))";
 
         return Regex.Replace(
             text,

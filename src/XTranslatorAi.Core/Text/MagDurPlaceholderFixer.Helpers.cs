@@ -26,24 +26,6 @@ public static partial class MagDurPlaceholderFixer
         RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
-    private static bool LooksLikeKoreanText(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-        {
-            return false;
-        }
-
-        foreach (var ch in text)
-        {
-            if (ch >= '가' && ch <= '힣')
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private static string BuildLossAndRecoveryPhraseKo(string attrEn)
     {
         if (string.Equals(attrEn, "Health", StringComparison.OrdinalIgnoreCase))
