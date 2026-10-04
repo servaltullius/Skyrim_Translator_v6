@@ -8,19 +8,8 @@ internal sealed class SpellingFixStep : IKoreanFixStep
 {
     private static readonly TimeSpan RegexTimeout = TimeSpan.FromMilliseconds(250);
 
-    // 되었 → 됐 (가장 흔한 AI 맞춤법 오류)
-    private static readonly Regex DoeEotRegex = new(
-        pattern: @"되었",
-        options: RegexOptions.CultureInvariant,
-        matchTimeout: RegexTimeout
-    );
-
-    // 되어 → 돼 (축약형)
-    private static readonly Regex DoeEoRegex = new(
-        pattern: @"되어",
-        options: RegexOptions.CultureInvariant,
-        matchTimeout: RegexTimeout
-    );
+    // "되었/되어"는 맞춤법 오류가 아니라 고치지 않는다. 공식 번역은 "되었습니다"를 "됐습니다"보다 훨씬 많이 쓰고(42:3),
+    // 이 후처리는 TM 적용 행에도 돌아 공식 문장을 축약형으로 바꿨다(2026-10-05 결정 4).
 
     // 됬 → 됐 (잘못된 축약)
     private static readonly Regex DwaetWrongRegex = new(
@@ -54,18 +43,6 @@ internal sealed class SpellingFixStep : IKoreanFixStep
         if (working.IndexOf("몇일", StringComparison.Ordinal) >= 0)
         {
             working = MyeotIlRegex.Replace(working, "며칠");
-        }
-
-        // 되었 → 됐
-        if (working.IndexOf("되었", StringComparison.Ordinal) >= 0)
-        {
-            working = DoeEotRegex.Replace(working, "됐");
-        }
-
-        // 되어 → 돼
-        if (working.IndexOf("되어", StringComparison.Ordinal) >= 0)
-        {
-            working = DoeEoRegex.Replace(working, "돼");
         }
 
         return working;

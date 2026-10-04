@@ -383,29 +383,15 @@ public class KoreanTranslationFixerTests
 
     // --- SpellingFixStep tests ---
 
-    [Fact]
-    public void Fix_CorrectsDwae_되어_To_돼()
-    {
-        var input = "이것은 사용되어 왔다.";
-        var output = KoreanTranslationFixer.Fix("korean", input);
-        Assert.Equal("이것은 사용돼 왔다.", output);
-    }
-
-    [Fact]
-    public void Fix_CorrectsDwaet_되었_To_됐()
-    {
-        var input = "마법이 해제되었습니다.";
-        var output = KoreanTranslationFixer.Fix("korean", input);
-        Assert.Equal("마법이 해제됐습니다.", output);
-    }
-
-    [Fact]
-    public void Fix_CorrectsDwaetda_되었다_To_됐다()
-    {
-        var input = "전쟁이 시작되었다.";
-        var output = KoreanTranslationFixer.Fix("korean", input);
-        Assert.Equal("전쟁이 시작됐다.", output);
-    }
+    // "되었/되어" are correct, not spelling errors: the official translation writes "되었습니다" 42 times to "됐습니다"
+    // 3, and the fixer also runs on TM hits, so contracting them rewrote official text (decision 4, 2026-10-05).
+    [Theory]
+    [InlineData("이것은 사용되어 왔다.")]
+    [InlineData("마법이 해제되었습니다.")]
+    [InlineData("전쟁이 시작되었다.")]
+    [InlineData("준비가 됐어.")]
+    public void Fix_KeepsFullAndContractedFormsOfDoeda(string input)
+        => Assert.Equal(input, KoreanTranslationFixer.Fix("korean", input));
 
     [Fact]
     public void Fix_Corrects몇일_To_며칠()
