@@ -411,7 +411,7 @@ public partial class MainViewModel
     /// asking, and kept the 직접 수정 status on machine-changed text. When such rows would change, the user now
     /// chooses whether to include them. The rewrite runs off the UI thread on a snapshot of the rows.
     /// </summary>
-    private async Task RewriteFinishedRowsAsync(ProjectDb db, string operation, string progressMessage, string doneMessage,
+    internal async Task RewriteFinishedRowsAsync(ProjectDb db, string operation, string progressMessage, string doneMessage,
         Func<(string Source, string Dest), string> rewrite)
     {
         StatusMessage = progressMessage;
@@ -419,12 +419,19 @@ public partial class MainViewModel
         {
             var rows = Entries
                 .Where(vm => vm.Status is StringEntryStatus.Done or StringEntryStatus.Edited)
-                .Select(vm => (Row: vm, Source: vm.SourceText ?? "", Dest: vm.DestText ?? ""))
+                .Select(vm => (Row: vm, Source: vm.SourceText ?? "", Dest: vm.DestText ?? "", vm.Status))
                 .ToList();
-            var changes = await Task.Run(() => rows
-                .Select(r => (r.Row, Fixed: rewrite((r.Source, r.Dest)), r.Dest))
+            var computed = await Task.Run(() => rows
+                .Select(r => (r.Row, Fixed: rewrite((r.Source, r.Dest)), r.Dest, r.Status))
                 .Where(c => !string.Equals(c.Fixed, c.Dest, StringComparison.Ordinal))
                 .ToList());
+
+            // The fixes were computed from a snapshot; a row edited or re-translated meanwhile keeps its new text.
+            var changes = computed
+                .Where(c => c.Row.Status == c.Status && string.Equals(c.Row.DestText ?? "", c.Dest, StringComparison.Ordinal))
+                .Select(c => (c.Row, c.Fixed, c.Dest))
+                .ToList();
+            var changedMeanwhile = computed.Count - changes.Count;
 
             var edited = changes.Count(c => c.Row.Status == StringEntryStatus.Edited);
             if (edited > 0)
@@ -459,7 +466,8 @@ public partial class MainViewModel
                 row.DestText = fixedText;
             }
 
-            StatusMessage = updates.Count == 0 ? "교정할 항목이 없습니다." : $"{doneMessage}: {updates.Count}개 항목을 수정했습니다.";
+            StatusMessage = (updates.Count == 0 ? "교정할 항목이 없습니다." : $"{doneMessage}: {updates.Count}개 항목을 수정했습니다.")
+                + (changedMeanwhile == 0 ? "" : $" 작업 중에 바뀐 {changedMeanwhile}개 행은 건너뛰었습니다.");
         }
         catch (Exception ex)
         {
