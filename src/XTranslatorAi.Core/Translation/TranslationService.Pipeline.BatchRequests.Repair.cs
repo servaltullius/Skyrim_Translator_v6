@@ -271,9 +271,11 @@ public sealed partial class TranslationService
         for (var attempt = 0; attempt <= maxRetries; attempt++)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            string? cacheName = null;
             try
             {
-                return await RepairBatchOnceAsync(currentCtx, userPrompt, cancellationToken);
+                cacheName = await GetPromptCacheNameAsync(currentCtx.PromptCache, cancellationToken);
+                return await RepairBatchOnceAsync(currentCtx, userPrompt, cacheName, cancellationToken);
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -283,13 +285,13 @@ public sealed partial class TranslationService
             {
                 if (currentCtx.PromptCache != null && IsCachedContentInvalid(ex))
                 {
-                    InvalidatePromptCache(currentCtx.PromptCache, ex);
+                    InvalidatePromptCache(currentCtx.PromptCache, cacheName, ex);
 
                     // CachedContent can expire mid-run; retry immediately without it.
                     var noCacheCtx = currentCtx with { PromptCache = null };
                     try
                     {
-                        return await RepairBatchOnceAsync(noCacheCtx, userPrompt, cancellationToken);
+                        return await RepairBatchOnceAsync(noCacheCtx, userPrompt, cachedContent: null, cancellationToken);
                     }
                     catch (Exception ex2)
                     {
@@ -336,10 +338,10 @@ public sealed partial class TranslationService
     private async Task<IReadOnlyDictionary<long, string>> RepairBatchOnceAsync(
         BatchTranslateContext ctx,
         string userPrompt,
+        string? cachedContent,
         CancellationToken cancellationToken
     )
     {
-        var cachedContent = ctx.PromptCache != null ? await ctx.PromptCache.GetOrCreateAsync(cancellationToken) : null;
         var request = BuildRepairBatchRequest(
             userPrompt,
             cachedContent,

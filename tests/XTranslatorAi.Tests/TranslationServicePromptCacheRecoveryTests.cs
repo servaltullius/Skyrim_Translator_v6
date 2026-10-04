@@ -177,6 +177,87 @@ public class TranslationServicePromptCacheRecoveryTests
         }
     }
 
+    // One 503 while creating the cache turned caching off for the rest of the run. The first row now goes without
+    // the cache and the next request creates it.
+    [Fact]
+    public async Task TranslateIdsAsync_WhenCacheCreationFailsOnce_CreatesItForLaterRows()
+    {
+        await using var fixture = await TranslationRunFixture.CreateAsync(("First", "MESG:DESC"), ("Second", "MESG:DESC"), ("Third", "MESG:DESC"));
+        fixture.Client.CreateCache = attempt => attempt == 1
+            ? Task.FromException<string>(ServiceUnavailable())
+            : Task.FromResult("cachedContents/second-try");
+
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { EnablePromptCache = true });
+
+        Assert.Equal(2, fixture.Client.CacheCreates);
+        Assert.Equal(new string?[] { null, "cachedContents/second-try", "cachedContents/second-try" },
+            fixture.Client.Requests.Select(request => request.CachedContent).ToArray());
+        Assert.Equal(new[] { "cachedContents/second-try" }, fixture.Client.DeletedCaches);
+        Assert.All((await fixture.RowsAsync()).Values, row => Assert.Equal(StringEntryStatus.Done, row.Status));
+    }
+
+    [Fact]
+    public async Task PromptCache_GivesUpAfterBoundedTransientFailuresAndAtOnceOnOthers()
+    {
+        var transient = new EchoGeminiClient { CreateCache = _ => Task.FromException<string>(ServiceUnavailable()) };
+        var cache = new TranslationService.PromptCache(transient, "DUMMY", ModelName, "base", TimeSpan.FromHours(1));
+        for (var i = 0; i < 5; i++)
+        {
+            Assert.Null(await cache.GetOrCreateAsync(CancellationToken.None));
+        }
+        Assert.Equal(TranslationService.PromptCache.MaxCreateAttempts, transient.CacheCreates);
+
+        // The prompt is below the minimum cache size: asking again will not help.
+        var permanent = new EchoGeminiClient
+        {
+            CreateCache = _ => Task.FromException<string>(new GeminiHttpException("CreateCachedContent", 400, "Bad Request", null,
+                "CreateCachedContent failed: HTTP 400 Bad Request. {\"error\":{\"message\":\"Cached content is too small.\"}}")),
+        };
+        cache = new TranslationService.PromptCache(permanent, "DUMMY", ModelName, "base", TimeSpan.FromHours(1));
+        Assert.Null(await cache.GetOrCreateAsync(CancellationToken.None));
+        Assert.Null(await cache.GetOrCreateAsync(CancellationToken.None));
+        Assert.Equal(1, permanent.CacheCreates);
+    }
+
+    // Requests waiting for the cache while its creation fails go without it instead of each trying again at once.
+    [Fact]
+    public async Task PromptCache_RequestsQueuedBehindAFailedCreationDoNotRetryAtOnce()
+    {
+        var release = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var client = new EchoGeminiClient { CreateCache = attempt => attempt == 1 ? release.Task : Task.FromResult("cachedContents/later") };
+        var cache = new TranslationService.PromptCache(client, "DUMMY", ModelName, "base", TimeSpan.FromHours(1));
+
+        var waiting = Enumerable.Range(0, 3).Select(_ => cache.GetOrCreateAsync(CancellationToken.None)).ToArray();
+        release.SetException(ServiceUnavailable());
+
+        Assert.All(await Task.WhenAll(waiting), Assert.Null);
+        Assert.Equal(1, client.CacheCreates);
+        Assert.Equal("cachedContents/later", await cache.GetOrCreateAsync(CancellationToken.None));
+    }
+
+    // When the cache expires, every worker whose request used it reports it. A late report used to drop the cache
+    // another worker had just recreated; that cache was never deleted because cleanup only knows the newest.
+    [Fact]
+    public async Task PromptCache_InvalidateIgnoresAStaleCacheName()
+    {
+        var client = new EchoGeminiClient();
+        var cache = new TranslationService.PromptCache(client, "DUMMY", ModelName, "base", TimeSpan.FromHours(1));
+        var expired = await cache.GetOrCreateAsync(CancellationToken.None);
+
+        cache.Invalidate(expired);
+        var recreated = await cache.GetOrCreateAsync(CancellationToken.None);
+        cache.Invalidate(expired);
+
+        Assert.NotEqual(expired, recreated);
+        Assert.Equal(recreated, await cache.GetOrCreateAsync(CancellationToken.None));
+        Assert.Equal(2, client.CacheCreates);
+        await cache.DeleteAsync(CancellationToken.None);
+        Assert.Equal(new[] { recreated }, client.DeletedCaches);
+    }
+
+    private static GeminiHttpException ServiceUnavailable()
+        => new("CreateCachedContent", 503, "Service Unavailable", null, "CreateCachedContent failed: HTTP 503 Service Unavailable.");
+
     private static async Task SeedProjectAsync(ProjectDb db)
     {
         var now = DateTimeOffset.UtcNow;

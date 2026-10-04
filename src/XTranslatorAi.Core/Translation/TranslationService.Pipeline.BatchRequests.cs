@@ -71,9 +71,11 @@ public sealed partial class TranslationService
         {
             using var retryScope = EnterGenerationScope(recovery: attempt > 0);
             ctx.CancellationToken.ThrowIfCancellationRequested();
+            string? cacheName = null;
             try
             {
-                return await TranslateBatchOnceAsync(currentCtx, batch, userPrompt);
+                cacheName = await GetPromptCacheNameAsync(currentCtx.PromptCache, ctx.CancellationToken);
+                return await TranslateBatchOnceAsync(currentCtx, batch, userPrompt, cacheName);
             }
             catch (OperationCanceledException) when (ctx.CancellationToken.IsCancellationRequested)
             {
@@ -83,14 +85,14 @@ public sealed partial class TranslationService
             {
                 if (currentCtx.PromptCache != null && IsCachedContentInvalid(ex))
                 {
-                    InvalidatePromptCache(currentCtx.PromptCache, ex);
+                    InvalidatePromptCache(currentCtx.PromptCache, cacheName, ex);
 
                     // CachedContent can expire mid-run; retry immediately without it.
                     var noCacheCtx = currentCtx with { PromptCache = null };
                     try
                     {
                         using var recovery = EnterGenerationScope(recovery: true);
-                        return await TranslateBatchOnceAsync(noCacheCtx, batch, userPrompt);
+                        return await TranslateBatchOnceAsync(noCacheCtx, batch, userPrompt, cachedContent: null);
                     }
                     catch (Exception ex2)
                     {
@@ -219,10 +221,10 @@ public sealed partial class TranslationService
     private async Task<IReadOnlyDictionary<long, string>> TranslateBatchOnceAsync(
         BatchTranslateContext ctx,
         IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> batch,
-        string userPrompt
+        string userPrompt,
+        string? cachedContent
     )
     {
-        var cachedContent = ctx.PromptCache != null ? await ctx.PromptCache.GetOrCreateAsync(ctx.CancellationToken) : null;
         var candidateCount = GetBatchCandidateCount(ctx, batch);
         var sizedContext = ctx with { MaxOutputTokens = TranslationOutputBudget.Compute(
             batch.Sum(row => row.Masked.Length), batch.Sum(row => TranslationConstants.XtTokenRegex.Matches(row.Masked).Count),

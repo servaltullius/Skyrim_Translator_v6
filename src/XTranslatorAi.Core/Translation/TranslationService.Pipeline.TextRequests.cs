@@ -82,9 +82,11 @@ public sealed partial class TranslationService
         {
             using var retryScope = EnterGenerationScope(recovery: attempt > 0);
             request.CancellationToken.ThrowIfCancellationRequested();
+            string? cacheName = null;
             try
             {
-                return await TranslateUserPromptOnceAsync(currentRequest, userPrompt);
+                cacheName = await GetPromptCacheNameAsync(currentRequest.PromptCache, request.CancellationToken);
+                return await TranslateUserPromptOnceAsync(currentRequest, userPrompt, cacheName);
             }
             catch (OperationCanceledException) when (request.CancellationToken.IsCancellationRequested)
             {
@@ -94,7 +96,7 @@ public sealed partial class TranslationService
             {
                 if (currentRequest.PromptCache != null && IsCachedContentInvalid(ex))
                 {
-                    InvalidatePromptCache(currentRequest.PromptCache, ex);
+                    InvalidatePromptCache(currentRequest.PromptCache, cacheName, ex);
 
                     // If the prompt cache resource expired / got invalidated mid-run, retry immediately
                     // without cachedContent so the translation can continue instead of failing the row.
@@ -102,7 +104,7 @@ public sealed partial class TranslationService
                     try
                     {
                         using var recovery = EnterGenerationScope(recovery: true);
-                        return await TranslateUserPromptOnceAsync(noCacheRequest, userPrompt);
+                        return await TranslateUserPromptOnceAsync(noCacheRequest, userPrompt, cachedContent: null);
                     }
                     catch (Exception ex2)
                     {
@@ -125,12 +127,8 @@ public sealed partial class TranslationService
         throw new InvalidOperationException($"Translate text failed: {last?.Message}", last);
     }
 
-    private async Task<string> TranslateUserPromptOnceAsync(TextRequestContext request, string userPrompt)
+    private async Task<string> TranslateUserPromptOnceAsync(TextRequestContext request, string userPrompt, string? cachedContent)
     {
-        var cachedContent = request.PromptCache != null
-            ? await request.PromptCache.GetOrCreateAsync(request.CancellationToken)
-            : null;
-
         var geminiRequest = BuildTextOnlyGenerateContentRequest(request, userPrompt, cachedContent);
         var modelText = await GenerateContentWithGateAsync(
             request.ApiKey,
@@ -153,9 +151,11 @@ public sealed partial class TranslationService
         {
             using var retryScope = EnterGenerationScope(recovery: attempt > 0);
             request.CancellationToken.ThrowIfCancellationRequested();
+            string? cacheName = null;
             try
             {
-                return await TranslateUserPromptCandidatesOnceAsync(currentRequest, userPrompt);
+                cacheName = await GetPromptCacheNameAsync(currentRequest.PromptCache, request.CancellationToken);
+                return await TranslateUserPromptCandidatesOnceAsync(currentRequest, userPrompt, cacheName);
             }
             catch (OperationCanceledException) when (request.CancellationToken.IsCancellationRequested)
             {
@@ -165,13 +165,13 @@ public sealed partial class TranslationService
             {
                 if (currentRequest.PromptCache != null && IsCachedContentInvalid(ex))
                 {
-                    InvalidatePromptCache(currentRequest.PromptCache, ex);
+                    InvalidatePromptCache(currentRequest.PromptCache, cacheName, ex);
 
                     var noCacheRequest = currentRequest with { PromptCache = null };
                     try
                     {
                         using var recovery = EnterGenerationScope(recovery: true);
-                        return await TranslateUserPromptCandidatesOnceAsync(noCacheRequest, userPrompt);
+                        return await TranslateUserPromptCandidatesOnceAsync(noCacheRequest, userPrompt, cachedContent: null);
                     }
                     catch (Exception ex2)
                     {
@@ -194,12 +194,8 @@ public sealed partial class TranslationService
         throw new InvalidOperationException($"Translate text candidates failed: {last?.Message}", last);
     }
 
-    private async Task<IReadOnlyList<string>> TranslateUserPromptCandidatesOnceAsync(TextRequestContext request, string userPrompt)
+    private async Task<IReadOnlyList<string>> TranslateUserPromptCandidatesOnceAsync(TextRequestContext request, string userPrompt, string? cachedContent)
     {
-        var cachedContent = request.PromptCache != null
-            ? await request.PromptCache.GetOrCreateAsync(request.CancellationToken)
-            : null;
-
         var geminiRequest = BuildTextOnlyGenerateContentRequest(request, userPrompt, cachedContent);
         var modelTexts = await GenerateContentCandidatesWithGateAsync(
             request.ApiKey,

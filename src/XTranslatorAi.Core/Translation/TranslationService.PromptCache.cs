@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Diagnostics;
@@ -56,7 +58,8 @@ public sealed partial class TranslationService
         return false;
     }
 
-    private static void InvalidatePromptCache(PromptCache cache, Exception ex)
+    /// <param name="failedName">The cache the failed request used; null when it used none.</param>
+    private static void InvalidatePromptCache(PromptCache cache, string? failedName, Exception ex)
     {
         if (IsCachedContentPermissionDenied(ex))
         {
@@ -64,21 +67,33 @@ public sealed partial class TranslationService
         }
         else
         {
-            cache.Invalidate();
+            cache.Invalidate(failedName);
         }
     }
 
-    private sealed class PromptCache
+    private static async Task<string?> GetPromptCacheNameAsync(PromptCache? cache, CancellationToken cancellationToken)
+        => cache != null ? await cache.GetOrCreateAsync(cancellationToken) : null;
+
+    internal sealed class PromptCache
     {
+        /// <summary>
+        /// Creation attempts after transient failures (429, 5xx, network, timeout) before the run goes on
+        /// without the cache. Other failures (the prompt is below the minimum size, the model has no caching)
+        /// will not change and disable it at once.
+        /// </summary>
+        internal const int MaxCreateAttempts = 3;
+
         private readonly IGeminiClient _gemini;
         private readonly string _apiKey;
         private readonly string _modelName;
         private readonly string _systemPrompt;
         private readonly TimeSpan _ttl;
         private readonly SemaphoreSlim _gate = new(1, 1);
+        private readonly object _nameGate = new();
 
         private string? _cachedContentName;
-        private bool _disabled;
+        private volatile bool _disabled;
+        private volatile int _failedCreates;
 
         public PromptCache(IGeminiClient gemini, string apiKey, string modelName, string systemPrompt, TimeSpan ttl)
         {
@@ -89,15 +104,34 @@ public sealed partial class TranslationService
             _ttl = ttl;
         }
 
-        public void Invalidate()
+        /// <summary>
+        /// Forgets the cache only while it is still the one the failed request used. When the cache expired, every
+        /// worker whose request used it lands here; a late one used to drop the cache another worker had just
+        /// recreated, which then stayed on Google's side until its TTL because DeleteAsync knows only the newest.
+        /// </summary>
+        public void Invalidate(string? failedName)
         {
-            _cachedContentName = null;
+            if (failedName == null)
+            {
+                return;
+            }
+
+            lock (_nameGate)
+            {
+                if (string.Equals(_cachedContentName, failedName, StringComparison.Ordinal))
+                {
+                    _cachedContentName = null;
+                }
+            }
         }
 
         public void Disable()
         {
             _disabled = true;
-            _cachedContentName = null;
+            lock (_nameGate)
+            {
+                _cachedContentName = null;
+            }
         }
 
         public async Task<string?> GetOrCreateAsync(CancellationToken cancellationToken)
@@ -113,6 +147,7 @@ public sealed partial class TranslationService
                 return existing;
             }
 
+            var failuresBeforeWait = _failedCreates;
             await _gate.WaitAsync(cancellationToken);
             try
             {
@@ -126,18 +161,33 @@ public sealed partial class TranslationService
                     return _cachedContentName;
                 }
 
+                // Requests that queued up behind a failed attempt go without the cache rather than each
+                // retrying at once and using up the attempts in the same moment.
+                if (_failedCreates != failuresBeforeWait)
+                {
+                    return null;
+                }
+
                 var created = await _gemini.CreateCachedContentAsync(_apiKey, _modelName, _systemPrompt, _ttl, cancellationToken);
-                _cachedContentName = created;
+                lock (_nameGate)
+                {
+                    _cachedContentName = created;
+                }
                 return created;
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
                 throw;
             }
-            catch
+            catch (Exception ex)
             {
-                _disabled = true;
-                _cachedContentName = null;
+                // One 503 while creating the cache used to turn caching off for the rest of the run.
+                // This request goes without the cache; a later one tries again.
+                _failedCreates++;
+                if (!IsTransientCreateFailure(ex) || _failedCreates >= MaxCreateAttempts)
+                {
+                    _disabled = true;
+                }
                 return null;
             }
             finally
@@ -145,6 +195,10 @@ public sealed partial class TranslationService
                 _gate.Release();
             }
         }
+
+        private static bool IsTransientCreateFailure(Exception ex)
+            => IsRateLimit(ex) || IsServerError(ex)
+               || ExceptionTraversal.Enumerate(ex).Any(e => e is HttpRequestException or TaskCanceledException);
 
         public async Task DeleteAsync(CancellationToken cancellationToken)
         {

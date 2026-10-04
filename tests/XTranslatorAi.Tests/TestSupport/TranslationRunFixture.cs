@@ -65,7 +65,8 @@ internal sealed class EchoGeminiClient : IGeminiClient
     public List<string> DeletedCaches { get; } = new();
     public List<GeminiGenerateContentRequest> Requests { get; } = new();
     public Func<int, GeminiGenerateContentRequest, string?>? ResponseOverride { get; set; }
-    public Func<int, string>? CreateCache { get; set; }
+    /// <summary>Answers the n-th cache creation (from 1); by default a new name each time.</summary>
+    public Func<int, Task<string>>? CreateCache { get; set; }
 
     public Task<string> GenerateContentAsync(string apiKey, string modelName, GeminiGenerateContentRequest request, CancellationToken cancellationToken)
     {
@@ -117,7 +118,7 @@ internal sealed class EchoGeminiClient : IGeminiClient
     {
         int attempt;
         lock (_gate) attempt = ++CacheCreates;
-        return Task.FromResult(CreateCache?.Invoke(attempt) ?? $"cachedContents/fixture-{attempt}");
+        return CreateCache?.Invoke(attempt) ?? Task.FromResult($"cachedContents/fixture-{attempt}");
     }
 
     public Task DeleteCachedContentAsync(string apiKey, string cacheName, CancellationToken cancellationToken)
