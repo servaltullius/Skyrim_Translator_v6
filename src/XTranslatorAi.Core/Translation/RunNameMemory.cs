@@ -60,7 +60,7 @@ internal sealed class RunNameMemory
                 {
                     lowercase.Add(word);
                 }
-                else if (NameRegex.IsMatch(word) && IsNamedPosition(text, words, i))
+                else if (NameRegex.IsMatch(word) && !NameConsistencyRule.Interjections.Contains(word) && IsNamedPosition(text, words, i))
                 {
                     named.Add(word);
                 }

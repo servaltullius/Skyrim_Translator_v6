@@ -24,9 +24,20 @@ internal static class NameConsistencyRule
     // Particles and endings that follow a name; stripped to find the name itself.
     private static readonly string[] Suffixes =
     {
-        "에게서", "한테서", "이라는", "이시여", "께서", "시여", "에게", "한테", "이랑", "이라", "이란", "이여", "이야", "라는", "처럼", "보다", "까지", "부터",
-        "이나", "은", "는", "이", "가", "을", "를", "의", "와", "과", "도", "만", "에", "로", "랑", "나", "아", "야", "여", "님", "씨",
+        "이라고요", "라고요", "에게서", "한테서", "이라는", "이라고", "이시여", "에서는", "으로서", "으로는", "께서", "시여", "에게", "한테", "이랑", "이라", "이란",
+        "이여", "이야", "라는", "라고", "처럼", "보다", "까지", "부터", "에서", "에선", "에는", "으로", "로서", "로는",
+        "이나", "은", "는", "이", "가", "을", "를", "의", "와", "과", "도", "만", "에", "엔", "로", "랑", "나", "아", "야", "여", "님", "씨",
     };
+
+    // Interjections are capitalized and never written in lowercase in a mod's lines, but they are not names (으윽/으으).
+    internal static readonly HashSet<string> Interjections = new(StringComparer.Ordinal)
+    {
+        "Ugh", "Urgh", "Argh", "Agh", "Gah", "Bah", "Hah", "Heh", "Hmm", "Hmph", "Huh", "Aww", "Ahh", "Ooh", "Oof", "Ouch", "Wow", "Whoa",
+        "Yay", "Yeah", "Yep", "Nope", "Mhm", "Mmm", "Hey", "Haha", "Hehe", "Pfft", "Psst", "Shh", "Tsk", "Eek", "Yikes", "Gods",
+    };
+
+    // Verb forms are not spellings of a name: 소환하고/소환하여 for "Summon".
+    private static readonly Regex VerbEnding = new(@"(?:하고|하여|하며|하면|하는|하기|해서|했다|합니다|한다|되어|되는|된다)$", RegexOptions.CultureInvariant);
 
     public static Dictionary<long, string> Build(IReadOnlyList<LqaScanEntry> entries, bool isKorean)
     {
@@ -57,7 +68,7 @@ internal static class NameConsistencyRule
                 {
                     lowercaseWords.Add(word);
                 }
-                else if (word.Length >= 3 && word.Skip(1).All(char.IsLower) && (!titleRow || IsGreetedName(matches, m)))
+                else if (word.Length >= 3 && word.Skip(1).All(char.IsLower) && !Interjections.Contains(word) && (!titleRow || IsGreetedName(matches, m)))
                 {
                     var byName = titleRow ? titleRowsByName : rowsByName;
                     if (!byName.TryGetValue(word, out var list))
@@ -138,7 +149,7 @@ internal static class NameConsistencyRule
 
             // A word with a particle ("컬런이") counts as its stem when the stem appears on its own as well.
             var spellings = counts
-                .Where(c => c.Key.Length >= 2 && c.Value >= MinMinorityRows && (double)c.Value / rowsByCore[c.Key] >= 0.6)
+                .Where(c => c.Key.Length >= 2 && c.Value >= MinMinorityRows && (double)c.Value / rowsByCore[c.Key] >= 0.6 && !VerbEnding.IsMatch(c.Key))
                 .Where(c => !Suffixes.Any(suffix => c.Key.Length > suffix.Length && c.Key.EndsWith(suffix, StringComparison.Ordinal)
                                                     && counts.GetValueOrDefault(c.Key[..^suffix.Length]) > c.Value))
                 .OrderByDescending(c => c.Value).ThenByDescending(c => c.Key.Length)

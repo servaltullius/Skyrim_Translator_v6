@@ -233,6 +233,29 @@ public class LqaFalsePositiveTests
     }
 
     [Fact]
+    public async Task NameConsistency_IgnoresParticlesInterjectionsAndVerbs()
+    {
+        // Flint9 wrote Valenwood with 에서 and 라고요, Ashe wrote "Ugh" as 으윽 and 으으, and a skill description
+        // wrote "Summon" as 소환하고 and 소환하여; none of them is one name spelled two ways.
+        var entries = new List<LqaScanEntry>
+        {
+            Dialogue(1, "I grew up in Valenwood, you know.", "난 발렌우드에서 자랐어."),
+            Dialogue(2, "You mean Valenwood?", "발렌우드라고요?"),
+            Dialogue(3, "So you love Valenwood?", "발렌우드라고요?"),
+            Dialogue(4, "Ugh. That smell.", "으윽. 저 냄새."),
+            Dialogue(5, "Ugh, not again.", "으으, 또야."),
+            Dialogue(6, "Ugh! Leave me be.", "으으! 날 내버려 둬."),
+            Dialogue(7, "Then Summon the bow.", "그다음 활을 소환하고 쏜다."),
+            Dialogue(8, "First Summon the bow.", "먼저 활을 소환하여 쏜다."),
+            Dialogue(9, "We Summon the bow.", "우리는 활을 소환하여 쏜다."),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        Assert.DoesNotContain(issues, i => i.Code == "name_inconsistent");
+    }
+
+    [Fact]
     public async Task NameConsistency_CountsTitleCaseRowsForWordsUsedAsNames()
     {
         // Serana Dialogue Add-On greets each player name ("Hey Drelorea!") and spelled it 드렐로레아 there but
