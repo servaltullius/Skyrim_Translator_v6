@@ -83,6 +83,12 @@ public sealed partial class ProjectDb
                 ? new Dictionary<(string Key, string Source), (string Dest, StringEntryStatus Status)>()
                 : await ReadRetiredPluginTranslationsAsync(tx, cancellationToken);
 
+            // Notes (TM applied, TM fallback) are kept for rows whose translation is kept, by field key: reopening
+            // the plugin used to drop them all, so the grid lost its TM marks and the quality check its TM notes.
+            var notesByKey = oldSource == null
+                ? new Dictionary<string, (string Source, List<(string Kind, string Message, string UpdatedAt)> Notes)>(StringComparer.Ordinal)
+                : await ReadPluginStringNotesAsync(tx, cancellationToken);
+
             await using (var clear = _connection.CreateCommand())
             {
                 clear.Transaction = tx;
@@ -124,6 +130,10 @@ public sealed partial class ProjectDb
                 keyParameter.Value = field.Key;
                 fieldParameter.Value = JsonSerializer.Serialize(field);
                 var id = Convert.ToInt64(await binding.ExecuteScalarAsync(cancellationToken), System.Globalization.CultureInfo.InvariantCulture);
+                if (notesByKey.TryGetValue(field.Key, out var notes) && string.Equals(notes.Source, field.SourceText, StringComparison.Ordinal))
+                {
+                    await RestorePluginStringNotesAsync(tx, id, notes.Notes, cancellationToken);
+                }
                 imported.Add(new StringEntry(id, field.OrderIndex, null, null, null, field.EditorId,
                     field.Rec, field.SourceText, dest, status, null, updatedAt));
             }
@@ -155,6 +165,47 @@ public sealed partial class ProjectDb
             return imported;
         }
         finally { _gate.Release(); }
+    }
+
+    private async Task<Dictionary<string, (string Source, List<(string Kind, string Message, string UpdatedAt)> Notes)>> ReadPluginStringNotesAsync(
+        SqliteTransaction tx, CancellationToken ct)
+    {
+        var notes = new Dictionary<string, (string Source, List<(string Kind, string Message, string UpdatedAt)> Notes)>(StringComparer.Ordinal);
+        await using var query = _connection.CreateCommand();
+        query.Transaction = tx;
+        query.CommandText = "SELECT b.FieldKey, s.SourceText, n.Kind, n.Message, n.UpdatedAt FROM StringNote n "
+                            + "JOIN StringEntry s ON s.Id = n.StringId JOIN PluginStringBinding b ON b.StringId = n.StringId;";
+        await using var reader = await query.ExecuteReaderAsync(ct);
+        while (await reader.ReadAsync(ct))
+        {
+            var key = reader.GetString(0);
+            if (!notes.TryGetValue(key, out var entry))
+            {
+                entry = (reader.GetString(1), new List<(string Kind, string Message, string UpdatedAt)>());
+                notes[key] = entry;
+            }
+
+            entry.Notes.Add((reader.GetString(2), reader.GetString(3), reader.GetString(4)));
+        }
+
+        return notes;
+    }
+
+    private async Task RestorePluginStringNotesAsync(
+        SqliteTransaction tx, long stringId, IReadOnlyList<(string Kind, string Message, string UpdatedAt)> notes, CancellationToken ct)
+    {
+        await using var insert = _connection.CreateCommand();
+        insert.Transaction = tx;
+        insert.CommandText = "INSERT OR REPLACE INTO StringNote (StringId, Kind, Message, UpdatedAt) VALUES ($id, $kind, $message, $at);";
+        var id = insert.Parameters.AddWithValue("$id", stringId);
+        var kind = insert.Parameters.Add("$kind", SqliteType.Text);
+        var message = insert.Parameters.Add("$message", SqliteType.Text);
+        var at = insert.Parameters.Add("$at", SqliteType.Text);
+        foreach (var note in notes)
+        {
+            (kind.Value, message.Value, at.Value) = (note.Kind, note.Message, note.UpdatedAt);
+            await insert.ExecuteNonQueryAsync(ct);
+        }
     }
 
     /// <summary>

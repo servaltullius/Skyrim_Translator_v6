@@ -307,6 +307,23 @@ public sealed class PluginProjectIntegrationTests
         Assert.Contains("원본 플러그인", error.Value.Message);
     }
 
+    // Reopening a plugin deleted every row note, so the grid lost its TM marks and the quality check its TM notes.
+    [Fact]
+    public async Task Reopening_KeepsTheNotesOfRowsWhoseSourceIsUnchanged()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        await fixture.ImportAsync(Field("sword", 0, "Iron Sword"), Field("shield", 1, "Iron Shield"));
+        var rows = await fixture.Db.GetStringsAsync(20, 0, CancellationToken.None);
+        await fixture.Db.UpsertStringNoteAsync(rows[0].Id, "tm_hit", "TM 적용", CancellationToken.None);
+        await fixture.Db.UpsertStringNoteAsync(rows[1].Id, "tm_hit", "TM 적용", CancellationToken.None);
+
+        var reopened = await fixture.Db.ReplaceImportedPluginStringsAsync(fixture.Source with { Sha256 = "v2" },
+            new[] { Field("sword", 0, "Iron Sword"), Field("shield", 1, "Steel Shield") }, fixture.Project, "utf-8", CancellationToken.None);
+
+        var notes = await fixture.Db.GetStringNotesByKindAsync("tm_hit", CancellationToken.None);
+        Assert.Equal(new[] { reopened[0].Id }, notes.Keys.ToArray());
+    }
+
     private static PluginField Field(string key, int index, string source)
         => new(key, index, "WEAP", "FULL", (uint)(0x800 + index), "TestSword", index + 1, 1, source);
 
