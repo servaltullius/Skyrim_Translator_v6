@@ -87,8 +87,18 @@ public partial class MainViewModel
             SelectedSavedApiKey = null;
         }
 
+        // The current key is saved as well, so a deleted key left in the field was written back to the settings
+        // and loaded again on the next start. A key typed after picking the deleted one stays.
+        var deletedCurrentKey = string.Equals(selected.ApiKey?.Trim(), ApiKey?.Trim(), System.StringComparison.Ordinal);
+        if (deletedCurrentKey)
+        {
+            ApiKey = "";
+        }
+
         PersistSavedApiKeys();
-        StatusMessage = "저장된 API 키를 목록에서 삭제했습니다.";
+        StatusMessage = deletedCurrentKey
+            ? "저장된 API 키를 목록과 현재 키 칸에서 삭제했습니다."
+            : "저장된 API 키를 목록에서 삭제했습니다.";
     }
 
     [RelayCommand]

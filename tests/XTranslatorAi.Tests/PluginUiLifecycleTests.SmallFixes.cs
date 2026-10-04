@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Windows.Input;
 using System.Xml.Linq;
+using XTranslatorAi.App.Services;
 using XTranslatorAi.App.ViewModels;
 using XTranslatorAi.Core.Models;
 
@@ -49,6 +50,33 @@ public sealed partial class PluginUiLifecycleTests
                 .Invoke(fixture.Vm, new object?[] { true, null })!;
             Assert.Equal(StringEntryStatus.Pending, rows[1].Status);
             Assert.Equal((1, 2), (fixture.Vm.DoneCount, fixture.Vm.PendingCount));
+        });
+
+    [Fact]
+    public Task DeletingTheActiveSavedApiKey_ClearsTheKeyField_SoItIsNotSavedAgain()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture(initialSettings: new AppSettings(ApiKey: "key-a",
+                ApiKeys: new[] { new SavedApiKey("A", "key-a"), new SavedApiKey("B", "key-b") }));
+            var vm = fixture.Vm;
+            Assert.Equal("key-a", vm.ApiKey);
+            Assert.Equal("A", vm.SelectedSavedApiKey!.Name);
+
+            vm.ClearSavedApiKeyCommand.Execute(null);
+
+            Assert.Equal("", vm.ApiKey);
+            Assert.Equal("B", Assert.Single(vm.SavedApiKeys).Name);
+            var saved = fixture.Settings.Load();
+            Assert.Null(saved.ApiKey);
+            Assert.Equal("key-b", Assert.Single(saved.ApiKeys!).ApiKey);
+
+            // A key typed after picking a saved one is not the deleted key and stays.
+            vm.SelectedSavedApiKey = vm.SavedApiKeys[0];
+            vm.ApiKey = "key-c";
+            vm.ClearSavedApiKeyCommand.Execute(null);
+            Assert.Equal("key-c", vm.ApiKey);
+            Assert.Empty(vm.SavedApiKeys);
+            Assert.Equal("key-c", fixture.Settings.Load().ApiKey);
         });
 
     [Fact]
