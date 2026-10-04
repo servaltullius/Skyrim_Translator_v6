@@ -37,11 +37,13 @@ public sealed partial class TranslationService
         foreach (var row in rows)
         {
             var source = (row.Source ?? "").Trim();
-            wholeRows.Add(source);
             if (!IsSessionTermRec(row.Rec))
             {
                 continue;
             }
+
+            // Only a name row is a definition the regular seeding translates ("Deathblow" as a SPEL:DESC is not).
+            wholeRows.Add(source);
 
             foreach (var part in source.Split(NamePartSeparators, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
             {

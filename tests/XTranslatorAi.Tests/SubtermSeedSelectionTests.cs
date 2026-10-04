@@ -22,6 +22,7 @@ public class SubtermSeedSelectionTests
             Row("Hotkey Deathblow - Visceral Blast", "SPEL:FULL"),
             Row("Elden Deathblow", "PERK:FULL"),
             Row("If the enemy is hit, Deathblow is allowed.", "SPEL:DESC"),
+            Row("Deathblow", "SPEL:DESC"),                       // a description, not a name row the seeding uses
             Row("Ancient Sword", "WEAP:FULL"),
             Row("Ancient Shield", "ARMO:FULL"),
             Row("Ancient Helmet", "ARMO:FULL"),
