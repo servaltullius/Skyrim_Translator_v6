@@ -1,11 +1,11 @@
 # Skyrim SE/AE 플러그인 직접 번역
 
-최신 릴리스: `1.8`([GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/1.8)). 1.8에서 아래 "이전 번역 참고"를 더했다. 프로젝트 루트의 `TulliusTranslator.exe`는 미리보기 `1.9-preview13`(프로젝트 문맥 자동 생성 개선, 영문 남음 예외, windows-1252 원문 자동 전환, [대사 모드 검수](analysis/2026-10-03-dialogue-mod-review.md) 반영, 문장 속 공식 이름, 대사 말투 규칙, 이름 표기 불일치 검사, 꺾쇠 안 행동 지문 번역, 용어집 음역어 검사, 이름 앞 Master 칭호, 인사말 속 이름 검사, "Well"·위로하는 "sorry" 번역 규칙, 번역 중 이름 기억, 이름 검사 오탐 수정)이다. preview12의 [2026-10-01 전반 개선](analysis/2026-10-01-upgrade.md)(한국어 화면, 프롬프트 예시 누출 수정, 이전 손상 검사)에 [품질 검사 오탐 수정](analysis/2026-10-02-lqa-false-positives.md)과 완료된 행을 대기로 되돌리는 `다시 번역` 버튼을 더했다. 플러그인 reader/writer는 preview9와 같다. 설정과 API 키는 이번 교체에서 변경하지 않았다. 이전 루트 빌드 1.9-preview12는 `artifacts/name-check-20261004/deployment/`에, 1.9-preview11은 `artifacts/run-names-20261004/deployment/`에, 1.9-preview10은 `artifacts/serana-review3-20261004/deployment/`에, 1.9-preview9는 `artifacts/serana-review2-20261003/deployment/`에, 1.9-preview8은 `artifacts/serana-audit-20261003/deployment/`에, 1.9-preview7은 `artifacts/serana-final-20261003/deployment/`에, 1.9-preview6은 `artifacts/dialogue-rules-1.9-preview7-20261003/deployment/`에, 1.9-preview5는 `artifacts/official-names-1.9-preview6-20261003/deployment/`에, 1.9-preview4는 `artifacts/molag-bal-20261003/deployment/`에, 1.9-preview3은 `artifacts/dialogue-1.9-preview4-20261003/deployment/`에, 1.9-preview2는 `artifacts/encoding-1.9-preview3-20261003/deployment/`에, 1.9-preview1은 `artifacts/residue-1.9-preview2-20261003/deployment/`에, 1.8은 `artifacts/context-1.9-preview1-20261002/deployment/`에, 그 이전 빌드도 기존 `.disabled` 백업에 보존한다.
+최신 릴리스: `1.8`([GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/1.8)). 1.8에서 아래 "이전 번역 참고"를 더했다. 프로젝트 루트의 `TulliusTranslator.exe`는 미리보기 `1.9-preview14`(프로젝트 문맥 자동 생성 개선, 영문 남음 예외, windows-1252 원문 자동 전환, [대사 모드 검수](analysis/2026-10-03-dialogue-mod-review.md) 반영, 문장 속 공식 이름, 대사 말투 규칙, 이름 표기 불일치 검사, 꺾쇠 안 행동 지문 번역, 용어집 음역어 검사, 이름 앞 Master 칭호, 인사말 속 이름 검사, "Well"·위로하는 "sorry" 번역 규칙, 번역 중 이름 기억, 이름 검사 오탐 수정, 파일 끌어다 놓기)이다. preview12의 [2026-10-01 전반 개선](analysis/2026-10-01-upgrade.md)(한국어 화면, 프롬프트 예시 누출 수정, 이전 손상 검사)에 [품질 검사 오탐 수정](analysis/2026-10-02-lqa-false-positives.md)과 완료된 행을 대기로 되돌리는 `다시 번역` 버튼을 더했다. 플러그인 reader/writer는 preview9와 같다. 설정과 API 키는 이번 교체에서 변경하지 않았다. 이전 루트 빌드 1.9-preview13은 `artifacts/file-drop-20261004/deployment/`에, 1.9-preview12는 `artifacts/name-check-20261004/deployment/`에, 1.9-preview11은 `artifacts/run-names-20261004/deployment/`에, 1.9-preview10은 `artifacts/serana-review3-20261004/deployment/`에, 1.9-preview9는 `artifacts/serana-review2-20261003/deployment/`에, 1.9-preview8은 `artifacts/serana-audit-20261003/deployment/`에, 1.9-preview7은 `artifacts/serana-final-20261003/deployment/`에, 1.9-preview6은 `artifacts/dialogue-rules-1.9-preview7-20261003/deployment/`에, 1.9-preview5는 `artifacts/official-names-1.9-preview6-20261003/deployment/`에, 1.9-preview4는 `artifacts/molag-bal-20261003/deployment/`에, 1.9-preview3은 `artifacts/dialogue-1.9-preview4-20261003/deployment/`에, 1.9-preview2는 `artifacts/encoding-1.9-preview3-20261003/deployment/`에, 1.9-preview1은 `artifacts/residue-1.9-preview2-20261003/deployment/`에, 1.8은 `artifacts/context-1.9-preview1-20261002/deployment/`에, 그 이전 빌드도 기존 `.disabled` 백업에 보존한다.
 
 ## 사용 순서
 
 1. 고급 설정의 **ESP 불러오기 설정**에서 Skyrim SE/AE, 원본 언어 슬롯, 번역 언어와 인코딩을 선택한다. 다음 `ESP 열기`부터 적용된다.
-2. **ESP 열기**에서 `.esp`, `.esm`, `.esl`을 연다. ESL 플래그가 설정된 ESP도 같은 경로다. XML 추출은 필요 없다.
+2. **ESP 열기**에서 `.esp`, `.esm`, `.esl`을 연다. 파일을 창에 끌어다 놓아도 같은 설정으로 열린다. ESL 플래그가 설정된 ESP도 같은 경로다. XML 추출은 필요 없다.
 3. 기존 용어집, 문맥, 비용 추정, `번역 시작`, 검수 기능으로 번역한다. API 호출에는 기존 요금·할당량이 적용된다.
 4. **ESP 저장**에서 아직 존재하지 않는 **새 출력 폴더 이름**을 지정한다. 그 폴더 안에 원본과 같은 플러그인 파일명 및 필요한 `Strings`가 함께 생성된다.
 5. 출력 폴더 전체를 별도 MO2 모드로 설치하고, 대상 원본 모드보다 우선하도록 배치한다. 원본 모드는 메시·텍스처·스크립트 등 자산을 제공하므로 함께 유지한다. 복사한 테스트 프로필에서 확인한다.
@@ -34,7 +34,7 @@
 
 ## 이전 번역 참고
 
-같은 플러그인의 이전 번역판(예: 모드 업데이트 전의 한글판 ESP)이 있으면 **프로젝트 문맥** 탭의 `이전 번역 불러오기`로 연결한다. 같은 FormID·필드끼리 짝지어, 번역할 때 그 행의 이전 번역을 참고 자료로 함께 보낸다. 모델은 지금 원문에 맞는 범위에서 기존 이름·용어(예: 시산혈해, 참격)를 따르고, 이전 번역의 조사 오류나 미번역은 따라 하지 않는다. 이전 번역을 그대로 복사하지는 않는다.
+같은 플러그인의 이전 번역판(예: 모드 업데이트 전의 한글판 ESP)이 있으면 **프로젝트 문맥** 탭의 `이전 번역 불러오기`로 연결하거나, 그 ESP를 "이전 번역 참고" 줄에 끌어다 놓는다. 같은 FormID·필드끼리 짝지어, 번역할 때 그 행의 이전 번역을 참고 자료로 함께 보낸다. 모델은 지금 원문에 맞는 범위에서 기존 이름·용어(예: 시산혈해, 참격)를 따르고, 이전 번역의 조사 오류나 미번역은 따라 하지 않는다. 이전 번역을 그대로 복사하지는 않는다.
 
 - 번역판은 저장 인코딩으로 읽고, 문자열은 그 파일 옆 `Strings`나 BSA에서 찾는다. 마스터 구성이 같아야 FormID가 맞는다.
 - 연결은 필드 키로 저장되므로 ESP를 다시 열어도 유지된다. `연결 해제`로 지운다.
