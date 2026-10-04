@@ -14,12 +14,16 @@ internal static class HiddenTopicRule
     // Letters, digits and underscores only: "LoNier." is a name written in two capitals, not an identifier.
     private static readonly Regex IdentifierRegex = new(@"^[A-Za-z0-9_]+$", RegexOptions.CultureInvariant);
 
+    /// <summary>A dialogue topic named by an identifier (SDA_DA09IntroTopic00): hidden, never shown to the player.</summary>
+    internal static bool IsHiddenTopicIdentifier(string? rec, string? sourceText)
+        => string.Equals((rec ?? "").Trim(), "DIAL:FULL", StringComparison.OrdinalIgnoreCase)
+           && IdentifierRegex.IsMatch((sourceText ?? "").Trim())
+           && LqaHeuristics.IsInternalIdentifier((sourceText ?? "").Trim());
+
     public static void Apply(LqaScanEntry entry, string sourceText, string destText, List<LqaIssue> issues)
     {
-        if (!string.Equals((entry.Rec ?? "").Trim(), "DIAL:FULL", StringComparison.OrdinalIgnoreCase)
+        if (!IsHiddenTopicIdentifier(entry.Rec, sourceText)
             || string.IsNullOrWhiteSpace(destText)
-            || !IdentifierRegex.IsMatch(sourceText.Trim())
-            || !LqaHeuristics.IsInternalIdentifier(sourceText.Trim())
             || string.Equals(sourceText.Trim(), destText.Trim(), StringComparison.Ordinal))
         {
             return;

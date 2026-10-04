@@ -58,10 +58,12 @@ public sealed partial class TranslationService
                 continue;
             }
 
-            if (!HasLettersToTranslate(row.SourceText))
+            if (!HasLettersToTranslate(row.SourceText)
+                || XTranslatorAi.Core.Text.Lqa.Internal.Rules.HiddenTopicRule.IsHiddenTopicIdentifier(row.Rec, row.SourceText))
             {
                 // "...", a blank, "???", "11", an empty paragraph tag: nothing to translate, and a blank answer for a
-                // blank source could not be saved in a required field.
+                // blank source could not be saved in a required field. A hidden topic's identifier is never shown,
+                // and the quality check asks to leave it as is.
                 await _db.UpdateStringTranslationAsync(row.Id, row.SourceText, StringEntryStatus.Done, null, request.CancellationToken);
                 if (request.OnRowUpdated != null)
                 {
