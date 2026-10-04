@@ -272,6 +272,26 @@ public class LqaFalsePositiveTests
     }
 
     [Fact]
+    public async Task NameConsistency_ReportsEachMinoritySpelling_AgainstTheMostFrequentOne()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Dialogue(1, "Merovech, how do you plan to find him?", "메로베흐, 그를 어떻게 찾을 생각이야?"),
+            Dialogue(2, "I trust Merovech with my life.", "난 메로베흐에게 목숨을 맡길 수 있어."),
+            Dialogue(3, "Merovech said the road is safe.", "메로베흐가 길은 안전하다고 했어."),
+            Dialogue(4, "Ask Merovech about the ship.", "메로벡에게 배에 대해 물어봐."),
+            Dialogue(5, "Merovech is waiting.", "메로베크는 기다리고 있어."),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        var found = issues.Where(i => i.Code == "name_inconsistent").OrderBy(i => i.Id).ToList();
+        Assert.Equal(new long[] { 4, 5 }, found.Select(i => i.Id));
+        Assert.Contains("Merovech → '메로벡' (다른 3행은 '메로베흐')", found[0].Message);
+        Assert.Contains("Merovech → '메로베크' (다른 3행은 '메로베흐')", found[1].Message);
+    }
+
+    [Fact]
     public async Task NameConsistency_IgnoresParticlesInterjectionsAndVerbs()
     {
         // Flint9 wrote Valenwood with 에서 and 라고요, Ashe wrote "Ugh" as 으윽 and 으으, and a skill description

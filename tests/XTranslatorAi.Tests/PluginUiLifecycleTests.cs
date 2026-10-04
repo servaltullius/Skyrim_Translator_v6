@@ -322,7 +322,9 @@ public sealed partial class PluginUiLifecycleTests
     private sealed class StaContext : SynchronizationContext, IDisposable
     {
         private readonly BlockingCollection<(SendOrPostCallback Callback, object? State)> _queue = new();
-        public override void Post(SendOrPostCallback callback, object? state) => _queue.Add((callback, state));
+        // Runs on the posting thread, so a test can see which thread handed work to the UI thread.
+        public Action<object?>? Posted { get; set; }
+        public override void Post(SendOrPostCallback callback, object? state) { Posted?.Invoke(state); _queue.Add((callback, state)); }
         public void Run() { foreach (var item in _queue.GetConsumingEnumerable()) item.Callback(item.State); }
         public void Complete() => _queue.CompleteAdding();
         public void Dispose() => _queue.Dispose();

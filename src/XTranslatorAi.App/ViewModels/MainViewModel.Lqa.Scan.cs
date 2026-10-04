@@ -35,13 +35,18 @@ public partial class MainViewModel
             ? new Dictionary<long, string>()
             : await db.GetStringNotesByKindAsync("tm_fallback", CancellationToken.None);
 
-        var issues = await LqaScanner.ScanAsync(
+        // The rules read only this snapshot, so they run on a worker thread. On the UI thread the
+        // project-wide rules (name consistency, tone majorities) ran before the first progress report
+        // and froze the window for seconds on large projects. Progress is posted back to the UI thread.
+        var targetLang = TargetLang;
+        IProgress<int> progress = new Progress<int>(pct => StatusMessage = $"품질 검사 중... {pct}%");
+        var issues = await Task.Run(() => LqaScanner.ScanAsync(
             entries: ordered,
-            targetLang: TargetLang,
+            targetLang: targetLang,
             forceTokenGlossary: forceTokenGlossary,
-            onProgress: pct => StatusMessage = $"품질 검사 중... {pct}%",
+            onProgress: progress.Report,
             tmFallbackNotes: tmFallbackNotes
-        );
+        ));
 
         return issues
             .Select(

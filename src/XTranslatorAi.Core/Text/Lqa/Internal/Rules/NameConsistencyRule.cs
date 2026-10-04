@@ -29,6 +29,11 @@ internal static class NameConsistencyRule
         "이나", "은", "는", "이", "가", "을", "를", "의", "와", "과", "도", "만", "에", "엔", "로", "랑", "나", "아", "야", "여", "님", "씨",
     };
 
+    // The suffixes a word can end with, by its last syllable, in the order of Suffixes (which decides Stem).
+    private static readonly Dictionary<char, string[]> SuffixesByLastChar = Suffixes
+        .GroupBy(suffix => suffix[^1])
+        .ToDictionary(group => group.Key, group => group.ToArray());
+
     // Interjections are capitalized and never written in lowercase in a mod's lines, but they are not names (으윽/으으).
     internal static readonly HashSet<string> Interjections = new(StringComparer.Ordinal)
     {
@@ -85,39 +90,6 @@ internal static class NameConsistencyRule
             }
         }
 
-        var coresByRow = new Dictionary<int, HashSet<string>>();
-        HashSet<string> CoresOf(int row)
-        {
-            if (!coresByRow.TryGetValue(row, out var cores))
-            {
-                cores = new HashSet<string>(StringComparer.Ordinal);
-                foreach (Match word in HangulWordRegex.Matches(rows[row].DestText))
-                {
-                    cores.Add(word.Value);
-                    foreach (var suffix in Suffixes)
-                    {
-                        if (word.Value.Length - suffix.Length >= 2 && word.Value.EndsWith(suffix, StringComparison.Ordinal))
-                        {
-                            cores.Add(word.Value[..^suffix.Length]);
-                        }
-                    }
-                }
-
-                coresByRow[row] = cores;
-            }
-
-            return cores;
-        }
-
-        var rowsByCore = new Dictionary<string, int>(StringComparer.Ordinal);
-        foreach (var row in Enumerable.Range(0, rows.Count))
-        {
-            foreach (var core in CoresOf(row))
-            {
-                rowsByCore[core] = rowsByCore.GetValueOrDefault(core) + 1;
-            }
-        }
-
         // A word used as a name in a sentence or on its own is a name when a short title-case row ends with it:
         // Serana Dialogue Add-On greets each player name ("Hey Drelorea!") and spelled it 드렐로레아 there but
         // 드렐로리아 in its lines. Item names put the word first ("Daedric Armor", "Guard Tower") and stay out.
@@ -130,6 +102,15 @@ internal static class NameConsistencyRule
             }
         }
 
+        // Korean words are numbered once so that counting them per name is array work. Book-heavy projects have
+        // hundreds of thousands of distinct words and a common name appears in most rows; with string
+        // dictionaries this rule took over 30 s (3,000 synthetic book rows) before the scan could report progress.
+        var index = new CoreIndex(rows);
+
+        // Rows of the current name that contain each word; reset after every name. The first-seen order of the
+        // words breaks ties between spellings that are equally frequent and equally long.
+        var counts = new int[index.Count];
+        var seen = new List<int>();
         foreach (var (name, nameRows) in rowsByName)
         {
             if (nameRows.Count < MinRows || lowercaseWords.Contains(name.ToLowerInvariant()))
@@ -137,53 +118,210 @@ internal static class NameConsistencyRule
                 continue;
             }
 
-            // Korean words found mostly in this name's rows: the name's spellings.
-            var counts = new Dictionary<string, int>(StringComparer.Ordinal);
             foreach (var row in nameRows)
             {
-                foreach (var core in CoresOf(row))
+                foreach (var core in index.RowCores[row])
                 {
-                    counts[core] = counts.GetValueOrDefault(core) + 1;
+                    if (counts[core]++ == 0)
+                    {
+                        seen.Add(core);
+                    }
                 }
             }
 
-            // A word with a particle ("컬런이") counts as its stem when the stem appears on its own as well.
-            var spellings = counts
-                .Where(c => c.Key.Length >= 2 && c.Value >= MinMinorityRows && (double)c.Value / rowsByCore[c.Key] >= 0.6 && !VerbEnding.IsMatch(c.Key))
-                .Where(c => !Suffixes.Any(suffix => c.Key.Length > suffix.Length && c.Key.EndsWith(suffix, StringComparison.Ordinal)
-                                                    && counts.GetValueOrDefault(c.Key[..^suffix.Length]) > c.Value))
-                .OrderByDescending(c => c.Value).ThenByDescending(c => c.Key.Length)
-                .ToList();
-            if (spellings.Count < 2)
+            AddFindings(name, nameRows, rows, index, counts, seen, findings);
+
+            foreach (var core in seen)
+            {
+                counts[core] = 0;
+            }
+
+            seen.Clear();
+        }
+
+        return findings;
+    }
+
+    private static void AddFindings(
+        string name,
+        List<int> nameRows,
+        List<LqaScanEntry> rows,
+        CoreIndex index,
+        int[] counts,
+        List<int> seen,
+        Dictionary<long, string> findings)
+    {
+        // Korean words found mostly in this name's rows are the name's spellings. A word with a particle
+        // ("컬런이") counts as its stem when the stem appears on its own more often.
+        bool IsSpelling(int core)
+        {
+            var word = index.Words[core];
+            var value = counts[core];
+            if (word.Length < 2 || value < MinMinorityRows || (double)value / index.RowCounts[core] < 0.6 || VerbEnding.IsMatch(word))
+            {
+                return false;
+            }
+
+            foreach (var suffix in SuffixesEndingWith(word[^1]))
+            {
+                if (word.Length > suffix.Length && word.EndsWith(suffix, StringComparison.Ordinal))
+                {
+                    var stem = index.Find(word[..^suffix.Length]);
+                    if (stem >= 0 && counts[stem] > value)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        bool Outranks(int core, int than)
+            => counts[core] > counts[than] || (counts[core] == counts[than] && index.Words[core].Length > index.Words[than].Length);
+
+        // The main spelling: the most frequent, then the longest, then the first seen.
+        var main = -1;
+        foreach (var core in seen)
+        {
+            if ((main < 0 || Outranks(core, main)) && IsSpelling(core))
+            {
+                main = core;
+            }
+        }
+
+        if (main < 0 || counts[main] < 2 || !SoundsLike(name, index.Words[main]))
+        {
+            return;
+        }
+
+        var mainWord = index.Words[main];
+        var mainValue = counts[main];
+        var mainStem = Stem(mainWord);
+        var mainJamo = Jamo(mainWord);
+
+        // Cheap tests first: nearly all words of a common name's rows are rare words that start with
+        // another sound, and only the few left need the suffix and edit-distance checks.
+        var others = new List<(int Core, int Seen)>();
+        for (var i = 0; i < seen.Count; i++)
+        {
+            var core = seen[i];
+            var word = index.Words[core];
+            if (core == main
+                || word.Length < 2
+                || counts[core] > mainValue / 2 + 1
+                || !SoundsLike(name, word)
+                || mainWord.Contains(word, StringComparison.Ordinal) || word.Contains(mainWord, StringComparison.Ordinal)
+                || !IsSpelling(core)
+                || Stem(word) == mainStem
+                || !AreSimilar(mainJamo, Jamo(word)))
             {
                 continue;
             }
 
-            var main = spellings[0];
-            if (main.Value < 2)
+            others.Add((core, i));
+        }
+
+        // Same order as a list of spellings sorted by frequency, then length, then first appearance.
+        others.Sort((a, b) =>
+        {
+            var byCount = counts[b.Core].CompareTo(counts[a.Core]);
+            if (byCount != 0)
             {
-                continue;
+                return byCount;
             }
 
-            foreach (var other in spellings.Skip(1))
+            var byLength = index.Words[b.Core].Length.CompareTo(index.Words[a.Core].Length);
+            return byLength != 0 ? byLength : a.Seen.CompareTo(b.Seen);
+        });
+
+        foreach (var (other, _) in others)
+        {
+            foreach (var row in nameRows)
             {
-                if (other.Value > main.Value / 2 + 1
-                    || main.Key.Contains(other.Key, StringComparison.Ordinal) || other.Key.Contains(main.Key, StringComparison.Ordinal)
-                    || Stem(main.Key) == Stem(other.Key)
-                    || !SoundsLike(name, main.Key) || !SoundsLike(name, other.Key)
-                    || !AreSimilar(main.Key, other.Key))
+                if (index.RowContains(row, other) && !index.RowContains(row, main))
                 {
-                    continue;
+                    findings.TryAdd(rows[row].Id,
+                        $"같은 이름을 다르게 썼습니다: {name} → '{Display(index.Words[other])}' (다른 {mainValue}행은 '{Display(mainWord)}')");
+                }
+            }
+        }
+    }
+
+    private static string[] SuffixesEndingWith(char last)
+        => SuffixesByLastChar.TryGetValue(last, out var suffixes) ? suffixes : Array.Empty<string>();
+
+    /// <summary>
+    /// Every Korean word of the rows and its forms without a particle ("메로베흐에게" → "메로베흐"), numbered.
+    /// </summary>
+    private sealed class CoreIndex
+    {
+        private readonly Dictionary<string, int> _ids = new(StringComparer.Ordinal);
+        private readonly int[][] _sortedRowCores;
+
+        public List<string> Words { get; } = new();
+
+        // Number of rows that contain each word.
+        public List<int> RowCounts { get; } = new();
+
+        // Each row's distinct words in first-seen order.
+        public int[][] RowCores { get; }
+
+        public int Count => Words.Count;
+
+        public CoreIndex(List<LqaScanEntry> rows)
+        {
+            RowCores = new int[rows.Count][];
+            _sortedRowCores = new int[rows.Count][];
+            var rowCores = new List<int>();
+            var inRow = new HashSet<int>();
+            for (var row = 0; row < rows.Count; row++)
+            {
+                foreach (Match match in HangulWordRegex.Matches(rows[row].DestText))
+                {
+                    var word = match.Value;
+                    Add(word);
+                    foreach (var suffix in SuffixesEndingWith(word[^1]))
+                    {
+                        if (word.Length - suffix.Length >= 2 && word.EndsWith(suffix, StringComparison.Ordinal))
+                        {
+                            Add(word[..^suffix.Length]);
+                        }
+                    }
                 }
 
-                foreach (var row in nameRows.Where(r => CoresOf(r).Contains(other.Key) && !CoresOf(r).Contains(main.Key)))
+                foreach (var core in rowCores)
                 {
-                    findings.TryAdd(rows[row].Id, $"같은 이름을 다르게 썼습니다: {name} → '{Display(other.Key)}' (다른 {main.Value}행은 '{Display(main.Key)}')");
+                    RowCounts[core]++;
+                }
+
+                RowCores[row] = rowCores.ToArray();
+                _sortedRowCores[row] = rowCores.ToArray();
+                Array.Sort(_sortedRowCores[row]);
+                rowCores.Clear();
+                inRow.Clear();
+            }
+
+            void Add(string core)
+            {
+                if (!_ids.TryGetValue(core, out var id))
+                {
+                    id = Words.Count;
+                    _ids[core] = id;
+                    Words.Add(core);
+                    RowCounts.Add(0);
+                }
+
+                if (inRow.Add(id))
+                {
+                    rowCores.Add(id);
                 }
             }
         }
 
-        return findings;
+        public int Find(string word) => _ids.TryGetValue(word, out var id) ? id : -1;
+
+        public bool RowContains(int row, int core) => Array.BinarySearch(_sortedRowCores[row], core) >= 0;
     }
 
     private static bool IsGreetedName(MatchCollection words, int index) => words.Count <= 3 && index == words.Count - 1 && index > 0;
@@ -261,7 +399,12 @@ internal static class NameConsistencyRule
     // "넌은" and "넌을" are one name with different particles, even for a one-syllable name.
     private static string Stem(string word)
     {
-        foreach (var suffix in Suffixes)
+        if (word.Length == 0)
+        {
+            return word;
+        }
+
+        foreach (var suffix in SuffixesEndingWith(word[^1]))
         {
             if (word.Length > suffix.Length && word.EndsWith(suffix, StringComparison.Ordinal))
             {
@@ -273,10 +416,9 @@ internal static class NameConsistencyRule
     }
 
     // Spellings of one name differ in a vowel or a final consonant: 셀린/셀레네, 아론/애런.
-    private static bool AreSimilar(string a, string b)
+    // Both arguments are already split into jamo.
+    private static bool AreSimilar(string x, string y)
     {
-        var x = Jamo(a);
-        var y = Jamo(b);
         if (x.Length == 0 || y.Length == 0 || x[0] != y[0])
         {
             return false;
