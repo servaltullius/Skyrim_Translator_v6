@@ -168,6 +168,8 @@ public static class LqaScanner
 
         EnglishResidueRule.Apply(entry, sourceText, destText, isKorean, glossaryLatinWords, issues);
 
+        ForeignScriptResidueRule.Apply(entry, sourceText, destText, isKorean, issues);
+
         DialogueToneConsistencyRule.Apply(entry, strongDialogueMajority, issues);
 
         NameConsistencyRule.Apply(entry, nameFindings, issues);
