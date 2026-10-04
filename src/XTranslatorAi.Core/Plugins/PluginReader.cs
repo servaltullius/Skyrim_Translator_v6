@@ -232,15 +232,18 @@ public static class PluginReader
         if (hedr == null || hedr.Data.Length != 12)
             throw new InvalidDataException("TES4 HEDR 헤더가 잘못되었습니다.");
         var version = BitConverter.Int32BitsToSingle(unchecked((int)PluginBinary.U32(hedr.Data.Span, 0)));
-        if (!float.IsFinite(version) || (Math.Abs(version - 1.7f) > 0.0001f && Math.Abs(version - 1.71f) > 0.0001f))
-            throw new NotSupportedException($"Skyrim 형식 HEDR 1.7/1.71이 아닙니다({version}). 다른 게임의 파일을 Skyrim 형식으로 저장할 수 없습니다.");
         var localized = (header.Flags & PluginBinary.LocalizedFlag) != 0;
         var masters = header.Subrecords.Where(sub => sub.Type == "MAST")
             .Select(sub => PluginBinary.ReadZString(sub.Data.Span, metadataEncoding, "MAST")).ToArray();
+        var skyrimLe = IsSkyrimLeHeader(version, masters, header.Raw.Span);
+        if (!skyrimLe && (!float.IsFinite(version) || (Math.Abs(version - 1.7f) > 0.0001f && Math.Abs(version - 1.71f) > 0.0001f)))
+            throw new NotSupportedException($"Skyrim 형식 HEDR 1.7/1.71이 아닙니다({version}). 다른 게임의 파일을 Skyrim 형식으로 저장할 수 없습니다.");
         var tables = tableBytes.ToDictionary(pair => pair.Key, pair => PluginStringTable.Read(pair.Key, pair.Value, encoding));
         var fields = new List<PluginField>();
         var diagnostics = new List<PluginDiagnostic>();
         var unknown = new HashSet<string>(StringComparer.Ordinal);
+        if (skyrimLe)
+            diagnostics.Add(new("skyrim_le_header", "Skyrim LE 형식(HEDR 0.94) 플러그인입니다. 헤더와 레코드 형식은 그대로 두고 문자열만 바꿉니다."));
         var withTrailingBytes = records.Values.Count(record => record.TrailingCompressedBytes > 0);
         if (withTrailingBytes > 0)
             diagnostics.Add(new("compressed_trailing_bytes", $"압축 레코드 {withTrailingBytes}개의 끝에 쓰이지 않는 바이트가 붙어 있습니다. 원본 그대로 두고 읽었습니다(번역해 저장하는 레코드는 다시 압축되어 그 바이트가 빠집니다)."));
@@ -302,6 +305,18 @@ public static class PluginReader
         return new(new(path, PluginBinary.Hash(bytes), options, localized, Array.AsReadOnly(masters), diagnostics.AsReadOnly(), tableSources),
             fields.AsReadOnly(), bytes, nodes, records, tables,
             dependencies ?? new Dictionary<string, string>());
+    }
+
+    /// <summary>
+    /// Skyrim LE plugins keep HEDR 0.94 and the SE game loads them. Fallout 3 and New Vegas use 0.94 too, so it counts
+    /// only with Skyrim.esm among the masters or a Skyrim form version (40-44; Fallout uses 15) on the header record.
+    /// </summary>
+    private static bool IsSkyrimLeHeader(float version, IReadOnlyList<string> masters, ReadOnlySpan<byte> headerRecord)
+    {
+        if (!(Math.Abs(version - 0.94f) <= 0.0001f)) return false; // also false for NaN
+        if (masters.Any(master => string.Equals(master, "Skyrim.esm", StringComparison.OrdinalIgnoreCase))) return true;
+        var formVersion = headerRecord.Length >= 22 ? BitConverter.ToUInt16(headerRecord.Slice(20, 2)) : 0;
+        return formVersion is >= 40 and <= 44;
     }
 
     internal static (IReadOnlyList<PluginNode> Nodes, IReadOnlyDictionary<int, PluginRecord> Records) ParseStructure(byte[] bytes, CancellationToken ct)

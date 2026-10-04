@@ -463,6 +463,35 @@ public sealed class PluginReadWriteTests
         Assert.False(Directory.Exists(fixture.Output));
     }
 
+    /// <summary>
+    /// Skyrim LE plugins keep HEDR 0.94 and the SE game loads them (LyPlayerVoice.esp, masters Skyrim.esm, form 43/44).
+    /// They were rejected as another game's file. Fallout 3/New Vegas also use 0.94, so a 0.94 header is accepted only
+    /// with Skyrim.esm among the masters or a Skyrim form version (40-44) on the header record.
+    /// </summary>
+    [Theory]
+    [InlineData("Skyrim.esm", 0, true)]
+    [InlineData("Dawnguard.esm", 43, true)]
+    [InlineData("FalloutNV.esm", 15, false)]
+    [InlineData("Fallout3.esm", 0, false)]
+    public async Task SkyrimLeHeader_IsAcceptedButNotFalloutsWithTheSameVersion(string master, ushort formVersion, bool accepted)
+    {
+        var bytes = Header(masterBytes: Z(master)).Concat(Group(Record("WEAP", 0x01000800, Sub("EDID", Z("ExampleSword")), Sub("FULL", Z("Steel Sword"))))).ToArray();
+        BitConverter.GetBytes(0.94f).CopyTo(bytes, 30);
+        BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(20), formVersion);
+        using var fixture = new Fixture(bytes);
+        if (!accepted)
+        {
+            await Assert.ThrowsAsync<NotSupportedException>(() => PluginReader.ReadAsync(fixture.Input, new(), default));
+            return;
+        }
+
+        var document = await PluginReader.ReadAsync(fixture.Input, new(), default);
+        Assert.Single(document.Fields);
+        Assert.False(Assert.Single(document.Info.Diagnostics, d => d.Code == "skyrim_le_header").BlocksExport);
+        var result = await PluginWriter.ExportAsync(document, new Dictionary<string, string> { [document.Fields[0].Key] = "강철 검" }, new(fixture.Output), default);
+        Assert.Equal("강철 검", Assert.Single((await PluginReader.ReadAsync(result.PluginPath, new(), default)).Fields).SourceText);
+    }
+
     private static byte[] Build(bool compressed) => Header().Concat(Group(Record("WEAP", 0x01000800,
         compressed, Sub("EDID", Z("ExampleSword")), Sub("FULL", Z("Steel Sword")), Sub("DATA", new byte[] { 1, 0, 255, 88 }), Sub("ZZZZ", new byte[] { 9, 8, 7 })))).ToArray();
 
