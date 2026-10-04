@@ -1,4 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows.Threading;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text;
 
@@ -8,8 +13,8 @@ public partial class MainViewModel
 {
     // The grid filters live on the translation text and status. Typing a fix into the editor under a search or
     // "보호 요소 불일치만" used to remove the row mid-edit, which cleared the selection and blanked the editor. The
-    // selected row therefore stays visible until the selection moves (IsOpenInEditor turns false and the live
-    // filter checks the row again), or until the user changes the filter itself.
+    // selected row therefore stays visible until the selection moves (IsOpenInEditor turns false and
+    // OnEntryPropertyChanged checks the row again), or until the user changes the filter itself.
     private bool _isApplyingEntryFilterChange;
 
     partial void OnEntryFilterTextChanged(string value) => ApplyEntryFilterChange();
@@ -68,6 +73,114 @@ public partial class MainViewModel
         {
             newValue.IsOpenInEditor = true;
         }
+    }
+
+    // Row properties the filter reads. A change can move the row into or out of the filtered grid.
+    private static readonly HashSet<string> EntryFilterProperties = new(StringComparer.Ordinal)
+    {
+        nameof(StringEntryViewModel.Edid),
+        nameof(StringEntryViewModel.Rec),
+        nameof(StringEntryViewModel.SourceText),
+        nameof(StringEntryViewModel.DestText),
+        nameof(StringEntryViewModel.Status),
+        nameof(StringEntryViewModel.ErrorMessage),
+        nameof(StringEntryViewModel.IsOpenInEditor),
+    };
+
+    private readonly HashSet<StringEntryViewModel> _watchedEntries = new();
+    private bool _entriesRefreshQueued;
+
+    private bool RecordEntryFilter(object obj)
+    {
+        var shown = EntryFilter(obj);
+        if (obj is StringEntryViewModel entry)
+        {
+            entry.IsShownInEntriesView = shown;
+        }
+
+        return shown;
+    }
+
+    private void OnEntriesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Reset)
+        {
+            foreach (var entry in _watchedEntries)
+            {
+                entry.PropertyChanged -= OnEntryPropertyChanged;
+            }
+
+            _watchedEntries.Clear();
+            foreach (var entry in Entries)
+            {
+                Watch(entry);
+            }
+
+            return;
+        }
+
+        foreach (var entry in e.OldItems?.OfType<StringEntryViewModel>() ?? Enumerable.Empty<StringEntryViewModel>())
+        {
+            entry.PropertyChanged -= OnEntryPropertyChanged;
+            _watchedEntries.Remove(entry);
+        }
+
+        foreach (var entry in e.NewItems?.OfType<StringEntryViewModel>() ?? Enumerable.Empty<StringEntryViewModel>())
+        {
+            Watch(entry);
+        }
+    }
+
+    private void Watch(StringEntryViewModel entry)
+    {
+        if (_watchedEntries.Add(entry))
+        {
+            entry.PropertyChanged += OnEntryPropertyChanged;
+        }
+    }
+
+    /// <summary>
+    /// A row that stops matching (translated under a "대기" filter, or left after an edit) is taken out of the view
+    /// on its own. A hidden row that starts matching needs a refresh, queued once for many such changes: without
+    /// live filtering a refresh of 67,390 rows takes milliseconds.
+    /// </summary>
+    private void OnEntryPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (sender is not StringEntryViewModel entry || e.PropertyName == null || !EntryFilterProperties.Contains(e.PropertyName))
+        {
+            return;
+        }
+
+        var shouldShow = EntryFilter(entry);
+        if (shouldShow == entry.IsShownInEntriesView)
+        {
+            return;
+        }
+
+        if (!shouldShow && EntriesView is IEditableCollectionView editable && editable.CurrentEditItem == null && !editable.IsAddingNew)
+        {
+            // Committing an edit filters that item again; it leaves the view and records its new filter result.
+            editable.EditItem(entry);
+            editable.CommitEdit();
+            return;
+        }
+
+        QueueEntriesRefresh();
+    }
+
+    private void QueueEntriesRefresh()
+    {
+        if (_entriesRefreshQueued)
+        {
+            return;
+        }
+
+        _entriesRefreshQueued = true;
+        Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+        {
+            _entriesRefreshQueued = false;
+            EntriesView.Refresh();
+        }));
     }
 
     private bool EntryFilter(object obj)

@@ -63,6 +63,42 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Equal(new[] { rows[1] }, VisibleRows(fixture.Vm));
         });
 
+    // Without WPF live filtering (3-5 s per search keystroke on 67,390 rows), rows that change are filtered one by one.
+    [Fact]
+    public Task RowsChangingUnderAStatusFilter_LeaveAndJoinTheGrid()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            var rows = await LoadXmlWorkspaceAsync(fixture, "Iron Sword", "Steel Sword", "Elven Sword");
+            fixture.Vm.SelectedEntry = null;
+            fixture.Vm.EntryFilterStatus = StringEntryStatusLabels.ToLabel(StringEntryStatus.Pending);
+            Assert.Equal(rows, VisibleRows(fixture.Vm));
+
+            // Translated during a run: the row leaves the "대기" view at once.
+            rows[1].Status = StringEntryStatus.Done;
+            Assert.Equal(new[] { rows[0], rows[2] }, VisibleRows(fixture.Vm));
+
+            // Back to pending (다시 번역): it returns after the queued refresh.
+            rows[1].Status = StringEntryStatus.Pending;
+            PumpDispatcher();
+            Assert.Equal(rows, VisibleRows(fixture.Vm));
+        });
+
+    [Fact]
+    public Task SearchMatchesTextChangedAfterTheFilterWasSet()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            var rows = await LoadXmlWorkspaceAsync(fixture, "Iron Sword", "Steel Sword");
+            fixture.Vm.SelectedEntry = null;
+            fixture.Vm.EntryFilterText = "강철";
+            Assert.Empty(VisibleRows(fixture.Vm));
+
+            rows[1].DestText = "강철 검";
+            PumpDispatcher();
+            Assert.Equal(new[] { rows[1] }, VisibleRows(fixture.Vm));
+        });
+
     private static List<StringEntryViewModel> VisibleRows(MainViewModel vm)
         => vm.EntriesView.Cast<StringEntryViewModel>().ToList();
 

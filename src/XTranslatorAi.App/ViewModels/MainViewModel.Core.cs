@@ -147,19 +147,10 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
         }
 
         EntriesView = CollectionViewSource.GetDefaultView(Entries);
-        EntriesView.Filter = EntryFilter;
-        if (EntriesView is ICollectionViewLiveShaping live && live.CanChangeLiveFiltering)
-        {
-            live.LiveFilteringProperties.Add(nameof(StringEntryViewModel.Edid));
-            live.LiveFilteringProperties.Add(nameof(StringEntryViewModel.Rec));
-            live.LiveFilteringProperties.Add(nameof(StringEntryViewModel.SourceText));
-            live.LiveFilteringProperties.Add(nameof(StringEntryViewModel.DestText));
-            live.LiveFilteringProperties.Add(nameof(StringEntryViewModel.Status));
-            live.LiveFilteringProperties.Add(nameof(StringEntryViewModel.ErrorMessage));
-            // Re-filters the row the selection just left; see EntryFilter.
-            live.LiveFilteringProperties.Add(nameof(StringEntryViewModel.IsOpenInEditor));
-            live.IsLiveFiltering = true;
-        }
+        // Not WPF live filtering: with it every search keystroke took 3-5 s on Skyrim.esm (67,390 rows). Rows whose
+        // filter result changes are handled one by one instead; see OnEntryPropertyChanged.
+        EntriesView.Filter = RecordEntryFilter;
+        Entries.CollectionChanged += OnEntriesCollectionChanged;
         EntryStatusFilterValues.ReplaceAll(
             new[]
             {

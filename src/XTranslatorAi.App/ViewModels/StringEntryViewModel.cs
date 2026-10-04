@@ -24,6 +24,9 @@ public partial class StringEntryViewModel : ObservableObject
     /// </summary>
     [ObservableProperty] private bool _isOpenInEditor;
 
+    /// <summary>The strings grid filter's last answer for this row: whether the row is in the filtered view.</summary>
+    internal bool IsShownInEntriesView { get; set; } = true;
+
     public StringEntryViewModel(long id, int orderIndex)
     {
         Id = id;
