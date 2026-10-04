@@ -34,6 +34,24 @@ public class UserFacingErrorClassifierTests
     public void ClassifyErrorMessage_ReadsStatusesOnlyWhereTheyAreStatuses(string message, string code)
         => Assert.Equal(code, UserFacingErrorClassifier.ClassifyErrorMessage(message).Code);
 
+    // Stored row errors with another 4xx, e.g. a model name Gemini has retired, used to show E999.
+    [Theory]
+    [InlineData("InvalidOperationException: Translate text failed: GenerateContent failed: HTTP 404 Not Found. {\"error\":{\"code\":404,\"message\":\"models/gemini-1.5-pro is not found for API version v1beta\",\"status\":\"NOT_FOUND\"}} | GeminiHttpException: GenerateContent failed: HTTP 404 Not Found.", "E299")]
+    [InlineData("InvalidOperationException: Translate batch failed: GenerateContent failed: HTTP 400 Bad Request. {\"error\":{\"code\":400,\"message\":\"Invalid value at 'generation_config.temperature'\",\"status\":\"INVALID_ARGUMENT\"}}", "E299")]
+    [InlineData("InvalidOperationException: Translate text failed: GenerateContent failed: HTTP 413 Payload Too Large.", "E299")]
+    public void ClassifyErrorMessage_OtherClientErrors_PointAtTheApiLog(string message, string code)
+    {
+        var error = UserFacingErrorClassifier.ClassifyErrorMessage(message);
+        Assert.Equal(code, error.Code);
+        Assert.True(error.DetailsInApiLogs);
+    }
+
+    [Theory]
+    [InlineData("Translate batch failed: Model output missing id: 404")]
+    [InlineData("Translate batch failed: Model output missing id: 1413")]
+    public void ClassifyErrorMessage_RowIdsAreNotClientErrors(string message)
+        => Assert.Equal("E320", UserFacingErrorClassifier.ClassifyErrorMessage(message).Code);
+
     // Stored row errors as FormatError writes them. The E320 texts are GeminiClient's own; the pattern
     // "missing candidates" matched none of them, so these rows showed E999.
     [Theory]

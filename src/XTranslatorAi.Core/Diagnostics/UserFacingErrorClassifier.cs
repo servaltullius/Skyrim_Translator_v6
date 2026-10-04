@@ -136,6 +136,17 @@ public static class UserFacingErrorClassifier
             );
         }
 
+        // Any other 4xx, as ClassifyGeminiHttp does for a live exception: a 404 for a retired model name or a
+        // 400 for a bad parameter fell through to E999, which does not point at the API log that explains it.
+        if (Contains(msgChain, "HTTP 4"))
+        {
+            return new UserFacingError(
+                "E299",
+                "요청 처리 중 오류가 발생했습니다. 잠시 후 다시 시도하세요.",
+                DetailsInApiLogs: true
+            );
+        }
+
         if (IsSafetyBlock(msgChain))
         {
             return SafetyBlocked;
