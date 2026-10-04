@@ -138,8 +138,12 @@ public sealed partial class TranslationService
     private readonly record struct TranslationContextKey(string Rec, string Edid, string Dialogue, string Scope);
     private readonly record struct DuplicateKey(string Source, string TextAndGlossary, TranslationContextKey Context);
 
+    // Outside dialogue the EditorID only names the record: "Fortify Mystic" on seven perks (MagicSkillPerk01-07)
+    // was translated seven times and came out as 신비 강화 and 강화 신비. Same source and record type now means one
+    // translation; dialogue keeps the EditorID, since a line's meaning depends on its topic.
     private TranslationContextKey GetTranslationContextKey(DialogueContextRow row)
-        => new(row.Rec?.Trim().ToUpperInvariant() ?? "", row.Edid?.Trim().ToUpperInvariant() ?? "",
+        => new(row.Rec?.Trim().ToUpperInvariant() ?? "",
+            IsDialogueRecBase(row.Rec) || row.DialogueScope != null ? row.Edid?.Trim().ToUpperInvariant() ?? "" : "",
             GetDialogueContextWindowForId(row.Id) ?? "", row.DialogueScope ?? "");
 
     private HashSet<string> FindAmbiguousTranslationMemorySources(IReadOnlyList<DialogueContextRow> rows)

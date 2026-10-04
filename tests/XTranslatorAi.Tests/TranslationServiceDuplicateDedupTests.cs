@@ -56,6 +56,35 @@ public class TranslationServiceDuplicateDedupTests
         }
     }
 
+    // "Fortify Mystic" on seven perks (MagicSkillPerk01-07) was translated once per EditorID and came out as both
+    // 신비 강화 and 강화 신비. Outside dialogue, the same source and record type is translated once.
+    [Theory]
+    [InlineData("PERK:FULL", true)]
+    [InlineData("INFO:NAM1", false)]
+    public async Task TranslateIdsAsync_SameSourceAndRecord_DifferentEditorIds(string rec, bool shared)
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
+        try
+        {
+            await using var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
+            await SeedProjectAsync(db);
+            await db.BulkInsertStringsAsync(new[] { "MagicSkillPerk01", "MagicSkillPerk02" }.Select((edid, i) =>
+                (OrderIndex: i + 1, ListAttr: (string?)null, PartialAttr: (string?)null, AttributesJson: (string?)null,
+                    Edid: (string?)edid, Rec: (string?)rec, SourceText: "Fortify Mystic", DestText: "",
+                    Status: StringEntryStatus.Pending, RawStringXml: "<r/>")).ToArray(), CancellationToken.None);
+            var ids = await GetPendingIdsAsync(db, expectedCount: 2);
+
+            await CreateService(db, new FakeGeminiHandler()).TranslateIdsAsync(CreateTranslateIdsRequest(ids, batchSize: 10));
+
+            var (first, second) = await GetRowsByIdsAsync(db, ids[0], ids[1]);
+            Assert.Equal(shared, first.DestText == second.DestText);
+        }
+        finally
+        {
+            TestDbHelper.TryDeleteDbFiles(path);
+        }
+    }
+
     [Fact]
     public async Task TranslateIdsAsync_WhenBatchContainsDuplicates_CopiesCanonicalResultToDuplicates()
     {
