@@ -58,6 +58,19 @@ public sealed partial class TranslationService
                 continue;
             }
 
+            if (!HasLettersToTranslate(row.SourceText))
+            {
+                // "...", a blank, "???", "11", an empty paragraph tag: nothing to translate, and a blank answer for a
+                // blank source could not be saved in a required field.
+                await _db.UpdateStringTranslationAsync(row.Id, row.SourceText, StringEntryStatus.Done, null, request.CancellationToken);
+                if (request.OnRowUpdated != null)
+                {
+                    NotifyRowUpdated(request.OnRowUpdated, row.Id, StringEntryStatus.Done, row.SourceText);
+                }
+
+                continue;
+            }
+
             var sourceKey = TranslationMemoryKey.NormalizeSource(row.SourceText);
             var hasUnscopedDialogueTm = contextRow.DialogueScope != null && translationMemory.ContainsKey(sourceKey);
             if (hasUnscopedDialogueTm || (ambiguousTmSources.Contains(sourceKey) && translationMemory.ContainsKey(sourceKey)))
