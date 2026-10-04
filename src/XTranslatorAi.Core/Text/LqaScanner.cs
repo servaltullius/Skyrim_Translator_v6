@@ -93,6 +93,7 @@ public static class LqaScanner
         var fieldToneMajority = RecToneRule.BuildFieldMajorities(entries);
         var glossarySources = OfficialNameRule.BuildGlossarySources(forceTokenGlossary);
         var sameSourceVariants = SameSourceVariantRule.Build(entries);
+        var prefixedNameVariants = PrefixedNameVariantRule.Build(entries);
 
         var total = entries.Count;
         for (var i = 0; i < total; i++)
@@ -129,6 +130,7 @@ public static class LqaScanner
             );
             OfficialNameRule.Apply(entry, source, dest, isKorean, context.ReferenceNames, glossarySources, issues);
             SameSourceVariantRule.Apply(entry, sameSourceVariants, issues);
+            PrefixedNameVariantRule.Apply(entry, prefixedNameVariants, issues);
         }
     }
 

@@ -87,7 +87,7 @@ public partial class MainViewModel
     // Codes that compare a row with the rest of the project; a re-check of one row cannot judge them.
     private static readonly HashSet<string> ProjectWideLqaCodes = new(StringComparer.Ordinal)
     {
-        "name_inconsistent", "tone_inconsistent", "tone_differs_from_plugin", "rec_tone", "same_source_variant", "tm_fallback", "official_name_missing",
+        "name_inconsistent", "tone_inconsistent", "tone_differs_from_plugin", "rec_tone", "same_source_variant", "prefixed_name_variant", "tm_fallback", "official_name_missing",
     };
 
     /// <summary>
