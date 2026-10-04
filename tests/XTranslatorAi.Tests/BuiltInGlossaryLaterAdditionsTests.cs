@@ -177,6 +177,16 @@ public class BuiltInGlossaryLaterAdditionsTests : IAsyncLifetime
         Assert.Equal(expected, Assert.Single(await GlossaryAsync(), e => e.SourceTerm == source).TargetTerm);
     }
 
+    // Decided 2026-10-05 from the Elden Rim review: [Activate Button] 활성화 버튼 (8 rows), [Sprint Button] 질주 버튼.
+    [Fact]
+    public async Task ButtonNames_AreAddedToExistingAndNewGlossaries()
+    {
+        await AddAllBatchesAsync();
+        var existing = await GlossaryAsync();
+        Assert.Equal("활성화 버튼", Assert.Single(existing, e => e.SourceTerm == "Activate Button").TargetTerm);
+        Assert.Equal("질주 버튼", Assert.Single(existing, e => e.SourceTerm == "Sprint Button").TargetTerm);
+    }
+
     [Fact]
     public async Task NewGlossary_GetsBootsAndSmithingAsDecided()
     {

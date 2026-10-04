@@ -50,6 +50,9 @@ public sealed class BuiltInGlossaryService
         new("2026-10-04", Array.Empty<string>(), new[] { ("Fine", "하급") }),
         // Decided 2026-10-05 after comparing with the official translation (Iron Boots 철 전투화, Fortify Smithing 제련 강화).
         new("2026-10-05", Array.Empty<string>(), new[] { ("Boots", "부츠"), ("Smithing", "대장"), ("Fortify Smithing", "대장 강화") }),
+        // Decided 2026-10-05 from the Elden Rim review ([Activate Button] 활성화 버튼, [Sprint Button] 질주 버튼).
+        // [Activate] and [Sprint] alone stay English as the game's key names (PlaceholderMasker.ControlKeyNames).
+        new("2026-10-05.2", new[] { "Activate Button", "Sprint Button" }, Array.Empty<(string, string)>()),
     };
 
     /// <summary>
