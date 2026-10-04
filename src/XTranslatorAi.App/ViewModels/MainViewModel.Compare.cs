@@ -124,8 +124,9 @@ public partial class MainViewModel
         {
             var globalGlossary = CompareIncludeGlobalGlossary ? await TryLoadGlobalGlossaryAsync(cancellationToken) : null;
             var franchiseTranslationMemory = CompareIncludeFranchiseTranslationMemory ? await TryLoadFranchiseTranslationMemoryAsync(cancellationToken) : null;
+            var referenceNames = CompareIncludeFranchiseTranslationMemory ? await TryLoadReferenceNameMemoryAsync(cancellationToken) : null;
             cancellationToken.ThrowIfCancellationRequested();
-            var request = BuildCompareRequest(context, globalGlossary, franchiseTranslationMemory);
+            var request = BuildCompareRequest(context, globalGlossary, franchiseTranslationMemory, referenceNames);
 
             var result = await _compareTranslationService.RunAsync(request, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
@@ -151,7 +152,8 @@ public partial class MainViewModel
     private CompareTranslationService.Request BuildCompareRequest(
         CompareExecutionContext context,
         IReadOnlyList<GlossaryEntry>? globalGlossary,
-        IReadOnlyDictionary<string, string>? franchiseTranslationMemory
+        IReadOnlyDictionary<string, string>? franchiseTranslationMemory,
+        IReadOnlyList<(string Source, string Target)>? referenceNames
     )
     {
         var maxOut = ComputeMaxOutputTokens(context.ModelName);
@@ -185,7 +187,11 @@ public partial class MainViewModel
             IncludeProjectGlossary: CompareIncludeProjectGlossary,
             GlobalGlossary: globalGlossary,
             GlobalTranslationMemory: franchiseTranslationMemory,
-            IsDirectPluginSource: context.Entry.PluginLocation != null
+            IsDirectPluginSource: context.Entry.PluginLocation != null,
+            // A real run also uses the official-name index and the project TM; without them the comparison
+            // translated differently from the run it is meant to preview.
+            ReferenceNameMemory: referenceNames,
+            IncludeProjectTranslationMemory: CompareIncludeFranchiseTranslationMemory
         );
     }
 

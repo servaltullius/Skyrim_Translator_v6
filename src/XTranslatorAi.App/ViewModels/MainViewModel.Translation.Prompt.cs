@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Text;
@@ -29,6 +30,21 @@ public partial class MainViewModel
             }
 
             return await _globalGlossaryService.GetAsync(cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>The series TM with its original casing, for the official-name index (as TranslationRunnerService loads it).</summary>
+    private async Task<IReadOnlyList<(string Source, string Target)>?> TryLoadReferenceNameMemoryAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var entries = await _globalTranslationMemoryService.GetEntriesAsync(SourceLang.Trim(), TargetLang.Trim(), cancellationToken);
+            return entries.Select(entry => (entry.SourceText, entry.DestText)).ToList();
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
         catch

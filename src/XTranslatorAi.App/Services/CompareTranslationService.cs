@@ -52,7 +52,9 @@ public sealed class CompareTranslationService
         bool IncludeProjectGlossary,
         IReadOnlyList<GlossaryEntry>? GlobalGlossary,
         IReadOnlyDictionary<string, string>? GlobalTranslationMemory,
-        bool IsDirectPluginSource = false
+        bool IsDirectPluginSource = false,
+        IReadOnlyList<(string Source, string Target)>? ReferenceNameMemory = null,
+        bool IncludeProjectTranslationMemory = false
     );
 
     public sealed record Result(
@@ -73,6 +75,7 @@ public sealed class CompareTranslationService
 
             await SeedTempDbAsync(tempDb, request, cancellationToken);
             await TryInsertProjectGlossaryAsync(tempDb, request, cancellationToken);
+            await TryCopyProjectTranslationMemoryAsync(tempDb, request, cancellationToken);
 
             var translationService = new TranslationService(tempDb, request.GeminiClient);
             await translationService.TranslateIdsAsync(BuildTranslateRequest(request, cancellationToken));
@@ -153,16 +156,43 @@ public sealed class CompareTranslationService
         );
     }
 
+    /// <summary>
+    /// A real run reads the project TM (translations the user corrected) from the project DB, but the comparison
+    /// runs on an empty scratch DB, so a row a real run would fill from the project TM went to the model here.
+    /// The project TM is copied in, under the same switch as the series TM.
+    /// </summary>
+    private static async Task TryCopyProjectTranslationMemoryAsync(ProjectDb tempDb, Request request, CancellationToken cancellationToken)
+    {
+        if (!request.IncludeProjectTranslationMemory || request.ProjectDb == null || SkipsUnscopedDialogueTm(request))
+        {
+            return;
+        }
+
+        var sourceLang = request.SourceLang.Trim();
+        var targetLang = request.TargetLang.Trim();
+        var entries = await request.ProjectDb.GetTranslationMemoryEntriesAsync(sourceLang, targetLang, cancellationToken);
+        if (entries.Count > 0)
+        {
+            await tempDb.BulkUpsertTranslationMemoryAsync(sourceLang, targetLang,
+                entries.Select(entry => (entry.SourceText, entry.DestText)).ToList(), cancellationToken);
+        }
+    }
+
+    // The comparison scratch row deliberately has no plugin binding. Preserve
+    // its provenance in the request so it cannot bypass the normal dialogue
+    // pipeline's rejection of source-only TM with an unknown topic origin.
+    private static bool SkipsUnscopedDialogueTm(Request request)
+    {
+        var recBase = request.Rec?.Split(':', 2)[0].Trim().ToUpperInvariant();
+        return request.IsDirectPluginSource && (recBase is "INFO" or "DIAL");
+    }
+
     private static TranslateIdsRequest BuildTranslateRequest(Request request, CancellationToken cancellationToken)
     {
         var thinkingOverride = request.ThinkingOff
             ? GeminiTranslationPolicy.GetLowThinkingConfigForTranslation(request.ModelName)
             : null;
-        var recBase = request.Rec?.Split(':', 2)[0].Trim().ToUpperInvariant();
-        // The comparison scratch row deliberately has no plugin binding. Preserve
-        // its provenance in the request so it cannot bypass the normal dialogue
-        // pipeline's rejection of source-only TM with an unknown topic origin.
-        var skipUnscopedDialogueTm = request.IsDirectPluginSource && (recBase is "INFO" or "DIAL");
+        var skipUnscopedDialogueTm = SkipsUnscopedDialogueTm(request);
 
         return new TranslateIdsRequest(
             ApiKey: request.ApiKey.Trim(),
@@ -185,6 +215,8 @@ public sealed class CompareTranslationService
             CancellationToken: cancellationToken,
             GlobalGlossary: request.GlobalGlossary,
             GlobalTranslationMemory: skipUnscopedDialogueTm ? null : request.GlobalTranslationMemory,
+            // Official names from the series TM, as a real run uses them (TranslationRunnerService).
+            ReferenceNameMemory: request.ReferenceNameMemory,
             SemanticRepairMode: request.SemanticRepairMode,
             EnableTemplateFixer: request.EnableTemplateFixer,
             KeepSkyrimTagsRaw: request.KeepSkyrimTagsRaw,

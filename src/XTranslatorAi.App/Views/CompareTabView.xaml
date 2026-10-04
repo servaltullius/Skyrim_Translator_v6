@@ -23,8 +23,8 @@
                       ToolTip="Compare용 임시 DB에 현재 프로젝트 용어집을 복사해 적용합니다." />
             <CheckBox Content="전체 용어집" IsChecked="{Binding CompareIncludeGlobalGlossary}" VerticalAlignment="Center" Margin="12,0,0,0"
                       ToolTip="Global glossary를 적용합니다." />
-            <CheckBox Content="시리즈 TM" IsChecked="{Binding CompareIncludeFranchiseTranslationMemory}" VerticalAlignment="Center" Margin="12,0,0,0"
-                      ToolTip="시리즈 TM을 적용합니다. (TM hit가 있으면 LLM 호출 없이 Done (TM)으로 끝날 수 있습니다)" />
+            <CheckBox Content="TM" IsChecked="{Binding CompareIncludeFranchiseTranslationMemory}" VerticalAlignment="Center" Margin="12,0,0,0"
+                      ToolTip="실제 번역처럼 시리즈 TM과 프로젝트 TM(직접 고친 번역), 시리즈 TM의 공식 이름을 적용합니다. (TM hit가 있으면 LLM 호출 없이 Done (TM)으로 끝날 수 있습니다)" />
         </WrapPanel>
 
         <GroupBox Grid.Row="1" Header="{Binding CompareSelectedEntrySummary}" Style="{StaticResource XT.GroupBoxCard}" Margin="0,0,0,10">
