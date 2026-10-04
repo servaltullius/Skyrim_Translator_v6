@@ -35,6 +35,7 @@ public static class LqaIssueLabels
         ["hidden_topic_translated"] = "숨은 토픽 번역됨",
         ["mixed_description_tone"] = "설명 말투 섞임",
         ["official_name_missing"] = "공식 이름 아님",
+        ["same_source_variant"] = "같은 원문 다른 번역",
         ["book_pagebreak_mismatch"] = "책 쪽 나눔 불일치",
         ["book_html_tag_mismatch"] = "책 HTML 태그 불일치",
         ["book_length_ratio"] = "책 길이 비율",

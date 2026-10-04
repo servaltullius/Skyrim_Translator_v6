@@ -87,6 +87,7 @@ public static class LqaScanner
         var loanwordIndex = isKorean ? GlossaryLoanwordRule.Build(forceTokenGlossary) : new Dictionary<string, GlossaryLoanwordRule.Term>();
         var fieldToneMajority = RecToneRule.BuildFieldMajorities(entries);
         var glossarySources = OfficialNameRule.BuildGlossarySources(forceTokenGlossary);
+        var sameSourceVariants = SameSourceVariantRule.Build(entries);
 
         var total = entries.Count;
         for (var i = 0; i < total; i++)
@@ -122,6 +123,7 @@ public static class LqaScanner
                 issues
             );
             OfficialNameRule.Apply(entry, source, dest, isKorean, context.ReferenceNames, glossarySources, issues);
+            SameSourceVariantRule.Apply(entry, sameSourceVariants, issues);
         }
     }
 
