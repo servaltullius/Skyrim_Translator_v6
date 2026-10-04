@@ -62,6 +62,68 @@ public class TokenAwareTextSplitterTests
         Assert.DoesNotContain(chunks, c => c.Length == 0);
     }
 
+    // A full chunk was cut right before the next piece, usually a term token inside a sentence, and the two halves
+    // of the sentence were translated separately.
+    [Fact]
+    public void Split_CutsAfterTheLastLineBreak_NotBeforeATermInsideASentence()
+    {
+        var text = "The first paragraph ends here.__XT_PH_0000__Then you must defeat the __XT_TERM_0001__ at the summit.";
+
+        var chunks = TokenAwareTextSplitter.Split(text, maxChunkChars: 80);
+
+        Assert.Equal(new[] { "The first paragraph ends here.__XT_PH_0000__", "Then you must defeat the __XT_TERM_0001__ at the summit." }, chunks);
+    }
+
+    [Fact]
+    public void Split_CutsAtTheLastSentenceEnd_WhenThereIsNoLineBreak()
+    {
+        var text = "Mara watched over us. Then you must defeat the __XT_TERM_0001__ at the summit.";
+
+        var chunks = TokenAwareTextSplitter.Split(text, maxChunkChars: 60);
+
+        Assert.Equal(new[] { "Mara watched over us. ", "Then you must defeat the __XT_TERM_0001__ at the summit." }, chunks);
+    }
+
+    [Fact]
+    public void Split_FallsBackToCuttingBeforeTheNextPiece_WhenThereIsNoBoundary()
+    {
+        var chunks = TokenAwareTextSplitter.Split("you must defeat the __XT_TERM_0001__ at the summit", maxChunkChars: 25);
+
+        Assert.Equal(new[] { "you must defeat the ", "__XT_TERM_0001__", " at the summit" }, chunks);
+    }
+
+    [Fact]
+    public void Split_LongParagraph_EndsAtASentenceBeforeASpace()
+    {
+        var chunks = TokenAwareTextSplitter.Split("Sentence one is here. Sentence two goes on and on without end", maxChunkChars: 40);
+
+        Assert.Equal("Sentence one is here. ", chunks[0]);
+        Assert.Equal("Sentence one is here. Sentence two goes on and on without end", string.Concat(chunks));
+    }
+
+    [Fact]
+    public void Split_BoundaryCuts_KeepBothLimits_AndRoundTrip()
+    {
+        var sb = new StringBuilder();
+        for (var i = 0; i < 120; i++)
+        {
+            sb.Append(i % 7 == 0 ? "A new page begins" : "the road leads to");
+            sb.Append($" __XT_TERM_{i:0000}__");
+            sb.Append(i % 3 == 0 ? ". " : " and ");
+            if (i % 11 == 0)
+            {
+                sb.Append($"__XT_PH_{i:0000}__");
+            }
+        }
+        var text = sb.ToString();
+
+        var chunks = TokenAwareTextSplitter.Split(text, maxChunkChars: 150, maxTokensPerChunk: 4);
+
+        Assert.Equal(text, string.Concat(chunks));
+        Assert.All(chunks, c => Assert.True(c.Length <= 150));
+        Assert.All(chunks, c => Assert.True(TokenRegex.Matches(c).Count <= 4));
+    }
+
     // --- SplitAtPagebreaks tests ---
 
     [Fact]

@@ -12,6 +12,18 @@ public static class TokenAwareTextSplitter
         options: RegexOptions.CultureInvariant
     );
 
+    // Plain __XT_PH_####__ tokens are layout: line breaks, page breaks and formatting tags.
+    private static readonly Regex LayoutTokenRegex = new(
+        pattern: @"__XT_PH_[0-9]{4}__",
+        options: RegexOptions.CultureInvariant
+    );
+
+    // A sentence end followed by space ("cold. The", "dead!\" She"); "。" needs no space.
+    private static readonly Regex SentenceEndRegex = new(
+        pattern: @"[.!?][""'”’)\]]*\s+|。[""'”’)\]]*\s*",
+        options: RegexOptions.CultureInvariant
+    );
+
     private sealed class SplitState
     {
         public SplitState(int maxChunkChars)
@@ -198,28 +210,28 @@ public static class TokenAwareTextSplitter
             return;
         }
 
-        if (state.Sb.Length == 0 && piece.Length > maxChunkChars)
+        if (piece.Length > maxChunkChars)
         {
+            // The piece itself runs past the limit, so no boundary in the current chunk avoids a cut inside it.
+            if (state.Sb.Length > 0)
+            {
+                FlushChunk(state);
+            }
+
             state.Chunks.AddRange(SplitPlainText(piece, maxChunkChars));
             return;
         }
 
         var tokenCount = IsTokenPiece(piece) ? 1 : 0;
 
-        if (ShouldFlushForTokenLimit(state.Sb, state.CurrentTokens, tokenCount, maxTokensPerChunk))
+        // Cutting right before the piece that no longer fits split sentences in the middle, usually before a
+        // term token ("You must defeat the | __XT_TERM_0003__ at the summit"), and each half was translated
+        // on its own. Cut the chunk at its last line break or sentence end and carry the rest over instead.
+        while (state.Sb.Length > 0
+               && (ShouldFlushForTokenLimit(state.Sb, state.CurrentTokens, tokenCount, maxTokensPerChunk)
+                   || state.Sb.Length + piece.Length > maxChunkChars))
         {
-            FlushChunk(state);
-        }
-
-        if (state.Sb.Length > 0 && state.Sb.Length + piece.Length > maxChunkChars)
-        {
-            FlushChunk(state);
-        }
-
-        if (piece.Length > maxChunkChars)
-        {
-            state.Chunks.AddRange(SplitPlainText(piece, maxChunkChars));
-            return;
+            FlushAtBoundary(state);
         }
 
         state.Sb.Append(piece);
@@ -234,6 +246,55 @@ public static class TokenAwareTextSplitter
         state.Chunks.Add(state.Sb.ToString());
         state.Sb.Clear();
         state.CurrentTokens = 0;
+    }
+
+    /// <summary>Flushes the chunk up to <see cref="FindChunkCut"/>, keeping the rest; the whole chunk when there is no boundary.</summary>
+    private static void FlushAtBoundary(SplitState state)
+    {
+        var text = state.Sb.ToString();
+        var cut = FindChunkCut(text);
+        if (cut <= 0 || cut >= text.Length)
+        {
+            FlushChunk(state);
+            return;
+        }
+
+        state.Chunks.Add(text[..cut]);
+        var rest = text[cut..];
+        state.Sb.Clear().Append(rest);
+        state.CurrentTokens = TokenRegex.Matches(rest).Count;
+    }
+
+    /// <summary>
+    /// After the last layout token when that keeps at least half of the chunk; otherwise after the later of the
+    /// last layout token and the last sentence end (a title's line break near the start alone would send a tiny
+    /// request and leave the long rest to be cut again). -1 when there is neither.
+    /// </summary>
+    private static int FindChunkCut(string text)
+    {
+        var layoutCut = -1;
+        foreach (Match m in LayoutTokenRegex.Matches(text))
+        {
+            layoutCut = m.Index + m.Length;
+        }
+
+        if (layoutCut >= text.Length / 2)
+        {
+            return layoutCut;
+        }
+
+        return Math.Max(layoutCut, LastSentenceCut(text));
+    }
+
+    private static int LastSentenceCut(string text)
+    {
+        var cut = -1;
+        foreach (Match m in SentenceEndRegex.Matches(text))
+        {
+            cut = m.Index + m.Length;
+        }
+
+        return cut;
     }
 
     private static bool IsTokenPiece(string piece)
@@ -295,6 +356,13 @@ public static class TokenAwareTextSplitter
 
     private static int FindSplitLength(string text, int start, int maxLen)
     {
+        // A paragraph longer than the limit: end at a sentence in the second half before settling for a space.
+        var sentenceCut = LastSentenceCut(text.Substring(start, maxLen));
+        if (sentenceCut >= maxLen / 2)
+        {
+            return sentenceCut;
+        }
+
         var end = start + maxLen;
 
         for (var i = end - 1; i > start; i--)
