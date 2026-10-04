@@ -30,6 +30,11 @@ public partial class MainViewModel
             return;
         }
 
+        if (!await TrySaveListEditsBeforeReloadAsync(EditableLists.ProjectGlossary, "용어를 추가하면"))
+        {
+            return;
+        }
+
         try
         {
             await _projectGlossaryService.UpsertAsync(
@@ -81,6 +86,7 @@ public partial class MainViewModel
             priority: GlossaryPriority,
             matchMode: GlossaryMatchMode,
             forceMode: GlossaryForceMode,
+            reloadedList: EditableLists.ProjectGlossary,
             reloadAsync: ReloadGlossaryAsync
         );
     }
@@ -105,34 +111,10 @@ public partial class MainViewModel
 
         try
         {
-            var rows = dirty.Select(
-                    g =>
-                    (
-                        g.Id,
-                        Category: string.IsNullOrWhiteSpace(g.Category) ? null : g.Category.Trim(),
-                        SourceTerm: (g.SourceTerm ?? "").Trim(),
-                        TargetTerm: (g.TargetTerm ?? "").Trim(),
-                        g.Enabled,
-                        g.Priority,
-                        MatchMode: (int)g.MatchMode,
-                        ForceMode: (int)g.ForceMode,
-                        g.Note
-                    )
-                )
-                .ToList();
-
-            await _projectGlossaryService.BulkUpdateAsync(db, rows, CancellationToken.None);
-
-            foreach (var g in dirty)
-            {
-                g.MarkClean();
-            }
-
-            RebuildGlossaryCategoryFilters();
-            GlossaryView.Refresh();
+            await SaveGlossaryRowsAsync(db, dirty);
             StatusMessage = IsTranslating
-                ? $"Glossary saved: {rows.Count} updated. (Restart translation to apply.)"
-                : $"Glossary saved: {rows.Count} updated.";
+                ? $"Glossary saved: {dirty.Count} updated. (Restart translation to apply.)"
+                : $"Glossary saved: {dirty.Count} updated.";
         }
         catch (Exception ex)
         {
@@ -141,6 +123,19 @@ public partial class MainViewModel
     }
 
     private bool CanSaveGlossaryChanges() => IsProjectLoaded;
+
+    private async Task SaveGlossaryRowsAsync(ProjectDb db, IReadOnlyList<GlossaryEntryViewModel> dirty)
+    {
+        await _projectGlossaryService.BulkUpdateAsync(db, dirty.Select(ToGlossaryUpdateRow).ToList(), CancellationToken.None);
+
+        foreach (var g in dirty)
+        {
+            g.MarkClean();
+        }
+
+        RebuildGlossaryCategoryFilters();
+        GlossaryView.Refresh();
+    }
 
     [RelayCommand(CanExecute = nameof(CanDeleteGlossaryEntry))]
     private async Task DeleteGlossaryEntryAsync()

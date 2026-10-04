@@ -60,7 +60,8 @@ public partial class MainViewModel
         _isSwitchingProject = true;
         IsPluginIoBusy = true;
         // The current project's edits belong to its DB, which this open replaces (see OpenXmlPathAsync).
-        if (!await TryCommitPendingDestEditsAsync())
+        if (!await TrySaveListEditsBeforeReloadAsync(EditableLists.All, "다른 파일을 열면")
+            || !await TryCommitPendingDestEditsAsync())
         {
             _isSwitchingProject = false;
             IsPluginIoBusy = false;

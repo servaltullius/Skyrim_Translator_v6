@@ -35,6 +35,20 @@ public partial class MainViewModel
         return vm;
     }
 
+    private static (long Id, string? Category, string SourceTerm, string TargetTerm, bool Enabled, int Priority, int MatchMode, int ForceMode, string? Note)
+        ToGlossaryUpdateRow(GlossaryEntryViewModel g)
+        => (
+            g.Id,
+            Category: string.IsNullOrWhiteSpace(g.Category) ? null : g.Category.Trim(),
+            SourceTerm: (g.SourceTerm ?? "").Trim(),
+            TargetTerm: (g.TargetTerm ?? "").Trim(),
+            g.Enabled,
+            g.Priority,
+            MatchMode: (int)g.MatchMode,
+            ForceMode: (int)g.ForceMode,
+            g.Note
+        );
+
     private static bool MatchGlossaryFilter(GlossaryEntryViewModel entry, string categoryFilter, string textFilter)
     {
         if (!string.IsNullOrWhiteSpace(categoryFilter) && categoryFilter != GlossaryCategoryAll)

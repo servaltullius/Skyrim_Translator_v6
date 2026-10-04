@@ -17,11 +17,17 @@ public partial class MainViewModel
         int priority,
         GlossaryMatchMode matchMode,
         GlossaryForceMode forceMode,
+        EditableLists reloadedList,
         Func<Task> reloadAsync
     )
     {
         var glossaryPath = ResolveGlossaryImportPath(dialogTitle);
         if (string.IsNullOrWhiteSpace(glossaryPath))
+        {
+            return;
+        }
+
+        if (!await TrySaveListEditsBeforeReloadAsync(reloadedList, "파일에서 가져오면"))
         {
             return;
         }

@@ -156,6 +156,11 @@ public partial class MainViewModel
             return;
         }
 
+        if (!await TrySaveListEditsBeforeReloadAsync(EditableLists.FranchiseTranslationMemory, "시리즈 TM에 추가하면"))
+        {
+            return;
+        }
+
         try
         {
             var applied = await _globalTranslationMemoryService.BulkUpsertAsync(
@@ -204,11 +209,7 @@ public partial class MainViewModel
 
         try
         {
-            var rows = dirty
-                .Select(e => (e.Id, DestText: (e.DestText ?? "").Trim()))
-                .ToList();
-
-            var applied = await _globalTranslationMemoryService.BulkUpdateAsync(SourceLang.Trim(), TargetLang.Trim(), rows, CancellationToken.None);
+            var applied = await SaveFranchiseTranslationMemoryRowsAsync(dirty);
             await ReloadFranchiseTranslationMemoryAsync();
             StatusMessage = $"시리즈 TM 저장 완료: {applied}개 항목";
         }
@@ -219,6 +220,21 @@ public partial class MainViewModel
     }
 
     private bool CanSaveFranchiseTranslationMemoryChanges() => !IsTranslating;
+
+    private async Task<int> SaveFranchiseTranslationMemoryRowsAsync(IReadOnlyList<TranslationMemoryEntryViewModel> dirty)
+    {
+        var rows = dirty
+            .Select(e => (e.Id, DestText: (e.DestText ?? "").Trim()))
+            .ToList();
+
+        var applied = await _globalTranslationMemoryService.BulkUpdateAsync(SourceLang.Trim(), TargetLang.Trim(), rows, CancellationToken.None);
+        foreach (var e in dirty)
+        {
+            e.MarkClean();
+        }
+
+        return applied;
+    }
 
     [RelayCommand(CanExecute = nameof(CanDeleteFranchiseTranslationMemoryEntry))]
     private async Task DeleteFranchiseTranslationMemoryEntryAsync()
@@ -315,6 +331,11 @@ public partial class MainViewModel
             )
         );
         if (string.IsNullOrWhiteSpace(filePath))
+        {
+            return;
+        }
+
+        if (!await TrySaveListEditsBeforeReloadAsync(EditableLists.FranchiseTranslationMemory, "파일에서 가져오면"))
         {
             return;
         }

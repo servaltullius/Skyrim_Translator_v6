@@ -39,8 +39,10 @@ public partial class MainViewModel
         _isSwitchingProject = true;
         NotifyWorkspaceAvailability();
         // The current project's edits belong to its DB, which is disposed below. The workspace is already
-        // disabled, so no row can be edited or left between this save and the switch.
-        if (!await TryCommitPendingDestEditsAsync())
+        // disabled, so no row can be edited or left between this save and the switch. The new project reloads
+        // the glossary and TM lists, so their unsaved grid edits are saved (or the open cancelled) first.
+        if (!await TrySaveListEditsBeforeReloadAsync(EditableLists.All, "다른 파일을 열면")
+            || !await TryCommitPendingDestEditsAsync())
         {
             _isSwitchingProject = false;
             NotifyWorkspaceAvailability();
