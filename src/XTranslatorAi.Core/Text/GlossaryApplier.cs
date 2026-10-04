@@ -471,6 +471,14 @@ public sealed class GlossaryApplier
         return token;
     }
 
+    private static string PluralSuffixFor(string sourceTerm)
+    {
+        var term = sourceTerm.Trim();
+        return term.Contains(' ') && term.Length > 0 && char.IsLetter(term[^1]) && !term.EndsWith('s')
+            ? "(?:es|s)?"
+            : "";
+    }
+
     private static Regex? CreateRegex(GlossaryEntry entry)
     {
         if (entry.ForceMode == GlossaryForceMode.PromptOnly)
@@ -488,7 +496,9 @@ public sealed class GlossaryApplier
         {
             // \b only matches at word/non-word boundaries and fails for terms ending with punctuation (e.g., "...most.").
             // Use \w-based guards instead so terms like "A skill beyond the reach of most." can still match as a whole.
-            GlossaryMatchMode.WordBoundary => $@"(?<!\w){Regex.Escape(entry.SourceTerm)}(?!\w)",
+            // Korean does not mark the plural: a multi-word term also matches with a plural s/es ("NPC Weapon Arts"
+            // stayed plain text and came out as 전투 기술 instead of 전기). Single words keep their exact form.
+            GlossaryMatchMode.WordBoundary => $@"(?<!\w){Regex.Escape(entry.SourceTerm)}{PluralSuffixFor(entry.SourceTerm)}(?!\w)",
             GlossaryMatchMode.Regex => entry.SourceTerm,
             _ => throw new ArgumentOutOfRangeException(nameof(entry), entry.MatchMode, "Unsupported glossary match mode."),
         };
