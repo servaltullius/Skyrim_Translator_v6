@@ -43,6 +43,9 @@ internal sealed class TranslationRunContext : IDisposable
 
     public ReferenceNameIndex? ReferenceNames { get; set; }
 
+    // The run's glossary, so seeding leaves glossary terms (and their plurals) to it.
+    public GlossaryApplier? Glossary { get; set; }
+
     // Sentences that recur across description rows, translated once before the run (TranslationService.SentenceMemory).
     public System.Collections.Concurrent.ConcurrentDictionary<string, string> RepeatedSentences { get; } = new(StringComparer.Ordinal);
     public RunNameMemory? RunNames { get; set; }

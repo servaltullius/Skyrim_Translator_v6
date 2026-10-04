@@ -119,6 +119,23 @@ public sealed partial class TranslationService
         return chosen;
     }
 
+    /// <summary>
+    /// The glossary decides a term it covers, also in plural: "NPC Weapon Arts" escaped the glossary's "Weapon Art"
+    /// (전기) token, was seeded as 전투 기술 and offered next to the glossary in the evaluation.
+    /// </summary>
+    internal static bool IsGlossaryTerm(GlossaryApplier? glossary, string term)
+    {
+        if (glossary == null)
+        {
+            return false;
+        }
+
+        static bool Covered(GlossaryApplication applied) => applied.TokenToReplacement.Count > 0 || applied.PromptOnlyPairs.Count > 0;
+        return Covered(glossary.Apply(term))
+               || (term.EndsWith("es", StringComparison.Ordinal) && Covered(glossary.Apply(term[..^2])))
+               || (term.EndsWith('s') && Covered(glossary.Apply(term[..^1])));
+    }
+
     private async Task SeedSubtermsAsync(
         TranslateIdsRequest request,
         PromptCache? promptCache,
@@ -134,7 +151,7 @@ public sealed partial class TranslationService
 
         var terms = SelectSubtermSeeds(
             items.Select(it => (it.Source, GetRecForId(it.Id) ?? "", it.Masked)).ToList(),
-            memory.Knows,
+            term => memory.Knows(term) || IsGlossaryTerm(Ctx.Glossary, term),
             MaxSubtermSeeds);
         if (terms.Count == 0)
         {

@@ -48,3 +48,23 @@ public class SubtermSeedSelectionTests
         Assert.Empty(TranslationService.SelectSubtermSeeds(rows, _ => false, 24));
     }
 }
+
+public class SubtermGlossaryCoverageTests
+{
+    // The evaluation lost "NPC Weapon Arts" → 전기: the plural escaped the glossary token and was seeded as 전투 기술.
+    [Theory]
+    [InlineData("Weapon Art", true)]
+    [InlineData("Weapon Arts", true)]
+    [InlineData("NPC Weapon Arts", true)]
+    [InlineData("Deathblow", false)]
+    public void GlossaryTermsAndTheirPlurals_AreLeftToTheGlossary(string term, bool covered)
+    {
+        var glossary = new XTranslatorAi.Core.Text.GlossaryApplier(new[]
+        {
+            new XTranslatorAi.Core.Text.GlossaryEntry(1, null, "Weapon Art", "전기", true,
+                XTranslatorAi.Core.Text.GlossaryMatchMode.WordBoundary, XTranslatorAi.Core.Text.GlossaryForceMode.ForceToken, 10, null),
+        });
+
+        Assert.Equal(covered, TranslationService.IsGlossaryTerm(glossary, term));
+    }
+}
