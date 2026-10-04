@@ -26,16 +26,8 @@ public static class LqaHeuristics
         options: RegexOptions.CultureInvariant
     );
 
-    // Words whose last syllable looks like 을/은 after a vowel but is part of the word:
-    // nouns (마을, 수은), ㅅ-irregular verb forms (더 나은, 지은, 지을 수) and 모으다 (모을 수, 모은 기).
-    private static readonly HashSet<string> VowelThenEulEunWords = new(StringComparer.Ordinal)
-    {
-        "마을", "가을", "고을", "노을", "나을", "지을", "이을", "부을", "그을", "저을", "모을",
-        "수은", "보은", "나은", "지은", "이은", "부은", "그은", "저은", "모은",
-    };
-
-    private static readonly Regex RomanVowelConsonantParticleRegex = new(
-        pattern: @"\b(?<word>[A-Za-z][A-Za-z0-9'’\-]{1,})(?<particle>을|은|이|과)(?=$|[\s\p{P}])",
+    private static readonly Regex RomanParticleRegex = new(
+        pattern: @"\b(?<word>[A-Za-z][A-Za-z0-9'’\-]*)(?<particle>을|를|은|는|이|가|과|와)(?=$|[\s\p{P}])",
         options: RegexOptions.CultureInvariant
     );
 
@@ -135,7 +127,7 @@ public static class LqaHeuristics
         {
             var word = m.Groups["word"].Value;
             var particle = m.Groups["particle"].Value;
-            if (word.Length == 0 || VowelThenEulEunWords.Contains(word[^1] + particle))
+            if (word.Length == 0 || KoreanParticleSelector.EndsWithEulEunWord(word, particle))
             {
                 continue;
             }
@@ -188,34 +180,28 @@ public static class LqaHeuristics
             .OrderByDescending(t => t.Length)
             .ToList();
 
-    public static string? FindRomanVowelParticleMismatchSuggestion(string destText)
+    /// <summary>
+    /// A particle after a Latin word depends on how the word is read, which its spelling does not tell:
+    /// "Rune Stone을" (스톤) and "Nexus를" (넥서스) are correct although Stone ends in e and Nexus in s.
+    /// Only an all-caps acronym has a certain reading, letter by letter (NPC를, MCM을), so only those are checked.
+    /// </summary>
+    public static string? FindRomanParticleMismatchSuggestion(string destText)
     {
         if (string.IsNullOrWhiteSpace(destText))
         {
             return null;
         }
 
-        foreach (Match m in RomanVowelConsonantParticleRegex.Matches(destText))
+        foreach (Match m in RomanParticleRegex.Matches(destText))
         {
-            if (!m.Success)
-            {
-                continue;
-            }
-
             var word = m.Groups["word"].Value;
             var particle = m.Groups["particle"].Value;
-            if (string.IsNullOrWhiteSpace(word) || string.IsNullOrWhiteSpace(particle))
+            if (!KoreanParticleSelector.TryGetAcronymFinalSound(word, out var hasFinal, out _))
             {
                 continue;
             }
 
-            var last = word[^1];
-            if (!IsAsciiVowel(last))
-            {
-                continue;
-            }
-
-            var expected = GetExpectedParticleForHangul(particle, hasFinalConsonant: false);
+            var expected = GetExpectedParticleForHangul(particle, hasFinal);
             if (expected == null)
             {
                 continue;
@@ -345,12 +331,6 @@ public static class LqaHeuristics
         }
 
         return null;
-    }
-
-    private static bool IsAsciiVowel(char c)
-    {
-        c = char.ToLowerInvariant(c);
-        return c is 'a' or 'e' or 'i' or 'o' or 'u' or 'y';
     }
 
     private static string? GetExpectedParticleForHangul(string particle, bool hasFinalConsonant)

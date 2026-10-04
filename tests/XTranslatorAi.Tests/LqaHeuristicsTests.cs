@@ -69,12 +69,12 @@ public class LqaHeuristicsTests
     }
 
     [Fact]
-    public void FindRomanVowelParticleMismatchSuggestion_ReturnsSuggestion_ForVowelEndingWord()
+    public void FindRomanParticleMismatchSuggestion_ReturnsSuggestion_ForAcronym()
     {
-        var hit = LqaHeuristics.FindRomanVowelParticleMismatchSuggestion("Magicka을 흡수합니다.");
-        Assert.Equal("Magicka을 → Magicka를", hit);
+        var hit = LqaHeuristics.FindRomanParticleMismatchSuggestion("NPC을 고용합니다.");
+        Assert.Equal("NPC을 → NPC를", hit);
 
-        var none = LqaHeuristics.FindRomanVowelParticleMismatchSuggestion("Blood을 흡수합니다.");
+        var none = LqaHeuristics.FindRomanParticleMismatchSuggestion("NPC를 고용합니다.");
         Assert.Null(none);
     }
 

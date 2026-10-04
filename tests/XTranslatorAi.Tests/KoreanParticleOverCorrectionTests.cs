@@ -36,6 +36,39 @@ public class KoreanParticleOverCorrectionTests
         Assert.Equal(text, KoreanTranslationFixer.Fix("korean", text));
     }
 
+    // Correct sentences the fixer still damaged in the 2026-10-04 full audit (items 7-9). The fixer
+    // also runs on translation memory hits and hand-edited rows, so each must come out as written.
+    [Theory]
+    // Particles after Latin words follow their reading, not the last letter (NPC은, HP이, Rune를 before).
+    [InlineData("NPC는 공격하지 않는다.")]
+    [InlineData("NPC를 고용할 수 있다.")]
+    [InlineData("NPC가 말을 건다.")]
+    [InlineData("HP가 30% 미만일 때 발동합니다.")]
+    [InlineData("DLC를 설치해야 한다.")]
+    [InlineData("Enter를 누르세요.")]
+    [InlineData("Nexus를 방문하세요.")]
+    [InlineData("Rune을 새겼다.")]
+    [InlineData("Rune Stone을 찾았다.")]
+    [InlineData("Aela가 말했다.")]
+    // A wrong particle after an acronym is left for the quality check to report, not rewritten.
+    [InlineData("NPC을 고용할 수 있다.")]
+    // The demonstrative 이 before a number or tag (내가가, 그에게가, 어서가, 나는이 before).
+    [InlineData("내가 이 7년 동안 기다렸다.")]
+    [InlineData("그에게 이 100골드를 건네라.")]
+    [InlineData("어서 이 <Alias=QuestItem>을 가져가.")]
+    [InlineData("나는 이 <Alias=QuestItem>을 지켜야 한다.")]
+    [InlineData("그대가 이 <mag>포인트를 감당할 수 있겠나?")]
+    // ㅅ-irregular and 모으다 verb forms (뒤이는, 죄지는, 끌어모는, 끌어모를, 관련지를 before).
+    [InlineData("뒤이은 혼란 속에서 도망쳤다.")]
+    [InlineData("죄지은 자는 벌을 받는다.")]
+    [InlineData("끌어모은 군대가 진격했다.")]
+    [InlineData("병력을 끌어모을 수 있다.")]
+    [InlineData("두 사건을 관련지을 증거가 없다.")]
+    public void Fix_LeavesCorrectTextFromTheAudit(string text)
+    {
+        Assert.Equal(text, KoreanTranslationFixer.Fix("korean", text));
+    }
+
     public static IEnumerable<object[]> TermParticleCases()
     {
         yield return new object[] { "화이트런", "와 싸웠다.", "화이트런과 싸웠다." };
@@ -48,7 +81,15 @@ public class KoreanParticleOverCorrectionTests
         yield return new object[] { "마르카스", "으로부터 왔다.", "마르카스로부터 왔다." };
         yield return new object[] { "해머펠", "로 향했다.", "해머펠로 향했다." };
         yield return new object[] { "리프튼", "로 향했다.", "리프튼으로 향했다." };
-        yield return new object[] { "Skyrim", "가 좋다.", "Skyrim이 좋다." };
+        // After a Latin term only an acronym's reading is certain (letter by letter: 엔피시, 엠시엠).
+        // For other words the last letter is a guess, so the model's particle stays and only a
+        // marker written both ways is resolved by it.
+        yield return new object[] { "NPC", "은 공격하지 않는다.", "NPC는 공격하지 않는다." };
+        yield return new object[] { "MCM", "를 연다.", "MCM을 연다." };
+        yield return new object[] { "NPC", "을(를) 고용한다.", "NPC를 고용한다." };
+        yield return new object[] { "Rune", "을 새겼다.", "Rune을 새겼다." };
+        yield return new object[] { "Nexus", "를 방문했다.", "Nexus를 방문했다." };
+        yield return new object[] { "Skyrim", "이(가) 좋다.", "Skyrim이 좋다." };
         yield return new object[] { "야를", "과의 대화", "야를과의 대화" };
         // Both forms written after the token (1.9 evaluation: "히얄마치를(를)", "요새는(는)", "자리-라가(가)").
         yield return new object[] { "히얄마치", "을(를) 탈환하면", "히얄마치를 탈환하면" };

@@ -105,7 +105,7 @@ internal static class ParticleRules
 
     private static void TryAddRomanParticleMismatchIssue(LqaScanEntry entry, string sourceText, string destText, List<LqaIssue> issues)
     {
-        var romanMismatch = LqaHeuristics.FindRomanVowelParticleMismatchSuggestion(destText);
+        var romanMismatch = LqaHeuristics.FindRomanParticleMismatchSuggestion(destText);
         if (string.IsNullOrWhiteSpace(romanMismatch))
         {
             return;

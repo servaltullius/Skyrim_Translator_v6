@@ -39,6 +39,8 @@ internal static class KoreanParticleSelector
         return HasFinalConsonant(last) ? "을" : "를";
     }
 
+    // Only for a marker written both ways ("NPC을(를)"). A single particle the model wrote after a Latin
+    // word is never rewritten: it chose by pronunciation (NPC는, Rune을), which the spelling cannot overrule.
     public static string ChooseObjectParticleLatin(string noun)
         => HasFinalConsonantLatin(noun) ? "을" : "를";
 
@@ -116,33 +118,32 @@ internal static class KoreanParticleSelector
         return expected;
     }
 
-    public static string FixSubjectParticleSafelyLatin(string noun, string particle)
+    // Words whose last syllable looks like 을/은 after a vowel but is part of the word:
+    // nouns (마을, 수은), ㅅ-irregular verb forms (더 나은, 뒤이은, 죄지은, 관련지을 수) and 모으다
+    // (끌어모은 군대, 끌어모을 수). The step regexes split "시골마을" or "뒤이은" as noun + particle,
+    // which rewrote 뒤이은 혼란 to 뒤이는 and 끌어모을 수 to 끌어모를.
+    private static readonly HashSet<string> VowelThenEulEunWords = new(StringComparer.Ordinal)
     {
-        var expected = HasFinalConsonantLatin(noun) ? "이" : "가";
-        return string.Equals(particle, expected, StringComparison.Ordinal) ? particle : expected;
-    }
+        "마을", "가을", "고을", "노을", "나을", "지을", "이을", "부을", "그을", "저을", "모을",
+        "수은", "보은", "나은", "지은", "이은", "부은", "그은", "저은", "모은",
+    };
 
-    // Nouns that end in "을" themselves; in compounds ("시골마을") the regex splits them as noun + "을".
-    private static readonly string[] WordsEndingInEul = { "마을", "가을", "고을", "노을" };
+    /// <summary>
+    /// True when the 을/은 after <paramref name="word"/> ends a word such as 마을, 뒤이은 or 끌어모을
+    /// rather than being a particle. The fixer and the quality check share this list so they agree.
+    /// </summary>
+    public static bool EndsWithEulEunWord(string word, string particle)
+        => word.Length > 0 && VowelThenEulEunWords.Contains(word[^1] + particle);
 
     public static string FixObjectParticleSafely(string noun, string particle)
     {
-        if (string.Equals(particle, "을", StringComparison.Ordinal))
+        if (EndsWithEulEunWord(noun, particle))
         {
-            foreach (var word in WordsEndingInEul)
-            {
-                if (noun.EndsWith(word[..1], StringComparison.Ordinal))
-                {
-                    return particle;
-                }
-            }
+            return particle;
         }
 
         return FixParticleSafely(noun, particle, ChooseObjectParticle, unsafeParticle: "을", unsafeExpected: "를");
     }
-
-    public static string FixObjectParticleSafelyLatin(string noun, string particle)
-        => FixParticleSafely(noun, particle, ChooseObjectParticleLatin, unsafeParticle: "을", unsafeExpected: "를");
 
     public static string FixTopicParticleSafely(string noun, string particle)
     {
@@ -155,6 +156,11 @@ internal static class KoreanParticleSelector
         // "…는" after a consonant is almost always an attributive verb ending
         // ("살아남는", "잡아먹는", "있는"), not a wrong topic particle. Never rewrite it to "은".
         if (string.Equals(particle, "는", StringComparison.Ordinal))
+        {
+            return particle;
+        }
+
+        if (EndsWithEulEunWord(noun, particle))
         {
             return particle;
         }
@@ -184,7 +190,7 @@ internal static class KoreanParticleSelector
     {
         particle = "";
         length = 0;
-        if (!TryGetFinalSound(term, out var hasFinal, out var finalRieul))
+        if (!TryGetFinalSound(term, out var hasFinal, out var finalRieul, out var certain))
         {
             return false;
         }
@@ -204,6 +210,14 @@ internal static class KoreanParticleSelector
                 if (!IsParticleEnd(text, end, ContinuationsFor(consonantForm)))
                 {
                     continue;
+                }
+
+                // After a Latin term read as a word, its last letter is only a guess ("Rune" is 룬, so
+                // Rune을; "Nexus" is 넥서스, so Nexus를). Keep the single particle the model wrote and
+                // resolve only a marker written both ways, which has to become one form or the other.
+                if (!certain && (written == consonantForm || written == vowelForm))
+                {
+                    return false;
                 }
 
                 var useConsonantForm = consonantForm == "으로" ? hasFinal && !finalRieul : hasFinal;
@@ -259,10 +273,12 @@ internal static class KoreanParticleSelector
         return false;
     }
 
-    private static bool TryGetFinalSound(string term, out bool hasFinal, out bool finalRieul)
+    /// <param name="certain">False when the sound is only guessed from the last Latin letter of a word.</param>
+    private static bool TryGetFinalSound(string term, out bool hasFinal, out bool finalRieul, out bool certain)
     {
         hasFinal = false;
         finalRieul = false;
+        certain = true;
         if (string.IsNullOrEmpty(term))
         {
             return false;
@@ -283,11 +299,16 @@ internal static class KoreanParticleSelector
             return true;
         }
 
-        if (last is >= 'A' and <= 'Z' or >= 'a' and <= 'z')
+        if (IsAsciiLetter(last))
         {
-            var lower = char.ToLowerInvariant(last);
-            hasFinal = !IsLatinVowel(lower);
-            finalRieul = lower == 'l';
+            if (!TryGetAcronymFinalSound(term, out hasFinal, out finalRieul))
+            {
+                var lower = char.ToLowerInvariant(last);
+                hasFinal = !IsLatinVowel(lower);
+                finalRieul = lower == 'l';
+                certain = false;
+            }
+
             return true;
         }
 
@@ -296,9 +317,56 @@ internal static class KoreanParticleSelector
         return false;
     }
 
-    public static string FixTopicParticleSafelyLatin(string noun, string particle)
-        => FixParticleSafely(noun, particle, ChooseTopicParticleLatin, unsafeParticle: "은", unsafeExpected: "는");
+    // Longer all-caps words are more often shouted words (WARNING, SKYRIM) than acronyms.
+    private const int MaxAcronymLength = 5;
 
+    /// <summary>
+    /// Reads the final sound of a word that ends in an all-caps acronym such as NPC, HP or MCM. Korean
+    /// readers say an acronym letter by letter, and of the letter names only L, M, N and R end in a
+    /// consonant (엘, 엠, 엔, 알): NPC는 (엔피시), HP가 (에이치피), DLC를 (디엘시), MCM을 (엠시엠).
+    /// Returns false for any other word, which is read as a word: Rune을 (룬), Nexus를 (넥서스).
+    /// </summary>
+    public static bool TryGetAcronymFinalSound(string word, out bool hasFinal, out bool finalRieul)
+    {
+        hasFinal = false;
+        finalRieul = false;
+
+        var start = word.Length;
+        while (start > 0 && IsAsciiLetter(word[start - 1]))
+        {
+            start--;
+        }
+
+        var letters = word.Length - start;
+        if (letters is 0 or > MaxAcronymLength)
+        {
+            return false;
+        }
+
+        var romanNumeral = letters >= 2;
+        for (var i = start; i < word.Length; i++)
+        {
+            if (word[i] is not (>= 'A' and <= 'Z'))
+            {
+                return false;
+            }
+
+            romanNumeral &= word[i] is 'I' or 'V' or 'X';
+        }
+
+        // Roman numerals are read as numbers, not letter names: "Septim VII" is 셉팀 칠세.
+        if (romanNumeral)
+        {
+            return false;
+        }
+
+        hasFinal = word[^1] is 'L' or 'M' or 'N' or 'R';
+        finalRieul = word[^1] is 'L' or 'R';
+        return true;
+    }
+
+    // Resolves a marker written both ways after a Latin word: by the acronym reading when there is
+    // one ("NPC을(를)" -> "NPC를"), otherwise by the last letter, which is right more often than not.
     private static bool HasFinalConsonantLatin(string noun)
     {
         if (string.IsNullOrWhiteSpace(noun))
@@ -314,15 +382,18 @@ internal static class KoreanParticleSelector
                 return DigitHasFinalConsonant(c);
             }
 
-            if (c is >= 'A' and <= 'Z' or >= 'a' and <= 'z')
+            if (IsAsciiLetter(c))
             {
-                var lower = char.ToLowerInvariant(c);
-                return !IsLatinVowel(lower);
+                return TryGetAcronymFinalSound(noun[..(i + 1)], out var hasFinal, out _)
+                    ? hasFinal
+                    : !IsLatinVowel(c);
             }
         }
 
         return true;
     }
+
+    private static bool IsAsciiLetter(char c) => c is >= 'A' and <= 'Z' or >= 'a' and <= 'z';
 
     private static string FixParticleSafely(
         string noun,

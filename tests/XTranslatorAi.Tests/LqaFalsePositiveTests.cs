@@ -45,6 +45,45 @@ public class LqaFalsePositiveTests
     public void ParticleMismatch_FindsWrongParticles(string dest, string expected)
         => Assert.Equal(expected, LqaHeuristics.FindHangulParticleMismatchSuggestion(dest, Terms));
 
+    // A Latin word is read as a word, so its last letter does not decide the particle (스톤을, 넥서스를, 룬을);
+    // a Roman numeral is read as a number (칠세). Correct particles after acronyms are not flagged either.
+    [Theory]
+    [InlineData("Rune Stone을 찾았다.")]
+    [InlineData("Rune을 새겼다.")]
+    [InlineData("Nexus를 방문하세요.")]
+    [InlineData("Enter를 누르세요.")]
+    [InlineData("Aela을 만났다.")]
+    [InlineData("Magicka을 흡수합니다.")]
+    [InlineData("NPC는 공격하지 않는다.")]
+    [InlineData("NPC가 말을 건다.")]
+    [InlineData("HP가 30% 미만일 때")]
+    [InlineData("DLC를 설치해야 한다.")]
+    [InlineData("MCM을 엽니다.")]
+    [InlineData("HTML은 지원하지 않습니다.")]
+    [InlineData("Uriel Septim VII은 암살당했다.")]
+    public void RomanParticleMismatch_IgnoresWordsReadAsWords(string dest)
+        => Assert.Null(LqaHeuristics.FindRomanParticleMismatchSuggestion(dest));
+
+    // An all-caps acronym is read letter by letter; only L, M, N and R (엘, 엠, 엔, 알) end in a consonant.
+    [Theory]
+    [InlineData("NPC을 고용합니다.", "NPC을 → NPC를")]
+    [InlineData("NPC은 공격하지 않는다.", "NPC은 → NPC는")]
+    [InlineData("HP이 30% 미만일 때", "HP이 → HP가")]
+    [InlineData("MCM를 엽니다.", "MCM를 → MCM을")]
+    [InlineData("SKSE과 함께 설치", "SKSE과 → SKSE와")]
+    public void RomanParticleMismatch_FindsWrongParticleAfterAcronym(string dest, string expected)
+        => Assert.Equal(expected, LqaHeuristics.FindRomanParticleMismatchSuggestion(dest));
+
+    // The fixer leaves these verb forms alone for the same reason the quality check does.
+    [Theory]
+    [InlineData("뒤이은 혼란 속에서")]
+    [InlineData("죄지은 자는 벌을 받는다.")]
+    [InlineData("끌어모은 군대")]
+    [InlineData("끌어모을 수 있다.")]
+    [InlineData("두 사건을 관련지을 증거")]
+    public void ParticleMismatch_IgnoresIrregularVerbForms(string dest)
+        => Assert.Null(LqaHeuristics.FindHangulParticleMismatchSuggestion(dest, Terms));
+
     [Theory]
     [InlineData("지팡이가 정말 훌륭하다.")]
     [InlineData("성능 차이가 존재합니다.")]

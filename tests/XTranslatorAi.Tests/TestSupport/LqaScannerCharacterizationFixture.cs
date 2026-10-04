@@ -47,8 +47,8 @@ internal static class LqaScannerCharacterizationFixture
                 Edid: "MGEF_ROMAN_001",
                 Rec: "MGEF:000004",
                 Status: StringEntryStatus.Done,
-                SourceText: "Meet Aela",
-                DestText: "Aela을 (테스트"
+                SourceText: "Meet Aela and the NPC",
+                DestText: "Aela와 NPC을 (테스트"
             ),
             new(
                 Id: 201,
@@ -183,7 +183,7 @@ internal static class LqaScannerCharacterizationFixture
             issue =>
             {
                 AssertIssueShape(issue, id: 104, orderIndex: 40, severity: "Warn", code: "particle_roman_mismatch");
-                AssertMessageContainsAll(issue.Message, "로마자", "Aela을", "Aela를");
+                AssertMessageContainsAll(issue.Message, "로마자", "NPC을", "NPC를");
             },
             issue =>
             {

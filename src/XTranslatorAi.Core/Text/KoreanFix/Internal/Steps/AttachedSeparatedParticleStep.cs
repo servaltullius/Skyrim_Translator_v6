@@ -4,6 +4,9 @@ using XTranslatorAi.Core.Text.KoreanFix.Internal;
 
 namespace XTranslatorAi.Core.Text.KoreanFix.Internal.Steps;
 
+// Particles attached to a Latin word are left as the model wrote them. Korean readers choose them by
+// how the word is read, not by its last letter: NPC는 (엔피시), HP가, DLC를, Enter를 (엔터), Nexus를
+// (넥서스), Rune을 (룬). Rewriting by the last letter turned these into NPC은, HP이, DLC을 and Rune를.
 internal sealed class AttachedSeparatedParticleStep : IKoreanFixStep
 {
     private const string ParticleBoundary = @"(?=$|[\s\p{P}])";
@@ -11,11 +14,6 @@ internal sealed class AttachedSeparatedParticleStep : IKoreanFixStep
 
     private static readonly Regex AttachedObjectParticleRegex = new(
         pattern: @"(?<noun>[가-힣]{1,30})(?<particle>을|를)" + ParticleBoundary,
-        options: RegexOptions.CultureInvariant
-    );
-
-    private static readonly Regex AttachedObjectParticleLatinRegex = new(
-        pattern: LatinNoun + @"(?<particle>을|를)" + ParticleBoundary,
         options: RegexOptions.CultureInvariant
     );
 
@@ -31,11 +29,6 @@ internal sealed class AttachedSeparatedParticleStep : IKoreanFixStep
 
     private static readonly Regex AttachedTopicParticleRegex = new(
         pattern: @"(?<noun>[가-힣]{1,30})(?<particle>은|는)" + ParticleBoundary,
-        options: RegexOptions.CultureInvariant
-    );
-
-    private static readonly Regex AttachedTopicParticleLatinRegex = new(
-        pattern: LatinNoun + @"(?<particle>은|는)" + ParticleBoundary,
         options: RegexOptions.CultureInvariant
     );
 
@@ -55,11 +48,6 @@ internal sealed class AttachedSeparatedParticleStep : IKoreanFixStep
     // Particles after glossary terms are fixed where the term is substituted.
     private static readonly Regex AttachedSubjectParticleRegex = new(
         pattern: @"(?<noun>체력|매지카|지구력)(?<particle>이|가)" + ParticleBoundary,
-        options: RegexOptions.CultureInvariant
-    );
-
-    private static readonly Regex AttachedSubjectParticleLatinRegex = new(
-        pattern: LatinNoun + @"(?<particle>이|가)" + ParticleBoundary,
         options: RegexOptions.CultureInvariant
     );
 
@@ -96,25 +84,7 @@ internal sealed class AttachedSeparatedParticleStep : IKoreanFixStep
                 }
             );
 
-            working = SeparatedObjectParticleLatinRegex.Replace(
-                working,
-                m =>
-                {
-                    var noun = m.Groups["noun"].Value;
-                    var particle = m.Groups["particle"].Value;
-                    return noun + KoreanParticleSelector.FixObjectParticleSafelyLatin(noun, particle);
-                }
-            );
-
-            working = AttachedObjectParticleLatinRegex.Replace(
-                working,
-                m =>
-                {
-                    var noun = m.Groups["noun"].Value;
-                    var particle = m.Groups["particle"].Value;
-                    return noun + KoreanParticleSelector.FixObjectParticleSafelyLatin(noun, particle);
-                }
-            );
+            working = SeparatedObjectParticleLatinRegex.Replace(working, JoinLatinParticle);
         }
 
         if (working.IndexOf('은') >= 0 || working.IndexOf('는') >= 0)
@@ -139,25 +109,7 @@ internal sealed class AttachedSeparatedParticleStep : IKoreanFixStep
                 }
             );
 
-            working = SeparatedTopicParticleLatinRegex.Replace(
-                working,
-                m =>
-                {
-                    var noun = m.Groups["noun"].Value;
-                    var particle = m.Groups["particle"].Value;
-                    return noun + KoreanParticleSelector.FixTopicParticleSafelyLatin(noun, particle);
-                }
-            );
-
-            working = AttachedTopicParticleLatinRegex.Replace(
-                working,
-                m =>
-                {
-                    var noun = m.Groups["noun"].Value;
-                    var particle = m.Groups["particle"].Value;
-                    return noun + KoreanParticleSelector.FixTopicParticleSafelyLatin(noun, particle);
-                }
-            );
+            working = SeparatedTopicParticleLatinRegex.Replace(working, JoinLatinParticle);
 
             // Some model outputs duplicate topic particles after pronouns: "저는은", "나는은", ...
             working = DuplicatePronounTopicParticleRegex.Replace(
@@ -180,18 +132,11 @@ internal sealed class AttachedSeparatedParticleStep : IKoreanFixStep
                     return noun + KoreanParticleSelector.FixSubjectParticleSafely(noun, particle);
                 }
             );
-
-            working = AttachedSubjectParticleLatinRegex.Replace(
-                working,
-                m =>
-                {
-                    var noun = m.Groups["noun"].Value;
-                    var particle = m.Groups["particle"].Value;
-                    return noun + KoreanParticleSelector.FixSubjectParticleSafelyLatin(noun, particle);
-                }
-            );
         }
 
         return working;
     }
+
+    // A spaced particle after a Latin word is only joined, keeping the particle as written: "NPC 를" -> "NPC를".
+    private static string JoinLatinParticle(Match m) => m.Groups["noun"].Value + m.Groups["particle"].Value;
 }

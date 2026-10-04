@@ -106,28 +106,32 @@ public class KoreanTranslationFixerTests
     }
 
     [Fact]
-    public void Fix_CorrectsAttachedObjectParticle_ForLatinNoun_WhenWrong()
-    {
-        var input = "Aela을 만났다.";
-        var output = KoreanTranslationFixer.Fix("korean", input);
-        Assert.Equal("Aela를 만났다.", output);
-    }
-
-    [Fact]
-    public void Fix_CorrectsAttachedObjectParticle_ForLatinNoun_WhenConsonantEnding()
-    {
-        var input = "Skyrim를 탐험합니다.";
-        var output = KoreanTranslationFixer.Fix("korean", input);
-        Assert.Equal("Skyrim을 탐험합니다.", output);
-    }
-
-    [Fact]
     public void Fix_ChoosesTopicParticle_ForParenthesizedParticle_ForLatinNoun()
     {
         var input = "Aela은(는) 동료입니다.";
         var output = KoreanTranslationFixer.Fix("korean", input);
         Assert.Equal("Aela는 동료입니다.", output);
     }
+
+    // An acronym is read letter by letter, and only L, M, N and R (엘, 엠, 엔, 알) end in a consonant.
+    // Other Latin words keep the last-letter choice: a marker must become one form or the other.
+    [Theory]
+    [InlineData("NPC을(를) 고용합니다.", "NPC를 고용합니다.")]
+    [InlineData("DLC를(을) 설치하세요.", "DLC를 설치하세요.")]
+    [InlineData("NPC은(는) 공격하지 않습니다.", "NPC는 공격하지 않습니다.")]
+    [InlineData("MCM를(을) 엽니다.", "MCM을 엽니다.")]
+    [InlineData("HTML는(은) 지원하지 않습니다.", "HTML은 지원하지 않습니다.")]
+    [InlineData("Skyrim을(를) 탐험합니다.", "Skyrim을 탐험합니다.")]
+    public void Fix_ResolvesMarkerAfterLatinWord_ByPronunciation(string input, string expected)
+        => Assert.Equal(expected, KoreanTranslationFixer.Fix("korean", input));
+
+    [Theory]
+    [InlineData("NPC 를 고용합니다.", "NPC를 고용합니다.")]
+    [InlineData("Rune 을 새겼다.", "Rune을 새겼다.")]
+    [InlineData("Nexus 를 방문하세요.", "Nexus를 방문하세요.")]
+    [InlineData("NPC 는 공격하지 않습니다.", "NPC는 공격하지 않습니다.")]
+    public void Fix_JoinsSpacedParticleAfterLatinWord_WithoutRewritingIt(string input, string expected)
+        => Assert.Equal(expected, KoreanTranslationFixer.Fix("korean", input));
 
     [Fact]
     public void Fix_CorrectsAttachedObjectParticle_WhenFollowedByPunctuation()
@@ -202,6 +206,15 @@ public class KoreanTranslationFixerTests
         Assert.Contains("중갑이", output);
         Assert.DoesNotContain("중갑 가", output);
     }
+
+    [Theory]
+    [InlineData("체력 가 <mag>포인트 회복됩니다.", "체력이 <mag>포인트 회복됩니다.")]
+    [InlineData("매지카 이 <dur>초 동안 재생되지 않습니다.", "매지카가 <dur>초 동안 재생되지 않습니다.")]
+    [InlineData("회복마법 가 <25%> 강화됩니다.", "회복마법이 <25%> 강화됩니다.")]
+    [InlineData("한손무기 가 +<mag> 증가합니다.", "한손무기가 +<mag> 증가합니다.")]
+    [InlineData("지구력 가 15 증가합니다.", "지구력이 15 증가합니다.")]
+    public void Fix_JoinsSeparatedSubjectParticle_AfterStatOrSkillBeforeNumber(string input, string expected)
+        => Assert.Equal(expected, KoreanTranslationFixer.Fix("korean", input));
 
     [Fact]
     public void Fix_ReordersMisplacedDurationTokenAfterTimePhrase()
@@ -346,24 +359,6 @@ public class KoreanTranslationFixerTests
         var input = "집가 멀다.";
         var output = KoreanTranslationFixer.Fix("korean", input);
         Assert.Equal("집가 멀다.", output);
-    }
-
-    [Fact]
-    public void Fix_CorrectsSubjectParticle_ForLatinNoun()
-    {
-        // Skyrim ends in consonant 'm' → should be 이
-        var input = "Skyrim가 좋다.";
-        var output = KoreanTranslationFixer.Fix("korean", input);
-        Assert.Equal("Skyrim이 좋다.", output);
-    }
-
-    [Fact]
-    public void Fix_CorrectsSubjectParticle_ForLatinNoun_VowelEnding()
-    {
-        // Aela ends in vowel 'a' → should be 가
-        var input = "Aela이 말했다.";
-        var output = KoreanTranslationFixer.Fix("korean", input);
-        Assert.Equal("Aela가 말했다.", output);
     }
 
     [Fact]
