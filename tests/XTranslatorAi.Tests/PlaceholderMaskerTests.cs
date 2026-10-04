@@ -285,5 +285,7 @@ public class PlaceholderMaskerTests
     {
         Assert.True(XTranslatorAi.Core.Text.LqaScanner.HasTokenMismatch("Hold [Sprint] to sprint while moving.", "이동 중에 [달리기] 키를 누르고 있으면 질주합니다."));
         Assert.False(XTranslatorAi.Core.Text.LqaScanner.HasTokenMismatch("Hold [Sprint] to sprint while moving.", "이동 중에 [Sprint] 키를 누르고 있으면 질주합니다."));
+        // A key kept in English is not English left in the translation.
+        Assert.Null(XTranslatorAi.Core.Text.LqaScanner.FindEnglishResidue("[Ready Weapon] 키를 눌러 무기를 꺼냅니다.", "Press [Ready Weapon] to draw your weapons."));
     }
 }

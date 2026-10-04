@@ -27,7 +27,7 @@ public sealed class PlaceholderMasker
         "PlacePlayerMarker", "MapLookMode", "NextPage", "PrevPage",
     };
 
-    private static readonly string ControlKeyPattern =
+    internal static readonly string ControlKeyPattern =
         @"\[(?-i:" + string.Join("|", ControlKeyNames.OrderByDescending(name => name.Length).Select(Regex.Escape)) + @")\]";
 
     private static readonly Regex PlaceholderRegex = new(

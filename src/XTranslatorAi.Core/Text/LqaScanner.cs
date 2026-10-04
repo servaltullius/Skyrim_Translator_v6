@@ -36,8 +36,9 @@ public readonly record struct LqaIssue(
 
 public static class LqaScanner
 {
+    // Control keys ("[Sprint]") stay in English on purpose, so they are not English left in a translation.
     private static readonly Regex UiTagTokenRegex = new(
-        pattern: @"[+-]?<" + TranslationConstants.StageDirectionGuard + @"\s*[^>]+\s*>|\[page ?break\]|__XT_[A-Za-z0-9_]+__",
+        pattern: @"[+-]?<" + TranslationConstants.StageDirectionGuard + @"\s*[^>]+\s*>|\[page ?break\]|__XT_[A-Za-z0-9_]+__|" + PlaceholderMasker.ControlKeyPattern,
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
