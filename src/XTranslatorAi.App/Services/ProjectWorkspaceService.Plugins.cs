@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Data;
@@ -30,9 +31,7 @@ public sealed partial class ProjectWorkspaceService
         ArgumentException.ThrowIfNullOrWhiteSpace(request.TargetEncoding);
         // Parse and validate the complete input before opening or replacing any project DB.
         var document = await PluginReader.ReadAsync(request.InputPath, request.Options, cancellationToken);
-        // The reader may have switched a UTF-8 setting to Windows-1252; the project follows what was read.
-        var dbPath = ProjectPaths.GetPluginProjectDbPath(request.InputPath, document.Info.Options,
-            request.TargetLanguage, request.TargetEncoding, _projectsRootOverride);
+        var dbPath = ResolvePluginProjectDbPath(request, document);
         var db = await ProjectDb.OpenOrCreateAsync(dbPath, cancellationToken);
         try
         {
@@ -57,6 +56,28 @@ public sealed partial class ProjectWorkspaceService
             await db.DisposeAsync();
             throw;
         }
+    }
+
+    /// <summary>
+    /// Project DBs are keyed on the source encoding, and the reader may read a UTF-8 setting as Windows-1252.
+    /// A mod update can cross that line: Mod.esp v1 is pure ASCII, so its 5,000 translated rows live in the
+    /// UTF-8 project; v2 adds one Windows-1252 apostrophe and is read as Windows-1252. Keying only on the
+    /// encoding read would open a new, empty project and leave the translated one unreachable. So an existing
+    /// project for the encoding read comes first (Serana's Windows-1252 project), then one for the setting,
+    /// then the setting's fallback project, for an update that drops the only Windows-1252 text. Only a plugin
+    /// with none of them gets a new project, keyed on the encoding read. The import then records the encoding
+    /// read in that project, and export converts from it.
+    /// </summary>
+    private string ResolvePluginProjectDbPath(LoadFromPluginRequest request, PluginDocument document)
+    {
+        var read = document.Info.Options;
+        var setting = request.Options.SourceEncoding;
+        var paths = new[] { read.SourceEncoding, setting, PluginReader.GetSourceEncodingFallback(setting) }
+            .OfType<string>()
+            .Select(encoding => ProjectPaths.GetPluginProjectDbPath(request.InputPath, read with { SourceEncoding = encoding },
+                request.TargetLanguage, request.TargetEncoding, _projectsRootOverride))
+            .ToArray();
+        return paths.FirstOrDefault(File.Exists) ?? paths[0];
     }
 
     public Task<PluginExportResult> ExportPluginAsync(ProjectDb db, PluginDocument document,
