@@ -120,7 +120,7 @@ public sealed partial class TranslationService
 
     private static GlossaryUpsertRequest CreateSessionAutoGlossaryRequest(string source, string target)
         => new(
-            Category: "Auto(Session)",
+            Category: GlossaryMerger.SessionAutoSuggestionCategory,
             SourceTerm: source,
             TargetTerm: target,
             Enabled: false,
