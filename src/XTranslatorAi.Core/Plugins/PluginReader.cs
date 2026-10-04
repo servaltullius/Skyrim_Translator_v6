@@ -80,7 +80,10 @@ public static class PluginReader
     /// English plugins are usually saved in Windows-1252, while the source encoding defaults to UTF-8, so a
     /// single "cliché" stopped the whole plugin from opening. When UTF-8 cannot decode the source text, the
     /// plugin is read again as Windows-1252 — unless some text was valid UTF-8, which a mixed file would
-    /// turn into mojibake ("â€™"); that keeps the original error.
+    /// turn into mojibake ("â€™"); that keeps the original error. Every byte sequence is valid Windows-1252,
+    /// so an older Korean translation saved in CP949 would also open, "검을" as "°ËÀ»", and a UTF-8
+    /// export would then write that mojibake over the Korean text. Such a file keeps the error too, with a
+    /// hint that it looks like CP949 Korean.
     /// </summary>
     private static PluginDocument ReadWithSourceEncodingFallback(string path, byte[] bytes, PluginReadOptions options,
         IReadOnlyDictionary<PluginStringTableKind, byte[]> tables, IReadOnlyDictionary<string, string> dependencies,
@@ -92,7 +95,7 @@ public static class PluginReader
             return ReadSnapshot(path, bytes, options, tables, dependencies, structure, cancellationToken, sources);
         }
         catch (InvalidDataException utf8Error) when (utf8Error.InnerException is DecoderFallbackException
-                                                      && PluginBinary.GetEncoding(options.SourceEncoding).CodePage == Encoding.UTF8.CodePage)
+                                                      && GetSourceEncodingFallback(options.SourceEncoding) != null)
         {
             PluginDocument? fallback = null;
             try
@@ -106,9 +109,9 @@ public static class PluginReader
             }
 
             var windows1252 = PluginBinary.GetEncoding(Windows1252);
-            if (fallback == null
-                || fallback.Fields.Any(field => WasValidUtf8(field.SourceText, windows1252))
-                || fallback.Tables.Values.SelectMany(table => table.Strings.Values).Any(text => WasValidUtf8(text, windows1252)))
+            if (fallback != null && LooksLikeCp949Korean(SourceTexts(fallback), windows1252))
+                throw new InvalidDataException(utf8Error.Message + Cp949KoreanHint, utf8Error.InnerException);
+            if (fallback == null || SourceTexts(fallback).Any(text => WasValidUtf8(text, windows1252)))
             {
                 throw;
             }
@@ -120,7 +123,79 @@ public static class PluginReader
         }
     }
 
+    /// <summary>
+    /// The encoding a plugin is read with when <paramref name="sourceEncoding"/> cannot decode it, or null when
+    /// that setting has no fallback. Only the UTF-8 default falls back, to Windows-1252.
+    /// </summary>
+    public static string? GetSourceEncodingFallback(string sourceEncoding)
+        => PluginBinary.GetEncoding(sourceEncoding).CodePage == Encoding.UTF8.CodePage ? Windows1252 : null;
+
     private const string Windows1252 = "windows-1252";
+
+    /// <summary>Appended to the decoding error; PluginUserFacingErrorClassifier turns it into the ks_c_5601-1987 hint.</summary>
+    internal const string Cp949KoreanHint = " CP949 한글 원문으로 보입니다.";
+
+    /// <summary>Each source string once: inline fields, then every string-table entry (localized fields point into them).</summary>
+    private static IEnumerable<string> SourceTexts(PluginDocument document)
+        => document.Fields.Where(field => field.TableKind == null).Select(field => field.SourceText)
+            .Concat(document.Tables.Values.SelectMany(table => table.Strings.Values));
+
+    /// <summary>
+    /// Whether text read as Windows-1252 is really CP949 Korean. Smart punctuation alone often forms valid
+    /// CP949 pairs — "’s" (0x92 0x73) is the rare syllable "뭩" and "—a" is "뾞" — so only the 2,350 common
+    /// KS X 1001 syllables (lead 0xB0-0xC8, trail 0xA1-0xFE) count. They must form at least one word of two
+    /// syllables and make up most of the non-ASCII bytes, which Serana's "cliché" or an English "Don’t—ever"
+    /// does not.
+    /// </summary>
+    private static bool LooksLikeCp949Korean(IEnumerable<string> texts, Encoding windows1252)
+    {
+        var cp949 = PluginBinary.GetEncoding("ks_c_5601-1987");
+        var nonAsciiBytes = 0;
+        var syllableBytes = 0;
+        var hasWord = false;
+        foreach (var text in texts)
+        {
+            if (text.All(char.IsAscii))
+            {
+                continue;
+            }
+
+            var bytes = windows1252.GetBytes(text);
+            nonAsciiBytes += bytes.Count(value => value >= 0x80);
+            try
+            {
+                _ = cp949.GetString(bytes);
+            }
+            catch (DecoderFallbackException)
+            {
+                continue;
+            }
+
+            var run = 0;
+            for (var i = 0; i < bytes.Length; i++)
+            {
+                // A valid CP949 string pairs every byte 0x81-0xFE with a trail byte; 0x80 and 0xFF stand alone.
+                if (bytes[i] is < 0x81 or 0xFF)
+                {
+                    run = 0;
+                    continue;
+                }
+
+                var lead = bytes[i];
+                var trail = bytes[++i];
+                if (lead is < 0xB0 or > 0xC8 || trail < 0xA1)
+                {
+                    run = 0;
+                    continue;
+                }
+
+                syllableBytes += 2;
+                hasWord |= ++run >= 2;
+            }
+        }
+
+        return hasWord && syllableBytes * 2 > nonAsciiBytes;
+    }
 
     private static bool WasValidUtf8(string text, Encoding windows1252)
     {

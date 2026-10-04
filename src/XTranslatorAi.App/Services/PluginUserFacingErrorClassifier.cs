@@ -35,10 +35,14 @@ public static class PluginUserFacingErrorClassifier
                 var rowHint = rows.Success ? " 관련 행: " + rows.Groups["ids"].Value : "";
                 return Error("E453", $"{table} StringID {id}를 공유하는 행의 번역이 다릅니다. Search에 string:{table.ToUpperInvariant()}/{id}를 입력하고 Status를 (All)로 설정한 뒤, 공유 행의 번역을 모두 일치시켜 저장하세요.{rowHint}");
             }
-            var decoding = Match(message, $@"^원문 인코딩으로 해석할 수 없습니다: (?<id>{Field}|{Table}:[0-9]{{1,10}}|EDID|MAST)\. 올바른 인코딩을 선택하세요\.$");
+            var decoding = Match(message, $@"^원문 인코딩으로 해석할 수 없습니다: (?<id>{Field}|{Table}:[0-9]{{1,10}}|EDID|MAST)\. 올바른 인코딩을 선택하세요\.(?<korean> CP949 한글 원문으로 보입니다\.)?$");
             if (decoding.Success)
             {
                 var location = decoding.Groups["id"].Value;
+                // The reader refused its windows-1252 fallback because the text reads as CP949 Korean
+                // (an older Korean translation); windows-1252 would turn it into mojibake.
+                if (decoding.Groups["korean"].Success)
+                    return Error("E452", $"{location}을 현재 원문 인코딩으로 해석할 수 없습니다. CP949로 저장된 한글 원문으로 보입니다. 원문 인코딩을 ks_c_5601-1987(CP949)로 선택하여 다시 열어주세요. 영문 원문이면 windows-1252를 선택하세요.");
                 var setting = location is "EDID" or "MAST" ? "메타데이터 인코딩" : "원문 인코딩";
                 return Error("E452", $"{location}을 현재 {setting}으로 해석할 수 없습니다. 원본에 맞는 {setting}을 선택하여 다시 열어주세요.");
             }

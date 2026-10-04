@@ -296,6 +296,49 @@ public sealed class PluginReadWriteTests
     }
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Cp949KoreanPlugin_OpenedWithTheUtf8Default_KeepsTheErrorWithAKoreanHint(bool localized)
+    {
+        // An older Korean translation saved in CP949. Its bytes are valid Windows-1252 too, which would read
+        // "검을 찾아라" as "°ËÀ» Ã£¾Æ¶ó" and write that mojibake into the next UTF-8 export.
+        var cp949 = PluginBinary.GetEncoding("ks_c_5601-1987");
+        var plugin = Header(localized).Concat(Group(
+            Record("WEAP", 0x800, Sub("FULL", localized ? UInt(1) : cp949.GetBytes("강철 검을 찾아라\0"))),
+            Record("WEAP", 0x801, Sub("FULL", localized ? UInt(2) : Z("Sword"))))).ToArray();
+        using var fixture = new Fixture(plugin);
+        if (localized) fixture.Table(PluginStringTableKind.Strings, new() { [1] = "강철 검을 찾아라", [2] = "Sword" }, cp949);
+
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() => PluginReader.ReadAsync(fixture.Input, new(), default));
+
+        Assert.IsType<DecoderFallbackException>(error.InnerException);
+        Assert.EndsWith(PluginReader.Cp949KoreanHint, error.Message);
+        var korean = await PluginReader.ReadAsync(fixture.Input, new(SourceEncoding: "ks_c_5601-1987"), default);
+        Assert.Equal(new[] { "강철 검을 찾아라", "Sword" }, korean.Fields.Select(field => field.SourceText));
+    }
+
+    [Fact]
+    public async Task Windows1252SmartPunctuation_IsNotMistakenForCp949Korean()
+    {
+        // "Don’t—ever" and "Smith’s" are valid CP949 byte pairs (rare syllables), and "Æð" is even one common
+        // Hangul syllable, but none forms a Korean word, so these English strings still fall back.
+        var cp1252 = PluginBinary.GetEncoding("windows-1252");
+        var texts = new[]
+        {
+            "Smith’s Hammer", "Don’t—ever—stop", "“Wait…” – she said", "‘Cliché’ naïve señor", "Æðelred’s shield", "Sword",
+        };
+        var plugin = Header().Concat(Group(texts.Select((text, index) =>
+            Record("WEAP", 0x800u + (uint)index, Sub("FULL", cp1252.GetBytes(text + "\0")))).ToArray())).ToArray();
+        using var fixture = new Fixture(plugin);
+
+        var document = await PluginReader.ReadAsync(fixture.Input, new(), default);
+
+        Assert.Equal(texts, document.Fields.Select(field => field.SourceText));
+        Assert.Equal("windows-1252", document.Info.Options.SourceEncoding);
+        Assert.Contains(document.Info.Diagnostics, item => item.Code == "source_encoding_fallback");
+    }
+
+    [Theory]
     [InlineData("windows-1252", "windows-1252", "Café", false)]
     [InlineData("windows-1252", "windows-1252", "Café", true)]
     [InlineData("windows-1252", "utf-8", "Café", false)]
