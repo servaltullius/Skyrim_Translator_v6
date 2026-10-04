@@ -76,11 +76,13 @@ public partial class MainViewModel
                 ArchivePaths = null,
             };
             var previous = await Task.Run(() => PluginReader.ReadAsync(path, options, cancellationToken), cancellationToken);
-            var result = PreviousTranslationMatcher.Match(document.Fields, previous.Fields, LanguageHelper.IsKoreanLanguage(TargetLang));
+            // The master lists let a release that added or dropped a master still pair its FormIDs.
+            var result = PreviousTranslationMatcher.Match(document.Fields, document.Info.Masters,
+                previous.Fields, previous.Info.Masters, LanguageHelper.IsKoreanLanguage(TargetLang));
             if (result.TextByFieldKey.Count == 0)
             {
                 StatusMessage = $"이전 번역을 연결하지 못했습니다: {Path.GetFileName(path)}에서 같은 레코드의 번역문을 찾지 못했습니다. "
-                    + "같은 모드의 이전 번역판인지, 마스터 파일 구성이 같은지 확인하세요.";
+                    + "같은 모드의 이전 번역판인지 확인하세요.";
                 return;
             }
 
@@ -92,7 +94,8 @@ public partial class MainViewModel
 
             await RefreshPreviousTranslationsAsync(cancellationToken);
             StatusMessage = $"이전 번역 {result.TextByFieldKey.Count}행을 연결했습니다({Path.GetFileName(path)}). "
-                + $"제외: 이전 판에 없음 {result.NotInPreviousRelease}, 원문 그대로 {result.SameAsSource}, 번역 안 됨 {result.NotTranslated}. "
+                + $"제외: 이전 판에 없음 {result.NotInPreviousRelease}, 레코드 구성이 바뀜 {result.ChangedRecord}, "
+                + $"원문 그대로 {result.SameAsSource}, 번역 안 됨 {result.NotTranslated}. "
                 + "다음 번역부터 참고합니다. 이미 번역된 행에 반영하려면 '다시 번역'을 쓰세요.";
         });
     }
