@@ -95,6 +95,11 @@ public partial class MainViewModel
     {
         get
         {
+            if (Entries.Count == 0)
+            {
+                return "";
+            }
+
             var visible = EntriesView is System.Windows.Data.CollectionView view ? view.Count : TotalCount;
             return visible == Entries.Count ? $"전체 {Entries.Count}행" : $"표시 {visible} / 전체 {Entries.Count}행";
         }
