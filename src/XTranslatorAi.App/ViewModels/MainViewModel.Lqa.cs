@@ -38,9 +38,10 @@ public partial class MainViewModel
             LqaIssues.ReplaceAll(issues);
             LqaIssuesView.Refresh();
 
-            if (LqaIssues.Count > 0 && SelectedLqaIssue == null)
+            // The first result the list shows: with "참고 숨기기" the first result may be hidden.
+            if (SelectedLqaIssue == null && LqaIssuesView.Cast<LqaIssueViewModel>().FirstOrDefault() is { } first)
             {
-                SelectedLqaIssue = LqaIssues[0];
+                SelectedLqaIssue = first;
             }
 
             StatusMessage = LqaIssues.Count == 0

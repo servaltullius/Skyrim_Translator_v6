@@ -27,4 +27,25 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Equal(new long[] { 1, 3 }, fixture.Vm.LqaIssuesView.Cast<LqaIssueViewModel>().Select(i => i.Id));
             Assert.Equal("표시 2 / 전체 3건", fixture.Vm.LqaTab.LqaVisibleSummary);
         });
+
+    /// <summary>A scan selected its first result even when "참고 숨기기" hid it, so the editor showed a row not in the list.</summary>
+    [Fact]
+    public Task Scan_WithInformationHidden_SelectsOnlyAVisibleResult()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            var rows = await LoadXmlWorkspaceAsync(fixture, "Iron Sword");
+            var db = fixture.State.Db!;
+            await db.UpdateStringTranslationAsync(rows[0].Id, "철 검", XTranslatorAi.Core.Models.StringEntryStatus.Done, null, CancellationToken.None);
+            (rows[0].DestText, rows[0].Status) = ("철 검", XTranslatorAi.Core.Models.StringEntryStatus.Done);
+            await db.UpsertStringNoteAsync(rows[0].Id, "tm_fallback", "TM 대신 번역", CancellationToken.None);
+            fixture.Vm.SelectedEntry = null;
+            fixture.Vm.LqaTab.LqaHideInfo = true;
+
+            await fixture.Vm.ScanLqaCommand.ExecuteAsync(null);
+
+            Assert.Contains(fixture.Vm.LqaIssues, i => i.Severity == "Info");
+            Assert.Empty(fixture.Vm.LqaIssuesView.Cast<LqaIssueViewModel>());
+            Assert.Null(fixture.Vm.SelectedLqaIssue);
+        });
 }
