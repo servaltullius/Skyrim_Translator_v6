@@ -7,7 +7,7 @@
 | 항목 | 값 |
 |---|---|
 | 처리한 항목 | 84개(+ 배포 9회, 아침 결정 반영 #79~#84 포함) |
-| 로컬 커밋 | 129개(origin/main보다 앞섬, push 대기) |
+| 로컬 커밋 | 139개(origin/main보다 앞섬, push 대기) |
 | 테스트 | 1,450 → 1,669개, 모두 통과, 빌드 경고 0 |
 | 루트 EXE | 1.11-preview9(SHA-256 06925152…A9CE), 이전 빌드는 `artifacts/overnight-1.11-previewN-20261005/deployment/` |
 | 최종 회귀 평가 | 실패 0, chrF 52.67(1.10-preview3 기준 52.43), 엘든림 용어 16/16 |
@@ -72,7 +72,7 @@ $2.481: 설명 문체 A/B $0.146, 회귀 평가 4회 $1.610, 하위 용어·반�
 
 ## push 대기
 
-`git log origin/main..main`: 129개 커밋(5aded54 … 최신). 확인 뒤 push하면 된다. worktree 하위 에이전트가 남긴 브랜치 2개(`worktree-agent-a4aeb85c8207a8b92`, `worktree-agent-a767c60a1967136bb`)는 이미 main에 cherry-pick했으니 지워도 된다.
+`git log origin/main..main`: 139개 커밋(5aded54 … 최신). 확인 뒤 push하면 된다. worktree 하위 에이전트가 남긴 브랜치 2개(`worktree-agent-a4aeb85c8207a8b92`, `worktree-agent-a767c60a1967136bb`)는 이미 main에 cherry-pick했으니 지워도 된다.
 
 ## 검수할 만한 남은 행(검수 끝난 프로젝트 사본에 새 품질 검사를 돌린 결과)
 
