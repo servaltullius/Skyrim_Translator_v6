@@ -48,6 +48,8 @@ public sealed class BuiltInGlossaryService
         new("2026-10-03.3", new[] { "Psijic Order", "Elder Council", "Black-Briar", "Artaeum", "Honningbrew" }, Array.Empty<(string, string)>()),
         // The official translation (built-in TM) names the smithing tiers 초급, 중급, 상급; 하급 for Fine broke the set.
         new("2026-10-04", Array.Empty<string>(), new[] { ("Fine", "하급") }),
+        // Decided 2026-10-05 after comparing with the official translation (Iron Boots 철 전투화, Fortify Smithing 제련 강화).
+        new("2026-10-05", Array.Empty<string>(), new[] { ("Boots", "부츠"), ("Smithing", "대장"), ("Fortify Smithing", "대장 강화") }),
     };
 
     /// <summary>

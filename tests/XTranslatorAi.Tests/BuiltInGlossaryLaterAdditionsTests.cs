@@ -160,6 +160,34 @@ public class BuiltInGlossaryLaterAdditionsTests : IAsyncLifetime
         Assert.Equal(expected, Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Fine").TargetTerm);
     }
 
+    // Decided 2026-10-05 (official translation: Iron Boots 철 전투화, Fortify Smithing 제련 강화).
+    [Theory]
+    [InlineData("Boots", "부츠", "Built-in default glossary", "전투화")]
+    [InlineData("Smithing", "대장", "Built-in default glossary", "제련")]
+    [InlineData("Fortify Smithing", "대장 강화", "Built-in default glossary", "제련 강화")]
+    [InlineData("Boots", "부츠", null, "부츠")]
+    public async Task BootsAndSmithing_AreCorrected_OnlyWhereTheUserKeptTheOldOne(string source, string target, string? note, string expected)
+    {
+        await _db.BulkInsertGlossaryAsync(
+            new[] { ((string?)null, source, target, true, 10, (int)GlossaryMatchMode.WordBoundary, (int)GlossaryForceMode.ForceToken, note) },
+            CancellationToken.None);
+
+        await AddAllBatchesAsync();
+
+        Assert.Equal(expected, Assert.Single(await GlossaryAsync(), e => e.SourceTerm == source).TargetTerm);
+    }
+
+    [Fact]
+    public async Task NewGlossary_GetsBootsAndSmithingAsDecided()
+    {
+        await new BuiltInGlossaryService().EnsureBuiltInGlossaryAsync(_db, CancellationToken.None);
+
+        var glossary = await GlossaryAsync();
+        Assert.Equal("전투화", Assert.Single(glossary, e => e.SourceTerm == "Boots").TargetTerm);
+        Assert.Equal("제련", Assert.Single(glossary, e => e.SourceTerm == "Smithing").TargetTerm);
+        Assert.Equal("제련 강화", Assert.Single(glossary, e => e.SourceTerm == "Fortify Smithing").TargetTerm);
+    }
+
     [Fact]
     public async Task NewGlossary_GetsTheOfficialFineTier()
     {
