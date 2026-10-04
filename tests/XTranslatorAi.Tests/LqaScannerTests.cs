@@ -156,6 +156,24 @@ public class LqaScannerTests
         Assert.Contains(issues, i => i.Code == "book_pagebreak_mismatch" && i.Id == 1);
     }
 
+    // The masker protects LotD's "[page break]" and "<page break>" too, so the book check counts them.
+    [Theory]
+    [InlineData("[page break]")]
+    [InlineData("<page break>")]
+    public async Task Scan_Book_CountsEveryPageBreakForm(string pageBreak)
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            new(1, 1, "BookTest", "BOOK:00000001", StringEntryStatus.Done, $"Page one.{pageBreak}Page two.", "1페이지. 2페이지."),
+            new(2, 2, "BookTest2", "BOOK:00000002", StringEntryStatus.Done, $"Page one.{pageBreak}Page two.", $"1페이지.{pageBreak}2페이지."),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", forceTokenGlossary: new List<GlossaryEntry>());
+
+        Assert.Contains(issues, i => i.Code == "book_pagebreak_mismatch" && i.Id == 1);
+        Assert.DoesNotContain(issues, i => i.Code == "book_pagebreak_mismatch" && i.Id == 2);
+    }
+
     [Fact]
     public async Task Scan_Book_PagebreakCountMatch_NoPagebreakIssue()
     {

@@ -112,6 +112,25 @@ public class TokenAwareTextSplitterTests
         Assert.Equal(text, string.Concat(chunks));
     }
 
+    // Legacy of the Dragonborn's other page break forms were split by length instead.
+    [Theory]
+    [InlineData("[page break]")]
+    [InlineData("<page break>")]
+    [InlineData("<pagebreak>")]
+    public void SplitAtPagebreaks_RecognizesEveryPageBreakForm(string pageBreak)
+    {
+        var text = "Page one content.__XT_PH_0001__Page two content.__XT_PH_0002__Page three content.";
+        var tokenMap = new Dictionary<string, string>
+        {
+            ["__XT_PH_0001__"] = pageBreak,
+            ["__XT_PH_0002__"] = pageBreak,
+        };
+
+        var chunks = TokenAwareTextSplitter.SplitAtPagebreaks(text, maxCharsPerChunk: 40, tokenMap);
+
+        Assert.Equal(new[] { "Page one content.__XT_PH_0001__", "Page two content.__XT_PH_0002__", "Page three content." }, chunks);
+    }
+
     [Fact]
     public void SplitAtPagebreaks_ShortPages_MergesWithinLimit()
     {

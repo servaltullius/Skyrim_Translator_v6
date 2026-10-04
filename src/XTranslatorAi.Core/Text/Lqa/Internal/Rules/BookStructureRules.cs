@@ -6,8 +6,9 @@ namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 
 internal static class BookStructureRules
 {
+    // The same page break forms the masker protects, so a dropped "[page break]" is reported here too.
     private static readonly Regex PagebreakRegex = new(
-        pattern: @"\[pagebreak\]",
+        pattern: ProtectedTextKinds.PageBreakPattern,
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
@@ -51,7 +52,7 @@ internal static class BookStructureRules
                 Rec: entry.Rec,
                 Severity: "Warn",
                 Code: "book_pagebreak_mismatch",
-                Message: $"BOOK: [pagebreak] 수 불일치 (원본: {sourceCount}, 번역: {destCount})",
+                Message: $"BOOK: 쪽 나눔([pagebreak]) 수 불일치 (원본: {sourceCount}, 번역: {destCount})",
                 SourceText: sourceText,
                 DestText: destText
             ));

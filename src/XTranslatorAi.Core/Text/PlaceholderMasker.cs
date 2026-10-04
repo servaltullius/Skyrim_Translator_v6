@@ -31,7 +31,7 @@ public sealed class PlaceholderMasker
         @"\[(?-i:" + string.Join("|", ControlKeyNames.OrderByDescending(name => name.Length).Select(Regex.Escape)) + @")\]";
 
     private static readonly Regex PlaceholderRegex = new(
-        pattern: @"(\r\n|\r|\n|[+-]?<" + TranslationConstants.StageDirectionGuard + @"[^>]+>[\t ]*%|[+-]?<" + TranslationConstants.StageDirectionGuard + @"[^>]+>|\[pagebreak\]|" + ControlKeyPattern + @"|%[A-Za-z0-9_]+%|%(?:[0-9]+\$)?[-+0-9.]*[A-Za-z]|\$[A-Za-z0-9_]+\$|\{\{[A-Za-z0-9_.,:+-]{1,40}\}\}|\{[A-Za-z0-9_.,:+-]{1,40}\}|[+-]?\d+(?:\.\d+)?[\t ]*%|%)",
+        pattern: @"(\r\n|\r|\n|[+-]?<" + TranslationConstants.StageDirectionGuard + @"[^>]+>[\t ]*%|[+-]?<" + TranslationConstants.StageDirectionGuard + @"[^>]+>|\[page ?break\]|" + ControlKeyPattern + @"|%[A-Za-z0-9_]+%|%(?:[0-9]+\$)?[-+0-9.]*[A-Za-z]|\$[A-Za-z0-9_]+\$|\{\{[A-Za-z0-9_.,:+-]{1,40}\}\}|\{[A-Za-z0-9_.,:+-]{1,40}\}|[+-]?\d+(?:\.\d+)?[\t ]*%|%)",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
@@ -96,7 +96,7 @@ public sealed class PlaceholderMasker
     }
 
     private static bool IsControlKey(string placeholder)
-        => placeholder.Length > 2 && placeholder[0] == '[' && !placeholder.Equals("[pagebreak]", StringComparison.OrdinalIgnoreCase);
+        => placeholder.Length > 2 && placeholder[0] == '[' && !ProtectedTextKinds.IsPageBreak(placeholder);
 
     private static bool ShouldKeepRawSkyrimTag(string placeholder)
     {

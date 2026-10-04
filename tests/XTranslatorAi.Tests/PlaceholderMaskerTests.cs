@@ -269,6 +269,33 @@ public class PlaceholderMaskerTests
         Assert.Equal("<헛기침> 좋아.", new PlaceholderMasker().Mask(translated).Text);
     }
 
+    // Legacy of the Dragonborn writes its page breaks as "[pagebreak]", "[page break]", "<page break>" and "<pagebreak>".
+    // "<page break>" was a value token free to move anywhere, and "[page break]" was not protected at all.
+    [Theory]
+    [InlineData("[pagebreak]")]
+    [InlineData("[page break]")]
+    [InlineData("[Page Break]")]
+    [InlineData("<page break>")]
+    [InlineData("<pagebreak>")]
+    public void Mask_TreatsEveryPageBreakFormAsLayout(string pageBreak)
+    {
+        var masked = new PlaceholderMasker().Mask($"Fate of the Snow Elves{pageBreak}Some things about the chronology.");
+
+        Assert.Equal("Fate of the Snow Elves__XT_PH_0000__Some things about the chronology.", masked.Text);
+        Assert.Equal(pageBreak, masked.TokenToOriginal["__XT_PH_0000__"]);
+    }
+
+    [Fact]
+    public void PageBreakMovedAcrossALine_IsRejected()
+    {
+        const string source = "Fate of the Snow Elves\n<page break>\nSome things.";
+
+        XTranslatorAi.Core.Translation.TokenValidator.ValidateFinalTextIntegrity(source, "스노우 엘프의 운명\n<page break>\n몇 가지.", "test");
+        Assert.Throws<InvalidOperationException>(() => XTranslatorAi.Core.Translation.TokenValidator.ValidateFinalTextIntegrity(
+            source, "스노우 엘프의 운명\n\n몇 가지.<page break>", "test"));
+        Assert.True(LqaScanner.HasTokenMismatch("One.[page break]Two.", "하나. 둘."));
+    }
+
     [Fact]
     public void Sanitizer_StillDropsMarkupTheSourceDoesNotHave()
     {

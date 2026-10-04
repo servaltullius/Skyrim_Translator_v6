@@ -37,10 +37,23 @@ internal static class ProtectedTextKinds
         return names;
     }
 
+    /// <summary>
+    /// Book page breaks. Skyrim writes "[pagebreak]"; Legacy of the Dragonborn also writes "[page break]",
+    /// "&lt;page break&gt;" and "&lt;pagebreak&gt;" (Druadach too). "&lt;page break&gt;" was masked as a value that may
+    /// move anywhere, and "[page break]" was not masked at all, though the quality check counts both.
+    /// </summary>
+    internal const string PageBreakPattern = @"\[page ?break\]|<\s*page\s*break\s*>";
+
+    private static readonly Regex PageBreakRegex = new(
+        pattern: @"^(?:" + PageBreakPattern + @")$",
+        options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
+    );
+
+    internal static bool IsPageBreak(string placeholder) => PageBreakRegex.IsMatch(placeholder);
+
     internal static bool IsLayout(string placeholder, ISet<string> formattingNames)
     {
-        if (placeholder is "\r\n" or "\r" or "\n"
-            || placeholder.Equals("[pagebreak]", StringComparison.OrdinalIgnoreCase))
+        if (placeholder is "\r\n" or "\r" or "\n" || IsPageBreak(placeholder))
         {
             return true;
         }

@@ -26,7 +26,7 @@ public static class TokenAwareTextSplitter
     }
 
     /// <summary>
-    /// Splits masked text preferring [pagebreak] token boundaries.
+    /// Splits masked text preferring page break token boundaries ([pagebreak], [page break], &lt;page break&gt;).
     /// Falls back to <see cref="Split"/> for segments that exceed <paramref name="maxCharsPerChunk"/>.
     /// Short adjacent segments are merged up to the char limit for efficiency.
     /// </summary>
@@ -68,8 +68,9 @@ public static class TokenAwareTextSplitter
         var positions = new List<(int Position, int Length)>();
         foreach (Match m in TokenRegex.Matches(text))
         {
-            if (tokenToOriginal.TryGetValue(m.Value, out var original)
-                && original.Equals("[pagebreak]", StringComparison.OrdinalIgnoreCase))
+            // Every page break form, not only Skyrim's "[pagebreak]": LotD's "<page break>" books were
+            // split by length instead (see ProtectedTextKinds.PageBreakPattern).
+            if (tokenToOriginal.TryGetValue(m.Value, out var original) && ProtectedTextKinds.IsPageBreak(original))
             {
                 positions.Add((m.Index, m.Length));
             }

@@ -16,7 +16,7 @@ internal static class TokenSanitizer
     );
 
     internal static readonly Regex RawPagebreakRegex = new(
-        pattern: @"\[pagebreak\]",
+        pattern: @"\[page ?break\]",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
@@ -159,10 +159,9 @@ internal static class TokenSanitizer
                 working = RawMarkupTagRegex.Replace(working, "");
             }
         }
-        if (working.IndexOf("[pagebreak]", StringComparison.OrdinalIgnoreCase) >= 0)
+        if (RawPagebreakRegex.IsMatch(working))
         {
-            var allowPagebreak = !string.IsNullOrWhiteSpace(inputText)
-                                 && inputText.IndexOf("[pagebreak]", StringComparison.OrdinalIgnoreCase) >= 0;
+            var allowPagebreak = !string.IsNullOrWhiteSpace(inputText) && RawPagebreakRegex.IsMatch(inputText);
             if (!allowPagebreak)
             {
                 working = RawPagebreakRegex.Replace(working, "");

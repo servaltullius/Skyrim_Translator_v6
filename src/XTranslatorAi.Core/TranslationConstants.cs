@@ -22,7 +22,7 @@ public static class TranslationConstants
         + @"(?![^<>]*[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7A3][^<>]*>)";
 
     public static readonly Regex UiTagTokenRegex = new(
-        pattern: @"[+-]?<" + StageDirectionGuard + @"\s*[^>]+\s*>|\[pagebreak\]|__XT_[A-Za-z0-9_]+__",
+        pattern: @"[+-]?<" + StageDirectionGuard + @"\s*[^>]+\s*>|\[page ?break\]|__XT_[A-Za-z0-9_]+__",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
