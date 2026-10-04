@@ -11,7 +11,7 @@ namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 internal static class ForeignScriptResidueRule
 {
     private static readonly Regex ForeignRunRegex = new(
-        @"[぀-ヿㇰ-ㇿ㐀-䶿一-鿿豈-﫿]+",
+        @"[\u3040-\u30FF\u31F0-\u31FF\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]+",
         RegexOptions.CultureInvariant
     );
 

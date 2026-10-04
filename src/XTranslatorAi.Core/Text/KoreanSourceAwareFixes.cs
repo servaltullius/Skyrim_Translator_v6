@@ -32,11 +32,11 @@ internal static class KoreanSourceAwareFixes
     );
 
     private static readonly Regex HanjaGlossRegex = new(
-        @"(?<=[가-힣])\((?:[㐀-䶿一-鿿豈-﫿]+)\)",
+        @"(?<=[가-힣])\((?:[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]+)\)",
         RegexOptions.CultureInvariant
     );
 
-    private static readonly Regex IdeographRegex = new(@"[㐀-䶿一-鿿豈-﫿]", RegexOptions.CultureInvariant);
+    private static readonly Regex IdeographRegex = new(@"[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]", RegexOptions.CultureInvariant);
 
     internal static string Apply(string targetLang, string sourceText, string text)
     {
