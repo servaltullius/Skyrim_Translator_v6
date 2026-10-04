@@ -197,7 +197,10 @@ public static class UserFacingErrorClassifier
                 "Token count mismatch",
                 "Missing placeholder token",
                 "Missing glossary token",
-                "xt_token_leak"
+                "xt_token_leak",
+                // The final check: RimImpactOfMob's "体力恢复速度减半" came back with an added "50%" and showed as E999.
+                "Protected text mismatch",
+                "Unexpected protected text"
             ))
         {
             return new UserFacingError(

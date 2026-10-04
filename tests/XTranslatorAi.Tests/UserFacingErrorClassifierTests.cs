@@ -29,6 +29,8 @@ public class UserFacingErrorClassifierTests
     [Theory]
     [InlineData("Translate batch failed: Model output missing id: 1429", "E320")]
     [InlineData("Translate batch failed: Model output missing id: 401", "E320")]
+    [InlineData("InvalidOperationException: Protected text mismatch for id=58 post-edits: 50% (expected 0, got 1).", "E330")]
+    [InlineData("Unexpected protected text for id=7: %s (expected 0, got 1).", "E330")]
     [InlineData("GenerateContent failed: HTTP 429 Too Many Requests. {\"error\":{\"status\":\"RESOURCE_EXHAUSTED\"}}", "E202")]
     [InlineData("GenerateContent failed: HTTP 400 Bad Request. {\"error\":{\"message\":\"API key not valid. Please pass a valid API key.\"}}", "E201")]
     public void ClassifyErrorMessage_ReadsStatusesOnlyWhereTheyAreStatuses(string message, string code)
