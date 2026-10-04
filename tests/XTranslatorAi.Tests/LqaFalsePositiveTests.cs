@@ -388,6 +388,25 @@ public class LqaFalsePositiveTests
         Assert.Equal(new long[] { 2 }, issues.Where(i => i.Code == "book_length_ratio").Select(i => i.Id));
     }
 
+    // Numbered steps and emoticons are unbalanced in the source too; only a bracket the translation
+    // lost or added on its own is reported.
+    [Theory]
+    [InlineData("1) Gather herbs. 2) Grind them.", "1) 약초를 모은다. 2) 빻는다.", false)]
+    [InlineData("See you soon :)", "곧 보자 :)", false)]
+    [InlineData("Step [1 of 3", "단계 [1/3", false)]
+    [InlineData("1) Gather herbs. 2) Grind them.", "1. 약초를 모은다. 2. 빻는다.", false)]
+    [InlineData("Restore (50 points) of Health.", "체력을 (50포인트 회복한다.", true)]
+    [InlineData("1) Gather herbs. 2) Grind them.", "1) 약초를 모은다. 빻는다.", true)]
+    [InlineData("Restore 50 points.", "체력을 50포인트] 회복한다.", true)]
+    public async Task BracketMismatch_ComparesWithTheSource(string source, string dest, bool expected)
+    {
+        var entries = new List<LqaScanEntry> { Row(1, "BOOK:DESC", dest, source) };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        Assert.Equal(expected, issues.Any(i => i.Code == "bracket_mismatch"));
+    }
+
     private static LqaScanEntry Row(long id, string rec, string dest, string source = "Source text.")
         => new(id, (int)id, $"EDID{id:000}", rec, StringEntryStatus.Done, source, dest);
 

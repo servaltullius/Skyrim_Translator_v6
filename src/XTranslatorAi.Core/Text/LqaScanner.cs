@@ -371,15 +371,23 @@ public static class LqaScanner
         return UiTagTokenRegex.Replace(text, "");
     }
 
-    internal static bool HasBracketMismatch(string text)
+    // An unbalanced translation is reported only when the source is not unbalanced the same way:
+    // numbered steps "1) Gather herbs. 2) Grind them." faithfully become "1) 약초를 모은다. 2) 빻는다.".
+    internal static bool HasBracketMismatch(string sourceText, string destText)
     {
-        if (string.IsNullOrEmpty(text))
+        if (string.IsNullOrEmpty(destText))
         {
             return false;
         }
 
-        return CountChar(text, '(') != CountChar(text, ')')
-               || CountChar(text, '[') != CountChar(text, ']');
+        return DiffersFromSource('(', ')') || DiffersFromSource('[', ']');
+
+        bool DiffersFromSource(char open, char close)
+        {
+            var destBalance = CountChar(destText, open) - CountChar(destText, close);
+            return destBalance != 0
+                   && destBalance != CountChar(sourceText ?? "", open) - CountChar(sourceText ?? "", close);
+        }
     }
 
     private static int CountChar(string text, char c)

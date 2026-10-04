@@ -6,7 +6,7 @@ internal static class BracketMismatchRule
 {
     public static void Apply(LqaScanEntry entry, string sourceText, string destText, List<LqaIssue> issues)
     {
-        if (!LqaScanner.HasBracketMismatch(destText))
+        if (!LqaScanner.HasBracketMismatch(sourceText, destText))
         {
             return;
         }
