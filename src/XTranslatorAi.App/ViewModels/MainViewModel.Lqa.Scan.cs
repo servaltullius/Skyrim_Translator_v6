@@ -21,7 +21,7 @@ public partial class MainViewModel
                         OrderIndex: e.OrderIndex,
                         Edid: e.Edid,
                         Rec: e.Rec,
-                        Status: e.Status,
+                        Status: LqaStatus(e),
                         SourceText: e.SourceText ?? "",
                         DestText: e.DestText ?? "",
                         PreviousText: e.PreviousTranslation
@@ -103,7 +103,7 @@ public partial class MainViewModel
         }
 
         var db = _projectState.Db;
-        var scanEntry = new LqaScanEntry(entry.Id, entry.OrderIndex, entry.Edid, entry.Rec, entry.Status,
+        var scanEntry = new LqaScanEntry(entry.Id, entry.OrderIndex, entry.Edid, entry.Rec, LqaStatus(entry),
             entry.SourceText ?? "", entry.DestText ?? "", entry.PreviousTranslation);
         var glossary = LanguageHelper.IsKoreanLanguage(TargetLang) ? BuildLqaForceTokenGlossary() : Array.Empty<GlossaryEntry>();
         var targetLang = TargetLang;
@@ -128,6 +128,17 @@ public partial class MainViewModel
 
         ClearLqaCommand.NotifyCanExecuteChanged();
     }
+
+    /// <summary>
+    /// An xTranslator XML opens its existing translations as 건너뜀 (Skipped); they are checked like finished rows. A row
+    /// skipped on purpose keeps its source text and has nothing to check.
+    /// </summary>
+    private static StringEntryStatus LqaStatus(StringEntryViewModel entry)
+        => entry.Status == StringEntryStatus.Skipped
+           && !string.IsNullOrWhiteSpace(entry.DestText)
+           && !string.Equals((entry.DestText ?? "").Trim(), (entry.SourceText ?? "").Trim(), StringComparison.Ordinal)
+            ? StringEntryStatus.Done
+            : entry.Status;
 
     private static int LqaSeverityWeight(string severity)
         => string.Equals(severity, "Error", StringComparison.OrdinalIgnoreCase) ? 0
