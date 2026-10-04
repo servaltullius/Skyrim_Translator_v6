@@ -172,8 +172,11 @@ public sealed class PluginReadWriteTests
     {
         using var fixture = new Fixture(Build(false));
         var document = await PluginReader.ReadAsync(fixture.Input, new(), default);
-        await Assert.ThrowsAsync<EncoderFallbackException>(() => PluginWriter.ExportAsync(document,
+        // The row and the character are named (E457 used to say only that some character could not be written).
+        var unencodable = await Assert.ThrowsAsync<InvalidDataException>(() => PluginWriter.ExportAsync(document,
             new Dictionary<string, string> { [document.Fields[0].Key] = "강철 검" }, new(fixture.Output, "windows-1252"), default));
+        Assert.IsType<EncoderFallbackException>(unencodable.InnerException);
+        Assert.EndsWith("U+AC15", unencodable.Message);
         await Assert.ThrowsAsync<InvalidDataException>(() => PluginWriter.ExportAsync(document,
             new Dictionary<string, string> { ["not-a-field"] = "test" }, new(fixture.Output), default));
         Assert.False(Directory.Exists(fixture.Output));

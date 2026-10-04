@@ -54,6 +54,9 @@ public static class PluginUserFacingErrorClassifier
                 return Error("E451", $"{missingId.Groups["table"].Value} 테이블에 StringID {missingId.Groups["id"].Value}가 없습니다. 플러그인 버전과 일치하는 원문 Strings/BSA를 선택하세요.");
             if (message.StartsWith("불러온 뒤 원본이 변경되었습니다. 다시 열어주세요: ", StringComparison.Ordinal))
                 return SourceChanged();
+            var unencodable = Match(message, $@"^출력 인코딩으로 표현할 수 없는 문자가 있습니다: (?<id>{Field}) (?<ch>U\+[0-9A-F]{{4}})$");
+            if (unencodable.Success)
+                return Error("E457", $"{unencodable.Groups["id"].Value}에 현재 출력 인코딩으로 표현할 수 없는 문자({unencodable.Groups["ch"].Value})가 있습니다. Search에 form:{unencodable.Groups["id"].Value[^8..]}을 입력해 행을 찾아 고치거나, UTF-8 출력 인코딩을 선택해 다시 여세요. 기존 번역은 그대로 이어집니다.");
             var translatedSource = Match(message, @"^번역된 플러그인을 원문으로 열 수 없습니다: (?<rows>[0-9]{1,7})행$");
             if (translatedSource.Success)
                 return Error("E460", $"이 프로젝트에서 번역해 저장한 플러그인으로 보입니다(원문 자리에 번역문이 있는 행 {translatedSource.Groups["rows"].Value}개). 번역 전 원본 플러그인을 여세요. 기존 번역은 그대로 남아 있습니다.");

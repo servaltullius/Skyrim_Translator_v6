@@ -33,7 +33,23 @@ public static class PluginWriter
             if (translated == null || (field.RequiresNonEmpty && string.IsNullOrWhiteSpace(translated)))
                 throw new InvalidDataException($"비어 있는 번역을 저장할 수 없습니다: {field.Rec}/{field.FormId:X8}");
             TokenValidator.ValidateFinalTextIntegrity(field.SourceText, translated, $"plugin:{key}");
-            _ = PluginBinary.EncodeZString(translated, encoding); // Strict representability check before any output.
+        }
+
+        // Strict representability check before any output, for every text the output will hold: a kept source
+        // ("Café", an em dash) fails too when the output encoding differs. E457 used to say only that some character
+        // somewhere could not be written.
+        foreach (var field in document.Fields)
+        {
+            var text = edits.GetValueOrDefault(field.Key, field.SourceText) ?? "";
+            try
+            {
+                _ = PluginBinary.EncodeZString(text, encoding);
+            }
+            catch (EncoderFallbackException ex)
+            {
+                var ch = ex.CharUnknown != '\0' ? ex.CharUnknown : ex.CharUnknownHigh;
+                throw new InvalidDataException($"출력 인코딩으로 표현할 수 없는 문자가 있습니다: {field.Rec}/{field.FormId:X8} U+{(int)ch:X4}", ex);
+            }
         }
         var inputHandles = new List<FileStream>();
         string? temporary = null;

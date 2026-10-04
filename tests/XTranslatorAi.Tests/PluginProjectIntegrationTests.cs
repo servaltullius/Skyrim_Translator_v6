@@ -324,6 +324,18 @@ public sealed class PluginProjectIntegrationTests
         Assert.Equal(new[] { reopened[0].Id }, notes.Keys.ToArray());
     }
 
+    // E457 said only that some character somewhere could not be written in the output encoding.
+    [Fact]
+    public void UnencodableCharacter_NamesTheRowAndTheCharacter()
+    {
+        var error = PluginUserFacingErrorClassifier.Classify(
+            new InvalidDataException("출력 인코딩으로 표현할 수 없는 문자가 있습니다: WEAP:FULL/00000800 U+2014"));
+        Assert.Equal("E457", error!.Value.Code);
+        Assert.Contains("WEAP:FULL/00000800", error.Value.Message);
+        Assert.Contains("U+2014", error.Value.Message);
+        Assert.Contains("form:00000800", error.Value.Message);
+    }
+
     private static PluginField Field(string key, int index, string source)
         => new(key, index, "WEAP", "FULL", (uint)(0x800 + index), "TestSword", index + 1, 1, source);
 
