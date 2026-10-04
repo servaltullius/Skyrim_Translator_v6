@@ -22,8 +22,7 @@ public partial class MainViewModel
             AddonName: _projectState.AddonName?.Trim(),
             InputFile: _projectState.InputPath != null ? Path.GetFileName(_projectState.InputPath) : null,
             SourceLang: SourceLang?.Trim() ?? "",
-            TargetLang: TargetLang?.Trim() ?? "",
-            NexusContext: null
+            TargetLang: TargetLang?.Trim() ?? ""
         );
 
         var globalDb = await _globalProjectDbService.GetOrCreateAsync(cancellationToken);

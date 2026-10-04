@@ -67,8 +67,6 @@ public sealed class ProjectContextScanner
         var topRec = BuildTopRec(scan.RecCounts);
         var topTerms = BuildTopTerms(scan.TermCounts, glossaryByKey, scan.EditedByKey, scan.PreviousCandidatesByKey);
 
-        var nexus = string.IsNullOrWhiteSpace(options.NexusContext) ? null : options.NexusContext.Trim();
-
         return new ProjectContextScanReport(
             AddonName: string.IsNullOrWhiteSpace(options.AddonName) ? null : options.AddonName.Trim(),
             InputFile: string.IsNullOrWhiteSpace(options.InputFile) ? null : options.InputFile.Trim(),
@@ -77,8 +75,7 @@ public sealed class ProjectContextScanner
             TotalStrings: total,
             TopRec: topRec,
             TopTerms: topTerms,
-            Samples: scan.Samples,
-            NexusContext: nexus
+            Samples: scan.Samples
         );
     }
 

@@ -60,7 +60,7 @@ public class ProjectContextPreviousTranslationTests
                 fields.ToDictionary(f => f.Key, f => previous(f.OrderIndex + 1)), CancellationToken.None);
 
             return await new ProjectContextScanner().ScanAsync(db, null,
-                new ProjectContextScanOptions("Test.esp", "Test.esp", "english", "korean", null), CancellationToken.None);
+                new ProjectContextScanOptions("Test.esp", "Test.esp", "english", "korean"), CancellationToken.None);
         }
         finally
         {

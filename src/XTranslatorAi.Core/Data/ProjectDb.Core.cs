@@ -77,17 +77,6 @@ public sealed partial class ProjectDb : IAsyncDisposable, IProjectDb
         CREATE UNIQUE INDEX IF NOT EXISTS UX_TranslationMemory_Key
           ON TranslationMemory (SourceLangKey, DestLangKey, SrcKey);
 
-        CREATE TABLE IF NOT EXISTS NexusContext (
-          Id INTEGER PRIMARY KEY,
-          GameDomain TEXT NOT NULL,
-          ModId INTEGER NOT NULL,
-          ModUrl TEXT,
-          ModName TEXT,
-          Summary TEXT,
-          ContextText TEXT NOT NULL,
-          UpdatedAt TEXT NOT NULL
-        );
-
         CREATE TABLE IF NOT EXISTS ProjectContext (
           Id INTEGER PRIMARY KEY,
           ContextText TEXT NOT NULL,

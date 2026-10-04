@@ -21,15 +21,13 @@ public sealed record ProjectContextScanReport(
     int TotalStrings,
     IReadOnlyList<ProjectContextRecCount> TopRec,
     IReadOnlyList<ProjectContextTermInfo> TopTerms,
-    IReadOnlyList<ProjectContextSample> Samples,
-    string? NexusContext
+    IReadOnlyList<ProjectContextSample> Samples
 );
 
 public sealed record ProjectContextScanOptions(
     string? AddonName,
     string? InputFile,
     string SourceLang,
-    string TargetLang,
-    string? NexusContext
+    string TargetLang
 );
 

@@ -56,8 +56,7 @@ public class ProjectContextScannerTests
                     AddonName: "Dummy",
                     InputFile: "dummy.xml",
                     SourceLang: "english",
-                    TargetLang: "korean",
-                    NexusContext: null
+                    TargetLang: "korean"
                 ),
                 cancellationToken: CancellationToken.None
             );
@@ -100,7 +99,7 @@ public class ProjectContextScannerTests
             await db.UpdateStringTranslationAsync(first.Id, "번역문은 원문 샘플이 아닙니다", StringEntryStatus.Edited, null, CancellationToken.None);
 
             var report = await new ProjectContextScanner().ScanAsync(db, null,
-                new ProjectContextScanOptions("Plain.esp", "Plain.esp", "english", "korean", null), CancellationToken.None);
+                new ProjectContextScanOptions("Plain.esp", "Plain.esp", "english", "korean"), CancellationToken.None);
 
             Assert.Equal(8, report.Samples.Count);
             Assert.All(report.Samples.GroupBy(sample => sample.Rec), group => Assert.InRange(group.Count(), 1, 2));
