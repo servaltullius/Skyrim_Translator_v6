@@ -5,6 +5,18 @@ namespace XTranslatorAi.Tests;
 
 public sealed class KoreanProtectFromFixerTests
 {
+    // An acronym is read letter by letter: NPC → 엔피시, so NPC를 (the fixer wrote NPC을 from the letter C).
+    [Fact]
+    public void Apply_ChoosesTheParticleOfAnAcronymByItsLetterNames()
+    {
+        var source = "I was tasked with protecting the NPC from an incoming bandit attack.";
+        var dest = "습격해오는 NPC의 공격으로부터 산적을 보호하라는 임무를 받았다.";
+
+        var fixedText = TranslationPostEdits.Apply(targetLang: "korean", sourceText: source, translatedText: dest, enableTemplateFixer: false);
+
+        Assert.Equal("습격해오는 산적의 공격으로부터 NPC를 보호하라는 임무를 받았다.", fixedText);
+    }
+
     [Fact]
     public void Apply_FixesProtectFromAttack_RoleInversion()
     {

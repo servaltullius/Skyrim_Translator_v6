@@ -1,5 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
+using XTranslatorAi.Core.Text.KoreanFix.Internal;
 using static XTranslatorAi.Core.Text.KoreanSyllables;
 
 namespace XTranslatorAi.Core.Text;
@@ -213,15 +214,10 @@ internal static class KoreanProtectFromFixer
             return HasFinalConsonant(last) ? "을" : "를";
         }
 
-        if (char.IsDigit(last))
+        // Digits and Latin words follow the shared rule: an acronym by its letter names (NPC를, MCM을).
+        if (char.IsDigit(last) || (last >= 'A' && last <= 'Z') || (last >= 'a' && last <= 'z'))
         {
-            return DigitHasFinalConsonant(last) ? "을" : "를";
-        }
-
-        if ((last >= 'A' && last <= 'Z') || (last >= 'a' && last <= 'z'))
-        {
-            var lower = char.ToLowerInvariant(last);
-            return IsLatinVowel(lower) ? "를" : "을";
+            return KoreanParticleSelector.ChooseObjectParticleLatin(nounPhrase.TrimEnd());
         }
 
         return "를";
