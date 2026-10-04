@@ -13,16 +13,32 @@ namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 /// </summary>
 internal static class LegacyPostEditDamageRule
 {
-    private static readonly (Regex Pattern, string What)[] Patterns =
+    // Words that end in 인/은 and take the subject particle 이 as a plain noun, so "<word>이?" is a
+    // correct short question ("무엇을 원하나, 젊은이?", "그 노인이?"), not a damaged "<word>가?".
+    // Compared with the whole word, because the same syllables also end damaged copulas:
+    // "이게 전부인이?" (전부인가?) and "장군인이?" (장군인가?) must still be reported.
+    private static readonly HashSet<string> NounsTakingQuestionI = new(System.StringComparer.Ordinal)
     {
-        (new Regex(@"(?:무언|언젠|어딘|누군)이(?![가-힣])", RegexOptions.CultureInvariant), "'~가'로 끝나는 단어가 '~이'로 바뀜"),
-        (new Regex(@"(?:인|은|는|던)이\?", RegexOptions.CultureInvariant), "의문형 '~가?'가 '~이?'로 바뀜"),
+        "젊은", "늙은", "지은", "엮은",
+        "노인", "주인", "집주인", "상인", "부인", "거인", "하인", "죄인", "군인", "범인", "악인",
+        "연인", "여인", "은인", "현인", "광인", "타인", "미인", "장인", "성인", "시인", "개인",
+        "이방인", "외지인",
+    };
+
+    private static readonly (Regex Pattern, string What, System.Func<Match, bool>? IsCorrectText)[] Patterns =
+    {
+        (new Regex(@"(?:무언|언젠|어딘|누군)이(?![가-힣])", RegexOptions.CultureInvariant), "'~가'로 끝나는 단어가 '~이'로 바뀜", null),
+        (new Regex(@"(?<![가-힣])(?<word>[가-힣]*(?:인|은|는|던))이\?", RegexOptions.CultureInvariant), "의문형 '~가?'가 '~이?'로 바뀜",
+            m => NounsTakingQuestionI.Contains(m.Groups["word"].Value)),
         // Only after a word that already ended in 가 as a particle or ending (내가, 우리가, 게다가, 돌아가,
         // 누군가가). A noun ending in 가 takes 가 normally: 뭔가가, 대가가, 작가가, 헬가가.
         (new Regex(@"(?:(?<![가-힣])(?:내|네|제|우리|저희|너희|그대|당신|자네|그녀|게다)가|(?<=[가-힣][아어])가|가가)가 (?=[가-힣])",
-            RegexOptions.CultureInvariant), "지시어 '이'가 앞 조사에 붙어 '~가가'가 됨"),
-        (new Regex(@"(?:기꺼|가까)가(?![가-힣])", RegexOptions.CultureInvariant), "부사 '~이'가 '~가'로 바뀜"),
-        (new Regex(@"[.!?…][""”’')]?[가-힣]{2,}[ \t]*$", RegexOptions.CultureInvariant | RegexOptions.Multiline), "문장 끝 뒤에 용어가 덧붙음"),
+            RegexOptions.CultureInvariant), "지시어 '이'가 앞 조사에 붙어 '~가가'가 됨", null),
+        (new Regex(@"(?:기꺼|가까)가(?![가-힣])", RegexOptions.CultureInvariant), "부사 '~이'가 '~가'로 바뀜", null),
+        // A single '.', '!' or '?' only: a word after an ellipsis ("음...알겠어", "음…알겠어") is ordinary
+        // hesitant speech, while the old token repair appended terms after a full stop ("…막아냈다.던머노드").
+        (new Regex(@"(?:(?<!\.)\.|[!?])[""”’')]?[가-힣]{2,}[ \t]*$", RegexOptions.CultureInvariant | RegexOptions.Multiline),
+            "문장 끝 뒤에 용어가 덧붙음", null),
     };
 
     public static void Apply(LqaScanEntry entry, string sourceText, string destText, bool isKorean, List<LqaIssue> issues)
@@ -32,9 +48,14 @@ internal static class LegacyPostEditDamageRule
             return;
         }
 
-        foreach (var (pattern, what) in Patterns)
+        foreach (var (pattern, what, isCorrectText) in Patterns)
         {
             var match = pattern.Match(destText);
+            while (match.Success && isCorrectText != null && isCorrectText(match))
+            {
+                match = match.NextMatch();
+            }
+
             if (!match.Success)
             {
                 continue;

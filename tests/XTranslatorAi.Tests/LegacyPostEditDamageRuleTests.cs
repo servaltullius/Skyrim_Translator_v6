@@ -27,6 +27,10 @@ public sealed class LegacyPostEditDamageRuleTests
     [InlineData("그를 찾을 만큼 가까가 다가가지 못했다.")]
     [InlineData("기꺼가 도전할 수 있어야 한다.")]
     [InlineData("추가적인 침략을 성공적으로 막아냈다.던머노드")]
+    // Same syllables as the noun exclusions below, but here they end a damaged copula "~인가?".
+    [InlineData("이게 전부인이?")]
+    [InlineData("그 노인이 장군인이?")]
+    [InlineData("그 노인이? 정말 무엇인이?")]
     public async Task FindsDamageFromOlderBuilds(string dest)
     {
         var issue = Assert.Single(await ScanAsync(dest));
@@ -45,6 +49,12 @@ public sealed class LegacyPostEditDamageRuleTests
     [InlineData("이번엔 얼마나 큰 대가가 걸려 있는지를 보여주려던 걸지도.")]
     [InlineData("작가가 흡혈귀나 늑대인간이 어떻게 돌아가는지 전혀 몰랐어.")]
     [InlineData("그러니까 헬가가 디벨라의 광신도라는 거네.")]
+    // Nouns ending in 이 or 인 asked as a short question, and a word after an ellipsis.
+    [InlineData("무엇을 원하나, 젊은이?")]
+    [InlineData("그 노인이?")]
+    [InlineData("여관 주인이? 그럴 리가.")]
+    [InlineData("음...알겠어")]
+    [InlineData("음…알겠어")]
     public async Task LeavesCorrectTextAlone(string dest) => Assert.Empty(await ScanAsync(dest));
 
     [Fact]
