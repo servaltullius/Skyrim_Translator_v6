@@ -90,6 +90,16 @@ public partial class MainViewModel
     private readonly HashSet<StringEntryViewModel> _watchedEntries = new();
     private bool _entriesRefreshQueued;
 
+    /// <summary>How many rows the search and status filter leave, next to the search box; it was never shown.</summary>
+    public string VisibleEntrySummary
+    {
+        get
+        {
+            var visible = EntriesView is System.Windows.Data.CollectionView view ? view.Count : TotalCount;
+            return visible == Entries.Count ? $"전체 {Entries.Count}행" : $"표시 {visible} / 전체 {Entries.Count}행";
+        }
+    }
+
     private bool RecordEntryFilter(object obj)
     {
         var shown = EntryFilter(obj);

@@ -34,3 +34,19 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Equal("철검", saved[0].DestText);
         });
 }
+
+public sealed partial class PluginUiLifecycleTests
+{
+    [Fact]
+    public Task SearchShowsHowManyRowsAreVisible()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            await LoadXmlWorkspaceAsync(fixture, "Iron Sword", "Steel Sword", "Elven Bow");
+            fixture.Vm.SelectedEntry = null;
+            Assert.Equal("전체 3행", fixture.Vm.VisibleEntrySummary);
+
+            fixture.Vm.EntryFilterText = "Sword";
+            Assert.Equal("표시 2 / 전체 3행", fixture.Vm.VisibleEntrySummary);
+        });
+}

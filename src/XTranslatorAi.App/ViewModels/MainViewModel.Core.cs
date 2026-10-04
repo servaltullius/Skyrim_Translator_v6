@@ -151,6 +151,7 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
         // filter result changes are handled one by one instead; see OnEntryPropertyChanged.
         EntriesView.Filter = RecordEntryFilter;
         Entries.CollectionChanged += OnEntriesCollectionChanged;
+        ((System.Collections.Specialized.INotifyCollectionChanged)EntriesView).CollectionChanged += (_, _) => OnPropertyChanged(nameof(VisibleEntrySummary));
         EntryStatusFilterValues.ReplaceAll(
             new[]
             {
