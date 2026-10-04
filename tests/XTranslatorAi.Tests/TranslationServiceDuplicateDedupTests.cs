@@ -61,6 +61,7 @@ public class TranslationServiceDuplicateDedupTests
     [Theory]
     [InlineData("PERK:FULL", true)]
     [InlineData("INFO:NAM1", false)]
+    [InlineData("RACE:FULL", false)]
     public async Task TranslateIdsAsync_SameSourceAndRecord_DifferentEditorIds(string rec, bool shared)
     {
         var path = Path.Combine(Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");

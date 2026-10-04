@@ -138,13 +138,20 @@ public sealed partial class TranslationService
     private readonly record struct TranslationContextKey(string Rec, string Edid, string Dialogue, string Scope);
     private readonly record struct DuplicateKey(string Source, string TextAndGlossary, TranslationContextKey Context);
 
-    // Outside dialogue the EditorID only names the record: "Fortify Mystic" on seven perks (MagicSkillPerk01-07)
-    // was translated seven times and came out as 신비 강화 and 강화 신비. Same source and record type now means one
-    // translation; dialogue keeps the EditorID, since a line's meaning depends on its topic.
+    // Outside dialogue the EditorID usually only names the record: "Fortify Mystic" on seven perks
+    // (MagicSkillPerk01-07) was translated seven times and came out as 신비 강화 and 강화 신비. Same source and record
+    // type now means one translation. Dialogue keeps the EditorID, since a line's meaning depends on its topic, and so
+    // do races and NPCs, whose EditorID tells which one a generic name means (巨人 is the Giant on GiantRace and the
+    // Lurker on DLC2LurkerRace).
     private TranslationContextKey GetTranslationContextKey(DialogueContextRow row)
         => new(row.Rec?.Trim().ToUpperInvariant() ?? "",
-            IsDialogueRecBase(row.Rec) || row.DialogueScope != null ? row.Edid?.Trim().ToUpperInvariant() ?? "" : "",
+            KeepsEditorIdInContext(row) ? row.Edid?.Trim().ToUpperInvariant() ?? "" : "",
             GetDialogueContextWindowForId(row.Id) ?? "", row.DialogueScope ?? "");
+
+    private static bool KeepsEditorIdInContext(DialogueContextRow row)
+        => IsDialogueRecBase(row.Rec) || row.DialogueScope != null
+           || (row.Rec ?? "").TrimStart().StartsWith("RACE", StringComparison.OrdinalIgnoreCase)
+           || (row.Rec ?? "").TrimStart().StartsWith("NPC_", StringComparison.OrdinalIgnoreCase);
 
     private HashSet<string> FindAmbiguousTranslationMemorySources(IReadOnlyList<DialogueContextRow> rows)
     {
