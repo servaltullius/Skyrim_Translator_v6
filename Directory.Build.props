@@ -2,5 +2,10 @@
   <!-- The solution builds with zero compiler warnings; keep it that way. -->
   <PropertyGroup>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!--
+      NuGet audit warnings (a security advisory published for a dependency) stay warnings: as errors they broke CI
+      and the release build, which rebuilds the tagged commit, without any code change. They are still shown.
+    -->
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);NU1901;NU1902;NU1903;NU1904</WarningsNotAsErrors>
   </PropertyGroup>
 </Project>
