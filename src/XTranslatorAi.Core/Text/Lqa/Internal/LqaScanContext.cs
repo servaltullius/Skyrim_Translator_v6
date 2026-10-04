@@ -10,7 +10,8 @@ internal sealed class LqaScanContext
         string targetLang,
         IReadOnlyList<GlossaryEntry> forceTokenGlossary,
         Action<int>? onProgress,
-        IReadOnlyDictionary<long, string>? tmFallbackNotes
+        IReadOnlyDictionary<long, string>? tmFallbackNotes,
+        XTranslatorAi.Core.Translation.ReferenceNameIndex? referenceNames = null
     )
     {
         Entries = entries;
@@ -18,6 +19,7 @@ internal sealed class LqaScanContext
         ForceTokenGlossary = forceTokenGlossary;
         OnProgress = onProgress;
         TmFallbackNotes = tmFallbackNotes;
+        ReferenceNames = referenceNames;
     }
 
     public IReadOnlyList<LqaScanEntry> Entries { get; }
@@ -29,4 +31,6 @@ internal sealed class LqaScanContext
     public Action<int>? OnProgress { get; }
 
     public IReadOnlyDictionary<long, string>? TmFallbackNotes { get; }
+
+    public XTranslatorAi.Core.Translation.ReferenceNameIndex? ReferenceNames { get; }
 }

@@ -58,11 +58,12 @@ public static class LqaScanner
         string targetLang,
         IReadOnlyList<GlossaryEntry> forceTokenGlossary,
         Action<int>? onProgress = null,
-        IReadOnlyDictionary<long, string>? tmFallbackNotes = null
+        IReadOnlyDictionary<long, string>? tmFallbackNotes = null,
+        XTranslatorAi.Core.Translation.ReferenceNameIndex? referenceNames = null
     )
     {
         var issues = new List<LqaIssue>();
-        var context = new LqaScanContext(entries, targetLang, forceTokenGlossary, onProgress, tmFallbackNotes);
+        var context = new LqaScanContext(entries, targetLang, forceTokenGlossary, onProgress, tmFallbackNotes, referenceNames);
         await ApplyExtractedRulePipelineAsync(context, issues);
 
         LqaIssueSorter.Sort(issues);
@@ -85,6 +86,7 @@ public static class LqaScanner
         var nameFindings = NameConsistencyRule.Build(entries, isKorean);
         var loanwordIndex = isKorean ? GlossaryLoanwordRule.Build(forceTokenGlossary) : new Dictionary<string, GlossaryLoanwordRule.Term>();
         var fieldToneMajority = RecToneRule.BuildFieldMajorities(entries);
+        var glossarySources = OfficialNameRule.BuildGlossarySources(forceTokenGlossary);
 
         var total = entries.Count;
         for (var i = 0; i < total; i++)
@@ -119,6 +121,7 @@ public static class LqaScanner
                 loanwordIndex,
                 issues
             );
+            OfficialNameRule.Apply(entry, source, dest, isKorean, context.ReferenceNames, glossarySources, issues);
         }
     }
 

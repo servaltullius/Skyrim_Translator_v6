@@ -38,6 +38,7 @@ public partial class MainViewModel
         // The rules read only this snapshot, so they run on a worker thread. On the UI thread the
         // project-wide rules (name consistency, tone majorities) ran before the first progress report
         // and froze the window for seconds on large projects. Progress is posted back to the UI thread.
+        var referenceMemory = await TryLoadLqaReferenceMemoryAsync();
         var targetLang = TargetLang;
         IProgress<int> progress = new Progress<int>(pct => StatusMessage = $"품질 검사 중... {pct}%");
         var issues = await Task.Run(() => LqaScanner.ScanAsync(
@@ -45,7 +46,8 @@ public partial class MainViewModel
             targetLang: targetLang,
             forceTokenGlossary: forceTokenGlossary,
             onProgress: progress.Report,
-            tmFallbackNotes: tmFallbackNotes
+            tmFallbackNotes: tmFallbackNotes,
+            referenceNames: referenceMemory is { Count: > 0 } ? XTranslatorAi.Core.Translation.ReferenceNameIndex.Build(referenceMemory) : null
         ));
 
         return issues
@@ -64,6 +66,32 @@ public partial class MainViewModel
                     )
             )
             .ToList();
+    }
+
+    /// <summary>The series TM the translation's official-name index is built from; null when it cannot be read.</summary>
+    private async Task<IReadOnlyList<(string Source, string Target)>?> TryLoadLqaReferenceMemoryAsync()
+    {
+        if (!LanguageHelper.IsKoreanLanguage(TargetLang))
+        {
+            return null;
+        }
+
+        try
+        {
+            var globalDb = await _globalProjectDbService.GetOrCreateAsync(CancellationToken.None);
+            if (globalDb == null)
+            {
+                return null;
+            }
+
+            var entries = await globalDb.GetTranslationMemoryEntriesAsync(SourceLang.Trim(), TargetLang.Trim(), CancellationToken.None);
+            return entries.Select(e => (e.SourceText, e.DestText)).ToList();
+        }
+        catch (Exception ex)
+        {
+            XTranslatorAi.App.Services.AppLog.Write($"WARN 품질 검사용 공식 이름 색인을 읽지 못했습니다: {ex.Message}");
+            return null;
+        }
     }
 
     private IReadOnlyList<GlossaryEntry> BuildLqaForceTokenGlossary()
