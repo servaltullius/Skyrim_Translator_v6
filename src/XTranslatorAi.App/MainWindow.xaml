@@ -39,11 +39,12 @@
                     <WrapPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
                         <Button Content="XML 열기" Command="{Binding OpenXmlCommand}" Style="{StaticResource XT.ToolbarButton}"
                                 ToolTip="xTranslator XML을 엽니다. XML 파일을 창에 끌어다 놓아도 열립니다." />
-                        <Button Content="XML 내보내기" Command="{Binding ExportXmlCommand}" Style="{StaticResource XT.ToolbarButton}" />
+                        <Button Content="XML 내보내기" Command="{Binding ExportXmlCommand}" Style="{StaticResource XT.ToolbarButton}"
+                                ToolTip="{Binding ExportXmlToolTip}" ToolTipService.ShowOnDisabled="True" />
                         <Button Content="ESP 열기" Command="{Binding OpenPluginCommand}" Style="{StaticResource XT.ToolbarButton}"
                                 ToolTip="고급 설정의 게임·언어·인코딩으로 ESP/ESM/ESL을 읽습니다. 원본은 수정하지 않습니다. 파일을 창에 끌어다 놓아도 열립니다." />
                         <Button Content="ESP 저장" Command="{Binding ExportPluginCommand}" Style="{StaticResource XT.ToolbarButton}"
-                                ToolTip="새 출력 폴더에 원본 플러그인 이름을 유지하여 저장합니다." />
+                                ToolTip="{Binding ExportPluginToolTip}" ToolTipService.ShowOnDisabled="True" />
                         <Button Content="용어집 폴더" Command="{Binding OpenGlossaryFolderCommand}" Style="{StaticResource XT.ToolbarButton}"
                                 ToolTip="%LOCALAPPDATA%\\XTranslatorAi\\ (Projects/Global) 폴더를 엽니다." />
                     </WrapPanel>

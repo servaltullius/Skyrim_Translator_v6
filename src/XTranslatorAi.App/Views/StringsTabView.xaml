@@ -191,6 +191,7 @@
                             <!-- EditableDestText marks typed text as unsaved; leaving the row saves it. -->
                             <TextBox Text="{Binding SelectedEntry.EditableDestText, UpdateSourceTrigger=PropertyChanged}"
                                      IsReadOnly="{Binding IsTranslating}"
+                                     ToolTip="{Binding DestEditorToolTip}"
                                      Style="{StaticResource XT.EditorTextBox}"
                                      TextWrapping="Wrap"
                                      AcceptsReturn="True"
