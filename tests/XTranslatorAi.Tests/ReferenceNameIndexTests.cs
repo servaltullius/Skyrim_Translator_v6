@@ -86,6 +86,46 @@ public class ReferenceNameIndexTests
         Assert.Equal("에란더", applied.TokenToReplacement["__XT_TERM_N2_0000__"]);
     }
 
+    private static readonly ReferenceNameIndex MaterialIndex = ReferenceNameIndex.Build(new[]
+    {
+        ("Ebony Sword", "에보니 검"), ("Ebony Bow", "에보니 활"),
+        ("Dragonscale Armor", "드래곤 비늘 방어구"), ("Dragonscale Boots", "드래곤 비늘 전투화"),
+        ("Daedric Armor", "데이드라제 방어구"), ("Daedric Dagger", "데이드라제 단검"),
+        ("Glass Armor", "글래스 방어구"), ("Glass Bow", "글래스 활"),
+        ("Elven Armor", "엘프제 방어구"), ("Elven Bow", "엘프제 활"),
+    });
+
+    private static GlossaryApplication ForceMaterials(string text)
+        => MaterialIndex.ForceNames(new GlossaryApplication(text, new Dictionary<string, string>(), Array.Empty<(string, string)>()));
+
+    // Elden Rim: "Pure Ebony" came back as 흑단 and 흑연마석, "Dragonscale War Dance" as 용비늘 무답.
+    [Theory]
+    [InlineData("Pure Ebony - Whirlwind", "Pure __XT_TERM_N1_0000__ - Whirlwind", "에보니")]
+    [InlineData("Ebony Beam - 120°trail", "__XT_TERM_N1_0000__ Beam - 120°trail", "에보니")]
+    [InlineData("Dragonscale War Dance", "__XT_TERM_N1_0000__ War Dance", "드래곤 비늘")]
+    [InlineData("Daedric armor is forged at night.", "__XT_TERM_N1_0000__ armor is forged at night.", "데이드라제")]
+    [InlineData("Forge a Glass Katana.", "Forge a __XT_TERM_N1_0000__ Katana.", "글래스")]
+    public void ForcesMaterialsOfItemNamesTheMemoryDoesNotHold(string text, string expected, string target)
+    {
+        var applied = ForceMaterials(text);
+
+        Assert.Equal(expected, applied.Text);
+        Assert.Equal(target, applied.TokenToReplacement["__XT_TERM_N1_0000__"]);
+    }
+
+    [Theory]
+    [InlineData("A Daedric Lord walks among the Daedric ruins.")]
+    [InlineData("The Glass Cannon perk.")]
+    [InlineData("It was made of Ebony. Glass shatters.")]
+    [InlineData("Ebony is rare, and ebony swords rarer.")]
+    [InlineData("I've discovered a rare Snow Elven staff.")]
+    public void LeavesMaterialWordsInOtherSensesAlone(string text) => Assert.Equal(text, ForceMaterials(text).Text);
+
+    [Fact]
+    public void ForcesMaterialsOnlyWhenTheMemorySpellsThem()
+        => Assert.Equal("Pure Ebony - Whirlwind", Index.ForceNames(new GlossaryApplication("Pure Ebony - Whirlwind",
+            new Dictionary<string, string>(), Array.Empty<(string, string)>())).Text);
+
     [Fact]
     public async Task NamesAreWrittenAsTheirOfficialTranslation_UnlessTheGlossaryForcesThem()
     {

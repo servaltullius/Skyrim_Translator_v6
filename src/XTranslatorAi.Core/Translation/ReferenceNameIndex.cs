@@ -14,7 +14,7 @@ namespace XTranslatorAi.Core.Translation;
 /// reference terms, the model still kept 에란두르 in most Erandur lines (official names 57 of 67 in a 60-row
 /// sample), so names are replaced by term tokens like forced glossary entries.
 /// </summary>
-public sealed class ReferenceNameIndex
+public sealed partial class ReferenceNameIndex
 {
     private const int MaxNameLength = 40;
     private const int MaxTargetLength = 30;
@@ -42,11 +42,13 @@ public sealed class ReferenceNameIndex
     private static readonly Regex WordRegex = new(@"[A-Za-z]+(?:['’-][A-Za-z]+)*", RegexOptions.CultureInvariant);
 
     private readonly Dictionary<string, List<(string Source, string Target)>> _byFirstWord;
+    private readonly Material[] _materials;
 
-    private ReferenceNameIndex(Dictionary<string, List<(string Source, string Target)>> byFirstWord, int count)
+    private ReferenceNameIndex(Dictionary<string, List<(string Source, string Target)>> byFirstWord, int count, Material[] materials)
     {
         _byFirstWord = byFirstWord;
         Count = count;
+        _materials = materials;
     }
 
     public int Count { get; }
@@ -102,17 +104,18 @@ public sealed class ReferenceNameIndex
             list.Sort((a, b) => b.Source.Length.CompareTo(a.Source.Length));
         }
 
-        return new ReferenceNameIndex(byFirstWord, count);
+        return new ReferenceNameIndex(byFirstWord, count, ConfirmedMaterials(pairs));
     }
 
     /// <summary>
-    /// Replaces the names in <paramref name="glossed"/> with term tokens for their official translation. The
-    /// glossary ran first, so the names it forces are already tokens and keep the glossary's translation.
+    /// Replaces the names in <paramref name="glossed"/>, and the materials of item names the memory does not hold
+    /// whole, with term tokens for their official translation. The glossary ran first, so the names it forces
+    /// are already tokens and keep the glossary's translation.
     /// </summary>
     public GlossaryApplication ForceNames(GlossaryApplication glossed)
     {
         var names = FindIn(glossed.Text, max: 16);
-        if (names.Count == 0)
+        if (names.Count == 0 && _materials.Length == 0)
         {
             return glossed;
         }
@@ -132,7 +135,8 @@ public sealed class ReferenceNameIndex
             }
         }
 
-        return glossed with { Text = text, TokenToReplacement = tokens };
+        text = ForceMaterials(text, tokens, ref number);
+        return string.Equals(text, glossed.Text, StringComparison.Ordinal) ? glossed : glossed with { Text = text, TokenToReplacement = tokens };
     }
 
     /// <summary>Names written exactly as in the memory (capitalized) in <paramref name="text"/>, longest first, without overlaps.</summary>
