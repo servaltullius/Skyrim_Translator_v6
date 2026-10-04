@@ -63,8 +63,17 @@ public static partial class PairedSlashListExpander
             return false;
         }
 
+        // A masked line break, tag or value inside means the item ran into the next line.
+        if (item.Contains("__XT_PH_", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
         return true;
     }
+
+    private static bool IsXtTokenStart(string text, int index)
+        => string.CompareOrdinal(text, index, "__XT_", 0, 5) == 0;
 
     private static int FindLabelItemEnd(string text, int start)
     {
@@ -78,8 +87,17 @@ public static partial class PairedSlashListExpander
             return text.Length;
         }
 
-        // Stop at punctuation that usually ends the label list, or before "skill/level" suffix.
+        // A label may itself be a glossary term ("__XT_TERM_0002__"); any other token ends it. Line breaks are
+        // masked, so "…of One-handed/Two-handed/Archery⏎Requires Smithing 50" used to take
+        // "Archery⏎Requires Smithing 50" as the last label.
         var idx = start;
+        var leadingTerm = TranslationConstants.XtTokenRegex.Match(text, start);
+        if (leadingTerm.Success && leadingTerm.Index == start && text.AsSpan(start).StartsWith("__XT_TERM_", StringComparison.Ordinal))
+        {
+            idx += leadingTerm.Length;
+        }
+
+        // Stop at punctuation that usually ends the label list, or before "skill/level" suffix.
         while (idx < text.Length)
         {
             var c = text[idx];
@@ -88,7 +106,7 @@ public static partial class PairedSlashListExpander
                 return idx;
             }
 
-            if (IsSuffixWordStart(text, idx))
+            if (IsXtTokenStart(text, idx) || IsSuffixWordStart(text, idx))
             {
                 return idx;
             }
@@ -139,8 +157,9 @@ public static partial class PairedSlashListExpander
             return true;
         }
 
+        // A masked line break right after the word ("skill__XT_PH_0004__") is a boundary too.
         var c = text[after];
-        return !char.IsLetterOrDigit(c) && c != '_';
+        return (!char.IsLetterOrDigit(c) && c != '_') || IsXtTokenStart(text, after);
     }
 
     private static int FindSuffixEnd(string text, int start)
@@ -149,7 +168,8 @@ public static partial class PairedSlashListExpander
         while (idx < text.Length)
         {
             var c = text[idx];
-            if (c is ',' or '.' or ';' or ':' or ')' or '(' or '\r' or '\n')
+            // A token ends the suffix too: "…/Archery skill⏎Requires Smithing 50" keeps the next line out.
+            if (c is ',' or '.' or ';' or ':' or ')' or '(' or '\r' or '\n' || IsXtTokenStart(text, idx))
             {
                 return idx;
             }
