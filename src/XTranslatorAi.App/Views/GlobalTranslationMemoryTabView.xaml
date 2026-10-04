@@ -15,9 +15,9 @@
 
         <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
             <TextBlock Text="원문:" VerticalAlignment="Center" Margin="0,0,6,0" />
-            <TextBox Text="{Binding FranchiseTranslationMemorySourceText}" Width="320" Style="{StaticResource XT.ToolbarTextBox}" />
+            <TextBox Text="{Binding FranchiseTranslationMemorySourceText, UpdateSourceTrigger=PropertyChanged}" Width="320" Style="{StaticResource XT.ToolbarTextBox}" />
             <TextBlock Text="번역문:" VerticalAlignment="Center" Margin="12,0,6,0" />
-            <TextBox Text="{Binding FranchiseTranslationMemoryDestText}" Width="320" Style="{StaticResource XT.ToolbarTextBox}" />
+            <TextBox Text="{Binding FranchiseTranslationMemoryDestText, UpdateSourceTrigger=PropertyChanged}" Width="320" Style="{StaticResource XT.ToolbarTextBox}" />
 
             <Button Content="추가" Command="{Binding AddFranchiseTranslationMemoryCommand}" Style="{StaticResource XT.ToolbarButton}" />
             <Button Content="저장" Command="{Binding SaveFranchiseTranslationMemoryChangesCommand}" Style="{StaticResource XT.ToolbarButton}" />

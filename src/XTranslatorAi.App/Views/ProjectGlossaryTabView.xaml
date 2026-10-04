@@ -18,9 +18,9 @@
             <TextBox Text="{Binding GlossaryCategory}" Width="180" Style="{StaticResource XT.ToolbarTextBox}" Margin="0,0,12,0" />
 
             <TextBlock Text="원문:" VerticalAlignment="Center" Margin="0,0,6,0" />
-            <TextBox Text="{Binding GlossarySourceTerm}" Width="220" Style="{StaticResource XT.ToolbarTextBox}" />
+            <TextBox Text="{Binding GlossarySourceTerm, UpdateSourceTrigger=PropertyChanged}" Width="220" Style="{StaticResource XT.ToolbarTextBox}" />
             <TextBlock Text="번역어:" VerticalAlignment="Center" Margin="0,0,6,0" />
-            <TextBox Text="{Binding GlossaryTargetTerm}" Width="220" Style="{StaticResource XT.ToolbarTextBox}" />
+            <TextBox Text="{Binding GlossaryTargetTerm, UpdateSourceTrigger=PropertyChanged}" Width="220" Style="{StaticResource XT.ToolbarTextBox}" />
 
             <TextBlock Text="일치 방식:" VerticalAlignment="Center" Margin="0,0,6,0" />
             <ComboBox ItemsSource="{Binding GlossaryMatchModeValues}"
