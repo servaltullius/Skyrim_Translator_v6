@@ -73,18 +73,21 @@ public sealed partial class ReferenceNameIndex
                 continue;
             }
 
-            // A single word must also be used as a name inside a sentence ("Speak to Erandur"); item and menu
-            // entries such as Slot (장치), Hawk (매) or Honey (벌꿀) only ever appear on their own.
-            if (!group.Key.Contains(' ') && (!namedInSentences.Contains(FirstWordOf(group.Key)) || OrdinaryWords.Contains(group.Key)))
-            {
-                continue;
-            }
-
             var targets = group.GroupBy(pair => pair.Target, StringComparer.Ordinal)
                 .Select(t => (Target: t.Key, Count: t.Count()))
                 .OrderByDescending(t => t.Count)
                 .ToList();
             if (targets.Count > 1 && targets[0].Count == targets[1].Count)
+            {
+                continue;
+            }
+
+            // A single word must also be used as a name inside a sentence ("Speak to Erandur"), or be spelled by
+            // sound (Cairine → 카이린); item and menu entries such as Slot (장치), Hawk (매) or Honey (벌꿀) are
+            // translated words and only ever appear on their own.
+            if (!group.Key.Contains(' ')
+                && (OrdinaryWords.Contains(group.Key)
+                    || !namedInSentences.Contains(FirstWordOf(group.Key)) && !IsSpelledBySound(group.Key, targets[0].Target)))
             {
                 continue;
             }
@@ -391,6 +394,14 @@ public sealed partial class ReferenceNameIndex
         }
 
         return dropped;
+    }
+
+    // The whole translation is the word's sound spelling (From-Deepest-Fathoms → 프롬-디피스트-페덤스); words with fewer
+    // than two consonant sounds are too short to tell (Erdi → 어디).
+    private static bool IsSpelledBySound(string word, string target)
+    {
+        var spelled = Regex.Replace(target, "[^가-힣]", "");
+        return spelled.Length > 0 && string.Equals(RunNameMemory.FindSpelling(word, spelled), spelled, StringComparison.Ordinal);
     }
 
     // "ng" before a vowel is two sounds in a name: Ingun is 잉건 (ing-geon), not one nasal. A possessive 의 is not

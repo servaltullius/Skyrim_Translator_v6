@@ -199,6 +199,23 @@ public class ReferenceNameIndexTests
         Assert.Equal("메이븐 블랙-브라이어", Assert.Single(index.FindIn("Ask Maven Black-Briar.")).Target);
     }
 
+    // MEI's patches wrote Cairine as 케이린 and 케어린 (game: 카이린) and From-Deepest-Fathoms as 가장-깊은-곳에서-온-자:
+    // a one-word entry counted only when a memory sentence also used it, which keeps item words like Slot (장치) out.
+    // A one-word entry the memory spells by sound is a name on its own; Erdi (어디) has too few sounds to tell.
+    [Fact]
+    public void OneWordEntriesSpelledBySound_AreNames()
+    {
+        var index = ReferenceNameIndex.Build(new[]
+        {
+            ("Cairine", "카이린"), ("From-Deepest-Fathoms", "프롬-디피스트-페덤스"), ("Slot", "장치"), ("Hawk", "매"), ("Erdi", "어디"),
+        });
+
+        var found = index.FindIn("Give it to Cairine and From-Deepest-Fathoms.").ToDictionary(n => n.Source, n => n.Target);
+        Assert.Equal("카이린", found["Cairine"]);
+        Assert.Equal("프롬-디피스트-페덤스", found["From-Deepest-Fathoms"]);
+        Assert.Empty(index.FindIn("Slot, Hawk and Erdi."));
+    }
+
     [Fact]
     public async Task NamesAreWrittenAsTheirOfficialTranslation_UnlessTheGlossaryForcesThem()
     {
