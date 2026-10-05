@@ -13,14 +13,17 @@ internal sealed class DurationProbabilityStep : IKoreanFixStep
     // "3초 동안", and moving <25> in front of it produced "<25>초 동안 모든 적은 3포인트의 피해".
     private const string SubjectNotEndingInNumber = @"(?<!\p{N}\s*)";
 
+    // The broken form glues the subject to 초 ("늑대인간초 동안 <150>초 의"). A space, or a count word before 초
+    // ("수 초", "몇 초", "매 초", "수초"), is a correct duration: moving the token there produced "적은 수포인트의 피해".
+
     private static readonly Regex RawDurationMisplacementWithEuiRegex = new(
-        pattern: @"(?<subject>[\p{L}][\p{L}\p{N} \-'\u2019]{0,40})" + SubjectNotEndingInNumber + @"\s*초\s*동안\s*(?<dur>[+-]?<\s*(?:dur|[0-9]+)\s*>)\s*초?\s*의",
+        pattern: @"(?<subject>[\p{L}][\p{L}\p{N} \-'\u2019]{0,40})" + SubjectNotEndingInNumber + @"(?<![\s수몇매])초\s*동안\s*(?<dur>[+-]?<\s*(?:dur|[0-9]+)\s*>)\s*초?\s*의",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase,
         matchTimeout: RegexTimeout
     );
 
     private static readonly Regex RawDurationMisplacementRegex = new(
-        pattern: @"(?<subject>[\p{L}][\p{L}\p{N} \-'\u2019]{0,40})" + SubjectNotEndingInNumber + @"\s*초\s*동안\s*(?<dur>[+-]?<\s*(?:dur|[0-9]+)\s*>)\s*초?\b",
+        pattern: @"(?<subject>[\p{L}][\p{L}\p{N} \-'\u2019]{0,40})" + SubjectNotEndingInNumber + @"(?<![\s수몇매])초\s*동안\s*(?<dur>[+-]?<\s*(?:dur|[0-9]+)\s*>)\s*초?\b",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase,
         matchTimeout: RegexTimeout
     );

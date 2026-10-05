@@ -254,6 +254,11 @@ public class KoreanTranslationFixerTests
     [InlineData("모든 적은 3초 동안 <25>포인트의 피해를 입습니다.")]
     [InlineData("모든 적은 3 초 동안 <25>포인트의 피해를 입습니다.")]
     [InlineData("적은 10초 동안 <5>의 냉기 피해를 입습니다.")]
+    // Count words are durations as well: "수 초", "몇 초", "매 초" moved the token into the subject (적은 수포인트).
+    [InlineData("적은 수 초 동안 <10>포인트의 피해를 입습니다.")]
+    [InlineData("대상은 몇 초 동안 <25>의 피해를 입습니다.")]
+    [InlineData("매 초 동안 <5>포인트씩 회복합니다.")]
+    [InlineData("적은 수초 동안 <10>포인트의 피해를 입습니다.")]
     public void Fix_KeepsCorrectLiteralDurationBeforeValueToken(string input)
     {
         // "N초 동안" with a literal number is already a correct duration; the token after it is the magnitude.
