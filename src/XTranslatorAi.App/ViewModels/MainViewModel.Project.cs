@@ -280,6 +280,14 @@ public partial class MainViewModel
             return;
         }
 
+        // Nothing typed: saving would only turn a pending row into a manual edit of its empty or English text, which
+        // later runs skip and the export writes as it is (and turn a model translation into a manual one).
+        if (!SelectedEntry.HasUnsavedDestEdit)
+        {
+            StatusMessage = "바뀐 내용이 없어 저장하지 않았습니다.";
+            return;
+        }
+
         try
         {
             await CommitDestEditAsync(SelectedEntry, SelectedEntry.DestText);
