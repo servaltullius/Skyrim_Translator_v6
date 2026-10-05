@@ -80,7 +80,18 @@ public sealed partial class TranslationService
             return;
         }
         var (left, right) = SplitBatchByWeight(batch);
-        await TranslateBatchWithSplitFallbackAsync(ctx, left, splitAfterTimeout);
+        try
+        {
+            await TranslateBatchWithSplitFallbackAsync(ctx, left, splitAfterTimeout);
+        }
+        catch (Exception ex) when (IsTimeout(ex, ctx.CancellationToken))
+        {
+            // The second half is not sent after the first timed out again. It used to be marked Error with that
+            // timeout as well, as if it had been sent; it goes back to Pending for the next run.
+            await RevertBatchToPendingAsync(ctx.OnRowUpdated, right, ctx.CancellationToken);
+            throw;
+        }
+
         await TranslateBatchWithSplitFallbackAsync(ctx, right, splitAfterTimeout);
     }
 

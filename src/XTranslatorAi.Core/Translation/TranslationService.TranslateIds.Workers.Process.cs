@@ -65,7 +65,7 @@ public sealed partial class TranslationService
             if (IsRunGenerationLimit(ex) || IsRateLimitAbort(ex)) throw;
             if (IsCredentialError(ex))
             {
-                await RevertBatchToPendingAsync(ctx.Request, batch, ct);
+                await RevertBatchToPendingAsync(ctx.Request.OnRowUpdated, batch, ct);
                 throw;
             }
 
@@ -116,7 +116,7 @@ public sealed partial class TranslationService
     }
 
     private async Task RevertBatchToPendingAsync(
-        TranslateIdsRequest request,
+        Func<long, StringEntryStatus, string, Task>? onRowUpdated,
         IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> batch,
         CancellationToken ct
     )
@@ -146,14 +146,14 @@ public sealed partial class TranslationService
 
         await _db.UpdateStringStatusesAsync(ids, StringEntryStatus.Pending, errorMessage: null, ct);
 
-        if (request.OnRowUpdated == null)
+        if (onRowUpdated == null)
         {
             return;
         }
 
         for (var i = 0; i < ids.Count; i++)
         {
-            NotifyRowUpdated(request.OnRowUpdated, ids[i], StringEntryStatus.Pending, "");
+            NotifyRowUpdated(onRowUpdated, ids[i], StringEntryStatus.Pending, "");
         }
     }
 

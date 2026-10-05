@@ -271,6 +271,27 @@ public sealed class TranslationServiceIntegrityRegressionTests
         Assert.Equal(2, fixture.Client.Calls);
     }
 
+    // A batch that timed out is split once; when its first half timed out too, the second half was never sent but was
+    // marked Error with the timeout as if it had failed.
+    [Fact]
+    public async Task RowsNeverSentAfterABatchTimeout_StayPending()
+    {
+        await using var fixture = await Fixture.CreateAsync(
+            ("Iron Sword", "WEAP:FULL", null), ("Steel Sword", "WEAP:FULL", null), ("Iron Axe", "WEAP:FULL", null), ("Steel Axe", "WEAP:FULL", null));
+        fixture.Client.BeforeGenerate = (_, _) => Task.FromException(
+            new TaskCanceledException("The request was canceled due to the configured HttpClient.Timeout.", new TimeoutException()));
+
+        fixture.Service.RetryDelayOverride = TimeSpan.Zero;
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { BatchSize = 4, MaxConcurrency = 1 });
+
+        var rows = await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None);
+        // The whole batch, then its first half; the second half is never sent.
+        Assert.Equal(2, fixture.Client.Calls);
+        var pending = rows.Count(row => row.Status == StringEntryStatus.Pending && row.ErrorMessage == null);
+        Assert.InRange(pending, 1, 3);
+        Assert.Equal(4 - pending, rows.Count(row => row.Status == StringEntryStatus.Error));
+    }
+
     [Fact]
     public async Task LongText_ChunksThatKeepFailing_StillStopAtTheRecoveryLimit()
     {
