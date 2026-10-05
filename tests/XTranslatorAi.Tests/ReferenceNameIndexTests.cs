@@ -182,6 +182,23 @@ public class ReferenceNameIndexTests
         Assert.Empty(FullNames.FindIn("Jarl, the Old one, and Stone. Charming.", max: 16));
     }
 
+    // The memory's own entry "Imperial Legion" says 임페리얼, but 10 of its 12 sentences say 제국군, so forcing the
+    // entry wrote 임페리얼 into MEI's USSEP patch. A name its sentences rarely spell that way is not forced.
+    [Fact]
+    public void NameThatTheMemorysSentencesSpellDifferently_IsNotForced()
+    {
+        var index = ReferenceNameIndex.Build(new[]
+        {
+            ("Imperial Legion", "임페리얼"), ("Hail the Imperial Legion!", "제국군 만세!"),
+            ("How do I join the Imperial Legion?", "제국군에 가입하려면 어떻게 해야 됩니까?"),
+            ("I want to join the Imperial Legion now.", "지금 제국군에 입대하고 싶습니다."),
+            ("Maven Black-Briar", "메이븐 블랙-브라이어"), ("Speak to Maven Black-Briar today", "메이븐 블랙-브라이어와 오늘 대화하기"),
+        });
+
+        Assert.Empty(index.FindIn("Released by order of the Imperial Legion."));
+        Assert.Equal("메이븐 블랙-브라이어", Assert.Single(index.FindIn("Ask Maven Black-Briar.")).Target);
+    }
+
     [Fact]
     public async Task NamesAreWrittenAsTheirOfficialTranslation_UnlessTheGlossaryForcesThem()
     {

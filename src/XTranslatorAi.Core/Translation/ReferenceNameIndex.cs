@@ -112,6 +112,8 @@ public sealed partial class ReferenceNameIndex
             count++;
         }
 
+        count -= DropNamesTheSentencesSpellDifferently(byFirstWord, pairs);
+
         foreach (var list in byFirstWord.Values)
         {
             list.Sort((a, b) => b.Source.Length.CompareTo(a.Source.Length));
@@ -333,6 +335,63 @@ public sealed partial class ReferenceNameIndex
         => GlossaryLoanwordRule.KoreanSound(spelling) is { } sound
            && (sound == GlossaryLoanwordRule.EnglishSound(word)
                || sound == GlossaryLoanwordRule.EnglishSound(Regex.Replace(word, "ng(?=[aeiouy])", "ngg", RegexOptions.CultureInvariant)));
+
+    /// <summary>
+    /// Drops multi-word names that the memory's own sentences (four words or more) spell another way in more than 70%
+    /// of at least three uses: its entry "Imperial Legion" says 임페리얼 while 10 of 12 sentences say 제국군, and
+    /// "Word of Power" says 힘의 언어 while every sentence says 힘의 단어. 13 of 5,239 names in the official memory.
+    /// Runs after the words of full names are taken, so Ingun keeps 잉건 even when "Ingun Black-Briar" goes.
+    /// </summary>
+    private static int DropNamesTheSentencesSpellDifferently(
+        Dictionary<string, List<(string Source, string Target)>> byFirstWord, IReadOnlyList<(string Source, string Target)> memory)
+    {
+        var names = byFirstWord.Values.SelectMany(list => list).Where(name => name.Source.Contains(' ')).ToList();
+        if (names.Count == 0)
+        {
+            return 0;
+        }
+
+        var bySource = names.ToDictionary(name => name.Source, name => (name.Target, Total: 0, Spelled: 0), StringComparer.Ordinal);
+        var byFirst = names.GroupBy(name => name.Source.Split(' ')[0], StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.Select(name => name.Source).ToList(), StringComparer.Ordinal);
+        foreach (var (source, target) in memory)
+        {
+            if (source.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length < 4)
+            {
+                continue;
+            }
+
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            foreach (Match word in WordRegex.Matches(source))
+            {
+                if (!byFirst.TryGetValue(word.Value, out var candidates))
+                {
+                    continue;
+                }
+
+                foreach (var name in candidates)
+                {
+                    if (seen.Contains(name) || string.CompareOrdinal(source, word.Index, name, 0, name.Length) != 0
+                        || !EndsAtWordBoundary(source, word.Index + name.Length))
+                    {
+                        continue;
+                    }
+
+                    seen.Add(name);
+                    var use = bySource[name];
+                    bySource[name] = (use.Target, use.Total + 1, use.Spelled + (target.Contains(use.Target, StringComparison.Ordinal) ? 1 : 0));
+                }
+            }
+        }
+
+        var dropped = 0;
+        foreach (var list in byFirstWord.Values)
+        {
+            dropped += list.RemoveAll(name => bySource.TryGetValue(name.Source, out var use) && use.Total >= 3 && use.Spelled * 10 < use.Total * 3);
+        }
+
+        return dropped;
+    }
 
     // "ng" before a vowel is two sounds in a name: Ingun is 잉건 (ing-geon), not one nasal. A possessive 의 is not
     // part of the name (아카토쉬의 신전).
