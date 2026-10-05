@@ -437,6 +437,8 @@ public class LqaFalsePositiveTests
             Dialogue(1, "I overheard Braith trying to talk to her parents.", "브레이스가 부모님이랑 얘기하려는 걸 우연히 들었어."),
             Dialogue(2, "In the meantime, keep holding on.", "그동안은 계속 버텨봐."),
             Dialogue(3, "Should be a master key somewhere around here.", "이 근처 어딘가에 마스터 키가 있을 거야."),
+            // A plural next word: "files" is written 파일.
+            Dialogue(4, "Load order: sort the master files first.", "로드 순서: 마스터 파일을 먼저 정렬하세요."),
         };
 
         var issues = await LqaScanner.ScanAsync(entries, "ko", glossary);

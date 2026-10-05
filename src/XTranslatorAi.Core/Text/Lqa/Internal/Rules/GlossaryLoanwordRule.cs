@@ -350,11 +350,15 @@ internal static class GlossaryLoanwordRule
     }
 
     // "master key" written 마스터 키: the phrase is borrowed whole, so 마스터 is not the glossary's Master (달인).
+    // A plural next word is written singular ("master files" → 마스터 파일).
     private static bool SpellsWholePhrase(string sourceText, string destText, string termSource, string word)
     {
         var nextWords = Regex.Matches(sourceText ?? "", @"(?<![A-Za-z])" + Regex.Escape(termSource) + @"(?:e?s)?\s+(?<next>[A-Za-z]+)",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)
-            .Select(m => EnglishSound(m.Groups["next"].Value))
+            .Select(m => m.Groups["next"].Value)
+            .SelectMany(next => next.Length > 3 && next.EndsWith("s", StringComparison.OrdinalIgnoreCase)
+                ? new[] { EnglishSound(next), EnglishSound(next[..^1]) }
+                : new[] { EnglishSound(next) })
             .ToHashSet(StringComparer.Ordinal);
         return nextWords.Count > 0
                && Regex.Matches(destText, Regex.Escape(word) + @"\s+(?<next>[가-힣]+)", RegexOptions.CultureInvariant)
