@@ -23,6 +23,8 @@ internal static class LegacyPostEditDamageRule
         "노인", "주인", "집주인", "상인", "부인", "거인", "하인", "죄인", "군인", "범인", "악인",
         "연인", "여인", "은인", "현인", "광인", "타인", "미인", "장인", "성인", "시인", "개인",
         "이방인", "외지인",
+        // Sino-Korean nouns and 은 (silver): "또 살인이?", "봉인이?", "그게 원인이?", "금이 아니라 은이?".
+        "살인", "봉인", "원인", "증인", "요인", "승인", "혼인", "고인", "용인", "의인", "선인", "외계인", "은", "수은",
     };
 
     private static readonly (Regex Pattern, string What, System.Func<Match, bool>? IsCorrectText)[] Patterns =

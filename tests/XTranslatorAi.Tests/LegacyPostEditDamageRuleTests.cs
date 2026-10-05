@@ -53,6 +53,12 @@ public sealed class LegacyPostEditDamageRuleTests
     [InlineData("무엇을 원하나, 젊은이?")]
     [InlineData("그 노인이?")]
     [InlineData("여관 주인이? 그럴 리가.")]
+    // Sino-Korean nouns ending in 인, and 은 (silver), asked the same way.
+    [InlineData("또 살인이?")]
+    [InlineData("봉인이? 벌써 풀렸다고?")]
+    [InlineData("그게 원인이?")]
+    [InlineData("증인이? 누가?")]
+    [InlineData("금이 아니라 은이?")]
     [InlineData("음...알겠어")]
     [InlineData("음…알겠어")]
     public async Task LeavesCorrectTextAlone(string dest) => Assert.Empty(await ScanAsync(dest));
