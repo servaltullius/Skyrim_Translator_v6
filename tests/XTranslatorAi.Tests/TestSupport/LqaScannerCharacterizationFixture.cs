@@ -17,8 +17,9 @@ internal static class LqaScannerCharacterizationFixture
             new(
                 Id: 101,
                 OrderIndex: 10,
-                Edid: "INFO_TM_001",
-                Rec: "INFO:000001",
+                // Not dialogue: a TM fallback note on dialogue is not listed (the fallback is deliberate there).
+                Edid: "MESG_TM_001",
+                Rec: "MESG:000001",
                 Status: StringEntryStatus.Done,
                 SourceText: "Saarthal Amulet",
                 DestText: "Saarthal Amulet"

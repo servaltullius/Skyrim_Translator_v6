@@ -128,6 +128,7 @@ public static class LqaScanner
                 loanwordIndex,
                 issues
             );
+            TmFallbackRule.Apply(entry, source, dest, tmFallbackNotes, context.ReferenceNames, issues);
             OfficialNameRule.Apply(entry, source, dest, isKorean, context.ReferenceNames, glossarySources, issues);
             SameSourceVariantRule.Apply(entry, sameSourceVariants, issues);
             PrefixedNameVariantRule.Apply(entry, prefixedNameVariants, issues);
@@ -150,8 +151,6 @@ public static class LqaScanner
         List<LqaIssue> issues
     )
     {
-        TmFallbackRule.Apply(entry, sourceText, destText, tmFallbackNotes, issues);
-
         // Even an otherwise untranslated row can have lost markup or line breaks.
         // Integrity failures must not disappear behind the untranslated heuristic.
         TokenMismatchRule.Apply(entry, sourceText, destText, issues);

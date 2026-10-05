@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
@@ -9,10 +10,27 @@ internal static class TmFallbackRule
         string sourceText,
         string destText,
         IReadOnlyDictionary<long, string>? tmFallbackNotes,
+        XTranslatorAi.Core.Translation.ReferenceNameIndex? referenceNames,
         List<LqaIssue> issues
     )
     {
         if (tmFallbackNotes == null || !tmFallbackNotes.TryGetValue(entry.Id, out var note) || string.IsNullOrWhiteSpace(note))
+        {
+            return;
+        }
+
+        // MEI listed 136 such notes and none needed action. Dialogue is translated on its own on purpose (the
+        // official lines use another speaker's tone), so a note on every dialogue line said nothing about the text.
+        if (LqaScanner.GetRecBase(entry.Rec) is "INFO" or "DIAL")
+        {
+            return;
+        }
+
+        // A name that came out as the memory's own translation (Rulindil → 룰린딜): the fallback changed nothing.
+        var name = sourceText.Trim();
+        if (referenceNames?.FindIn(name, max: 2) is [var only]
+            && string.Equals(only.Source, name, StringComparison.Ordinal)
+            && string.Equals(only.Target, destText.Trim(), StringComparison.Ordinal))
         {
             return;
         }

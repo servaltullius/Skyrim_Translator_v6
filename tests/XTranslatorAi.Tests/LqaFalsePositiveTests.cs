@@ -443,6 +443,31 @@ public class LqaFalsePositiveTests
         Assert.Equal("Info", Assert.Single(issues).Severity);
     }
 
+    // MEI listed 136 "TM 대신 번역" notes and none needed action: 131 were dialogue, which is translated on its own on
+    // purpose (the official lines use another speaker's tone), and 5 were names that came out as the memory's own
+    // translation. A fallback elsewhere (a TM entry that broke a placeholder) is still listed.
+    [Fact]
+    public async Task TmFallback_IsNotListedForDialogue_OrForANameMatchingTheMemory()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            new(1, 1, "Topic", "DIAL:FULL", StringEntryStatus.Done, "Who are the Thalmor?", "탈모어는 누구입니까?"),
+            new(2, 2, null, "INFO:NAM1", StringEntryStatus.Done, "I'm listening.", "듣고 있어."),
+            new(3, 3, "MS03Rulindil", "NPC_:FULL", StringEntryStatus.Done, "Rulindil", "룰린딜"),
+            new(4, 4, "FireDmg", "MGEF:FULL", StringEntryStatus.Done, "Fire Damage", "화염 피해"),
+        };
+        var notes = new Dictionary<long, string>
+        {
+            [1] = "TM 폴백: 직접 플러그인의 INFO/DIAL 대화는 개별 번역합니다.", [2] = "TM 폴백: 직접 플러그인의 INFO/DIAL 대화는 개별 번역합니다.",
+            [3] = "TM 폴백: 같은 원문의 REC/EDID/대화 문맥이 달라 개별 번역합니다.", [4] = "TM 폴백: 같은 원문의 REC/EDID/대화 문맥이 달라 개별 번역합니다.",
+        };
+        var names = XTranslatorAi.Core.Translation.ReferenceNameIndex.Build(new[] { ("Rulindil", "룰린딜"), ("Speak to Rulindil", "룰린딜과 대화하기") });
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>(), tmFallbackNotes: notes, referenceNames: names);
+
+        Assert.Equal(4L, Assert.Single(issues, i => i.Code == "tm_fallback").Id);
+    }
+
     [Fact]
     public async Task BookLengthRatio_SkipsShortTitles_ButChecksLongBodies()
     {
