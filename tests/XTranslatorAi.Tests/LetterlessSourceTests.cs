@@ -1,4 +1,6 @@
 using XTranslatorAi.Core.Models;
+using XTranslatorAi.Core.Text;
+using XTranslatorAi.Core.Translation;
 using XTranslatorAi.Tests.TestSupport;
 using Xunit;
 
@@ -38,6 +40,60 @@ public class LetterlessSourceTests
         var rows = (await fixture.RowsAsync()).Values.ToList();
         Assert.All(rows, row => Assert.Equal(StringEntryStatus.Done, row.Status));
         Assert.Equal("...", rows.Single(r => r.SourceText == "...").DestText);
+    }
+
+    /// <summary>
+    /// The letterless check counted any angle brackets as markup, so a row that is only a stage direction or a player
+    /// option was kept in English without a request: MEI's 17 options such as "< Recruit character as a follower. >".
+    /// </summary>
+    [Fact]
+    public async Task RowsThatAreOnlyAStageDirection_AreTranslated()
+    {
+        await using var fixture = await TranslationRunFixture.CreateAsync(
+            ("< Recruit character as a follower. >", "DIAL:FULL"), ("<Take a deep breath>", "INFO:NAM1"), ("<p align='center'></p>", "BOOK:DESC"));
+
+        await fixture.Service.TranslateIdsAsync(fixture.Request);
+
+        var sent = string.Join(" | ", fixture.Client.Requests.Select(r => r.Contents[0].Parts[0].Text));
+        Assert.Contains("Recruit character as a follower", sent);
+        Assert.Contains("Take a deep breath", sent);
+        Assert.Equal("<p align='center'></p>", (await fixture.RowsAsync()).Values.Single(r => r.SourceText.StartsWith("<p")).DestText);
+    }
+
+    /// <summary>
+    /// With "Maven" forced by the glossary, "&lt; Maven - What do you think of this place? &gt;" reached the token checks as
+    /// "&lt; __XT_TERM_…__ - What … &gt;", which looked like a tag again, so the translated option was rejected as an error.
+    /// </summary>
+    [Fact]
+    public async Task OptionWithAGlossaryTerm_IsTranslated()
+    {
+        await using var fixture = await TranslationRunFixture.CreateAsync(("< Maven - What do you think of this place? >", "DIAL:FULL"));
+        fixture.Client.ResponseOverride = (_, request) =>
+        {
+            var prompt = request.Contents[0].Parts[0].Text!;
+            const string marker = "Input JSON:";
+            var json = prompt.IndexOf(marker, StringComparison.Ordinal);
+            static string Translate(string text) => System.Text.RegularExpressions.Regex.Replace(
+                GlossarySemanticHintInjector.Strip(text), "What do you think of this place\\?", "이곳을 어떻게 생각해요?");
+            if (json < 0) return Translate(EchoGeminiClient.GetTextOnlySource(prompt));
+            using var payload = System.Text.Json.JsonDocument.Parse(prompt[(json + marker.Length)..]);
+            return System.Text.Json.JsonSerializer.Serialize(new
+            {
+                translations = payload.RootElement.GetProperty("items").EnumerateArray()
+                    .Select(item => new { id = item.GetProperty("id").GetInt64(), text = Translate(item.GetProperty("text").GetString()!) }).ToArray(),
+            });
+        };
+        var request = fixture.Request with
+        {
+            TargetLang = "korean",
+            GlobalGlossary = new[] { new GlossaryEntry(1, null, "Maven", "메이븐", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null) },
+        };
+
+        await fixture.Service.TranslateIdsAsync(request);
+
+        var row = Assert.Single((await fixture.RowsAsync()).Values);
+        Assert.Equal(StringEntryStatus.Done, row.Status);
+        Assert.Equal("< 메이븐 - 이곳을 어떻게 생각해요? >", row.DestText);
     }
 
     /// <summary>

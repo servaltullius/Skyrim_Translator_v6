@@ -20,9 +20,12 @@ public static class TranslationConstants
     /// Three or more words starting with a letter are text even with an apostrophe, a slash or a digit, as long as
     /// there is no '=', '%' or double quote: MEI's player option "&lt; Tell Senna you're visiting with a friend. &gt;"
     /// stayed in English as a tag. Tags with quotes or slashes carry an attribute ('=') or have fewer words (&lt;br /&gt;).
+    /// Words around a term token are text too: with "Maven" forced, "&lt; __XT_TERM_…__ - What do you think? &gt;" read as a tag
+    /// and the translated option was rejected. A tag never holds a term token; tags are masked before terms.
     /// </summary>
     public const string StageDirectionGuard = @"(?!(?!\s*[Pp]age\s+[Bb]reak\s*>)(?:\s*[^\s<>=/'""\d%]+(?:\s+[^\s<>=/'""\d%]+)+\s*>"
-        + @"|\s*[A-Za-z][^\s<>=%""]*(?:\s+[^\s<>=%""]+){2,}\s*>))"
+        + @"|\s*[A-Za-z][^\s<>=%""]*(?:\s+[^\s<>=%""]+){2,}\s*>"
+        + @"|(?=[^<>]*__XT_)\s*[^\s<>=%""]+(?:\s+[^\s<>=%""]+)+\s*>))"
         + @"(?![^<>]*[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7A3][^<>]*>)";
 
     public static readonly Regex UiTagTokenRegex = new(
