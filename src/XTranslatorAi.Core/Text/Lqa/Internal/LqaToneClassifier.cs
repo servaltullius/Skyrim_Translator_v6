@@ -47,6 +47,13 @@ internal static class LqaToneClassifier
             return ToneKind.Unknown;
         }
 
+        // A line that ends in one of these nouns has no speech level ("재시작 필요.", "치명적인 피해!", "새 메시지").
+        var lastSpace = cleaned.LastIndexOfAny(new[] { ' ', '\t', '\n', ':' });
+        if (NounsLikeEndings.Contains(cleaned[(lastSpace + 1)..]))
+        {
+            return ToneKind.Unknown;
+        }
+
         // Every ㅂ니다/ㅂ니까/ㅂ시다 form: 합니다, 됩니다, 줍니다, 갑니까, 됩시다.
         if (cleaned.Length >= 3
             && EndsWithAny(cleaned, "니다", "니까", "시다")
@@ -81,6 +88,15 @@ internal static class LqaToneClassifier
     }
 
     private static readonly string[] PlainImperativeEndings = { "아라", "어라", "여라", "거라", "너라", "해라", "하라" };
+
+    // Nouns that end like 요 (해요체), 해 or 지 (반말) or 다 (해라체).
+    private static readonly HashSet<string> NounsLikeEndings = new(StringComparer.Ordinal)
+    {
+        "필요", "중요", "주요", "수요", "개요", "요요",
+        "피해", "방해", "손해", "재해", "이해", "오해", "견해", "동해", "서해", "남해",
+        "메시지", "이미지", "페이지", "지지", "의지", "부지", "토지", "휴지",
+        "바다", "시다",
+    };
 
     public static string ToDisplay(ToneKind tone) => tone switch
     {
