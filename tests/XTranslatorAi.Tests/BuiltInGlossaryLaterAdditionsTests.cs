@@ -177,6 +177,29 @@ public class BuiltInGlossaryLaterAdditionsTests : IAsyncLifetime
         Assert.Equal(expected, Assert.Single(await GlossaryAsync(), e => e.SourceTerm == source).TargetTerm);
     }
 
+    // Decided 2026-10-05 from the Feris review: the game (built-in TM) names the cave 부풀은 사내의 암굴.
+    [Theory]
+    [InlineData("Built-in default glossary", "부풀은 사내의 암굴")]
+    [InlineData(null, "부풀은 사내 암굴")]
+    public async Task BloatedMansGrotto_IsCorrected_OnlyWhereTheUserKeptTheOldOne(string? note, string expected)
+    {
+        await _db.BulkInsertGlossaryAsync(
+            new[] { ((string?)null, "Bloated Man's Grotto", "부풀은 사내 암굴", true, 10, (int)GlossaryMatchMode.WordBoundary, (int)GlossaryForceMode.ForceToken, note) },
+            CancellationToken.None);
+
+        await AddAllBatchesAsync();
+
+        Assert.Equal(expected, Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Bloated Man's Grotto").TargetTerm);
+    }
+
+    [Fact]
+    public async Task NewGlossary_GetsTheGameNameOfBloatedMansGrotto()
+    {
+        await new BuiltInGlossaryService().EnsureBuiltInGlossaryAsync(_db, CancellationToken.None);
+
+        Assert.Equal("부풀은 사내의 암굴", Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Bloated Man's Grotto").TargetTerm);
+    }
+
     // Decided 2026-10-05 from the Elden Rim review: [Activate Button] 활성화 버튼 (8 rows), [Sprint Button] 질주 버튼.
     [Fact]
     public async Task ButtonNames_AreAddedToExistingAndNewGlossaries()

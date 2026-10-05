@@ -53,6 +53,8 @@ public sealed class BuiltInGlossaryService
         // Decided 2026-10-05 from the Elden Rim review ([Activate Button] 활성화 버튼, [Sprint Button] 질주 버튼).
         // [Activate] and [Sprint] alone stay English as the game's key names (PlaceholderMasker.ControlKeyNames).
         new("2026-10-05.2", new[] { "Activate Button", "Sprint Button" }, Array.Empty<(string, string)>()),
+        // Decided 2026-10-05 from the Feris review: the game (built-in TM) names the cave 부풀은 사내의 암굴.
+        new("2026-10-05.3", Array.Empty<string>(), new[] { ("Bloated Man's Grotto", "부풀은 사내 암굴") }),
     };
 
     /// <summary>
