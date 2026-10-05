@@ -166,10 +166,44 @@ public class TranslationServicePromptCacheRecoveryTests
             Assert.Equal(2, rows.Count);
             Assert.All(rows, r => Assert.Equal(StringEntryStatus.Done, r.Status));
 
-            // First row: generate with cache fails (403), then we retry without cache.
-            // Second row: cache should be disabled and go straight to no-cache.
-            Assert.Equal(1, handler.GenerateWithCacheCount);
+            // First row: the cache is refused (403) and may have expired, so it is made again and the row goes on
+            // without it. Second row: the new cache is refused too, so caching is off from then on.
+            Assert.Equal(2, handler.GenerateWithCacheCount);
             Assert.Equal(2, handler.GenerateWithoutCacheCount);
+        }
+        finally
+        {
+            TestDbHelper.TryDeleteDbFiles(path);
+        }
+    }
+
+    // A cache that expired (403 "CachedContent not found (or permission denied)") turned caching off for the rest of
+    // the run; runs longer than its two hours then paid the full system prompt on every request.
+    [Fact]
+    public async Task TranslateIdsAsync_WhenTheCacheExpiredOnce_UsesANewCacheForLaterRows()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
+        try
+        {
+            await using var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
+            await SeedProjectAsync(db);
+            await db.BulkInsertStringsAsync(Enumerable.Range(1, 3).Select(i => (
+                OrderIndex: i, ListAttr: (string?)null, PartialAttr: (string?)null, AttributesJson: (string?)null,
+                Edid: (string?)$"BookTest0{i}", Rec: (string?)"BOOK:FULL", SourceText: $"Line {i}.", DestText: "",
+                Status: StringEntryStatus.Pending, RawStringXml: "<r/>")).ToArray(), CancellationToken.None);
+            var ids = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending }, CancellationToken.None);
+            var handler = new CachedContent403ThenOkHandler(forbiddenTimes: 1);
+            var service = new TranslationService(db, new GeminiClient(new HttpClient(handler)));
+
+            await service.TranslateIdsAsync(new TranslateIdsRequest(
+                ApiKey: "DUMMY", ModelName: ModelName, SourceLang: "english", TargetLang: "korean", SystemPrompt: "base", Ids: ids,
+                BatchSize: 1, MaxChars: 5000, MaxConcurrency: 1, Temperature: 0.0, MaxOutputTokens: 512, MaxRetries: 0,
+                UseRecStyleHints: false, EnableRepairPass: false, EnableSessionTermMemory: false, OnRowUpdated: null,
+                WaitIfPaused: null, CancellationToken: CancellationToken.None));
+
+            Assert.All(await db.GetStringsAsync(10, 0, CancellationToken.None), r => Assert.Equal(StringEntryStatus.Done, r.Status));
+            Assert.Equal(3, handler.GenerateWithCacheCount);
+            Assert.Equal(1, handler.GenerateWithoutCacheCount);
         }
         finally
         {
@@ -283,7 +317,7 @@ public class TranslationServicePromptCacheRecoveryTests
         );
     }
 
-    private sealed class CachedContent403ThenOkHandler : HttpMessageHandler
+    private sealed class CachedContent403ThenOkHandler(int forbiddenTimes = int.MaxValue) : HttpMessageHandler
     {
         private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
         {
@@ -308,6 +342,11 @@ public class TranslationServicePromptCacheRecoveryTests
                 if (body.IndexOf("\"cachedContent\"", StringComparison.Ordinal) >= 0)
                 {
                     GenerateWithCacheCount++;
+                    if (GenerateWithCacheCount > forbiddenTimes)
+                    {
+                        return OkJson(new { candidates = new[] { new { content = new { parts = new[] { new { text = "KOR_OK __XT_PH_9999__" } } }, finishReason = "STOP" } } });
+                    }
+
                     return new HttpResponseMessage(HttpStatusCode.Forbidden)
                     {
                         Content = new StringContent(

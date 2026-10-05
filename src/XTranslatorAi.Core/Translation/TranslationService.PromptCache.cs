@@ -63,7 +63,7 @@ public sealed partial class TranslationService
     {
         if (IsCachedContentPermissionDenied(ex))
         {
-            cache.Disable();
+            cache.Deny(failedName);
         }
         else
         {
@@ -123,6 +123,34 @@ public sealed partial class TranslationService
                     _cachedContentName = null;
                 }
             }
+        }
+
+        private bool _recreatedAfterDenial;
+
+        /// <summary>
+        /// Gemini answers an expired cache (the TTL is never extended) with 403 "CachedContent not found (or permission
+        /// denied)", the same as a key that may not use it. Disabling at once ran every request after the first two
+        /// hours without the cache. The cache is made again once; a new cache refused as well means it is not allowed.
+        /// </summary>
+        public void Deny(string? failedName)
+        {
+            lock (_nameGate)
+            {
+                // A request that used an older cache: another worker has already dealt with it.
+                if (failedName == null || !string.Equals(_cachedContentName, failedName, StringComparison.Ordinal))
+                {
+                    return;
+                }
+
+                if (!_recreatedAfterDenial)
+                {
+                    _recreatedAfterDenial = true;
+                    _cachedContentName = null;
+                    return;
+                }
+            }
+
+            Disable();
         }
 
         public void Disable()
