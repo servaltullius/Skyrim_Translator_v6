@@ -133,6 +133,17 @@ public class KoreanTranslationFixerTests
     public void Fix_ResolvesMarkerAfterAClosingBracketOrQuote(string input, string expected)
         => Assert.Equal(expected, KoreanTranslationFixer.Fix("korean", input));
 
+    // 들를 is 들르다 ("stop by"), not 들 + 를: the fixer turned "여관에 들를 거야" into 들을 (hear) and the quality check
+    // reported the correct form.
+    [Theory]
+    [InlineData("여관에 들를 거야.")]
+    [InlineData("잠시 들를 수 있다.")]
+    public void Fix_KeepsTheVerbDeulreuda(string text)
+    {
+        Assert.Equal(text, KoreanTranslationFixer.Fix("korean", text));
+        Assert.Null(LqaHeuristics.FindHangulParticleMismatchSuggestion(text));
+    }
+
     // Parentheses qualify the word before them, so the marker follows that word (32eb1d7 picked 양손).
     [Theory]
     [InlineData("도끼(양손)을(를) 든다.", "도끼(양손)를 든다.")]

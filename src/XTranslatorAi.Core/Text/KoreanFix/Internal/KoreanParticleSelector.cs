@@ -133,7 +133,9 @@ internal static class KoreanParticleSelector
     /// rather than being a particle. The fixer and the quality check share this list so they agree.
     /// </summary>
     public static bool EndsWithEulEunWord(string word, string particle)
-        => word.Length > 0 && VowelThenEulEunWords.Contains(word[^1] + particle);
+        => word.Length > 0 && VowelThenEulEunWords.Contains(word[^1] + particle)
+           // 들를 is 들르다 ("여관에 들를 거야"), not 들 + 를.
+           || word == "들" && particle == "를";
 
     public static string FixObjectParticleSafely(string noun, string particle)
     {
