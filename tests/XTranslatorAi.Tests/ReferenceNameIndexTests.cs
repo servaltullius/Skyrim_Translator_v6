@@ -274,6 +274,27 @@ public class ReferenceNameIndexTests
         Assert.Equal(("Dagon", "데이건"), Assert.Single(index.FindIn("Hail, Lord Dagon.")));
     }
 
+    // The rule above went too far on local projects: Kolbjorn (only in "Kolbjorn Barrow", 콜비욘 무덤) is a name, because
+    // the memory translates the noun after it; and "Karthwasten River" or "Karthwasten Smelter" still name Karthwasten,
+    // because a place noun follows. Only a whole name spelled by sound (Elder Scroll → 엘더 스크롤) or an unknown word
+    // after the name (Dagon Fel) keeps the word out.
+    [Fact]
+    public void WordsBeforeATranslatedNounOrBeforeAPlaceNoun_AreNames()
+    {
+        var index = ReferenceNameIndex.Build(new[]
+        {
+            ("Kolbjorn Barrow", "콜비욘 무덤"), ("Clear the Draugr from Kolbjorn Barrow", "콜비욘 무덤의 드로거를 처리하기"),
+            ("Investigate Kolbjorn Barrow", "콜비욘 무덤을 조사하기"), ("An old barrow lies there.", "오래된 무덤이 있다."),
+            ("Elder Scroll", "엘더 스크롤"), ("Read the Elder Scroll now", "지금 엘더 스크롤을 읽기"), ("Find the Elder Scroll", "엘더 스크롤 찾기"),
+            ("Use the scroll.", "주문서를 사용한다."),
+            ("Karthwasten", "카스웨이스튼"), ("I want to stop at Karthwasten.", "카스웨이스튼까지."),
+        });
+
+        Assert.Equal(("Kolbjorn", "콜비욘"), Assert.Single(index.FindIn("So far your investment into Kolbjorn hasn't paid.")));
+        Assert.Empty(index.FindIn("It's what you call an Elder artifact."));
+        Assert.Equal(("Karthwasten", "카스웨이스튼"), Assert.Single(index.FindIn("Treasure Map, Karthwasten River")));
+    }
+
     // MEI's names that the memory has only inside sentences were left to the model: "Gray Quarter" (잿빛 지구),
     // "Lake Honrich" (혼리크 호수). A name the sentences translate the same way is a name; the particles after it are not.
     [Fact]

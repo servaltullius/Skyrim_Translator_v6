@@ -44,6 +44,7 @@ public sealed partial class ReferenceNameIndex
 
     private readonly Dictionary<string, List<(string Source, string Target)>> _byFirstWord;
     private readonly Material[] _materials;
+    private readonly HashSet<string> _ordinaryWords;
 
     // Multi-word names by their lowercase first word: "sweeter than moon sugar" names Moon Sugar (문 슈거). Only names
     // whose first word the translation spells by sound (moon → 문): the lowercase forms of translated names were ordinary
@@ -51,9 +52,11 @@ public sealed partial class ReferenceNameIndex
     // "send a note" → 노트). One-word names are not matched in lowercase: dirge and maul are ordinary words.
     private readonly Dictionary<string, List<(string Source, string Target)>> _byLowerFirstWord;
 
-    private ReferenceNameIndex(Dictionary<string, List<(string Source, string Target)>> byFirstWord, int count, Material[] materials)
+    private ReferenceNameIndex(Dictionary<string, List<(string Source, string Target)>> byFirstWord, int count, Material[] materials,
+        HashSet<string> ordinaryWords)
     {
         _byFirstWord = byFirstWord;
+        _ordinaryWords = ordinaryWords;
         Count = count;
         _materials = materials;
         _byLowerFirstWord = byFirstWord.Values.SelectMany(list => list)
@@ -136,7 +139,7 @@ public sealed partial class ReferenceNameIndex
             list.Sort((a, b) => b.Source.Length.CompareTo(a.Source.Length));
         }
 
-        return new ReferenceNameIndex(byFirstWord, count, ConfirmedMaterials(pairs));
+        return new ReferenceNameIndex(byFirstWord, count, ConfirmedMaterials(pairs), lowercaseUse.Where(phrase => !phrase.Contains(' ')).ToHashSet(StringComparer.Ordinal));
     }
 
     /// <summary>
@@ -158,7 +161,7 @@ public sealed partial class ReferenceNameIndex
         foreach (var (source, target) in names.OrderByDescending(name => name.Source.Length))
         {
             var token = $"__XT_TERM_N{++number}_0000__";
-            var replaced = NameOccurrence(source).Replace(text, token);
+            var replaced = ReplaceName(text, source, token);
             if (!string.Equals(replaced, text, StringComparison.Ordinal))
             {
                 text = replaced;
@@ -193,7 +196,7 @@ public sealed partial class ReferenceNameIndex
         foreach (var (source, target) in broken.OrderByDescending(name => name.Source.Length))
         {
             var token = $"__XT_TERM_R{++number}_0000__";
-            var replaced = NameOccurrence(source).Replace(text, token);
+            var replaced = ReplaceName(text, source, token);
             if (!string.Equals(replaced, text, StringComparison.Ordinal))
             {
                 text = replaced;
@@ -212,13 +215,34 @@ public sealed partial class ReferenceNameIndex
 
     private static readonly Regex WholeTokenRegex = new(@"^__XT_[A-Z0-9_]+__$", RegexOptions.CultureInvariant);
 
-    // A one-word name followed by another capitalized word is part of another name: Dagon Fel is a town, not 데이건.
     private static Regex NameOccurrence(string source)
-        => new(@"(?<![A-Za-z'’\-])" + Regex.Escape(source) + @"(?![A-Za-z\-])(?!['’](?!s\b))" + (source.Contains(' ') ? "" : "(?! [A-Z])"),
-            RegexOptions.CultureInvariant);
+        => new(@"(?<![A-Za-z'’\-])" + Regex.Escape(source) + @"(?![A-Za-z\-])(?!['’](?!s\b))", RegexOptions.CultureInvariant);
 
-    private static bool StartsAnotherName(string text, int end, string name)
-        => !name.Contains(' ') && end + 1 < text.Length && text[end] == ' ' && char.IsAsciiLetterUpper(text[end + 1]);
+    private string ReplaceName(string text, string source, string token)
+        => NameOccurrence(source).Replace(text, m => StartsAnotherName(text, m.Index + m.Length, source) ? m.Value : token);
+
+    // Nouns that follow a place's name in Skyrim ("Karthwasten River", "Karthwasten Smelter"). The memory rarely writes
+    // them in lowercase (it has no "river" at all), so they are listed.
+    private static readonly HashSet<string> PlaceNouns = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Barrow", "Bay", "Bridge", "Camp", "Cave", "Cavern", "Chapel", "Coast", "Crypt", "Docks", "Estate", "Falls", "Farm", "Fort",
+        "Gate", "Grotto", "Hall", "Hollow", "House", "Inn", "Isle", "Isles", "Keep", "Lake", "Lighthouse", "Lodge", "Manor", "Market",
+        "Mill", "Mine", "Outpost", "Pass", "Peak", "Pond", "Road", "Ruins", "Sanctum", "Shack", "Shrine", "Smelter", "Stables",
+        "Temple", "Tomb", "Tower", "Valley", "Watchtower", "Woods", "River", "Stream", "Springs", "Hold", "Guard", "Guards",
+    };
+
+    // A one-word name followed by another capitalized word is part of another name (Dagon Fel is a town, not 데이건),
+    // unless that word is an ordinary or place noun: "Karthwasten River" still names Karthwasten.
+    private bool StartsAnotherName(string text, int end, string name)
+    {
+        if (name.Contains(' ') || end + 1 >= text.Length || text[end] != ' ' || !char.IsAsciiLetterUpper(text[end + 1]))
+        {
+            return false;
+        }
+
+        var next = WordRegex.Match(text, end + 1).Value;
+        return !PlaceNouns.Contains(next) && !_ordinaryWords.Contains(next.ToLowerInvariant());
+    }
 
     /// <summary>Names written exactly as in the memory (capitalized) in <paramref name="text"/>, longest first, without overlaps.</summary>
     public IReadOnlyList<(string Source, string Target)> FindIn(string text, int max = 8)
@@ -317,8 +341,11 @@ public sealed partial class ReferenceNameIndex
 
                 set.Add(spelling);
 
-                // No ordinary word follows it: Ingun Black-Briar and Jarl Balgruuf (a title comes first), not Raven Rock.
-                if (words.SkipWhile(other => !ReferenceEquals(other, word)).Skip(1).All(other => !lowercaseUse.Contains(other.ToLowerInvariant())))
+                // Every word after it is a name (Ingun Black-Briar; a title comes first, as in Jarl Balgruuf) or an ordinary
+                // word the translation translates (Kolbjorn Barrow, 콜비욘 무덤). A whole name spelled by sound (Elder Scroll,
+                // 엘더 스크롤; Ideal Masters, 아이디얼 마스터) may be made of ordinary words.
+                if (words.SkipWhile(other => !ReferenceEquals(other, word)).Skip(1)
+                    .All(other => !lowercaseUse.Contains(other.ToLowerInvariant()) || !IsSoundedInTargetEvenAsSingular(other, target)))
                 {
                     amongNames.Add(word);
                 }
@@ -484,6 +511,9 @@ public sealed partial class ReferenceNameIndex
         return sound.Count(c => c != 'V') >= 2
                && Regex.Matches(target, "[가-힣]+").Any(m => GlossaryLoanwordRule.KoreanSound(m.Value) == sound);
     }
+
+    private static bool IsSoundedInTargetEvenAsSingular(string word, string target)
+        => IsSoundedInTarget(word, target) || word.Length > 3 && word.EndsWith('s') && IsSoundedInTarget(word[..^1], target);
 
     // The whole translation is the word's sound spelling (From-Deepest-Fathoms → 프롬-디피스트-페덤스); words with fewer
     // than two consonant sounds are too short to tell (Erdi → 어디).
