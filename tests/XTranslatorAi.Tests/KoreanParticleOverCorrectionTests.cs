@@ -99,6 +99,19 @@ public class KoreanParticleOverCorrectionTests
         yield return new object[] { "노드", "는(은) 강하다.", "노드는 강하다." };
         // Not a particle: the syllable starts the next word.
         yield return new object[] { "달인", "과거를 회상했다.", "달인과거를 회상했다." };
+        // The copula needs 이 after a final consonant; the model wrote the vowel form behind the token (MEI: "네가 사빈겠군").
+        yield return new object[] { "사빈", "겠군.", "사빈이겠군." };
+        yield return new object[] { "사빈", "였어.", "사빈이었어." };
+        yield return new object[] { "사빈", "예요.", "사빈이에요." };
+        yield return new object[] { "사빈", "다.", "사빈이다." };
+        yield return new object[] { "사빈", "지?", "사빈이지?" };
+        yield return new object[] { "사빈", "지만 괜찮아.", "사빈이지만 괜찮아." };
+        // After a vowel the short form is right, and an ambiguous 야 (copula or vocative 아) is left alone.
+        yield return new object[] { "사피아", "겠군.", "사피아겠군." };
+        yield return new object[] { "사피아", "였어.", "사피아였어." };
+        yield return new object[] { "사빈", "야!", "사빈야!" };
+        // A syllable that starts another word is not a copula.
+        yield return new object[] { "사빈", "다른 곳으로", "사빈다른 곳으로" };
     }
 
     [Theory]

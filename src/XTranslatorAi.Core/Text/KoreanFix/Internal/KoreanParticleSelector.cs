@@ -230,6 +230,45 @@ internal static class KoreanParticleSelector
         return false;
     }
 
+    // The copula after a term, as (written after a vowel, needed after a final consonant, what may follow): the model
+    // wrote the vowel form behind the token, and MEI got "네가 사빈겠군". 겠 and 였 always continue an ending; 예요 and
+    // 다 end the word; 지 ends it or goes on as 지만, 지요. 야 is left alone: after a consonant it may be the vocative
+    // (사빈아) as well as the copula (사빈이야).
+    private static readonly (string Vowel, string Consonant, string[]? Continuations)[] CopulaForms =
+    {
+        ("겠", "이겠", null), ("였", "이었", null), ("예요", "이에요", Array.Empty<string>()),
+        ("다", "이다", Array.Empty<string>()), ("지", "이지", new[] { "만", "요" }),
+    };
+
+    /// <summary>
+    /// Adds the copula's 이 after a term that ends in a final consonant ("사빈겠군" → "사빈이겠군"). A term ending in a
+    /// vowel, or one whose final sound is only guessed, is left as written.
+    /// </summary>
+    public static bool TryFixCopulaAfterTerm(string term, string text, int start, out string copula, out int length)
+    {
+        copula = "";
+        length = 0;
+        if (!TryGetFinalSound(term, out var hasFinal, out _, out var certain) || !hasFinal || !certain)
+        {
+            return false;
+        }
+
+        foreach (var (vowel, consonant, continuations) in CopulaForms)
+        {
+            if (string.CompareOrdinal(text, start, vowel, 0, vowel.Length) != 0
+                || continuations != null && !IsParticleEnd(text, start + vowel.Length, continuations))
+            {
+                continue;
+            }
+
+            copula = consonant;
+            length = vowel.Length;
+            return true;
+        }
+
+        return false;
+    }
+
     private static IEnumerable<string> BothForms(string consonantForm, string vowelForm)
     {
         foreach (var (first, second) in new[] { (consonantForm, vowelForm), (vowelForm, consonantForm) })

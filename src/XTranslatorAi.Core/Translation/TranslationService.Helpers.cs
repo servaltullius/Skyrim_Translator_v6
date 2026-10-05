@@ -284,7 +284,8 @@ public sealed partial class TranslationService
 
             // The model chose this particle while seeing only the token, not the term.
             if (fixKoreanParticles
-                && KoreanParticleSelector.TryFixParticleAfterTerm(replacement, text, afterStart, out var particle, out var particleLength))
+                && (KoreanParticleSelector.TryFixParticleAfterTerm(replacement, text, afterStart, out var particle, out var particleLength)
+                    || KoreanParticleSelector.TryFixCopulaAfterTerm(replacement, text, afterStart, out particle, out particleLength)))
             {
                 result.Append(particle);
                 cursor = afterStart + particleLength;
