@@ -48,4 +48,31 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Empty(fixture.Vm.LqaIssuesView.Cast<LqaIssueViewModel>());
             Assert.Null(fixture.Vm.SelectedLqaIssue);
         });
+
+    /// <summary>
+    /// Choosing another row kept the issue list's selection on the earlier row's issue: the tab showed that issue
+    /// above the other row's text, and clicking it again did nothing because it was already selected.
+    /// </summary>
+    [Fact]
+    public Task ChoosingAnotherRow_MovesTheIssueSelectionToThatRow()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            var rows = await LoadXmlWorkspaceAsync(fixture, "Iron Sword", "Steel Sword", "Iron Axe");
+            var first = new LqaIssueViewModel(rows[0].Id, rows[0].OrderIndex, null, "WEAP:FULL", "Warn", "untranslated", "m", "s", "");
+            var second = new LqaIssueViewModel(rows[1].Id, rows[1].OrderIndex, null, "WEAP:FULL", "Warn", "untranslated", "m", "s", "");
+            fixture.Vm.LqaIssues.ReplaceAll(new[] { first, second });
+            fixture.Vm.LqaIssuesView.Refresh();
+            fixture.Vm.SelectedLqaIssue = first;
+            Assert.Same(rows[0], fixture.Vm.SelectedEntry);
+
+            fixture.Vm.SelectedEntry = rows[1];
+            Assert.Same(second, fixture.Vm.SelectedLqaIssue);
+
+            fixture.Vm.SelectedEntry = rows[2];
+            Assert.Null(fixture.Vm.SelectedLqaIssue);
+
+            fixture.Vm.SelectedLqaIssue = first;
+            Assert.Same(rows[0], fixture.Vm.SelectedEntry);
+        });
 }

@@ -133,6 +133,23 @@ public partial class MainViewModel
         return issue.MatchesQuery(q);
     }
 
+    /// <summary>
+    /// Choosing another row kept the issue list's selection on the earlier row's issue: the tab showed that issue
+    /// above the other row's text, and clicking it again did nothing because it was already selected. The list now
+    /// selects the chosen row's first shown issue, or nothing.
+    /// </summary>
+    private void FollowSelectedEntryInLqaIssues(StringEntryViewModel? entry)
+    {
+        if (SelectedLqaIssue == null || (entry != null && SelectedLqaIssue.Id == entry.Id))
+        {
+            return;
+        }
+
+        SelectedLqaIssue = entry == null
+            ? null
+            : LqaIssuesView.Cast<LqaIssueViewModel>().FirstOrDefault(issue => issue.Id == entry.Id);
+    }
+
     partial void OnSelectedLqaIssueChanged(LqaIssueViewModel? value)
     {
         if (value == null)

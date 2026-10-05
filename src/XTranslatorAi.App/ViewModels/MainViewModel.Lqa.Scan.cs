@@ -124,9 +124,12 @@ public partial class MainViewModel
             .OrderBy(i => LqaSeverityWeight(i.Severity)).ThenBy(i => i.OrderIndex).ThenBy(i => i.Code, StringComparer.OrdinalIgnoreCase)
             .ToList());
         LqaIssuesView.Refresh();
-        if (selected != null && LqaIssues.Contains(selected))
+        if (selected != null)
         {
-            SelectedLqaIssue = selected;
+            // A fixed issue is gone; the row's remaining issue, if any, stays selected instead of the removed one.
+            SelectedLqaIssue = LqaIssues.Contains(selected)
+                ? selected
+                : LqaIssuesView.Cast<LqaIssueViewModel>().FirstOrDefault(issue => issue.Id == selected.Id);
         }
 
         ClearLqaCommand.NotifyCanExecuteChanged();
