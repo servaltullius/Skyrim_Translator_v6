@@ -47,24 +47,29 @@ public sealed partial class ProjectDb
             return dict;
         }
 
-        await using var cmd = _connection.CreateCommand();
-        var placeholders = new List<string>(ids.Count);
-        for (var i = 0; i < ids.Count; i++)
+        // In chunks: SQLite allows 32,766 variables, and one IN list for a big "후처리 재적용" failed after the rows
+        // were already saved.
+        const int chunkSize = 900;
+        for (var start = 0; start < ids.Count; start += chunkSize)
         {
-            var name = $"$id{i}";
-            placeholders.Add(name);
-            cmd.Parameters.AddWithValue(name, ids[i]);
-        }
+            var count = Math.Min(chunkSize, ids.Count - start);
+            await using var cmd = _connection.CreateCommand();
+            var placeholders = new List<string>(count);
+            for (var i = 0; i < count; i++)
+            {
+                var name = $"$id{i}";
+                placeholders.Add(name);
+                cmd.Parameters.AddWithValue(name, ids[start + i]);
+            }
 
-        cmd.CommandText =
-            $"SELECT Id, SourceText FROM StringEntry WHERE Id IN ({string.Join(",", placeholders)});";
+            cmd.CommandText =
+                $"SELECT Id, SourceText FROM StringEntry WHERE Id IN ({string.Join(",", placeholders)});";
 
-        await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
-        while (await reader.ReadAsync(cancellationToken))
-        {
-            var id = reader.GetInt64(0);
-            var sourceText = reader.GetString(1);
-            dict[id] = sourceText;
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                dict[reader.GetInt64(0)] = reader.GetString(1);
+            }
         }
 
         return dict;

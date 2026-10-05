@@ -202,30 +202,36 @@ public sealed partial class ProjectDb
         try
         {
             using var tx = _connection.BeginTransaction();
-            await using var cmd = _connection.CreateCommand();
-            cmd.Transaction = tx;
-
-            var placeholders = new List<string>(ids.Count);
-            for (var i = 0; i < ids.Count; i++)
+            var rows = 0;
+            // In chunks: SQLite allows 32,766 variables per statement.
+            for (var offset = 0; offset < ids.Count; offset += 900)
             {
-                var name = $"$id{i}";
-                placeholders.Add(name);
-                cmd.Parameters.AddWithValue(name, ids[i]);
+                var count = Math.Min(900, ids.Count - offset);
+                await using var cmd = _connection.CreateCommand();
+                cmd.Transaction = tx;
+
+                var placeholders = new List<string>(count);
+                for (var i = 0; i < count; i++)
+                {
+                    var name = $"$id{i}";
+                    placeholders.Add(name);
+                    cmd.Parameters.AddWithValue(name, ids[offset + i]);
+                }
+
+                cmd.CommandText =
+                    $"""
+                    DELETE FROM TranslationMemory
+                    WHERE SourceLangKey=$SourceLangKey
+                      AND DestLangKey=$DestLangKey
+                      AND Id IN ({string.Join(",", placeholders)})
+                    ;
+                    """;
+
+                cmd.Parameters.AddWithValue("$SourceLangKey", sourceLangKey);
+                cmd.Parameters.AddWithValue("$DestLangKey", destLangKey);
+                rows += await cmd.ExecuteNonQueryAsync(cancellationToken);
             }
 
-            cmd.CommandText =
-                $"""
-                DELETE FROM TranslationMemory
-                WHERE SourceLangKey=$SourceLangKey
-                  AND DestLangKey=$DestLangKey
-                  AND Id IN ({string.Join(",", placeholders)})
-                ;
-                """;
-
-            cmd.Parameters.AddWithValue("$SourceLangKey", sourceLangKey);
-            cmd.Parameters.AddWithValue("$DestLangKey", destLangKey);
-
-            var rows = await cmd.ExecuteNonQueryAsync(cancellationToken);
             tx.Commit();
             return rows;
         }

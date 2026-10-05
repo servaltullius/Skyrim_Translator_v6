@@ -63,6 +63,25 @@ public sealed class TranslationMemoryUpdateTests
         Assert.False(tm.ContainsKey("steel sword"));
     }
 
+    // "후처리 재적용" over every edited row of a big project: the source lookup put all ids in one IN list, and past
+    // SQLite's 32,766 variables the call failed after the rows were already saved, so the TM got nothing.
+    [Fact]
+    public async Task ManyManualEdits_AreSavedWithTheirTmEntries()
+    {
+        await using var fixture = await TranslationRunFixture.CreateAsync(("Iron Sword", "WEAP:FULL"));
+        var rows = Enumerable.Range(0, 33000).Select(i => (OrderIndex: i + 10, ListAttr: (string?)null, PartialAttr: (string?)null,
+            AttributesJson: (string?)null, Edid: (string?)null, Rec: (string?)"MESG", SourceText: $"Message {i}", DestText: "",
+            Status: StringEntryStatus.Pending, RawStringXml: "<r/>")).ToArray();
+        await fixture.Db.BulkInsertStringsAsync(rows, CancellationToken.None);
+        var ids = await fixture.Db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending }, CancellationToken.None);
+
+        await fixture.Db.UpdateStringTranslationsAsync(
+            ids.Select(id => (id, "수정", StringEntryStatus.Edited, (string?)null)).ToArray(), CancellationToken.None);
+
+        var tm = await fixture.Db.GetTranslationMemoryAsync(Lang, Lang, CancellationToken.None);
+        Assert.True(tm.Count >= 33000, $"TM has {tm.Count} entries");
+    }
+
     [Fact]
     public async Task RetranslatingOrRevertingAnEditedRow_KeepsTheEditAsTheTmEntry()
     {
