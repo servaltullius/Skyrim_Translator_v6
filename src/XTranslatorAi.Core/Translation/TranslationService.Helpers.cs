@@ -294,6 +294,13 @@ public sealed partial class TranslationService
         return result.Append(text, cursor, text.Length - cursor).ToString();
     }
 
+    private static readonly HashSet<string> DuplicateParticles = new(StringComparer.Ordinal)
+    {
+        "은", "는", "이", "가", "을", "를", "의", "에", "에서", "에게", "로", "으로", "와", "과", "도", "만", "이나", "나",
+        "까지", "부터", "처럼", "보다", "들", "들이", "들은", "들을", "들의", "이다", "이야", "야", "였다", "이었다", "이에요", "예요",
+        "입니다", "이지", "이고", "이며", "이라고", "라고",
+    };
+
     private static bool TryMatchDupAfterToken(string text, int start, string replacement, out int stripLen)
     {
         stripLen = 0;
@@ -313,6 +320,19 @@ public sealed partial class TranslationService
         }
 
         i += replacement.Length;
+
+        // The word itself, maybe with a particle ("겨울은"), not a longer word starting with it: 겨울잠 after the
+        // term 겨울 dropped the term as a duplicate.
+        var rest = i;
+        while (rest < text.Length && KoreanSyllables.IsHangulSyllable(text[rest]))
+        {
+            rest++;
+        }
+
+        if (rest > i && !DuplicateParticles.Contains(text[i..rest]))
+        {
+            return false;
+        }
 
         // Strip optional trailing __
         if (i + 2 <= text.Length && text[i] == '_' && text[i + 1] == '_')

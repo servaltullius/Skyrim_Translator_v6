@@ -52,6 +52,15 @@ public class ReplaceTokenDedupAdjacentTests
     public void OneSyllableReplacement_IsNeverTreatedAsADuplicate(string input, string expected)
         => Assert.Equal(expected, TranslationService.ReplaceTokenDedupAdjacent(input, "__XT_TERM_N1_0000__", "은"));
 
+    // After the token as well, the duplicate must be the word itself, maybe with a particle: 겨울잠 (hibernation) and
+    // 가죽 갑옷 start with the terms 겨울 and 가죽, and the term was dropped as a duplicate.
+    [Theory]
+    [InlineData("__XT_TERM_N1_0000__ 겨울잠을 잔다.", "겨울", "겨울 겨울잠을 잔다.")]
+    [InlineData("__XT_TERM_N1_0000__ 겨울은 춥다.", "겨울", "겨울은 춥다.")]
+    [InlineData("__XT_TERM_N1_0000__ 가죽 갑옷", "가죽", "가죽 갑옷")]
+    public void DuplicateAfter_MustBeTheWordItself(string input, string replacement, string expected)
+        => Assert.Equal(expected, TranslationService.ReplaceTokenDedupAdjacent(input, "__XT_TERM_N1_0000__", replacement));
+
     [Fact]
     public void DuplicateBefore_MustBeAWholeWord()
         => Assert.Equal("초강철 강철 검", TranslationService.ReplaceTokenDedupAdjacent("초강철 __XT_TERM_N1_0000__ 검", "__XT_TERM_N1_0000__", "강철"));
