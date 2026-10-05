@@ -350,6 +350,28 @@ public class ReferenceNameIndexTests
         Assert.Empty(index.FindIn("A suit of dragon armor. The seeker remains silent."));
     }
 
+    // A name is put back before the glossary only when a shorter glossary term broke it (Agent of Dibella). A longer
+    // glossary term around the name is the glossary's: "Tiber Septim" (타이버 셉팀) came out as "[타이버] Septim".
+    [Fact]
+    public void ALongerGlossaryTermAroundAName_KeepsTheGlossarysTranslation()
+    {
+        var index = ReferenceNameIndex.Build(new[]
+        {
+            ("Tiber", "타이버"), ("Speak to Tiber about it", "타이버에게 그것에 관해 말하기"),
+            ("Raven Rock", "레이븐 락"), ("Sail to Raven Rock", "레이븐 락으로 항해하기"),
+        });
+        var glossary = new GlossaryApplier(new[]
+        {
+            new GlossaryEntry(1, null, "Tiber Septim", "타이버 셉팀", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null),
+            new GlossaryEntry(2, null, "Raven Rock Harbor", "레이븐 락 항구", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 100, null),
+        });
+
+        var applied = index.ApplyWithGlossary("Tiber Septim united Tamriel near Raven Rock Harbor.", glossary);
+
+        Assert.Equal(new[] { "레이븐 락 항구", "타이버 셉팀" }, applied.TokenToReplacement.Values.OrderBy(v => v, StringComparer.Ordinal).ToArray());
+        Assert.DoesNotContain("Septim", applied.Text);
+    }
+
     // MEI's names that the memory has only inside sentences were left to the model: "Gray Quarter" (잿빛 지구),
     // "Lake Honrich" (혼리크 호수). A name the sentences translate the same way is a name; the particles after it are not.
     [Fact]

@@ -199,6 +199,8 @@ public sealed partial class ReferenceNameIndex
         var broken = FindIn(text, max: 16)
             .Where(name => !glossary.HasTerm(name.Source))
             .Where(name => !glossed.Text.Contains(name.Source, StringComparison.Ordinal))
+            // Broken by a shorter term inside it; a longer term around it ("Raven Rock Harbor") is the glossary's.
+            .Where(name => !string.Equals(glossary.Apply(name.Source).Text, name.Source, StringComparison.Ordinal))
             .Where(name => !WholeTokenRegex.IsMatch(glossary.Apply(name.Source).Text.Trim()))
             .ToList();
         if (broken.Count == 0)
