@@ -253,6 +253,27 @@ public class ReferenceNameIndexTests
         Assert.Equal("진정한 바렌자이아", Assert.Single(index.FindIn("A copy of The Real Barenziah.")).Target);
     }
 
+    // Serana Dialogue Add-On's "Raven of the North" was matched as Raven (레이븐), a word the memory only ever writes in
+    // "Raven Rock"; likewise Elder (Elder Scroll, Elder Council) and Ideal (Ideal Masters, "Ideal for my materials").
+    // A word of a full name counts alone only where the memory also writes it alone ("Dagon has spoken"), and a one-word
+    // name followed by another capitalized word is part of another name: Dagon Fel is a town, not 데이건.
+    [Fact]
+    public void WordsOnlyWrittenInsideLongerNames_AreNotNamesAlone()
+    {
+        var index = ReferenceNameIndex.Build(new[]
+        {
+            ("Raven Rock", "레이븐 락"), ("Bring the note to a guard in Raven Rock", "레이븐 락의 경비병에게 노트를 전달하기"),
+            ("Are there any other Imperials in Raven Rock?", "레이븐 락에 다른 임페리얼은 없나?"), ("A rock fell.", "바위가 떨어졌다."),
+            ("Mehrunes Dagon", "메이룬스 데이건"), ("Altar of Mehrunes Dagon", "메이룬스 데이건의 제단"),
+            ("Dagon has spoken.", "데이건의 명령이다."), ("I will use the Razor as I see fit, Dagon.", "이 면도칼은 내 마음대로 쓰겠소, 데이건."),
+        });
+
+        Assert.Empty(index.FindIn("Yeah, you can be Serana, Raven of the North!"));
+        Assert.Equal("레이븐 락", Assert.Single(index.FindIn("Sail to Raven Rock.")).Target);
+        Assert.Empty(index.FindIn("One in Dagon Fel, another in Black Marsh."));
+        Assert.Equal(("Dagon", "데이건"), Assert.Single(index.FindIn("Hail, Lord Dagon.")));
+    }
+
     // MEI's names that the memory has only inside sentences were left to the model: "Gray Quarter" (잿빛 지구),
     // "Lake Honrich" (혼리크 호수). A name the sentences translate the same way is a name; the particles after it are not.
     [Fact]

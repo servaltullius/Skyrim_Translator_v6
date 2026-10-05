@@ -212,8 +212,13 @@ public sealed partial class ReferenceNameIndex
 
     private static readonly Regex WholeTokenRegex = new(@"^__XT_[A-Z0-9_]+__$", RegexOptions.CultureInvariant);
 
+    // A one-word name followed by another capitalized word is part of another name: Dagon Fel is a town, not 데이건.
     private static Regex NameOccurrence(string source)
-        => new(@"(?<![A-Za-z'’\-])" + Regex.Escape(source) + @"(?![A-Za-z\-])(?!['’](?!s\b))", RegexOptions.CultureInvariant);
+        => new(@"(?<![A-Za-z'’\-])" + Regex.Escape(source) + @"(?![A-Za-z\-])(?!['’](?!s\b))" + (source.Contains(' ') ? "" : "(?! [A-Z])"),
+            RegexOptions.CultureInvariant);
+
+    private static bool StartsAnotherName(string text, int end, string name)
+        => !name.Contains(' ') && end + 1 < text.Length && text[end] == ' ' && char.IsAsciiLetterUpper(text[end + 1]);
 
     /// <summary>Names written exactly as in the memory (capitalized) in <paramref name="text"/>, longest first, without overlaps.</summary>
     public IReadOnlyList<(string Source, string Target)> FindIn(string text, int max = 8)
@@ -245,7 +250,8 @@ public sealed partial class ReferenceNameIndex
             foreach (var candidate in candidates)
             {
                 if (string.CompareOrdinal(text, word.Index, candidate.Source, 0, candidate.Source.Length) != 0
-                    || !EndsAtWordBoundary(text, word.Index + candidate.Source.Length))
+                    || !EndsAtWordBoundary(text, word.Index + candidate.Source.Length)
+                    || StartsAnotherName(text, word.Index + candidate.Source.Length, candidate.Source))
                 {
                     continue;
                 }
@@ -283,6 +289,7 @@ public sealed partial class ReferenceNameIndex
     {
         var known = byFirstWord.Values.SelectMany(list => list).Select(name => name.Source).ToHashSet(StringComparer.Ordinal);
         var spellings = new Dictionary<string, HashSet<string>>(StringComparer.Ordinal);
+        var amongNames = new HashSet<string>(StringComparer.Ordinal);
         foreach (var (source, target) in byFirstWord.Values.SelectMany(list => list))
         {
             var words = source.Split(' ');
@@ -309,6 +316,12 @@ public sealed partial class ReferenceNameIndex
                 }
 
                 set.Add(spelling);
+
+                // No ordinary word follows it: Ingun Black-Briar and Jarl Balgruuf (a title comes first), not Raven Rock.
+                if (words.SkipWhile(other => !ReferenceEquals(other, word)).Skip(1).All(other => !lowercaseUse.Contains(other.ToLowerInvariant())))
+                {
+                    amongNames.Add(word);
+                }
             }
         }
 
@@ -346,7 +359,28 @@ public sealed partial class ReferenceNameIndex
             }
         }
 
+        // A word the memory only writes before an ordinary word is no name alone: Raven (Raven Rock), Elder (Elder
+        // Scroll, Elder Council) and Ideal (Ideal Masters) turned "Raven of the North" and "Ideal for my materials" into
+        // names in Serana Dialogue Add-On. Dagon stands alone in "Dagon has spoken.", and Ingun is written only before
+        // another name (Ingun Black-Briar).
+        var standsAlone = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var (source, _) in memory)
+        {
+            var words = WordRegex.Matches(source).ToArray();
+            for (var i = 0; i < words.Length; i++)
+            {
+                bool Joined(int left) => source[(words[left].Index + words[left].Length)..words[left + 1].Index] == " ";
+                if (char.IsUpper(words[i].Value[0])
+                    && !(i > 0 && Joined(i - 1) && char.IsUpper(words[i - 1].Value[0]))
+                    && !(i + 1 < words.Length && Joined(i) && char.IsUpper(words[i + 1].Value[0])))
+                {
+                    standsAlone.Add(FirstWordOf(words[i].Value));
+                }
+            }
+        }
+
         return single.Where(pair => uses[pair.Key] is { Total: >= 2 } use && use.Spelled * 5 >= use.Total * 4)
+            .Where(pair => standsAlone.Contains(pair.Key) || amongNames.Contains(pair.Key))
             .Where(pair => SoundsExactly(pair.Key, pair.Value) || afterLowercase.Contains(pair.Key))
             .Select(pair => (pair.Key, pair.Value));
     }
