@@ -2,7 +2,9 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -14,6 +16,15 @@ public partial class App : Application
 {
     private readonly StartupLog _startupLog = StartupLog.Create();
     private readonly IUiInteractionService _uiInteractionService = new WpfUiInteractionService();
+
+    // Two windows wrote over each other's project DBs and settings (one deleted the API keys the other saved) and paid
+    // for the same rows twice, so a second start brings the running window forward instead.
+    private const string SingleInstanceName = @"Local\TulliusTranslator.SingleInstance";
+    private Mutex? _singleInstance;
+
+    // Set once the main window is shown: after that an unexpected UI exception is reported and the app keeps running.
+    private bool _started;
+    private bool _shownRuntimeError;
 
     public App()
     {
@@ -32,6 +43,15 @@ public partial class App : Application
         _startupLog.Write($"ProcessPath: {GetProcessPathForLog()}");
 
         base.OnStartup(e);
+
+        var snapshot = TryGetSnapshotDirectory(e.Args, out var snapshotDirectory);
+        if (!snapshot && !TryClaimSingleInstance())
+        {
+            _startupLog.Write("Another window is already running; bringing it forward.");
+            BringRunningWindowForward();
+            Shutdown(0);
+            return;
+        }
 
         try
         {
@@ -74,14 +94,24 @@ public partial class App : Application
             _startupLog.Write("Showing MainWindow...");
             window.Show();
             _startupLog.Write("MainWindow shown.");
+            _started = true;
 
-            if (TryGetSnapshotDirectory(e.Args, out var snapshotDirectory))
+            if (snapshot)
             {
                 window.ContentRendered += async (_, _) =>
                 {
-                    await window.SaveTabSnapshotsAsync(snapshotDirectory);
-                    _startupLog.Write($"UI snapshots saved: {snapshotDirectory}");
-                    Shutdown(0);
+                    try
+                    {
+                        await window.SaveTabSnapshotsAsync(snapshotDirectory);
+                        _startupLog.Write($"UI snapshots saved: {snapshotDirectory}");
+                        Shutdown(0);
+                    }
+                    catch (Exception ex)
+                    {
+                        // An automated run must not wait behind a message box.
+                        _startupLog.Write(ex, "UI snapshots failed");
+                        Shutdown(-1);
+                    }
                 };
             }
         }
@@ -103,13 +133,96 @@ public partial class App : Application
         return true;
     }
 
+    protected override void OnExit(ExitEventArgs e)
+    {
+        _singleInstance?.Dispose();
+        base.OnExit(e);
+    }
+
+    private bool TryClaimSingleInstance()
+    {
+        try
+        {
+            _singleInstance = new Mutex(initiallyOwned: false, SingleInstanceName, out var createdNew);
+            return createdNew;
+        }
+        catch (Exception ex)
+        {
+            // Never keep the app from starting because of the check itself.
+            _startupLog.Write(ex, "Single-instance check failed");
+            return true;
+        }
+    }
+
+    private void BringRunningWindowForward()
+    {
+        try
+        {
+            using var current = Process.GetCurrentProcess();
+            foreach (var other in Process.GetProcessesByName(current.ProcessName))
+            {
+                using (other)
+                {
+                    if (other.Id != current.Id && other.MainWindowHandle != IntPtr.Zero)
+                    {
+                        ShowWindow(other.MainWindowHandle, SwRestore);
+                        SetForegroundWindow(other.MainWindowHandle);
+                        return;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _startupLog.Write(ex, "Could not bring the running window forward");
+        }
+    }
+
+    private const int SwRestore = 9;
+
+    [DllImport("user32.dll")]
+    private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+    /// <summary>
+    /// Before the window is shown an exception means the app cannot start. After that, one escaping a binding, a
+    /// converter or a command used to close the app as a "start" failure and lose the unsaved edit; it is logged and
+    /// reported once, and the app keeps running.
+    /// </summary>
     private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
         _startupLog.Write(e.Exception, "DispatcherUnhandledException");
-        TryShowFatalError(e.Exception);
-
         e.Handled = true;
-        Shutdown(-1);
+        if (!_started)
+        {
+            TryShowFatalError(e.Exception);
+            Shutdown(-1);
+            return;
+        }
+
+        AppLog.Write($"ERROR 처리하지 못한 화면 오류: {e.Exception.GetType().Name}: {e.Exception.Message}");
+        if (_shownRuntimeError)
+        {
+            return;
+        }
+
+        _shownRuntimeError = true;
+        try
+        {
+            _uiInteractionService.ShowMessage(
+                "예상하지 못한 오류가 났지만 앱은 계속 실행합니다. 저장하지 않은 수정이 있다면 저장하고, 이상하면 앱을 다시 시작하세요."
+                + Environment.NewLine + Environment.NewLine + $"{e.Exception.GetType().Name}: {e.Exception.Message}"
+                + Environment.NewLine + $"로그: {_startupLog.LogPath}",
+                "Tullius Translator - 오류",
+                UiMessageBoxButton.Ok,
+                UiMessageBoxImage.Warning);
+        }
+        catch
+        {
+            // Reporting must not throw again.
+        }
     }
 
     private void OnAppDomainUnhandledException(object? sender, UnhandledExceptionEventArgs e)
