@@ -14,7 +14,16 @@ internal static class KoreanProtectFromFixer
     private static readonly TimeSpan RegexTimeout = TimeSpan.FromMilliseconds(250);
 
     private static readonly Regex SourceProtectFromAttackRegex = new(
-        pattern: @"\bprotect(?:ing|ed|s)?\b.+?\bfrom\b.+?\battack\b",
+        pattern: @"\bprotect(?:ing|ed|s)?\b(?<protected>.+?)\bfrom\b(?<attacker>.+?)\battack\b",
+        options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase,
+        matchTimeout: RegexTimeout
+    );
+
+    // The English attackers of LikelyAttackersKo. The Korean side alone cannot tell a place or the real target from an
+    // attacker ("Protect Dragon Bridge from the Thalmor attack", "Protect the werewolves from the Silver Hand attack"),
+    // so a swap needs the source to name an attacker after "from" and none in what it protects.
+    private static readonly Regex EnglishAttackerRegex = new(
+        pattern: @"\b(?:bandit|thie(?:f|ves)|robber|outlaw|dragon|vampire|cultist|giant|werewol(?:f|ves))(?:s|'s)?\b",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase,
         matchTimeout: RegexTimeout
     );
@@ -86,10 +95,14 @@ internal static class KoreanProtectFromFixer
         }
 
         // Only attempt when the English explicitly matches "protect ... from ... attack" patterns.
-        if (!SourceProtectFromAttackRegex.IsMatch(sourceText))
+        var source = SourceProtectFromAttackRegex.Match(sourceText);
+        if (!source.Success)
         {
             return destText;
         }
+
+        var sourceAllowsSwap = !EnglishAttackerRegex.IsMatch(source.Groups["protected"].Value)
+                               && EnglishAttackerRegex.IsMatch(source.Groups["attacker"].Value);
 
         // Some model outputs misplace the "incoming" phrase after "으로부터":
         //   "산적의 공격으로부터 습격해 오는 템테이션 하우스를 보호..."
@@ -127,7 +140,7 @@ internal static class KoreanProtectFromFixer
             var attacker2 = (dm.Groups["attacker"].Value + dm.Groups["attackerPlural"].Value).Trim();
             var protected2 = dm.Groups["protected"].Value.Trim();
 
-            if (!ContainsLikelyAttacker(protected2))
+            if (!sourceAllowsSwap || !ContainsLikelyAttacker(protected2))
             {
                 return normalized;
             }
@@ -158,7 +171,7 @@ internal static class KoreanProtectFromFixer
 
         // Swap only when the protected noun phrase strongly looks like an attacker group (e.g., "산적"),
         // and the attacker side does NOT already look like an attacker group.
-        if (!ContainsLikelyAttacker(protectedNoun))
+        if (!sourceAllowsSwap || !ContainsLikelyAttacker(protectedNoun))
         {
             return normalized;
         }

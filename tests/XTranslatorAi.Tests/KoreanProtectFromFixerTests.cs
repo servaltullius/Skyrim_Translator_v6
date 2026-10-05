@@ -95,6 +95,18 @@ public sealed class KoreanProtectFromFixerTests
         Assert.Equal(dest, fixedText);
     }
 
+    // The Korean side alone cannot tell a place or the real target from an attacker: Dragon Bridge (드래곤 브리지) and
+    // werewolves protected from the Silver Hand were swapped. The source says what is protected and who attacks.
+    [Theory]
+    [InlineData("Protect Dragon Bridge from the Thalmor attack.", "탈모르의 공격으로부터 드래곤 브리지를 보호하라.")]
+    [InlineData("Protect the werewolves from the Silver Hand attack.", "실버 핸드의 공격으로부터 늑대인간들을 보호하세요.")]
+    public void Apply_DoesNotSwap_WhenTheSourceProtectsTheAttackerWord(string source, string dest)
+    {
+        var fixedText = TranslationPostEdits.Apply(targetLang: "korean", sourceText: source, translatedText: dest, enableTemplateFixer: false);
+
+        Assert.Equal(dest, fixedText);
+    }
+
     [Fact]
     public void Apply_StillSwaps_WhenAttackerNounIsFollowedByPlural()
     {
