@@ -5,40 +5,43 @@ namespace XTranslatorAi.Core.Text.KoreanFix.Internal.Steps;
 
 internal sealed class ParenthesizedParticleStep : IKoreanFixStep
 {
+    // A closing bracket or quote may stand between the word and the marker: "[엘든 패리]을(를)".
+    private const string Close = @"(?<close>[\]\)""\'’”」』]{0,2})";
+
     private const string LatinNoun = @"(?<noun>[A-Z][A-Za-z0-9 \-'\u2019]{1,40})";
 
     private static readonly Regex ParenthesizedObjectParticleRegex = new(
-        pattern: @"(?<noun>[가-힣]{1,30})\s*(?:을\(를\)|를\(을\)|\(\s*을\s*\)\s*를|\(\s*를\s*\)\s*을|을/를|를/을)",
+        pattern: @"(?<noun>[가-힣]{1,30})(?<close>[\]\)""\'’”」』]{0,2})\s*(?:을\(를\)|를\(을\)|\(\s*을\s*\)\s*를|\(\s*를\s*\)\s*을|을/를|를/을)",
         options: RegexOptions.CultureInvariant
     );
 
     private static readonly Regex ParenthesizedObjectParticleLatinRegex = new(
-        pattern: LatinNoun + @"\s*(?:을\(를\)|를\(을\)|\(\s*을\s*\)\s*를|\(\s*를\s*\)\s*을|을/를|를/을)",
+        pattern: LatinNoun + Close + @"\s*(?:을\(를\)|를\(을\)|\(\s*을\s*\)\s*를|\(\s*를\s*\)\s*을|을/를|를/을)",
         options: RegexOptions.CultureInvariant
     );
 
     private static readonly Regex ParenthesizedTopicParticleRegex = new(
-        pattern: @"(?<noun>[가-힣]{1,30})\s*(?:은\(는\)|는\(은\)|\(\s*은\s*\)\s*는|\(\s*는\s*\)\s*은|은/는|는/은)",
+        pattern: @"(?<noun>[가-힣]{1,30})(?<close>[\]\)""\'’”」』]{0,2})\s*(?:은\(는\)|는\(은\)|\(\s*은\s*\)\s*는|\(\s*는\s*\)\s*은|은/는|는/은)",
         options: RegexOptions.CultureInvariant
     );
 
     private static readonly Regex ParenthesizedTopicParticleLatinRegex = new(
-        pattern: LatinNoun + @"\s*(?:은\(는\)|는\(은\)|\(\s*은\s*\)\s*는|\(\s*는\s*\)\s*은|은/는|는/은)",
+        pattern: LatinNoun + Close + @"\s*(?:은\(는\)|는\(은\)|\(\s*은\s*\)\s*는|\(\s*는\s*\)\s*은|은/는|는/은)",
         options: RegexOptions.CultureInvariant
     );
 
     private static readonly Regex ParenthesizedSubjectParticleRegex = new(
-        pattern: @"(?<noun>[가-힣]{1,30})\s*(?:이\(가\)|가\(이\)|\(\s*이\s*\)\s*가|\(\s*가\s*\)\s*이|이/가|가/이)",
+        pattern: @"(?<noun>[가-힣]{1,30})(?<close>[\]\)""\'’”」』]{0,2})\s*(?:이\(가\)|가\(이\)|\(\s*이\s*\)\s*가|\(\s*가\s*\)\s*이|이/가|가/이)",
         options: RegexOptions.CultureInvariant
     );
 
     private static readonly Regex ParenthesizedConjunctionParticleRegex = new(
-        pattern: @"(?<noun>[가-힣]{1,30})\s*(?:과\(와\)|와\(과\)|\(\s*와\s*\)\s*과|\(\s*과\s*\)\s*와|과/와|와/과)",
+        pattern: @"(?<noun>[가-힣]{1,30})(?<close>[\]\)""\'’”」』]{0,2})\s*(?:과\(와\)|와\(과\)|\(\s*와\s*\)\s*과|\(\s*과\s*\)\s*와|과/와|와/과)",
         options: RegexOptions.CultureInvariant
     );
 
     private static readonly Regex ParenthesizedDirectionalParticleRegex = new(
-        pattern: @"(?<noun>[가-힣]{1,30})\s*(?:\(\s*으\s*\)\s*로|으로\(로\)|로\(으로\)|으로/로|로/으로)",
+        pattern: @"(?<noun>[가-힣]{1,30})(?<close>[\]\)""\'’”」』]{0,2})\s*(?:\(\s*으\s*\)\s*로|으로\(로\)|로\(으로\)|으로/로|로/으로)",
         options: RegexOptions.CultureInvariant
     );
 
@@ -56,7 +59,7 @@ internal sealed class ParenthesizedParticleStep : IKoreanFixStep
             m =>
             {
                 var noun = m.Groups["noun"].Value;
-                return noun + KoreanParticleSelector.ChooseObjectParticle(noun);
+                return noun + m.Groups["close"].Value + KoreanParticleSelector.ChooseObjectParticle(noun);
             }
         );
 
@@ -65,7 +68,7 @@ internal sealed class ParenthesizedParticleStep : IKoreanFixStep
             m =>
             {
                 var noun = m.Groups["noun"].Value;
-                return noun + KoreanParticleSelector.ChooseObjectParticleLatin(noun);
+                return noun + m.Groups["close"].Value + KoreanParticleSelector.ChooseObjectParticleLatin(noun);
             }
         );
 
@@ -74,7 +77,7 @@ internal sealed class ParenthesizedParticleStep : IKoreanFixStep
             m =>
             {
                 var noun = m.Groups["noun"].Value;
-                return noun + KoreanParticleSelector.ChooseTopicParticle(noun);
+                return noun + m.Groups["close"].Value + KoreanParticleSelector.ChooseTopicParticle(noun);
             }
         );
 
@@ -83,7 +86,7 @@ internal sealed class ParenthesizedParticleStep : IKoreanFixStep
             m =>
             {
                 var noun = m.Groups["noun"].Value;
-                return noun + KoreanParticleSelector.ChooseTopicParticleLatin(noun);
+                return noun + m.Groups["close"].Value + KoreanParticleSelector.ChooseTopicParticleLatin(noun);
             }
         );
 
@@ -92,7 +95,7 @@ internal sealed class ParenthesizedParticleStep : IKoreanFixStep
             m =>
             {
                 var noun = m.Groups["noun"].Value;
-                return noun + KoreanParticleSelector.ChooseSubjectParticle(noun);
+                return noun + m.Groups["close"].Value + KoreanParticleSelector.ChooseSubjectParticle(noun);
             }
         );
 
@@ -101,7 +104,7 @@ internal sealed class ParenthesizedParticleStep : IKoreanFixStep
             m =>
             {
                 var noun = m.Groups["noun"].Value;
-                return noun + KoreanParticleSelector.ChooseConjunctionParticle(noun);
+                return noun + m.Groups["close"].Value + KoreanParticleSelector.ChooseConjunctionParticle(noun);
             }
         );
 
@@ -110,7 +113,7 @@ internal sealed class ParenthesizedParticleStep : IKoreanFixStep
             m =>
             {
                 var noun = m.Groups["noun"].Value;
-                return noun + KoreanParticleSelector.ChooseDirectionalParticle(noun);
+                return noun + m.Groups["close"].Value + KoreanParticleSelector.ChooseDirectionalParticle(noun);
             }
         );
 

@@ -125,6 +125,15 @@ public class KoreanTranslationFixerTests
     public void Fix_ResolvesMarkerAfterLatinWord_ByPronunciation(string input, string expected)
         => Assert.Equal(expected, KoreanTranslationFixer.Fix("korean", input));
 
+    // The 1.12 regression run kept "[엘든 패리]을(를)": a closing bracket or quote between the word and the marker hid it.
+    [Theory]
+    [InlineData("[엘든 패리]을(를) 사용할 수 있습니다.", "[엘든 패리]를 사용할 수 있습니다.")]
+    [InlineData("\"검의 의지\"을(를) 얻었다.", "\"검의 의지\"를 얻었다.")]
+    [InlineData("(전기)은(는) 강하다.", "(전기)는 강하다.")]
+    [InlineData("[Hand Strap]을(를) 만든다.", "[Hand Strap]을 만든다.")]
+    public void Fix_ResolvesMarkerAfterAClosingBracketOrQuote(string input, string expected)
+        => Assert.Equal(expected, KoreanTranslationFixer.Fix("korean", input));
+
     [Theory]
     [InlineData("NPC 를 고용합니다.", "NPC를 고용합니다.")]
     [InlineData("Rune 을 새겼다.", "Rune을 새겼다.")]
