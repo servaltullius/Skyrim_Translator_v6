@@ -45,7 +45,8 @@ internal sealed class RunNameMemory
 
     public IReadOnlyDictionary<string, string> Spellings => _spellings.ToDictionary(kv => kv.Key, kv => kv.Value.Target, StringComparer.Ordinal);
 
-    public static RunNameMemory Build(IEnumerable<string> sources)
+    /// <param name="ownedByGlossary">Words the glossary has: it decides where they are forced ("Pale light" is not the Pale).</param>
+    public static RunNameMemory Build(IEnumerable<string> sources, Func<string, bool>? ownedByGlossary = null)
     {
         var lowercase = new HashSet<string>(StringComparer.Ordinal);
         var named = new HashSet<string>(StringComparer.Ordinal);
@@ -67,7 +68,7 @@ internal sealed class RunNameMemory
             }
         }
 
-        named.RemoveWhere(name => lowercase.Contains(name.ToLowerInvariant()));
+        named.RemoveWhere(name => lowercase.Contains(name.ToLowerInvariant()) || ownedByGlossary?.Invoke(name) == true);
         return new RunNameMemory(named);
     }
 

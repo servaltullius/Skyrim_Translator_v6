@@ -295,6 +295,26 @@ public class ReferenceNameIndexTests
         Assert.Equal(("Karthwasten", "카스웨이스튼"), Assert.Single(index.FindIn("Treasure Map, Karthwasten River")));
     }
 
+    // The glossary decides where its own terms are forced: the built-in Oblivion and Pale skip "What in Oblivion is this
+    // place?" and "Pale light", and the name index forced them right after (오블리비언, 페일), bringing back the Serana bug.
+    [Fact]
+    public void TermsTheGlossaryHas_AreLeftToTheGlossary()
+    {
+        var index = ReferenceNameIndex.Build(new[]
+        {
+            ("Oblivion", "오블리비언"), ("Close the gate to Oblivion", "오블리비언으로 가는 관문을 닫기"),
+            ("The Pale", "페일"), ("Pale", "페일"), ("Travel to the Pale", "페일로 이동하기"),
+        });
+        var glossary = new GlossaryApplier(new[]
+        {
+            new GlossaryEntry(1, null, "Oblivion", "오블리비언", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, "Built-in default glossary"),
+            new GlossaryEntry(2, null, "Pale", "페일", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, "Built-in default glossary"),
+        });
+
+        Assert.Equal("What in Oblivion is this place?", index.ApplyWithGlossary("What in Oblivion is this place?", glossary).Text);
+        Assert.Equal("Pale light filled the room.", index.ApplyWithGlossary("Pale light filled the room.", glossary).Text);
+    }
+
     // MEI's names that the memory has only inside sentences were left to the model: "Gray Quarter" (잿빛 지구),
     // "Lake Honrich" (혼리크 호수). A name the sentences translate the same way is a name; the particles after it are not.
     [Fact]

@@ -19,7 +19,7 @@ public sealed partial class TranslationService
     )
     {
         var translated = await _db.GetTranslatedPairsAsync(cancellationToken);
-        var names = RunNameMemory.Build(items.Select(i => i.Source).Concat(translated.Select(r => r.SourceText)));
+        var names = RunNameMemory.Build(items.Select(i => i.Source).Concat(translated.Select(r => r.SourceText)), Ctx.Glossary is { } glossary ? glossary.HasTerm : null);
         names.Preload(translated);
         Ctx.RunNames = names.NameCount > 0 ? names : null;
     }

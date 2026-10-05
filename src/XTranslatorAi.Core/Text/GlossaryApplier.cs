@@ -35,7 +35,18 @@ public sealed class GlossaryApplier
 
         _entries = compiled;
         InvalidRegexTerms = invalid;
+        _terms = compiled.Where(e => e.Entry.MatchMode != GlossaryMatchMode.Regex)
+            .Select(e => e.Entry.SourceTerm.Trim())
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
     }
+
+    private readonly HashSet<string> _terms;
+
+    /// <summary>
+    /// Whether <paramref name="term"/> is one of the glossary's word terms. The glossary decides where those are forced
+    /// (the built-in Oblivion and Pale skip "What in Oblivion" and "Pale light"), so name forcing leaves them alone.
+    /// </summary>
+    public bool HasTerm(string term) => _terms.Contains(term.Trim());
 
     /// <summary>Enabled regex entries whose pattern does not compile; they are left out of <see cref="Apply"/>.</summary>
     public IReadOnlyList<string> InvalidRegexTerms { get; }

@@ -46,6 +46,17 @@ public class RunNameMemoryTests
         Assert.Equal("드렐로레아", memory.Spellings["Drelorea"]);
     }
 
+    // A word the glossary has is the glossary's to force or leave ("Pale light" is not the Pale, 페일).
+    [Fact]
+    public void WordsTheGlossaryHas_AreNotRemembered()
+    {
+        var memory = RunNameMemory.Build(new[] { "The people of the Pale are tough.", "Hey Drelorea!" }, term => term == "Pale");
+
+        memory.Preload(new[] { ("The people of the Pale are tough.", "페일 사람들은 강인해."), ("Hey Drelorea!", "안녕, 드렐로레아!") });
+
+        Assert.Equal(new[] { "Drelorea" }, memory.Spellings.Keys.ToArray());
+    }
+
     [Theory]
     [InlineData("Drelorea", "드렐로리아! 괜찮아?", "드렐로리아")]
     [InlineData("Drelorea", "드렐로레아는 나를 위해 많은 걸 해줬어.", "드렐로레아")]

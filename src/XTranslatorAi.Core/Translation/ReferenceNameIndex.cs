@@ -147,9 +147,10 @@ public sealed partial class ReferenceNameIndex
     /// whole, with term tokens for their official translation. The glossary ran first, so the names it forces
     /// are already tokens and keep the glossary's translation.
     /// </summary>
-    public GlossaryApplication ForceNames(GlossaryApplication glossed)
+    public GlossaryApplication ForceNames(GlossaryApplication glossed, GlossaryApplier? glossary = null)
     {
-        var names = FindIn(glossed.Text, max: 16);
+        // A term the glossary has is the glossary's to force or leave: it skips "What in Oblivion" and "Pale light".
+        var names = FindIn(glossed.Text, max: 16).Where(name => glossary?.HasTerm(name.Source) != true).ToList();
         if (names.Count == 0 && _materials.Length == 0)
         {
             return glossed;
@@ -183,12 +184,13 @@ public sealed partial class ReferenceNameIndex
     {
         var glossed = glossary.Apply(text);
         var broken = FindIn(text, max: 16)
+            .Where(name => !glossary.HasTerm(name.Source))
             .Where(name => !glossed.Text.Contains(name.Source, StringComparison.Ordinal))
             .Where(name => !WholeTokenRegex.IsMatch(glossary.Apply(name.Source).Text.Trim()))
             .ToList();
         if (broken.Count == 0)
         {
-            return ForceNames(glossed);
+            return ForceNames(glossed, glossary);
         }
 
         var tokens = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -210,7 +212,7 @@ public sealed partial class ReferenceNameIndex
             tokens[token] = target;
         }
 
-        return ForceNames(glossed with { TokenToReplacement = tokens });
+        return ForceNames(glossed with { TokenToReplacement = tokens }, glossary);
     }
 
     private static readonly Regex WholeTokenRegex = new(@"^__XT_[A-Z0-9_]+__$", RegexOptions.CultureInvariant);
