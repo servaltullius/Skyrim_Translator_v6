@@ -255,6 +255,22 @@ public sealed class TranslationServiceIntegrityRegressionTests
         Assert.All(rows, row => Assert.Equal(StringEntryStatus.Done, row.Status));
     }
 
+    // A row that timed out was sent again on every retry and then once more through the long-text path: 7 calls of
+    // up to 15 minutes each, close to two hours for one row of a server that does not answer.
+    [Fact]
+    public async Task ASingleRowThatTimesOut_IsRetriedOnce()
+    {
+        await using var fixture = await Fixture.CreateAsync(("Iron Sword", "WEAP:FULL", null));
+        fixture.Client.BeforeGenerate = (_, _) => Task.FromException(
+            new TaskCanceledException("The request was canceled due to the configured HttpClient.Timeout.", new TimeoutException()));
+
+        fixture.Service.RetryDelayOverride = TimeSpan.Zero;
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { MaxRetries = 3 });
+
+        Assert.Equal(StringEntryStatus.Error, Assert.Single(await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None)).Status);
+        Assert.Equal(2, fixture.Client.Calls);
+    }
+
     [Fact]
     public async Task LongText_ChunksThatKeepFailing_StillStopAtTheRecoveryLimit()
     {

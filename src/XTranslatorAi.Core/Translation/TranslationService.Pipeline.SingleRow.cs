@@ -143,7 +143,8 @@ public sealed partial class TranslationService
         {
             throw;
         }
-        catch (Exception ex) when (!MustStopRecovery(ex))
+        // Not after a timeout: a row within MaxChars goes out as the same request again, another 15-minute wait.
+        catch (Exception ex) when (!MustStopRecovery(ex) && !IsTimeout(ex, ctx.CancellationToken))
         {
             using var recovery = EnterGenerationScope(recovery: true);
             return await TranslateLongMaskedTextAsync(ctx, row);

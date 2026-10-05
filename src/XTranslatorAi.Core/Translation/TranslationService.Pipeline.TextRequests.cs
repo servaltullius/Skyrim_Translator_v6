@@ -233,6 +233,13 @@ public sealed partial class TranslationService
             return true;
         }
 
+        // Each timeout waits out the whole HTTP timeout (15 minutes), so a request that timed out is sent once more,
+        // not MaxRetries times.
+        if (attempt >= 1 && IsTimeout(ex, request.CancellationToken))
+        {
+            return true;
+        }
+
         return !ShouldRetry(ex) || attempt >= request.MaxRetries;
     }
 
