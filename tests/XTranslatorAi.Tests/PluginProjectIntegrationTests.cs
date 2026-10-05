@@ -56,6 +56,24 @@ public sealed class PluginProjectIntegrationTests
         Assert.Equal(fixture.Source.Sha256, (await fixture.Db.TryGetPluginSourceAsync(CancellationToken.None))!.Info.Sha256);
     }
 
+    // A row without letters (" " in MEI) is finished by keeping its source. Reopening the plugin dropped it as an
+    // empty translation, so the project showed one row waiting after every reopen.
+    [Fact]
+    public async Task Reimport_KeepsABlankRowThatWasFinishedAsItsSource()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        var blank = Field("blank", 0, " ");
+        await fixture.ImportAsync(blank);
+        var row = Assert.Single(await fixture.Db.GetStringsAsync(20, 0, CancellationToken.None));
+        await fixture.Db.UpdateStringTranslationAsync(row.Id, " ", StringEntryStatus.Done, null, CancellationToken.None);
+
+        await fixture.ImportAsync(blank);
+
+        var after = Assert.Single(await fixture.Db.GetStringsAsync(20, 0, CancellationToken.None));
+        Assert.Equal(StringEntryStatus.Done, after.Status);
+        Assert.Equal(" ", after.DestText);
+    }
+
     [Fact]
     public async Task InvalidImport_RollsBackStringsBindingsAndSourceMetadata()
     {

@@ -66,7 +66,9 @@ public sealed partial class ProjectDb
                     {
                         var status = (StringEntryStatus)reader.GetInt32(3);
                         var dest = reader.GetString(2);
-                        if (status == StringEntryStatus.Edited || !string.IsNullOrWhiteSpace(dest))
+                        // A row without letters (" ") is finished by keeping its source; it is not an empty translation.
+                        if (status == StringEntryStatus.Edited || !string.IsNullOrWhiteSpace(dest)
+                            || (dest.Length > 0 && string.Equals(dest, reader.GetString(1), StringComparison.Ordinal)))
                             saved.Add(reader.GetString(0), (reader.GetString(1), dest, status));
                     }
                 }
