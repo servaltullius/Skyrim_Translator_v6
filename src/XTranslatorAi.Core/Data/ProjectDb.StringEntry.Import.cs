@@ -37,6 +37,9 @@ public sealed partial class ProjectDb
                 ? await ReadRetiredTranslationsAsync(tx, cancellationToken)
                 : new Dictionary<string, List<SavedTranslation>>(StringComparer.Ordinal);
             var present = new HashSet<string>(StringComparer.Ordinal);
+            var notes = preserveExistingTranslations
+                ? await ReadImportStringNotesAsync(tx, cancellationToken)
+                : new Dictionary<(string, int), List<(string Kind, string Message, string UpdatedAt)>>();
 
             await using (var clear = _connection.CreateCommand())
             {
@@ -52,6 +55,7 @@ public sealed partial class ProjectDb
                 cancellationToken.ThrowIfCancellationRequested();
                 var destText = row.DestText;
                 var status = row.Status;
+                SavedTranslation? kept = null;
                 var identity = saved.Count > 0 || retired.Count > 0 ? GetImportIdentity(row.RawStringXml) : null;
                 if (identity != null)
                 {
@@ -75,10 +79,21 @@ public sealed partial class ProjectDb
                         destText = old.DestText;
                         status = old.Status;
                     }
+
+                    kept = old;
                 }
                 p.BindRow((row.OrderIndex, row.ListAttr, row.PartialAttr, row.AttributesJson,
                     row.Edid, row.Rec, row.SourceText, destText, status, row.RawStringXml), now);
                 await insert.ExecuteNonQueryAsync(cancellationToken);
+
+                // Notes (TM applied, TM fallback) describe the translation, so a row that keeps it keeps them:
+                // reopening used to delete them all. A hand edit has none (saving one removes them).
+                if (kept != null && kept.Status != StringEntryStatus.Edited && status != StringEntryStatus.Pending
+                    && string.Equals(destText, kept.DestText, StringComparison.Ordinal)
+                    && notes.TryGetValue((identity!, kept.OrderIndex), out var keptNotes))
+                {
+                    await RestorePluginStringNotesAsync(tx, await LastInsertedRowIdAsync(tx, cancellationToken), keptNotes, cancellationToken);
+                }
             }
 
             if (preserveExistingTranslations)
@@ -123,6 +138,31 @@ public sealed partial class ProjectDb
             entries.Add(new SavedTranslation(reader.GetInt32(0), dest, status));
         }
         return result;
+    }
+
+    private async Task<Dictionary<(string Identity, int OrderIndex), List<(string Kind, string Message, string UpdatedAt)>>> ReadImportStringNotesAsync(
+        SqliteTransaction tx, CancellationToken cancellationToken)
+    {
+        var result = new Dictionary<(string, int), List<(string Kind, string Message, string UpdatedAt)>>();
+        await using var cmd = _connection.CreateCommand();
+        cmd.Transaction = tx;
+        cmd.CommandText = "SELECT s.RawStringXml, s.OrderIndex, n.Kind, n.Message, n.UpdatedAt FROM StringNote n JOIN StringEntry s ON s.Id = n.StringId;";
+        await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
+        {
+            var key = (GetImportIdentity(reader.GetString(0)), reader.GetInt32(1));
+            if (!result.TryGetValue(key, out var list)) result[key] = list = new List<(string, string, string)>();
+            list.Add((reader.GetString(2), reader.GetString(3), reader.GetString(4)));
+        }
+        return result;
+    }
+
+    private async Task<long> LastInsertedRowIdAsync(SqliteTransaction tx, CancellationToken cancellationToken)
+    {
+        await using var cmd = _connection.CreateCommand();
+        cmd.Transaction = tx;
+        cmd.CommandText = "SELECT last_insert_rowid();";
+        return Convert.ToInt64(await cmd.ExecuteScalarAsync(cancellationToken), System.Globalization.CultureInfo.InvariantCulture);
     }
 
     private async Task<Dictionary<string, List<SavedTranslation>>> ReadRetiredTranslationsAsync(

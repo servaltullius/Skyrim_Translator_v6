@@ -103,6 +103,30 @@ public sealed class XmlImportExportSafetyTests : IAsyncLifetime
         Assert.Empty(await _db.GetStringNotesByKindAsync("tm_hit", CancellationToken.None));
     }
 
+    // Reopening the XML deleted every note, so the grid lost its TM marks and the quality check its TM notes. A row
+    // that keeps its translation keeps them; a row whose translation the file replaced does not.
+    [Fact]
+    public async Task Reopen_KeepsNotesOfRowsThatKeepTheirTranslation()
+    {
+        await ImportAsync(Row("1", "Iron Sword", "") + Row("2", "Steel Sword", "") + Row("3", "Iron Axe", ""));
+        await _db.UpdateStringTranslationAsync(1, "철검", StringEntryStatus.Done, null, CancellationToken.None);
+        await _db.UpdateStringTranslationAsync(2, "강철 검", StringEntryStatus.Done, null, CancellationToken.None);
+        await _db.UpdateStringTranslationAsync(3, "철 도끼", StringEntryStatus.Done, null, CancellationToken.None);
+        await _db.UpsertStringNoteAsync(1, "tm_fallback", "TM 대신 번역", CancellationToken.None);
+        await _db.UpsertStringNoteAsync(2, "tm_hit", "TM 적용", CancellationToken.None);
+        await _db.UpsertStringNoteAsync(3, "tm_hit", "TM 적용", CancellationToken.None);
+
+        // Row 1 comes back untranslated, row 2 with the same translation, row 3 with another one.
+        await ImportAsync(Row("1", "Iron Sword", "") + Row("2", "Steel Sword", "강철 검") + Row("3", "Iron Axe", "쇠도끼"), preserve: true);
+
+        var loaded = await _db.GetStringsAsync(10, 0, CancellationToken.None);
+        var fallback = await _db.GetStringNotesByKindAsync("tm_fallback", CancellationToken.None);
+        var hits = await _db.GetStringNotesByKindAsync("tm_hit", CancellationToken.None);
+        Assert.Equal("TM 대신 번역", fallback[loaded.Single(r => r.SourceText == "Iron Sword").Id]);
+        Assert.Equal("TM 적용", hits[loaded.Single(r => r.SourceText == "Steel Sword").Id]);
+        Assert.False(hits.ContainsKey(loaded.Single(r => r.SourceText == "Iron Axe").Id));
+    }
+
     // Rows sharing an identity (LotD has 76, mostly repeated objectives such as "Talk to Captain Falx") were matched by
     // position only, so a row added above them dropped their translations without keeping them aside.
     [Fact]
