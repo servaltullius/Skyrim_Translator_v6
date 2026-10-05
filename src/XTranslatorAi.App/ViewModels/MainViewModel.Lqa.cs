@@ -22,6 +22,7 @@ public partial class MainViewModel
         }
 
         IsLqaScanning = true;
+        _lqaRowsChangedDuringScan.Clear();
         var db = _projectState.Db;
         try
         {
@@ -37,6 +38,7 @@ public partial class MainViewModel
 
             LqaIssues.ReplaceAll(issues);
             LqaIssuesView.Refresh();
+            await RecheckLqaRowsChangedDuringScanAsync();
 
             // The first result the list shows: with "참고 숨기기" the first result may be hidden.
             if (SelectedLqaIssue == null && LqaIssuesView.Cast<LqaIssueViewModel>().FirstOrDefault() is { } first)

@@ -466,6 +466,15 @@ public partial class MainViewModel
                 row.DestText = fixedText;
             }
 
+            try
+            {
+                await RecheckLqaRowsAsync(changes.Select(c => c.Row).ToList());
+            }
+            catch (Exception ex)
+            {
+                AppLog.Write($"WARN 바꾼 행을 다시 검사하지 못했습니다: {ex.Message}");
+            }
+
             StatusMessage = (updates.Count == 0 ? "교정할 항목이 없습니다." : $"{doneMessage}: {updates.Count}개 항목을 수정했습니다.")
                 + (changedMeanwhile == 0 ? "" : $" 작업 중에 바뀐 {changedMeanwhile}개 행은 건너뛰었습니다.");
         }

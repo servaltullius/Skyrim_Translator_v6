@@ -93,30 +93,70 @@ public partial class MainViewModel
         "name_inconsistent", "tone_inconsistent", "tone_differs_from_plugin", "rec_tone", "same_source_variant", "prefixed_name_variant", "tm_fallback", "official_name_missing",
     };
 
+    // Rows saved while a scan runs; the scan read them before the save, so they are checked again when it ends.
+    private readonly HashSet<long> _lqaRowsChangedDuringScan = new();
+
     /// <summary>
     /// After a row is saved, its quality-check results are recomputed from the new text. The list kept showing the
     /// old translation and its problems until the next full scan, so working through it meant guessing which rows
     /// were already fixed. Checks that compare rows across the project stay until the next full scan.
     /// </summary>
-    private async Task RecheckLqaRowAsync(StringEntryViewModel entry)
+    private Task RecheckLqaRowAsync(StringEntryViewModel entry) => RecheckLqaRowsAsync(new[] { entry });
+
+    /// <summary>
+    /// Re-checks rows the list shows. A row saved during a scan is noted and checked when the scan ends, whether
+    /// or not it was listed: the scan judged its earlier text. Bulk tools ("후처리 재적용", "태그 교정") pass every
+    /// row they rewrote.
+    /// </summary>
+    private async Task RecheckLqaRowsAsync(IReadOnlyCollection<StringEntryViewModel> entries)
     {
-        if (IsLqaScanning || !LqaIssues.Any(i => i.Id == entry.Id))
+        if (IsLqaScanning)
+        {
+            foreach (var entry in entries)
+            {
+                _lqaRowsChangedDuringScan.Add(entry.Id);
+            }
+
+            return;
+        }
+
+        var listed = LqaIssues.Select(i => i.Id).ToHashSet();
+        await RecheckLqaRowsCoreAsync(entries.Where(e => listed.Contains(e.Id)).ToList());
+    }
+
+    private async Task RecheckLqaRowsChangedDuringScanAsync()
+    {
+        while (_lqaRowsChangedDuringScan.Count > 0)
+        {
+            var entries = _lqaRowsChangedDuringScan
+                .Select(id => _projectState.TryGetById(id, out var entry) ? entry : null)
+                .OfType<StringEntryViewModel>()
+                .ToList();
+            _lqaRowsChangedDuringScan.Clear();
+            await RecheckLqaRowsCoreAsync(entries);
+        }
+    }
+
+    private async Task RecheckLqaRowsCoreAsync(IReadOnlyList<StringEntryViewModel> entries)
+    {
+        if (entries.Count == 0)
         {
             return;
         }
 
         var db = _projectState.Db;
-        var scanEntry = new LqaScanEntry(entry.Id, entry.OrderIndex, entry.Edid, entry.Rec, LqaStatus(entry),
-            entry.SourceText ?? "", entry.DestText ?? "", entry.PreviousTranslation);
+        var scanEntries = entries.Select(entry => new LqaScanEntry(entry.Id, entry.OrderIndex, entry.Edid, entry.Rec, LqaStatus(entry),
+            entry.SourceText ?? "", entry.DestText ?? "", entry.PreviousTranslation)).ToList();
         var glossary = LanguageHelper.IsKoreanLanguage(TargetLang) ? BuildLqaForceTokenGlossary() : Array.Empty<GlossaryEntry>();
         var targetLang = TargetLang;
-        var fresh = await Task.Run(() => LqaScanner.ScanAsync(new[] { scanEntry }, targetLang, glossary));
+        var fresh = await Task.Run(() => LqaScanner.ScanAsync(scanEntries, targetLang, glossary));
         if (!ReferenceEquals(db, _projectState.Db))
         {
             return;
         }
 
-        var kept = LqaIssues.Where(i => i.Id != entry.Id || ProjectWideLqaCodes.Contains(i.Code)).ToList();
+        var ids = entries.Select(entry => entry.Id).ToHashSet();
+        var kept = LqaIssues.Where(i => !ids.Contains(i.Id) || ProjectWideLqaCodes.Contains(i.Code)).ToList();
         var replacements = fresh.Where(i => !ProjectWideLqaCodes.Contains(i.Code)).Select(ToIssueViewModel);
         var selected = SelectedLqaIssue;
         // The order of the full scan: errors, warnings, information, each by row.
