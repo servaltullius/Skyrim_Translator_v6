@@ -10,6 +10,11 @@ namespace XTranslatorAi.Core.Translation;
 
 public sealed partial class TranslationService
 {
+    /// <summary>Replaces the wait before a retry; tests set it to zero so that retries do not take seconds.</summary>
+    internal TimeSpan? RetryDelayOverride { get; set; }
+
+    private TimeSpan RetryDelay(Exception ex, int attempt) => RetryDelayOverride ?? ComputeRetryDelay(ex, attempt);
+
     private static TimeSpan ComputeRetryDelay(Exception ex, int attempt)
     {
         if (attempt < 0)
@@ -129,6 +134,14 @@ public sealed partial class TranslationService
     }
 
     private void ResetRateLimitStreak() => Interlocked.Exchange(ref Ctx.ConsecutiveRateLimitFailures, 0);
+
+    /// <summary>
+    /// A rate limit, a server error or no answer at all. Retrying after one is not a recovery of the row: a book of
+    /// 11 chunks that each met one 503 used up the row's 8 recovery calls and was dropped after 8 paid chunks.
+    /// The attempt count of each call and the run-wide limit still bound these retries.
+    /// </summary>
+    private static bool IsTransportFailure(Exception? ex)
+        => ex != null && (IsRateLimit(ex) || IsServerError(ex) || IsConnectionFailure(ex));
 
     private static bool IsRateLimitAbort(Exception ex)
     {

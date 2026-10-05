@@ -217,6 +217,26 @@ public sealed class TranslationServiceIntegrityRegressionTests
         Assert.True(fixture.Client.Calls > 9, $"expected a chunked fallback, got {fixture.Client.Calls} calls");
     }
 
+    // A book of 11 chunks where every chunk first got a 503 and then succeeded: the 11 transport retries were charged
+    // to the row's 8 recovery calls, and the book failed after 8 chunks had been translated and paid for.
+    [Fact]
+    public async Task LongText_TransportRetriesOfItsChunks_DoNotUseUpTheRowsRecoveryCalls()
+    {
+        var source = string.Join("\n", Enumerable.Range(1, 540).Select(i => $"Line number {i}."));
+        await using var fixture = await Fixture.CreateAsync((source, "BOOK:DESC", null));
+        // Every first attempt fails (odd calls) and its retry succeeds (even calls).
+        fixture.Client.BeforeGenerate = (call, _) => call % 2 == 1
+            ? Task.FromException(new GeminiHttpException("generateContent", 503, "The model is overloaded.", null, "fixture"))
+            : Task.CompletedTask;
+
+        fixture.Service.RetryDelayOverride = TimeSpan.Zero;
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { MaxChars = 1000, MaxRetries = 2, MaxConcurrency = 1 });
+
+        var book = Assert.Single(await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None));
+        Assert.True(book.Status == StringEntryStatus.Done, book.ErrorMessage);
+        Assert.True(fixture.Client.Calls > 16, $"expected more than 8 chunks, got {fixture.Client.Calls} calls");
+    }
+
     [Fact]
     public async Task LongText_ChunksThatKeepFailing_StillStopAtTheRecoveryLimit()
     {

@@ -80,7 +80,7 @@ public sealed partial class TranslationService
         Exception? last = null;
         for (var attempt = 0; attempt <= request.MaxRetries; attempt++)
         {
-            using var retryScope = EnterGenerationScope(recovery: attempt > 0);
+            using var retryScope = EnterGenerationScope(recovery: attempt > 0 && !IsTransportFailure(last));
             request.CancellationToken.ThrowIfCancellationRequested();
             string? cacheName = null;
             try
@@ -149,7 +149,7 @@ public sealed partial class TranslationService
         Exception? last = null;
         for (var attempt = 0; attempt <= request.MaxRetries; attempt++)
         {
-            using var retryScope = EnterGenerationScope(recovery: attempt > 0);
+            using var retryScope = EnterGenerationScope(recovery: attempt > 0 && !IsTransportFailure(last));
             request.CancellationToken.ThrowIfCancellationRequested();
             string? cacheName = null;
             try
@@ -238,7 +238,7 @@ public sealed partial class TranslationService
 
     private async Task DelayBeforeTextRetryAsync(Exception ex, int attempt, CancellationToken cancellationToken)
     {
-        var delay = ComputeRetryDelay(ex, attempt);
+        var delay = RetryDelay(ex, attempt);
         if (IsRateLimit(ex))
         {
             Ctx.AdaptiveConcurrency.RegisterRateLimit();

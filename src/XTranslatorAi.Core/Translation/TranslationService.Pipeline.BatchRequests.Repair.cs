@@ -361,7 +361,7 @@ public sealed partial class TranslationService
 
     private async Task DelayBeforeRetryAsync(Exception ex, int attempt, CancellationToken cancellationToken)
     {
-        var delay = ComputeRetryDelay(ex, attempt);
+        var delay = RetryDelay(ex, attempt);
         if (IsRateLimit(ex))
         {
             Ctx.AdaptiveConcurrency.RegisterRateLimit();

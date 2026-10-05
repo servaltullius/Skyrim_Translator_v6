@@ -69,7 +69,7 @@ public sealed partial class TranslationService
         Exception? last = null;
         for (var attempt = 0; attempt <= ctx.MaxRetries; attempt++)
         {
-            using var retryScope = EnterGenerationScope(recovery: attempt > 0);
+            using var retryScope = EnterGenerationScope(recovery: attempt > 0 && !IsTransportFailure(last));
             ctx.CancellationToken.ThrowIfCancellationRequested();
             string? cacheName = null;
             try
@@ -113,7 +113,7 @@ public sealed partial class TranslationService
                     break;
                 }
 
-                var delay = ComputeRetryDelay(ex, attempt);
+                var delay = RetryDelay(ex, attempt);
                 if (IsRateLimit(ex))
                 {
                     Ctx.AdaptiveConcurrency.RegisterRateLimit();
