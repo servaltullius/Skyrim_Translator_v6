@@ -126,6 +126,34 @@ public class ReferenceNameIndexTests
         => Assert.Equal("Pure Ebony - Whirlwind", Index.ForceNames(new GlossaryApplication("Pure Ebony - Whirlwind",
             new Dictionary<string, string>(), Array.Empty<(string, string)>())).Text);
 
+    // MEI (Maven Elenwen Ingun): the glossary forces "Dibella" and "Black-Briar", which broke the longer official
+    // names around them before the memory could see them: 디벨라의 요원/대리인 (Agent of Dibella → 디벨라의 사도),
+    // 블랙-브라이어 산장 (Black-Briar Lodge → 블랙-브라이어 가옥), 블랙-브라이어 벌미주 (Black-Briar Mead → 벌꿀술).
+    private static readonly GlossaryApplier DibellaGlossary = new(new[]
+    {
+        new GlossaryEntry(1, null, "Dibella", "디벨라", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null),
+        new GlossaryEntry(2, null, "Black-Briar", "블랙-브라이어", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null),
+        new GlossaryEntry(3, null, "Ingun Black-Briar", "잉건 블랙-브라이어", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null),
+    });
+
+    private static readonly ReferenceNameIndex DibellaNames = ReferenceNameIndex.Build(new[]
+    {
+        ("Agent of Dibella", "디벨라의 사도"), ("Black-Briar Lodge", "블랙-브라이어 가옥"), ("Black-Briar Mead", "술 - 블랙-브라이어 벌꿀술"),
+        ("Ingun Black-Briar", "잉건 블랙-브라이어 아씨"),
+    });
+
+    private static string Resolve(GlossaryApplication applied)
+        => applied.TokenToReplacement.Aggregate(applied.Text, (text, token) => text.Replace(token.Key, token.Value, StringComparison.Ordinal));
+
+    [Theory]
+    [InlineData("You wanna... what? Agent of Dibella? Dibella's faithful?", "You wanna... what? 디벨라의 사도? 디벨라's faithful?")]
+    [InlineData("Really? In the lodge? As in \"Black-Briar Lodge\"?", "Really? In the lodge? As in \"블랙-브라이어 가옥\"?")]
+    [InlineData("I plan to bring Black-Briar Mead to all of Tamriel.", "I plan to bring 블랙-브라이어 벌꿀술 to all of Tamriel.")]
+    // A name the glossary forces whole keeps the glossary's translation.
+    [InlineData("Ingun Black-Briar sends her regards.", "잉건 블랙-브라이어 sends her regards.")]
+    public void OfficialNameContainingAGlossaryTerm_WinsOverTheShorterTerm(string source, string expected)
+        => Assert.Equal(expected, Resolve(DibellaNames.ApplyWithGlossary(source, DibellaGlossary)));
+
     [Fact]
     public async Task NamesAreWrittenAsTheirOfficialTranslation_UnlessTheGlossaryForcesThem()
     {

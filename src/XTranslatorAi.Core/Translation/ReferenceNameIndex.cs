@@ -126,8 +126,7 @@ public sealed partial class ReferenceNameIndex
         foreach (var (source, target) in names.OrderByDescending(name => name.Source.Length))
         {
             var token = $"__XT_TERM_N{++number}_0000__";
-            var replaced = Regex.Replace(text, @"(?<![A-Za-z'’\-])" + Regex.Escape(source) + @"(?![A-Za-z\-])(?!['’](?!s\b))", token,
-                RegexOptions.CultureInvariant);
+            var replaced = NameOccurrence(source).Replace(text, token);
             if (!string.Equals(replaced, text, StringComparison.Ordinal))
             {
                 text = replaced;
@@ -138,6 +137,51 @@ public sealed partial class ReferenceNameIndex
         text = ForceMaterials(text, tokens, ref number);
         return string.Equals(text, glossed.Text, StringComparison.Ordinal) ? glossed : glossed with { Text = text, TokenToReplacement = tokens };
     }
+
+    /// <summary>
+    /// Applies <paramref name="glossary"/> and then the official names. A name the glossary forces whole keeps the
+    /// glossary's translation, but a longer official name around a shorter forced term is replaced first: in MEI the
+    /// glossary's "Dibella" and "Black-Briar" broke "Agent of Dibella" (디벨라의 사도) and "Black-Briar Lodge"
+    /// (블랙-브라이어 가옥) before the memory could see them, and the model wrote 디벨라의 요원 and 블랙-브라이어 산장.
+    /// </summary>
+    public GlossaryApplication ApplyWithGlossary(string text, GlossaryApplier glossary)
+    {
+        var glossed = glossary.Apply(text);
+        var broken = FindIn(text, max: 16)
+            .Where(name => !glossed.Text.Contains(name.Source, StringComparison.Ordinal))
+            .Where(name => !WholeTokenRegex.IsMatch(glossary.Apply(name.Source).Text.Trim()))
+            .ToList();
+        if (broken.Count == 0)
+        {
+            return ForceNames(glossed);
+        }
+
+        var tokens = new Dictionary<string, string>(StringComparer.Ordinal);
+        var number = 0;
+        foreach (var (source, target) in broken.OrderByDescending(name => name.Source.Length))
+        {
+            var token = $"__XT_TERM_R{++number}_0000__";
+            var replaced = NameOccurrence(source).Replace(text, token);
+            if (!string.Equals(replaced, text, StringComparison.Ordinal))
+            {
+                text = replaced;
+                tokens[token] = target;
+            }
+        }
+
+        glossed = glossary.Apply(text);
+        foreach (var (token, target) in glossed.TokenToReplacement)
+        {
+            tokens[token] = target;
+        }
+
+        return ForceNames(glossed with { TokenToReplacement = tokens });
+    }
+
+    private static readonly Regex WholeTokenRegex = new(@"^__XT_[A-Z0-9_]+__$", RegexOptions.CultureInvariant);
+
+    private static Regex NameOccurrence(string source)
+        => new(@"(?<![A-Za-z'’\-])" + Regex.Escape(source) + @"(?![A-Za-z\-])(?!['’](?!s\b))", RegexOptions.CultureInvariant);
 
     /// <summary>Names written exactly as in the memory (capitalized) in <paramref name="text"/>, longest first, without overlaps.</summary>
     public IReadOnlyList<(string Source, string Target)> FindIn(string text, int max = 8)

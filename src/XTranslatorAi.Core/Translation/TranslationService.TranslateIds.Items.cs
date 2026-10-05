@@ -101,8 +101,7 @@ public sealed partial class TranslationService
             {
                 masked = masked with { Text = fortifyExpanded };
             }
-            var glossed = glossaryApplier.Apply(masked.Text);
-            glossed = Ctx.ReferenceNames?.ForceNames(glossed) ?? glossed;
+            var glossed = Ctx.ReferenceNames?.ApplyWithGlossary(masked.Text, glossaryApplier) ?? glossaryApplier.Apply(masked.Text);
             var expanded = PairedSlashListExpander.Expand(glossed.Text);
             if (!string.Equals(expanded, glossed.Text, StringComparison.Ordinal))
             {
