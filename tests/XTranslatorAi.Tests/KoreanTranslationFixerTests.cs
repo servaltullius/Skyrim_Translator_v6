@@ -133,6 +133,16 @@ public class KoreanTranslationFixerTests
     public void Fix_ResolvesMarkerAfterAClosingBracketOrQuote(string input, string expected)
         => Assert.Equal(expected, KoreanTranslationFixer.Fix("korean", input));
 
+    // "LEVEL UP" is read as words (레벨 업을), so UP is no acronym read letter by letter (유피를); and 몇일까 is 몇 + 일까
+    // ("how many would it be?"), not the misspelled 몇일 (며칠).
+    [Theory]
+    [InlineData("LEVEL UP을 축하합니다.", "LEVEL UP을 축하합니다.")]
+    [InlineData("남은 건 몇일까?", "남은 건 몇일까?")]
+    [InlineData("몇일 동안 기다렸다.", "며칠 동안 기다렸다.")]
+    [InlineData("AP을 소모한다.", "AP를 소모한다.")]
+    public void Fix_LeavesWordsReadAsWordsAndTheCopula(string input, string expected)
+        => Assert.Equal(expected, KoreanTranslationFixer.Fix("korean", input));
+
     // 들를 is 들르다 ("stop by"), not 들 + 를: the fixer turned "여관에 들를 거야" into 들을 (hear) and the quality check
     // reported the correct form.
     [Theory]

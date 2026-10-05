@@ -29,7 +29,9 @@ internal sealed class AcronymParticleStep : IKoreanFixStep
         return AcronymParticleRegex.Replace(text, m =>
         {
             var word = m.Groups["word"].Value;
-            if (!IsSurelySpelledOut(word) || !KoreanParticleSelector.TryGetAcronymFinalSound(word, out var hasFinal, out _))
+            // After another capitalized word the letters are a word of a phrase read as words: "LEVEL UP을" is 업을.
+            if (!IsSurelySpelledOut(word) || FollowsACapitalizedWord(text, m.Index)
+                || !KoreanParticleSelector.TryGetAcronymFinalSound(word, out var hasFinal, out _))
             {
                 return m.Value;
             }
@@ -60,6 +62,23 @@ internal sealed class AcronymParticleStep : IKoreanFixStep
 
         var letters = word.AsSpan(start);
         return letters.Length == 2 || letters.IndexOfAny("AEIOU") < 0;
+    }
+
+    private static bool FollowsACapitalizedWord(string text, int index)
+    {
+        var i = index - 1;
+        if (i < 0 || text[i] != ' ')
+        {
+            return false;
+        }
+
+        var end = i;
+        while (i > 0 && text[i - 1] is >= 'A' and <= 'Z')
+        {
+            i--;
+        }
+
+        return end - i >= 2 && (i == 0 || !char.IsLetter(text[i - 1]));
     }
 
     private static bool HasAsciiUpper(string text)

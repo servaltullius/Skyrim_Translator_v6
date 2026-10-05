@@ -19,8 +19,9 @@ internal sealed class SpellingFixStep : IKoreanFixStep
     );
 
     // 몇일 → 며칠 (표준어 규정)
+    // Not before 까: 몇일까 is 몇 + 일까 ("how many would it be?").
     private static readonly Regex MyeotIlRegex = new(
-        pattern: @"몇일",
+        pattern: @"몇일(?!까)",
         options: RegexOptions.CultureInvariant,
         matchTimeout: RegexTimeout
     );
