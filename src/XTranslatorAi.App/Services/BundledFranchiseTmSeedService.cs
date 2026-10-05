@@ -72,6 +72,25 @@ public sealed class BundledFranchiseTmSeedService
         }
     }
 
+    /// <summary>
+    /// The languages of a bundled seed in tm-import, or null for a file the user put there. The seeds are English to
+    /// Korean whatever project is open; importing one with a Chinese-source project's languages filed the official
+    /// memory as chinese→korean for good.
+    /// </summary>
+    public static (string Source, string Target)? LanguagesOfSeedFile(string path)
+    {
+        var name = Path.GetFileName(path);
+        foreach (var franchise in Enum.GetValues<BethesdaFranchise>())
+        {
+            if (GetBundledSeedMetadata(franchise) is { } metadata && string.Equals(metadata.FileName, name, StringComparison.OrdinalIgnoreCase))
+            {
+                return ("english", "korean");
+            }
+        }
+
+        return null;
+    }
+
     public static BundledSeedMetadata? GetBundledSeedMetadata(BethesdaFranchise franchise)
         => franchise switch
         {

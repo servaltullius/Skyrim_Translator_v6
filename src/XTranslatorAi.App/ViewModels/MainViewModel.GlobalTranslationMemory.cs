@@ -67,9 +67,10 @@ public partial class MainViewModel
                 int applied;
                 try
                 {
+                    var languages = BundledFranchiseTmSeedService.LanguagesOfSeedFile(path) ?? (SourceLang.Trim(), TargetLang.Trim());
                     applied = await _globalTranslationMemoryService.ImportFromTsvAsync(
-                        SourceLang.Trim(),
-                        TargetLang.Trim(),
+                        languages.Source,
+                        languages.Target,
                         path,
                         CancellationToken.None
                     );

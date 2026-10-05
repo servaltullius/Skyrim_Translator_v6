@@ -11,6 +11,15 @@ namespace XTranslatorAi.Tests;
 
 public class BundledFranchiseTmSeedServiceTests
 {
+    // The seeds are English→Korean, but auto-import used the open project's languages: a Chinese-source first project
+    // filed the official memory as chinese→korean, and the stamp kept English projects from ever getting it.
+    [Theory]
+    [InlineData("bundled-skyrim-tes-franchise-tm.tsv", true)]
+    [InlineData("bundled-starfield-franchise-tm.tsv", true)]
+    [InlineData("my-own-terms.tsv", false)]
+    public void BundledSeeds_AreImportedAsEnglishToKorean(string fileName, bool bundled)
+        => Assert.Equal(bundled ? ("english", "korean") : null, BundledFranchiseTmSeedService.LanguagesOfSeedFile(@"C:\tm-import\" + fileName));
+
     [Fact]
     public void LoadBundledFranchiseTmSeed_Fallout_ReturnsEmbeddedSeedText()
     {
