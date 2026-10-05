@@ -468,6 +468,23 @@ public class LqaFalsePositiveTests
         Assert.Equal(4L, Assert.Single(issues, i => i.Code == "tm_fallback").Id);
     }
 
+    // MEI's last note was Rulindil → 룰린딜, a single name the name index does not hold: the translation is the
+    // memory's own, so the note is dropped before the scan.
+    [Fact]
+    public void TmFallbackNotes_DropRowsTranslatedAsTheMemory()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            new(3, 3, "Rulindil", "NPC_:FULL", StringEntryStatus.Done, "Rulindil", "룰린딜"),
+            new(4, 4, "FireDmg", "MGEF:FULL", StringEntryStatus.Done, "Fire Damage", "불 피해"),
+        };
+        var notes = new Dictionary<long, string> { [3] = "TM 폴백", [4] = "TM 폴백" };
+
+        var kept = LqaScanner.DropTmFallbacksMatchingMemory(notes, entries, new[] { ("Rulindil", "룰린딜"), ("Fire Damage", "화염 피해") });
+
+        Assert.Equal(new long[] { 4 }, kept.Keys);
+    }
+
     [Fact]
     public async Task BookLengthRatio_SkipsShortTitles_ButChecksLongBodies()
     {

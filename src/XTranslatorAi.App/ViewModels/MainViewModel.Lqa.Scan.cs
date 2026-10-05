@@ -42,12 +42,15 @@ public partial class MainViewModel
         var referenceMemory = await Task.Run(TryLoadLqaReferenceMemoryAsync);
         var targetLang = TargetLang;
         IProgress<int> progress = new Progress<int>(pct => StatusMessage = $"품질 검사 중... {pct}%");
+        var notes = referenceMemory is { Count: > 0 }
+            ? LqaScanner.DropTmFallbacksMatchingMemory(tmFallbackNotes, ordered, referenceMemory)
+            : tmFallbackNotes;
         var issues = await Task.Run(() => LqaScanner.ScanAsync(
             entries: ordered,
             targetLang: targetLang,
             forceTokenGlossary: forceTokenGlossary,
             onProgress: progress.Report,
-            tmFallbackNotes: tmFallbackNotes,
+            tmFallbackNotes: notes,
             referenceNames: referenceMemory is { Count: > 0 } ? XTranslatorAi.Core.Translation.ReferenceNameIndex.Build(referenceMemory) : null
         ));
 

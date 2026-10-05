@@ -76,6 +76,46 @@ public static class LqaScanner
         return issues;
     }
 
+    /// <summary>
+    /// TM-fallback notes without the rows whose translation is the memory's own for the same source: the fallback
+    /// changed nothing there (MEI: Rulindil → 룰린딜).
+    /// </summary>
+    public static IReadOnlyDictionary<long, string> DropTmFallbacksMatchingMemory(
+        IReadOnlyDictionary<long, string> notes,
+        IReadOnlyList<LqaScanEntry> entries,
+        IEnumerable<(string Source, string Target)> memory)
+    {
+        if (notes.Count == 0)
+        {
+            return notes;
+        }
+
+        var noted = entries.Where(e => notes.ContainsKey(e.Id)).ToList();
+        var sources = noted.Select(e => (e.SourceText ?? "").Trim()).ToHashSet(StringComparer.Ordinal);
+        var targets = new Dictionary<string, HashSet<string>>(StringComparer.Ordinal);
+        foreach (var (source, target) in memory)
+        {
+            var key = (source ?? "").Trim();
+            if (!sources.Contains(key))
+            {
+                continue;
+            }
+
+            if (!targets.TryGetValue(key, out var set))
+            {
+                set = new HashSet<string>(StringComparer.Ordinal);
+                targets[key] = set;
+            }
+
+            set.Add((target ?? "").Trim());
+        }
+
+        var moot = noted.Where(e => targets.TryGetValue((e.SourceText ?? "").Trim(), out var set) && set.Contains((e.DestText ?? "").Trim()))
+            .Select(e => e.Id)
+            .ToHashSet();
+        return moot.Count == 0 ? notes : notes.Where(n => !moot.Contains(n.Key)).ToDictionary(n => n.Key, n => n.Value);
+    }
+
     private static async Task ApplyExtractedRulePipelineAsync(LqaScanContext context, List<LqaIssue> issues)
     {
         var entries = context.Entries;
