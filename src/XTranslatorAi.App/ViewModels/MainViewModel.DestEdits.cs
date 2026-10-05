@@ -79,6 +79,26 @@ public partial class MainViewModel
             }
         }
 
+        // The prompt uses the context box as typed, but only its button saved it: closing or opening another file
+        // dropped the edit and the next run went back to the old context. An emptied box is left to the clear button.
+        var context = (ProjectContextPreview ?? "").Trim();
+        if (context.Length > 0)
+        {
+            try
+            {
+                var saved = await db.TryGetProjectContextAsync(CancellationToken.None);
+                if (!string.Equals(saved?.ContextText?.Trim(), context, StringComparison.Ordinal))
+                {
+                    await db.UpsertProjectContextAsync(context, CancellationToken.None);
+                }
+            }
+            catch (Exception ex)
+            {
+                SetUserFacingError("프로젝트 문맥 저장", ex);
+                return false;
+            }
+        }
+
         return true;
     }
 
