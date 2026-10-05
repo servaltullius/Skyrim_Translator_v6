@@ -237,6 +237,24 @@ public sealed class TranslationServiceIntegrityRegressionTests
         Assert.True(fixture.Client.Calls > 16, $"expected more than 8 chunks, got {fixture.Client.Calls} calls");
     }
 
+    // The repeated-sentence seed is an aid sent before the rows; its timeout (HttpClient.Timeout, a TaskCanceledException)
+    // escaped as if the user had stopped the run, and nothing was translated.
+    [Fact]
+    public async Task ATimedOutAidRequest_DoesNotStopTheRun()
+    {
+        const string shared = "Targets take extra damage from fire for a few seconds after the hit.";
+        await using var fixture = await Fixture.CreateAsync(
+            ($"Burning blade. {shared}", "MGEF:DNAM", null), ($"Burning axe. {shared}", "MGEF:DNAM", null), ($"Burning bow. {shared}", "MGEF:DNAM", null));
+        fixture.Client.BeforeGenerate = (call, _) => call == 1
+            ? Task.FromException(new TaskCanceledException("The request was canceled due to the configured HttpClient.Timeout.", new TimeoutException()))
+            : Task.CompletedTask;
+
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { EnableSessionTermMemory = true, BatchSize = 3 });
+
+        var rows = await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None);
+        Assert.All(rows, row => Assert.Equal(StringEntryStatus.Done, row.Status));
+    }
+
     [Fact]
     public async Task LongText_ChunksThatKeepFailing_StillStopAtTheRecoveryLimit()
     {

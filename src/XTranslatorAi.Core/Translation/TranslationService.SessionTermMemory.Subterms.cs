@@ -246,7 +246,8 @@ public sealed partial class TranslationService
             results = await TranslateBatchOnceAsync(CreateBatchTranslateContext(ctx), batch, prompt,
                 await GetPromptCacheNameAsync(promptCache, request.CancellationToken));
         }
-        catch (Exception ex) when (ex is not OperationCanceledException
+        // A timeout (HttpClient.Timeout) is a TaskCanceledException too; only the user's stop ends the run here.
+        catch (Exception ex) when ((ex is not OperationCanceledException || !request.CancellationToken.IsCancellationRequested)
                                    && !IsRunGenerationLimit(ex) && !IsRateLimitAbort(ex) && !IsCredentialError(ex))
         {
             // Seeding is an aid: the rows themselves still translate without it.

@@ -139,7 +139,7 @@ public sealed partial class TranslationService
                 Ctx.MaskedTokensPerCharHint = (double)tokens / sampleChars;
             }
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (request.CancellationToken.IsCancellationRequested)
         {
             throw;
         }
