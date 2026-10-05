@@ -72,6 +72,7 @@ public sealed partial class ReferenceNameIndex
             .Select(pair => (Source: (pair.Source ?? "").Trim(), Target: SelfContainedCategory.Replace((pair.Target ?? "").Trim(), "")))
             .Where(pair => pair.Source.Length > 0 && pair.Target.Length > 0)
             .ToList();
+        pairs.AddRange(BookTitlesWithoutVolume(pairs).ToList());
         var lowercaseUse = CollectLowercaseUse(pairs.Select(pair => pair.Source));
         var namedInSentences = CollectWordsNamedInSentences(pairs.Select(pair => pair.Source));
 
@@ -409,6 +410,35 @@ public sealed partial class ReferenceNameIndex
         }
 
         return dropped;
+    }
+
+    private static readonly Regex VolumeSource = new(@"^(.+?),\s*v(?:ol(?:ume)?\.?)?\s*\d+$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+    private static readonly Regex VolumeTarget = new(@"^(.+?),?\s*제\s*\d+\s*권$", RegexOptions.CultureInvariant);
+
+    /// <summary>
+    /// Book series appear in the memory only by volume ("The Lusty Argonian Maid, v1" → "음란한 아르고니안 메이드, 제 1권"),
+    /// which is no name entry, so MEI wrote "Lusty Argonian Maid" as 음탕한 아르고니안 가정부. The title without the
+    /// volume is an entry of its own, and without a leading "The" as well.
+    /// </summary>
+    private static IEnumerable<(string Source, string Target)> BookTitlesWithoutVolume(IEnumerable<(string Source, string Target)> pairs)
+    {
+        foreach (var (source, target) in pairs)
+        {
+            var title = VolumeSource.Match(source);
+            var korean = VolumeTarget.Match(target);
+            if (!title.Success || !korean.Success)
+            {
+                continue;
+            }
+
+            var english = title.Groups[1].Value.Trim();
+            var translated = korean.Groups[1].Value.Trim();
+            yield return (english, translated);
+            if (english.StartsWith("The ", StringComparison.Ordinal))
+            {
+                yield return (english[4..], translated);
+            }
+        }
     }
 
     // A word of the translation sounds exactly like the English word (moon → 문, tomato → 토마토). Unlike FindSpelling,

@@ -236,6 +236,23 @@ public class ReferenceNameIndexTests
         Assert.Empty(index.FindIn("A sad dirge played. Served on a silver platter, bad enough to turn undead."));
     }
 
+    // The memory names book series only by volume ("The Lusty Argonian Maid, v1" → "음란한 아르고니안 메이드, 제 1권"),
+    // which is no name entry, so MEI wrote "Lusty Argonian Maid" as 음탕한 아르고니안 가정부. The title without the volume
+    // is a name, with and without its leading "The".
+    [Fact]
+    public void BookTitlesWithoutTheirVolume_AreNames()
+    {
+        var index = ReferenceNameIndex.Build(new[]
+        {
+            ("The Lusty Argonian Maid, v1", "음란한 아르고니안 메이드, 제 1권"), ("The Lusty Argonian Maid, v2", "음란한 아르고니안 메이드, 제 2권"),
+            ("The Real Barenziah, v1", "진정한 바렌자이아, 제 1권"),
+        });
+
+        Assert.Equal("음란한 아르고니안 메이드", Assert.Single(index.FindIn("I'm no Lusty Argonian Maid.")).Target);
+        Assert.Equal("음란한 아르고니안 메이드", Assert.Single(index.FindIn("She has The Lusty Argonian Maid.")).Target);
+        Assert.Equal("진정한 바렌자이아", Assert.Single(index.FindIn("A copy of The Real Barenziah.")).Target);
+    }
+
     [Fact]
     public async Task NamesAreWrittenAsTheirOfficialTranslation_UnlessTheGlossaryForcesThem()
     {
