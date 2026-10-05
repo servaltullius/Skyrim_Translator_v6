@@ -461,18 +461,25 @@ public sealed class TranslationRunnerService
             return false;
         }
 
-        return await TryFailoverToNextSavedGeminiKeyAsync(request, triedApiKeys, classified);
+        return await TryFailoverToNextSavedGeminiKeyAsync(request.StatusPort, request.FailoverPort, triedApiKeys, classified);
     }
 
-    private static async Task<bool> TryFailoverToNextSavedGeminiKeyAsync(Request request, HashSet<string> triedApiKeys, UserFacingError classifiedError)
+    internal static async Task<bool> TryFailoverToNextSavedGeminiKeyAsync(ITranslationRunnerStatusPort statusPort,
+        ITranslationRunnerFailoverPort failoverPort, HashSet<string> triedApiKeys, UserFacingError classifiedError)
     {
-        var savedKeys = request.FailoverPort.SavedApiKeys;
+        // The run works on a pool thread; the saved keys are the window's collection, which it can change meanwhile.
+        IReadOnlyList<TranslationRunnerSavedApiKey> savedKeys = Array.Empty<TranslationRunnerSavedApiKey>();
+        var currentKey = "";
+        await statusPort.DispatchAsync(() =>
+        {
+            savedKeys = failoverPort.SavedApiKeys;
+            currentKey = (failoverPort.ApiKey ?? "").Trim();
+        });
         if (savedKeys.Count <= 0)
         {
             return false;
         }
 
-        var currentKey = (request.FailoverPort.ApiKey ?? "").Trim();
         var startIndex = -1;
         for (var i = 0; i < savedKeys.Count; i++)
         {
@@ -505,11 +512,11 @@ public sealed class TranslationRunnerService
 
             // API 키 변경과 UI 상태 메시지를 UI 스레드에서 수행하되,
             // 완료까지 대기하여 다음 요청이 새 키를 확실히 사용하도록 보장
-            await request.StatusPort.DispatchAsync(
+            await statusPort.DispatchAsync(
                 () =>
                 {
-                    request.FailoverPort.SelectSavedApiKey(candidate);
-                    request.StatusPort.SetStatusMessage($"{classifiedError.Message} → 키 전환: {candidate.DisplayLabel}");
+                    failoverPort.SelectSavedApiKey(candidate);
+                    statusPort.SetStatusMessage($"{classifiedError.Message} → 키 전환: {candidate.DisplayLabel}");
                 }
             );
 
