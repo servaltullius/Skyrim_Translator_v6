@@ -125,6 +125,32 @@ public sealed class PluginMovedProjectTests : IAsyncLifetime
         }
     }
 
+    // A ";" in a plugin's file name went into an interpolated connection string: the next new plugin failed to open,
+    // and a moved "Mod;Fix.esp" could never be continued.
+    [Fact]
+    public async Task APluginNamedWithASemicolon_DoesNotBreakOpeningPlugins()
+    {
+        var semicolon = Path.Combine(_root, "a", "Mod;Fix.esp");
+        Directory.CreateDirectory(Path.GetDirectoryName(semicolon)!);
+        File.WriteAllBytes(semicolon, PluginProjectIntegrationTests.CreateMinimalPlugin());
+        await TranslateOnlyRowAsync(semicolon);
+
+        var moved = Path.Combine(_root, "b", "Mod;Fix.esp");
+        Directory.CreateDirectory(Path.GetDirectoryName(moved)!);
+        File.Move(semicolon, moved);
+        var reopened = await OpenAsync(moved);
+        await using (reopened.Db)
+        {
+            Assert.Equal("철검", Assert.Single(reopened.Entries).DestText);
+        }
+
+        var other = await OpenAsync(WritePlugin("c"));
+        await using (other.Db)
+        {
+            Assert.Single(other.Entries);
+        }
+    }
+
     [Fact]
     public async Task CopiedPlugin_WithTheSameContent_ContinuesTheProject()
     {

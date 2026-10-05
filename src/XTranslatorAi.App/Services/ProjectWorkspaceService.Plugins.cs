@@ -108,6 +108,16 @@ public sealed partial class ProjectWorkspaceService
     /// way, and <c>EarlierTargetEncoding</c> names its encoding. The Strings folder and the metadata encoding are in the
     /// key too, so a project of the same plugin read with other such settings is continued as well (<c>SamePlugin</c>).
     /// </summary>
+    // Built, not interpolated: a plugin named "Mod;Fix.esp" gave a project path with ";", which split the connection
+    // string and made opening every later plugin fail.
+    private static string ConnectionString(string dbPath, bool readOnly)
+        => new SqliteConnectionStringBuilder
+        {
+            DataSource = dbPath,
+            Mode = readOnly ? SqliteOpenMode.ReadOnly : SqliteOpenMode.ReadWriteCreate,
+            Pooling = false,
+        }.ToString();
+
     private static (string InputPath, string? EarlierTargetEncoding, bool SamePlugin)? TryContinueMovedProject(LoadFromPluginRequest request, PluginDocument document, string newDbPath)
     {
         var directory = Path.GetDirectoryName(newDbPath);
@@ -165,8 +175,8 @@ public sealed partial class ProjectWorkspaceService
         }
 
         // The backup API also carries pages still in a -wal file, which a file copy would leave behind.
-        using (var source = new SqliteConnection($"Data Source={chosen.DbPath};Mode=ReadOnly;Pooling=False"))
-        using (var target = new SqliteConnection($"Data Source={newDbPath};Pooling=False"))
+        using (var source = new SqliteConnection(ConnectionString(chosen.DbPath, readOnly: true)))
+        using (var target = new SqliteConnection(ConnectionString(newDbPath, readOnly: false)))
         {
             source.Open();
             target.Open();
@@ -283,7 +293,7 @@ public sealed partial class ProjectWorkspaceService
         var entries = new List<GlossaryRow>();
         try
         {
-            using var connection = new SqliteConnection($"Data Source={dbPath};Mode=ReadOnly;Pooling=False");
+            using var connection = new SqliteConnection(ConnectionString(dbPath, readOnly: true));
             connection.Open();
             using var command = connection.CreateCommand();
             command.CommandText = "SELECT Category, SrcTerm, DstTerm, MatchMode, ForceMode, Priority, Note FROM Glossary WHERE Enabled = 1;";
@@ -306,7 +316,7 @@ public sealed partial class ProjectWorkspaceService
     {
         try
         {
-            using var connection = new SqliteConnection($"Data Source={dbPath};Mode=ReadOnly;Pooling=False");
+            using var connection = new SqliteConnection(ConnectionString(dbPath, readOnly: true));
             connection.Open();
             using var command = connection.CreateCommand();
             command.CommandText = "SELECT s.SourceInfoJson, s.TargetEncoding, p.DestLang FROM ProjectSource s JOIN Project p ON p.Id = s.ProjectId "
