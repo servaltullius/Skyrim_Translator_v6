@@ -168,7 +168,7 @@ public static class LqaScanner
                 loanwordIndex,
                 issues
             );
-            TmFallbackRule.Apply(entry, source, dest, tmFallbackNotes, context.ReferenceNames, issues);
+            TmFallbackRule.Apply(entry, source, dest, tmFallbackNotes, context.ReferenceNames, forceTokenGlossary, issues);
             OfficialNameRule.Apply(entry, source, dest, isKorean, context.ReferenceNames, glossarySources, issues);
             SameSourceVariantRule.Apply(entry, sameSourceVariants, issues);
             PrefixedNameVariantRule.Apply(entry, prefixedNameVariants, issues);

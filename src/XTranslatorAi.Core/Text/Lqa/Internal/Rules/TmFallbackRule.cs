@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 
@@ -11,6 +12,7 @@ internal static class TmFallbackRule
         string destText,
         IReadOnlyDictionary<long, string>? tmFallbackNotes,
         XTranslatorAi.Core.Translation.ReferenceNameIndex? referenceNames,
+        IReadOnlyList<GlossaryEntry> forceTokenGlossary,
         List<LqaIssue> issues
     )
     {
@@ -31,6 +33,14 @@ internal static class TmFallbackRule
         if (referenceNames?.FindIn(name, max: 2) is [var only]
             && string.Equals(only.Source, name, StringComparison.Ordinal)
             && string.Equals(only.Target, destText.Trim(), StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        // A row that says what a forced glossary term says (MEI's sailor Eris kept as 에리스, the memory's is 이리스) is
+        // the user's choice.
+        if (forceTokenGlossary.Any(term => string.Equals((term.SourceTerm ?? "").Trim(), name, StringComparison.OrdinalIgnoreCase)
+                                           && string.Equals((term.TargetTerm ?? "").Trim(), destText.Trim(), StringComparison.Ordinal)))
         {
             return;
         }

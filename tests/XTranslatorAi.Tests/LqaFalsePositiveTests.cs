@@ -485,6 +485,27 @@ public class LqaFalsePositiveTests
         Assert.Equal(new long[] { 4 }, kept.Keys);
     }
 
+    // MEI Red Wave's sailor Eris is a mod NPC the user keeps as 에리스 through a forced glossary term, while the memory's
+    // Eris is 이리스. The row says what the glossary says, so its fallback note needs no action either.
+    [Fact]
+    public async Task TmFallback_IsNotListedForRowsTranslatedAsTheGlossaryForces()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            new(3, 3, "SailorEris", "NPC_:FULL", StringEntryStatus.Done, "Eris", "에리스"),
+            new(4, 4, "FireDmg", "MGEF:FULL", StringEntryStatus.Done, "Fire Damage", "불 피해"),
+        };
+        var notes = new Dictionary<long, string> { [3] = "TM 폴백", [4] = "TM 폴백" };
+        var glossary = new List<GlossaryEntry>
+        {
+            new(1, null, "Eris", "에리스", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 20, null),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", glossary, tmFallbackNotes: notes);
+
+        Assert.Equal(4L, Assert.Single(issues, i => i.Code == "tm_fallback").Id);
+    }
+
     [Fact]
     public async Task BookLengthRatio_SkipsShortTitles_ButChecksLongBodies()
     {
