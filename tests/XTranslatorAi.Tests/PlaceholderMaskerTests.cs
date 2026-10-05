@@ -247,6 +247,25 @@ public class PlaceholderMaskerTests
         Assert.DoesNotContain("<page break>", new PlaceholderMasker().Mask("One.<page break>Two.").Text);
     }
 
+    // MEI's player options: "< Tell Senna you're visiting with a friend. >". An apostrophe, a slash between words or
+    // a digit made the whole option a tag, so it was never translated and the quality check did not see it either.
+    [Theory]
+    [InlineData("< Tell Senna you're visiting with a friend. >")]
+    [InlineData("< Haelga / Svana, can I ask you something? >")]
+    [InlineData("< Ask Haelga for 3P with Maven (ask Maven for a 3P first) >")]
+    [InlineData("< Randomized end / walkaway topic for Elenwen's reply. >")]
+    public void Mask_LeavesSentencesInAngleBracketsAsText(string option)
+        => Assert.Equal(option, new PlaceholderMasker().Mask(option).Text);
+
+    [Theory]
+    [InlineData("<br />")]
+    [InlineData("<p align='center'>")]
+    [InlineData("<font face='$HandwrittenFont' size='15'>")]
+    [InlineData("<img src='img://Textures/Map.dds' width='512' height='256'>")]
+    [InlineData("</font>")]
+    public void Mask_StillKeepsTagsWithQuotesAndSlashes(string tag)
+        => Assert.DoesNotContain("<", new PlaceholderMasker().Mask("Text " + tag + " more.").Text);
+
     [Fact]
     public void QualityCheck_ReadsAStageDirectionAsText()
     {

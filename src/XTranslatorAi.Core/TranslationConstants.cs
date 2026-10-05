@@ -17,8 +17,12 @@ public static class TranslationConstants
     /// Legacy of the Dragonborn's "&lt;page break&gt;" marker stays a tag.
     /// Brackets holding Hangul are always text: the model translates "&lt;Clears throat&gt;" to the single word
     /// "&lt;헛기침&gt;", and reading that as a tag missing from the source deleted it from the translation.
+    /// Three or more words starting with a letter are text even with an apostrophe, a slash or a digit, as long as
+    /// there is no '=', '%' or double quote: MEI's player option "&lt; Tell Senna you're visiting with a friend. &gt;"
+    /// stayed in English as a tag. Tags with quotes or slashes carry an attribute ('=') or have fewer words (&lt;br /&gt;).
     /// </summary>
-    public const string StageDirectionGuard = @"(?!(?!\s*[Pp]age\s+[Bb]reak\s*>)\s*[^\s<>=/'""\d%]+(?:\s+[^\s<>=/'""\d%]+)+\s*>)"
+    public const string StageDirectionGuard = @"(?!(?!\s*[Pp]age\s+[Bb]reak\s*>)(?:\s*[^\s<>=/'""\d%]+(?:\s+[^\s<>=/'""\d%]+)+\s*>"
+        + @"|\s*[A-Za-z][^\s<>=%""]*(?:\s+[^\s<>=%""]+){2,}\s*>))"
         + @"(?![^<>]*[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7A3][^<>]*>)";
 
     public static readonly Regex UiTagTokenRegex = new(
