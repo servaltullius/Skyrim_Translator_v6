@@ -19,9 +19,11 @@ public partial class MainViewModel
     private Task RetranslateSelectedAsync(IList? selectedRows)
         => RetranslateAsync(selectedRows?.OfType<StringEntryViewModel>().ToList() ?? new List<StringEntryViewModel>(), "선택한 행");
 
+    // The open row stays in the grid while it is edited even when the search no longer finds it; it is not one of
+    // the rows the search shows, and was retranslated with them right after being fixed by hand.
     [RelayCommand(CanExecute = nameof(CanRetranslate))]
     private Task RetranslateVisibleAsync()
-        => RetranslateAsync(EntriesView.OfType<StringEntryViewModel>().ToList(), "목록에 보이는 행");
+        => RetranslateAsync(EntriesView.OfType<StringEntryViewModel>().Where(MatchesEntryFilter).ToList(), "목록에 보이는 행");
 
     private bool CanRetranslate() => IsProjectLoaded && !IsTranslating && IsWorkspaceInteractive;
 
