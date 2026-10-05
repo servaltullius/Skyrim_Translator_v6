@@ -45,11 +45,23 @@ public sealed partial class ReferenceNameIndex
     private readonly Dictionary<string, List<(string Source, string Target)>> _byFirstWord;
     private readonly Material[] _materials;
 
+    // Multi-word names by their lowercase first word: "sweeter than moon sugar" names Moon Sugar (문 슈거). Only names
+    // whose first word the translation spells by sound (moon → 문): the lowercase forms of translated names were ordinary
+    // phrases in local projects ("served on a silver platter" → 은제 큰 접시, "bad enough to turn undead" → 언데드 퇴치,
+    // "send a note" → 노트). One-word names are not matched in lowercase: dirge and maul are ordinary words.
+    private readonly Dictionary<string, List<(string Source, string Target)>> _byLowerFirstWord;
+
     private ReferenceNameIndex(Dictionary<string, List<(string Source, string Target)>> byFirstWord, int count, Material[] materials)
     {
         _byFirstWord = byFirstWord;
         Count = count;
         _materials = materials;
+        _byLowerFirstWord = byFirstWord.Values.SelectMany(list => list)
+            .Where(name => name.Source.Contains(' ') && IsSoundedInTarget(name.Source.Split(' ')[0], name.Target))
+            .Select(name => (Source: name.Source.ToLowerInvariant(), name.Target))
+            .Where(name => char.IsLower(name.Source[0]))
+            .GroupBy(name => name.Source.Split(' ')[0], StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.OrderByDescending(name => name.Source.Length).ToList(), StringComparer.Ordinal);
     }
 
     public int Count { get; }
@@ -214,13 +226,16 @@ public sealed partial class ReferenceNameIndex
         var coveredUntil = 0;
         foreach (Match word in WordRegex.Matches(text))
         {
-            if (word.Index < coveredUntil || !char.IsUpper(word.Value[0]))
+            if (word.Index < coveredUntil)
             {
                 continue;
             }
 
             var firstWord = FirstWordOf(word.Value);
-            if (!_byFirstWord.TryGetValue(firstWord, out var candidates))
+            var candidates = char.IsUpper(word.Value[0]) ? _byFirstWord.GetValueOrDefault(firstWord)
+                : char.IsLower(word.Value[0]) ? _byLowerFirstWord.GetValueOrDefault(firstWord)
+                : null;
+            if (candidates == null)
             {
                 continue;
             }
@@ -394,6 +409,15 @@ public sealed partial class ReferenceNameIndex
         }
 
         return dropped;
+    }
+
+    // A word of the translation sounds exactly like the English word (moon → 문, tomato → 토마토). Unlike FindSpelling,
+    // a spelling that is also a native word counts here (문 is "door").
+    private static bool IsSoundedInTarget(string word, string target)
+    {
+        var sound = GlossaryLoanwordRule.EnglishSound(word);
+        return sound.Count(c => c != 'V') >= 2
+               && Regex.Matches(target, "[가-힣]+").Any(m => GlossaryLoanwordRule.KoreanSound(m.Value) == sound);
     }
 
     // The whole translation is the word's sound spelling (From-Deepest-Fathoms → 프롬-디피스트-페덤스); words with fewer

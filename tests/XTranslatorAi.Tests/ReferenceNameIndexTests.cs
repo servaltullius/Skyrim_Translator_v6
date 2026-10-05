@@ -216,6 +216,26 @@ public class ReferenceNameIndexTests
         Assert.Empty(index.FindIn("Slot, Hawk and Erdi."));
     }
 
+    // MEI's Beast Races addon wrote "sweeter than moon sugar" as 달빛 사탕 and 달빛 설탕: the memory names it only as
+    // "Moon Sugar" (문 슈거), and only capitalized names were matched. In lowercase, a multi-word name counts only when
+    // its first word is spelled by sound (moon → 문): across local projects the lowercase forms of translated names were
+    // ordinary phrases ("served on a silver platter", "bad enough to turn undead"). One-word names never count.
+    [Fact]
+    public void MultiWordNamesSpelledBySound_AreFoundInLowercaseToo()
+    {
+        var index = ReferenceNameIndex.Build(new[]
+        {
+            ("Moon Sugar", "문 슈거"), ("Deliver Moon Sugar to the caravan", "카라반에 문 슈거를 배달하기"),
+            ("Dirge", "더지"), ("Why do they call you Dirge?", "왜 당신을 더지라고 부르지?"),
+            ("Silver Platter", "은제 큰 접시"), ("Turn Undead", "언데드 퇴치"),
+        });
+
+        Assert.Equal(("moon sugar", "문 슈거"), Assert.Single(index.FindIn("Words sweeter than moon sugar.")));
+        Assert.Equal("Words sweeter than __XT_TERM_N1_0000__.", index.ForceNames(new GlossaryApplication(
+            "Words sweeter than moon sugar.", new Dictionary<string, string>(), Array.Empty<(string, string)>())).Text);
+        Assert.Empty(index.FindIn("A sad dirge played. Served on a silver platter, bad enough to turn undead."));
+    }
+
     [Fact]
     public async Task NamesAreWrittenAsTheirOfficialTranslation_UnlessTheGlossaryForcesThem()
     {
