@@ -63,6 +63,7 @@ public sealed partial class PluginUiLifecycleTests
             fixture.Vm.SelectedLqaIssue = issue;
             fixture.Vm.Compare1Status = "Done";
             fixture.Vm.Compare1Output = "철검";
+            fixture.Vm.LastCostEstimateSummary = "예상 비용: $0.12 (gemini)";
             Assert.True(fixture.Vm.ClearLqaCommand.CanExecute(null));
 
             var path = await WriteReplacementPluginAsync(fixture);
@@ -76,6 +77,8 @@ public sealed partial class PluginUiLifecycleTests
                 Assert.Null(fixture.Vm.SelectedLqaIssue);
                 Assert.False(fixture.Vm.ClearLqaCommand.CanExecute(null));
                 Assert.Equal(("", ""), (fixture.Vm.Compare1Status, fixture.Vm.Compare1Output));
+                // The estimate was for the earlier project's rows.
+                Assert.Equal("", fixture.Vm.LastCostEstimateSummary);
             }
             finally
             {

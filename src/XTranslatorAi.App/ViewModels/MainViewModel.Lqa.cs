@@ -81,7 +81,8 @@ public partial class MainViewModel
     /// <summary>
     /// Quality-check issues and compare outputs describe rows of the project they came from. Row Ids restart at 1
     /// in every project, so after a switch a leftover issue selected an unrelated row of the new project with the
-    /// same Id, and the compare slots showed the old row's translations under the new selection.
+    /// same Id, and the compare slots showed the old row's translations under the new selection. The cost estimate
+    /// line was for the earlier project's rows too.
     /// </summary>
     private void ClearProjectResults()
     {
@@ -90,6 +91,7 @@ public partial class MainViewModel
         LqaIssuesView.Refresh();
         ClearLqaCommand.NotifyCanExecuteChanged();
         ClearCompareOutputs();
+        LastCostEstimateSummary = "";
     }
 
     partial void OnLqaFilterTextChanged(string value) => LqaIssuesView.Refresh();
