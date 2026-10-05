@@ -129,9 +129,15 @@ public class KoreanTranslationFixerTests
     [Theory]
     [InlineData("[엘든 패리]을(를) 사용할 수 있습니다.", "[엘든 패리]를 사용할 수 있습니다.")]
     [InlineData("\"검의 의지\"을(를) 얻었다.", "\"검의 의지\"를 얻었다.")]
-    [InlineData("(전기)은(는) 강하다.", "(전기)는 강하다.")]
     [InlineData("[Hand Strap]을(를) 만든다.", "[Hand Strap]을 만든다.")]
     public void Fix_ResolvesMarkerAfterAClosingBracketOrQuote(string input, string expected)
+        => Assert.Equal(expected, KoreanTranslationFixer.Fix("korean", input));
+
+    // Parentheses qualify the word before them, so the marker follows that word (32eb1d7 picked 양손).
+    [Theory]
+    [InlineData("도끼(양손)을(를) 든다.", "도끼(양손)를 든다.")]
+    [InlineData("물약(대)이(가) 있다.", "물약(대)이 있다.")]
+    public void Fix_ResolvesMarkerAfterParentheses_ByTheWordBeforeThem(string input, string expected)
         => Assert.Equal(expected, KoreanTranslationFixer.Fix("korean", input));
 
     [Theory]
