@@ -122,7 +122,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        var key = e.Key == System.Windows.Input.Key.System ? e.SystemKey : e.Key;
+        var key = ShortcutKey(e.Key, e.SystemKey, e.ImeProcessedKey);
         var modifiers = System.Windows.Input.Keyboard.Modifiers;
         System.Windows.Input.ICommand? command = (key, modifiers) switch
         {
@@ -150,6 +150,20 @@ public partial class MainWindow : Window
             e.Handled = true;
         }
     }
+
+    /// <summary>
+    /// The key a shortcut is matched on. While a Korean syllable is still being composed, WPF reports the key as
+    /// ImeProcessed and keeps the pressed key in ImeProcessedKey, so Ctrl+S or Ctrl+Enter typed right after a
+    /// Korean word did nothing.
+    /// </summary>
+    internal static System.Windows.Input.Key ShortcutKey(System.Windows.Input.Key key, System.Windows.Input.Key systemKey,
+        System.Windows.Input.Key imeProcessedKey)
+        => key switch
+        {
+            System.Windows.Input.Key.System => systemKey,
+            System.Windows.Input.Key.ImeProcessed => imeProcessedKey,
+            _ => key,
+        };
 
     private void ApiKeyBox_OnPasswordChanged(object sender, RoutedEventArgs e)
     {
