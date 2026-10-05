@@ -51,7 +51,8 @@ public sealed partial class ReferenceNameIndex
     private readonly HashSet<string> _namesOnlyInsideSentences;
 
     // Multi-word names by their lowercase first word: "sweeter than moon sugar" names Moon Sugar (문 슈거). Only names
-    // whose first word the translation spells by sound (moon → 문): the lowercase forms of translated names were ordinary
+    // the translation spells by sound throughout ("a suit of dragon armor" is not the perk 드래곤 제련, nor "the seeker
+    // remains" the item 시커의 잔재), and so with a first word spelled by sound (moon → 문): the lowercase forms of translated names were ordinary
     // phrases in local projects ("served on a silver platter" → 은제 큰 접시, "bad enough to turn undead" → 언데드 퇴치,
     // "send a note" → 노트). One-word names are not matched in lowercase: dirge and maul are ordinary words.
     private readonly Dictionary<string, List<(string Source, string Target)>> _byLowerFirstWord;
@@ -65,7 +66,7 @@ public sealed partial class ReferenceNameIndex
         Count = count;
         _materials = materials;
         _byLowerFirstWord = byFirstWord.Values.SelectMany(list => list)
-            .Where(name => name.Source.Contains(' ') && IsSoundedInTarget(name.Source.Split(' ')[0], name.Target))
+            .Where(name => name.Source.Contains(' ') && name.Source.Split(' ').All(word => IsSoundedInTarget(word, name.Target)))
             .Select(name => (Source: name.Source.ToLowerInvariant(), name.Target))
             .Where(name => char.IsLower(name.Source[0]))
             .GroupBy(name => name.Source.Split(' ')[0], StringComparer.Ordinal)
@@ -133,6 +134,7 @@ public sealed partial class ReferenceNameIndex
 
         foreach (var (word, spelling) in WordsOfFullNames(byFirstWord, lowercaseUse, pairs))
         {
+
             if (!byFirstWord.TryGetValue(word, out var list))
             {
                 list = new List<(string Source, string Target)>();

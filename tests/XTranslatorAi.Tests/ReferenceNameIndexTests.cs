@@ -335,6 +335,21 @@ public class ReferenceNameIndexTests
         Assert.Equal("에란더", Assert.Single(index.FindIn("Erandur waits at the temple.")).Target);
     }
 
+    // In lowercase only a name spelled by sound throughout is a name ("moon sugar", 문 슈거): "a suit of dragon armor"
+    // was forced as the smithing perk Dragon Armor (드래곤 제련), "the seeker remains silent" as Seeker Remains.
+    [Fact]
+    public void LowercasePhrases_AreNamesOnlyWhenSpelledBySoundThroughout()
+    {
+        var index = ReferenceNameIndex.Build(new[]
+        {
+            ("Moon Sugar", "문 슈거"), ("Deliver Moon Sugar to the caravan", "카라반에 문 슈거를 배달하기"),
+            ("Dragon Armor", "드래곤 제련"), ("Seeker Remains", "시커의 잔재"),
+        });
+
+        Assert.Equal("문 슈거", Assert.Single(index.FindIn("Sweeter than moon sugar.")).Target);
+        Assert.Empty(index.FindIn("A suit of dragon armor. The seeker remains silent."));
+    }
+
     // MEI's names that the memory has only inside sentences were left to the model: "Gray Quarter" (잿빛 지구),
     // "Lake Honrich" (혼리크 호수). A name the sentences translate the same way is a name; the particles after it are not.
     [Fact]
