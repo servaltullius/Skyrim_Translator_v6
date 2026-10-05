@@ -7,9 +7,12 @@ namespace XTranslatorAi.Core.Translation;
 /// with API-key failover off, or on a lost connection or timeout (<see cref="IsConnectionFailure"/>), which no
 /// key change fixes. Rows not yet translated are back to Pending; the inner exception is the last failure.
 /// </summary>
-public sealed class TranslationRateLimitAbortException(int consecutiveFailures, Exception inner, bool isConnectionFailure = false)
+public sealed class TranslationRateLimitAbortException(int consecutiveFailures, Exception inner, bool isConnectionFailure = false,
+    bool isServerError = false)
     : Exception(
-        isConnectionFailure
+        isServerError
+            ? $"Gemini 서버 오류로 {consecutiveFailures}번 연속 실패해 번역을 멈췄습니다. 남은 행은 대기 상태로 되돌렸습니다."
+        : isConnectionFailure
             ? $"연결 문제로 {consecutiveFailures}번 연속 실패해 번역을 멈췄습니다. 남은 행은 대기 상태로 되돌렸습니다."
             : $"요청 제한으로 {consecutiveFailures}번 연속 실패해 번역을 멈췄습니다. 남은 행은 대기 상태로 되돌렸습니다.",
         inner)
@@ -17,4 +20,7 @@ public sealed class TranslationRateLimitAbortException(int consecutiveFailures, 
     public int ConsecutiveFailures { get; } = consecutiveFailures;
 
     public bool IsConnectionFailure { get; } = isConnectionFailure;
+
+    /// <summary>The model kept answering with a server error (503 "The model is overloaded."), which no key change fixes.</summary>
+    public bool IsServerError { get; } = isServerError;
 }

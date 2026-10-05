@@ -403,6 +403,50 @@ public sealed class TranslationServiceApiKeyFailoverTests
         }
     }
 
+    // "The model is overloaded." (503) on every call marked all 12 rows Error within seconds; an overload lasting minutes
+    // turned a large project into thousands of Error rows. It stops like a lost connection, rows left Pending, and no
+    // other key is tried for it.
+    [Fact]
+    public async Task TranslateIdsAsync_StopsAfterThreeServerOverloads()
+    {
+        var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
+        try
+        {
+            await using var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
+            await SeedProjectAsync(db);
+            var ids = await InsertPendingStringsAsync(db, 12);
+
+            var handler = new OverloadedHandler();
+            var service = new TranslationService(db, new GeminiClient(new HttpClient(handler)));
+
+            var ex = await Assert.ThrowsAsync<TranslationRateLimitAbortException>(
+                () => service.TranslateIdsAsync(CreateRequest(ids, enableApiKeyFailover: false) with { BatchSize = 4 }));
+
+            var statuses = await db.GetStringStatusesByIdsAsync(ids, CancellationToken.None);
+            Assert.True(statuses.Values.Count(status => status == StringEntryStatus.Pending) >= 4);
+            var error = UserFacingErrorClassifier.Classify(ex);
+            Assert.Equal("E204", error.Code);
+            Assert.Contains("멈췄습니다", error.Message);
+        }
+        finally
+        {
+            TestDbHelper.TryDeleteDbFiles(path);
+        }
+    }
+
+    private sealed class OverloadedHandler : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            var url = request.RequestUri?.ToString() ?? "";
+            var status = url.IndexOf(":generateContent", StringComparison.OrdinalIgnoreCase) < 0 ? HttpStatusCode.NotFound : HttpStatusCode.ServiceUnavailable;
+            return Task.FromResult(new HttpResponseMessage(status)
+            {
+                Content = new StringContent("{\"error\":{\"code\":503,\"message\":\"The model is overloaded.\",\"status\":\"UNAVAILABLE\"}}"),
+            });
+        }
+    }
+
     private sealed class NoAnswerHandler(bool timeout) : HttpMessageHandler
     {
         public int Calls { get; private set; }

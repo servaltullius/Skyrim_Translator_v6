@@ -80,8 +80,11 @@ public sealed partial class TranslationService
         // remaining row Error within seconds (connection refused) or hours (15-minute timeouts).
         var connection = IsConnectionFailure(ex);
 
+        // An overloaded model (503) is the same for every key too: it marked every row Error within seconds.
+        var server = !connection && IsServerError(ex);
+
         // With failover on, the first rate limit already stops the run to switch keys.
-        if (!connection && (apiKeyFailover || !IsRateLimit(ex)))
+        if (!connection && !server && (apiKeyFailover || !IsRateLimit(ex)))
         {
             return;
         }
@@ -94,7 +97,7 @@ public sealed partial class TranslationService
 
         // Batches still in flight that end on a rate limit stop too, so their rows go back to Pending as well.
         Ctx.RateLimitAborted = true;
-        throw new TranslationRateLimitAbortException(MaxConsecutiveRateLimitFailures, ex, connection);
+        throw new TranslationRateLimitAbortException(MaxConsecutiveRateLimitFailures, ex, connection, server);
     }
 
     /// <summary>The request timed out (HttpClient.Timeout), as opposed to the user stopping the run.</summary>

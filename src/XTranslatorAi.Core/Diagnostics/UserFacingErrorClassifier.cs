@@ -27,6 +27,16 @@ public static class UserFacingErrorClassifier
         // Wraps the last 429 or timeout, which alone would only suggest waiting a moment; the run has already stopped.
         if (FindInChain<TranslationRateLimitAbortException>(ex) is { } abort)
         {
+            // Not E203: the runner switches keys for E203, and no key helps an overloaded model.
+            if (abort.IsServerError)
+            {
+                return new UserFacingError(
+                    "E204",
+                    "Gemini 서버 오류(과부하 등)가 계속되어 번역을 멈췄습니다. 남은 행은 대기 상태로 두었으니 잠시 후 이어서 번역하세요.",
+                    DetailsInApiLogs: true
+                );
+            }
+
             if (abort.IsConnectionFailure)
             {
                 return new UserFacingError(
