@@ -100,7 +100,7 @@ public static class PreviousTranslationMatcher
     /// Rewrites the FormID in an earlier release's field key ("QUST/02000800/0/NNAM/1") into the current
     /// release's numbering: the high byte names a master by position, or the plugin itself past the masters.
     /// </summary>
-    private static bool TryMapKey(string key, IReadOnlyList<string> fromMasters, IReadOnlyList<string> toMasters, out string mapped)
+    internal static bool TryMapKey(string key, IReadOnlyList<string> fromMasters, IReadOnlyList<string> toMasters, out string mapped)
     {
         mapped = key;
         var start = key.IndexOf('/');

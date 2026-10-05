@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -74,6 +75,23 @@ public sealed partial class ProjectDb
                 }
             }
 
+            // A FormID's first byte is its master's position: an update that adds or reorders masters renumbers the
+            // records (01000800 → 02000800), so the saved keys are moved to the new master list first. Otherwise every
+            // translation of the plugin's own records was set aside as a changed row.
+            if (oldSource != null && !oldSource.Info.Masters.SequenceEqual(source.Masters, StringComparer.OrdinalIgnoreCase))
+            {
+                var remapped = new Dictionary<string, (string Source, string Dest, StringEntryStatus Status)>(StringComparer.Ordinal);
+                foreach (var (key, value) in saved)
+                {
+                    if (PreviousTranslationMatcher.TryMapKey(key, oldSource.Info.Masters, source.Masters, out var mapped))
+                    {
+                        remapped.TryAdd(mapped, value);
+                    }
+                }
+
+                saved = remapped;
+            }
+
             var sourceByKey = new Dictionary<string, string>(StringComparer.Ordinal);
             foreach (var field in fields)
             {
@@ -90,6 +108,14 @@ public sealed partial class ProjectDb
             var notesByKey = oldSource == null
                 ? new Dictionary<string, (string Source, List<(string Kind, string Message, string UpdatedAt)> Notes)>(StringComparer.Ordinal)
                 : await ReadPluginStringNotesAsync(tx, cancellationToken);
+            if (oldSource != null && !oldSource.Info.Masters.SequenceEqual(source.Masters, StringComparer.OrdinalIgnoreCase))
+            {
+                notesByKey = notesByKey
+                    .Select(pair => PreviousTranslationMatcher.TryMapKey(pair.Key, oldSource.Info.Masters, source.Masters, out var mapped) ? (mapped, pair.Value) : (null, pair.Value))
+                    .Where(pair => pair.Item1 != null)
+                    .GroupBy(pair => pair.Item1!, StringComparer.Ordinal)
+                    .ToDictionary(group => group.Key, group => group.First().Value, StringComparer.Ordinal);
+            }
 
             await using (var clear = _connection.CreateCommand())
             {

@@ -259,6 +259,25 @@ public sealed class PluginProjectIntegrationTests
         }
     }
 
+    // A FormID's first byte is its master's position, so an update that adds a master renumbers every record the
+    // plugin owns (01000800 → 02000800). Reopening it set all their translations aside as changed rows.
+    [Fact]
+    public async Task UpdateThatAddsAMaster_KeepsTheTranslationsOfThePluginsOwnRecords()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        var v1 = fixture.Source with { Masters = new[] { "Skyrim.esm" } };
+        static PluginField Keyed(uint formId, string source) => new($"WEAP/{formId:X8}/0/FULL/1", 0, "WEAP", "FULL", formId, "TestSword", 1, 1, source);
+        await fixture.Db.ReplaceImportedPluginStringsAsync(v1, new[] { Keyed(0x01000800, "Steel Sword") }, fixture.Project, "utf-8", CancellationToken.None);
+        var row = Assert.Single(await fixture.Db.GetStringsAsync(20, 0, CancellationToken.None));
+        await fixture.Db.UpdateStringTranslationAsync(row.Id, "강철 검", StringEntryStatus.Edited, null, CancellationToken.None);
+
+        var v2 = fixture.Source with { Sha256 = "v2", Masters = new[] { "Skyrim.esm", "Update.esm" } };
+        var reopened = await fixture.Db.ReplaceImportedPluginStringsAsync(v2, new[] { Keyed(0x02000800, "Steel Sword") }, fixture.Project, "utf-8", CancellationToken.None);
+
+        Assert.Equal(("강철 검", StringEntryStatus.Edited), (Assert.Single(reopened).DestText, reopened[0].Status));
+        Assert.Equal(0, await fixture.Db.GetRetiredPluginTranslationCountAsync(CancellationToken.None));
+    }
+
     // A mod update that changes one source string used to delete that row's translation, reviewed ones included,
     // and reopening the earlier file did not bring it back.
     [Fact]
