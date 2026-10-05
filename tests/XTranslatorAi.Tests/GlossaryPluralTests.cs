@@ -46,4 +46,23 @@ public class GlossaryPluralTests
 
         Assert.Equal(matches, applier.Apply(text).TokenToReplacement.Count > 0);
     }
+
+    // The built-in entries force a capitalized single word only in that exact form, so the plural above never reached
+    // the built-in Vampire it was written for. A plural is a noun in any case ("vampires", "Giants"); the singular in
+    // lowercase may still be an adjective ("a giant spider") and stays a hint.
+    [Theory]
+    [InlineData("Vampire", "흡혈귀", "A nest of vampires.", true)]
+    [InlineData("Vampire", "흡혈귀", "Vampires are powerful.", true)]
+    [InlineData("Giant", "거인", "Giants live here.", true)]
+    [InlineData("Giant", "거인", "A giant spider.", false)]
+    public void BuiltInTermOfABeing_MatchesItsPluralInAnyCase(string source, string target, string text, bool matches)
+    {
+        var applier = new GlossaryApplier(new[]
+        {
+            new GlossaryEntry(1, "종족 및 생물 (Races/Creatures)", source, target, true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10,
+                "Built-in default glossary"),
+        });
+
+        Assert.Equal(matches, applier.Apply(text).TokenToReplacement.Count > 0);
+    }
 }

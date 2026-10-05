@@ -234,11 +234,22 @@ public sealed class GlossaryApplier
     internal static bool ForcesOnlyExactCase(GlossaryEntry entry)
         => IsBuiltInDefaultEntry(entry) && IsCapitalizedSingleWord(entry.SourceTerm);
 
+    private static bool NamesBeingsOrGroups(GlossaryEntry entry)
+        => entry.Category is { } category
+           && (category.Contains("Races/Creatures", StringComparison.Ordinal) || category.Contains("Factions/Groups", StringComparison.Ordinal));
+
     private static BuiltInMatch ClassifyBuiltInDefaultGlossaryMatch(string input, GlossaryEntry entry, Match match)
     {
         if (!IsBuiltInDefaultEntry(entry))
         {
             return BuiltInMatch.Force;
+        }
+
+        // A plural is a noun in any case ("vampires", "Giants"), unlike a lowercase singular ("a giant spider"), so
+        // the exact-case rule below does not apply to it.
+        if (NamesBeingsOrGroups(entry) && match.Length > entry.SourceTerm.Trim().Length)
+        {
+            return IsBuiltInTermUsedOtherwise(input, entry, match.Index, match.Length) ? BuiltInMatch.NotTheTerm : BuiltInMatch.Force;
         }
 
         if (ForcesOnlyExactCase(entry)
@@ -477,9 +488,7 @@ public sealed class GlossaryApplier
     private static string PluralSuffixFor(GlossaryEntry entry)
     {
         var term = entry.SourceTerm.Trim();
-        var namesBeingsOrGroups = entry.Category is { } category
-                                  && (category.Contains("Races/Creatures", StringComparison.Ordinal) || category.Contains("Factions/Groups", StringComparison.Ordinal));
-        return (term.Contains(' ') || namesBeingsOrGroups) && term.Length > 0 && char.IsLetter(term[^1]) && !term.EndsWith('s')
+        return (term.Contains(' ') || NamesBeingsOrGroups(entry)) && term.Length > 0 && char.IsLetter(term[^1]) && !term.EndsWith('s')
             ? "(?:es|s)?"
             : "";
     }
