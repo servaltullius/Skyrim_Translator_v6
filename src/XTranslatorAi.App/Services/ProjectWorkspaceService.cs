@@ -254,7 +254,26 @@ public sealed partial class ProjectWorkspaceService
         => fileName is not null
            && fileName.Trim().ToLowerInvariant() is "starfield.esm";
 
+    /// <summary>
+    /// A damaged old project DB (not a database, or without a Project table) threw out of here, so the XML could not
+    /// be opened at all. It is logged and skipped; the XML then opens into its own project.
+    /// </summary>
     public static async Task<bool> TryMigrateLegacyProjectDbAsync(
+        string legacyDbPath, string newDbPath, BethesdaFranchise franchise,
+        XTranslatorXmlInfo xmlInfo, string inputXmlPath, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await MigrateLegacyProjectDbAsync(legacyDbPath, newDbPath, franchise, xmlInfo, inputXmlPath, cancellationToken);
+        }
+        catch (SqliteException ex)
+        {
+            AppLog.Write($"WARN 예전 프로젝트 DB를 읽지 못해 건너뜁니다({legacyDbPath}): {ex.Message}");
+            return false;
+        }
+    }
+
+    private static async Task<bool> MigrateLegacyProjectDbAsync(
         string legacyDbPath, string newDbPath, BethesdaFranchise franchise,
         XTranslatorXmlInfo xmlInfo, string inputXmlPath, CancellationToken cancellationToken)
     {

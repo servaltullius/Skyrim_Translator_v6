@@ -90,6 +90,42 @@ public sealed class ProjectMigrationSafetyTests
         }
     }
 
+    // A damaged old project DB threw out of the migration, so the XML could not be opened at all.
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task DamagedLegacyDb_IsSkipped(bool sqliteWithoutProject)
+    {
+        var root = Path.Combine(Path.GetTempPath(), "xt-migration-test-" + Guid.NewGuid().ToString("N"));
+        var legacy = Path.Combine(root, "old.sqlite");
+        var destination = Path.Combine(root, "new.sqlite");
+        try
+        {
+            Directory.CreateDirectory(root);
+            if (sqliteWithoutProject)
+            {
+                await using var empty = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={legacy};Pooling=False");
+                await empty.OpenAsync();
+                await using var create = empty.CreateCommand();
+                create.CommandText = "CREATE TABLE Other (Id INTEGER);";
+                await create.ExecuteNonQueryAsync();
+            }
+            else
+            {
+                await File.WriteAllTextAsync(legacy, "this is not a database, just text that happens to be long enough");
+            }
+
+            Assert.False(await ProjectWorkspaceService.TryMigrateLegacyProjectDbAsync(legacy, destination,
+                BethesdaFranchise.ElderScrolls, Info, Path.Combine(root, "input.xml"), CancellationToken.None));
+            Assert.False(File.Exists(destination));
+        }
+        finally
+        {
+            TestDbHelper.ReleaseProjectPoolAndDeleteDbFiles(legacy);
+            if (Directory.Exists(root)) Directory.Delete(root, true);
+        }
+    }
+
     private static async Task<ProjectDb> CreateLegacyAsync(string path, BethesdaFranchise? franchise)
     {
         var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
