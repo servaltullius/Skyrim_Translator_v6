@@ -253,6 +253,52 @@ public class ReferenceNameIndexTests
         Assert.Equal("진정한 바렌자이아", Assert.Single(index.FindIn("A copy of The Real Barenziah.")).Target);
     }
 
+    // MEI's names that the memory has only inside sentences were left to the model: "Gray Quarter" (잿빛 지구),
+    // "Lake Honrich" (혼리크 호수). A name the sentences translate the same way is a name; the particles after it are not.
+    [Fact]
+    public void NamesTheSentencesTranslateAlike_AreNames()
+    {
+        var index = ReferenceNameIndex.Build(new[]
+        {
+            ("Any plans to renovate the Gray Quarter?", "잿빛 지구를 개선할 계획이 있습니까?"),
+            ("What's the Gray Quarter?", "잿빛 지구가 뭡니까?"),
+            ("You live in the Gray Quarter?", "잿빛 지구에서 살고 있나?"),
+            ("How did it end up in Lake Honrich?", "어쩌다 혼리크 호수로 보내버린 거야?"),
+            ("Locate the Quill of Gemination under Lake Honrich", "복제의 깃털펜을 혼리크 호수 바닥에서 찾기"),
+        });
+
+        Assert.Equal(("Gray Quarter", "잿빛 지구"), Assert.Single(index.FindIn("Meet me in the Gray Quarter.")));
+        Assert.Equal(("Lake Honrich", "혼리크 호수"), Assert.Single(index.FindIn("The shore of Lake Honrich.")));
+    }
+
+    // Only names that stand alone in real sentences count: part of an item name ("Gloves of Major Destruction"), the
+    // first words of a line ("Join Barbas"), a translation ending in a possessive ("King Olaf's Verse" is 올라프 왕의 시,
+    // so "Olaf's Verse" is not 올라프 왕의), a name that longer official names write another way (the Guild Master's
+    // armor is 길드 마스터의 방어구) and a name the sentences translate two ways are left alone.
+    [Fact]
+    public void NamesTheSentencesDoNotSettle_AreNotNames()
+    {
+        var index = ReferenceNameIndex.Build(new[]
+        {
+            ("Gloves of Major Destruction", "파괴마법 중급 강화 장갑"), ("Ring of Major Destruction", "파괴마법 중급 강화 반지"),
+            ("Boots of Major Destruction", "파괴마법 중급 강화 전투화"),
+            ("Join Barbas outside", "바깥에서 바바스와 합류하기"), ("Join Barbas at the gate", "성문에서 바바스와 합류하기"),
+            ("King Olaf's Verse", "올라프 왕의 시"),
+            ("I've been to the tomb. I have Olaf's Verse.", "그 무덤에 가본 적이 있고, 올라프 왕의 시도 갖고 있습니다."),
+            ("Help Viarmo reconstruct Olaf's Verse", "비아모가 올라프 왕의 시를 복원하는 것을 돕기"),
+            ("Bring it to Sunhallowed Arrows today", "태양의 신성함을 받은 화살에게 오늘 가져가기"),
+            ("He sells Sunhallowed Arrows now", "그는 이제 태양의 신성함을 받은 화살을 판다"),
+            ("Guild Master's Armor", "길드 마스터의 방어구"),
+            ("Speak to Brynjolf about becoming the Guild Master", "브린욜프와 길드 지도자가 되는 것에 관해 대화하기"),
+            ("Speak to Brynjolf about being Guild Master", "브린욜프에게 길드 지도자로 살아가는 것에 관해서 대화하기"),
+        });
+
+        Assert.Empty(index.FindIn("Major Destruction and Barbas."));
+        Assert.Equal("올라프 왕의 시", Assert.Single(index.FindIn("Read King Olaf's Verse.")).Target);
+        Assert.Empty(index.FindIn("I have Olaf's Verse and Sunhallowed Arrows."));
+        Assert.DoesNotContain(index.FindIn("You are the Guild Master now."), name => name.Source == "Guild Master");
+    }
+
     [Fact]
     public async Task NamesAreWrittenAsTheirOfficialTranslation_UnlessTheGlossaryForcesThem()
     {

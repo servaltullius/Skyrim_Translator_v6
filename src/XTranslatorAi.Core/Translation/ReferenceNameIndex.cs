@@ -73,6 +73,7 @@ public sealed partial class ReferenceNameIndex
             .Where(pair => pair.Source.Length > 0 && pair.Target.Length > 0)
             .ToList();
         pairs.AddRange(BookTitlesWithoutVolume(pairs).ToList());
+        pairs.AddRange(NamesInSentences(pairs).ToList());
         var lowercaseUse = CollectLowercaseUse(pairs.Select(pair => pair.Source));
         var namedInSentences = CollectWordsNamedInSentences(pairs.Select(pair => pair.Source));
 
