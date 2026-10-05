@@ -175,14 +175,30 @@ public sealed partial class ProjectDb
         await _gate.WaitAsync(cancellationToken);
         try
         {
+            await using var tx = (SqliteTransaction)await _connection.BeginTransactionAsync(cancellationToken);
+            // Compared here as UpsertGlossaryAsync does: SQLite's LOWER folds only ASCII and keeps spaces, so
+            // "ÉBÈNE GUARD" or "Whiterun" was learned again beside "Ébène Guard" and "Whiterun ".
+            var source = request.SourceTerm.Trim();
+            await using (var read = _connection.CreateCommand())
+            {
+                read.Transaction = tx;
+                read.CommandText = "SELECT SrcTerm FROM Glossary;";
+                await using var reader = await read.ExecuteReaderAsync(cancellationToken);
+                while (await reader.ReadAsync(cancellationToken))
+                {
+                    if (string.Equals(reader.GetString(0).Trim(), source, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                }
+            }
+
             await using var cmd = _connection.CreateCommand();
+            cmd.Transaction = tx;
             cmd.CommandText =
                 """
                 INSERT INTO Glossary (Category, SrcTerm, DstTerm, Enabled, MatchMode, ForceMode, Priority, Note)
-                SELECT $Category, $SrcTerm, $DstTerm, $Enabled, $MatchMode, $ForceMode, $Priority, $Note
-                WHERE NOT EXISTS (
-                  SELECT 1 FROM Glossary WHERE LOWER(SrcTerm) = LOWER($SrcTerm)
-                );
+                VALUES ($Category, $SrcTerm, $DstTerm, $Enabled, $MatchMode, $ForceMode, $Priority, $Note);
                 """;
 
             cmd.Parameters.AddWithValue("$Category", (object?)request.Category ?? DBNull.Value);
@@ -195,6 +211,7 @@ public sealed partial class ProjectDb
             cmd.Parameters.AddWithValue("$Note", (object?)request.Note ?? DBNull.Value);
 
             var rows = await cmd.ExecuteNonQueryAsync(cancellationToken);
+            await tx.CommitAsync(cancellationToken);
             return rows > 0;
         }
         finally

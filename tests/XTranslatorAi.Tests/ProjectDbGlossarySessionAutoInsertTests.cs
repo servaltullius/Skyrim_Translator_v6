@@ -48,6 +48,29 @@ public class ProjectDbGlossarySessionAutoInsertTests
         }
     }
 
+    [Fact]
+    public async Task TryInsertGlossaryIfMissingAsync_TreatsAccentedCaseAndSpacesAsTheSameSource()
+    {
+        // SQLite's LOWER folds only ASCII and keeps spaces, so these learned terms used to become second rows
+        // beside the entries that already hold them.
+        var path = Path.Combine(Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
+        try
+        {
+            await using var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
+            Assert.True(await db.TryInsertGlossaryIfMissingAsync(CreateAutoGlossaryRequest("Ébène Guard", "흑단 경비대"), CancellationToken.None));
+            Assert.True(await db.TryInsertGlossaryIfMissingAsync(CreateAutoGlossaryRequest("Whiterun ", "화이트런"), CancellationToken.None));
+
+            Assert.False(await db.TryInsertGlossaryIfMissingAsync(CreateAutoGlossaryRequest("ÉBÈNE GUARD", "X"), CancellationToken.None));
+            Assert.False(await db.TryInsertGlossaryIfMissingAsync(CreateAutoGlossaryRequest("Whiterun", "X"), CancellationToken.None));
+
+            Assert.Equal(2, (await db.GetGlossaryAsync(CancellationToken.None)).Count);
+        }
+        finally
+        {
+            TestDbHelper.TryDeleteDbFiles(path);
+        }
+    }
+
     private static GlossaryUpsertRequest CreateAutoGlossaryRequest(string source, string target)
         => new(
             Category: "Auto(Session)",
