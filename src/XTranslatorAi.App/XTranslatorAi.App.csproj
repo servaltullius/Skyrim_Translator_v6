@@ -16,7 +16,7 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>TulliusTranslator</AssemblyName>
     <Version>1.11.0</Version>
-    <InformationalVersion>1.11-preview14</InformationalVersion>
+    <InformationalVersion>1.11-preview15</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
