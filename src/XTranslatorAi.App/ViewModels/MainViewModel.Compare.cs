@@ -55,10 +55,36 @@ public partial class MainViewModel
         return CompareGeminiModelCandidates;
     }
 
+    // The row the compare outputs were made for. A refresh that clears the selection for a moment keeps them.
+    private long? _compareEntryId;
+
     partial void OnSelectedEntryChanged(StringEntryViewModel? value)
     {
-        _ = value;
         OnPropertyChanged(nameof(CompareSelectedEntrySummary));
+        if (value == null)
+        {
+            return;
+        }
+
+        // The slots kept one row's translations under the next row's summary.
+        if (_compareEntryId is { } earlier && earlier != value.Id)
+        {
+            ClearIdleCompareSlots();
+        }
+
+        _compareEntryId = value.Id;
+    }
+
+    private void ClearIdleCompareSlots()
+    {
+        for (var slot = 1; slot <= 3; slot++)
+        {
+            if (!IsCompareSlotRunning(slot))
+            {
+                SetCompareStatus(slot, "");
+                SetCompareOutput(slot, "");
+            }
+        }
     }
 
     private static string BuildCompareSelectedEntrySummary(StringEntryViewModel? entry)
@@ -103,6 +129,7 @@ public partial class MainViewModel
         Compare2Output = "";
         Compare3Status = "";
         Compare3Output = "";
+        _compareEntryId = SelectedEntry?.Id;
     }
 
     private async Task RunCompareSlotAsync(int slot, CancellationToken cancellationToken)
@@ -130,6 +157,13 @@ public partial class MainViewModel
 
             var result = await _compareTranslationService.RunAsync(request, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
+            if (!ReferenceEquals(SelectedEntry, context.Entry))
+            {
+                SetCompareOutput(slot, "");
+                SetCompareStatus(slot, $"#{context.Entry.OrderIndex} 행의 결과는 다른 행을 선택해 표시하지 않았습니다. 다시 실행하세요.");
+                return;
+            }
+
             ApplyCompareResult(slot, result);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)

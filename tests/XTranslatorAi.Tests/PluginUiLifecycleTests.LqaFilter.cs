@@ -49,6 +49,25 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Null(fixture.Vm.SelectedLqaIssue);
         });
 
+    /// <summary>The compare slots kept one row's translations under the next row's summary.</summary>
+    [Fact]
+    public Task ChoosingAnotherRow_ClearsCompareOutputsOfTheEarlierRow()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            var rows = await LoadXmlWorkspaceAsync(fixture, "Iron Sword", "Steel Sword");
+            fixture.Vm.SelectedEntry = rows[0];
+            (fixture.Vm.Compare1Status, fixture.Vm.Compare1Output) = ("완료", "철검");
+
+            // A refresh that briefly clears the selection keeps them.
+            fixture.Vm.SelectedEntry = null;
+            fixture.Vm.SelectedEntry = rows[0];
+            Assert.Equal("철검", fixture.Vm.Compare1Output);
+
+            fixture.Vm.SelectedEntry = rows[1];
+            Assert.Equal(("", ""), (fixture.Vm.Compare1Status, fixture.Vm.Compare1Output));
+        });
+
     /// <summary>
     /// Choosing another row kept the issue list's selection on the earlier row's issue: the tab showed that issue
     /// above the other row's text, and clicking it again did nothing because it was already selected.
