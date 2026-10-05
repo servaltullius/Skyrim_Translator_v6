@@ -471,10 +471,15 @@ public sealed class GlossaryApplier
         return token;
     }
 
-    private static string PluralSuffixFor(string sourceTerm)
+    // Single words keep their exact form ("resists" is a verb, "shores" is not Shor, "masters" is not the rank 달인),
+    // except races, creatures and groups, which lines name in the plural all the time: Feris wrote "vampires" as
+    // 뱀파이어 in 10 lines while the built-in Vampire is 흡혈귀.
+    private static string PluralSuffixFor(GlossaryEntry entry)
     {
-        var term = sourceTerm.Trim();
-        return term.Contains(' ') && term.Length > 0 && char.IsLetter(term[^1]) && !term.EndsWith('s')
+        var term = entry.SourceTerm.Trim();
+        var namesBeingsOrGroups = entry.Category is { } category
+                                  && (category.Contains("Races/Creatures", StringComparison.Ordinal) || category.Contains("Factions/Groups", StringComparison.Ordinal));
+        return (term.Contains(' ') || namesBeingsOrGroups) && term.Length > 0 && char.IsLetter(term[^1]) && !term.EndsWith('s')
             ? "(?:es|s)?"
             : "";
     }
@@ -498,7 +503,7 @@ public sealed class GlossaryApplier
             // Use \w-based guards instead so terms like "A skill beyond the reach of most." can still match as a whole.
             // Korean does not mark the plural: a multi-word term also matches with a plural s/es ("NPC Weapon Arts"
             // stayed plain text and came out as 전투 기술 instead of 전기). Single words keep their exact form.
-            GlossaryMatchMode.WordBoundary => $@"(?<!\w){Regex.Escape(entry.SourceTerm)}{PluralSuffixFor(entry.SourceTerm)}(?!\w)",
+            GlossaryMatchMode.WordBoundary => $@"(?<!\w){Regex.Escape(entry.SourceTerm)}{PluralSuffixFor(entry)}(?!\w)",
             GlossaryMatchMode.Regex => entry.SourceTerm,
             _ => throw new ArgumentOutOfRangeException(nameof(entry), entry.MatchMode, "Unsupported glossary match mode."),
         };
