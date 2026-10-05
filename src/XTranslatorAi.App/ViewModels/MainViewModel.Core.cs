@@ -97,6 +97,7 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
 
         var settings = _appSettings.Load();
         var settingsWarning = _appSettings.LoadWarning;
+        _settingsUnreadAtStart = _appSettings.LastLoadLeftFileUnread;
         if (!string.IsNullOrWhiteSpace(settings.ApiKey))
         {
             ApiKey = settings.ApiKey.Trim();
@@ -422,9 +423,13 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
         }
     }
 
+    // The window started from defaults because settings.json could not be read. Saving later, once the file reads again,
+    // wrote those defaults over it and kept only keys added in this session, so nothing is saved until a restart.
+    private bool _settingsUnreadAtStart;
+
     private void SaveTranslationPreferences()
     {
-        if (_isUpdatingTranslationPreferences) return;
+        if (_isUpdatingTranslationPreferences || _settingsUnreadAtStart) return;
         try
         {
             var current = _appSettings.Load();

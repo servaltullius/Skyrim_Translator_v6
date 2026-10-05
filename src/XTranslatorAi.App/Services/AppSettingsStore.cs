@@ -36,6 +36,9 @@ public sealed class AppSettingsStore
     /// <summary>Why the last <see cref="Load"/> started from defaults although a settings file exists; null otherwise.</summary>
     public string? LoadWarning { get; private set; }
 
+    /// <summary>The last <see cref="Load"/> could not read an existing settings file, so it returned defaults.</summary>
+    public bool LastLoadLeftFileUnread { get { lock (_sync) return _existingFileUnread; } }
+
     /// <summary>
     /// Every caller saves by Load → change → Save. Load used to return defaults on any error, so a settings file
     /// that was briefly locked (antivirus, a sync client) or cut short by a crash during a save came back as
@@ -67,7 +70,7 @@ public sealed class AppSettingsStore
             {
                 _existingFileUnread = true;
                 LoadWarning = "설정 파일을 읽지 못해(다른 프로그램이 사용 중일 수 있음) 기본 설정으로 시작했습니다. "
-                    + "저장된 API 키와 설정을 지키려고, 파일을 다시 읽을 수 있을 때까지 설정을 저장하지 않습니다.";
+                    + "저장된 API 키와 설정을 지키려고, 앱을 다시 시작할 때까지 설정과 API 키를 저장하지 않습니다.";
                 AppLog.Write($"WARN 설정 파일을 읽지 못해 저장을 보류합니다: {_settingsPath}: {ex.Message}");
                 return new AppSettings();
             }
@@ -279,37 +282,68 @@ public sealed class AppSettingsStore
 
         // Keys are stored DPAPI-protected on Windows and as plain text elsewhere; every other field is the same.
         var persisted = new PersistedAppSettings(
-            EnableApiKeyFailover: settings.EnableApiKeyFailover,
-            EnableBookFullModelOverride: settings.EnableBookFullModelOverride,
-            EnableBookBodyModelOverride: settings.EnableBookBodyModelOverride,
-            BookFullModel: settings.BookFullModel,
-            EnablePromptCache: settings.EnablePromptCache,
-            EnableQualityEscalation: settings.EnableQualityEscalation,
-            QualityEscalationModel: settings.QualityEscalationModel,
-            EnableRiskyCandidateRerank: settings.EnableRiskyCandidateRerank,
-            RiskyCandidateCount: settings.RiskyCandidateCount,
-            SelectedModel: settings.SelectedModel,
-            BatchSize: settings.BatchSize,
-            MaxCharsPerBatch: settings.MaxCharsPerBatch,
-            MaxParallelRequests: settings.MaxParallelRequests,
-            MaxOutputTokensOverride: settings.MaxOutputTokensOverride,
-            EnableRepairPass: settings.EnableRepairPass,
-            SemanticRepairMode: settings.SemanticRepairMode,
-            KeepSkyrimTagsRaw: settings.KeepSkyrimTagsRaw,
-            EnableDialogueContextWindow: settings.EnableDialogueContextWindow,
-            EnableSessionTermMemory: settings.EnableSessionTermMemory,
-            UseRecStyleHints: settings.UseRecStyleHints,
-            EnableTemplateFixer: settings.EnableTemplateFixer,
-            EnableProjectContext: settings.EnableProjectContext,
-            EnableAdaptiveOutputBudget: settings.EnableAdaptiveOutputBudget,
-            EnableBookContext: settings.EnableBookContext,
-            MaxRetryGenerations: settings.MaxRetryGenerations,
-            MaxTotalGenerations: settings.MaxTotalGenerations,
-            PluginSourceLanguage: settings.PluginSourceLanguage,
-            PluginTargetLanguage: settings.PluginTargetLanguage,
-            PluginSourceEncoding: settings.PluginSourceEncoding,
-            PluginMetadataEncoding: settings.PluginMetadataEncoding,
-            PluginTargetEncoding: settings.PluginTargetEncoding,
+            EnableApiKeyFailover: settings.EnableApiKeyFailover,
+
+            EnableBookFullModelOverride: settings.EnableBookFullModelOverride,
+
+            EnableBookBodyModelOverride: settings.EnableBookBodyModelOverride,
+
+            BookFullModel: settings.BookFullModel,
+
+            EnablePromptCache: settings.EnablePromptCache,
+
+            EnableQualityEscalation: settings.EnableQualityEscalation,
+
+            QualityEscalationModel: settings.QualityEscalationModel,
+
+            EnableRiskyCandidateRerank: settings.EnableRiskyCandidateRerank,
+
+            RiskyCandidateCount: settings.RiskyCandidateCount,
+
+            SelectedModel: settings.SelectedModel,
+
+            BatchSize: settings.BatchSize,
+
+            MaxCharsPerBatch: settings.MaxCharsPerBatch,
+
+            MaxParallelRequests: settings.MaxParallelRequests,
+
+            MaxOutputTokensOverride: settings.MaxOutputTokensOverride,
+
+            EnableRepairPass: settings.EnableRepairPass,
+
+            SemanticRepairMode: settings.SemanticRepairMode,
+
+            KeepSkyrimTagsRaw: settings.KeepSkyrimTagsRaw,
+
+            EnableDialogueContextWindow: settings.EnableDialogueContextWindow,
+
+            EnableSessionTermMemory: settings.EnableSessionTermMemory,
+
+            UseRecStyleHints: settings.UseRecStyleHints,
+
+            EnableTemplateFixer: settings.EnableTemplateFixer,
+
+            EnableProjectContext: settings.EnableProjectContext,
+
+            EnableAdaptiveOutputBudget: settings.EnableAdaptiveOutputBudget,
+
+            EnableBookContext: settings.EnableBookContext,
+
+            MaxRetryGenerations: settings.MaxRetryGenerations,
+
+            MaxTotalGenerations: settings.MaxTotalGenerations,
+
+            PluginSourceLanguage: settings.PluginSourceLanguage,
+
+            PluginTargetLanguage: settings.PluginTargetLanguage,
+
+            PluginSourceEncoding: settings.PluginSourceEncoding,
+
+            PluginMetadataEncoding: settings.PluginMetadataEncoding,
+
+            PluginTargetEncoding: settings.PluginTargetEncoding,
+
             PluginStringsDirectory: settings.PluginStringsDirectory
         );
 

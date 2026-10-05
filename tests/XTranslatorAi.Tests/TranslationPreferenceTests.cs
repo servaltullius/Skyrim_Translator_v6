@@ -133,6 +133,34 @@ public sealed class TranslationPreferenceTests
             Assert.Equal(123, copy.MaxTotalGenerations);
         });
 
+    // Started while settings.json was locked, the window holds defaults and no keys. Once the lock cleared, a changed
+    // preference wrote every default over the file and saving a key kept only that key; the status still said saved.
+    [Fact]
+    public Task StartedWhileSettingsWereUnreadable_DoesNotWriteItsDefaultsOverThem()
+        => RunOnSta(() =>
+        {
+            using var fixture = new SettingsFixture();
+            fixture.Store.Save(new AppSettings(BatchSize: 30, ApiKeys: new[] { new SavedApiKey("A", "key-a"), new SavedApiKey("B", "key-b") }));
+
+            ViewModelFixture ui;
+            using (new FileStream(fixture.Path, FileMode.Open, FileAccess.Read, FileShare.None))
+            {
+                ui = new ViewModelFixture(fixture);
+            }
+
+            using (ui)
+            {
+                ui.ViewModel.BatchSize = 7;
+                ui.ViewModel.ApiKey = "key-c";
+                ui.ViewModel.SaveApiKeyCommand.Execute(null);
+
+                Assert.DoesNotContain("저장했습니다", ui.ViewModel.StatusMessage);
+                var stored = new AppSettingsStore(fixture.Path).Load();
+                Assert.Equal(30, stored.BatchSize);
+                Assert.Equal(new[] { "key-a", "key-b" }, stored.ApiKeys!.Select(k => k.ApiKey).ToArray());
+            }
+        });
+
     [Fact]
     public Task UnsupportedCandidateModel_ShowsOneWithoutErasingSavedPreference()
         => RunOnSta(() =>

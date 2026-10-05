@@ -53,9 +53,9 @@ public partial class MainViewModel
         }
 
         SelectedSavedApiKey = existing;
-        PersistSavedApiKeys();
+        var saved = PersistSavedApiKeys();
         SavedApiKeyName = "";
-        StatusMessage = "API 키를 목록에 저장했습니다.";
+        StatusMessage = saved ? "API 키를 목록에 저장했습니다." : KeysNotSavedMessage;
     }
 
     [RelayCommand]
@@ -95,7 +95,12 @@ public partial class MainViewModel
             ApiKey = "";
         }
 
-        PersistSavedApiKeys();
+        if (!PersistSavedApiKeys())
+        {
+            StatusMessage = KeysNotSavedMessage;
+            return;
+        }
+
         StatusMessage = deletedCurrentKey
             ? "저장된 API 키를 목록과 현재 키 칸에서 삭제했습니다."
             : "저장된 API 키를 목록에서 삭제했습니다.";
