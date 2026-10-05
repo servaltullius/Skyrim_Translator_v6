@@ -84,10 +84,28 @@ public sealed class TranslationServiceLongTextChunkTests
         var source = BuildBook("\n\n");
         await using var fixture = await TranslationRunFixture.CreateAsync((source, "BOOK:DESC"));
         var failing = Marker(5);
-        fixture.Client.BeforeGenerate = (_, request, _) =>
-            failure == "http-error" && ChunkOf(request).Contains(failing, StringComparison.Ordinal)
-                ? Task.FromException(new GeminiHttpException("generateContent", 500, "fixture", null, "fixture"))
-                : Task.CompletedTask;
+        // The failing chunk waits until the first one was sent: in parallel it could fail first under load, and the
+        // run then rightly stopped before sending the first chunk.
+        var firstSent = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        fixture.Client.BeforeGenerate = async (_, request, _) =>
+        {
+            var chunk = ChunkOf(request);
+            if (chunk.Contains(Marker(1), StringComparison.Ordinal))
+            {
+                firstSent.TrySetResult();
+            }
+
+            if (!chunk.Contains(failing, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            await Task.WhenAny(firstSent.Task, Task.Delay(TimeSpan.FromSeconds(10)));
+            if (failure == "http-error")
+            {
+                throw new GeminiHttpException("generateContent", 500, "fixture", null, "fixture");
+            }
+        };
         fixture.Client.ResponseOverride = (_, request) =>
         {
             var chunk = ChunkOf(request);
