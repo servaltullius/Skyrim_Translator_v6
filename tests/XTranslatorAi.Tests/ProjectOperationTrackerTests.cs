@@ -2,10 +2,17 @@ using XTranslatorAi.App.Services;
 
 namespace XTranslatorAi.Tests;
 
+/// <summary>
+/// The bodies run on the thread pool: under xUnit's synchronization context every continuation of the tools waits
+/// for one of its few worker slots, which other test classes hold while they run. On a CI runner the canceled tools
+/// once did not get a slot within 10 seconds (release 1.11, passed on the rerun).
+/// </summary>
 public class ProjectOperationTrackerTests
 {
+    private static readonly TimeSpan Patience = TimeSpan.FromSeconds(30);
+
     [Fact]
-    public async Task Suspend_CancelsEveryConcurrentToolAndWaitsForCleanup()
+    public Task Suspend_CancelsEveryConcurrentToolAndWaitsForCleanup() => Task.Run(async () =>
     {
         var tracker = new ProjectOperationTracker();
         var canceled = new[] { Signal(), Signal(), Signal() };
@@ -17,21 +24,21 @@ public class ProjectOperationTrackerTests
         })).ToArray();
 
         var stopping = tracker.SuspendAndStopAsync();
-        await Task.WhenAll(canceled.Select(signal => signal.Task)).WaitAsync(TimeSpan.FromSeconds(10));
+        await Task.WhenAll(canceled.Select(signal => signal.Task)).WaitAsync(Patience);
         Assert.False(stopping.IsCompleted);
         var startedWhileSuspended = false;
         await tracker.RunAsync(_ => { startedWhileSuspended = true; return Task.CompletedTask; });
         Assert.False(startedWhileSuspended);
         cleanup.SetResult();
-        await stopping;
+        await stopping.WaitAsync(Patience);
         foreach (var task in tasks) await Assert.ThrowsAnyAsync<OperationCanceledException>(() => task);
         Assert.False(tracker.IsRunning);
         tracker.Resume();
         await tracker.RunAsync(token => { Assert.False(token.IsCancellationRequested); return Task.CompletedTask; });
-    }
+    });
 
     [Fact]
-    public async Task Cancellation_PreventsSubsequentCompareSlotsFromStarting()
+    public Task Cancellation_PreventsSubsequentCompareSlotsFromStarting() => Task.Run(async () =>
     {
         var tracker = new ProjectOperationTracker();
         var entered = Signal();
@@ -46,11 +53,11 @@ public class ProjectOperationTrackerTests
                 await Task.Delay(Timeout.Infinite, token);
             }
         });
-        await entered.Task;
-        await tracker.SuspendAndStopAsync();
+        await entered.Task.WaitAsync(Patience);
+        await tracker.SuspendAndStopAsync().WaitAsync(Patience);
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => work);
         Assert.Equal(1, slotsStarted);
-    }
+    });
 
     private static TaskCompletionSource Signal() => new(TaskCreationOptions.RunContinuationsAsynchronously);
 }
