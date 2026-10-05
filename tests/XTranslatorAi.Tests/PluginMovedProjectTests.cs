@@ -99,6 +99,32 @@ public sealed class PluginMovedProjectTests : IAsyncLifetime
         }
     }
 
+    // The Strings folder and the metadata encoding are part of the project key as well: setting a Strings folder for
+    // Skyrim.esm, or following E452's advice to change the metadata encoding, opened every other plugin empty.
+    [Theory]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    public async Task ReopeningWithOtherReadSettings_ContinuesTheProject(bool stringsFolder, bool metadataEncoding)
+    {
+        var plugin = await TranslateOnlyRowAsync(WritePlugin("a"));
+        var strings = Path.Combine(_root, "strings");
+        Directory.CreateDirectory(strings);
+        var options = new PluginReadOptions() with
+        {
+            StringsDirectory = stringsFolder ? strings : null,
+            MetadataEncoding = metadataEncoding ? "ks_c_5601-1987" : new PluginReadOptions().MetadataEncoding,
+        };
+
+        var reopened = await _workspace.LoadFromPluginAsync(new ProjectWorkspaceService.LoadFromPluginRequest(plugin, options,
+            "korean", "utf-8", "gemini-3.8-flash", "", false), CancellationToken.None);
+        await using (reopened.Db)
+        {
+            Assert.Null(reopened.MovedFromPath);
+            Assert.True(reopened.ContinuedAfterReadSettingsChange);
+            Assert.Equal(("철검", StringEntryStatus.Edited), (Assert.Single(reopened.Entries).DestText, Assert.Single(reopened.Entries).Status));
+        }
+    }
+
     [Fact]
     public async Task CopiedPlugin_WithTheSameContent_ContinuesTheProject()
     {

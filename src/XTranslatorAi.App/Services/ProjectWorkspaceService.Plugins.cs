@@ -20,11 +20,12 @@ public sealed partial class ProjectWorkspaceService
 
     /// <param name="MovedFromPath">The plugin's earlier location when its project was continued after a move.</param>
     /// <param name="InheritedGlossary">Glossary entries a new project took from other projects of the same mod, and from which plugins.</param>
+    /// <param name="ContinuedAfterReadSettingsChange">The plugin's project was continued after the Strings folder or metadata encoding changed.</param>
     public sealed record LoadFromPluginResult(ProjectDb Db, PluginDocument Document,
         string SourceLanguage, string TargetLanguage, string TargetEncoding,
         IReadOnlyList<StringEntry> Entries, string ProjectContext, string? MovedFromPath = null,
         (int Count, IReadOnlyList<string> FromPlugins) InheritedGlossary = default, int RetiredTranslations = 0,
-        string? ContinuedFromTargetEncoding = null);
+        string? ContinuedFromTargetEncoding = null, bool ContinuedAfterReadSettingsChange = false);
 
     public Task<LoadFromPluginResult> LoadFromPluginAsync(LoadFromPluginRequest request, CancellationToken cancellationToken)
         // SQLite's async methods execute synchronously. Keep the complete parse/import operation
@@ -41,8 +42,9 @@ public sealed partial class ProjectWorkspaceService
         var isNewProject = !File.Exists(dbPath);
         var continued = isNewProject ? TryContinueMovedProject(request, document, dbPath) : null;
         // The same plugin opened with another output encoding continues that project rather than being "moved".
-        var movedFrom = continued is { EarlierTargetEncoding: null } ? continued.Value.InputPath : null;
+        var movedFrom = continued is { EarlierTargetEncoding: null, SamePlugin: false } ? continued.Value.InputPath : null;
         var continuedFromEncoding = continued?.EarlierTargetEncoding;
+        var continuedAfterSettings = continued is { SamePlugin: true, EarlierTargetEncoding: null };
         var db = await ProjectDb.OpenOrCreateAsync(dbPath, cancellationToken);
         try
         {
@@ -63,7 +65,7 @@ public sealed partial class ProjectWorkspaceService
             var retired = db.LastPluginImportRetiredCount;
             return new LoadFromPluginResult(db, document, request.Options.SourceLanguage,
                 request.TargetLanguage, request.TargetEncoding, entries, context?.ContextText ?? "", movedFrom, inherited, retired,
-                continuedFromEncoding);
+                continuedFromEncoding, continuedAfterSettings);
         }
         catch
         {
@@ -103,9 +105,10 @@ public sealed partial class ProjectWorkspaceService
     /// that follows restores its translations by field key. Returns the earlier plugin path, or null.
     /// The output encoding is part of the project key too, so following E457's advice (choose UTF-8 and reopen)
     /// opened an empty project; a project of the same plugin with another output encoding is continued the same
-    /// way, and <c>EarlierTargetEncoding</c> names its encoding.
+    /// way, and <c>EarlierTargetEncoding</c> names its encoding. The Strings folder and the metadata encoding are in the
+    /// key too, so a project of the same plugin read with other such settings is continued as well (<c>SamePlugin</c>).
     /// </summary>
-    private static (string InputPath, string? EarlierTargetEncoding)? TryContinueMovedProject(LoadFromPluginRequest request, PluginDocument document, string newDbPath)
+    private static (string InputPath, string? EarlierTargetEncoding, bool SamePlugin)? TryContinueMovedProject(LoadFromPluginRequest request, PluginDocument document, string newDbPath)
     {
         var directory = Path.GetDirectoryName(newDbPath);
         var stem = Path.GetFileNameWithoutExtension(newDbPath);
@@ -115,7 +118,7 @@ public sealed partial class ProjectWorkspaceService
             return null;
         }
 
-        var candidates = new List<(string DbPath, string InputPath, bool SameFile, DateTime Written, string? Encoding)>();
+        var candidates = new List<(string DbPath, string InputPath, bool SameFile, DateTime Written, string? Encoding, bool SamePlugin)>();
         foreach (var file in Directory.EnumerateFiles(directory, stem[..(hashDot + 1)] + "*.sqlite"))
         {
             var hash = Path.GetFileNameWithoutExtension(file)[(hashDot + 1)..];
@@ -133,9 +136,9 @@ public sealed partial class ProjectWorkspaceService
                 && string.Equals(info.Options.SourceLanguage, request.Options.SourceLanguage, StringComparison.OrdinalIgnoreCase)
                 && string.Equals(info.Options.SourceEncoding, document.Info.Options.SourceEncoding, StringComparison.OrdinalIgnoreCase)
                 && string.Equals(earlier.TargetLanguage, request.TargetLanguage, StringComparison.OrdinalIgnoreCase);
-            if (samePath && otherEncoding && sameOther)
+            if (samePath && sameOther)
             {
-                candidates.Add((file, info.InputPath, true, File.GetLastWriteTimeUtc(file), earlier.TargetEncoding));
+                candidates.Add((file, info.InputPath, true, File.GetLastWriteTimeUtc(file), otherEncoding ? earlier.TargetEncoding : null, true));
                 continue;
             }
 
@@ -149,12 +152,12 @@ public sealed partial class ProjectWorkspaceService
             var sameFile = string.Equals(info.Sha256, document.Info.Sha256, StringComparison.OrdinalIgnoreCase);
             if (sameSettings && (sameFile || !File.Exists(info.InputPath)))
             {
-                candidates.Add((file, info.InputPath, sameFile, File.GetLastWriteTimeUtc(file), null));
+                candidates.Add((file, info.InputPath, sameFile, File.GetLastWriteTimeUtc(file), null, false));
             }
         }
 
-        // The same plugin under another output encoding first, then a moved copy of the same file, newest first.
-        var chosen = candidates.OrderByDescending(c => c.Encoding != null).ThenByDescending(c => c.SameFile)
+        // The same plugin under other settings first, then a moved copy of the same file, newest first.
+        var chosen = candidates.OrderByDescending(c => c.SamePlugin).ThenByDescending(c => c.SameFile)
             .ThenByDescending(c => c.Written).FirstOrDefault();
         if (chosen.DbPath == null)
         {
@@ -170,7 +173,7 @@ public sealed partial class ProjectWorkspaceService
             source.BackupDatabase(target);
         }
 
-        return (chosen.InputPath, chosen.Encoding);
+        return (chosen.InputPath, chosen.Encoding, chosen.SamePlugin);
     }
 
     /// <summary>
