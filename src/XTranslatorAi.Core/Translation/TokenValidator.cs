@@ -308,10 +308,44 @@ internal static class TokenValidator
             Add(values, NormalizePercentValue(m.Groups["n"].Value), 1);
         }
 
+        foreach (Match m in SpelledPercentRegex.Matches(text))
+        {
+            Add(values, SpelledNumber(m.Groups["n"].Value).ToString(System.Globalization.CultureInfo.InvariantCulture), 1);
+        }
+
         return values;
 
         static void Add(Dictionary<string, int> counts, string key, int n)
             => counts[key] = counts.TryGetValue(key, out var existing) ? existing + n : n;
+    }
+
+    private static readonly string[] Units =
+    {
+        "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve",
+        "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen",
+    };
+
+    private static readonly string[] Tens = { "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety" };
+
+    // Feris spells the number too: "Seventy percent now." is "이제 70%야." in Korean.
+    private static readonly Regex SpelledPercentRegex = new(
+        pattern: @"(?<![A-Za-z\-])(?<n>(?:a|one)[\t -]+hundred|(?:" + string.Join("|", Tens) + @")(?:[\t -]+(?:"
+                 + string.Join("|", Units.Skip(1).Take(9)) + @"))?|" + string.Join("|", Units.Reverse()) + @")[\t ]*(?:percent|per[\t ]?cent)(?![A-Za-z])",
+        options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
+    );
+
+    private static int SpelledNumber(string words)
+    {
+        var parts = words.ToLowerInvariant().Split(new[] { ' ', '\t', '-' }, StringSplitOptions.RemoveEmptyEntries);
+        if (parts[^1] == "hundred")
+        {
+            return 100;
+        }
+
+        var tens = Array.IndexOf(Tens, parts[0]);
+        return tens >= 0
+            ? (tens + 2) * 10 + (parts.Length > 1 ? Array.IndexOf(Units, parts[1]) : 0)
+            : Array.IndexOf(Units, parts[0]);
     }
 
     // "+10%" in a stat line is usually written "10% 증가" in Korean; the sign moves into the verb.
