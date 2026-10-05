@@ -104,6 +104,8 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
             HasSavedApiKey = true;
         }
         LoadSavedApiKeys(settings);
+        UseCustomPrompt = settings.UseCustomPrompt;
+        CustomPromptText = settings.CustomPromptText ?? "";
         EnableApiKeyFailover = settings.EnableApiKeyFailover;
         EnableBookFullModelOverride = settings.EnableBookFullModelOverride;
         EnableBookBodyModelOverride = settings.EnableBookBodyModelOverride;
@@ -417,7 +419,10 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
             or nameof(PluginSourceEncoding)
             or nameof(PluginMetadataEncoding)
             or nameof(PluginTargetEncoding)
-            or nameof(PluginStringsDirectory))
+            or nameof(PluginStringsDirectory)
+            // Restored on the next start; it was never saved, so a restart translated without it.
+            or nameof(UseCustomPrompt)
+            or nameof(CustomPromptText))
         {
             SaveTranslationPreferences();
         }
@@ -468,6 +473,8 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
                     PluginMetadataEncoding = PluginMetadataEncoding,
                     PluginTargetEncoding = PluginTargetEncoding,
                     PluginStringsDirectory = PluginStringsDirectory,
+                    UseCustomPrompt = UseCustomPrompt,
+                    CustomPromptText = CustomPromptText,
                 }
             );
         }

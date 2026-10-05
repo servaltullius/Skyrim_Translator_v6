@@ -133,6 +133,23 @@ public sealed class TranslationPreferenceTests
             Assert.Equal(123, copy.MaxTotalGenerations);
         });
 
+    // The custom prompt was never saved: after a restart the box was empty and the next project was translated without it.
+    [Fact]
+    public Task CustomPrompt_IsRestoredAfterARestart()
+        => RunOnSta(() =>
+        {
+            using var fixture = new SettingsFixture();
+            using (var ui = new ViewModelFixture(fixture))
+            {
+                ui.ViewModel.UseCustomPrompt = true;
+                ui.ViewModel.CustomPromptText = "페리스는 반말을 쓴다.";
+            }
+
+            using var restored = new ViewModelFixture(fixture);
+            Assert.True(restored.ViewModel.UseCustomPrompt);
+            Assert.Equal("페리스는 반말을 쓴다.", restored.ViewModel.CustomPromptText);
+        });
+
     // Started while settings.json was locked, the window holds defaults and no keys. Once the lock cleared, a changed
     // preference wrote every default over the file and saving a key kept only that key; the status still said saved.
     [Fact]

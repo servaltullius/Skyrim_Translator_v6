@@ -271,7 +271,9 @@ public sealed class AppSettingsStore
             PluginSourceEncoding: persisted.PluginSourceEncoding,
             PluginMetadataEncoding: persisted.PluginMetadataEncoding,
             PluginTargetEncoding: persisted.PluginTargetEncoding,
-            PluginStringsDirectory: persisted.PluginStringsDirectory
+            PluginStringsDirectory: persisted.PluginStringsDirectory,
+            UseCustomPrompt: persisted.UseCustomPrompt,
+            CustomPromptText: persisted.CustomPromptText
         );
     }
 
@@ -344,7 +346,9 @@ public sealed class AppSettingsStore
 
             PluginTargetEncoding: settings.PluginTargetEncoding,
 
-            PluginStringsDirectory: settings.PluginStringsDirectory
+            PluginStringsDirectory: settings.PluginStringsDirectory,
+            UseCustomPrompt: settings.UseCustomPrompt,
+            CustomPromptText: string.IsNullOrWhiteSpace(settings.CustomPromptText) ? null : settings.CustomPromptText
         );
 
         return _canUseDpapi
@@ -596,7 +600,9 @@ public sealed class AppSettingsStore
         [property: JsonPropertyName("pluginSourceEncoding")] string PluginSourceEncoding = "utf-8",
         [property: JsonPropertyName("pluginMetadataEncoding")] string PluginMetadataEncoding = "windows-1252",
         [property: JsonPropertyName("pluginTargetEncoding")] string PluginTargetEncoding = "utf-8",
-        [property: JsonPropertyName("pluginStringsDirectory")] string PluginStringsDirectory = ""
+        [property: JsonPropertyName("pluginStringsDirectory")] string PluginStringsDirectory = "",
+        [property: JsonPropertyName("useCustomPrompt")] bool UseCustomPrompt = false,
+        [property: JsonPropertyName("customPromptText")] string? CustomPromptText = null
     );
 
     private sealed record PersistedSavedApiKey(
@@ -640,7 +646,9 @@ public sealed record AppSettings(
     [property: JsonPropertyName("pluginSourceEncoding")] string PluginSourceEncoding = "utf-8",
     [property: JsonPropertyName("pluginMetadataEncoding")] string PluginMetadataEncoding = "windows-1252",
     [property: JsonPropertyName("pluginTargetEncoding")] string PluginTargetEncoding = "utf-8",
-    [property: JsonPropertyName("pluginStringsDirectory")] string PluginStringsDirectory = ""
+    [property: JsonPropertyName("pluginStringsDirectory")] string PluginStringsDirectory = "",
+    [property: JsonPropertyName("useCustomPrompt")] bool UseCustomPrompt = false,
+    [property: JsonPropertyName("customPromptText")] string? CustomPromptText = null
 );
 
 public sealed record SavedApiKey(
