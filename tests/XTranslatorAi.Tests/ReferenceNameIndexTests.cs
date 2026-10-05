@@ -154,6 +154,34 @@ public class ReferenceNameIndexTests
     public void OfficialNameContainingAGlossaryTerm_WinsOverTheShorterTerm(string source, string expected)
         => Assert.Equal(expected, Resolve(DibellaNames.ApplyWithGlossary(source, DibellaGlossary)));
 
+    // MEI wrote Ingun as 인군 36 times: the memory names her only as "Ingun Black-Briar" (잉건 블랙-브라이어) and
+    // "Ingun's Alchemy Chest", never alone, so the index had no "Ingun". A word of a full name becomes a name of its
+    // own when the official translation spells it by sound; word order does not matter (발그루프 영주). The memory
+    // must spell it that way in most entries that use it, and in at least two.
+    private static readonly ReferenceNameIndex FullNames = ReferenceNameIndex.Build(new[]
+    {
+        ("Ingun Black-Briar", "잉건 블랙-브라이어"), ("Bring the deathbell to Ingun Black-Briar", "데스벨을 잉건에게 가져다 주기"),
+        // 리트러쉬 is one sound off Letrush, accepted because the memory also writes "to Letrush" in a sentence.
+        ("Louis Letrush", "루이 리트러쉬"), ("Talk to Letrush about the horse", "리트러쉬와 말에 대해 대화하기"),
+        ("Jarl Balgruuf", "발그루프 영주"), ("Speak to Jarl Balgruuf", "발그루프 영주와 대화하기"),
+        ("Stone of Barenziah", "바렌자이아의 보석"), ("Old Orc", "늙은 오크"), ("The old orc is here.", "늙은 오크가 여기 있다."),
+        ("Talk to the jarl.", "영주와 대화하기"),
+        // Sound alone would match Charming with the start of 지팡이; the spelling must be a whole word.
+        ("Charming Staff", "매혹의 지팡이"), ("Use the Charming Staff", "매혹의 지팡이 사용"),
+    });
+
+    [Fact]
+    public void WordsOfOfficialFullNames_AreNamesOfTheirOwn_WhenSpelledBySound()
+    {
+        var found = FullNames.FindIn("Ingun told Letrush that Balgruuf kept the Stone of Barenziah.", max: 16).ToDictionary(n => n.Source, n => n.Target);
+
+        Assert.Equal("잉건", found["Ingun"]);
+        Assert.Equal("리트러쉬", found["Letrush"]);
+        Assert.Equal("발그루프", found["Balgruuf"]);
+        Assert.Equal("바렌자이아의 보석", found["Stone of Barenziah"]);
+        Assert.Empty(FullNames.FindIn("Jarl, the Old one, and Stone. Charming.", max: 16));
+    }
+
     [Fact]
     public async Task NamesAreWrittenAsTheirOfficialTranslation_UnlessTheGlossaryForcesThem()
     {

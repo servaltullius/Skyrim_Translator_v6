@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using XTranslatorAi.Core.Text;
+using XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 
 namespace XTranslatorAi.Core.Translation;
 
@@ -96,6 +97,18 @@ public sealed partial class ReferenceNameIndex
             }
 
             list.Add((group.Key, targets[0].Target));
+            count++;
+        }
+
+        foreach (var (word, spelling) in WordsOfFullNames(byFirstWord, lowercaseUse, pairs))
+        {
+            if (!byFirstWord.TryGetValue(word, out var list))
+            {
+                list = new List<(string Source, string Target)>();
+                byFirstWord[word] = list;
+            }
+
+            list.Add((word, spelling));
             count++;
         }
 
@@ -231,6 +244,111 @@ public sealed partial class ReferenceNameIndex
         }
 
         return found;
+    }
+
+    /// <summary>
+    /// The words of indexed full names that the official translation spells by sound: "Ingun Black-Briar"
+    /// (잉건 블랙-브라이어) gives Ingun → 잉건, "Jarl Balgruuf" (발그루프 영주) gives Balgruuf → 발그루프 but not
+    /// Jarl. The memory names many people only in full, so their first names were left to the model (MEI: 인군 36
+    /// times). A word with two spellings, an ordinary word, or a word the index already has is left out, and so is a
+    /// word the memory does not spell that way in most of its entries: sounds alone also matched Volkihar with
+    /// 발코니 and Grotto with 그레이워터, and capitalized ordinary words (Red, Divine, Companion) are translated
+    /// differently from entry to entry.
+    /// </summary>
+    private static IEnumerable<(string Word, string Spelling)> WordsOfFullNames(
+        Dictionary<string, List<(string Source, string Target)>> byFirstWord, HashSet<string> lowercaseUse,
+        IReadOnlyList<(string Source, string Target)> memory)
+    {
+        var known = byFirstWord.Values.SelectMany(list => list).Select(name => name.Source).ToHashSet(StringComparer.Ordinal);
+        var spellings = new Dictionary<string, HashSet<string>>(StringComparer.Ordinal);
+        foreach (var (source, target) in byFirstWord.Values.SelectMany(list => list))
+        {
+            var words = source.Split(' ');
+            if (words.Length < 2)
+            {
+                continue;
+            }
+
+            foreach (var word in words)
+            {
+                // Materials (Ebony, Glass) are names only inside item names; ForceMaterials handles them.
+                if (word.Length < 3 || !char.IsUpper(word[0]) || !word.All(char.IsAsciiLetter) || known.Contains(word)
+                    || Materials.Any(material => string.Equals(material.Word, word, StringComparison.Ordinal))
+                    || lowercaseUse.Contains(word.ToLowerInvariant()) || OrdinaryWords.Contains(word)
+                    || SpellingOf(word, target) is not { } spelling)
+                {
+                    continue;
+                }
+
+                if (!spellings.TryGetValue(word, out var set))
+                {
+                    set = new HashSet<string>(StringComparer.Ordinal);
+                    spellings[word] = set;
+                }
+
+                set.Add(spelling);
+            }
+        }
+
+        var single = spellings.Where(pair => pair.Value.Count == 1).ToDictionary(pair => pair.Key, pair => pair.Value.Single(), StringComparer.Ordinal);
+        if (single.Count == 0)
+        {
+            return Array.Empty<(string, string)>();
+        }
+
+        var uses = single.Keys.ToDictionary(word => word, _ => (Total: 0, Spelled: 0), StringComparer.Ordinal);
+        foreach (var (source, target) in memory)
+        {
+            foreach (var word in WordRegex.Matches(source).Select(m => FirstWordOf(m.Value)).Distinct(StringComparer.Ordinal))
+            {
+                if (uses.TryGetValue(word, out var use))
+                {
+                    uses[word] = (use.Total + 1, use.Spelled + (target.Contains(single[word], StringComparison.Ordinal) ? 1 : 0));
+                }
+            }
+        }
+
+        // A spelling one sound off (메이븐 for Maven) is accepted only for a word the memory also writes after a
+        // lowercase word ("to Maven"); item words like Charming (→ 지팡) and Sugar (→ 슈거) never are.
+        var afterLowercase = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var (source, _) in memory)
+        {
+            var words = WordRegex.Matches(source).ToArray();
+            for (var i = 1; i < words.Length; i++)
+            {
+                if (char.IsUpper(words[i].Value[0]) && char.IsLower(words[i - 1].Value[0])
+                    && source[(words[i - 1].Index + words[i - 1].Length)..words[i].Index].Trim().Length == 0)
+                {
+                    afterLowercase.Add(FirstWordOf(words[i].Value));
+                }
+            }
+        }
+
+        return single.Where(pair => uses[pair.Key] is { Total: >= 2 } use && use.Spelled * 5 >= use.Total * 4)
+            .Where(pair => SoundsExactly(pair.Key, pair.Value) || afterLowercase.Contains(pair.Key))
+            .Select(pair => (pair.Key, pair.Value));
+    }
+
+    private static bool SoundsExactly(string word, string spelling)
+        => GlossaryLoanwordRule.KoreanSound(spelling) is { } sound
+           && (sound == GlossaryLoanwordRule.EnglishSound(word)
+               || sound == GlossaryLoanwordRule.EnglishSound(Regex.Replace(word, "ng(?=[aeiouy])", "ngg", RegexOptions.CultureInvariant)));
+
+    // "ng" before a vowel is two sounds in a name: Ingun is 잉건 (ing-geon), not one nasal. A possessive 의 is not
+    // part of the name (아카토쉬의 신전).
+    private static string? SpellingOf(string word, string target)
+    {
+        var spelling = RunNameMemory.FindSpelling(word, target)
+                       ?? RunNameMemory.FindSpelling(Regex.Replace(word, "ng(?=[aeiouy])", "ngg", RegexOptions.CultureInvariant), target);
+        if (spelling is { Length: > 2 } && spelling.EndsWith('의'))
+        {
+            spelling = spelling[..^1];
+        }
+
+        // A whole word of the translation, not the start of one: Charming matched 지팡 in 지팡이.
+        return spelling != null && Regex.Matches(target, "[가-힣]+").Any(m => m.Value == spelling || m.Value == spelling + "의")
+            ? spelling
+            : null;
     }
 
     private static bool IsNameEntry((string Source, string Target) pair)
