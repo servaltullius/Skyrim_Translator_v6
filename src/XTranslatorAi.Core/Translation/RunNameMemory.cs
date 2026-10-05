@@ -185,7 +185,8 @@ internal sealed class RunNameMemory
         foreach (var stem in HangulWordRegex.Matches(dest).Select(m => m.Value).SelectMany(Stems).Distinct(StringComparer.Ordinal))
         {
             var stemSound = stem.Length >= 2 ? GlossaryLoanwordRule.KoreanSound(stem) : null;
-            if (stemSound == null || stemSound[0] != sound[0] || GlossaryLoanwordRule.IsWrittenLikeNativeWord(stem))
+            // 으으 has no sound at all (no consonant, and ㅡ is not counted).
+            if (stemSound is not { Length: > 0 } || stemSound[0] != sound[0] || GlossaryLoanwordRule.IsWrittenLikeNativeWord(stem))
             {
                 continue;
             }

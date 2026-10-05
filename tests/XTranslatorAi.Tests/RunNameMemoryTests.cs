@@ -52,6 +52,9 @@ public class RunNameMemoryTests
     [InlineData("Byleth", "미안해, 벨레스. 괜히 물어봤네.", "벨레스")]
     [InlineData("Byleth", "미안해, 괜히 물어봤네.", null)]
     [InlineData("Swims", "그림자 속을 헤엄치는 자.", null)]
+    // A word with no consonant sound at all (으으, 아아) failed the whole row with IndexOutOfRangeException (Feris AE).
+    [InlineData("Drelorea", "으으, 추워... 드렐로레아는 어디 갔지?", "드렐로레아")]
+    [InlineData("Byleth", "아아, 미안해.", null)]
     public void FindsTheKoreanWordThatSoundsLikeTheName(string name, string dest, string? expected)
         => Assert.Equal(expected, RunNameMemory.FindSpelling(name, dest));
 
