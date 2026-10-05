@@ -151,6 +151,31 @@ public sealed class PluginMovedProjectTests : IAsyncLifetime
         }
     }
 
+    // A canceled or failed first open left an empty DB at the new path, which every later open took as the project:
+    // the moved plugin was never continued again.
+    [Fact]
+    public async Task FailedFirstOpenOfAMovedPlugin_LeavesNoProject_AndTheNextOpenContinuesIt()
+    {
+        var before = await TranslateOnlyRowAsync(WritePlugin("a"));
+        var after = Path.Combine(_root, "b", "Test.esp");
+        Directory.CreateDirectory(Path.GetDirectoryName(after)!);
+        File.Move(before, after);
+
+        var projects = Path.Combine(_root, "projects");
+        var earlier = Assert.Single(Directory.EnumerateFiles(projects, "Test.*.sqlite", SearchOption.AllDirectories));
+        _workspace.BeforePluginImportForTests = _ => throw new OperationCanceledException();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => OpenAsync(after));
+        _workspace.BeforePluginImportForTests = null;
+        Assert.All(Directory.EnumerateFiles(projects, "Test.*", SearchOption.AllDirectories), f => Assert.StartsWith(earlier, f));
+
+        var reopened = await OpenAsync(after);
+        await using (reopened.Db)
+        {
+            Assert.Equal(before, reopened.MovedFromPath);
+            Assert.Equal("철검", Assert.Single(reopened.Entries).DestText);
+        }
+    }
+
     [Fact]
     public async Task CopiedPlugin_WithTheSameContent_ContinuesTheProject()
     {

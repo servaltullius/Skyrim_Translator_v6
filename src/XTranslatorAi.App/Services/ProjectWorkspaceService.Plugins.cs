@@ -27,6 +27,9 @@ public sealed partial class ProjectWorkspaceService
         (int Count, IReadOnlyList<string> FromPlugins) InheritedGlossary = default, int RetiredTranslations = 0,
         string? ContinuedFromTargetEncoding = null, bool ContinuedAfterReadSettingsChange = false);
 
+    /// <summary>Runs after a project DB is opened and before the import; lets tests fail an open there.</summary>
+    internal Func<CancellationToken, Task>? BeforePluginImportForTests { get; set; }
+
     public Task<LoadFromPluginResult> LoadFromPluginAsync(LoadFromPluginRequest request, CancellationToken cancellationToken)
         // SQLite's async methods execute synchronously. Keep the complete parse/import operation
         // off the caller's UI context, including work before the first incomplete I/O await.
@@ -40,20 +43,26 @@ public sealed partial class ProjectWorkspaceService
         var document = await PluginReader.ReadAsync(request.InputPath, request.Options, cancellationToken);
         var dbPath = ResolvePluginProjectDbPath(request, document);
         var isNewProject = !File.Exists(dbPath);
-        var continued = isNewProject ? TryContinueMovedProject(request, document, dbPath) : null;
-        // The same plugin opened with another output encoding continues that project rather than being "moved".
-        var movedFrom = continued is { EarlierTargetEncoding: null, SamePlugin: false } ? continued.Value.InputPath : null;
-        var continuedFromEncoding = continued?.EarlierTargetEncoding;
-        var continuedAfterSettings = continued is { SamePlugin: true, EarlierTargetEncoding: null };
-        var db = await ProjectDb.OpenOrCreateAsync(dbPath, cancellationToken);
+        ProjectDb? db = null;
         try
         {
+            var continued = isNewProject ? TryContinueMovedProject(request, document, dbPath) : null;
+            // The same plugin opened with another output encoding continues that project rather than being "moved".
+            var movedFrom = continued is { EarlierTargetEncoding: null, SamePlugin: false } ? continued.Value.InputPath : null;
+            var continuedFromEncoding = continued?.EarlierTargetEncoding;
+            var continuedAfterSettings = continued is { SamePlugin: true, EarlierTargetEncoding: null };
+            db = await ProjectDb.OpenOrCreateAsync(dbPath, cancellationToken);
             var now = DateTimeOffset.UtcNow;
             var project = new ProjectInfo(1, "", Path.GetFileName(document.Info.InputPath), BethesdaFranchise.ElderScrolls,
                 request.Options.SourceLanguage, request.TargetLanguage, "", false, "", request.SelectedModel,
                 EmbeddedAssets.LoadMetaPrompt(BethesdaFranchise.ElderScrolls), request.CustomPromptText,
                 request.UseCustomPrompt, now, now);
             await OpenGlobalDbAsync(BethesdaFranchise.ElderScrolls, cancellationToken);
+            if (BeforePluginImportForTests != null)
+            {
+                await BeforePluginImportForTests(cancellationToken);
+            }
+
             var inherited = isNewProject && continued == null
                 ? await InheritModFamilyGlossaryAsync(db, request.InputPath, dbPath, cancellationToken)
                 : default;
@@ -69,8 +78,35 @@ public sealed partial class ProjectWorkspaceService
         }
         catch
         {
-            await db.DisposeAsync();
+            if (db != null)
+            {
+                await db.DisposeAsync();
+            }
+
+            // A project created by this open and never imported into is removed, so the next open is a first open
+            // again: a canceled or failed first open used to leave an empty DB that was then opened as the project,
+            // and a moved plugin was no longer continued nor the mod's glossary inherited.
+            if (isNewProject)
+            {
+                DeleteUnimportedProject(dbPath);
+            }
+
             throw;
+        }
+    }
+
+    private static void DeleteUnimportedProject(string dbPath)
+    {
+        SqliteConnection.ClearAllPools();
+        foreach (var path in new[] { dbPath, dbPath + "-wal", dbPath + "-shm", dbPath + "-journal" })
+        {
+            try
+            {
+                File.Delete(path);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+            }
         }
     }
 
@@ -174,13 +210,24 @@ public sealed partial class ProjectWorkspaceService
             return null;
         }
 
-        // The backup API also carries pages still in a -wal file, which a file copy would leave behind.
-        using (var source = new SqliteConnection(ConnectionString(chosen.DbPath, readOnly: true)))
-        using (var target = new SqliteConnection(ConnectionString(newDbPath, readOnly: false)))
+        // The backup API also carries pages still in a -wal file, which a file copy would leave behind. It writes a
+        // temporary file that is moved in once complete, so an interrupted copy never becomes the project.
+        var partial = newDbPath + ".partial";
+        try
         {
-            source.Open();
-            target.Open();
-            source.BackupDatabase(target);
+            using (var source = new SqliteConnection(ConnectionString(chosen.DbPath, readOnly: true)))
+            using (var target = new SqliteConnection(ConnectionString(partial, readOnly: false)))
+            {
+                source.Open();
+                target.Open();
+                source.BackupDatabase(target);
+            }
+
+            File.Move(partial, newDbPath);
+        }
+        finally
+        {
+            DeleteUnimportedProject(partial);
         }
 
         return (chosen.InputPath, chosen.Encoding, chosen.SamePlugin);
