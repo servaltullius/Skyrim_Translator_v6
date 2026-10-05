@@ -51,6 +51,30 @@ public static class PluginWriter
                 throw new InvalidDataException($"출력 인코딩으로 표현할 수 없는 문자가 있습니다: {field.Rec}/{field.FormId:X8} U+{(int)ch:X4}", ex);
             }
         }
+
+        // A changed encoding rewrites whole tables, so their strings no field uses are converted too. One that does
+        // not fit failed later with no StringID, and no row in the project can change it.
+        if (PluginBinary.GetEncoding(document.Info.Options.SourceEncoding).CodePage != encoding.CodePage)
+        {
+            foreach (var (kind, table) in document.Tables)
+            {
+                var used = document.Fields.Where(field => field.TableKind == kind).Select(field => field.StringId!.Value).ToHashSet();
+                foreach (var (id, text) in table.Strings)
+                {
+                    if (used.Contains(id)) continue;
+                    try
+                    {
+                        _ = PluginBinary.EncodeZString(text, encoding);
+                    }
+                    catch (EncoderFallbackException ex)
+                    {
+                        var ch = ex.CharUnknown != '\0' ? ex.CharUnknown : ex.CharUnknownHigh;
+                        throw new InvalidDataException(
+                            $"쓰이지 않는 문자열에 출력 인코딩으로 표현할 수 없는 문자가 있습니다: {kind.ToString().ToUpperInvariant()}/{id} U+{(int)ch:X4}", ex);
+                    }
+                }
+            }
+        }
         var inputHandles = new List<FileStream>();
         string? temporary = null;
         try

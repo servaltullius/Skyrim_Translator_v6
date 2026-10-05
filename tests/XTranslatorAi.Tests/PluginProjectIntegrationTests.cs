@@ -401,6 +401,17 @@ public sealed class PluginProjectIntegrationTests
 
     // E457 said only that some character somewhere could not be written in the output encoding.
     [Fact]
+    public void UnencodableUnusedString_NamesTheStringAndAsksForUtf8()
+    {
+        var error = PluginUserFacingErrorClassifier.Classify(
+            new InvalidDataException("쓰이지 않는 문자열에 출력 인코딩으로 표현할 수 없는 문자가 있습니다: STRINGS/9 U+D55C"));
+        Assert.Equal("E457", error!.Value.Code);
+        Assert.Contains("STRINGS StringID 9", error.Value.Message);
+        Assert.Contains("U+D55C", error.Value.Message);
+        Assert.Contains("UTF-8", error.Value.Message);
+    }
+
+    [Fact]
     public void UnencodableCharacter_NamesTheRowAndTheCharacter()
     {
         var error = PluginUserFacingErrorClassifier.Classify(

@@ -110,6 +110,22 @@ public sealed class PluginReadWriteTests
         Assert.True(File.Exists(Path.Combine(fixture.Output, "Strings", "Example_english.STRINGS")));
     }
 
+    // Converting a localized plugin's tables converts their unused strings too. One the output encoding cannot hold
+    // failed with only "some character could not be written", which no row in the project could fix.
+    [Fact]
+    public async Task LocalizedExport_NamesAnUnusedStringTheOutputEncodingCannotHold()
+    {
+        using var fixture = new Fixture(Header(localized: true).Concat(Group(Record("WEAP", 0x800, Sub("FULL", UInt(1))))).ToArray());
+        fixture.Table(PluginStringTableKind.Strings, new() { [1] = "Sword", [9] = "한글 이름" });
+        var document = await PluginReader.ReadAsync(fixture.Input, new(), default);
+
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() => PluginWriter.ExportAsync(document,
+            new Dictionary<string, string> { [document.Fields[0].Key] = "Sword" }, new(fixture.Output, "windows-1252"), default));
+
+        Assert.Equal("쓰이지 않는 문자열에 출력 인코딩으로 표현할 수 없는 문자가 있습니다: STRINGS/9 U+D55C", error.Message);
+        Assert.False(Directory.Exists(fixture.Output));
+    }
+
     [Fact]
     public async Task LocalizedPerk_TranslatesDisplayNameAndPreservesGraphVariableAndNumericParameters()
     {

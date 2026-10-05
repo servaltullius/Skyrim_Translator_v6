@@ -57,6 +57,9 @@ public static class PluginUserFacingErrorClassifier
             var unencodable = Match(message, $@"^출력 인코딩으로 표현할 수 없는 문자가 있습니다: (?<id>{Field}) (?<ch>U\+[0-9A-F]{{4}})$");
             if (unencodable.Success)
                 return Error("E457", $"{unencodable.Groups["id"].Value}에 현재 출력 인코딩으로 표현할 수 없는 문자({unencodable.Groups["ch"].Value})가 있습니다. Search에 form:{unencodable.Groups["id"].Value[^8..]}을 입력해 행을 찾아 고치거나, UTF-8 출력 인코딩을 선택해 다시 여세요. 기존 번역은 그대로 이어집니다.");
+            var unusedUnencodable = Match(message, @"^쓰이지 않는 문자열에 출력 인코딩으로 표현할 수 없는 문자가 있습니다: (?<table>STRINGS|DLSTRINGS|ILSTRINGS)/(?<id>[0-9]{1,10}) (?<ch>U\+[0-9A-F]{4})$");
+            if (unusedUnencodable.Success)
+                return Error("E457", $"번역 행이 없는 {unusedUnencodable.Groups["table"].Value} StringID {unusedUnencodable.Groups["id"].Value}에 현재 출력 인코딩으로 표현할 수 없는 문자({unusedUnencodable.Groups["ch"].Value})가 있습니다. 출력 인코딩을 바꾸면 이런 문자열도 함께 변환되므로, UTF-8 또는 원문과 같은 출력 인코딩을 선택해 다시 여세요. 기존 번역은 그대로 이어집니다.");
             var translatedSource = Match(message, @"^번역된 플러그인을 원문으로 열 수 없습니다: (?<rows>[0-9]{1,7})행$");
             if (translatedSource.Success)
                 return Error("E460", $"이 프로젝트에서 번역해 저장한 플러그인으로 보입니다(원문 자리에 번역문이 있는 행 {translatedSource.Groups["rows"].Value}개). 번역 전 원본 플러그인을 여세요. 기존 번역은 그대로 남아 있습니다.");
