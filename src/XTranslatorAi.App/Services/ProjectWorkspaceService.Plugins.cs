@@ -260,7 +260,8 @@ public sealed partial class ProjectWorkspaceService
 
         if (string.Equals(earlierFolder, folder, StringComparison.OrdinalIgnoreCase))
         {
-            return true;
+            // The game's Data folder holds every installed mod, so sharing it says nothing about the mod.
+            return !string.Equals(Path.GetFileName(folder), "Data", StringComparison.OrdinalIgnoreCase);
         }
 
         var earlierParent = Path.GetDirectoryName(earlierFolder);

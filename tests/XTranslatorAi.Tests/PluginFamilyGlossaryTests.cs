@@ -92,6 +92,21 @@ public sealed class PluginFamilyGlossaryTests : IAsyncLifetime
         }
     }
 
+    // Plugins opened straight from the game's Data folder are every installed mod: the same-folder rule gave a new
+    // project the forced terms of unrelated mods (Elden Rim's 이보커).
+    [Fact]
+    public async Task PluginsInTheGamesDataFolder_DoNotShareTheirGlossary()
+    {
+        await CreateProjectWithGlossaryAsync(WritePlugin(@"Skyrim Special Edition\Data", "EldenSkyrim.esp", "Iron Sword"), ("Evoker", "이보커", true));
+
+        var opened = await OpenAsync(WritePlugin(@"Skyrim Special Edition\Data", "feris.esp", "Steel Sword"));
+        await using (opened.Db)
+        {
+            Assert.Empty(await EnabledSourcesAsync(opened.Db));
+            Assert.Equal(0, opened.InheritedGlossary.Count);
+        }
+    }
+
     [Fact]
     public async Task OtherMods_AndExistingProjects_AreNotTouched()
     {
