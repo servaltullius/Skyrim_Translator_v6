@@ -26,7 +26,7 @@ internal static class NameConsistencyRule
     {
         "이라고요", "라고요", "에게서", "한테서", "이라는", "이라고", "이시여", "에서는", "으로서", "으로는", "께서", "시여", "에게", "한테", "이랑", "이라", "이란",
         "이여", "이야", "라는", "라고", "처럼", "보다", "까지", "부터", "에서", "에선", "에는", "으로", "로서", "로는",
-        "이나", "은", "는", "이", "가", "을", "를", "의", "와", "과", "도", "만", "에", "엔", "로", "랑", "나", "아", "야", "여", "님", "씨",
+        "이나", "은", "는", "이", "가", "을", "를", "의", "와", "과", "도", "만", "에", "엔", "로", "랑", "나", "아", "야", "여", "님", "씨", "들",
     };
 
     // The suffixes a word can end with, by its last syllable, in the order of Suffixes (which decides Stem).
@@ -214,6 +214,7 @@ internal static class NameConsistencyRule
                 || mainWord.Contains(word, StringComparison.Ordinal) || word.Contains(mainWord, StringComparison.Ordinal)
                 || !IsSpelling(core)
                 || Stem(word) == mainStem
+                || DiffersByAnEnding(Stem(word), mainStem)
                 || !AreSimilar(mainJamo, Jamo(word)))
             {
                 continue;
@@ -395,6 +396,13 @@ internal static class NameConsistencyRule
 
         return word;
     }
+
+    // One spelling with up to two more syllables after it is that spelling with an ending: 노드일 (뿐), 아케이였어, and
+    // 쇼어스 for Shor's Stone (쇼어스 스톤) next to 쇼어 (Feris).
+    private static bool DiffersByAnEnding(string a, string b)
+        => a.Length != b.Length
+           && (a.Length < b.Length ? b.StartsWith(a, StringComparison.Ordinal) && b.Length - a.Length <= 2
+               : a.StartsWith(b, StringComparison.Ordinal) && a.Length - b.Length <= 2);
 
     // "넌은" and "넌을" are one name with different particles, even for a one-syllable name.
     private static string Stem(string word)

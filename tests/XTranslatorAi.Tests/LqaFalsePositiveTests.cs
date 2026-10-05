@@ -444,6 +444,36 @@ public class LqaFalsePositiveTests
         Assert.DoesNotContain(issues, i => i.Code == "glossary_variant");
     }
 
+    // Feris: a name with an ending after it is the same spelling (노드일 뿐, 아케이였어, 노드들), and Shor's Stone
+    // (쇼어스 스톤) is not Shor spelled 쇼어스. A different spelling (노르드) is still reported.
+    [Fact]
+    public async Task NameInconsistent_IgnoresEndingsAfterTheName()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Dialogue(1, "The tug of war between the Forsworn and the Nords.", "포스원과 노르드 사이의 줄다리기 말이야."),
+            Dialogue(2, "True Nords of Skyrim they call themselves. They're just Nords playing in the hills to me.", "스스로 진정한 스카이림의 노드라고 부르더군. 내가 보기엔 그냥 언덕에서 놀고 있는 노드일 뿐이지만."),
+            Dialogue(3, "What else could the ancient Nords do?", "고대 노드들이 달리 뭘 할 수 있었겠어?"),
+            Dialogue(4, "As there are for the Nords.", "노드들에게 많은 것처럼 말이야."),
+            Dialogue(5, "Those that don't look like Nords.", "노드처럼 생기지 않은 사람들에게도 그렇고."),
+            Dialogue(6, "He doesn't understand much about Nords at all.", "노드에 대해 아는 게 거의 없는 것 같아."),
+            Dialogue(11, "How can a Priest of Arkay be afraid of the dead?", "아케이의 사제가 어떻게 시체를 두려워할 수가 있지?"),
+            Dialogue(12, "Acolytes of Arkay must come through here.", "아케이의 복사들이 여길 지나가겠지."),
+            Dialogue(13, "Priests of Arkay are better than I.", "아케이의 사제들은 나보다 훨씬 대단해."),
+            Dialogue(14, "Unless the priest of Arkay hides a secret.", "아케이의 사제에게 숨기는 비밀이 있는 게 아니라면."),
+            Dialogue(15, "His last thoughts were for his love, and Arkay.", "마지막 순간에 떠올린 건 연인과 아케이였어."),
+            Dialogue(21, "Those soldiers at Shor's Stone were afraid of spiders.", "쇼어스 스톤의 병사들, 거미를 무서워했던 거 맞지?"),
+            Dialogue(22, "Sylgja, from Shor's Stone.", "쇼어스 스톤의 실기야 말이야."),
+            Dialogue(23, "How did this place become Shor's Stone?", "어쩌다 여기가 쇼어스 스톤이 된 거지?"),
+            Dialogue(24, "If Shor's Stone can't mine, the town's sunk.", "쇼어스 스톤에서 채광을 못 하면 마을이 망할 거야."),
+            Dialogue(25, "Shor and Tsun. They're the gods who fought.", "쇼어와 쑨. 싸우다 죽은 신들이지."),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        Assert.Equal(new long[] { 1 }, issues.Where(i => i.Code == "name_inconsistent").Select(i => i.Id).ToArray());
+    }
+
     private static GlossaryEntry Term(string source, string target)
         => new(0, null, source, target, true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null);
 
