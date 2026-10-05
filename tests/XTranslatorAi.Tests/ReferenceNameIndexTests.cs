@@ -315,6 +315,26 @@ public class ReferenceNameIndexTests
         Assert.Equal("Pale light filled the room.", index.ApplyWithGlossary("Pale light filled the room.", glossary).Text);
     }
 
+    // Ordinary words were forced at the start of a line: "Courage, my friend." → 고무 (the spell), "Cotton sheets" →
+    // 코튼. Courage counted as named in sentences through item names ("Scroll of Courage"), and Cotton is an entry
+    // spelled by sound that no sentence uses; such a word is only a name inside a sentence, where it is capitalized for
+    // that reason. Names the memory's sentences use (Erandur) stay names at the start of a line.
+    [Fact]
+    public void WordsNamedOnlyInItemNamesOrByEntry_AreNotNamesAtTheStartOfALine()
+    {
+        var index = ReferenceNameIndex.Build(new[]
+        {
+            ("Courage", "고무"), ("Scroll of Courage", "고무의 주문서"), ("Staff of Courage", "고무의 지팡이"),
+            ("Cotton", "코튼"), ("Cairine", "카이린"),
+            ("Erandur", "에란더"), ("Speak to Erandur", "에란더와 대화하기"),
+        });
+
+        Assert.Empty(index.FindIn("Courage, my friend."));
+        Assert.Empty(index.FindIn("Cotton sheets are soft."));
+        Assert.Equal("카이린", Assert.Single(index.FindIn("Have you met Cairine yet?")).Target);
+        Assert.Equal("에란더", Assert.Single(index.FindIn("Erandur waits at the temple.")).Target);
+    }
+
     // MEI's names that the memory has only inside sentences were left to the model: "Gray Quarter" (잿빛 지구),
     // "Lake Honrich" (혼리크 호수). A name the sentences translate the same way is a name; the particles after it are not.
     [Fact]

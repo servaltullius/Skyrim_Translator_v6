@@ -46,6 +46,10 @@ public sealed partial class ReferenceNameIndex
     private readonly Material[] _materials;
     private readonly HashSet<string> _ordinaryWords;
 
+    // One-word entries spelled by sound that no memory sentence uses as a name (Cotton → 코튼, Cairine → 카이린).
+    // Capitalized inside a sentence they are names; at the start of a line they may be ordinary words ("Cotton sheets").
+    private readonly HashSet<string> _namesOnlyInsideSentences;
+
     // Multi-word names by their lowercase first word: "sweeter than moon sugar" names Moon Sugar (문 슈거). Only names
     // whose first word the translation spells by sound (moon → 문): the lowercase forms of translated names were ordinary
     // phrases in local projects ("served on a silver platter" → 은제 큰 접시, "bad enough to turn undead" → 언데드 퇴치,
@@ -53,10 +57,11 @@ public sealed partial class ReferenceNameIndex
     private readonly Dictionary<string, List<(string Source, string Target)>> _byLowerFirstWord;
 
     private ReferenceNameIndex(Dictionary<string, List<(string Source, string Target)>> byFirstWord, int count, Material[] materials,
-        HashSet<string> ordinaryWords)
+        HashSet<string> ordinaryWords, HashSet<string> namesOnlyInsideSentences)
     {
         _byFirstWord = byFirstWord;
         _ordinaryWords = ordinaryWords;
+        _namesOnlyInsideSentences = namesOnlyInsideSentences;
         Count = count;
         _materials = materials;
         _byLowerFirstWord = byFirstWord.Values.SelectMany(list => list)
@@ -81,6 +86,7 @@ public sealed partial class ReferenceNameIndex
         var namedInSentences = CollectWordsNamedInSentences(pairs.Select(pair => pair.Source));
 
         var byFirstWord = new Dictionary<string, List<(string Source, string Target)>>(StringComparer.Ordinal);
+        var namesOnlyInsideSentences = new HashSet<string>(StringComparer.Ordinal);
         var count = 0;
         foreach (var group in pairs.Where(IsNameEntry).GroupBy(pair => pair.Source, StringComparer.Ordinal))
         {
@@ -107,6 +113,11 @@ public sealed partial class ReferenceNameIndex
                     || !namedInSentences.Contains(FirstWordOf(group.Key)) && !IsSpelledBySound(group.Key, targets[0].Target)))
             {
                 continue;
+            }
+
+            if (!group.Key.Contains(' ') && !namedInSentences.Contains(FirstWordOf(group.Key)))
+            {
+                namesOnlyInsideSentences.Add(group.Key);
             }
 
             var firstWord = FirstWordOf(group.Key.Split(' ')[0]);
@@ -139,7 +150,7 @@ public sealed partial class ReferenceNameIndex
             list.Sort((a, b) => b.Source.Length.CompareTo(a.Source.Length));
         }
 
-        return new ReferenceNameIndex(byFirstWord, count, ConfirmedMaterials(pairs), lowercaseUse.Where(phrase => !phrase.Contains(' ')).ToHashSet(StringComparer.Ordinal));
+        return new ReferenceNameIndex(byFirstWord, count, ConfirmedMaterials(pairs), lowercaseUse.Where(phrase => !phrase.Contains(' ')).ToHashSet(StringComparer.Ordinal), namesOnlyInsideSentences);
     }
 
     /// <summary>
@@ -233,6 +244,12 @@ public sealed partial class ReferenceNameIndex
         "Temple", "Tomb", "Tower", "Valley", "Watchtower", "Woods", "River", "Stream", "Springs", "Hold", "Guard", "Guards",
     };
 
+    private static bool StartsALine(string text, int index)
+    {
+        var before = text[..index].TrimEnd();
+        return before.Length == 0 || ".!?:\"“(['-—…\n>".Contains(before[^1]);
+    }
+
     // A one-word name followed by another capitalized word is part of another name (Dagon Fel is a town, not 데이건),
     // unless that word is an ordinary or place noun: "Karthwasten River" still names Karthwasten.
     private bool StartsAnotherName(string text, int end, string name)
@@ -277,7 +294,8 @@ public sealed partial class ReferenceNameIndex
             {
                 if (string.CompareOrdinal(text, word.Index, candidate.Source, 0, candidate.Source.Length) != 0
                     || !EndsAtWordBoundary(text, word.Index + candidate.Source.Length)
-                    || StartsAnotherName(text, word.Index + candidate.Source.Length, candidate.Source))
+                    || StartsAnotherName(text, word.Index + candidate.Source.Length, candidate.Source)
+                    || _namesOnlyInsideSentences.Contains(candidate.Source) && StartsALine(text, word.Index))
                 {
                     continue;
                 }
@@ -573,6 +591,8 @@ public sealed partial class ReferenceNameIndex
         return used;
     }
 
+    private static readonly HashSet<string> ItemNameConnectors = new(StringComparer.Ordinal) { "of", "the", "and" };
+
     // Capitalized words between lowercase words, not at the start of a line or a sentence: "Speak to Erandur".
     private static HashSet<string> CollectWordsNamedInSentences(IEnumerable<string> sources)
     {
@@ -583,7 +603,8 @@ public sealed partial class ReferenceNameIndex
             for (var i = 1; i < words.Length; i++)
             {
                 var word = words[i].Value;
-                if (!char.IsUpper(word[0]) || !char.IsLower(words[i - 1].Value[0]))
+                // After "of" or "the" the word is part of a longer name: "Scroll of Courage" does not name Courage.
+                if (!char.IsUpper(word[0]) || !char.IsLower(words[i - 1].Value[0]) || ItemNameConnectors.Contains(words[i - 1].Value))
                 {
                     continue;
                 }
