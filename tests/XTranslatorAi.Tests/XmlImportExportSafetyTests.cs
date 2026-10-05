@@ -103,6 +103,21 @@ public sealed class XmlImportExportSafetyTests : IAsyncLifetime
         Assert.Empty(await _db.GetStringNotesByKindAsync("tm_hit", CancellationToken.None));
     }
 
+    // Rows sharing an identity (LotD has 76, mostly repeated objectives such as "Talk to Captain Falx") were matched by
+    // position only, so a row added above them dropped their translations without keeping them aside.
+    [Fact]
+    public async Task Reopen_RowsSharingAnIdentity_KeepTheirTranslationAfterAShift()
+    {
+        await ImportAsync(Row("7", "Talk to Falx", "") + Row("7", "Talk to Falx", "") + Row("8", "Done", ""));
+        await _db.UpdateStringTranslationAsync(1, "팔크스와 대화하기", StringEntryStatus.Done, null, CancellationToken.None);
+        await _db.UpdateStringTranslationAsync(2, "팔크스와 대화하기", StringEntryStatus.Done, null, CancellationToken.None);
+
+        await ImportAsync(Row("9", "New row", "") + Row("7", "Talk to Falx", "") + Row("7", "Talk to Falx", "") + Row("8", "Done", ""), preserve: true);
+
+        var loaded = await _db.GetStringsAsync(10, 0, CancellationToken.None);
+        Assert.All(loaded.Where(r => r.SourceText == "Talk to Falx"), r => Assert.Equal(("팔크스와 대화하기", StringEntryStatus.Done), (r.DestText, r.Status)));
+    }
+
     [Fact]
     public async Task Reopen_DifferentRecordIdDoesNotBorrowTranslation()
     {

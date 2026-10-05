@@ -61,7 +61,13 @@ public sealed partial class ProjectDb
                 // A row still in the project keeps its current translation over one kept from an earlier file.
                 if (identity != null && (saved.TryGetValue(identity, out var candidates) || retired.TryGetValue(identity, out candidates)))
                 {
-                    var old = candidates.Count == 1 ? candidates[0] : candidates.Find(r => r.OrderIndex == row.OrderIndex);
+                    // Rows sharing an identity have the same source, so after a shift any of them will do (a manual
+                    // edit first): matching by position alone dropped LotD's repeated objectives when a row was added.
+                    var old = candidates.Count == 1
+                        ? candidates[0]
+                        : candidates.Find(r => r.OrderIndex == row.OrderIndex)
+                          ?? candidates.Find(r => r.Status == StringEntryStatus.Edited)
+                          ?? candidates[0];
                     // Explicit manual edits, including an intentional empty translation, win.
                     // Otherwise an explicitly translated incoming XML wins over earlier generated text.
                     if (old != null && (old.Status == StringEntryStatus.Edited || row.Status == StringEntryStatus.Pending))
