@@ -123,7 +123,8 @@ internal static class GlossaryLoanwordRule
             }
 
             var sourceSounds = SourceSounds(sourceText, term.SourceTerm);
-            if (levels.Any(level => KoreanSound(level) is { } s && sourceSounds.Contains(s)))
+            if (levels.Any(level => KoreanSound(level) is { } s && sourceSounds.Contains(s))
+                || SpellsWholePhrase(sourceText, destText, term.SourceTerm, word))
             {
                 continue;
             }
@@ -268,8 +269,9 @@ internal static class GlossaryLoanwordRule
         return sb.ToString();
     }
 
-    // Verbs made with 하다, 되다 or 버리다 (부여될, 써버리는) are not borrowed nouns.
-    private static readonly string[] VerbEndings = { "하", "한", "할", "함", "해", "했", "되", "된", "될", "됨", "돼", "됐", "버리" };
+    // Verbs made with 하다, 되다, 버리다 or 보다 (부여될, 써버리는, 버텨봐) are not borrowed nouns: Feris's "hold on"
+    // (버텨봐) sounds like fortify.
+    private static readonly string[] VerbEndings = { "하", "한", "할", "함", "해", "했", "되", "된", "될", "됨", "돼", "됐", "버리", "봐", "봤" };
 
     // Korean writes a consonant before a vowel into the next syllable in borrowed words (일루전, not 일우전), and
     // does not repeat a vowel (그라아악). Both happen in native words and particles: 알아선, 수업이라.
@@ -331,6 +333,13 @@ internal static class GlossaryLoanwordRule
             }
 
             sounds.Add(EnglishSound(match.Value));
+
+            // Korean writes th as ㅅ in many names: Braith is 브레이스 in Feris.
+            if (match.Value.Contains("th", StringComparison.OrdinalIgnoreCase))
+            {
+                sounds.Add(EnglishSound(Regex.Replace(match.Value, "th", "s", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)));
+            }
+
             if (match.Length > 3 && match.Value.EndsWith("s", StringComparison.OrdinalIgnoreCase))
             {
                 sounds.Add(EnglishSound(match.Value[..^1]));
@@ -338,6 +347,18 @@ internal static class GlossaryLoanwordRule
         }
 
         return sounds;
+    }
+
+    // "master key" written 마스터 키: the phrase is borrowed whole, so 마스터 is not the glossary's Master (달인).
+    private static bool SpellsWholePhrase(string sourceText, string destText, string termSource, string word)
+    {
+        var nextWords = Regex.Matches(sourceText ?? "", @"(?<![A-Za-z])" + Regex.Escape(termSource) + @"(?:e?s)?\s+(?<next>[A-Za-z]+)",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)
+            .Select(m => EnglishSound(m.Groups["next"].Value))
+            .ToHashSet(StringComparer.Ordinal);
+        return nextWords.Count > 0
+               && Regex.Matches(destText, Regex.Escape(word) + @"\s+(?<next>[가-힣]+)", RegexOptions.CultureInvariant)
+                   .Any(m => StripLevels(m.Groups["next"].Value).Any(level => KoreanSound(level) is { } s && nextWords.Contains(s)));
     }
 
     private static bool IsTermUsedAsCommonNoun(string text, Match word, string termSource)

@@ -426,6 +426,24 @@ public class LqaFalsePositiveTests
         Assert.Equal(new long[] { 1, 2, 3 }, issues.Where(i => i.Code == "glossary_variant").Select(i => i.Id).OrderBy(i => i).ToArray());
     }
 
+    // Feris: 브레이스 is Braith (th written as ㅅ), not Flesh; 버텨봐 ("hold on") is a verb, not Fortify; and 마스터 키
+    // spells "master key" whole, so 마스터 is not the glossary's Master (달인).
+    [Fact]
+    public async Task GlossaryVariant_IgnoresNamesWithTh_VerbsWithBoda_AndWholeLoanwordPhrases()
+    {
+        var glossary = new List<GlossaryEntry> { Term("Flesh", "피부"), Term("Fortify", "강화"), Term("Master", "달인") };
+        var entries = new List<LqaScanEntry>
+        {
+            Dialogue(1, "I overheard Braith trying to talk to her parents.", "브레이스가 부모님이랑 얘기하려는 걸 우연히 들었어."),
+            Dialogue(2, "In the meantime, keep holding on.", "그동안은 계속 버텨봐."),
+            Dialogue(3, "Should be a master key somewhere around here.", "이 근처 어딘가에 마스터 키가 있을 거야."),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", glossary);
+
+        Assert.DoesNotContain(issues, i => i.Code == "glossary_variant");
+    }
+
     private static GlossaryEntry Term(string source, string target)
         => new(0, null, source, target, true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null);
 
