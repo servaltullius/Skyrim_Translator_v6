@@ -440,6 +440,23 @@ public sealed class TranslationServiceIntegrityRegressionTests
         Assert.Single(states.Values, status => status == StringEntryStatus.Pending);
     }
 
+    // Spent prepaid credits (402, RESOURCE_EXHAUSTED) were retried as a rate limit for a minute and a half and left
+    // the rows of every batch in flight as Error. The run now stops at the first one and leaves the rows Pending.
+    [Fact]
+    public async Task DepletedCredits_StopTheRunAtOnce_AndLeaveTheRowsPending()
+    {
+        await using var fixture = await Fixture.CreateAsync(("Hello", "MESG", null), ("World", "MESG", null), ("Again", "MESG", null));
+        fixture.Client.BeforeGenerate = (_, _) => Task.FromException(new GeminiHttpException("generateContent", 402, "Payment Required", null,
+            "GenerateContent failed: HTTP 402 Payment Required. {\"error\": {\"code\": 402, \"message\": \"Your prepayment credits are depleted.\", \"status\": \"RESOURCE_EXHAUSTED\"}}"));
+        fixture.Service.RetryDelayOverride = TimeSpan.Zero;
+
+        await Assert.ThrowsAnyAsync<Exception>(() => fixture.Service.TranslateIdsAsync(fixture.Request with { BatchSize = 1, MaxRetries = 3, MaxConcurrency = 1 }));
+
+        Assert.Equal(1, fixture.Client.Calls);
+        var states = await fixture.Db.GetStringStatusesByIdsAsync(fixture.Ids, CancellationToken.None);
+        Assert.All(states.Values, status => Assert.Equal(StringEntryStatus.Pending, status));
+    }
+
     [Fact]
     public async Task PartialBatch_CommitsValidPeerBeforeRequestingOnlyMissingRow()
     {

@@ -171,7 +171,13 @@ public static class UserFacingErrorClassifier
     private static UserFacingError ClassifyMessageChain(string msgChain)
     {
         // Stored row errors are message chains that also carry row ids and token names, so a bare "429" or
-        // " 401" would match "Model output missing id: 1429" or "id: 401".
+        // " 401" would match "Model output missing id: 1429" or "id: 401". Before the rate limit: its body says
+        // RESOURCE_EXHAUSTED as well.
+        if (ContainsAny(msgChain, "HTTP 402", "prepayment credits are depleted"))
+        {
+            return CreditsDepleted;
+        }
+
         if (ContainsAny(msgChain, "HTTP 429", "RESOURCE_EXHAUSTED", "rate limit", "too many requests"))
         {
             return new UserFacingError(
@@ -323,6 +329,11 @@ public static class UserFacingErrorClassifier
     private static UserFacingError ClassifyGeminiHttp(GeminiHttpException http)
     {
         var status = http.StatusCode;
+        if (GeminiErrorKinds.IsCreditsDepleted(http))
+        {
+            return CreditsDepleted;
+        }
+
         if (GeminiErrorKinds.IsRateLimit(http))
         {
             return new UserFacingError(
@@ -356,6 +367,12 @@ public static class UserFacingErrorClassifier
             DetailsInApiLogs: true
         );
     }
+
+    private static readonly UserFacingError CreditsDepleted = new(
+        "E205",
+        "Gemini API 선불 크레딧이 소진되었다는 응답(HTTP 402)을 받아 번역을 멈췄습니다. AI Studio(ai.studio/projects)에서 이 API 키가 속한 프로젝트의 크레딧·결제를 확인한 뒤 이어서 번역하세요. 남은 행은 대기 상태로 두었습니다.",
+        DetailsInApiLogs: true
+    );
 
     // Retrying the row or switching the key sends the same text, which is refused again.
     private static readonly UserFacingError SafetyBlocked = new(

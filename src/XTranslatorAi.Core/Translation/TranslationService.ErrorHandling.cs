@@ -159,11 +159,15 @@ public sealed partial class TranslationService
         return false;
     }
 
+    /// <summary>
+    /// The key cannot be used as it is: invalid, or its project's prepaid credits are spent. The run stops at once and
+    /// leaves the rows Pending; with failover on, the runner may switch to another saved key.
+    /// </summary>
     private static bool IsCredentialError(Exception ex)
     {
         foreach (var current in ExceptionTraversal.Enumerate(ex))
         {
-            if (current is GeminiHttpException http && GeminiErrorKinds.IsInvalidApiKey(http))
+            if (current is GeminiHttpException http && (GeminiErrorKinds.IsInvalidApiKey(http) || GeminiErrorKinds.IsCreditsDepleted(http)))
             {
                 return true;
             }

@@ -9,9 +9,15 @@ namespace XTranslatorAi.Core.Translation;
 /// </summary>
 internal static class GeminiErrorKinds
 {
-    // The body also carries the status for a quota error sent with another code.
+    // The body also carries the status for a quota error sent with another code. Spent prepaid credits carry it too,
+    // but no wait brings them back.
     public static bool IsRateLimit(GeminiHttpException http)
-        => http.StatusCode == 429 || Contains(http.Message, "RESOURCE_EXHAUSTED");
+        => !IsCreditsDepleted(http) && (http.StatusCode == 429 || Contains(http.Message, "RESOURCE_EXHAUSTED"));
+
+    // 402 "Your prepayment credits are depleted" (status RESOURCE_EXHAUSTED): the key's project has no prepaid
+    // credits left. It was retried and reported as a rate limit.
+    public static bool IsCreditsDepleted(GeminiHttpException http)
+        => http.StatusCode == 402 || Contains(http.Message, "prepayment credits are depleted");
 
     // Gemini answers a wrong or expired key with 400 INVALID_ARGUMENT and the reason API_KEY_INVALID, not 401.
     public static bool IsInvalidApiKey(GeminiHttpException http)
