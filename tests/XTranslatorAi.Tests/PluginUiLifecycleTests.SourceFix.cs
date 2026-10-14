@@ -80,4 +80,30 @@ public sealed partial class PluginUiLifecycleTests
 
         Assert.Empty(missing);
     }
+
+    /// <summary>
+    /// Opening an ESP built the grid's rows from the import without the rows' notes: the mark was in the project DB
+    /// but the quality check, which reads it from the rows, flagged the marked rows again. The TM color was lost too.
+    /// </summary>
+    [Fact]
+    public Task ReopeningAPlugin_KeepsTheRowsMarks()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            await fixture.LoadPluginWorkspaceAsync();
+            var db = fixture.State.Db!;
+            var row = Assert.Single(fixture.Vm.Entries);
+            await db.UpdateStringTranslationAsync(row.Id, "일부러 다르게 고친 번역", StringEntryStatus.Edited, null, CancellationToken.None);
+            await db.SetSourceFixAsync(row.Id, true, CancellationToken.None);
+            await db.UpsertStringNoteAsync(row.Id, TranslationConstants.TmHitNoteKind, "TM 적용", CancellationToken.None);
+
+            fixture.Ui.OpenPath = fixture.State.PluginDocument!.Info.InputPath;
+            await fixture.Vm.OpenPluginCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            var reopened = Assert.Single(fixture.Vm.Entries);
+            Assert.NotSame(row, reopened);
+            Assert.Equal("일부러 다르게 고친 번역", reopened.DestText);
+            Assert.True(reopened.IsSourceFix);
+            Assert.True(reopened.IsTranslationMemoryApplied);
+        });
 }

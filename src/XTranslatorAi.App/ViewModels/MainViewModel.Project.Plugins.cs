@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using XTranslatorAi.App.Services;
+using XTranslatorAi.Core;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Plugins;
@@ -79,11 +80,17 @@ public partial class MainViewModel
             StatusMessage = "플러그인을 읽고 번역 가능한 문자열을 확인하는 중...";
             var loaded = await _projectWorkspaceService.LoadFromPluginAsync(request, cancellation.Token);
             incomingDb = loaded.Db;
+            // The rows' notes the import kept: without them the grid lost its TM color and the quality check, which
+            // reads the "원문 오류 수정" mark from the rows, flagged the marked rows again.
+            var tmHitIds = (await loaded.Db.GetStringNotesByKindAsync(TranslationConstants.TmHitNoteKind, CancellationToken.None)).Keys.ToHashSet();
+            var sourceFixIds = (await loaded.Db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None)).Keys.ToHashSet();
             var entries = loaded.Entries.Select(row => new StringEntryViewModel(row.Id, row.OrderIndex)
             {
                 Edid = row.Edid, Rec = row.Rec, SourceText = row.SourceText, DestText = row.DestText,
                 Status = row.Status, ErrorMessage = row.ErrorMessage,
                 PluginLocation = loaded.Document.Fields[row.OrderIndex],
+                IsTranslationMemoryApplied = tmHitIds.Contains(row.Id),
+                IsSourceFix = sourceFixIds.Contains(row.Id),
             }).ToList();
             // The service's import commit is the point of no cancellation. Adopt its ready snapshot
             // before awaiting auxiliary work, so a late cancellation never leaves old rows over a new DB.
