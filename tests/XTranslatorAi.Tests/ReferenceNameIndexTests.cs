@@ -253,6 +253,44 @@ public class ReferenceNameIndexTests
         Assert.Equal("진정한 바렌자이아", Assert.Single(index.FindIn("A copy of The Real Barenziah.")).Target);
     }
 
+    // The memory names the Black Books only with their category ("Black Book: Waking Dreams" → "검은 책: 백일몽"), so
+    // Elden Rim's "Secret Book - Waking Dreams" came back as 깨어 있는 꿈, and five of the seven titles were wrong. A
+    // title after a category the memory uses for three or more entries is a name, with and without its "The".
+    [Fact]
+    public void TitlesAfterACategory_AreNames()
+    {
+        var index = ReferenceNameIndex.Build(new[]
+        {
+            ("Black Book: Waking Dreams", "검은 책: 백일몽"), ("Black Book: The Sallow Regent", "검은 책: 병든 섭정"),
+            ("Black Book: Filament and Filigree", "검은 책: 가는 실과 선 세공"), ("Black Book: Untold Legends", "검은 책: 감춰진 전설"),
+            ("The Falmer: A Study", "팔머: 연구"),
+        });
+
+        Assert.Equal("백일몽", Assert.Single(index.FindIn("Secret Book - Waking Dreams")).Target);
+        Assert.Equal("병든 섭정", Assert.Single(index.FindIn("Note - The Sallow Regent")).Target);
+        Assert.Equal("병든 섭정", Assert.Single(index.FindIn("Learning - Sallow Regent")).Target);
+        Assert.Equal("가는 실과 선 세공", Assert.Single(index.FindIn("Rim Scroll - Filament and Filigree")).Target);
+        Assert.Equal("감춰진 전설", Assert.Single(index.FindIn("Untold Legends - Fire Storm")).Target);
+        // A subtitle of one book is no category: "A Study" stays an ordinary phrase.
+        Assert.Empty(index.FindIn("Read A Study of the ruins."));
+    }
+
+    // The spell tomes name their spell differently from the spell's own entry ("Spell Tome: Ice Spike" → "마법책: 얼음
+    // 가시", "Ice Spike" → 얼음 창); the two tied, and Ice Spike, Bound Sword and Turn Undead dropped out of the index.
+    [Fact]
+    public void TitleAfterACategory_DoesNotOverrideTheNamesOwnEntry()
+    {
+        var index = ReferenceNameIndex.Build(new[]
+        {
+            ("Ice Spike", "얼음 창"), ("Serana Knows Ice Spike", "세라나가 얼음 창을 압니다"),
+            ("Spell Tome: Ice Spike", "마법책: 얼음 가시"), ("Spell Tome: Ash Rune", "마법책: 화산재의 룬"),
+            ("Spell Tome: Bane of the Undead", "마법책: 언데드의 파멸"),
+        });
+
+        Assert.Equal("얼음 창", Assert.Single(index.FindIn("Cast Ice Spike.")).Target);
+        Assert.Equal("화산재의 룬", Assert.Single(index.FindIn("Cast Ash Rune.")).Target);
+    }
+
     // Serana Dialogue Add-On's "Raven of the North" was matched as Raven (레이븐), a word the memory only ever writes in
     // "Raven Rock"; likewise Elder (Elder Scroll, Elder Council) and Ideal (Ideal Masters, "Ideal for my materials").
     // A word of a full name counts alone only where the memory also writes it alone ("Dagon has spoken"), and a one-word

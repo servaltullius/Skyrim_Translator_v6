@@ -77,6 +77,7 @@ public sealed partial class ReferenceNameIndex
             .Where(pair => pair.Source.Length > 0 && pair.Target.Length > 0)
             .ToList();
         pairs.AddRange(BookTitlesWithoutVolume(pairs).ToList());
+        pairs.AddRange(TitlesAfterCategory(pairs).ToList());
         pairs.AddRange(NamesInSentences(pairs).ToList());
         var lowercaseUse = CollectLowercaseUse(pairs.Select(pair => pair.Source));
         var namedInSentences = CollectWordsNamedInSentences(pairs.Select(pair => pair.Source));
@@ -509,6 +510,37 @@ public sealed partial class ReferenceNameIndex
         }
     }
 
+    // "Black Book: Waking Dreams" → "검은 책: 백일몽". Only categories the memory uses for several entries: "The Falmer: A
+    // Study" is one book's subtitle, and "A Study" no name. A title the memory also holds on its own keeps that entry:
+    // the spell tomes name their spells differently ("Spell Tome: Ice Spike" → 얼음 가시, "Ice Spike" → 얼음 창).
+    private const int MinCategoryEntries = 3;
+    private static readonly Regex CategorySource = new(@"^([A-Z][^:]{0,30}):\s+(\S.*)$", RegexOptions.CultureInvariant);
+    private static readonly Regex CategoryTarget = new(@"^([^:]{1,20}?)\s*:\s*(\S.*)$", RegexOptions.CultureInvariant);
+
+    private static IEnumerable<(string Source, string Target)> TitlesAfterCategory(IReadOnlyCollection<(string Source, string Target)> pairs)
+    {
+        var titled = pairs
+            .Select(pair => (Source: CategorySource.Match(pair.Source), Target: CategoryTarget.Match(pair.Target)))
+            .Where(m => m.Source.Success && m.Target.Success)
+            .Select(m => (Category: (m.Source.Groups[1].Value, m.Target.Groups[1].Value.Trim()),
+                Title: m.Source.Groups[2].Value.Trim(), Translated: m.Target.Groups[2].Value.Trim()))
+            .ToList();
+        var categories = titled.GroupBy(t => t.Category).Where(g => g.Count() >= MinCategoryEntries).Select(g => g.Key).ToHashSet();
+        var ownEntries = pairs.Select(pair => pair.Source).ToHashSet(StringComparer.Ordinal);
+        foreach (var (category, title, translated) in titled.Where(t => categories.Contains(t.Category)))
+        {
+            if (!ownEntries.Contains(title))
+            {
+                yield return (title, translated);
+            }
+
+            if (title.StartsWith("The ", StringComparison.Ordinal) && !ownEntries.Contains(title[4..]))
+            {
+                yield return (title[4..], translated);
+            }
+        }
+    }
+
     // A word of the translation sounds exactly like the English word (moon → 문, tomato → 토마토). Unlike FindSpelling,
     // a spelling that is also a native word counts here (문 is "door").
     private static bool IsSoundedInTarget(string word, string target)
@@ -548,7 +580,11 @@ public sealed partial class ReferenceNameIndex
 
     private static bool IsNameEntry((string Source, string Target) pair)
         => pair.Source.Length <= MaxNameLength && pair.Target.Length <= MaxTargetLength
-           && NamePattern.IsMatch(pair.Source) && TargetPattern.IsMatch(pair.Target) && !ObjectiveOrSentence.IsMatch(pair.Target);
+           && NamePattern.IsMatch(pair.Source) && TargetPattern.IsMatch(pair.Target)
+           && !ObjectiveOrSentence.IsMatch(pair.Source.Contains(" and ", StringComparison.Ordinal) ? JoinedByAnd.Replace(pair.Target, " ") : pair.Target);
+
+    // "Filament and Filigree" → "가는 실과 선 세공": with "and" in the name, 과/와 joins its two halves and is no sentence.
+    private static readonly Regex JoinedByAnd = new(@"(?<=[가-힣])[와과]\s", RegexOptions.CultureInvariant);
 
     // Lowercase words and two- to four-word lowercase phrases the memory uses, e.g. "ghost" or "dragon priest".
     private static HashSet<string> CollectLowercaseUse(IEnumerable<string> sources)
