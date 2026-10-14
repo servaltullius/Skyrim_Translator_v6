@@ -50,6 +50,10 @@ public static class EmbeddedAssets
             _ => null,
         };
 
+    /// <summary>The game translation dictionary built from the community Korean patch (see GameStringService).</summary>
+    public static Stream? OpenBundledGameStrings()
+        => Assembly.GetExecutingAssembly().GetManifestResourceStream("XTranslatorAi.App.Assets.GameStrings.game-strings-skyrim.gz");
+
     private static string LoadTextResource(string resourceName)
     {
         var assembly = Assembly.GetExecutingAssembly();

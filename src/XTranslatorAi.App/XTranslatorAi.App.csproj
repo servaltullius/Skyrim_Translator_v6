@@ -34,6 +34,7 @@
     <EmbeddedResource Include="Assets\기본용어집_폴아웃.md" />
     <EmbeddedResource Include="Assets\기본용어집_스타필드.md" />
     <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm.tsv" />
+    <EmbeddedResource Include="Assets\GameStrings\game-strings-skyrim.gz" />
     <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v2-changes.tsv" />
     <EmbeddedResource Include="Assets\TmSeeds\fallout4-franchise-tm.tsv" />
     <EmbeddedResource Include="Assets\TmSeeds\starfield-franchise-tm.tsv" />

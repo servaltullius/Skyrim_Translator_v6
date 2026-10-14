@@ -24,15 +24,17 @@ public sealed record GameStringPlugin(
 /// The player's own game translation, as xTranslator's dictionaries use it: the base game's English strings paired
 /// with the installed Korean patch by string ID. A mod row that overrides a base game record and keeps its English
 /// text takes that record's Korean (dialogue too, since the speaker is the same); other rows take the Korean of the
-/// same English text, except dialogue lines, which the patch words by speaker. Built from the user's files, so the
-/// patch itself is never shipped with the app.
+/// same English text, except dialogue lines, which the patch words by speaker. The English is kept only as a
+/// fingerprint (the text is Bethesda's), so the app can ship a dictionary built from the community Korean patch; a
+/// player can build one from the patch they installed.
 /// </summary>
 public sealed class GameStringDictionary
 {
-    private const string FormatHeader = "XTranslatorAi-GameStrings-v1";
+    // v2 keeps a fingerprint of the English instead of the text, so the dictionary can ship with the app.
+    private const string FormatHeader = "XTranslatorAi-GameStrings-v2";
     private static readonly Regex Hangul = new("[가-힣]", RegexOptions.CultureInvariant);
 
-    private readonly Dictionary<string, (string English, string Korean, string Plugin)> _byField;
+    private readonly Dictionary<string, (string EnglishHash, string Korean, string Plugin)> _byField;
     private readonly Dictionary<string, string> _byText;
 
     private GameStringDictionary(Dictionary<string, (string, string, string)> byField, Dictionary<string, string> byText)
@@ -79,14 +81,15 @@ public sealed class GameStringDictionary
                     continue;
                 }
 
-                byField[identity] = (field.SourceText, korean, plugin.FileName);
-                if (kind == PluginStringTableKind.IlStrings || IsDialogue(field.Rec))
+                var normalized = TranslationMemoryKey.NormalizeSource(field.SourceText);
+                if (string.IsNullOrWhiteSpace(normalized))
                 {
                     continue;
                 }
 
-                var key = TranslationMemoryKey.NormalizeSource(field.SourceText);
-                if (string.IsNullOrWhiteSpace(key))
+                var key = Fingerprint(normalized);
+                byField[identity] = (key, korean, plugin.FileName);
+                if (kind == PluginStringTableKind.IlStrings || IsDialogue(field.Rec))
                 {
                     continue;
                 }
@@ -127,8 +130,9 @@ public sealed class GameStringDictionary
             return null;
         }
 
+        key = Fingerprint(key);
         if (fieldIdentity != null && _byField.TryGetValue(fieldIdentity, out var field)
-            && string.Equals(TranslationMemoryKey.NormalizeSource(field.English), key, StringComparison.Ordinal))
+            && string.Equals(field.EnglishHash, key, StringComparison.Ordinal))
         {
             return new GameStringMatch(field.Korean, $"{field.Plugin} 같은 레코드");
         }
@@ -172,15 +176,15 @@ public sealed class GameStringDictionary
         using var writer = new StreamWriter(gzip, new UTF8Encoding(false));
         writer.Write(FormatHeader);
         writer.Write('\n');
-        foreach (var (identity, (english, korean, plugin)) in _byField)
+        foreach (var (identity, (englishHash, korean, plugin)) in _byField)
         {
-            writer.Write(string.Join('\t', "F", identity, Escape(english), Escape(korean), plugin));
+            writer.Write(string.Join('\t', "F", identity, englishHash, Escape(korean), plugin));
             writer.Write('\n');
         }
 
         foreach (var (key, korean) in _byText)
         {
-            writer.Write(string.Join('\t', "T", Escape(key), Escape(korean)));
+            writer.Write(string.Join('\t', "T", key, Escape(korean)));
             writer.Write('\n');
         }
     }
@@ -201,16 +205,20 @@ public sealed class GameStringDictionary
             var parts = line.Split('\t');
             if (parts.Length == 5 && parts[0] == "F")
             {
-                byField[parts[1]] = (Unescape(parts[2]), Unescape(parts[3]), parts[4]);
+                byField[parts[1]] = (parts[2], Unescape(parts[3]), parts[4]);
             }
             else if (parts.Length == 3 && parts[0] == "T")
             {
-                byText[Unescape(parts[1])] = Unescape(parts[2]);
+                byText[parts[1]] = Unescape(parts[2]);
             }
         }
 
         return new GameStringDictionary(byField, byText);
     }
+
+    // 128 bits of SHA-256 over the normalized English: equal text gives an equal fingerprint, and no text can be read back.
+    private static string Fingerprint(string normalizedEnglish)
+        => Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(normalizedEnglish)), 0, 16);
 
     private static string Escape(string text)
         => text.Replace("\\", "\\\\").Replace("\t", "\\t").Replace("\r", "\\r").Replace("\n", "\\n");

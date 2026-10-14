@@ -10,17 +10,25 @@ using XTranslatorAi.Core.Plugins;
 namespace XTranslatorAi.App.Services;
 
 /// <summary>
-/// Keeps the player's game translation dictionary (see <see cref="GameStringDictionary"/>) in the global folder: built
-/// once from the game's Data folder and the Korean patch's string tables, then loaded for each Skyrim translation run.
+/// The game translation dictionary (see <see cref="GameStringDictionary"/>) for Skyrim translation runs: the app ships
+/// one built from the community Korean patch, and a player who uses another revision of the patch can build their own
+/// from the game's Data folder and the patch's string tables; it is kept in the global folder and used instead.
 /// </summary>
 public sealed class GameStringService
 {
     private readonly string? _globalRootOverride;
     private readonly SemaphoreSlim _gate = new(1, 1);
+    private readonly Func<Stream?> _openBundled;
     private GameStringDictionary? _cached;
     private DateTime _cachedWriteUtc;
+    private GameStringDictionary? _bundled;
 
-    public GameStringService(string? globalRootOverride = null) => _globalRootOverride = globalRootOverride;
+    /// <param name="openBundled">The dictionary the app ships (built from the community Korean patch); null for none.</param>
+    public GameStringService(string? globalRootOverride = null, Func<Stream?>? openBundled = null)
+    {
+        _globalRootOverride = globalRootOverride;
+        _openBundled = openBundled ?? EmbeddedAssets.OpenBundledGameStrings;
+    }
 
     public string DictionaryPath => Path.Combine(ProjectPaths.GetGlobalRootDir(_globalRootOverride), "game-strings-skyrim.gz");
 
@@ -50,35 +58,45 @@ public sealed class GameStringService
         return report;
     }
 
-    /// <summary>The dictionary if one was built, reloaded when the file changed; null when there is none or it cannot be read.</summary>
+    /// <summary>
+    /// The dictionary the player built (reloaded when the file changed), else the one the app ships; null when there is
+    /// neither or it cannot be read.
+    /// </summary>
     public async Task<GameStringDictionary?> TryLoadAsync(CancellationToken cancellationToken)
-    {
-        if (!File.Exists(DictionaryPath))
-        {
-            return null;
-        }
+        => (await TryLoadWithSourceAsync(cancellationToken)).Dictionary;
 
+    private async Task<(GameStringDictionary? Dictionary, bool Built)> TryLoadWithSourceAsync(CancellationToken cancellationToken)
+    {
         await _gate.WaitAsync(cancellationToken);
         try
         {
-            var written = File.GetLastWriteTimeUtc(DictionaryPath);
-            if (_cached != null && written == _cachedWriteUtc)
+            if (File.Exists(DictionaryPath))
             {
-                return _cached;
+                var written = File.GetLastWriteTimeUtc(DictionaryPath);
+                if (_cached == null || written != _cachedWriteUtc)
+                {
+                    _cached = await Task.Run(() =>
+                    {
+                        using var stream = File.OpenRead(DictionaryPath);
+                        return GameStringDictionary.Load(stream);
+                    }, cancellationToken);
+                    _cachedWriteUtc = written;
+                }
+
+                return (_cached, true);
             }
 
-            _cached = await Task.Run(() =>
+            _bundled ??= await Task.Run(() =>
             {
-                using var stream = File.OpenRead(DictionaryPath);
-                return GameStringDictionary.Load(stream);
+                using var stream = _openBundled();
+                return stream == null ? null : GameStringDictionary.Load(stream);
             }, cancellationToken);
-            _cachedWriteUtc = written;
-            return _cached;
+            return (_bundled, false);
         }
         catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException)
         {
             AppLog.Write($"WARN 게임 번역 사전을 읽지 못해 없이 번역합니다: {ex.Message}");
-            return null;
+            return (null, false);
         }
         finally
         {
@@ -88,12 +106,16 @@ public sealed class GameStringService
 
     public async Task<string> DescribeAsync(CancellationToken cancellationToken)
     {
-        if (await TryLoadAsync(cancellationToken) is not { } dictionary)
+        var (dictionary, built) = await TryLoadWithSourceAsync(cancellationToken);
+        if (dictionary == null)
         {
             return "게임 번역 사전 없음";
         }
 
-        return $"게임 번역 사전: 레코드 {dictionary.FieldCount:N0}개 · 문장 {dictionary.TextCount:N0}개 ({File.GetLastWriteTime(DictionaryPath):yyyy-MM-dd} 만듦)";
+        var counts = $"레코드 {dictionary.FieldCount:N0}개 · 문장 {dictionary.TextCount:N0}개";
+        return built
+            ? $"직접 만든 게임 번역 사전: {counts} ({File.GetLastWriteTime(DictionaryPath):yyyy-MM-dd} 만듦)"
+            : $"기본 게임 번역 사전(한글패치): {counts}";
     }
 
     /// <summary>Skyrim SE's Data folder in a Steam library, or null when Steam does not list one.</summary>

@@ -1,3 +1,4 @@
 # Bundled TM seeds are validated by exact byte length and SHA-256.
 # Never convert their line endings on checkout.
 src/XTranslatorAi.App/Assets/TmSeeds/*.tsv -text
+src/XTranslatorAi.App/Assets/GameStrings/*.gz binary

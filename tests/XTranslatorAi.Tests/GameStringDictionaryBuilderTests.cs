@@ -41,20 +41,32 @@ public sealed class GameStringDictionaryBuilderTests : IDisposable
         Assert.Equal("강철 검", dictionary.Find(identity, "WEAP:FULL", "Iron Sword")!.Text);
     }
 
-    // Built once, the dictionary is read again by the next app start (a new service) from the global folder.
+    // Built once, the dictionary is read again by the next app start (a new service) from the global folder, and it
+    // replaces the dictionary the app ships: the player's own patch decides the wording.
     [Fact]
-    public async Task BuiltDictionary_IsReadAgainAfterARestart()
+    public async Task BuiltDictionary_IsReadAgainAfterARestart_InsteadOfTheBundledOne()
     {
         WriteTable(Path.Combine(PatchMod, "Strings", "Skyrim_english.STRINGS"), new() { [1] = "강철 검" });
         var global = Path.Combine(_root, "global");
-        Assert.Equal("게임 번역 사전 없음", await new XTranslatorAi.App.Services.GameStringService(global).DescribeAsync(CancellationToken.None));
+        var bundled = new XTranslatorAi.App.Services.GameStringService(global, XTranslatorAi.App.Services.EmbeddedAssets.OpenBundledGameStrings);
+        Assert.StartsWith("기본 게임 번역 사전(한글패치)", await bundled.DescribeAsync(CancellationToken.None));
+        Assert.Equal("철 검", (await bundled.TryLoadAsync(CancellationToken.None))!.Find(null, "WEAP:FULL", "Iron Sword")!.Text);
 
-        await new XTranslatorAi.App.Services.GameStringService(global).BuildAsync(Data, PatchMod, CancellationToken.None);
+        await new XTranslatorAi.App.Services.GameStringService(global, () => null).BuildAsync(Data, PatchMod, CancellationToken.None);
 
-        var restarted = new XTranslatorAi.App.Services.GameStringService(global);
+        var restarted = new XTranslatorAi.App.Services.GameStringService(global, XTranslatorAi.App.Services.EmbeddedAssets.OpenBundledGameStrings);
         var dictionary = await restarted.TryLoadAsync(CancellationToken.None);
         Assert.Equal("강철 검", dictionary!.Find(null, "WEAP:FULL", "Iron Sword")!.Text);
-        Assert.StartsWith("게임 번역 사전: 레코드 1개", await restarted.DescribeAsync(CancellationToken.None));
+        Assert.StartsWith("직접 만든 게임 번역 사전: 레코드 1개", await restarted.DescribeAsync(CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task WithoutABundledOrBuiltDictionary_ThereIsNone()
+    {
+        var service = new XTranslatorAi.App.Services.GameStringService(Path.Combine(_root, "global"), () => null);
+
+        Assert.Null(await service.TryLoadAsync(CancellationToken.None));
+        Assert.Equal("게임 번역 사전 없음", await service.DescribeAsync(CancellationToken.None));
     }
 
     [Fact]

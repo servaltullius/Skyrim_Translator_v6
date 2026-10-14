@@ -132,6 +132,22 @@ public sealed class GameStringDictionaryTests
         }
     }
 
+    // The app ships a dictionary, so it keeps only fingerprints of the game's English: the text itself is Bethesda's.
+    [Fact]
+    public void SavedDictionary_HoldsNoEnglishText()
+    {
+        using var stream = new MemoryStream();
+        Build().Save(stream);
+        stream.Position = 0;
+        using var gzip = new System.IO.Compression.GZipStream(stream, System.IO.Compression.CompressionMode.Decompress);
+        var text = new StreamReader(gzip).ReadToEnd();
+
+        Assert.Contains("얼음 폭풍", text);
+        Assert.DoesNotContain("Ice Storm", text);
+        Assert.DoesNotContain("What do you want", text);
+        Assert.DoesNotContain("A long book", text);
+    }
+
     [Fact]
     public void SavedDictionary_LoadsTheSameMatches()
     {
