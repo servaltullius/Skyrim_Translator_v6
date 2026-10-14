@@ -107,8 +107,9 @@ public sealed class BundledFranchiseTmSeedService
         {
             // v2 takes the spelling the Korean patch uses most for a source it translates several ways (Ice Storm 얼음 폭풍,
             // not the 얼음의 형상 of two Dawnguard strings); 83 rows changed. v3 takes the patch errors a review found and
-            // the game records confirmed (머서 프레이와와 대화하기, Howl of Terror → 피의 자취); 109 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v3", "bundled-skyrim-tes-franchise-tm.tsv", 1527209, "f04ad88f34d74770bd642d0c4293f120dbb4984a759114bfcc2087c269b04e60",
+            // the game records confirmed (머서 프레이와와 대화하기, Howl of Terror → 피의 자취), and where an Update or DLC
+            // override replaces a text, the one the game shows (Lisbet 리스벳, not the 리즈벳 it replaces); 126 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v3", "bundled-skyrim-tes-franchise-tm.tsv", 1527327, "e66600f3aff94bd6a9f7bf2f006279580d8b52aa74734640b3bec9b4a809d2eb",
                 PreviousVersions: new[] { "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v3-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),

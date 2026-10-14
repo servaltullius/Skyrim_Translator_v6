@@ -4,13 +4,22 @@ Source	Target	Previous
 <Alias=PlayerIsIt> is it. Hide from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt> 이/가 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요
 Add a tower that can be turned into a fully-equipped enchanting laboratory.	완벽한 마법부여 연구실로 전환할 수 있는 탑을 추가합니다.	완벽한 마법부가 연구실로 전환할 수 있는 탑을 추가합니다.
 Allegiance	충성	명령을 내려주십시오.
+ALTERATION	변화마법	변화
 Blacksmith's Forge	대장간의 화로	대장간 모루
 Break through the Second Barricade	두 번째 바리케이드를 파괴하기	두 번째 바리케이트를 파괴하기
 Breath of Nchuak	느츄악의 숨결	느챠닥의 숨결
 Bring 10 fire salts to Balimund (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개를 가져다 주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개을 가져다 주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)
+Call of the Wild	야생의 외침	아생의 외침
+Claim Mehrunes' Razor	메이룬스 데이건의 단검을 가지기	메이룬스의 면도칼을 가지기
 Clay. (<Global=BYOHHPAmountClay> for <Global=BYOHHPCostClay> gold)	점토. (<Global=BYOHHPAmountClay>개에 <Global=BYOHHPCostClay> 골드)	점토. (<Global=BYOHHPAmountClay> for <Global=BYOHHPCostClay> 골드)
 Come on. Let's go.	어서. 가자.	여기서 나가자.
+CONJURATION	소환마법	소환
+CONTAINERS	보관함	상자
 Cure Poison	독 치료	물약 - 독 치료
+Demonstrate your "Unrelenting Force" Shout	"거침없는 힘" 함성을 보여주기	'거침없는 힘' 함성을 보여주기
+Demonstrate your "Unrelenting Force" Shout (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	"거침없는 힘" 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	'거침없는 힘' 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)
+Demonstrate your "Whirlwind Sprint" Shout	"회오리 질주" 함성을 사용하기	'회오리 질주' 함성을 사용하기
+Discerning the Transmundane	다른 차원의 것을 인식	다른 차원의 것을 알아내기
 Distribute %d Point	분배하세요 - %d 포인트	분배하세요- %d Point
 Don't be ridiculous. Dreams are harmless.	되지도 않는 소리 마시오. 꿈은 위험하지 않소.	되도 않는 소리 마시오. 꿈은 위험하지 않소.
 Door to Garvey's Room	가비의 방 문	가비
@@ -18,12 +27,15 @@ Dragonscale Armor of the Eminent Knight	드래곤 비늘 방어구 - 상급 경�
 Dragonscale Armor of the Noble Knight	드래곤 비늘 방어구 - 최상급 경갑	드래곤 비늘 방어구 - 최상급 중갑
 Enemies who strike you with a melee attack have a small chance of being paralyzed.	근접 공격 피해를 입으면 적을 일정한 확률로 마비시킵니다.	근접 공격 피해를 입으면 적을 일정한 확률로 <dur> 초 동안 마비시킵니다.
 Fellow dovah? I am not a dragon.	도바 동료? 나는 드래곤이 아닌데.	Dovah 동료? 나는 드래곤이 아닌데.
-Finished?	끝인가?	완료?
+Finished?	완료?	완료?
 Follow Legate Rikke	리카 군단장을 따라가기	리카 군단장를 따라가기
+For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	불꽃의 망토를 둘러 <dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 For <dur> seconds, undead in melee range take <10> points sun damage per second.	<dur> 초 동안 주변 언데드에게 매 초마다 <10> 의 태양 피해를 입힙니다.	<dur> 초 동안 주변 언데드에게 매 초마다 <mag> 의 태양 피해를 입힙니다.
+Fur-Trimmed Cloak	야를의 털가죽 망토로 장식된 의상	털가죽 망토
 Gharol's Message	가롤의 메시지	가롤의 메세지
 Glass Armor of Resurgence	글래스 방어구 - 최상급 매지카 재생	글래스 투구 - 최상급 매지카 재생
 Gold Necklace	금 목걸이	황금 목걸이
+Goodbye	잘 가시오.	잘 가.
 Gunjar	건냐르	건쟈
 Have Need of Cynric	신릭의 도움 요청	마지막 제안
 He still needs to pay for his crimes.	그래도 죗값을 치러야 합니다.	그래도 죗값을 치르어야 합니다.
@@ -46,10 +58,12 @@ Key to Evette San's House	열쇠 - 이베트 산의 집	열쇠 - 이베트 산�
 Krag's Journal	크라그의 일기	크래그의 일기
 Lay off the old man. Now. (Intimidate)	그 노인을 내버려 둬. 당장. (위협)	그 노인를 내버려 둬. 당장. (위협)
 Let her back in, or you answer to me! (Intimidate)	그녀를 들여보내든가, 내 질문에 대답을 해! (협박)	그녀를 들려보내든가, 내 질문에 대답을 해! (협박)
+Lisbet	리스벳	리즈벳
 Llewellyn the Nightingale	나이팅게일 르웰린	르웰린
 Lumber. (<Global=BYOHHPAmountLogs> for <Global=BYOHHPCostLogs> gold)	목재. (<Global=BYOHHPAmountLogs>개에 <Global=BYOHHPCostLogs> 골드)	목재. (<Global=BYOHHPAmountLogs> for <Global=BYOHHPCostLogs> 골드)
 Message from General Tullius	툴리우스 장군의 메시지	툴리우스 장군의 메세지
 Never mind that... it worked!	신경 쓰지마... 제대로 되었어!	신경 쓰지마... 재대로 되었어!
+Noble Clothes	야를의 기품있는 의상	귀족의 의상
 On second thought, I'll be leaving.	다시 생각해보니, 그냥 가는 게 낫겠군.	다시 생각해보니, 그냥 가는 게 났겠군.
 Opponents in melee range take <mag> points shock damage per second.	주변 적에게 매 초마다 <mag> 의 전격 피해를 입힙니다.	주변 적에게 매 초마다 <mag> 의 전격 피해와 매지카 피해를 입힙니다.
 Orcish Armor of Eminent Stamina	오크제 방어구 - 상급 지구력 증가	오크제 전투화 - 상급 지구력 증가
@@ -61,6 +75,9 @@ Quick Test Cell	빠른 테스트 셀	Quick Test Cell
 Rage Of The Ancients	고대인의 분노	Rage Of The Ancients
 Read Nepos's Journal	네포스의 일기를 읽기	네포스의 일기을 읽기
 Reanimate a powerful dead body to fight for you for <dur> seconds.	<dur> 초 동안 나를 위해 싸울 강력한 시체를 하나 부활시킵니다.	<dur> 초 동안 나를 위해 싸울 조금 강력한 시체를 하나 부활시킵니다.
+Refined Tunic	야를의 세련된 의상	세련된 의상
+Replace the beacon	표식을 교체하기	등불을 교체하기
+Return the East Empire Shipping Map to Delvin	델빈에게 동 제국 해상운송 지도를 가져가기	델빈에게 동제국 해상운송 지도를 가져가기
 Ring of the Major Knight	반지 - 중급 중갑	반지 - 하급 중갑
 Room 7Workbench Enable	Room 7 작업선반 설치	Room 7작업선반 설치
 Secunda's Kiss	세쿤다의 입맞춤	세쿤다의 선반

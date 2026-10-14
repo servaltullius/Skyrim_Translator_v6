@@ -649,7 +649,7 @@ Altar of Dibella	디벨라의 제단
 Altar of Mehrunes Dagon	메이룬스 데이건의 제단
 Altar of Thrond	쓰론드 제단
 Altar of Thrond Cave	쓰론드 동굴 제단
-ALTERATION	변화
+ALTERATION	변화마법
 Alteration Dual Casting	변화마법 이중 시전
 Alteration Perks	변화마법 퍽
 Alteration Ritual Spell	변화 의식 마법
@@ -2327,7 +2327,7 @@ Calixto's House of Curiosities	칼릭스토의 골동품 박물관
 Calixto's Key	열쇠 - 칼릭스토의 열쇠
 Call Dragon	드래곤 소환
 Call Odahviing to Dragonsreach	오다빙을 드래곤스리치로 부르기
-Call of the Wild	아생의 외침
+Call of the Wild	야생의 외침
 Call of Valor	용맹의 외침
 Call Storm	폭풍 소환
 Call to Arms	대규모 고무
@@ -2844,7 +2844,7 @@ Circlet of Peerless Restoration	서클렛 - 특급 회복마법
 Circlet of Restoration	서클렛 - 하급 회복마법
 Circlet of Waterbreathing	서클렛 - 수중 호흡
 Civil War Champions	내전 투사
-Claim Mehrunes' Razor	메이룬스의 면도칼을 가지기
+Claim Mehrunes' Razor	메이룬스 데이건의 단검을 가지기
 Claim the treasure of Arkngthamz	아큰담즈의 보물을 획득하기
 Clairvoyance	예지
 Clam	대합조개
@@ -3003,7 +3003,7 @@ Confront Harkon with Auriel's Bow	아우리엘의 활을 가지고 하콘과 맞
 Confront Ralis	랄리스에 맞서기
 Congratulations. And... thanks, Katria.	축하해. 그리고... 고마워, 카트리아.
 Congratulations. Quite the day, hmm?	축하해요. 멋진 날이지, 안 그래?
-CONJURATION	소환
+CONJURATION	소환마법
 Conjuration Dual Casting	소환마법 이중 시전
 Conjuration Perks	소환마법 퍽
 Conjuration Ritual Spell	소환 의식 마법
@@ -3053,7 +3053,7 @@ Constance Michel	콘스턴스 미쉘
 Constant Damage Health	지속적인 체력 피해
 Constant Effect	지속 효과
 Contact	접촉
-CONTAINERS	상자
+CONTAINERS	보관함
 Containment	봉쇄
 Continue	계속
 Continue from your last saved game?	마지막으로 저장한 곳에서부터 계속하겠습니까?
@@ -3929,9 +3929,9 @@ Delvin Mallory said you had a job for me.	델빈 말로리가 말하길 나에�
 Delvin Mallory said you have work for me.	델빈 말로리가 말하길 나에게 부탁할 게 있다던데.
 Delvin Mallory sent me.	델빈 말로리가 보내서 왔다.
 Delving Pincers	탐구하는 집게발
-Demonstrate your "Unrelenting Force" Shout	'거침없는 힘' 함성을 보여주기
-Demonstrate your "Unrelenting Force" Shout (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	'거침없는 힘' 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)
-Demonstrate your "Whirlwind Sprint" Shout	'회오리 질주' 함성을 사용하기
+Demonstrate your "Unrelenting Force" Shout	"거침없는 힘" 함성을 보여주기
+Demonstrate your "Unrelenting Force" Shout (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	"거침없는 힘" 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)
+Demonstrate your "Whirlwind Sprint" Shout	"회오리 질주" 함성을 사용하기
 Dengeir	덴기어
 Dengeir of Stuhn	스툰의 덴기어
 Dengeir's Hall	덴기어의 회랑
@@ -4053,7 +4053,7 @@ Disaffected <BaseName>	불만을 품은 <BaseName>
 Disaffected <BaseName> Leader	불만을 품은 <BaseName> 우두머리
 Disarm	무장해제
 Disarming Bash	무장해제 밀어치기
-Discerning the Transmundane	다른 차원의 것을 알아내기
+Discerning the Transmundane	다른 차원의 것을 인식
 Discover evidence of Mercer's location	머서가 있는 위치에 관한 증거를 찾기
 Discover Svidi's whereabouts	스비디가 있는 곳을 찾기
 Discover the identity of the tomb's visitor	무덤 방문자의 신원을 밝혀내기
@@ -6776,7 +6776,7 @@ Fine. Take all the artifacts I have.	좋소. 모든 유물들을 가져가시오
 Fine. Take it. (Pay 50 gold)	좋아. 가져가. (50골드 지불)
 Finely Ground Bone Meal	곱게 간 뼛가루
 Finish and name your character?	완료하고 이름을 입력하겠습니까?
-Finished?	끝인가?
+Finished?	완료?
 Finn's Lute	핀의 류트
 Finna	피나
 Fire	화염
@@ -6932,7 +6932,7 @@ For <dur> seconds, opponents in melee range take <8> points frost damage and Sta
 For <dur> seconds, opponents in melee range take <mag> points fire damage per second. Targets on fire take extra damage.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 For <dur> seconds, opponents in melee range take <mag> points frost damage and stamina damage per second.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
 For <dur> seconds, opponents in melee range take <mag> points of damage per second.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 피해를 입힙니다.
-For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
+For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	불꽃의 망토를 둘러 <dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 For <dur> seconds, opponents in melee range take <mag> points shock damage and magicka damage per second.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 전격 피해와 매지카 피해를 입힙니다.
 For <dur> seconds, opponents that get too close take <8> points per second of fire damage.	<dur> 초 동안 주변 적에게 <8> 의 화염 피해를 입힙니다.
 For <dur> seconds, undead in melee range take <10> points sun damage per second.	<dur> 초 동안 주변 언데드에게 매 초마다 <10> 의 태양 피해를 입힙니다.
@@ -7214,7 +7214,7 @@ Fur Gauntlets	털가죽 장갑
 Fur Helmet	털가죽 투구
 Fur Shoes	털가죽 신발
 Fur-lined Boots	야를의 털가죽 장식 신발
-Fur-Trimmed Cloak	털가죽 망토
+Fur-Trimmed Cloak	야를의 털가죽 망토로 장식된 의상
 Fura	퓨라
 Fura Bloodmouth	퓨라 블러드마우스
 FURNITURE	가구
@@ -7914,7 +7914,7 @@ Good to see you.	만나게 되어 다행이군.
 Good, I could use all the help I can get.	좋소. 가능한 한 모든 도움이 필요하오.
 Good, it's about time I met her.	좋네. 드디어 메이븐을 만나 보는군.
 Good, they should be able to help us.	잘 됐소, 우리를 도와줄 수 있겠군.
-Goodbye	잘 가.
+Goodbye	잘 가시오.
 Goodbye.	그럼 이만.
 Gorging	폭식
 Gorm	고엄
@@ -12727,7 +12727,7 @@ Linwe's Gloves	린웨의 장갑
 Linwe's Hood	린웨의 두건
 Lip Color	입술 색상
 Lis	리스
-Lisbet	리즈벳
+Lisbet	리스벳
 Lisbet's Missing Shipment	리즈벳의 잃어버린 짐
 Lisette	리세트
 Listen to Brynjolf's scheme	브린욜프의 계획에 대해 듣기
@@ -13951,7 +13951,7 @@ No. Sorry.	아니. 미안하군.
 No. Stop pestering me.	귀찮게 하지 마라.
 No. We expected some kind of artifact.	우리는 어떤 종류의 유물이라고 생각하고 있소.
 Noble	귀족
-Noble Clothes	귀족의 의상
+Noble Clothes	야를의 기품있는 의상
 Nobleman	귀족
 Noblewoman	귀족 여성
 Nobody hears from them much anymore.	더이상 소식들을 일은 없을 거야.
@@ -15859,7 +15859,7 @@ Reeking Cave	독한악취 동굴
 Reeking Tower	독한악취 탑
 Refined Malachite	주괴 - 공작석
 Refined Moonstone	주괴 - 월장석
-Refined Tunic	세련된 의상
+Refined Tunic	야를의 세련된 의상
 Reflect Attack	반사 공격
 Reflect Blows	반사 공격
 Reflecting Shield	반사 방패
@@ -15954,7 +15954,7 @@ Replace my Child's Room with an Alchemy Lab. (<Global=HDMarkarthAlchemy> gold)	�
 Replace my Child's Room with an Alchemy Lab. (<Global=HDWhiterunAlchemy> gold)	아이들 방을 연금술 실험실로 변경하고 싶다. (<Global=HDWhiterunAlchemy> 골드)
 Replace my Enchanting Lab with a Child's Room. (<Global=HDRiftenChildRoom> gold)	마법 부가 연구실을 아이의 방으로 개조라고 싶다. (<Global=HDRiftenChildRoom> 골드)
 Replace Skeleton Key	해골 열쇠 돌려놓기
-Replace the beacon	등불을 교체하기
+Replace the beacon	표식을 교체하기
 Report Astrid's death to a guard	아스트리드의 죽음을 경비병에게 보고하기
 Report back to <Alias=Friend>	<Alias=Friend>에게 보고하기
 Report back to Adelaisa	아델라이자에게 돌아가 보고하기
@@ -16158,7 +16158,7 @@ Return the box to Trius for the promised reward.	트리우스에게 상자를 �
 Return the Bust of the Gray Fox to Delvin	델빈에게 그레이폭스의 흉상을 가져가기
 Return the Crystal to Paratus	파라투스에게 크리스털을 돌려주기
 Return the Dwemer Puzzle Cube to Delvin	델빈에게 드웨머 수수께끼 큐브를 가져가기
-Return the East Empire Shipping Map to Delvin	델빈에게 동제국 해상운송 지도를 가져가기
+Return the East Empire Shipping Map to Delvin	델빈에게 동 제국 해상운송 지도를 가져가기
 Return the Eye of the Falmer to Delvin	델빈에게 팔머의 눈을 가져가기
 Return the Folio to Cindiri Arano in Raven Rock	레이븐 락에 있는 신디리 아라노에게 한정판 책자를 돌려주기
 Return the Honningbrew Decanter to Delvin	델빈에게 허닝브루 디캔터를 가져가기
