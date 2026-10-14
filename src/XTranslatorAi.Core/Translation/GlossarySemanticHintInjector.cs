@@ -8,6 +8,7 @@ internal static class GlossarySemanticHintInjector
 {
     private const string HintPrefix = SemanticHintConstants.HintPrefix;
     private const string HintSuffix = SemanticHintConstants.HintSuffix;
+    private const int LongTextLength = 2000;
 
     private static readonly Regex TermTokenRegex = new(
         pattern: @"__XT_TERM(?:_[A-Z0-9]+)?_[0-9]{4}__",
@@ -37,11 +38,6 @@ internal static class GlossarySemanticHintInjector
             return false;
         }
 
-        if (text.Length > 2000)
-        {
-            return false;
-        }
-
         return text.Contains("__XT_TERM_", StringComparison.Ordinal);
     }
 
@@ -52,11 +48,19 @@ internal static class GlossarySemanticHintInjector
             return text;
         }
 
+        // A long text (books) hints each token once, so the prompt does not grow with every repeat; it got no hints at all
+        // over 2,000 characters, and the model saw only bare tokens for 스카이림 in Children of the Sky.
+        var hinted = text.Length > LongTextLength ? new HashSet<string>(StringComparer.Ordinal) : null;
         return TermTokenRegex.Replace(
             text,
             m =>
             {
                 var token = m.Value;
+                if (hinted != null && !hinted.Add(token))
+                {
+                    return token;
+                }
+
                 if (!tokenToReplacement!.TryGetValue(token, out var replacement) || string.IsNullOrWhiteSpace(replacement))
                 {
                     return token;
