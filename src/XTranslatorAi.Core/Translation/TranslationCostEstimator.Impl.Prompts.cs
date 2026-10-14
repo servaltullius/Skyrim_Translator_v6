@@ -170,15 +170,8 @@ public sealed partial class TranslationCostEstimator
             }
         }
 
-        string GetGroupKey(PreparedRow row)
-        {
-            if (!prepared.ContextById.TryGetValue(row.Id, out var ctx))
-            {
-                ctx = (null, null);
-            }
-
-            return TranslationBatchGrouping.ComputeGroupKey(ctx.Rec, ctx.Edid, row.Source);
-        }
+        (string? Rec, string? Edid) GetContext(PreparedRow row)
+            => prepared.ContextById.TryGetValue(row.Id, out var ctx) ? (ctx.Rec, ctx.Edid) : (null, null);
 
         static string GetRecSortKey(string? rec) => (rec ?? "").Trim();
 
@@ -189,6 +182,9 @@ public sealed partial class TranslationCostEstimator
                 return;
             }
 
+            var groups = TranslationBatchGrouping.ComputeGroupKeys(
+                list.Select(it => (GetContext(it).Rec, GetContext(it).Edid, it.Source)).ToList()
+            );
             var sorted = list
                 .Select(
                     (it, idx) =>
@@ -196,7 +192,7 @@ public sealed partial class TranslationCostEstimator
                         {
                             Item = it,
                             Index = idx,
-                            Group = GetGroupKey(it),
+                            Group = groups[idx],
                             Rec = prepared.ContextById.TryGetValue(it.Id, out var ctx) ? GetRecSortKey(ctx.Rec) : "",
                         }
                 )

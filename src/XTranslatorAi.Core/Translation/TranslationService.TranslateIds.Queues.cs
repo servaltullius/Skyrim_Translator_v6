@@ -91,6 +91,9 @@ public sealed partial class TranslationService
             return;
         }
 
+        var groups = TranslationBatchGrouping.ComputeGroupKeys(
+            list.Select(it => (GetRecForId(it.Id), GetEdidForId(it.Id), it.Source)).ToList()
+        );
         var sorted = list
             .Select(
                 (it, idx) =>
@@ -98,7 +101,7 @@ public sealed partial class TranslationService
                     {
                         Item = it,
                         Index = idx,
-                        Group = TranslationBatchGrouping.ComputeGroupKey(GetRecForId(it.Id), GetEdidForId(it.Id), it.Source),
+                        Group = groups[idx],
                         Rec = (GetRecForId(it.Id) ?? "").Trim(),
                     }
             )
