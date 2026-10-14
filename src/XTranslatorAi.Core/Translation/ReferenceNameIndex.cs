@@ -153,7 +153,7 @@ public sealed partial class ReferenceNameIndex
     public GlossaryApplication ForceNames(GlossaryApplication glossed, GlossaryApplier? glossary = null)
     {
         // A term the glossary has is the glossary's to force or leave: it skips "What in Oblivion" and "Pale light".
-        var names = FindIn(glossed.Text, max: 16).Where(name => glossary?.HasTerm(name.Source) != true).ToList();
+        var names = FindIn(glossed.Text, MaxForcedNames(glossed.Text), name => glossary?.HasTerm(name.Source) != true).ToList();
         if (names.Count == 0 && _materials.Length == 0)
         {
             return glossed;
@@ -186,12 +186,11 @@ public sealed partial class ReferenceNameIndex
     public GlossaryApplication ApplyWithGlossary(string text, GlossaryApplier glossary)
     {
         var glossed = glossary.Apply(text);
-        var broken = FindIn(text, max: 16)
-            .Where(name => !glossary.HasTerm(name.Source))
-            .Where(name => !glossed.Text.Contains(name.Source, StringComparison.Ordinal))
-            // Broken by a shorter term inside it; a longer term around it ("Raven Rock Harbor") is the glossary's.
-            .Where(name => !string.Equals(glossary.Apply(name.Source).Text, name.Source, StringComparison.Ordinal))
-            .Where(name => !WholeTokenRegex.IsMatch(glossary.Apply(name.Source).Text.Trim()))
+        var broken = FindIn(text, MaxForcedNames(text), name => !glossary.HasTerm(name.Source)
+                && !glossed.Text.Contains(name.Source, StringComparison.Ordinal)
+                // Broken by a shorter term inside it; a longer term around it ("Raven Rock Harbor") is the glossary's.
+                && !string.Equals(glossary.Apply(name.Source).Text, name.Source, StringComparison.Ordinal)
+                && !WholeTokenRegex.IsMatch(glossary.Apply(name.Source).Text.Trim()))
             .ToList();
         if (broken.Count == 0)
         {
@@ -219,6 +218,10 @@ public sealed partial class ReferenceNameIndex
 
         return ForceNames(glossed with { TokenToReplacement = tokens }, glossary);
     }
+
+    // 16 names for a line, more for a long text: Legacy of the Dragonborn's DBM_RelicBook lists 257 official names in
+    // 11,903 characters, and with 16 its "Lusty Argonian Maid" (the 129th) was left to the model.
+    private static int MaxForcedNames(string text) => Math.Max(16, text.Length / 32);
 
     private static readonly Regex WholeTokenRegex = new(@"^__XT_[A-Z0-9_]+__$", RegexOptions.CultureInvariant);
 
@@ -251,8 +254,11 @@ public sealed partial class ReferenceNameIndex
         return !PlaceNouns.Contains(next) && !_ordinaryWords.Contains(next.ToLowerInvariant());
     }
 
-    /// <summary>Names written exactly as in the memory (capitalized) in <paramref name="text"/>, longest first, without overlaps.</summary>
-    public IReadOnlyList<(string Source, string Target)> FindIn(string text, int max = 8)
+    /// <summary>
+    /// Names written exactly as in the memory (capitalized) in <paramref name="text"/>, longest first, without overlaps.
+    /// A name <paramref name="include"/> rejects still covers its words but does not count toward <paramref name="max"/>.
+    /// </summary>
+    public IReadOnlyList<(string Source, string Target)> FindIn(string text, int max = 8, Func<(string Source, string Target), bool>? include = null)
     {
         var found = new List<(string Source, string Target)>();
         if (string.IsNullOrEmpty(text) || _byFirstWord.Count == 0)
@@ -288,7 +294,7 @@ public sealed partial class ReferenceNameIndex
                 }
 
                 coveredUntil = word.Index + candidate.Source.Length;
-                if (seen.Add(candidate.Source))
+                if (seen.Add(candidate.Source) && include?.Invoke(candidate) != false)
                 {
                     found.Add(candidate);
                 }

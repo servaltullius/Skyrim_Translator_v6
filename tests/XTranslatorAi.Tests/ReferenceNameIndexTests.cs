@@ -253,6 +253,46 @@ public class ReferenceNameIndexTests
         Assert.Equal("진정한 바렌자이아", Assert.Single(index.FindIn("A copy of The Real Barenziah.")).Target);
     }
 
+    private static readonly (string Source, string Target)[] RelicNames =
+    {
+        ("Drainheart Sword", "생기흡수의 검"), ("Drainspell Bow", "마법흡수의 활"), ("Diadem of the Savant", "학자의 왕관"),
+        ("Mage's Circlet", "마법사의 서클렛"), ("Briarheart Geis", "찔레심장 도끼"), ("Karliah's Bow", "칼라이아의 활"),
+        ("Bow of the Hunt", "사냥의 활"), ("Stendarr's Hammer", "스텐다르의 망치"), ("Blade of Woe", "비통의 단검"),
+        ("Borvir's Dagger", "보비어의 단검"), ("Blade of Sacrifice", "희생의 단검"), ("Kahvozein's Fang", "카포자인의 단검"),
+        ("Harkon's Sword", "하콘의 검"), ("Bolar's Oathblade", "볼라의 서약검"), ("Froki's Bow", "프로키의 활"),
+        ("Red Eagle's Bane", "붉은 독수리의 파멸"), ("Firiniel's End", "피리니엘의 종말"), ("Gloves of the Pugilist", "권투선수의 장갑"),
+        ("The Lusty Argonian Maid, v1", "음란한 아르고니안 메이드, 제 1권"), ("The Lusty Argonian Maid, v2", "음란한 아르고니안 메이드, 제 2권"),
+    };
+
+    // Legacy of the Dragonborn's DBM_RelicBook (11,903 characters) names 257 official names, "Lusty Argonian Maid" the
+    // 129th; only the first 16 were forced, and the model wrote 음탕한 아르고니안 메이드.
+    [Fact]
+    public void ALongList_ForcesNamesPastTheFirstSixteen()
+    {
+        var index = ReferenceNameIndex.Build(RelicNames);
+        var text = string.Join("\n", RelicNames.Take(18).Select(name => name.Source + " - on display in the main gallery")) + "\nLusty Argonian Maid V1-2";
+
+        var applied = index.ForceNames(new GlossaryApplication(text, new Dictionary<string, string>(), Array.Empty<(string, string)>()));
+
+        Assert.DoesNotContain("Lusty Argonian Maid", applied.Text);
+        Assert.Contains("음란한 아르고니안 메이드", applied.TokenToReplacement.Values);
+    }
+
+    // Names the glossary has are left to it, so they must not use up the names the index forces.
+    [Fact]
+    public void NamesTheGlossaryHas_DoNotCountTowardTheLimit()
+    {
+        var index = ReferenceNameIndex.Build(RelicNames);
+        var glossary = new GlossaryApplier(RelicNames.Take(18).Select((name, i) => new GlossaryEntry(
+            i + 1, null, name.Source, name.Target, true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.PromptOnly, 10, null)).ToArray());
+        var text = string.Join(", ", RelicNames.Take(18).Select(name => name.Source)) + " and Lusty Argonian Maid.";
+
+        var applied = index.ApplyWithGlossary(text, glossary);
+
+        Assert.DoesNotContain("Lusty Argonian Maid", applied.Text);
+        Assert.Contains("음란한 아르고니안 메이드", applied.TokenToReplacement.Values);
+    }
+
     // The memory names the Black Books only with their category ("Black Book: Waking Dreams" → "검은 책: 백일몽"), so
     // Elden Rim's "Secret Book - Waking Dreams" came back as 깨어 있는 꿈, and five of the seven titles were wrong. A
     // title after a category the memory uses for three or more entries is a name, with and without its "The".
