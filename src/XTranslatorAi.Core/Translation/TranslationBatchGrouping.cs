@@ -7,10 +7,15 @@ internal static class TranslationBatchGrouping
     private const int MinSeriesRows = 3;
 
     /// <summary>
-    /// Sort keys that put a name series ("AttackDebuff - Knockback", "AttackDebuff - Drag", ...) into one run even when
-    /// its records use unrelated EditorIDs or record types. A record's other rows (its description) follow its name.
-    /// Rows outside any series keep <see cref="ComputeGroupKey"/>. Elden Rim's series were spread across the whole
-    /// sort order before, so each part was translated in a different batch and the series came out in mixed wording.
+    /// Sort keys that keep related names in one batch, so the parts are translated together:
+    /// <list type="bullet">
+    /// <item>One skill written in several forms ("Learning - Waterfowl Dance", "Waterfowl Dance (1H Sword)", "Weapon Art -
+    /// Waterfowl Dance (Charged)") shares the skill's name. Grouped by prefix, Elden Rim got 물새 난격 and 물새 난무, 에오히드의
+    /// 검무 and 에오히드의 춤추는 칼날. The prefixes themselves are glossary terms or seeded as session terms.</item>
+    /// <item>Otherwise a name series ("AttackDebuff - Knockback", "AttackDebuff - Drag", ...) shares its prefix even when its
+    /// records use unrelated EditorIDs or record types; before, Elden Rim's series came out in mixed wording.</item>
+    /// </list>
+    /// A record's other rows (its description) follow its name. Other rows keep <see cref="ComputeGroupKey"/>.
     /// </summary>
     public static IReadOnlyList<string> ComputeGroupKeys(IReadOnlyList<(string? Rec, string? Edid, string SourceText)> items)
     {
@@ -21,13 +26,26 @@ internal static class TranslationBatchGrouping
             .ToDictionary(g => g.Key, g => g.Count(), StringComparer.OrdinalIgnoreCase);
         bool IsSeries(string stem) => stem.Length > 0 && counts[stem] >= MinSeriesRows;
 
-        var seriesByRecord = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var names = items.Select(it => SkillName(it.Rec, it.SourceText)).ToArray();
+        var forms = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (names[i].Length > 0)
+            {
+                (forms.TryGetValue(names[i], out var set) ? set : forms[names[i]] = new HashSet<string>(StringComparer.Ordinal))
+                    .Add(items[i].SourceText.Trim());
+            }
+        }
+
+        string? OwnKey(int i) => names[i].Length > 0 && forms[names[i]].Count >= 2 ? names[i] : IsSeries(stems[i]) ? stems[i] : null;
+
+        var keyByRecord = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         for (var i = 0; i < items.Count; i++)
         {
             var record = NormalizeEdid(items[i].Edid);
-            if (record.Length > 0 && IsSeries(stems[i]))
+            if (record.Length > 0 && OwnKey(i) is { } key)
             {
-                seriesByRecord.TryAdd(record, stems[i]);
+                keyByRecord.TryAdd(record, key);
             }
         }
 
@@ -35,12 +53,45 @@ internal static class TranslationBatchGrouping
         for (var i = 0; i < items.Count; i++)
         {
             var (rec, edid, source) = items[i];
-            keys[i] = IsSeries(stems[i]) ? stems[i]
-                : seriesByRecord.TryGetValue(NormalizeEdid(edid), out var series) ? series
-                : ComputeGroupKey(rec, edid, source);
+            keys[i] = OwnKey(i)
+                      ?? (keyByRecord.TryGetValue(NormalizeEdid(edid), out var recordKey) ? recordKey : ComputeGroupKey(rec, edid, source));
         }
 
         return keys;
+    }
+
+    private static readonly string[] PrefixSeparators = { " - ", " – ", " — ", ": " };
+
+    // The name after a prefix and without a trailing qualifier: "Weapon Art - Waterfowl Dance (Charged)" → "Waterfowl Dance".
+    // Only names of two or more words; "Enchanting - Fire" and "Blade Oil - Fire" are not one skill.
+    private static string SkillName(string? rec, string sourceText)
+    {
+        var text = sourceText.Trim();
+        if (NormalizeRecBase(rec)?.ToUpperInvariant() is "INFO" or "DIAL" || text.Length > 80 || text.Contains('\n'))
+        {
+            return "";
+        }
+
+        var cut = -1;
+        var separatorLength = 0;
+        foreach (var separator in PrefixSeparators)
+        {
+            var index = text.IndexOf(separator, StringComparison.Ordinal);
+            if (index > 0 && (cut < 0 || index < cut))
+            {
+                (cut, separatorLength) = (index, separator.Length);
+            }
+        }
+
+        var name = cut > 0 ? text[(cut + separatorLength)..] : text;
+        var qualifier = name.LastIndexOf(" (", StringComparison.Ordinal);
+        if (name.EndsWith(')') && qualifier > 0)
+        {
+            name = name[..qualifier];
+        }
+
+        name = name.Trim();
+        return name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length >= 2 ? name : "";
     }
 
     // Dialogue lines belong with their topic; a shared "Yes (Persuade)" prefix says nothing about them.

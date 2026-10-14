@@ -41,6 +41,39 @@ public sealed class TranslationBatchGroupingTests
     }
 
     [Fact]
+    public void OneSkillWrittenInSeveralForms_SharesOneKey()
+    {
+        // Elden Rim names a skill under several prefixes and qualifiers; grouped by prefix, the forms were translated
+        // in different batches as 물새 난격 / 물새 난무 and 에오히드의 검무 / 에오히드의 춤추는 칼날.
+        var keys = TranslationBatchGrouping.ComputeGroupKeys(new (string?, string?, string)[]
+        {
+            ("MGEF:FULL", "PlayerKnow_80", "Learning - Waterfowl Dance"),
+            ("MGEF:DNAM", "PlayerKnow_80", "Slash foes in a flurry."),
+            ("MGEF:FULL", "Learning_81", "Learning - Moonlight Thrust"),
+            ("MGEF:FULL", "Learning_82", "Learning - Sky Shot"),
+            ("MGEF:FULL", "EnchDisable_30", "Waterfowl Dance (1H Sword)"),
+            ("ENCH:FULL", "WarAshEnchDisable_31", "Weapon Art - Waterfowl Dance (Charged)"),
+        });
+
+        Assert.Equal(new[] { "Waterfowl Dance", "Waterfowl Dance", "Learning", "Learning", "Waterfowl Dance", "Waterfowl Dance" }, keys);
+    }
+
+    [Fact]
+    public void OneWordAfterAPrefix_IsNoSkillName()
+    {
+        // "Fire" after several prefixes is an element, not one skill: the series keys stay.
+        var keys = TranslationBatchGrouping.ComputeGroupKeys(new (string?, string?, string)[]
+        {
+            ("SPEL:FULL", "Ench1", "Enchanting - Fire"),
+            ("SPEL:FULL", "Ench2", "Enchanting - Frost"),
+            ("SPEL:FULL", "Ench3", "Enchanting - Shock"),
+            ("MGEF:FULL", "Oil1", "Blade Oil - Fire"),
+        });
+
+        Assert.Equal(new[] { "Enchanting", "Enchanting", "Enchanting", "Oil" }, keys);
+    }
+
+    [Fact]
     public void PrefixSharedByFewerThanThreeRows_KeepsTheEditorIdKey()
     {
         var keys = TranslationBatchGrouping.ComputeGroupKeys(new (string?, string?, string)[]
