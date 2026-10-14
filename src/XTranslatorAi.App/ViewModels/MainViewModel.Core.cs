@@ -85,6 +85,7 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
         _projectWorkspaceService = services.ProjectWorkspaceService;
         _translationRunnerService = services.TranslationRunnerService;
         _compareTranslationService = services.CompareTranslationService;
+        _gameStringService = services.GameStringService;
 
         // Long book texts on some models (e.g., Gemini 3 preview) can take several minutes per request.
         // Use a higher client timeout and rely on cancellation tokens for user-initiated Stop.
@@ -199,6 +200,7 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
 
         _isUpdatingTranslationPreferences = false;
         PropertyChanged += SaveChangedTranslationPreference;
+        _ = RefreshGameStringStatusAsync();
     }
 
     private void LoadSavedApiKeys(AppSettings settings)

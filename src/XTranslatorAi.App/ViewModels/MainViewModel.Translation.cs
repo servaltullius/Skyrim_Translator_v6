@@ -107,7 +107,8 @@ public partial class MainViewModel
                     MaxRetryGenerations: MaxRetryGenerations,
                     MaxTotalGenerations: MaxTotalGenerations,
                     EnableAdaptiveOutputBudget: EnableAdaptiveOutputBudget,
-                    EnableBookContext: EnableBookContext
+                    EnableBookContext: EnableBookContext,
+                    GameStrings: await TryLoadGameStringsAsync(cancellationToken)
                 );
 
                 var result = await Task.Run(() => _translationRunnerService.RunAsync(request), cancellationToken);

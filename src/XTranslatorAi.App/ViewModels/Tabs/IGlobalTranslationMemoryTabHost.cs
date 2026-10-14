@@ -20,4 +20,7 @@ public interface IGlobalTranslationMemoryTabHost : INotifyPropertyChanged
     ICollectionView FranchiseTranslationMemoryView { get; }
 
     TranslationMemoryEntryViewModel? SelectedFranchiseTranslationMemoryEntry { get; set; }
+
+    string GameStringStatus { get; }
+    IAsyncRelayCommand BuildGameStringDictionaryCommand { get; }
 }

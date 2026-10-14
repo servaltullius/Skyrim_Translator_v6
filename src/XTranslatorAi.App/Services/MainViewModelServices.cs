@@ -14,5 +14,7 @@ public sealed record MainViewModelServices(
     FranchiseTranslationMemoryService FranchiseTranslationMemoryService,
     ProjectWorkspaceService ProjectWorkspaceService,
     TranslationRunnerService TranslationRunnerService,
-    CompareTranslationService CompareTranslationService
+    CompareTranslationService CompareTranslationService,
+    // Null in tests: the player's game translation stays off instead of reading the real global folder.
+    GameStringService? GameStringService = null
 );

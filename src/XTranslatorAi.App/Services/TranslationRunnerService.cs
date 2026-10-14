@@ -58,7 +58,9 @@ public sealed class TranslationRunnerService
         int MaxTotalGenerations = 0,
         bool EnableAdaptiveOutputBudget = false,
         bool EnableBookContext = false,
-        IReadOnlyDictionary<string, string>? BookTitlesByEdid = null
+        IReadOnlyDictionary<string, string>? BookTitlesByEdid = null,
+        // The player's game translation; rows it covers are finished without a request (see GameStringDictionary).
+        XTranslatorAi.Core.Plugins.GameStringDictionary? GameStrings = null
     );
 
     public sealed record Result(bool Canceled, Exception? Error);
@@ -175,7 +177,8 @@ public sealed class TranslationRunnerService
         int MaxOutputTokens,
         IReadOnlyList<GlossaryEntry>? GlobalGlossary,
         IReadOnlyDictionary<string, string>? GlobalTranslationMemory,
-        IReadOnlyList<(string Source, string Target)>? ReferenceNameMemory
+        IReadOnlyList<(string Source, string Target)>? ReferenceNameMemory,
+        IReadOnlyDictionary<long, XTranslatorAi.Core.Plugins.GameStringMatch>? GameStringMatches = null
     );
 
     private async Task<IReadOnlyList<TranslationRun>> BuildRunsAsync(Request request)
@@ -320,6 +323,9 @@ public sealed class TranslationRunnerService
         var globalGlossary = await TryLoadGlobalGlossaryAsync(request);
         var globalTranslationMemory = await TryLoadGlobalTranslationMemoryAsync(request);
         var referenceNameMemory = await TryLoadReferenceNameMemoryAsync(request);
+        var gameStringMatches = request.GameStrings == null
+            ? null
+            : await request.GameStrings.MatchAsync(request.Db, ids, request.CancellationToken);
 
         return new TranslationRun(
             Service: service,
@@ -334,7 +340,8 @@ public sealed class TranslationRunnerService
             MaxOutputTokens: maxOut,
             GlobalGlossary: globalGlossary,
             GlobalTranslationMemory: globalTranslationMemory,
-            ReferenceNameMemory: referenceNameMemory
+            ReferenceNameMemory: referenceNameMemory,
+            GameStringMatches: gameStringMatches
         );
     }
 
@@ -425,6 +432,7 @@ public sealed class TranslationRunnerService
             GlobalGlossary: run.GlobalGlossary,
             GlobalTranslationMemory: run.GlobalTranslationMemory,
             ReferenceNameMemory: run.ReferenceNameMemory,
+            GameStringMatches: run.GameStringMatches,
             SemanticRepairMode: request.SemanticRepairMode,
             EnableTemplateFixer: request.EnableTemplateFixer,
             KeepSkyrimTagsRaw: request.KeepSkyrimTagsRaw,

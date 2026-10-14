@@ -27,6 +27,10 @@ public sealed class GlobalTranslationMemoryTabViewModel : ObservableObject, IDis
         OnPropertyChanged(e.PropertyName);
     }
 
+    public string GameStringStatus => _host.GameStringStatus;
+
+    public IAsyncRelayCommand BuildGameStringDictionaryCommand => _host.BuildGameStringDictionaryCommand;
+
     public string FranchiseTranslationMemorySourceText
     {
         get => _host.FranchiseTranslationMemorySourceText;

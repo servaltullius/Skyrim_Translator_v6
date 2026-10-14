@@ -85,7 +85,8 @@ public partial class App : Application
                 FranchiseTranslationMemoryService: franchiseTranslationMemoryService,
                 ProjectWorkspaceService: projectWorkspaceService,
                 TranslationRunnerService: translationRunnerService,
-                CompareTranslationService: compareTranslationService
+                CompareTranslationService: compareTranslationService,
+                GameStringService: new GameStringService()
             );
             var vm = new ViewModels.MainViewModel(httpClient, services);
             var window = new MainWindow(vm);
