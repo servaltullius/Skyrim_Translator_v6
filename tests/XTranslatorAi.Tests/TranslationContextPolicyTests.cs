@@ -71,4 +71,21 @@ public class TranslationContextPolicyTests
         Assert.Contains("문어체", TranslationStyleHints.Get("A History", "BOOK:DESC"));
         Assert.Contains("spoken Korean", TranslationStyleHints.Get("Hello", "INFO:NAM1"));
     }
+
+    // Books draw their first letter as an image: the model saw "__XT_PH_0021__ords consider themselves..." for
+    // Children of the Sky and wrote 드는 (the 노 of 노드 left to the English N image).
+    [Fact]
+    public void BookDropCap_TellsTheModelTheWholeFirstWord()
+    {
+        const string source = "[pagebreak]\n<p align=\"left\">\n"
+            + "<img src='img://Textures/Interface/Books/Illuminated_Letters/N_letter.png'>ords consider themselves to be the children of the sky.\n"
+            + "[pagebreak]\n<img src=\"img://Textures/Interface/Books/Illuminated_Letters/T_letter.png\" width=\"58\">he breath and the voice.";
+
+        var hint = TranslationStyleHints.Get(source, "BOOK:DESC");
+
+        Assert.Contains("\"N\"", hint);
+        Assert.Contains("\"Nords\"", hint);
+        Assert.Contains("\"The\"", hint);
+        Assert.DoesNotContain("first letter", TranslationStyleHints.Get("Nords consider themselves to be the children of the sky.", "BOOK:DESC"));
+    }
 }

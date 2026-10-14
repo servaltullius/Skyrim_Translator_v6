@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace XTranslatorAi.Core.Translation;
 
@@ -117,7 +119,45 @@ public static class TranslationStyleHints
                 "\n\nFor any <i>...</i> block that is a poem/riddle/inscription, use a solemn archaic literary register (예언/주문/비문 느낌). Prefer endings like \"…리라\", \"…지어다\", \"…것이요/…보여주리라\" and keep line breaks inside the <i> block as-is.";
         }
 
-        return styleHint;
+        return styleHint + DropCapNote(sourceText);
+    }
+
+    private static readonly Regex DropCapRegex = new(
+        @"<img\s[^>]*Illuminated_Letters/(?<letter>[A-Za-z])_letter\.png[^>]*>(?<rest>[A-Za-z'’\-]*)",
+        RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
+    );
+
+    // Books draw the first letter of a chapter as an image, and the masked text shows only a token before the rest of the
+    // word: "__XT_PH_0021__ords consider themselves..." (Nords) came back as 드는, the 노 left to the English N image.
+    private static string DropCapNote(string sourceText)
+    {
+        if (sourceText.IndexOf("Illuminated_Letters", StringComparison.OrdinalIgnoreCase) < 0)
+        {
+            return "";
+        }
+
+        var words = new List<string>();
+        foreach (Match m in DropCapRegex.Matches(sourceText))
+        {
+            var letter = m.Groups["letter"].Value.ToUpperInvariant();
+            var rest = m.Groups["rest"].Value;
+            var note = rest.Length == 0
+                ? $"that opens a chapter draws the letter \"{letter}\", which is a whole word here (\"{letter}\")"
+                : $"before \"{rest}\" draws the letter \"{letter}\", so the word is \"{letter}{rest}\"";
+            if (!words.Contains(note))
+            {
+                words.Add(note);
+            }
+        }
+
+        if (words.Count == 0)
+        {
+            return "";
+        }
+
+        return "\n\nDecorated first letter: the token " + string.Join("; the token ", words)
+               + ". The image shows only the English letter, so keep the token where it is and write the complete translation of that word right after it; "
+               + "do not leave out the part the letter stands for.";
     }
 
     // Lowercase words a Title Case name may still contain: "Ring of Rim", "Sword and Scabbard".
