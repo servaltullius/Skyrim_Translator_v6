@@ -136,6 +136,8 @@ public sealed class ProjectContextScanner
         var samples = new List<ProjectContextSample>();
         var seenSamples = new HashSet<string>(StringComparer.Ordinal);
         var plainSamples = new List<ProjectContextSample>();
+        // A row marked "원문 오류 수정" is translated against its English on purpose; its translation is not the term's.
+        var sourceFixIds = await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, cancellationToken);
 
         const int pageSize = 2000;
         for (var offset = 0; offset < total; offset += pageSize)
@@ -145,7 +147,10 @@ public sealed class ProjectContextScanner
             foreach (var row in rows)
             {
                 AccumulateRecCount(recCounts, row.Rec);
-                AccumulateEditedSessionTerm(editedByKey, row);
+                if (!sourceFixIds.ContainsKey(row.Id))
+                {
+                    AccumulateEditedSessionTerm(editedByKey, row);
+                }
 
                 var source = row.SourceText ?? "";
                 if (string.IsNullOrWhiteSpace(source))

@@ -130,6 +130,11 @@ public sealed partial class ProjectDb
             return;
         }
 
+        if ((await GetSourceFixIdsUnsafeAsync(cancellationToken)).Contains(id))
+        {
+            return;
+        }
+
         var sourceText = await TryGetStringSourceTextUnsafeAsync(id, cancellationToken);
         var srcKey = TranslationMemoryKey.NormalizeSource(sourceText);
         if (string.IsNullOrWhiteSpace(srcKey))
@@ -172,9 +177,10 @@ public sealed partial class ProjectDb
         }
 
         var sourceTexts = await GetStringSourceTextsUnsafeAsync(ids, cancellationToken);
+        var sourceFixIds = await GetSourceFixIdsUnsafeAsync(cancellationToken);
         foreach (var (id, destText) in editedRows)
         {
-            if (!sourceTexts.TryGetValue(id, out var sourceText))
+            if (sourceFixIds.Contains(id) || !sourceTexts.TryGetValue(id, out var sourceText))
             {
                 continue;
             }

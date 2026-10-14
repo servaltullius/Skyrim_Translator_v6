@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using XTranslatorAi.App.Services;
-using XTranslatorAi.Core;
 
 namespace XTranslatorAi.App.ViewModels;
 
@@ -17,7 +16,8 @@ public partial class MainViewModel
     /// another record's text, a typo that changes the meaning) and its translation departs from it on purpose, so
     /// the quality check stops comparing it with the English and with other rows; its tags are still checked.
     /// With the selected rows of the strings grid, or the open row when none are passed. Rows that are all marked
-    /// are unmarked; otherwise all are marked. Retranslating a row removes its mark.
+    /// are unmarked; otherwise all are marked. A marked row's translation is taken out of the project TM. Retranslating
+    /// a row removes its mark.
     /// </summary>
     [RelayCommand(CanExecute = nameof(CanRetranslate))]
     private async Task ToggleSourceFixAsync(IList? selectedRows)
@@ -37,15 +37,7 @@ public partial class MainViewModel
         {
             foreach (var row in rows)
             {
-                if (mark)
-                {
-                    await db.UpsertStringNoteAsync(row.Id, TranslationConstants.SourceFixNoteKind, "원문 오류 수정", CancellationToken.None);
-                }
-                else
-                {
-                    await db.DeleteStringNoteAsync(row.Id, TranslationConstants.SourceFixNoteKind, CancellationToken.None);
-                }
-
+                await db.SetSourceFixAsync(row.Id, mark, CancellationToken.None);
                 row.IsSourceFix = mark;
             }
         }

@@ -116,6 +116,39 @@ public class ProjectContextScannerTests
         }
     }
 
+    // A row marked "원문 오류 수정" is translated against its English on purpose; its translation is not the term's.
+    [Fact]
+    public async Task ScanAsync_DoesNotOfferASourceFixRowsTranslationAsTheTerm()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"xt-context-fix-{Guid.NewGuid():N}.sqlite");
+        try
+        {
+            await using var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
+            await SeedProjectAsync(db);
+            await db.BulkInsertStringsAsync(new[]
+            {
+                CreateRow(0, "MGEF:FULL", "Sudden Tornado"),
+                CreateRow(1, "SPEL:FULL", "Sudden Tornado"),
+                CreateRow(2, "SCRL:FULL", "Sudden Tornado"),
+            }, CancellationToken.None);
+            var fix = (await db.GetStringsAsync(1, 0, CancellationToken.None)).Single();
+            await db.UpdateStringTranslationAsync(fix.Id, "약한 충격: 비틀거림", StringEntryStatus.Edited, null, CancellationToken.None);
+            var options = new ProjectContextScanOptions("Rim.esp", "Rim.esp", "english", "korean");
+            Assert.Contains((await new ProjectContextScanner().ScanAsync(db, null, options, CancellationToken.None)).TopTerms,
+                t => t.Source == "Sudden Tornado" && t.Target == "약한 충격: 비틀거림");
+
+            await db.SetSourceFixAsync(fix.Id, true, CancellationToken.None);
+
+            var term = Assert.Single((await new ProjectContextScanner().ScanAsync(db, null, options, CancellationToken.None)).TopTerms,
+                t => t.Source == "Sudden Tornado");
+            Assert.Null(term.Target);
+        }
+        finally
+        {
+            TestDbHelper.ReleaseProjectPoolAndDeleteDbFiles(path);
+        }
+    }
+
     private static (int OrderIndex, string? ListAttr, string? PartialAttr, string? AttributesJson, string? Edid, string? Rec, string SourceText, string DestText, StringEntryStatus Status, string RawStringXml) CreateRow(
         int orderIndex,
         string rec,
