@@ -15,20 +15,31 @@
 
 ## 파일
 
+이번에 받은 압축 파일에 들어 있는 묶음만 보면 됩니다.
+
 | 파일 | 내용 |
 |---|---|
-| `index.csv` | 묶음 목록과 행 수 |
+| `index.csv` | 이번 묶음의 파일 목록과 행 수 |
 | `01-used-by-mods-*.csv` | 실제 모드 번역에 쓰이는 문장 |
+| `02-names-*.csv` | 이름(아이템, 주문, 장소, 인물 등) |
+| `03-descriptions-*.csv` | 효과·아이템 설명 |
+| `04-quests-*.csv` | 퀘스트 이름, 목표, 일지 |
+| `05-books-*.csv` | 책 본문 |
+| `06-dialogue-*.csv` | 대사 |
+| `07-other-*.csv` | 그 밖의 문자열 |
 
 ## 열
 
-`plugin, table, id, rec, edid, overridden_by, source_en, current_ko`
+`plugin, table, id, rec, edid, overridden_by, source_en, current_ko, other_ko`
 
 - `rec`: 레코드:서브레코드. 예를 들어 `WEAP:FULL`은 무기 이름, `NPC_:SHRT`는 NPC 짧은 이름, `QUST:NNAM`은 퀘스트 목표, `INFO:NAM1`은 대사입니다.
 - `edid`: 레코드의 에디터 ID입니다. 레코드가 실제로 무엇인지 알려 줍니다(예: `EnchArmorDragonscaleCuirassLightArmor04`는 경갑 강화 4단계).
 - `overridden_by`: 비어 있지 않으면, 그 플러그인(Update.esm이나 DLC)이 같은 레코드를 덮어써서 **게임에는 그 플러그인의 번역이 보인다**는 뜻입니다.
   - 이 줄은 화면에 나오지 않습니다.
   - 표기를 맞출 때는 화면에 보이는 쪽을 기준으로 삼아 주세요. 예: Skyrim.esm의 Smithing 번역 "뼈다귀 제련"은 Update.esm의 "제련"에 가려져 있습니다.
+- `other_ko`: 같은 영어를 패치 전체(이번 묶음에 없는 파일 포함)에서 다르게 옮긴 번역과 그 개수입니다. 예: `서리 숨결 (17) | 냉기 호흡 (3, 가려짐)`.
+  - "가려짐"은 그 번역이 쓰인 줄이 모두 다른 플러그인에 덮어쓰여 화면에 안 보인다는 뜻입니다.
+  - 불일치를 판단할 때 근거로 써 주세요. 다만 같은 영어라도 레코드가 다르면 일부러 다르게 옮긴 경우가 있습니다(예: 무기 이름과 같은 이름의 주문). `rec`와 `edid`를 함께 봐 주세요.
 
 ## 봐 주셨으면 하는 것 (중요한 순서)
 
@@ -66,6 +77,7 @@ plugin,table,id,current_ko,suggested_ko,category,confidence,reason
   - 이 넷으로 줄을 찾습니다. `current_ko`가 지금 패치와 다르면 그 제안은 버립니다.
   - 다른 줄의 값을 섞지 않도록 특히 조심해 주세요. 지난 검수에서 제안이 한 줄씩 밀린 일이 있었습니다.
 - `suggested_ko`에는 고친 번역 **전체**를 적어 주세요(일부만 적지 말 것). 여러 줄인 글은 원래 줄바꿈을 그대로 두세요.
+- 빠진 태그를 넣을 때는 `source_en`에 있는 태그를 **따옴표까지 그대로** 복사해 주세요. 영어가 `<font face="$HandwrittenFont">`이면 `'`가 아니라 `"`입니다. 태그는 글자 그대로 비교합니다.
 - `category`: 오역 / 어긋남 / 불일치 / 오타 / 태그 / 문장
 - `confidence`: high / medium / low(추측)
 - `reason`: 근거. 다른 줄을 근거로 들면 그 줄의 plugin·table·id를 적어 주세요. `edid`나 `overridden_by`를 근거로 썼다면 그것도 적어 주세요.

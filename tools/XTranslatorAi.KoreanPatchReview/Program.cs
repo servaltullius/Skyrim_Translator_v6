@@ -52,6 +52,17 @@ async Task<int> Export()
     var groups = strings
         .GroupBy(s => used.Contains(TranslationMemoryKey.NormalizeSource(s.English)) ? "01-used-by-mods" : Category(s.Rec))
         .OrderBy(g => g.Key, StringComparer.Ordinal);
+    // The patch's other translations of the same English, in every file: a batch alone does not show that a name is
+    // 서리 숨결 in 17 strings elsewhere. Short lines only; a book differs from its copies for other reasons.
+    var byEnglish = strings.Where(s => s.English.Length <= 200 && s.English.IndexOf('\n') < 0)
+        .GroupBy(s => s.English, StringComparer.Ordinal)
+        .ToDictionary(g => g.Key, g => g.GroupBy(s => s.Korean, StringComparer.Ordinal)
+            .Select(k => (Korean: k.Key, Count: k.Count(), Hidden: k.All(s => s.OverriddenBy != null)))
+            .OrderByDescending(k => k.Count).ToList(), StringComparer.Ordinal);
+    string OtherKo(KoreanPatchString s) => byEnglish.TryGetValue(s.English, out var variants)
+        ? string.Join(" | ", variants.Where(v => v.Korean != s.Korean).Take(5)
+            .Select(v => $"{v.Korean} ({v.Count}{(v.Hidden ? ", 가려짐" : "")})"))
+        : "";
     var index = new StringBuilder("file,rows\n");
     foreach (var group in groups)
     {
@@ -59,11 +70,11 @@ async Task<int> Export()
         for (var part = 0; part * chunk < rows.Count; part++)
         {
             var name = $"{group.Key}-{part + 1:00}.csv";
-            var csv = new StringBuilder("plugin,table,id,rec,edid,overridden_by,source_en,current_ko\n");
+            var csv = new StringBuilder("plugin,table,id,rec,edid,overridden_by,source_en,current_ko,other_ko\n");
             foreach (var s in rows.Skip(part * chunk).Take(chunk))
             {
                 csv.AppendLine(string.Join(',', Csv(s.Plugin), TableName(s.Table), s.Id.ToString("X8"), Csv(s.Rec), Csv(s.Edid ?? ""),
-                    Csv(s.OverriddenBy ?? ""), Csv(s.English), Csv(s.Korean)));
+                    Csv(s.OverriddenBy ?? ""), Csv(s.English), Csv(s.Korean), Csv(OtherKo(s))));
             }
 
             await File.WriteAllTextAsync(Path.Combine(target, name), csv.ToString(), new UTF8Encoding(true));
