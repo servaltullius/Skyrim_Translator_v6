@@ -163,16 +163,23 @@ public static class KoreanPatchStrings
     private static readonly System.Text.RegularExpressions.Regex RawTag = new(@"<[^<>]+>|\[pagebreak\]",
         System.Text.RegularExpressions.RegexOptions.CultureInvariant | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
+    private static readonly System.Text.RegularExpressions.Regex FormattingTag = new(@"^</?(?:p|font|b|i|u|div|br|img|span)\b",
+        System.Text.RegularExpressions.RegexOptions.CultureInvariant | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
     // Fewer tags differ from the English than before, and none is added that neither the English nor the patch had.
+    // Formatting tags count together, since a translation may split a centered verse in two; a placeholder the game
+    // fills in (<mag>, <Alias=...>) or a page break is never further from the English than before.
     private static bool BringsTagsCloser(string english, string current, string replacement)
     {
         static Dictionary<string, int> Tags(string text) => RawTag.Matches(text).GroupBy(m => m.Value, StringComparer.Ordinal)
             .ToDictionary(g => g.Key, g => g.Count(), StringComparer.Ordinal);
-        static int Distance(Dictionary<string, int> a, Dictionary<string, int> b)
-            => a.Keys.Union(b.Keys).Sum(tag => Math.Abs(a.GetValueOrDefault(tag) - b.GetValueOrDefault(tag)));
+        static int Gap(Dictionary<string, int> a, Dictionary<string, int> b, string tag) => Math.Abs(a.GetValueOrDefault(tag) - b.GetValueOrDefault(tag));
 
         var (source, before, after) = (Tags(english), Tags(current), Tags(replacement));
-        return after.Keys.All(tag => source.ContainsKey(tag) || before.ContainsKey(tag)) && Distance(after, source) < Distance(before, source);
+        var all = source.Keys.Union(before.Keys).Union(after.Keys).ToList();
+        return after.Keys.All(tag => source.ContainsKey(tag) || before.ContainsKey(tag))
+            && all.Where(tag => !FormattingTag.IsMatch(tag)).All(tag => Gap(after, source, tag) <= Gap(before, source, tag))
+            && all.Sum(tag => Gap(after, source, tag)) < all.Sum(tag => Gap(before, source, tag));
     }
 
     private static string? TagProblem(string english, string korean)

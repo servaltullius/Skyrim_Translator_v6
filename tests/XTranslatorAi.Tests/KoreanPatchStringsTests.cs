@@ -131,6 +131,22 @@ public sealed class KoreanPatchStringsTests : IDisposable
         Assert.Empty(foreign.Applied);
     }
 
+    // Formatting tags may be laid out anew, but a placeholder the game fills in is never traded for them: repairing two
+    // italic tags while dropping the <mag> is closer by count and still breaks the number.
+    [Fact]
+    public async Task AFixThatDropsAPlaceholder_IsNotApplied_EvenWhenItRepairsOtherTags()
+    {
+        WriteTable(Path.Combine(Data, "Strings", "Skyrim_english.DLSTRINGS"), true, new() { [2] = "<p align=\"left\"><i>Note</i> <b>Deals</b> <mag> damage." });
+        WriteTable(Path.Combine(Patch, "Strings", "Skyrim_english.DLSTRINGS"), true, new() { [2] = "메모 <mag> 피해." });
+
+        var result = await KoreanPatchStrings.ApplyAsync(Data, Patch, new[]
+        {
+            new KoreanPatchChange("Skyrim.esm", PluginStringTableKind.DlStrings, 2, "메모 <mag> 피해.", "<i>메모</i> <b>피해</b>."),
+        }, write: false, backupFolder: null, CancellationToken.None);
+
+        Assert.Empty(result.Applied);
+    }
+
     private static void WriteTable(string path, bool lengthPrefixed, Dictionary<uint, string> values)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
