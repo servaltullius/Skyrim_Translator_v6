@@ -109,8 +109,9 @@ public sealed class BundledFranchiseTmSeedService
             // not the 얼음의 형상 of two Dawnguard strings); 83 rows changed. v3 takes the patch errors a review found and
             // the game records confirmed (머서 프레이와와 대화하기, Howl of Terror → 피의 자취), and where an Update or DLC
             // override replaces a text, the one the game shows (Lisbet 리스벳, not the 리즈벳 it replaces); 126 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v3", "bundled-skyrim-tes-franchise-tm.tsv", 1527327, "e66600f3aff94bd6a9f7bf2f006279580d8b52aa74734640b3bec9b4a809d2eb",
-                PreviousVersions: new[] { "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v3-changes.tsv"),
+            // v4 takes the patch's first review round (화살 - 강철 화살 → 화살 - 강철, 항박일지 → 항해일지); 21 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v4", "bundled-skyrim-tes-franchise-tm.tsv", 1527387, "20d5bd50e2d722876bc0066bb627d446bc6abda67a88760f03ec6a91e490f426",
+                PreviousVersions: new[] { "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v4-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,

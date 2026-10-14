@@ -465,19 +465,20 @@ public class BundledFranchiseTmSeedServiceTests
     }
 
     // v1 kept a minority spelling where the Korean patch translates one source several ways ("Ice Storm" is 얼음 폭풍
-    // in 27 strings and 얼음의 형상 in 2); v3 fixes patch errors a review found ("머서 프레이와와 대화하기"). Users who
-    // already imported an earlier seed get only the rows changed since their version, so other rows they edited in the
-    // global memory stay; a new install imports the whole seed.
+    // in 27 strings and 얼음의 형상 in 2); v3 and v4 fix patch errors reviews found ("머서 프레이와와 대화하기", "화살 -
+    // 강철 화살"). Users who already imported an earlier seed get only the rows changed since their version, so other
+    // rows they edited in the global memory stay; a new install imports the whole seed.
     [Theory]
-    [InlineData("v2|1527256|3a72a1830ab346b43fa3fb97251738d00480224ba014c3ff59005c47b5efb0fd|0", false)]
-    [InlineData("v1|1527384|8fd8931be7c1e7da90d99cbaaeac001ec4809c170fd18feb4274ceac83e69a44|0", true)]
-    public async Task ElderScrollsSeed_V3_ImportsOnlyTheChangesSinceTheImportedVersion(string stamp, bool fromV1)
+    [InlineData("v3|1527327|e66600f3aff94bd6a9f7bf2f006279580d8b52aa74734640b3bec9b4a809d2eb|0", false, false)]
+    [InlineData("v2|1527256|3a72a1830ab346b43fa3fb97251738d00480224ba014c3ff59005c47b5efb0fd|0", true, false)]
+    [InlineData("v1|1527384|8fd8931be7c1e7da90d99cbaaeac001ec4809c170fd18feb4274ceac83e69a44|0", true, true)]
+    public async Task ElderScrollsSeed_V4_ImportsOnlyTheChangesSinceTheImportedVersion(string stamp, bool beforeV3, bool fromV1)
     {
         var root = CreateTempRoot();
         try
         {
             var metadata = BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.ElderScrolls)!;
-            Assert.Equal("v3", metadata.Version);
+            Assert.Equal("v4", metadata.Version);
             var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.ElderScrolls, root);
             Directory.CreateDirectory(importDir);
             var previousStamp = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, stamp[..2], root);
@@ -496,7 +497,10 @@ public class BundledFranchiseTmSeedServiceTests
             var changesPath = Path.Combine(importDir, metadata.ChangesFileName!);
             var changes = await File.ReadAllTextAsync(changesPath, CancellationToken.None);
             Assert.StartsWith("Source\tTarget\tPrevious\n", changes, StringComparison.Ordinal);
-            Assert.Contains("\nSpeak to Mercer Frey\t머서 프레이와 대화하기\t머서 프레이와와 대화하기\n", changes, StringComparison.Ordinal);
+            Assert.Contains("\nSuvaris Atheron's Logbook\t수바리스 아테론의 항해일지\t수바리스 아테론의 항박일지\n", changes, StringComparison.Ordinal);
+            // v1 had 화살 - 강철; v2 took the 화살 - 강철 화살 of the records the game does not show, and v4 goes back.
+            Assert.Equal(!fromV1, changes.Contains("\nSteel Arrow\t화살 - 강철\t화살 - 강철 화살\n", StringComparison.Ordinal));
+            Assert.Equal(beforeV3, changes.Contains("\nSpeak to Mercer Frey\t머서 프레이와 대화하기\t머서 프레이와와 대화하기\n", StringComparison.Ordinal));
             Assert.Equal(fromV1, changes.Contains("\nIce Storm\t얼음 폭풍\t얼음의 형상\n", StringComparison.Ordinal));
             Assert.Equal(("english", "korean"), BundledFranchiseTmSeedService.LanguagesOfSeedFile(changesPath));
 
@@ -514,7 +518,7 @@ public class BundledFranchiseTmSeedServiceTests
     }
 
     [Fact]
-    public async Task ElderScrollsSeed_V3_NewInstallGetsTheWholeSeed()
+    public async Task ElderScrollsSeed_V4_NewInstallGetsTheWholeSeed()
     {
         var root = CreateTempRoot();
         try
@@ -526,6 +530,7 @@ public class BundledFranchiseTmSeedServiceTests
             var seed = await File.ReadAllTextAsync(Path.Combine(importDir, metadata.FileName), CancellationToken.None);
             Assert.Contains("\nIce Storm\t얼음 폭풍\n", seed, StringComparison.Ordinal);
             Assert.Contains("\nSpeak to Mercer Frey\t머서 프레이와 대화하기\n", seed, StringComparison.Ordinal);
+            Assert.Contains("\nSteel Arrow\t화살 - 강철\n", seed, StringComparison.Ordinal);
             Assert.False(File.Exists(Path.Combine(importDir, metadata.ChangesFileName!)));
         }
         finally

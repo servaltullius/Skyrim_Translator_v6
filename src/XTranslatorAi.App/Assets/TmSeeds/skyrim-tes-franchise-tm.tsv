@@ -463,7 +463,7 @@ Aetherial Crown	에테리얼 왕관
 Aetherial Shield	에테리얼 방패
 Aetherial Staff	에테리얼 지팡이
 Aetherial Summons	에테리얼 소환
-AETHERIUM	아테리움
+AETHERIUM	에테리움
 Aetherium Crest	에테리움 문장
 Aetherium Forge	에테리움 대장간
 Aetherium Shard	에테리움 파편
@@ -3813,8 +3813,8 @@ Deceiving the Herd	기만행위
 Deck of The Brinehammer	브린해머 호의 갑판
 Declaration of War	선전포고
 Decrease the target's Magicka regeneration by <mag>% for <dur> seconds.	<dur> 초 동안 매지카 재생을 <mag>% 감소시킵니다.
-Decrease the target's Stamina regeneration by <mag>% for <dur> seconds.	<dur> 초 동안 지구력 재생이 <mag>% 감소시킵니다.
-Decree of Monument	법령의 기념비
+Decrease the target's Stamina regeneration by <mag>% for <dur> seconds.	<dur> 초 동안 지구력 재생을 <mag>% 감소시킵니다.
+Decree of Monument	기념비 포고령
 Deeja	디자
 Deeja will need to be locked up.	디자는 가둬두어야 한다.
 Deekus	디커스
@@ -7225,7 +7225,7 @@ Gabriella mentioned something about Cicero...	가브리엘라가 시세로에 �
 Gadba	개드바
 Gadba gro-Largash	개드바 그로-라가쉬
 Gadnor	개드너
-Gadnor's Staff of Charming	개드너의 지팡이
+Gadnor's Staff of Charming	개드너의 매혹 지팡이
 Gain access to the Pelagius Wing of the Blue Palace	파란 궁전에 있는 펠라지우스 구역에 접근할 방법을 찾기
 Gain admittance to the Hall of Valor	용맹의 회랑으로 들어가기 위한 허가를 받기
 Gain entrance to Sky Haven Temple	스카이 헤이븐 사원으로 들어가기
@@ -8297,7 +8297,7 @@ Have you made any progress translating Shalidor's work?	'샬리도어의 연구'
 Have you noticed anything strange about the body?	뭔가 이상한 점은 없소?
 Have you seen a Moth Priest?	나방 사제를 본 적이 있소?
 Have you seen Varona?	바로나를 본 적이 있나?
-Have you thought about getting cured of vampirism?	흡혈귀 증상을 치료하는 것에 관해여 생각해 본 적은 없나?
+Have you thought about getting cured of vampirism?	흡혈귀 증상을 치료하는 것에 관하여 생각해 본 적은 없나?
 Have you tried getting into the Inner Sanctum?	지성소로 들어가려고 해 보았소?
 Have you tried to stop this?	이걸 막으려고 해 봤소?
 Have you unraveled the mystery of the dwarves yet?	드워프의 수수께끼는 풀었소?
@@ -8579,7 +8579,7 @@ Hern	헌
 Hern is dead.	헌은 죽었다.
 Hero of Sovngarde	소븐가드의 영웅
 hers	그녀의
-herself	그녀의
+herself	그녀 자신
 Hert	허트
 Hestla	헤슬라
 Hevnoraak	헤브노락
@@ -8721,7 +8721,7 @@ Hillgrund's Tomb Key	열쇠 - 힐그룬드의 무덤
 Hilt of Mehrunes' Razor	메이룬스의 면도칼 자루
 Hilund	힐룬드
 him	그
-himself	그의
+himself	그 자신
 Hinge	경첩
 Hircine	허씬
 Hired Muscle	해결사 역할
@@ -8997,7 +8997,7 @@ How did Aerin save your life?	에린이 어떻게 당신의 목숨을 구해준�
 How did Gallus die?	갤러스는 어떻게 죽었나?
 How did he die?	어쩌다가 죽었지?
 How did he end up in Skyrim?	그는 스카이림에서 어떻게 되었습니까?
-How did it end up in Lake Honrich?	어쩌다 혼리크 호수로 보내버린 거야?
+How did it end up in Lake Honrich?	어쩌다 혼리크 호수에 빠지게 된 거야?
 How did it happen?	무슨 일이 있던 거지?
 How did she die?	어쩌다 죽은 거지?
 How did that bring you to this old farm?	이 오래된 농장에 오게 된 이유는?
@@ -10128,7 +10128,7 @@ I was expecting someone... taller.	덩치가 큰 사람일 거라고 생각했�
 I was given strict instructions. For the Jarl's eyes only.	나는 엄격한 지시를 받았소. 직접 야를의 눈으로 보시오.
 I was happy to help.	도와줄 수 있어 다행입니다.
 I was hired to kill you, and that's what I intend to do.	너를 죽이기 위해 고용되었다, 그리고 내가 할 일이지.
-I was hoping you might want to talk about it.	너도 이 말을 듣고 싶어하길 바랬는데.
+I was hoping you might want to talk about it.	너도 그 이야기를 하고 싶어 하길 바랐는데.
 I was in Helgen when the dragon attacked.	드래곤이 헬겐을 공격했을때 거기에 있었단다.
 I was just asking. I didn't really want to be involved.	그냥 물어봤을 뿐이오. 별로 관여하고 싶지 않습니다.
 I was just curious.	그저 궁금했을 뿐이오.
@@ -12514,7 +12514,7 @@ Leave her alone, or else. (Intimidate)	카를로타를 내버려 둬, 그러지 
 Leave It	그대로 두기
 Leave Omluag alone. This is my final warning.	옴러그를 내버려둬. 이건 마지막 경고다.
 Leave that to me. I'll talk to Arngeir about hosting a peace council.	그건 저에게 맡겨 주시오. 평화회담을 주최하는 것에 관해 안기어와 논의해 보겠습니다.
-Leave this island now, or your life is forfeit. (Intimidate)	당장 이 섬을 떠나, 아니면 네 목숨을 없다. (위협)
+Leave this island now, or your life is forfeit. (Intimidate)	당장 이 섬을 떠나, 아니면 네 목숨은 없다. (위협)
 Leave.	내버려두기
 Leek	파
 Leek (2)	파 (2)
@@ -12632,7 +12632,7 @@ Letter from Sabjorn	사비욘의 편지
 Letter from Septimus Signus	셉티무스 시그누스의 편지
 Letter from Solitude	솔리튜드에서 보낸 편지
 Letter from the Steward	행정관의 편지
-Letter from the Steward of <Alias=HoldCity>	행정관 <Alias=HoldCity>의 편지
+Letter from the Steward of <Alias=HoldCity>	<Alias=HoldCity> 행정관의 편지
 Letter from the Vampire	흡혈귀의 편지
 Letter of Credit	신용장
 Letter of Inheritance	유산상속 편지
@@ -12908,7 +12908,7 @@ Lydia	리디아
 Lygrleid	리글레이드
 Lylvieve Family's House	릴비에브 가의 집
 Lylvieve House Key	열쇠 - 릴비에브 가의 집
-Lymdrenn Tenvanni's Journal	림드렌 트레반니의 일기
+Lymdrenn Tenvanni's Journal	림드렌 텔바니의 일기
 Lynly Star-Sung	린리 스타-성
 Lynoit	리노이트
 M'aiq	마'이크
@@ -13359,7 +13359,7 @@ Mogrul's Orders	모그룰의 지시
 Mogrul's Thug	모그룰의 폭력배
 Moira	모이라
 Molag Bal	몰락 발
-Molag Bal created the first vampire.	몰락-발이 첫 흡혈귀를 만들었소.
+Molag Bal created the first vampire.	몰락 발이 첫 흡혈귀를 만들었소.
 Molag Bal. (Intimidate)	몰락 발. (위협)
 Moldering Ruins	썩어가는 폐허
 Molgrom Twice-Killed	몰그롬 트와이스-킬드
@@ -18767,7 +18767,7 @@ Stamina Low	지구력 부족
 Stamina Poison	독 - 지구력 피해 중급
 Stamina reduction	지구력 감소
 Stamina regenerates 10x faster for <dur> seconds.	<dur> 초 동안 지구력 재생이 10배 증가합니다.
-Stamina regenerates <mag> points more slowly.	<dur> 초 동안 지구력 재생이 감소합니다.
+Stamina regenerates <mag> points more slowly.	지구력 재생이 <mag> 감소합니다.
 Stamina regenerates <mag>% faster for <dur> seconds.	<dur> 초 동안 지구력 재생이 <mag>% 증가합니다.
 Stamina regenerates <mag>% faster.	지구력 재생이 <mag>% 증가합니다.
 Stamina regenerates <mag>% fastser.	지구력 재생이 <mag>% 증가합니다.
@@ -18851,7 +18851,7 @@ Steel Armor of Restoration	강철 방어구 - 하급 회복마법
 Steel Armor of the Knight	강철 방어구 - 하급 중갑
 Steel Armor of the Major Knight	강철 방어구 - 중급 중갑
 Steel Armor of the Minor Knight	강철 방어구 - 최하급 중갑
-Steel Arrow	화살 - 강철 화살
+Steel Arrow	화살 - 강철
 Steel Battleaxe	강철 전투 도끼
 Steel Battleaxe of Arcing	강철 전투 도끼 - 하급 전격
 Steel Battleaxe of Binding	강철 전투 도끼 - 중급 소울 트랩
@@ -19434,7 +19434,7 @@ Susanna	수산나
 Susanna the Wicked	위험한 수산나
 Suspicious Cabinet	수상한 보관함
 Suvaris Atheron	수바리스 아세론
-Suvaris Atheron's Logbook	수바리스 아테론의 항박일지
+Suvaris Atheron's Logbook	수바리스 아테론의 항해일지
 Svaknir	스바크니어
 Svana Far-Shield	스바나 파-실드
 Svari	스바리
@@ -21075,7 +21075,7 @@ Until Next Time	다음에 만날때까지
 Until?	언제까지?
 Unusual Gem	특이한 보석
 Up	위로
-up to level	다음 레벨까지:
+up to level	최대 레벨:
 Uraccen	우라센
 Urag	우라그
 Urag gro-Shub	우라그 그로-셥
@@ -21125,7 +21125,7 @@ Vaermina Robes	베르미나의 로브
 Vaermina's Torpor	베르미나의 나른함
 Vagrant	방랑자
 Vahlok the Jailer	발록
-Vahlok the Jailor	발록
+Vahlok the Jailor	간수 발록
 Vahlok's Tomb	발록의 묘지
 Vald	볼드
 Vald's Debt	볼드의 빚
@@ -22726,7 +22726,7 @@ Why are they so rare?	어째서 그렇게 희귀해진 거지?
 Why are we doing this to Brand-Shei?	브랜드-쉐이에게 이런 일을 하는 이유는?
 Why are we speaking?	무슨 이야기를 하고 싶다는 거지?
 Why are you after Saadia?	왜 세이디아를 추적하는 거지?
-Why are you after Talos worshippers?	왜 탈로스 숭배자들을 추척하는 겁니까?
+Why are you after Talos worshippers?	왜 탈로스 숭배자들을 추적하는 겁니까?
 Why are you all the way out here?	왜 여기 나와있는 겁니까?
 Why are you asking?	왜 물어보는건가?
 Why are you begging?	왜 여기서 구걸을 하고 있지?
@@ -23312,7 +23312,7 @@ You aren't afraid to die?	죽는게 두렵지 않나?
 You aren't an Ulen.	당신은 울렌 가문 사람이 아닌데.
 You asked my opinion. I gave it to you.	내 의견을 물은 것은 당신이오. 그래서 내 의견을 말한거고.
 You became trapped.	함정에 빠진거였군.
-You become invulnerable, but unable to attack. However you recover magicka and stamina.	안개의 형상으로 변하여 피해를 입히지도, 입지도 않게 됩니다.
+You become invulnerable, but unable to attack. However you recover magicka and stamina.	안개의 형상으로 변하여 피해를 입히지도, 입지도 않게 되며 매지카와 지구력이 회복됩니다.
 You better start caring. (Intimidate)	신경쓰는 게 좋을 텐데. (위협)
 You call me Dragonborn. What does that mean?	나를 드래곤본이라고 부르는데, 그게 무슨 뜻입니까?
 You called me auxiliary?	나를 보조병이라고 불렀습니까?
@@ -23961,7 +23961,7 @@ Your tricks won't help you, monster!	수작 부려봐야 소용 없다, 이 괴�
 Your Unrelenting Force shout does more damage and using all three words may disintegrate enemies.	거침없는 힘의 위력이 증가하며 세 단어를 모두 사용 시 적을 붕괴시킬 수 있습니다.
 Your Vampiric Drain spell absorbs Magicka and Stamina from your victims for 1 day, but at the cost of <mag> less health.	흡혈귀의 흡수 마법이 목표의 매지카와 지구력을 1 일 동안 흡수합니다. 대신 체력이 <mag> 감소합니다.
 Your Vampiric Drain spell absorbs Magicka and Stamina from your victims for <mag> days.	흡혈귀의 흡수 마법이 목표의 매지카와 지구력을 <mag> 일 동안 흡수합니다.
-Your Wards are <25>% less effective, but absorb <50>% of the magicka from incoming spells.	방어막 마법의 위력이 <25>% 감소하지만 매지카 흡수량이 <50>% 증가합니다.
+Your Wards are <25>% less effective, but absorb <50>% of the magicka from incoming spells.	방어막 마법의 위력이 <25>% 감소하지만 적의 마법으로부터 <50>%의 매지카를 흡수합니다.
 Your weapon has broken.	당신의 무기가 부서졌습니다.
 Your weapons and armor are impressive.	무기와 방어구가 정말 훌륭한데!
 Your weird experiments are over, wizard.	너의 해괴망측한 실험은 끝났다, 마법사.
