@@ -63,6 +63,15 @@ public static class TranslationStyleHints
             if (styleHint == null && GetRecSubtype(rec) is "DESC" or "DNAM"
                 && r is "MGEF" or "SPEL" or "PERK" or "ENCH" or "SCRL" or "SHOU" or "WEAP" or "ARMO" or "AMMO" or "ALCH" or "INGR" or "MISC")
             {
+                // Elden Rim puts bare item names in ARMO:DESC and SPEL:DESC; under the sentence hint below
+                // "Evoker Crossbow" came back as "기원사 쇠뇌입니다." and "Deathblow" as "결정타를 가합니다." (1.12 eval).
+                if (IsShortTitleCaseLabel(sourceText))
+                {
+                    return "REC=*:DESC/DNAM, but this text is a short label or name, not a sentence. "
+                           + "Translate it as a short noun phrase: do not add 입니다 or any verb ending. "
+                           + "Keep separators such as ' - ' and suffixes such as 'L'/'R' as in the source.";
+                }
+
                 styleHint = "REC=*:DESC/DNAM (effect or item description shown in menus). Write every sentence in 합니다체 "
                             + "(-ㅂ니다/-습니다), including short fragments: 'Usable on two-handed weapons.' → '양손 무기에 사용할 수 있습니다.' "
                             + "Do not end a sentence with a bare noun such as '사용 가능.' "
@@ -109,6 +118,40 @@ public static class TranslationStyleHints
         }
 
         return styleHint;
+    }
+
+    // Lowercase words a Title Case name may still contain: "Ring of Rim", "Sword and Scabbard".
+    private static readonly string[] LabelJoinWords = { "a", "an", "and", "the", "of", "or", "in", "on", "for", "with", "from" };
+
+    // Deliberately narrow: a label has no sentence punctuation, no game tags or percentages, at most 8 words, and
+    // every other word capitalized. Sentence-like descriptions without a final period ("Release the loaded spell",
+    // "Targets with this buff cannot blocking") have lowercase words and keep the 합니다체 hint.
+    private static bool IsShortTitleCaseLabel(string sourceText)
+    {
+        var text = sourceText.Trim();
+        if (text.Length == 0 || text.IndexOfAny(new[] { '.', '!', '?', ',', ';', ':', '<', '>', '%', '\n', '\r' }) >= 0)
+        {
+            return false;
+        }
+
+        var words = 0;
+        foreach (var token in text.Split(new[] { ' ', '\t', '-', '/' }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            var word = token.Trim('(', ')', '[', ']', '"', '\'');
+            if (word.Length == 0)
+            {
+                continue;
+            }
+
+            words++;
+            if (!char.IsUpper(word[0]) && !char.IsDigit(word[0])
+                && Array.IndexOf(LabelJoinWords, word.ToLowerInvariant()) < 0)
+            {
+                return false;
+            }
+        }
+
+        return words is > 0 and <= 8;
     }
 
     private static string? GetRecSubtype(string? rec)
