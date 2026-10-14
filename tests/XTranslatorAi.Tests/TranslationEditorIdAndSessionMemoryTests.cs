@@ -31,6 +31,23 @@ public sealed class TranslationEditorIdAndSessionMemoryTests
             Assert.Equal(BuildPrompt(path, null), BuildPrompt(path, edid));
     }
 
+    [Theory]
+    [InlineData("//CastSpellScript_Open", "CastSpellScript_Open")]
+    [InlineData("///exp", "exp")]
+    [InlineData("// ES_debuff5_Strikefly", "ES_debuff5_Strikefly")]
+    public void CommentedOutEditorId_KeepsTheIdentifierAfterTheSlashes(string edid, string expected)
+    {
+        // Some modders mark unused records with a leading "//"; the identifier after it is still a meaning clue.
+        Assert.Equal(expected, TranslationPrompt.NormalizeEditorIdReference(edid));
+        Assert.Contains($"edid (reference only): {expected}", BuildPrompt("text", edid));
+    }
+
+    [Theory]
+    [InlineData("//")]
+    [InlineData("// ")]
+    public void SlashesOnlyEditorId_IsOmitted(string edid)
+        => Assert.Null(TranslationPrompt.NormalizeEditorIdReference(edid));
+
     [Fact]
     public void OversizedEditorId_IsOmittedAndJsonSourceIsUnchanged()
     {

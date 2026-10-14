@@ -10,8 +10,9 @@ public static partial class TranslationPrompt
     internal static string? NormalizeEditorIdReference(string? edid)
     {
         if (string.IsNullOrWhiteSpace(edid)) return null;
-        var value = edid.Trim();
-        if (value.Length > 160 || value.Contains("__XT_", StringComparison.OrdinalIgnoreCase)) return null;
+        // A leading "//" is how some modders mark a record as unused; the identifier after it still carries meaning.
+        var value = edid.Trim().TrimStart('/').TrimStart();
+        if (value.Length == 0 || value.Length > 160 || value.Contains("__XT_", StringComparison.OrdinalIgnoreCase)) return null;
         foreach (var ch in value)
         {
             if (!char.IsLetterOrDigit(ch) && ch is not '_' and not '-' and not '.') return null;
