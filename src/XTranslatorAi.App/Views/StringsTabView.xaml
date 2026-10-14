@@ -76,6 +76,10 @@
                     <MenuItem Header="선택 행 다시 번역"
                               Command="{Binding RetranslateSelectedCommand}"
                               CommandParameter="{Binding PlacementTarget.SelectedItems, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                    <MenuItem Header="원문 오류 수정으로 표시 / 해제"
+                              Command="{Binding ToggleSourceFixCommand}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItems, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              ToolTip="원문이 잘못돼서 일부러 다르게 번역한 행입니다. 품질 검사는 이 행의 태그만 확인합니다." />
                 </ContextMenu>
             </DataGrid.ContextMenu>
 	            <DataGrid.RowStyle>

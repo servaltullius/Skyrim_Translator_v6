@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using XTranslatorAi.Core.Plugins;
 
@@ -20,8 +21,8 @@ public partial class StringEntryViewModel
         : $"FormID {location.FormId:X8} · {location.Rec}"
           + (location.TableKind is { } table && location.StringId is { } id ? $" · {table.ToString().ToUpperInvariant()} StringID {id}" : "");
 
-    public string RowToolTip => string.IsNullOrEmpty(PluginLocationText) ? UserFacingErrorMessage
-        : PluginLocationText + (string.IsNullOrEmpty(UserFacingErrorMessage) ? "" : "\n" + UserFacingErrorMessage);
+    public string RowToolTip => string.Join("\n",
+        new[] { PluginLocationText, IsSourceFix ? "원문 오류 수정으로 표시됨" : "", UserFacingErrorMessage }.Where(line => line.Length > 0));
 
     // Explicit selectors use exact identity rather than matching the digits in unrelated source text.
     public bool TryMatchLocationQuery(string query, out bool matches)

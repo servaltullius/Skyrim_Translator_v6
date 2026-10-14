@@ -72,6 +72,19 @@ public class ProjectDbRetranslationResetTests : IAsyncLifetime
         Assert.Equal(StringEntryStatus.Pending, (await RowsAsync())["edited"].Status);
     }
 
+    // The mark says the translation departs from a wrong English on purpose; the model's new translation follows
+    // the English again, so the quality check judges it like any other row.
+    [Fact]
+    public async Task RetranslatedRows_LoseTheirSourceFixMark()
+    {
+        var done = (await RowsAsync())["done"];
+        await _db.UpsertStringNoteAsync(done.Id, TranslationConstants.SourceFixNoteKind, "원문 오류 수정", CancellationToken.None);
+
+        await _db.ResetForRetranslationAsync(new[] { done.Id }, includeEdited: false, CancellationToken.None);
+
+        Assert.Empty(await _db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None));
+    }
+
     private async Task<System.Collections.Generic.Dictionary<string, StringEntry>> RowsAsync()
         => (await _db.GetStringsAsync(100, 0, CancellationToken.None)).ToDictionary(row => row.Edid!);
 }

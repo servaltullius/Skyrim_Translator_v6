@@ -131,6 +131,7 @@ public partial class MainViewModel
     [NotifyCanExecuteChangedFor(nameof(ClearLqaCommand))]
     [NotifyCanExecuteChangedFor(nameof(RetranslateSelectedCommand))]
     [NotifyCanExecuteChangedFor(nameof(RetranslateVisibleCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ToggleSourceFixCommand))]
     [NotifyCanExecuteChangedFor(nameof(ImportPreviousTranslationCommand))]
     [NotifyCanExecuteChangedFor(nameof(ClearPreviousTranslationCommand))]
     private bool _isProjectLoaded;
@@ -169,6 +170,7 @@ public partial class MainViewModel
     [NotifyCanExecuteChangedFor(nameof(ClearLqaCommand))]
     [NotifyCanExecuteChangedFor(nameof(RetranslateSelectedCommand))]
     [NotifyCanExecuteChangedFor(nameof(RetranslateVisibleCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ToggleSourceFixCommand))]
     [NotifyCanExecuteChangedFor(nameof(ImportPreviousTranslationCommand))]
     [NotifyCanExecuteChangedFor(nameof(ClearPreviousTranslationCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenXmlCommand))]

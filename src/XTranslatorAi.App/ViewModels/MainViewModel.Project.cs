@@ -366,6 +366,9 @@ public partial class MainViewModel
         var tmHitIds = new System.Collections.Generic.HashSet<long>(
             (await db.GetStringNotesByKindAsync(TranslationConstants.TmHitNoteKind, CancellationToken.None)).Keys
         );
+        var sourceFixIds = new System.Collections.Generic.HashSet<long>(
+            (await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None)).Keys
+        );
 
         const int pageSize = 500;
         var loaded = new List<StringEntryViewModel>(capacity: total);
@@ -384,6 +387,7 @@ public partial class MainViewModel
                     Status = row.Status,
                     ErrorMessage = row.ErrorMessage,
                     IsTranslationMemoryApplied = tmHitIds.Contains(row.Id),
+                    IsSourceFix = sourceFixIds.Contains(row.Id),
                 };
 
                 loaded.Add(vm);

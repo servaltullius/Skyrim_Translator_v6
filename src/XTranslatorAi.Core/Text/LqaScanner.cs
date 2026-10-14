@@ -64,12 +64,22 @@ public static class LqaScanner
         IReadOnlyList<GlossaryEntry> forceTokenGlossary,
         Action<int>? onProgress = null,
         IReadOnlyDictionary<long, string>? tmFallbackNotes = null,
-        XTranslatorAi.Core.Translation.ReferenceNameIndex? referenceNames = null
+        XTranslatorAi.Core.Translation.ReferenceNameIndex? referenceNames = null,
+        IReadOnlySet<long>? sourceFixIds = null
     )
     {
         var issues = new List<LqaIssue>();
-        var context = new LqaScanContext(entries, targetLang, forceTokenGlossary, onProgress, tmFallbackNotes, referenceNames);
+        // A row marked "원문 오류 수정" was translated against its English on purpose (the modder pasted another record's
+        // text), so it is neither compared with its English nor counted as other rows' wording; its tags are still checked.
+        var scanned = sourceFixIds is { Count: > 0 } ? entries.Where(e => !sourceFixIds.Contains(e.Id)).ToList() : entries;
+        var context = new LqaScanContext(scanned, targetLang, forceTokenGlossary, onProgress, tmFallbackNotes, referenceNames);
         await ApplyExtractedRulePipelineAsync(context, issues);
+        foreach (var entry in entries.Where(e => sourceFixIds?.Contains(e.Id) == true
+                     && e.Status is StringEntryStatus.Done or StringEntryStatus.Edited))
+        {
+            TokenMismatchRule.Apply(entry, entry.SourceText ?? "", entry.DestText ?? "", issues);
+            BracketMismatchRule.Apply(entry, entry.SourceText ?? "", entry.DestText ?? "", issues);
+        }
 
         LqaIssueSorter.Sort(issues);
 

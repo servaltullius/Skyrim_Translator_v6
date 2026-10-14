@@ -13,7 +13,8 @@ public sealed partial class ProjectDb
     /// Clears the translation of the given rows and marks them Pending, so the next run translates them
     /// again. Finished, failed and skipped rows are reset; manual edits only with
     /// <paramref name="includeEdited"/>. Rows already pending or in progress are left alone.
-    /// TM notes are removed because the next run decides again whether TM applies.
+    /// TM notes are removed because the next run decides again whether TM applies, and the "원문 오류 수정" mark
+    /// because the new translation follows the English again.
     /// Returns the number of rows reset.
     /// </summary>
     public async Task<int> ResetForRetranslationAsync(
@@ -54,9 +55,10 @@ public sealed partial class ProjectDb
 
             await using var deleteNotes = _connection.CreateCommand();
             deleteNotes.Transaction = tx;
-            deleteNotes.CommandText = "DELETE FROM StringNote WHERE StringId=$Id AND Kind IN ($TmHit, $TmFallback);";
+            deleteNotes.CommandText = "DELETE FROM StringNote WHERE StringId=$Id AND Kind IN ($TmHit, $TmFallback, $SourceFix);";
             deleteNotes.Parameters.AddWithValue("$TmHit", TranslationConstants.TmHitNoteKind);
             deleteNotes.Parameters.AddWithValue("$TmFallback", TranslationConstants.TmFallbackNoteKind);
+            deleteNotes.Parameters.AddWithValue("$SourceFix", TranslationConstants.SourceFixNoteKind);
             var deleteId = deleteNotes.Parameters.Add("$Id", Microsoft.Data.Sqlite.SqliteType.Integer);
 
             var reset = 0;

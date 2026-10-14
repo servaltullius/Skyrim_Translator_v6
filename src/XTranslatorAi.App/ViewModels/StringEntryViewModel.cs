@@ -18,6 +18,11 @@ public partial class StringEntryViewModel : ObservableObject
     [ObservableProperty] private string? _errorMessage;
     [ObservableProperty] private bool _isTranslationMemoryApplied;
 
+    /// <summary>Marked "원문 오류 수정": translated against a wrong English on purpose, so the quality check leaves it out.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(RowToolTip))]
+    private bool _isSourceFix;
+
     /// <summary>
     /// True while this is the selected row, whose text the editor shows. The strings grid keeps it visible even when
     /// its text or status stops matching the filter, and filters it again when this turns false.

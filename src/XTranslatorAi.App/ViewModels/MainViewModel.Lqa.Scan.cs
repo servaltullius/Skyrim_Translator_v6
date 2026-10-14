@@ -34,6 +34,7 @@ public partial class MainViewModel
         var tmFallbackNotes = db == null
             ? new Dictionary<long, string>()
             : await db.GetStringNotesByKindAsync("tm_fallback", CancellationToken.None);
+        var sourceFixIds = Entries.Where(e => e.IsSourceFix).Select(e => e.Id).ToHashSet();
 
         // The rules read only this snapshot, so they run on a worker thread. On the UI thread the
         // project-wide rules (name consistency, tone majorities) ran before the first progress report
@@ -51,7 +52,8 @@ public partial class MainViewModel
             forceTokenGlossary: forceTokenGlossary,
             onProgress: progress.Report,
             tmFallbackNotes: notes,
-            referenceNames: referenceMemory is { Count: > 0 } ? XTranslatorAi.Core.Translation.ReferenceNameIndex.Build(referenceMemory) : null
+            referenceNames: referenceMemory is { Count: > 0 } ? XTranslatorAi.Core.Translation.ReferenceNameIndex.Build(referenceMemory) : null,
+            sourceFixIds: sourceFixIds
         ));
 
         return issues.Select(ToIssueViewModel).ToList();
@@ -149,14 +151,15 @@ public partial class MainViewModel
             entry.SourceText ?? "", entry.DestText ?? "", entry.PreviousTranslation)).ToList();
         var glossary = LanguageHelper.IsKoreanLanguage(TargetLang) ? BuildLqaForceTokenGlossary() : Array.Empty<GlossaryEntry>();
         var targetLang = TargetLang;
-        var fresh = await Task.Run(() => LqaScanner.ScanAsync(scanEntries, targetLang, glossary));
+        var sourceFixIds = entries.Where(entry => entry.IsSourceFix).Select(entry => entry.Id).ToHashSet();
+        var fresh = await Task.Run(() => LqaScanner.ScanAsync(scanEntries, targetLang, glossary, sourceFixIds: sourceFixIds));
         if (!ReferenceEquals(db, _projectState.Db))
         {
             return;
         }
 
         var ids = entries.Select(entry => entry.Id).ToHashSet();
-        var kept = LqaIssues.Where(i => !ids.Contains(i.Id) || ProjectWideLqaCodes.Contains(i.Code)).ToList();
+        var kept = LqaIssues.Where(i => !ids.Contains(i.Id) || (ProjectWideLqaCodes.Contains(i.Code) && !sourceFixIds.Contains(i.Id))).ToList();
         var replacements = fresh.Where(i => !ProjectWideLqaCodes.Contains(i.Code)).Select(ToIssueViewModel);
         var selected = SelectedLqaIssue;
         // The order of the full scan: errors, warnings, information, each by row.

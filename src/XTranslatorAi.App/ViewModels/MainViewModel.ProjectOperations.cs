@@ -30,6 +30,7 @@ public partial class MainViewModel
         ExportPluginCommand.NotifyCanExecuteChanged();
         RetranslateSelectedCommand.NotifyCanExecuteChanged();
         RetranslateVisibleCommand.NotifyCanExecuteChanged();
+        ToggleSourceFixCommand.NotifyCanExecuteChanged();
         ImportPreviousTranslationCommand.NotifyCanExecuteChanged();
         ClearPreviousTranslationCommand.NotifyCanExecuteChanged();
         NotifyProjectOperationCommands();

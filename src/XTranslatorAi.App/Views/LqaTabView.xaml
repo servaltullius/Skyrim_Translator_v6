@@ -86,12 +86,24 @@
 
             <GroupBox Header="번역문" Grid.Column="1" Margin="6,0,0,0" Style="{StaticResource XT.GroupBoxCard}">
                 <DockPanel>
-                    <Button DockPanel.Dock="Top"
-                            Content="번역문 저장"
-                            Command="{Binding SaveSelectedDestCommand}"
-                            Style="{StaticResource XT.ToolbarButton}"
-                            HorizontalAlignment="Left"
-                            Margin="0,0,0,8" />
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+                        <Button Content="번역문 저장"
+                                Command="{Binding SaveSelectedDestCommand}"
+                                Style="{StaticResource XT.ToolbarButton}" />
+                        <Button Command="{Binding ToggleSourceFixCommand}"
+                                ToolTip="원문이 잘못돼서(다른 레코드 문장을 붙여 넣음, 뜻이 바뀌는 오타 등) 일부러 다르게 번역한 행입니다. 표시하면 품질 검사는 이 행의 태그만 확인합니다. 다시 번역하면 표시가 풀립니다.">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource XT.ToolbarButton}">
+                                    <Setter Property="Content" Value="원문 오류 수정으로 표시" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedEntry.IsSourceFix}" Value="True">
+                                            <Setter Property="Content" Value="원문 오류 수정 표시 해제" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
                     <!-- EditableDestText marks typed text as unsaved; leaving the row saves it. -->
                     <TextBox Text="{Binding SelectedEntry.EditableDestText, UpdateSourceTrigger=PropertyChanged}"
                              IsReadOnly="{Binding IsTranslating}"
