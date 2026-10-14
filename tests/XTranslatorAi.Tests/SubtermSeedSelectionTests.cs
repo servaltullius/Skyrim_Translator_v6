@@ -57,6 +57,39 @@ public class SubtermSeedSelectionTests
         Assert.True(watch.Elapsed < System.TimeSpan.FromSeconds(2), $"took {watch.Elapsed.TotalSeconds:F1} s");
     }
 
+    /// <summary>
+    /// The evaluation seeded "Ring of Rim" on its own, the model read "Rim" as the English word (가장자리의 반지), and
+    /// session memory spread that to ten rows. "Rim" is the mod's own name, which its EditorIDs (RimPerk011,
+    /// RimRing023) start with; such a term is left to the rows, where the batches read it as a name (림 전기).
+    /// </summary>
+    [Fact]
+    public void PartNamedAfterTheModsEditorIdPrefix_IsNotSelected()
+    {
+        var rows = new List<(string Source, string Rec, string Masked)>
+        {
+            Row("Ring of Rim - High Speed", "PERK:FULL"),
+            Row("Ring of Rim - Stance", "PERK:FULL"),
+            Row("Ring of Rim - Jump Attack", "PERK:FULL"),
+            Row("Ring of Rim - Destruction Dual Weild", "PERK:FULL"),
+            Row("Elden Skill, triggered by wearing the Ring of Rim [Counter Attack].", "MESG:DESC"),
+            Row("Sword Intent Blast 2", "SPEL:FULL"),
+            Row("Evoker Sword - R", "ARMO:FULL"),
+            Row("Evoker Sword - L", "ARMO:FULL"),
+            Row("Bound Sword FX", "ENCH:FULL"),
+        };
+        var edids = new[]
+        {
+            "RimPerk011", "RimPerk018", "RimPerk020", "RimPERK03", "EldenTitps015",
+            "SwordRuneAttack-2", "RimMagicSword", "ExLeftSword", "//BoundSwordEnchantment",
+        };
+
+        var seeds = TranslationService.SelectSubtermSeeds(rows, _ => false, 24, edids);
+
+        Assert.DoesNotContain("Ring of Rim", seeds);
+        // One EditorID that happens to start with the word does not make "Sword" a name.
+        Assert.Contains("Sword", seeds);
+    }
+
     [Fact]
     public void PartAlreadyTokenizedByTheGlossary_IsNotSelected()
     {

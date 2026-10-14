@@ -30,7 +30,8 @@ public sealed partial class TranslationService
     internal static IReadOnlyList<string> SelectSubtermSeeds(
         IReadOnlyList<(string Source, string Rec, string Masked)> rows,
         Func<string, bool> isKnownTerm,
-        int max)
+        int max,
+        IReadOnlyList<string?>? edids = null)
     {
         var parts = new HashSet<string>(StringComparer.Ordinal);
         var wholeRows = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -85,8 +86,10 @@ public sealed partial class TranslationService
 
             var count = 0;
             var stillPlain = false;
-            foreach (var row in CandidateRows(rows, rowsByWord, term))
+            var termRowEdids = new List<string?>();
+            foreach (var index in CandidateRowIndexes(rows, rowsByWord, term))
             {
+                var row = rows[index];
                 if (!ContainsSessionTerm(row.Source ?? "", term))
                 {
                     continue;
@@ -95,9 +98,13 @@ public sealed partial class TranslationService
                 count++;
                 // The glossary already turned it into a token everywhere: it has its translation.
                 stillPlain |= ContainsSessionTerm(row.Masked ?? "", term);
+                if (edids != null && index < edids.Count)
+                {
+                    termRowEdids.Add(edids[index]);
+                }
             }
 
-            if (count >= MinSubtermRows && stillPlain)
+            if (count >= MinSubtermRows && stillPlain && !IsNamedAfterEditorIdPrefix(term, termRowEdids))
             {
                 counted.Add((term, count));
             }
@@ -154,7 +161,7 @@ public sealed partial class TranslationService
         return index;
     }
 
-    private static IEnumerable<(string Source, string Rec, string Masked)> CandidateRows(
+    private static IEnumerable<int> CandidateRowIndexes(
         IReadOnlyList<(string Source, string Rec, string Masked)> rows,
         Dictionary<string, List<int>> rowsByWord,
         string term)
@@ -164,13 +171,47 @@ public sealed partial class TranslationService
         if (end == 0)
         {
             // A term starting with punctuation has no first word to look up.
-            return rows;
+            return Enumerable.Range(0, rows.Count);
         }
 
-        return rowsByWord.TryGetValue(term[..end], out var indexes)
-            ? indexes.Select(i => rows[i])
-            : Enumerable.Empty<(string Source, string Rec, string Masked)>();
+        return rowsByWord.TryGetValue(term[..end], out var indexes) ? indexes : Enumerable.Empty<int>();
     }
+
+    /// <summary>
+    /// A seed is translated alone, without the rows around it, so a word that is the mod's own name reads as English:
+    /// "Ring of Rim" came back as 가장자리의 반지 and session memory spread it to ten Elden Rim rows, while the rows
+    /// translated with their neighbours had 림 전기 and 엘든 림. Modders start EditorIDs with that name (RimPerk011,
+    /// RimRing023), so a term with a word that most of its rows' EditorIDs start with is left to those rows. One
+    /// EditorID like SwordRuneAttack among ten Sword rows does not make "Sword" a name.
+    /// </summary>
+    private static bool IsNamedAfterEditorIdPrefix(string term, IReadOnlyList<string?> termRowEdids)
+    {
+        if (termRowEdids.Count == 0)
+        {
+            return false;
+        }
+
+        foreach (var word in term.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+        {
+            if (word.Length < 2 || !char.IsUpper(word[0]) || !word.All(char.IsLetter))
+            {
+                continue;
+            }
+
+            var prefixed = termRowEdids.Count(edid => StartsWithEditorIdWord(TranslationPrompt.NormalizeEditorIdReference(edid), word));
+            if (prefixed >= 2 && prefixed * 2 >= termRowEdids.Count)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool StartsWithEditorIdWord(string? edid, string word)
+        => edid != null
+           && edid.StartsWith(word, StringComparison.Ordinal)
+           && (edid.Length == word.Length || !char.IsLower(edid[word.Length]));
 
     /// <summary>
     /// The glossary decides a term it covers, also in plural: "NPC Weapon Arts" escaped the glossary's "Weapon Art"
@@ -205,7 +246,8 @@ public sealed partial class TranslationService
         var terms = SelectSubtermSeeds(
             items.Select(it => (it.Source, GetRecForId(it.Id) ?? "", it.Masked)).ToList(),
             term => memory.Knows(term) || IsGlossaryTerm(Ctx.Glossary, term),
-            MaxSubtermSeeds);
+            MaxSubtermSeeds,
+            items.Select(it => GetEdidForId(it.Id)).ToList());
         if (terms.Count == 0)
         {
             return;
