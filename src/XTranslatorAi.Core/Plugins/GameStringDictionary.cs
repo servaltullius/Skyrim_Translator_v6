@@ -69,7 +69,10 @@ public sealed class GameStringDictionary
     public static GameStringDictionary Build(IEnumerable<GameStringPlugin> plugins)
     {
         var byField = new Dictionary<string, (string, string, string)>(StringComparer.Ordinal);
-        var textVariants = new Dictionary<string, Dictionary<string, int>>(StringComparer.Ordinal);
+        // Each record's text as the game shows it: a later plugin's override of the same English replaces the earlier
+        // text, which no longer counts. Update.esm's 제련 for the Smithing skill was outvoted by the 뼈다귀 제련 it
+        // replaces. An override that changes the English leaves the earlier pair a translation of its own English.
+        var shownText = new Dictionary<(string Identity, string Key), string>();
         foreach (var plugin in plugins)
         {
             foreach (var field in plugin.Fields)
@@ -94,14 +97,20 @@ public sealed class GameStringDictionary
                     continue;
                 }
 
-                if (!textVariants.TryGetValue(key, out var variants))
-                {
-                    variants = new Dictionary<string, int>(StringComparer.Ordinal);
-                    textVariants[key] = variants;
-                }
-
-                variants[korean] = variants.GetValueOrDefault(korean) + 1;
+                shownText[(identity, key)] = korean;
             }
+        }
+
+        var textVariants = new Dictionary<string, Dictionary<string, int>>(StringComparer.Ordinal);
+        foreach (var ((_, key), korean) in shownText)
+        {
+            if (!textVariants.TryGetValue(key, out var variants))
+            {
+                variants = new Dictionary<string, int>(StringComparer.Ordinal);
+                textVariants[key] = variants;
+            }
+
+            variants[korean] = variants.GetValueOrDefault(korean) + 1;
         }
 
         // The spelling the patch uses most; a tie is ambiguous and left to the model.

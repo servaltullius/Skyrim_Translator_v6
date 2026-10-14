@@ -36,15 +36,17 @@ public sealed class GameStringDictionaryTests
             [(PluginStringTableKind.Strings, 6)] = "강철 검",
             [(PluginStringTableKind.Strings, 7)] = "Untranslated",
         });
-        // Dawnguard overrides Skyrim's Iron Sword (00) and adds its own record (02).
+        // Dawnguard overrides Skyrim's Iron Sword (00), rewrites the book, and adds its own record (02).
         var dawnguard = new GameStringPlugin("Dawnguard.esm", new[] { "Skyrim.esm", "Update.esm" }, new[]
         {
             Field("WEAP/00001001/0/FULL/0", "Iron Sword", PluginStringTableKind.Strings, 10),
             Field("WEAP/02000800/0/FULL/0", "Dawnguard Rune Axe", PluginStringTableKind.Strings, 11),
+            Field("BOOK/00001000/0/DESC/0", "A longer book.", PluginStringTableKind.DlStrings, 12),
         }, new Dictionary<(PluginStringTableKind, uint), string>
         {
             [(PluginStringTableKind.Strings, 10)] = "철검",
             [(PluginStringTableKind.Strings, 11)] = "던가드 룬 도끼",
+            [(PluginStringTableKind.DlStrings, 12)] = "더 긴 책.",
         });
         return GameStringDictionary.Build(new[] { skyrim, dawnguard });
     }
@@ -93,6 +95,12 @@ public sealed class GameStringDictionaryTests
         Assert.Null(game.Find(null, "INFO:NAM1", "What do you want?"));
         // An untranslated patch string is no translation.
         Assert.Null(game.Find(null, "WEAP:FULL", "Untranslated"));
+        // The game shows Dawnguard's text for the record it overrides; the overridden text does not count. Skyrim's
+        // "Smithing" skill was 뼈다귀 제련 under Update.esm's 제련, and with a Dragonborn perk outvoted it 2 to 1.
+        Assert.Equal("철검", game.Find(null, "WEAP:FULL", "Iron Sword")!.Text);
+        // An override that changes the English leaves the earlier pair a translation of its own English ("A long book."
+        // above): Update.esm renames a staff Skyrim.esm calls Alteration Staff (변화마법 지팡이).
+        Assert.Equal("더 긴 책.", game.Find(null, "BOOK:DESC", "A longer book.")!.Text);
     }
 
     // Through a real plugin project: rows know their field keys and the plugin's masters from the import.
