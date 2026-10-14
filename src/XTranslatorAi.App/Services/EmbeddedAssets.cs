@@ -42,6 +42,14 @@ public static class EmbeddedAssets
             _ => null,
         };
 
+    /// <summary>The rows of the current seed that changed since the previous version (see BundledFranchiseTmSeedService).</summary>
+    public static string? LoadBundledFranchiseTmSeedChanges(BethesdaFranchise franchise)
+        => franchise switch
+        {
+            BethesdaFranchise.ElderScrolls => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v2-changes.tsv"),
+            _ => null,
+        };
+
     private static string LoadTextResource(string resourceName)
     {
         var assembly = Assembly.GetExecutingAssembly();

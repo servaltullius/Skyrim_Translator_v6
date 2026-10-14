@@ -315,7 +315,7 @@ public class BundledFranchiseTmSeedServiceTests
             await service.EnsureBundledSeedAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None);
 
             var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.ElderScrolls, root);
-            var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, "v1", root);
+            var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.ElderScrolls)!.Version, root);
             var files = Directory.GetFiles(importDir, "*.tsv", SearchOption.TopDirectoryOnly);
 
             Assert.Single(files);
@@ -422,7 +422,7 @@ public class BundledFranchiseTmSeedServiceTests
             var service = new BundledFranchiseTmSeedService(root);
             await service.EnsureBundledSeedAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None);
 
-            var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, "v1", root);
+            var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.ElderScrolls)!.Version, root);
             var seed = await File.ReadAllTextAsync(seedPath, CancellationToken.None);
 
             Assert.True(File.Exists(stampPath));
@@ -457,6 +457,71 @@ public class BundledFranchiseTmSeedServiceTests
             Assert.True(File.Exists(stampPath));
             Assert.DoesNotContain("WRONG", seed, StringComparison.Ordinal);
             Assert.Contains("All Must Serve", seed, StringComparison.Ordinal);
+        }
+        finally
+        {
+            TryDeleteDirectory(root);
+        }
+    }
+
+    // v1 kept a minority spelling where the Korean patch translates one source several ways ("Ice Storm" is 얼음 폭풍
+    // in 27 strings and 얼음의 형상 in 2). Users who already imported v1 get only the changed rows, so other rows they
+    // edited in the global memory stay; a new install imports the whole v2 seed.
+    [Fact]
+    public async Task ElderScrollsSeed_V2_ImportsOnlyItsChangesOverAnImportedV1()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var metadata = BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.ElderScrolls)!;
+            Assert.Equal("v2", metadata.Version);
+            var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.ElderScrolls, root);
+            Directory.CreateDirectory(importDir);
+            var v1Stamp = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, "v1", root);
+            await File.WriteAllTextAsync(v1Stamp, "v1|1527384|8fd8931be7c1e7da90d99cbaaeac001ec4809c170fd18feb4274ceac83e69a44|0", CancellationToken.None);
+
+            var fullLoads = 0;
+            var service = new BundledFranchiseTmSeedService(root, franchise =>
+            {
+                fullLoads++;
+                return EmbeddedAssets.LoadBundledFranchiseTmSeed(franchise);
+            });
+            await service.EnsureBundledSeedAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None);
+
+            Assert.Equal(0, fullLoads);
+            Assert.False(File.Exists(Path.Combine(importDir, metadata.FileName)));
+            var changesPath = Path.Combine(importDir, metadata.ChangesFileName!);
+            var changes = await File.ReadAllTextAsync(changesPath, CancellationToken.None);
+            Assert.StartsWith("Source\tTarget\n", changes, StringComparison.Ordinal);
+            Assert.Contains("\nIce Storm\t얼음 폭풍\n", changes, StringComparison.Ordinal);
+            Assert.Equal(("english", "korean"), BundledFranchiseTmSeedService.LanguagesOfSeedFile(changesPath));
+
+            // Auto-import moves the file away; the next load does nothing.
+            File.Delete(changesPath);
+            await service.EnsureBundledSeedAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None);
+            Assert.False(File.Exists(changesPath));
+            Assert.False(File.Exists(Path.Combine(importDir, metadata.FileName)));
+            Assert.Equal(0, fullLoads);
+        }
+        finally
+        {
+            TryDeleteDirectory(root);
+        }
+    }
+
+    [Fact]
+    public async Task ElderScrollsSeed_V2_NewInstallGetsTheWholeSeed()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var metadata = BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.ElderScrolls)!;
+            await new BundledFranchiseTmSeedService(root).EnsureBundledSeedAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None);
+
+            var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.ElderScrolls, root);
+            var seed = await File.ReadAllTextAsync(Path.Combine(importDir, metadata.FileName), CancellationToken.None);
+            Assert.Contains("\nIce Storm\t얼음 폭풍\n", seed, StringComparison.Ordinal);
+            Assert.False(File.Exists(Path.Combine(importDir, metadata.ChangesFileName!)));
         }
         finally
         {

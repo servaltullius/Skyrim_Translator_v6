@@ -11,11 +11,14 @@ public sealed class BundledFranchiseTmSeedService
 {
     private readonly string? _globalRootOverride;
     private readonly Func<BethesdaFranchise, string?> _loadBundledSeedText;
+    private readonly Func<BethesdaFranchise, string?> _loadBundledSeedChangesText;
 
-    public BundledFranchiseTmSeedService(string? globalRootOverride = null, Func<BethesdaFranchise, string?>? loadBundledSeedText = null)
+    public BundledFranchiseTmSeedService(string? globalRootOverride = null, Func<BethesdaFranchise, string?>? loadBundledSeedText = null,
+        Func<BethesdaFranchise, string?>? loadBundledSeedChangesText = null)
     {
         _globalRootOverride = globalRootOverride;
         _loadBundledSeedText = loadBundledSeedText ?? EmbeddedAssets.LoadBundledFranchiseTmSeed;
+        _loadBundledSeedChangesText = loadBundledSeedChangesText ?? EmbeddedAssets.LoadBundledFranchiseTmSeedChanges;
     }
 
     public async Task EnsureBundledSeedAsync(BethesdaFranchise franchise, CancellationToken cancellationToken)
@@ -38,6 +41,11 @@ public sealed class BundledFranchiseTmSeedService
             if (!File.Exists(seedPath) && File.Exists(stampPath)
                 && TryParseBundledSeedStamp(await File.ReadAllTextAsync(stampPath, cancellationToken), out var importedStamp)
                 && BundledSeedStampMatchesMetadata(importedStamp, metadata))
+            {
+                return;
+            }
+
+            if (await TryWriteChangesSincePreviousAsync(importDir, seedPath, stampPath, metadata, cancellationToken))
             {
                 return;
             }
@@ -82,7 +90,9 @@ public sealed class BundledFranchiseTmSeedService
         var name = Path.GetFileName(path);
         foreach (var franchise in Enum.GetValues<BethesdaFranchise>())
         {
-            if (GetBundledSeedMetadata(franchise) is { } metadata && string.Equals(metadata.FileName, name, StringComparison.OrdinalIgnoreCase))
+            if (GetBundledSeedMetadata(franchise) is { } metadata
+                && (string.Equals(metadata.FileName, name, StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(metadata.ChangesFileName, name, StringComparison.OrdinalIgnoreCase)))
             {
                 return ("english", "korean");
             }
@@ -94,11 +104,40 @@ public sealed class BundledFranchiseTmSeedService
     public static BundledSeedMetadata? GetBundledSeedMetadata(BethesdaFranchise franchise)
         => franchise switch
         {
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v1", "bundled-skyrim-tes-franchise-tm.tsv", 1527384, "8fd8931be7c1e7da90d99cbaaeac001ec4809c170fd18feb4274ceac83e69a44"),
+            // v2 takes the spelling the Korean patch uses most for a source it translates several ways (Ice Storm 얼음 폭풍,
+            // not the 얼음의 형상 of two Dawnguard strings); 83 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v2", "bundled-skyrim-tes-franchise-tm.tsv", 1527256, "3a72a1830ab346b43fa3fb97251738d00480224ba014c3ff59005c47b5efb0fd",
+                PreviousVersion: "v1", ChangesFileName: "bundled-skyrim-tes-franchise-tm-v2-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,
         };
+
+    /// <summary>
+    /// A user who imported the previous version gets only the rows that changed since: importing the whole seed again
+    /// would overwrite every bundled row they edited in the global memory.
+    /// </summary>
+    private async Task<bool> TryWriteChangesSincePreviousAsync(string importDir, string seedPath, string stampPath, BundledSeedMetadata metadata,
+        CancellationToken cancellationToken)
+    {
+        if (metadata.PreviousVersion is not { } previous || metadata.ChangesFileName is not { } changesFileName
+            || File.Exists(stampPath) || File.Exists(seedPath)
+            || !File.Exists(ProjectPaths.GetBundledFranchiseTmSeedStampPath(metadata.Franchise, previous, _globalRootOverride)))
+        {
+            return false;
+        }
+
+        var changes = _loadBundledSeedChangesText(metadata.Franchise);
+        if (string.IsNullOrWhiteSpace(changes))
+        {
+            return false;
+        }
+
+        Directory.CreateDirectory(importDir);
+        await File.WriteAllTextAsync(Path.Combine(importDir, changesFileName), changes, cancellationToken);
+        await WriteStampAsync(stampPath, seedPath, metadata, cancellationToken);
+        return true;
+    }
 
     private async Task RewriteSeedAsync(string seedPath, string stampPath, BundledSeedMetadata metadata, CancellationToken cancellationToken)
     {
@@ -175,7 +214,10 @@ public sealed class BundledFranchiseTmSeedService
     private static string BuildBundledSeedStamp(BundledSeedMetadata metadata, long lastWriteUtcTicks)
         => string.Join("|", metadata.Version, metadata.ExpectedByteLength, metadata.ExpectedSha256, lastWriteUtcTicks);
 
-    public sealed record BundledSeedMetadata(BethesdaFranchise Franchise, string Version, string FileName, long ExpectedByteLength, string ExpectedSha256);
+    /// <param name="PreviousVersion">The version a user who imported it is upgraded from with <paramref name="ChangesFileName"/>.</param>
+    /// <param name="ChangesFileName">The rows that changed since <paramref name="PreviousVersion"/>.</param>
+    public sealed record BundledSeedMetadata(BethesdaFranchise Franchise, string Version, string FileName, long ExpectedByteLength, string ExpectedSha256,
+        string? PreviousVersion = null, string? ChangesFileName = null);
 
     private sealed record BundledSeedStamp(string Version, long ExpectedByteLength, string ExpectedSha256, long LastWriteUtcTicks);
 }

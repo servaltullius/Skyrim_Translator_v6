@@ -180,7 +180,7 @@ A benefit? How?	도움이라니? 무슨?
 A Blade in the Dark	어둠 속의 블레이드
 A blast from Wabbajack with an unpredictable effect.	예측할 수 없는 와바잭의 돌풍입니다.
 A blast of cold that does <mag> points of damage per second damage to Health and Stamina.	차가운 돌풍을 뿜어내어 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
-A blast of cold that does <mag> points of damage per second to Health and Stamina.	매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
+A blast of cold that does <mag> points of damage per second to Health and Stamina.	차가운 돌풍을 뿜어내어 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
 A blast of cold that does <mag> points per second damage to Health and Stamina.	차가운 돌풍을 뿜어내어 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
 A blast of fire that does <mag> points of damage. Targets on fire take extra damage.	타오르는 불덩이를 날려 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 A blast of fire that does <mag> points. Targets on fire take extra damage.	불꽃의 화살을 날려 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
@@ -320,7 +320,7 @@ About that money Drovas owes you...	드로바스가 당신에게 진 빚에 관�
 About that poem....	그 시 말인데...
 About that test...	그 시험에 대하여..
 About the secrecy of the Nightingales...	나이팅게일의 비밀에 대해서 말인데...
-About to change back...	변신이 풀리고 있습니다...
+About to change back...	변신이 곧 풀어집니다...
 About your mother...	네 어머니에 대해...
 About your name...	네 이름이...
 Absolutely not. No pets. Ever.	난 동물이 싫다.
@@ -1040,7 +1040,7 @@ Are you a wizard? I wanted to buy some spells.	당신은 마법사요? 마법을
 Are you a...	당신은 그...
 Are you able to give us the scroll now?	이제 엘더스크롤을 주시겠소?
 Are you all alone here?	당신 혼자뿐이오?
-Are you all right?	당신 괜찮은 거 맞아?
+Are you all right?	괜찮나?
 Are you all werewolves?	당신들 모두가 늑대인간입니까?
 Are you alright?	괜찮소?
 Are you always drunk?	항상 술에 취해 있소?
@@ -1509,7 +1509,7 @@ Bashnag is dead.	배쉬나그은 죽었다.
 Basin	대야
 Basket	바구니
 Bassianus Axius	바시아누스 악시우스
-Bats	박쥐
+Bats	박쥐 떼
 Bats Cloak	박쥐 망토
 Bats Effect	박쥐 떼 효과
 Battle Cry	전투의 함성
@@ -1528,7 +1528,7 @@ Bear Pelt	모피 - 곰
 Bear Trap	곰덫
 Bear's Cave Mill	곰의 동굴 목재소
 Bearclaw	볼기어
-Beast Form	짐승의 형상
+Beast Form	야수의 형상
 Beast Stone	짐승의 바위
 Beast Tongue	짐승의 소리
 Beat Logrolf into submission	로그롤프를 복종시키기
@@ -1656,7 +1656,7 @@ Black Heart Blight	심장 흑화 질병
 Black Mage Hood	흑마법사 두건
 Black Mage Robes	흑마법사의 로브
 Black Market	암시장
-Black Robes	검은 로브
+Black Robes	검은색 로브
 Black Soul Gem	소울젬 - 검은 소울젬
 Black-Briar Lodge	블랙-브라이어 가옥
 Black-Briar Lodge Key	열쇠 - 블랙-브라이어 가옥
@@ -2297,7 +2297,7 @@ By right of plunder. I am a Nightingale of Nocturnal.	약탈의 권리입니다.
 By Sithis, I need details. Get to the point.	세상에 시디스님, 더 자세한 정보가 필요해. 요점을 말하라.
 By Sithis, we must stop them!	시디스님의 이름으로, 당장 놈들을 막아야 한다!
 By the right of birth. I am Dragonborn.	출생의 권리입니다. 저는 드래곤본입니다.
-Bye.	안녕히 가시오.
+Bye.	그럼 이만.
 C'mon boy, come with me.	가자.
 Cabbage	양배추
 Cabbage (2)	양배추 (2)
@@ -2422,7 +2422,7 @@ Can you tell me more about your missing son?	행방불명이 된 아들에 대�
 Can you train me in Alchemy?	연금술 훈련을 받을 수 있습니까?
 Can you train me in Alteration magic?	변화마법에 대해 가르쳐주시오.
 Can you train me in Conjuration?	소환마법에 관해서 가르쳐줄 수 있나?
-Can you train me in Enchanting?	마법부여를 가르쳐 줄 수 있나?
+Can you train me in Enchanting?	마법부여에 관해서 가르쳐주시겠소?
 Can you train me in Restoration?	회복마법을 가르쳐주시오.
 Can you train me in Smithing?	제련 기술을 가르쳐주시오.
 Can you train me to be better at Archery?	궁술에 관해서 가르쳐주시오.
@@ -3044,7 +3044,7 @@ Conjurer's Elixir	물약 - 소환마법 특급
 Conjurer's Philter	물약 - 소환마법 최상급
 Conjurer's Potion	물약 - 소환마법 하급
 Consider Adoption	입양을 고려해 보세요
-Consider it done.	곧바로 처리하지.
+Consider it done.	곧바로 처리하겠습니다.
 Consider it yours.	당신 것이라 생각하시오.
 Consider that fort already yours.	그 요새는 이미 손에 넣은 거나 마찬가집니다.
 Consider yourself hired. (<global=hirelinggold> gold)	고용하도록 하지. (<global=hirelinggold> 골드)
@@ -3160,7 +3160,7 @@ Creates a magic dagger for <dur> seconds. Sheathe it to dispel.	<dur> 초 동안
 Creates a magic sword for <dur> seconds. Sheathe it to dispel.	<dur> 초 동안 마법의 검을 소환합니다. 무기를 집어넣으면 사라집니다.
 Creates a wall of frost that does <mag> damage per second.	지면에 얼음의 장벽을 만들어 매 초마다 <50> 의 냉기 피해를 입힙니다.
 Creates an Ash Guardian that guards that location until destroyed. Consumes a heart stone from your inventory.	하트스톤을 소모하여 소환된 장소를 수호하는 화산재 수호자를 소환합니다. 하트스톤이 없을 시 적대적인 상태가 됩니다.
-Creation Club Cell	던가드 흡혈귀 사냥꾼
+Creation Club Cell	Creation Club Cell
 Creations	모드
 Creations are currently loaded. Note: Achievements are disabled.  Do you wish to continue loading this save?	현재 모드가 로드 되었습니다. 주의: 도전과제가 비활성화 됩니다.  이 저장파일을 불러오시겠습니까?
 Creations are currently loaded. Note: Trophies are disabled. Do you wish to continue loading this save?	현재 모드를 사용하고 있습니다. 이 세이브를 불러오시겠습니까? 주의: 업적 달성을 할 수 없습니다.
@@ -3519,7 +3519,7 @@ Daedric Mace of the Vampire	데이드라제 철퇴 - 특급 체력 흡수
 Daedric Mace of Thunderbolts	데이드라제 철퇴 - 상급 전격
 Daedric Mace of Winnowing	데이드라제 철퇴 - 상급 매지카 흡수
 Daedric Mace of Winter	데이드라제 철퇴 - 특급 냉기
-Daedric Relic	데이드라제 유물
+Daedric Relic	데이드라 유물
 Daedric Shield	데이드라제 방패
 Daedric Shield of Eminent Blocking	데이드라제 방패 - 상급 방어
 Daedric Shield of Extreme Blocking	데이드라제 방패 - 최상급 방어
@@ -4746,7 +4746,7 @@ Dremora Prices	드레모라 군주
 Dremora Valkynaz	드레모라 발키나스
 Dremora Valynaz	드레모라 발키나스
 Drennen	드레넌
-Dresser	옷상자
+Dresser	옷 상자
 Drevis	드레비스
 Drevis Neloren	드레비스 넬로렌
 Dreyla	드레일라
@@ -6418,7 +6418,7 @@ Explicit Content	유해 콘텐츠
 Exploding Dwarven Bolt of Fire	볼트 - 화염 폭발성 드워프제
 Exploding Dwarven Bolt of Ice	볼트 - 냉기 폭발성 드워프제
 Exploding Dwarven Bolt of Shock	볼트 - 전격 폭발성 드워프제
-Exploding Flame Spider	마법 주문서 - 폭발형 화염 거미
+Exploding Flame Spider	폭발형 화염 거미
 Exploding Frost Spider	폭발형 냉기 거미
 Exploding Poison Spider	마법 주문서 - 폭발형 독 거미
 Exploding Shock Spider	마법 주문서 - 폭발형 전격 거미
@@ -6477,7 +6477,7 @@ Fahlbtharz Corridor	팔브타즈 회랑
 Fahlbtharz Grand Hall	팔브타즈 대회랑
 Faida	파이다
 Failed	실패
-Fair enough.	할만 하군.
+Fair enough.	알았어.
 Fair enough. What do you have?	적당한 것 같군. 어떤 걸 가지고 있소?
 Fake Dragonrend	드래곤렌드
 Falas Selvayn	팔라스 셀바인
@@ -6902,7 +6902,7 @@ Follow Madanach	매더낙을 따라가기
 Follow Maurice	모리스를 따라가기
 Follow me, I need your help.	따라오게, 도움이 필요하니.
 Follow me, or you'll regret it. (Intimidate)	나를 따라오지 않으면 후회하게 될거야. (위협)
-Follow me.	나를 따라오시오.
+Follow me.	나를 따라오게.
 Follow me. I need your help.	같이 갑시다.
 Follow me. I'll lead you through this mist.	따라오시오. 이 안개를 벗어나게 안내를 해 주지.
 Follow Paratus	파라투스를 따라가기
@@ -6919,7 +6919,7 @@ Font of Stamina	지구력의 샘
 FOOD	음식
 Fools? Why do you say that?	멍청이들? 왜 그 사람들이 멍청한 거지?
 Footstep	발자국소리
-Footwraps	발싸개
+Footwraps	죄수의 발싸개
 For <dur> seconds nearby opponents take <8> points of shock damage and half magicka damage.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 전격 피해와 매지카 피해를 입힙니다.
 For <dur> seconds you automatically become invisible while sneaking.	<dur> 초 동안 은신 시 투명화합니다.
 For <dur> seconds, items are enchanted <mag>% stronger.	<dur> 초 동안 부여하는 마법의 위력이 <mag>% 증가합니다.
@@ -6972,7 +6972,7 @@ Forget I said anything.	내가 했던 말은 잊어주시오.
 Forget it! It could kill me!	됐소! 이 걸 마시면 죽을 지도 모르오!
 Forget it, I'll come back.	잊어버려, 나중에 다시 오겠어.
 Forget it, then.	그럼 됐소.
-Forget it.	내키지 않는데.
+Forget it.	관둬.
 Forget it. I'll be back.	관 둬. 다시 오겠다.
 Forget it. I'll come back.	좋아, 나중에 오지.
 Forget it. I'll just open it myself.	관 둬. 내가 직접 따지 뭐.
@@ -7125,7 +7125,7 @@ Free Logrolf	로그롤프를 풀어주기
 Free the prisoners	죄수들을 풀어주기
 Freeze	빙결
 Freir	프레이어
-Frenzy	광역 분노
+Frenzy	광분
 Frenzy Poison	독 - 광분 중급
 Frenzy Poison Recipe	제조법 : 광분
 Frenzy Rune	광분의 룬
@@ -7150,7 +7150,7 @@ Frost	된서리
 Frost Atronach	서리 아트로나크
 Frost Barrier	서리의 벽
 Frost Barrier IceWraith	얼음 망령 서리의 벽
-Frost Breath	냉기 숨결
+Frost Breath	서리 숨결
 Frost Cloak	서리 망토
 Frost Cloak Freeze	서리 망토
 Frost Cloaked Spider	서리 망토 거미
@@ -7218,7 +7218,7 @@ Fur-Trimmed Cloak	털가죽 망토
 Fura	퓨라
 Fura Bloodmouth	퓨라 블러드마우스
 FURNITURE	가구
-Fury	광분
+Fury	분노
 Fused Door	녹아붙은 문
 Gabriella	가브리엘라
 Gabriella mentioned something about Cicero...	가브리엘라가 시세로에 관해 뭐라고 하던데...
@@ -7907,7 +7907,7 @@ Golldir	골디어
 Gonnar Oath-Giver	고나르 오스-기버
 Good Intentions	선의
 Good luck finding her from there.	거기에서 그녀를 찾기를 빈다.
-Good luck with that.	잘 해보시오.
+Good luck with that.	잘 해보게.
 Good luck, then.	그럼, 행운을 빌지.
 Good luck.	행운을 빌지.
 Good to see you.	만나게 되어 다행이군.
@@ -8421,7 +8421,7 @@ Heard anything about a Moth Priest passing through?	나방 사제에 관해서 �
 Heart	심장
 Heart of Winter	겨울의 심장
 Heart Stone	하트스톤
-Heart Stone Deposit	하트스톤 매장층
+Heart Stone Deposit	하트스톤 광맥
 Heart Stones	하트스톤
 Heartfire	9월
 Hearthfire	하스파이어
@@ -8493,7 +8493,7 @@ Here are the things you asked for.	여기 요청받은 것들이오.
 Here I am. What do you want?	여기 왔어. 원하는 게 뭐지?
 Here is the scroll.	여기 스크롤.
 Here Lie the Hallowed Dead of Bromjunaar	브로뮤나의 신성한 시신이 여기에서 안식을 취하노라
-Here we go.	간다.
+Here we go.	그럼 해 보자.
 Here you are.	여기 있네.
 Here you go. (<Global=DLC2CostToSail> gold)	여기 있소. (<Global=DLC2CostToSail> 골드)
 Here you go. (Give 5 gold)	자, 받으시오. (5 골드를 준다)
@@ -8966,12 +8966,12 @@ How can I convince you to let me in?	들어가려면 어떻게 해야 되겠소?
 How can I find your master?	당신 주인을 어떻게 찾을수 있습니까?
 How can I get to your master?	당신의 주인을 만나려면 어떻게 해야하지?
 How can I help him?	그를 어떻게 도와줄 수 있소?
-How can I help?	뭔가 도움이 필요한가?
+How can I help?	무엇을 도와줄까?
 How can I learn it, then?	그러면, 어떻게 해야 그걸 배울 수 있습니까?
 How can the rest of the people not care?	어떻게 이런 일에 신경 안 쓰는거지?
 How can the Skull be affecting Dawnstar?	어떻게 타락의 두개골이 던스타에 영향을 끼칠 수 있는 거지?
 How can we get in without your father noticing?	어떻게 당신 아버지한테 들키지 않고 들어가지?
-How can we lure a dragon to Dragonsreach?	어떻게 하면 드래곤스리치로 유인할 수 있습니까?
+How can we lure a dragon to Dragonsreach?	어떻게 하면 '드래곤스리치'로 유인할 수 있습니까?
 How can we make them pay?	어떻게 하면 대가를 치르게 해줄 수 있지?
 How can you be certain the journals exist?	어째서 그 책이 존재한다고 확신하지?
 How can you be so sure I'm a vampire?	내가 흡혈귀라는 걸 어떻게 안 거지?
@@ -9178,7 +9178,7 @@ How'd you get involved?	넌 어떻게 관련된거지?
 How'd you pick up the herb trade?	약초 다루는 일은 어쩌다 시작했습니까?
 How's <Alias.ShortName=Child1> doing?	<Alias.ShortName=Child1> 말인데, 잘 지내고 있나?
 How's a moth related to the Elder Scrolls?	어떻게 나방이 엘더스크롤과 연관되어 있는 거요?
-How's business?	사업은 어떻지?
+How's business?	장사는 잘 됩니까?
 How's life under Stormcloak rule?	스톰클록의 통치를 받는 생활은 어떻소?
 How's that changing the way things are?	운이 어떻게 일에 영향을 미치는 거지?
 How's the Guild doing?	길드는 잘 돌아가나?
@@ -9427,7 +9427,7 @@ I don't have time for that now.	지금은 여유가 없습니다.
 I don't have time for that.	이런 일에 낭비할 시간은 없군.
 I don't have time for this nonsense.	당치도 않은 일에 쓸 시간은 없다.
 I don't have time for this!	이럴 여유는 없어!
-I don't have time for this.	그럴 시간이 없군요.
+I don't have time for this.	이런 일에 낭비할 시간은 없군.
 I don't have time for this. Do you?	이렇게 낭비할 시간따위는 없어.
 I don't have time for this. I can get rough with you if I have to. (Brawl)	이렇게 낭비할 시간은 없어. 필요하다면 패주지. (싸움)
 I don't have time for this. I can get rough with you if I have to. (Intimidate)	이렇게 낭비할 시간은 없어. 필요하다면 패주지. (위협)
@@ -9452,7 +9452,7 @@ I don't know what happened to me.	나에게 무슨 일이 일어난 건지 모�
 I don't know what she was thinking.	무슨 생각으로 그런지 모르겠군.
 I don't know what to say.	뭐라고 해야 할지 모르겠군.
 I don't know what you're asking.	당신이 무슨 말 하는지 모르겠군.
-I don't know what you're talking about.	무슨 말을 하는 것인지 모르겠군.
+I don't know what you're talking about.	무슨 말 하는 건지 모르겠는데.
 I don't know where she is.	그애가 어디있는지 모르겠는데.
 I don't know who she is. She says she lives in a castle near Solitude.	정체는 모르지만, 솔리튜드 근처의 성에 살고 있다더군.
 I don't know yet what he wanted. I left Apocrypha before I found out.	그가 뭘 원하는지는 아직 모르겠습니다. 알아내기 전에 아포크리파를 벗어났기 때문에.
@@ -9497,7 +9497,7 @@ I don't think I can help you with this.	딱히 도와줄 방법이 없는데.
 I don't think I can help you.	당신을 도와줄 수 없을 것 같군.
 I don't think I like where this is going...	이야기가 이상하게 돌아가는데...
 I don't think I'm game.	너랑 함께 가긴 싫은데.
-I don't think so.	안 될 것 같은데.
+I don't think so.	아닌 것 같은데.
 I don't think so. In fact, I'm going to help her get home.	그렇게 생각하지는 않소. 나는 그녀의 집까지 데려다 줄 생각이오.
 I don't think they'll give up willingly.	그들이 쉽게 포기하진 않을 것 같은데.
 I don't think they'll involve you.	저 사람들이 널 받아주진 않을 것 같은데.
@@ -9897,7 +9897,7 @@ I need to speak to you about Saarthal.	사아쌀에 관해서 할 말이 있습�
 I need to stop Alduin.	알두인을 막아야 합니다.
 I need to talk to him. I'm a friend. His life's in danger. (Persuade)	이야기를 해야해. 나는 그 사람 친구야. 그 사람의 목숨이 위험하다고. (설득)
 I need to talk to you about Helgen.	헬겐에 관해서 할 말이 있습니다.
-I need to talk to you.	할 말이 있는데.
+I need to talk to you.	당신에게 할 말이 있는데.
 I need to think it over.	조금 더 생각을 해봐야겠군.
 I need to trade some things with you.	교환할 물건들이 있는데.
 I need training for Two-Handed weapons.	양손무기 훈련이 필요합니다.
@@ -10298,7 +10298,7 @@ I'll come back later.	다시 돌아오지.
 I'll deliver the book for you.	내가 그 책을 전해주지.
 I'll deliver the frost salts for you.	냉기소금을 대신 배달해 주지.
 I'll distribute them.	그걸 나눠주겠습니다.
-I'll do it.	제가 하겠습니다.
+I'll do it.	내가 하지.
 I'll do it. I'll report Cicero to the guard.	그래. 경비병에게 시세로에 관해서 말하겠다.
 I'll do nothing of the sort.	그런 일은 하지 않겠다.
 I'll do what I can.	노력해 보지.
@@ -10330,7 +10330,7 @@ I'll go see Bryling for you.	내가 대신 브라일링을 만나러 가지.
 I'll handle those draugr for you.	내가 그 드로거들을 처리하지.
 I'll have no part of this insanity.	이런 미친 짓에는 관여하고 싶지 않아.
 I'll have to do that some other time.	그 일은 다음 기회에 하겠습니다.
-I'll have to think about it.	조금 더 생각을 해 봐야겠군.
+I'll have to think about it.	생각해보겠다.
 I'll head there immediately.	즉시 그 장소로 가지.
 I'll help you find her.	스비디를 찾게 도와주지.
 I'll help you pay off your debt.	빚을 갚게 도와주지.
@@ -10386,7 +10386,7 @@ I'll stay out, then.	그럼 난 관여하지 않도록 하지.
 I'll take <Global=BYOHHPAmountLogs> logs (<Global=BYOHHPCostLogs> gold).	통나무 <Global=BYOHHPAmountLogs>개를 사겠다. (<Global=BYOHHPCostLogs> 골드).
 I'll take care of it.	내게 맡겨 줘.
 I'll take it.	그걸로 하지.
-I'll take it. (<Global=BYOHHPCost> gold)	그렇게 하겠다. (<Global=BYOHHPCost> 골드)
+I'll take it. (<Global=BYOHHPCost> gold)	구입하겠다. (<Global=BYOHHPCost> 골드)
 I'll take my pay.	보수를 주시오.
 I'll take that claw for 50 gold.	그 발톱을 50골드에 사겠습니다.
 I'll take that dog off your hands. (<global=animalgold> gold)	내가 저 개를 사지. (<global=animalgold> 골드)
@@ -10411,7 +10411,7 @@ I'll wield this mighty blade in your name.	당신의 이름으로 이 전능한 
 I'll worry about capturing a dragon. I need your help to stop the war.	드래곤을 잡는 방법은 내가 알아보겠습니다. 전쟁을 끝내기 위해서는 당신의 도움이 필요합니다.
 I'll... consider your request.	한번... 고려해보겠다.
 I'm <Alias=Player>. Who are you?	나는 <Alias=Player>. 당신은 누구요?
-I'm a bit short of money right now. (<Global=BYOHHPCost> gold)	부른 값보다는 가지고 있는 돈이 모자라다. (<Global=BYOHHPCost> 골드)
+I'm a bit short of money right now. (<Global=BYOHHPCost> gold)	그 정도의 돈은 없다. (<Global=BYOHHPCost> 골드)
 I'm a follower of Molag Bal, myself.	나도 몰락 발의 신도인데.
 I'm a Mercenary.	용병이다.
 I'm a proud supporter of Ulfric Stormcloak. What of it?	나는 울프릭의 자랑스러운 지지자입니다. 그게 무슨 문제라도?
@@ -10609,13 +10609,13 @@ I'm ready to pay.	배상을 하지.
 I'm ready to return to Tamriel.	탐리엘로 돌아갈 준비가 되었소.
 I'm ready to take the Oath.	선서할 준비가 되었습니다.
 I'm ready, ma'am.	준비됐습니다, 군단장님.
-I'm ready.	준비완료.
+I'm ready.	준비 되었소.
 I'm ready. Here's what I'll need.	준비 됐소. 여기 내가 쓸 물건들이오.
 I'm ready. Keep the rest of my things safe for me.	준비됐소. 나머지 내 물건들은 안전하게 보관해 주시오.
 I'm ready. Let's get this started.	준비됐어. 이제 시작해보자.
 I'm ready. Let's go get them.	준비되었소. 그걸 구하러 갑시다.
 I'm ready. Let's go trap a dragon.	준비는 끝났으니 드래곤을 생포하러 갑시다.
-I'm ready. Let's go.	준비 되었습니다. 갑시다.
+I'm ready. Let's go.	준비 됐어. 가자.
 I'm ready. Take me to Skuldafn.	준비는 끝났으니 스컬다픈으로 데려다 주시오.
 I'm so sorry! Here, take the money.	정말 미안하게 되었군요! 여기 돈을 받으시오.
 I'm sorry about your family.	가족에게 일어난 일은 안타깝군.
@@ -10834,8 +10834,8 @@ Ice Form	빙결화
 Ice Mage	얼음 마법사
 Ice Mage Adept	숙련된 얼음 마법사
 Ice Pile	얼음가루 더미
-Ice Spike	얼음 창
-Ice Storm	얼음의 형상
+Ice Spike	얼음 가시
+Ice Storm	얼음 폭풍
 Ice Terror	얼음 공포
 Ice Vine	얼음 포도덩굴
 Ice Volley	냉기 일제 사격
@@ -11090,7 +11090,7 @@ Imperial Light Shield of Waning Shock	제국군 경갑 방패 - 하급 전격 �
 Imperial LightHelmet of Major Illusion	제국군 경갑 투구 - 중급 환영마법
 Imperial Luck	임페리얼의 행운
 Imperial Mage	제국군 마법사
-Imperial Military Camp	제국군 야영지
+Imperial Military Camp	제국군 주둔지
 Imperial Missive	제국군 서신
 Imperial Officer	제국군 장교
 Imperial Officer's Helmet	제국군 장교 투구
@@ -11586,7 +11586,7 @@ Is the war really over?	정말로 전쟁이 끝난건가?
 Is there a bounty on her then?	일다리에게 현상금이라도 걸었나?
 Is there a cure?	이거 치료 방법은 있는 건가?
 Is there a key for this cage?	감옥 열쇠가 있나?
-Is there a problem?	무슨 문제라도 있나?
+Is there a problem?	무슨 문제라도 있습니까?
 Is there a story behind that burned down house?	그 불탄 집에 무슨 뒷이야기라도 있소?
 Is there a way to cure yourself?	치료할 방법은 있습니까?
 Is there an elven mage here that studies stars?	'별'에 대해 연구중인 엘프 마법사가 여기 있습니까?
@@ -12581,7 +12581,7 @@ Let's get this over with.	어서 끝내버립시다.
 Let's go	가지.
 Let's go kill a dragon.	드래곤을 죽이러 가지.
 Let's go to the castle's secret entrance.	성의 비밀 통로로 가자.
-Let's go!	해보지!
+Let's go!	그러면, 가자!
 Let's go.	가자.
 Let's go. (Dismiss current animal)	자 가자. (현재 동물을 해고)
 Let's go. Let me worry about the guards.	가자. 경비병들이나 신경쓰자구.
@@ -13435,7 +13435,7 @@ Mount Moesring	모스링 산
 Mountain Flower	들꽃
 Mounted Bear Head	곰 머리 박제
 Mounted Elk Antlers	큰 뿔 박제
-Mounted Elk Head	큰 뿔 사슴 머리 박제
+Mounted Elk Head	큰 뿔 사슴 박제
 Mounted Goat Head	염소 머리 박제
 Mounted Horker Head	호커 머리 박제
 Mounted Mudcrab	진흙게 박제
@@ -13462,7 +13462,7 @@ Movement	이동
 Mralki	므랄키
 Mralki's Chest	므랄키의 상자
 Much bigger than that. As big as the inn.	그것보다 훨씬 거대하더군. 여관만큼이나 크던데.
-Mudcrab	진흙 게
+Mudcrab	진흙게
 Mudcrab Boss (Old Salty)	거대 진흙 게 (올드 살티)
 Mudcrab Chitin	진흙게 껍질
 Mudcrab Guardian Spirit	진흙게 수호자 영혼
@@ -13892,7 +13892,7 @@ No saved games.	저장된 게임이 없습니다.
 No soul gem large enough.	충분한 크기의 소울젬이 없습니다.
 No Stone Unturned	최선을 다하기
 No Thanks	사양하지.
-No thanks.	필요없어.
+No thanks.	필요없소.
 No thanks. That sounds like a bad idea.	사양하지. 나쁜 생각 같으니까.
 No time to explain. Let's get out of here. (Free him)	설명할 시간이 없군. 여기서 나갑시다. (그를 풀어주기)
 No time to lose then.	그럼 낭비할 시간이 없군.
@@ -13925,7 +13925,7 @@ No, never mind.	신경쓰지 마라.
 No, no I don't.	아니, 없군.
 No, not really.	아니, 별로.
 No, not right now.	아니, 지금은 곤란하군.
-No, not yet.	아니, 아직은.
+No, not yet.	아직은.
 No, nothing interesting. I just killed Miraak and saved Solstheim.	그다지 특이한 것은 없소. 미락을 죽이고 솔스트하임을 구했을 뿐.
 No, nothing. I'll just be moving on.	아니, 아무것도 아니오. 그냥 지나가는 중인데.
 No, sir.	아닙니다, 선생님.
@@ -14473,7 +14473,7 @@ Now I get it.	이제 알겠군.
 Now is it worth something?	이제 좀 가치가 있게 되었나?
 Now that Ulfric is dead, will there be peace?	이제 울프릭이 죽었으니, 평화가 찾아오겠습니까?
 Now that we've defeated the Imperials, will there be peace?	이제 제국군을 물리쳤으니, 평화가 찾아오겠습니까?
-Now what?	이제 어쩌지?
+Now what?	이 다음은?
 Now where are the books?	자 그럼, 책들은 어디 있지?
 Now where's Esbern?	자, 에스번은 어디에 있지?
 Now, now, Gianna. Who's the Gourmet here?	이봐, 지아나. '미식가'는 누구지?
@@ -15309,7 +15309,7 @@ Poison Bloom	독초
 Poison Cloak	맹독 망토
 Poison Cloaked Spider	마법 주문서 - 독 망토 거미
 Poison Damage	독 피해
-Poison Gas	독가스
+Poison Gas	독 안개
 Poison of	제조 독 -
 Poison Rune	맹독의 룬
 Poison Spider	맹독 망토 거미
@@ -15574,7 +15574,7 @@ QUICK	빠른
 Quick Hands	잽싼 손길
 Quick Reflexes	빠른 반사신경
 Quick Shot	신속 사격
-Quick Test Cell	방어구를 장착하지 않을 시 피부 마법의 위력이 2.5배 증가합니다.
+Quick Test Cell	Quick Test Cell
 Quickloading...	빠른 저장 불러오는 중...
 Quicksave	빠른 저장
 Quicksaving...	빠른 저장 중...
@@ -15610,7 +15610,7 @@ Raen	라엔
 Raerek	레이렉
 Raerek's Inscribed Amulet of Talos	레이렉의 탈로스 아뮬렛
 Rage	격노
-Rage Of The Ancients	쇠뇌 - 하급 화염
+Rage Of The Ancients	Rage Of The Ancients
 Ragged Boots	누더기 신발
 Ragged Cap	누더기 모자
 Ragged Robes	누더기 로브
@@ -15626,7 +15626,7 @@ Rahgot's Bust	라고트의 흉상
 Rahgot's Reply	라고트의 답장
 Rain's Hand	4월
 Raise Dead	강령술
-Raise Zombie	좀비 부활
+Raise Zombie	하급 강령술
 Raised Stone	튀어나온 돌
 Raises the user's Smithing abilities by <mag> points.	제련 기술이 <mag> 증가합니다.
 Raises the wielder's Smithing abilities, and does <mag> shock damage to enemies on hit.	제련 기술이 증가합니다. <mag> 의 전격 피해를 입힙니다.
@@ -15724,14 +15724,14 @@ Ready. Let's go.	준비 완료. 출발하자.
 Ready...	준비...
 Reality & Other Falsehoods	현실 그리고 또다른 허상
 Really? Silus Vesuius says otherwise.	정말이오? 사일러스 베수이우스는 전혀 다른 말을 하던데.
-Reanimate	강령술
+Reanimate	중급 강령술
 Reanimate a dead body permanently to fight for you. Only works on people.	영구적으로 나를 위해 싸울 시체를 하나 부활시킵니다. 사람의 시체만 가능합니다.
 Reanimate a dead body to fight for you for <dur> seconds.	<dur> 초 동안 나를 위해 싸울 시체를 하나 부활시킵니다.
 Reanimate a more powerful dead body to fight for you for <dur> seconds.	<dur> 초 동안 나를 위해 싸울 조금 강력한 시체를 하나 부활시킵니다.
 Reanimate a powerful dead body to fight for you for <dur> seconds.	<dur> 초 동안 나를 위해 싸울 조금 강력한 시체를 하나 부활시킵니다.
 Reanimate a very powerful dead body to fight for you for <dur> seconds.	<dur> 초 동안 나를 위해 싸울 매우 강력한 시체를 하나 부활시킵니다.
 Reanimate a weak dead body to fight for you for <dur> seconds.	<dur> 초 동안 나를 위해 싸울 약한 시체를 하나 부활시킵니다.
-Reanimate Corpse	시체 부활
+Reanimate Corpse	중급 강령술
 Reanimate Thrall	죽음의 노예
 Reaper	사신
 Reaper Bracers	사신의 손목 보호대
@@ -16723,7 +16723,7 @@ Sabjorn seems like more than just friendly competition.	사비욘이 단순한 �
 Sabjorn's Dresser	사비욘의 옷상자
 Sabjorn's Dresser Key	열쇠 - 사비욘의 서랍장
 Sabotage?	방해공작을 합니까?
-Sabre Cat	검치 호랑이
+Sabre Cat	검치호랑이
 Sabre Cat Guardian Spirit	검치호랑이 수호자 영혼
 Sabre Cat Pelt	모피 - 검치호랑이
 Sabre Cat Snow Pelt	모피 - 설원 검치호랑이
@@ -17258,10 +17258,10 @@ Shipment's Arrived	뱃짐이 도착함
 Shipment's Ready	출하 준비 완료
 Shipwreck Loot	난파선의 보물
 Shiv	칼
-Shock	전격
+Shock	번개
 Shock Barrier	폭풍의 벽
 Shock Cloak	천둥 망토
-Shock Cloaked Spider	마법 주문서 - 폭발형 전격 거미
+Shock Cloaked Spider	전격 거미
 Shock Damage	전격 피해
 Shock Rune	벼락의 룬
 Shock spells do <25>% more damage.	전격 마법의 위력이 <25>% 증가합니다.
@@ -17574,7 +17574,7 @@ Sneaking is <mag>% better.	발각되기가 <mag>% 어려워집니다.
 Snilf	스닐프
 Snilling	스닐링
 Snorreid	스노리히트
-Snow Bear	설원 곰
+Snow Bear	설원곰
 Snow Bear Pelt	모피 - 설원곰
 Snow elves? You're a Falmer?	스노우 엘프? 당신은 팔머요?
 Snow Fox	설원여우
@@ -18851,7 +18851,7 @@ Steel Armor of Restoration	강철 방어구 - 하급 회복마법
 Steel Armor of the Knight	강철 방어구 - 하급 중갑
 Steel Armor of the Major Knight	강철 방어구 - 중급 중갑
 Steel Armor of the Minor Knight	강철 방어구 - 최하급 중갑
-Steel Arrow	화살 - 강철
+Steel Arrow	화살 - 강철 화살
 Steel Battleaxe	강철 전투 도끼
 Steel Battleaxe of Arcing	강철 전투 도끼 - 하급 전격
 Steel Battleaxe of Binding	강철 전투 도끼 - 중급 소울 트랩
@@ -19758,12 +19758,12 @@ Tell me about this temple.	이 사원에 대해 말해주시오.
 Tell me about this Thalmor assassin that's hunting you.	탈모어 암살자에 대해 말해주시오.
 Tell me about this tree.	이 나무에 대해 말해주시오.
 Tell me about your dream.	당신의 꿈에 관해서 말해주시오.
-Tell me about your family.	당신의 가족에 대해서 말해줄 수 있나.
+Tell me about your family.	당신 가문에 대해서 알려주실까.
 Tell me about your group.	당신네 조직에 관해 말해주시오.
 Tell me about your home.	당신의 집에 대해서 말해주시오.
 Tell me about your mother. What happened?	어머니에 대해서 좀 말해 보렴. 어떻게 된 거지?
 Tell me about your parents.	당신의 부모님에 대해 말해주시오.
-Tell me about yourself.	네 이야기를 들어보고 싶다.
+Tell me about yourself.	댁은 뭐하는 사람이오?
 Tell me again about being a Vampire Lord.	흡혈귀 군주가 되는 것에 관해서 한번 더 말해주시오.
 Tell me again about your wife?	당신의 아내에 관해 다시 말해보겠소?
 Tell me anything you can.	뭐라도 알고 있는 것을 말해주시오.
@@ -20594,7 +20594,7 @@ They're for enchanting, correct?	마법부여를 할 때 쓰는 것, 맞소?
 They're indestructible, so they'd make good armor.	그것들은 부서지지 않는 것이니, 아마도 좋은 방어구를 만들 수 있겠지.
 They've found a way in. We need to get you out of here. (Lie)	놈들이 방법을 찾아냈소. 당장 여기서 나가야 하오. (거짓)
 Thief	도적
-Thief Cache	도둑의 저장고
+Thief Cache	도둑의 은닉품
 Thief of Virtue	정조 도둑
 Thief's Last Words	도둑의 마지막 말
 Thieves and temples. It just doesn't add up.	도둑과 신전이라니 너무 안 어울리는데.
@@ -21220,7 +21220,7 @@ Vampire's Thrall	흡혈귀의 노예
 Vampires Grip	흡혈귀의 손아귀
 Vampires heal <mag> points of Health.	흡혈귀는 체력을 <mag> 회복합니다.
 Vampires threaten all of Skyrim. We need your help.	흡혈귀들이 스카이림 전역을 위협하고 있소. 당신의 도움이 필요하군.
-Vampiric Blood Rested	흡혈귀의 피가 휴식을 취함
+Vampiric Blood Rested	흡혈귀의 피가 편안한 휴식을 취했습니다.
 Vampiric Drain	흡혈귀의 흡수
 Vampiric Drain(Shade)	흡혈귀의 흡수
 Vampiric Grip	흡혈귀의 손아귀
@@ -21465,7 +21465,7 @@ Wait for Storn to read the book	스토언이 책을 읽도록 기다리기
 Wait for Telrav to return with your reward	보상을 받기 위해 텔라브가 돌아오는 것을 기다리기
 Wait for the Jarl's response	야를의 응답을 기다리기
 Wait here a moment.	여기서 잠시만 기다리시오.
-Wait here.	여기서 기다려.
+Wait here.	여기서 기다리게.
 Wait here. I'll take care of them.	여기서 기다리시오. 내가 처리하지.
 Wait in the courtyard.	안뜰에서 기다려.
 Wait inside Ulen Ancestral Tomb	울렌 선조의 무덤 내부에서 기다리기
@@ -21479,7 +21479,7 @@ Wait. I know you.	잠깐. 당신을 어디선가 봤는데.
 Wait. What artifact?	잠깐. 무슨 유물?
 Wait. You know him?	잠깐, 그를 알고 있소?
 Wake me up when we arrive.	도착하면 깨워주시오.
-Waking Nightmare	깨어나는 악몽
+Waking Nightmare	깨어있는 악몽
 Walk away. Right now. (Intimidate)	꺼져. 지금 당장! (위협)
 Walk on the surface of water for <dur> seconds.	<dur> 초 동안 수면을 걸을 수 있습니다.
 Walking the World, Vol XI	세계를 걷기, 제 11권
@@ -21590,7 +21590,7 @@ We seem to be at an impasse, then.	이러지도 저러지도 못하는 상황이
 We shall now add... a giant's toe!	그 다음에는... 거인의 발가락을 추가해!
 We should check back with Isran.	이스란을 만나봐야겠군.
 We should honor our agreement with him.	그와 한 약속을 지켜야만 해.
-We should keep moving.	계속 가지.
+We should keep moving.	계속 이동하지.
 We should wait until dark.	어두워질 때까지 기다리자.
 We were supposed to be learning about something?	뭔가 배워야 되는 건 아닙니까?
 We were victorious!	우리가 승리했습니다!
@@ -21748,7 +21748,7 @@ What are you doing in Markarth?	마르카스에는 무슨 일로 왔소?
 What are you doing in Skyrim?	스카이림에서 무슨 일을 하는 거지?
 What are you doing out here?	여기 밖에서 뭐합니까?
 What are you doing there?	거기서 뭐 하는 거지?
-What are you doing?	뭘 하고 있소?
+What are you doing?	뭐하는 거지?
 What are you going to do now?	이제 어떻게 할 생각이지?
 What are you going to do with this place?	이곳에서 뭘 할 생각이지?
 What are you in for?	여기엔 무슨 죄로 들어왔지?
@@ -21756,7 +21756,7 @@ What are you looking for?	뭘 보려는 거요?
 What are you offering to the giants?	그 거인들에게 뭘 제공하지?
 What are you saying?	무슨 뜻이지?
 What are you selling?	뭘 팔고 있지?
-What are you talking about?	무슨 말을 하고 있는거요?
+What are you talking about?	무슨 말을 하고 있는 거지?
 What are you thinking?	어떻게 할 생각이지?
 What are your duties here in Skyrim?	여기 스카이림에서 어떤 임무를 맡고 있소?
 What are your orders?	명령은 무엇입니까?
@@ -21770,7 +21770,7 @@ What brings you to this party?	이 연회에는 어떤 일로 왔소?
 What brings you to this remote place?	이렇게 먼곳까지 무슨일로 온거요?
 What can be done about it now?	이제 어떻게 될 것 같소?
 What can I do for you, Jarl?	도와드릴 일이 있소, 야를?
-What can I do for you?	무엇을 도와 드릴까?
+What can I do for you?	무엇을 도와 드릴까요?
 What can I do to help the Skaal?	스칼을 도울 일이 있나?
 What can I do to help?	무엇을 도와주면 되오?
 What can I do?	뭘 하면 되겠소?
@@ -21838,7 +21838,7 @@ What did you need help with?	무슨 도움이 필요하나?
 What did you need me to do for you?	어떤 도움이 필요한 겁니까?
 What did you need me to do?	내가 무엇을 하면 됩니까?
 What did you need me to get?	필요한게 뭐지?
-What did you need?	필요한 게 뭐라고 했지?
+What did you need?	뭐 필요하시다고?
 What did you say you needed?	필요한게 뭐라고 했소?
 What did you say you were missing?	잃어버린 게 뭐라고 했소?
 What did you see?	뭘 봤습니까?
@@ -21949,9 +21949,9 @@ What do you want me to say to this monk?	이 수도사에게 내가 뭐라고 �
 What do you want of me this time?	이번에는 내가 뭘 하면 되지?
 What do you want of me, my lord?	뭘 원하십니까?
 What do you want of me?	뭘 원하는 거지?
-What do you want with me?	내게 뭘 원하는 겁니까?
+What do you want with me?	내게 뭘 원하는 것이오?
 What do you want with the Elder Scroll?	엘더스크롤을 가지고 뭘 하려는 거지?
-What do you want?	뭐가 필요합니까?
+What do you want?	뭐가 필요한가?
 What do your titles mean?	그 호칭은 무슨 의미가 있소?
 What does a housecarl do?	하우스칼은 어떤 일을 하지?
 What does a kid do for fun around here?	애들은 이 주변에서 뭘하고 놀지?
@@ -22082,7 +22082,7 @@ What is going on here?	무슨 일이 일어나고 있는 거지?
 What is House Redoran?	레도란 가문이 뭐지?
 What is it Arniel wanted you to get?	아니얼이 원하는게 뭐지?
 What is it between you two?	당신들 사이에 무슨 일이 있었지?
-What is it now?	이번엔 또 뭐지?
+What is it now?	이번엔 또 무슨 일이지?
 What is it that you need?	뭘 원하는 거지?
 What is it that you want?	원하는게 뭐지?
 What is it this time?	이번엔 또 뭐요?
@@ -22090,7 +22090,7 @@ What is it you do here in town?	이 도시에서 어떤 일을 하고있습니�
 What is it you do here?	여기서 뭐하시오?
 What is it you want me to do?	내게 뭘 원하는 것이오?
 What is it you want?	원하는 게 뭐냐.
-What is it?	그게 뭐지?
+What is it?	뭔가?
 What is it? What happened?	뭡니까? 무슨 일이 있던 겁니까?
 What is my destiny?	나의 운명은 무엇입니까?
 What is skooma?	스쿠마가 뭐지?
@@ -22160,7 +22160,7 @@ What mission?	무슨 임무?
 What must I know about being a vampire?	흡혈귀가 되는 것에 관해서 반드시 알아두어야 할 것은?
 What needs to be done?	해야 할 일은?
 What now, Isran?	이제 어떻게 할 겁니까, 이스란?
-What now?	이 다음은?
+What now?	이제 어떻게 할까?
 What of it?	그게 어쨋다는 겁니까?
 What of Ulfric himself?	울프릭 그 사람은 어떻습니까?
 What right do you have to drag people away like this?	무슨 권리로 사람들을 이렇게 끌고가는 거지?
@@ -22244,7 +22244,7 @@ What will killing Gaius Maro accomplish?	가이우스 마로를 죽여서 얻는
 What will The Dreamstride feel like?	'꿈의 산책'이란건 어떤 거지?
 What will you do if we find your mother?	어머니를 찾으면 어쩔 생각이지?
 What will you do now that Nurelion is gone?	뉴렐리온이 죽었으니 이제 어떡할 거지?
-What will you do now?	이제 어쩔 거지?
+What will you do now?	이제 어떻게 할 생각이오?
 What will you do then?	이제 뭘 할 생각이오?
 What will you do?	뭘 할 생각이지?
 What wisdom can you share about hunting?	사냥의 수칙에 대해 알려줄 수 있나?
@@ -22257,7 +22257,7 @@ What would the Thalmor want with Esbern?	탈모어는 에스번에게 뭘 원하
 What would you ask of me?	나에게 어떠 한 것을 부탁하러 온 겐가?
 What would you like to do?	어떻게 하겠습니까?
 What would you like?	어떤 걸 좋아하니?
-What'll you give me for these?	어떤 것을 팔고 있소?
+What'll you give me for these?	이건 얼마에 쳐줄 텐가?
 What's a heart stone?	하트스톤이라는 게 뭐지?
 What's a werebear?	곰인간이란게 뭐요?
 What's all this about the Forsworn?	포스원이라니 무슨 일이오?
@@ -22272,7 +22272,7 @@ What's being built outside of town?	마을 바깥에 뭐가 지어지고 있는 
 What's dangerous about daedra?	데이드라의 위험한 점이 뭡니까?
 What's expected of me here?	여기서 제가 할 일은 뭡니까?
 What's going on here?	무슨 일이지?
-What's going on?	무슨 일이오?
+What's going on?	무슨 일이지?
 What's going on? What happened to everyone?	어떻게 된 겁니까? 다른 사람에겐 무슨 일이 일어난 겁니까?
 What's going to happen in there?	그 안에서 어떤 일이 생기는 거지?
 What's going wrong in Morthal?	모탈에 무슨 문제가 있소?
@@ -22280,7 +22280,7 @@ What's Gulum-Ei's story?	걸럼-아이 이야기 좀 해 주지?
 What's Haelga's story?	헬가에 대해 할 이야기가 있나?
 What's happened?	그래, 무슨 일인가?
 What's happening?	그래, 무슨 일인가?
-What's in it for me?	내가 도와주면 어떤 이득이 있지?
+What's in it for me?	내가 협력하면 어떤 이득이 있지?
 What's in this for me?	나에겐 무슨 이득이 있소?
 What's in your head?	뭔가 좋은 생각이라도?
 What's it like being a werewolf?	늑대인간이 되는건 어떤 느낌이오?
@@ -22296,7 +22296,7 @@ What's next, then?	다음은 뭐지?
 What's next?	다음은 뭐지?
 What's not allowed here?	여기서 금지된 일들이 뭐지?
 What's on the menu?	뭘 팔고 있습니까?
-What's on your mind?	뭐지?
+What's on your mind?	뭔데? 말해 봐.
 What's our first target?	첫 번째 목표는 뭐지?
 What's our next move against the Empire?	제국군을 상대하기 위해 다음으로 무얼 해야 합니까?
 What's our next move?	다음은 어디지?
@@ -22338,7 +22338,7 @@ What's the next step?	다음 단계는 뭡니까?
 What's the next target?	다음 목표는?
 What's the paint on the cow for, again?	잠깐, 소 위의 낙서가 뭐라고 했소?
 What's the plan?	계획은?
-What's the problem?	문제라도 있나?
+What's the problem?	문제라도 있소?
 What's the Psijic Order?	씨직 오더가 무엇입니까?
 What's the purpose of the College?	이 대학의 목표는 무엇입니까?
 What's the Ratway?	'쥐소굴'이 뭐지?
@@ -22760,7 +22760,7 @@ Why aren't you going in there?	왜 들어가지 않고 있소?
 Why aren't you like them?	어째서 당신은 그렇게 되지 않았지?
 Why aren't you part of the coven anymore?	이제 더 이상 마법회의 일원이 아닌 건가?
 Why bother poisoning the nest for Sabjorn?	왜 귀찮게 둥지에 독은 풀어야 하지?
-Why build a shrine outside of town?	어째서 마을 바깥에 성소를 세운 겁니까?
+Why build a shrine outside of town?	어째서 마을 바깥에 성소를 세운 거지?
 Why can't I be all three?	왜 세 가지 모두 될 수는 없는거지?
 Why can't I go in?	내가 왜 들어갈 수 없다는 겁니까?
 Why can't Orthjolf be trusted?	어째서 오디욜프를 믿을 수 없다는 거요?
@@ -22907,7 +22907,7 @@ Why not hire some of the miners out of Raven Rock?	레이븐 락 주변에서 �
 Why not just fight our way in?	그냥 싸워서 들어가면 안 되나?
 Why not level the entire estate?	왜 지구 전체를 싹 갈아버리면 안 되는 거지?
 Why not return to Morrowind?	왜 모로윈드로 돌아가지 않지?
-Why not?	왜 안 믿는 거지?
+Why not?	어째서?
 Why only have one bottle when you can have two?	왜 한 병만 따는 거지, 두 병도 딸 수 있는데?
 Why plant the ring on Brand-Shei?	왜 이 반지를 브랜드-쉐이의 주머니에 넣으라는 거지?
 Why sail there at all then?	그럼 왜 거기로 항해를 하는 거요?
@@ -23231,7 +23231,7 @@ Yes, otherwise he'll teach me nothing. You can trust me. (Persuade)	물론이지
 Yes, restart the game.	네, 게임을 다시 시작합니다
 Yes, Shadowfoot Sanctum.	그래, 섀도우풋 성역.
 Yes, sir!	예, 알겠습니다!
-Yes, sir.	알아들었소.
+Yes, sir.	알겠습니다.
 Yes, that's how I first learned I was Dragonborn.	그래, 그것이 내가 드래곤본이라는 것을 처음으로 알게 된 방법이야.
 Yes, the blushing bride now serves Sithis in the Void.	그렇지, 그 신부는 이제 공허 속에서 시디스를 섬기고 있지.
 Yes, the coffin. It's perfect.	과연, 관이라. 완벽하군.
@@ -23781,7 +23781,7 @@ You're a Vigilant of Stendarr?	당신은 스텐다르의 경계병입니까?
 You're already holding something.	이미 어떤 것을 쥐고 있습니다.
 You're an important family, I take it?	당신네는 중요한 가문이다, 이렇게 알아들으면 되겠소?
 You're an insult to our kind.	네 존재는 우리 종족에게는 모욕이다.
-You're awfully... mature for your age.	당신은 확실히... 나이에 비해 늙어보이는군.
+You're awfully... mature for your age.	너는 엄청... 나이에 비해 성숙하구나.
 You're blind!	눈이 멀어버렸군!
 You're coming with me. Now. (Intimidate)	나를 따라 와. 당장. (위협)
 You're corrupt. Thonar is paying you.	부패한 놈들. 토나에게 뇌물을 먹었군.
