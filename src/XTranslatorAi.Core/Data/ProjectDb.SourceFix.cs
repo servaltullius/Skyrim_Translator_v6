@@ -73,6 +73,22 @@ public sealed partial class ProjectDb
             return;
         }
 
+        // An unmarked row with the same English and translation (the record the text was pasted from) still owns it.
+        await using (var shared = _connection.CreateCommand())
+        {
+            shared.Transaction = tx;
+            shared.CommandText = "SELECT 1 FROM StringEntry WHERE Id<>$Id AND SourceText=$Source AND DestText=$Dest "
+                                 + "AND Id NOT IN (SELECT StringId FROM StringNote WHERE Kind=$Kind) LIMIT 1;";
+            shared.Parameters.AddWithValue("$Id", stringId);
+            shared.Parameters.AddWithValue("$Source", source);
+            shared.Parameters.AddWithValue("$Dest", dest);
+            shared.Parameters.AddWithValue("$Kind", TranslationConstants.SourceFixNoteKind);
+            if (await shared.ExecuteScalarAsync(cancellationToken) != null)
+            {
+                return;
+            }
+        }
+
         await using var delete = _connection.CreateCommand();
         delete.Transaction = tx;
         delete.CommandText = "DELETE FROM TranslationMemory WHERE SourceLangKey=$SourceLangKey AND DestLangKey=$DestLangKey AND SrcKey=$SrcKey AND DstText=$DstText;";

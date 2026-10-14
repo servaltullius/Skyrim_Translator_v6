@@ -41,6 +41,20 @@ public sealed class ProjectDbSourceFixTests
         Assert.Equal("완벽한 패리 비활성화", Assert.Single(await fixture.Db.GetTranslationMemoryEntriesAsync(Lang, Lang, CancellationToken.None)).DestText);
     }
 
+    // "Curse Dissipate" had the description of "Curse - load" pasted in; the TM entry is still that row's translation.
+    [Fact]
+    public async Task MarkingARow_KeepsATmTranslationAnUnmarkedRowShares()
+    {
+        await using var fixture = await TranslationRunFixture.CreateAsync(("When using medium, cumulative Curse.", "SPEL:DESC"), ("When using medium, cumulative Curse.", "SPEL:DESC"));
+        var (curse, dissipate) = (fixture.Ids[0], fixture.Ids[1]);
+        await fixture.Db.UpdateStringTranslationAsync(curse, "매개체 사용 시 저주가 누적됩니다.", StringEntryStatus.Edited, null, CancellationToken.None);
+        await fixture.Db.UpdateStringTranslationAsync(dissipate, "매개체 사용 시 저주가 누적됩니다.", StringEntryStatus.Done, null, CancellationToken.None);
+
+        await fixture.Db.SetSourceFixAsync(dissipate, true, CancellationToken.None);
+
+        Assert.Equal("매개체 사용 시 저주가 누적됩니다.", Assert.Single(await fixture.Db.GetTranslationMemoryEntriesAsync(Lang, Lang, CancellationToken.None)).DestText);
+    }
+
     [Fact]
     public async Task EditsOfAMarkedRow_StayOutOfTheTm_UntilItIsUnmarked()
     {
