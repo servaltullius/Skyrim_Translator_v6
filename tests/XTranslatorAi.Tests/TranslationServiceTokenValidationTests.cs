@@ -45,6 +45,22 @@ public class TranslationServiceTokenValidationTests
     }
 
     [Fact]
+    public void EnsureTokensPreservedOrRepair_DoesNotTakeOneSyllableTermFromAnotherWord()
+    {
+        // "Silver" → 은: the model dropped the term, and the 은 of 그들은 must not stand in for it.
+        var input = "Their __XT_TERM_0000__ blades deal __XT_PH_MAG_0000__ damage.";
+        var output = "그들은 적에게 __XT_PH_MAG_0000__의 피해를 줍니다.";
+
+        var glossaryTokenToReplacement = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["__XT_TERM_0000__"] = "은",
+        };
+
+        Assert.Throws<InvalidOperationException>(
+            () => TokenSanitizer.EnsureTokensPreservedOrRepair(input, output, "test", glossaryTokenToReplacement));
+    }
+
+    [Fact]
     public void EnsureTokensPreservedOrRepair_MovesDurToken_WhenPlacedAfterKoreanTimePhrase()
     {
         var input = "Take on the form of the Werewolf for __XT_PH_DUR_0000__ seconds.";

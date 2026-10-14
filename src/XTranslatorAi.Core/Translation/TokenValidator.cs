@@ -938,10 +938,11 @@ internal static class TokenValidator
         {
             for (var k = 0; k < missing; k++)
             {
+                // Not for one syllable: the 은 of "그들은" is not the material 은 (Silver), as in ApplyTokensAndUnmask.
                 if (glossaryTokenToReplacement == null
                     || !token.StartsWith("__XT_TERM_", StringComparison.Ordinal)
                     || !glossaryTokenToReplacement.TryGetValue(token, out var replacement)
-                    || string.IsNullOrWhiteSpace(replacement)
+                    || replacement.Trim().Length <= 1
                     || !TryReplaceFirstOccurrenceInAnyText(texts, replacement, token))
                 {
                     return false;
