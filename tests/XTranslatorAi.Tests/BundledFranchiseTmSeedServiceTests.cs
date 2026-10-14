@@ -492,8 +492,8 @@ public class BundledFranchiseTmSeedServiceTests
             Assert.False(File.Exists(Path.Combine(importDir, metadata.FileName)));
             var changesPath = Path.Combine(importDir, metadata.ChangesFileName!);
             var changes = await File.ReadAllTextAsync(changesPath, CancellationToken.None);
-            Assert.StartsWith("Source\tTarget\n", changes, StringComparison.Ordinal);
-            Assert.Contains("\nIce Storm\t얼음 폭풍\n", changes, StringComparison.Ordinal);
+            Assert.StartsWith("Source\tTarget\tPrevious\n", changes, StringComparison.Ordinal);
+            Assert.Contains("\nIce Storm\t얼음 폭풍\t얼음의 형상\n", changes, StringComparison.Ordinal);
             Assert.Equal(("english", "korean"), BundledFranchiseTmSeedService.LanguagesOfSeedFile(changesPath));
 
             // Auto-import moves the file away; the next load does nothing.

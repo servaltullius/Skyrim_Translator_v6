@@ -90,7 +90,14 @@ public sealed class FranchiseTranslationMemoryService
     )
     {
         // Not File.ReadAllLinesAsync: an Excel TSV from Korean Windows is CP949 (see ImportTextFileReader).
-        var pairs = TranslationMemoryFileService.ParseTsvPairs(await ImportTextFileReader.ReadAllLinesAsync(tsvPath, cancellationToken));
+        var lines = await ImportTextFileReader.ReadAllLinesAsync(tsvPath, cancellationToken);
+        if (TranslationMemoryFileService.ParseTsvChanges(lines) is { } changes)
+        {
+            var db = await RequireDbAsync(cancellationToken);
+            return await db.ApplyTranslationMemoryChangesAsync(sourceLang, targetLang, changes, cancellationToken);
+        }
+
+        var pairs = TranslationMemoryFileService.ParseTsvPairs(lines);
         if (pairs.Count == 0)
         {
             return 0;

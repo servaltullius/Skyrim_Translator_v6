@@ -110,6 +110,60 @@ public sealed partial class ProjectDb
         }
     }
 
+    /// <summary>
+    /// Applies a bundled seed's changes: a row is added when missing and replaced only while it still holds the previous
+    /// seed's text, so a row the user edited in the global memory stays. Returns the rows added or replaced.
+    /// </summary>
+    public async Task<int> ApplyTranslationMemoryChangesAsync(
+        string sourceLang,
+        string destLang,
+        IReadOnlyList<(string SourceText, string DestText, string PreviousText)> changes,
+        CancellationToken cancellationToken
+    )
+    {
+        var sourceLangKey = TranslationMemoryKey.NormalizeLanguage(sourceLang);
+        var destLangKey = TranslationMemoryKey.NormalizeLanguage(destLang);
+        if (changes.Count == 0 || string.IsNullOrWhiteSpace(sourceLangKey) || string.IsNullOrWhiteSpace(destLangKey))
+        {
+            return 0;
+        }
+
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            using var tx = _connection.BeginTransaction();
+            await using var cmd = _connection.CreateCommand();
+            var parameters = ConfigureBulkUpsertCommand(cmd, tx, sourceLangKey, destLangKey);
+            cmd.CommandText = cmd.CommandText.Replace("UpdatedAt=excluded.UpdatedAt", "UpdatedAt=excluded.UpdatedAt WHERE TranslationMemory.DstText = $PreviousText", StringComparison.Ordinal);
+            var previous = cmd.CreateParameter();
+            previous.ParameterName = "$PreviousText";
+            cmd.Parameters.Add(previous);
+
+            var applied = 0;
+            foreach (var (srcTextRaw, dstTextRaw, previousText) in changes)
+            {
+                if (!TryNormalizeUpsertPair(srcTextRaw, dstTextRaw, out var srcKey, out var srcText, out var dstText))
+                {
+                    continue;
+                }
+
+                parameters.SrcKey.Value = srcKey;
+                parameters.SrcText.Value = srcText;
+                parameters.DstText.Value = dstText;
+                parameters.UpdatedAt.Value = DateTimeOffset.UtcNow.ToString("O");
+                previous.Value = previousText ?? "";
+                applied += await cmd.ExecuteNonQueryAsync(cancellationToken);
+            }
+
+            tx.Commit();
+            return applied;
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
     private static BulkUpsertCommandParameters ConfigureBulkUpsertCommand(
         DbCommand cmd,
         DbTransaction tx,

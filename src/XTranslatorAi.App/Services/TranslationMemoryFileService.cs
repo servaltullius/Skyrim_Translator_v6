@@ -9,6 +9,31 @@ public static class TranslationMemoryFileService
 {
     private const string EscapedFormat = "XTranslatorAi-JSON-v1";
 
+    /// <summary>
+    /// A bundled seed's changes ("Source / Target / Previous", see BundledFranchiseTmSeedService), or null for any other
+    /// TSV. Previous is the text the earlier seed gave the source.
+    /// </summary>
+    public static List<(string SourceText, string DestText, string PreviousText)>? ParseTsvChanges(IReadOnlyList<string> lines)
+    {
+        var header = lines.Count > 0 ? lines[0].TrimStart('\uFEFF').Split('\t') : Array.Empty<string>();
+        if (header.Length != 3 || header[0].Trim() != "Source" || header[1].Trim() != "Target" || header[2].Trim() != "Previous")
+        {
+            return null;
+        }
+
+        var changes = new List<(string SourceText, string DestText, string PreviousText)>();
+        for (var i = 1; i < lines.Count; i++)
+        {
+            var parts = lines[i].Split('\t');
+            if (parts.Length == 3 && !string.IsNullOrWhiteSpace(parts[0]) && !string.IsNullOrWhiteSpace(parts[1]))
+            {
+                changes.Add((parts[0], parts[1], parts[2]));
+            }
+        }
+
+        return changes;
+    }
+
     public static List<(string SourceText, string DestText)> ParseTsvPairs(IEnumerable<string> lines)
     {
         var pairs = new List<(string SourceText, string DestText)>();
