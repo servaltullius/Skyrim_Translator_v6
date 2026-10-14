@@ -123,10 +123,12 @@ public static class KoreanPatchStrings
                 {
                     skipped.Add((change, "바꿀 내용 없음"));
                 }
-                // A patch text whose tags already differ from the English (books laid out anew) is held to its own tags.
+                // A patch text whose tags already differ from the English (books laid out anew) is held to its own tags,
+                // unless the change brings them closer to the English (a broken "]i>" repaired).
                 else if (english.TryGetValue((change.Plugin.ToLowerInvariant(), change.Table, change.Id), out var source)
                          && TagProblem(source, change.Replacement) is { } problem
-                         && (TagProblem(source, current) == null || TagProblem(current, change.Replacement) != null))
+                         && (TagProblem(source, current) == null
+                             || TagProblem(current, change.Replacement) != null && !BringsTagsCloser(source, current, change.Replacement)))
                 {
                     skipped.Add((change, "태그 불일치: " + problem));
                 }
@@ -156,6 +158,21 @@ public static class KoreanPatchStrings
         }
 
         return new KoreanPatchApplyResult(applied, skipped);
+    }
+
+    private static readonly System.Text.RegularExpressions.Regex RawTag = new(@"<[^<>]+>|\[pagebreak\]",
+        System.Text.RegularExpressions.RegexOptions.CultureInvariant | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+    // Fewer tags differ from the English than before, and none is added that neither the English nor the patch had.
+    private static bool BringsTagsCloser(string english, string current, string replacement)
+    {
+        static Dictionary<string, int> Tags(string text) => RawTag.Matches(text).GroupBy(m => m.Value, StringComparer.Ordinal)
+            .ToDictionary(g => g.Key, g => g.Count(), StringComparer.Ordinal);
+        static int Distance(Dictionary<string, int> a, Dictionary<string, int> b)
+            => a.Keys.Union(b.Keys).Sum(tag => Math.Abs(a.GetValueOrDefault(tag) - b.GetValueOrDefault(tag)));
+
+        var (source, before, after) = (Tags(english), Tags(current), Tags(replacement));
+        return after.Keys.All(tag => source.ContainsKey(tag) || before.ContainsKey(tag)) && Distance(after, source) < Distance(before, source);
     }
 
     private static string? TagProblem(string english, string korean)

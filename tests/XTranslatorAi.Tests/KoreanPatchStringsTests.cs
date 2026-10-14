@@ -110,6 +110,27 @@ public sealed class KoreanPatchStringsTests : IDisposable
         Assert.Equal("눈덮인 곳에 피해를 줍니다.", (await KoreanPatchStrings.ReadAsync(Data, Patch, CancellationToken.None)).Single(s => s.Id == 2).Korean);
     }
 
+    // A book whose patch text broke a tag ("]i>") and lost another: a fix that repairs one brings the text closer to the
+    // English and is applied, while a change that adds a tag the English does not have is not.
+    [Fact]
+    public async Task AFixBringingTheTagsCloserToTheEnglish_IsApplied()
+    {
+        WriteTable(Path.Combine(Data, "Strings", "Skyrim_english.DLSTRINGS"), true, new() { [2] = "<p align=\"left\"><i>Note</i> text" });
+        WriteTable(Path.Combine(Patch, "Strings", "Skyrim_english.DLSTRINGS"), true, new() { [2] = "<i>메모]i> 글" });
+
+        var result = await KoreanPatchStrings.ApplyAsync(Data, Patch, new[]
+        {
+            new KoreanPatchChange("Skyrim.esm", PluginStringTableKind.DlStrings, 2, "<i>메모]i> 글", "<i>메모</i> 글"),
+        }, write: false, backupFolder: null, CancellationToken.None);
+        var foreign = await KoreanPatchStrings.ApplyAsync(Data, Patch, new[]
+        {
+            new KoreanPatchChange("Skyrim.esm", PluginStringTableKind.DlStrings, 2, "<i>메모]i> 글", "<i>메모</i> <b>글</b>"),
+        }, write: false, backupFolder: null, CancellationToken.None);
+
+        Assert.Single(result.Applied);
+        Assert.Empty(foreign.Applied);
+    }
+
     private static void WriteTable(string path, bool lengthPrefixed, Dictionary<uint, string> values)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
