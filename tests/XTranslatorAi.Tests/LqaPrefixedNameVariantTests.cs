@@ -67,6 +67,35 @@ public class LqaPrefixedNameVariantTests
     }
 
     [Fact]
+    public async Task TrailingQualifier_IsLeftOutOfTheName()
+    {
+        // RimSkills: "Weapon Art - Ruinous Strike (Charged)" as 파멸의 일격 and "Waterfowl Dance (1H Sword)" as 물새 난무
+        // never met their other rows, because "(Charged)" and "(1H Sword)" made them different names. War Ash 3 wrote
+        // "(WIP)" right after the name.
+        var entries = TemplateRows(
+            Row(1, "MGEF:FULL", "Learning - Ruinous Strike", "배우기 - 파멸의 타격"),
+            Row(2, "ENCH:FULL", "Weapon Art - Ruinous Strike", "전투 기술 - 파멸의 타격"),
+            Row(3, "ENCH:FULL", "Weapon Art - Ruinous Strike (Charged)", "전투 기술 - 파멸의 일격 (차지)"),
+            Row(4, "MGEF:FULL", "Ruinous Strike (Dual, Charged)", "파멸의 타격 (쌍수, 차지)"),
+            Row(5, "MGEF:FULL", "Learning - Waterfowl Dance", "배우기 - 물새 난격"),
+            Row(6, "SCRL:FULL", "Rim Scroll - Waterfowl Dance", "림 주문서 - 물새 난격"),
+            Row(7, "MGEF:FULL", "Waterfowl Dance (1H Sword)", "물새 난무 (한손검)"),
+            Row(8, "MGEF:FULL", "Learning - Time-Crack Resonance", "배우기 - 시간의 틈 공명"),
+            Row(9, "SCRL:FULL", "Rim Scroll - Time-Crack Resonance(WIP)", "림 주문서 - 시간 균열 공명(제작 중)"),
+            Row(10, "ENCH:FULL", "Weapon Art - Weed Cutter", "전투 기술 - 잡초 베기"),
+            Row(11, "ENCH:FULL", "Weapon Art - Wild Swing (Charged)", "전투 기술 - 거친 휘두르기 (차지)"),
+            // The qualifier is the only difference, so the name agrees.
+            Row(12, "MGEF:FULL", "Wild Swing (Dual)", "거친 휘두르기 (쌍수)"));
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        var noted = issues.Where(i => i.Code == "prefixed_name_variant").OrderBy(i => i.Id).ToList();
+        Assert.Equal(new long[] { 3, 7, 8, 9 }, noted.Select(i => i.Id));
+        Assert.Contains("파멸의 타격", noted.Single(i => i.Id == 3).Message);
+        Assert.Contains("물새 난격", noted.Single(i => i.Id == 7).Message);
+    }
+
+    [Fact]
     public async Task ConsistentNames_SpacingInsideTheTemplate_AndOneOffDashes_AreNotNoted()
     {
         var entries = TemplateRows(

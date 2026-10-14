@@ -11,13 +11,17 @@ namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 /// the learning effect, the scroll, an annotation and the spell itself; 134 rows in five mods disagreed, and the
 /// same-source check missed them because the full source texts differ. A prefix counts as a template when at least
 /// three names use it. The spell itself ("Honed Bolt" alone) is what the magic menu shows, so when such rows agree
-/// they decide the expected name; otherwise the clear majority does, and a tie notes every row.
+/// they decide the expected name; otherwise the clear majority does, and a tie notes every row. A trailing qualifier
+/// such as "(Charged)", "(1H Sword)" or "(WIP)" is not part of the name: "Weapon Art - Ruinous Strike (Charged)" as
+/// 파멸의 일격 and "Waterfowl Dance (1H Sword)" as 물새 난무 never met their other rows while it was.
 /// </summary>
 internal static class PrefixedNameVariantRule
 {
     private const int MinNamesPerTemplate = 3;
 
     private static readonly Regex Separator = new(@"\s+-\s+", RegexOptions.CultureInvariant);
+
+    private static readonly Regex TrailingQualifier = new(@"\s*\([^()]*\)$", RegexOptions.CultureInvariant);
 
     private readonly record struct NamedRow(LqaScanEntry Entry, string Name, string Translation, bool IsBare);
 
@@ -33,7 +37,9 @@ internal static class PrefixedNameVariantRule
         var prefixed = new List<(LqaScanEntry Entry, string Prefix, string Name, string Translation)>();
         foreach (var entry in candidates)
         {
-            if (TrySplit(entry.SourceText, out var prefix, out var name) && TrySplit(entry.DestText, out _, out var translation))
+            if (TrySplit(entry.SourceText, out var prefix, out var name)
+                && TrySplit(entry.DestText, out _, out var translation)
+                && TryStripQualifier(name, translation, out name, out translation, out _))
             {
                 prefixed.Add((entry, prefix, name, translation));
             }
@@ -54,9 +60,15 @@ internal static class PrefixedNameVariantRule
             .Select(p => new NamedRow(p.Entry, p.Name, p.Translation, IsBare: false))
             .ToList();
         var names = rows.Select(r => r.Name).ToHashSet(StringComparer.Ordinal);
-        rows.AddRange(candidates
-            .Where(e => names.Contains(e.SourceText.Trim()))
-            .Select(e => new NamedRow(e, e.SourceText.Trim(), e.DestText.Trim(), IsBare: true)));
+        foreach (var entry in candidates)
+        {
+            // "Waterfowl Dance (1H Sword)" names the skill too, but only the bare name is the spell itself.
+            if (TryStripQualifier(entry.SourceText.Trim(), entry.DestText.Trim(), out var name, out var translation, out var qualified)
+                && names.Contains(name))
+            {
+                rows.Add(new NamedRow(entry, name, translation, IsBare: !qualified));
+            }
+        }
 
         foreach (var group in rows.GroupBy(r => r.Name, StringComparer.Ordinal))
         {
@@ -130,6 +142,34 @@ internal static class PrefixedNameVariantRule
         prefix = text[..match.Index].Trim();
         rest = text[(match.Index + match.Length)..].Trim();
         return prefix.Length > 0 && rest.Length > 0;
+    }
+
+    /// <summary>
+    /// Drops a trailing "(...)" from the name and its translation. A qualifier the translation does not keep at the
+    /// end leaves no name to compare, so the row is left out.
+    /// </summary>
+    private static bool TryStripQualifier(string name, string translation, out string strippedName, out string strippedTranslation,
+        out bool qualified)
+    {
+        strippedName = name;
+        strippedTranslation = translation;
+        qualified = false;
+        var nameMatch = TrailingQualifier.Match(name);
+        if (!nameMatch.Success || nameMatch.Index == 0)
+        {
+            return true;
+        }
+
+        var translationMatch = TrailingQualifier.Match(translation);
+        if (!translationMatch.Success || translationMatch.Index == 0)
+        {
+            return false;
+        }
+
+        strippedName = name[..nameMatch.Index];
+        strippedTranslation = translation[..translationMatch.Index];
+        qualified = true;
+        return true;
     }
 
     private static string Shorten(string text) => text.Length <= 40 ? text : text[..40] + "…";
