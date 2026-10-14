@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,10 +12,10 @@ public sealed class BundledFranchiseTmSeedService
 {
     private readonly string? _globalRootOverride;
     private readonly Func<BethesdaFranchise, string?> _loadBundledSeedText;
-    private readonly Func<BethesdaFranchise, string?> _loadBundledSeedChangesText;
+    private readonly Func<BethesdaFranchise, string, string?> _loadBundledSeedChangesText;
 
     public BundledFranchiseTmSeedService(string? globalRootOverride = null, Func<BethesdaFranchise, string?>? loadBundledSeedText = null,
-        Func<BethesdaFranchise, string?>? loadBundledSeedChangesText = null)
+        Func<BethesdaFranchise, string, string?>? loadBundledSeedChangesText = null)
     {
         _globalRootOverride = globalRootOverride;
         _loadBundledSeedText = loadBundledSeedText ?? EmbeddedAssets.LoadBundledFranchiseTmSeed;
@@ -105,29 +106,32 @@ public sealed class BundledFranchiseTmSeedService
         => franchise switch
         {
             // v2 takes the spelling the Korean patch uses most for a source it translates several ways (Ice Storm 얼음 폭풍,
-            // not the 얼음의 형상 of two Dawnguard strings); 83 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v2", "bundled-skyrim-tes-franchise-tm.tsv", 1527256, "3a72a1830ab346b43fa3fb97251738d00480224ba014c3ff59005c47b5efb0fd",
-                PreviousVersion: "v1", ChangesFileName: "bundled-skyrim-tes-franchise-tm-v2-changes.tsv"),
+            // not the 얼음의 형상 of two Dawnguard strings); 83 rows changed. v3 takes the patch errors a review found and
+            // the game records confirmed (머서 프레이와와 대화하기, Howl of Terror → 피의 자취); 109 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v3", "bundled-skyrim-tes-franchise-tm.tsv", 1527209, "f04ad88f34d74770bd642d0c4293f120dbb4984a759114bfcc2087c269b04e60",
+                PreviousVersions: new[] { "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v3-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,
         };
 
     /// <summary>
-    /// A user who imported the previous version gets only the rows that changed since: importing the whole seed again
-    /// would overwrite every bundled row they edited in the global memory.
+    /// A user who imported an earlier version gets only the rows that changed since that version: importing the whole
+    /// seed again would overwrite every bundled row they edited in the global memory. The newest earlier version they
+    /// imported decides which changes they need.
     /// </summary>
     private async Task<bool> TryWriteChangesSincePreviousAsync(string importDir, string seedPath, string stampPath, BundledSeedMetadata metadata,
         CancellationToken cancellationToken)
     {
-        if (metadata.PreviousVersion is not { } previous || metadata.ChangesFileName is not { } changesFileName
+        if (metadata.PreviousVersions is not { } previousVersions || metadata.ChangesFileName is not { } changesFileName
             || File.Exists(stampPath) || File.Exists(seedPath)
-            || !File.Exists(ProjectPaths.GetBundledFranchiseTmSeedStampPath(metadata.Franchise, previous, _globalRootOverride)))
+            || previousVersions.FirstOrDefault(version => File.Exists(ProjectPaths.GetBundledFranchiseTmSeedStampPath(metadata.Franchise, version, _globalRootOverride)))
+                is not { } previous)
         {
             return false;
         }
 
-        var changes = _loadBundledSeedChangesText(metadata.Franchise);
+        var changes = _loadBundledSeedChangesText(metadata.Franchise, previous);
         if (string.IsNullOrWhiteSpace(changes))
         {
             return false;
@@ -214,10 +218,10 @@ public sealed class BundledFranchiseTmSeedService
     private static string BuildBundledSeedStamp(BundledSeedMetadata metadata, long lastWriteUtcTicks)
         => string.Join("|", metadata.Version, metadata.ExpectedByteLength, metadata.ExpectedSha256, lastWriteUtcTicks);
 
-    /// <param name="PreviousVersion">The version a user who imported it is upgraded from with <paramref name="ChangesFileName"/>.</param>
-    /// <param name="ChangesFileName">The rows that changed since <paramref name="PreviousVersion"/>.</param>
+    /// <param name="PreviousVersions">Earlier versions, newest first, a user who imported one is upgraded from with only the rows changed since.</param>
+    /// <param name="ChangesFileName">The file the rows changed since the user's version are written to.</param>
     public sealed record BundledSeedMetadata(BethesdaFranchise Franchise, string Version, string FileName, long ExpectedByteLength, string ExpectedSha256,
-        string? PreviousVersion = null, string? ChangesFileName = null);
+        System.Collections.Generic.IReadOnlyList<string>? PreviousVersions = null, string? ChangesFileName = null);
 
     private sealed record BundledSeedStamp(string Version, long ExpectedByteLength, string ExpectedSha256, long LastWriteUtcTicks);
 }

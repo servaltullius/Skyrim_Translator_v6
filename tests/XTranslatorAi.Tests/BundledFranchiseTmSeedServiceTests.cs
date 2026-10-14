@@ -465,20 +465,23 @@ public class BundledFranchiseTmSeedServiceTests
     }
 
     // v1 kept a minority spelling where the Korean patch translates one source several ways ("Ice Storm" is 얼음 폭풍
-    // in 27 strings and 얼음의 형상 in 2). Users who already imported v1 get only the changed rows, so other rows they
-    // edited in the global memory stay; a new install imports the whole v2 seed.
-    [Fact]
-    public async Task ElderScrollsSeed_V2_ImportsOnlyItsChangesOverAnImportedV1()
+    // in 27 strings and 얼음의 형상 in 2); v3 fixes patch errors a review found ("머서 프레이와와 대화하기"). Users who
+    // already imported an earlier seed get only the rows changed since their version, so other rows they edited in the
+    // global memory stay; a new install imports the whole seed.
+    [Theory]
+    [InlineData("v2|1527256|3a72a1830ab346b43fa3fb97251738d00480224ba014c3ff59005c47b5efb0fd|0", false)]
+    [InlineData("v1|1527384|8fd8931be7c1e7da90d99cbaaeac001ec4809c170fd18feb4274ceac83e69a44|0", true)]
+    public async Task ElderScrollsSeed_V3_ImportsOnlyTheChangesSinceTheImportedVersion(string stamp, bool fromV1)
     {
         var root = CreateTempRoot();
         try
         {
             var metadata = BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.ElderScrolls)!;
-            Assert.Equal("v2", metadata.Version);
+            Assert.Equal("v3", metadata.Version);
             var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.ElderScrolls, root);
             Directory.CreateDirectory(importDir);
-            var v1Stamp = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, "v1", root);
-            await File.WriteAllTextAsync(v1Stamp, "v1|1527384|8fd8931be7c1e7da90d99cbaaeac001ec4809c170fd18feb4274ceac83e69a44|0", CancellationToken.None);
+            var previousStamp = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, stamp[..2], root);
+            await File.WriteAllTextAsync(previousStamp, stamp, CancellationToken.None);
 
             var fullLoads = 0;
             var service = new BundledFranchiseTmSeedService(root, franchise =>
@@ -493,7 +496,8 @@ public class BundledFranchiseTmSeedServiceTests
             var changesPath = Path.Combine(importDir, metadata.ChangesFileName!);
             var changes = await File.ReadAllTextAsync(changesPath, CancellationToken.None);
             Assert.StartsWith("Source\tTarget\tPrevious\n", changes, StringComparison.Ordinal);
-            Assert.Contains("\nIce Storm\t얼음 폭풍\t얼음의 형상\n", changes, StringComparison.Ordinal);
+            Assert.Contains("\nSpeak to Mercer Frey\t머서 프레이와 대화하기\t머서 프레이와와 대화하기\n", changes, StringComparison.Ordinal);
+            Assert.Equal(fromV1, changes.Contains("\nIce Storm\t얼음 폭풍\t얼음의 형상\n", StringComparison.Ordinal));
             Assert.Equal(("english", "korean"), BundledFranchiseTmSeedService.LanguagesOfSeedFile(changesPath));
 
             // Auto-import moves the file away; the next load does nothing.
@@ -510,7 +514,7 @@ public class BundledFranchiseTmSeedServiceTests
     }
 
     [Fact]
-    public async Task ElderScrollsSeed_V2_NewInstallGetsTheWholeSeed()
+    public async Task ElderScrollsSeed_V3_NewInstallGetsTheWholeSeed()
     {
         var root = CreateTempRoot();
         try
@@ -521,6 +525,7 @@ public class BundledFranchiseTmSeedServiceTests
             var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.ElderScrolls, root);
             var seed = await File.ReadAllTextAsync(Path.Combine(importDir, metadata.FileName), CancellationToken.None);
             Assert.Contains("\nIce Storm\t얼음 폭풍\n", seed, StringComparison.Ordinal);
+            Assert.Contains("\nSpeak to Mercer Frey\t머서 프레이와 대화하기\n", seed, StringComparison.Ordinal);
             Assert.False(File.Exists(Path.Combine(importDir, metadata.ChangesFileName!)));
         }
         finally

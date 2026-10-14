@@ -42,11 +42,12 @@ public static class EmbeddedAssets
             _ => null,
         };
 
-    /// <summary>The rows of the current seed that changed since the previous version (see BundledFranchiseTmSeedService).</summary>
-    public static string? LoadBundledFranchiseTmSeedChanges(BethesdaFranchise franchise)
-        => franchise switch
+    /// <summary>The rows of the current seed that changed since an earlier version (see BundledFranchiseTmSeedService).</summary>
+    public static string? LoadBundledFranchiseTmSeedChanges(BethesdaFranchise franchise, string fromVersion)
+        => (franchise, fromVersion) switch
         {
-            BethesdaFranchise.ElderScrolls => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v2-changes.tsv"),
+            (BethesdaFranchise.ElderScrolls, "v2") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v3-changes-from-v2.tsv"),
+            (BethesdaFranchise.ElderScrolls, "v1") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v3-changes-from-v1.tsv"),
             _ => null,
         };
 
