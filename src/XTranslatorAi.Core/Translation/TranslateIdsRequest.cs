@@ -49,5 +49,7 @@ public sealed record TranslateIdsRequest(
     // Translation memory pairs with their original casing; names among them become reference terms (see ReferenceNameIndex).
     IReadOnlyList<(string Source, string Target)>? ReferenceNameMemory = null,
     // Names spelled once in a run are written the same way in later rows (see RunNameMemory).
-    bool EnableRunNameMemory = true
+    bool EnableRunNameMemory = true,
+    // Rows the player's game translation already covers (see GameStringDictionary), by row id.
+    IReadOnlyDictionary<long, XTranslatorAi.Core.Plugins.GameStringMatch>? GameStringMatches = null
 );

@@ -78,6 +78,14 @@ public interface IProjectDb
     Task<IReadOnlyDictionary<long, string>> GetPreviousTranslationsByStringIdAsync(CancellationToken cancellationToken)
         => Task.FromResult<IReadOnlyDictionary<long, string>>(new Dictionary<long, string>());
 
+    /// <summary>The plugin field each row of a plugin project was read from ("INFO/01012345/0/NAM1/0"), by row id.</summary>
+    Task<IReadOnlyDictionary<long, string>> GetPluginFieldKeysByStringIdAsync(CancellationToken cancellationToken)
+        => Task.FromResult<IReadOnlyDictionary<long, string>>(new Dictionary<long, string>());
+
+    /// <summary>The masters and file name of a plugin project's plugin; null for an XML project.</summary>
+    Task<(IReadOnlyList<string> Masters, string PluginFileName)?> GetPluginMastersAsync(CancellationToken cancellationToken)
+        => Task.FromResult<(IReadOnlyList<string>, string)?>(null);
+
     /// <summary>Source and translation of the rows already translated (Done or Edited).</summary>
     Task<IReadOnlyList<(string SourceText, string DestText)>> GetTranslatedPairsAsync(CancellationToken cancellationToken)
         => Task.FromResult<IReadOnlyList<(string SourceText, string DestText)>>(new List<(string, string)>());

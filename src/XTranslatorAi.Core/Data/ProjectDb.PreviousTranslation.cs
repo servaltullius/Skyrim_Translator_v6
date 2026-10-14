@@ -67,6 +67,33 @@ public sealed partial class ProjectDb
         }
     }
 
+    public async Task<IReadOnlyDictionary<long, string>> GetPluginFieldKeysByStringIdAsync(CancellationToken cancellationToken)
+    {
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            await using var cmd = _connection.CreateCommand();
+            cmd.CommandText = "SELECT StringId, FieldKey FROM PluginStringBinding;";
+            var result = new Dictionary<long, string>();
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                result[reader.GetInt64(0)] = reader.GetString(1);
+            }
+
+            return result;
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
+    public async Task<(IReadOnlyList<string> Masters, string PluginFileName)?> GetPluginMastersAsync(CancellationToken cancellationToken)
+        => await TryGetPluginSourceAsync(cancellationToken) is { } source
+            ? (source.Info.Masters, System.IO.Path.GetFileName(source.Info.InputPath))
+            : null;
+
     public async Task<IReadOnlyDictionary<long, string>> GetPreviousTranslationsByStringIdAsync(CancellationToken cancellationToken)
     {
         await _gate.WaitAsync(cancellationToken);

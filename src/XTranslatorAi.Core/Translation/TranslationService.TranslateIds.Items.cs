@@ -73,6 +73,12 @@ public sealed partial class TranslationService
                 continue;
             }
 
+            if (request.GameStringMatches?.TryGetValue(row.Id, out var gameString) == true
+                && await TryApplyGameStringAsync(row.Id, row.SourceText, request.TargetLang, gameString, request.OnRowUpdated, request.CancellationToken))
+            {
+                continue;
+            }
+
             var sourceKey = TranslationMemoryKey.NormalizeSource(row.SourceText);
             var hasUnscopedDialogueTm = contextRow.DialogueScope != null && translationMemory.ContainsKey(sourceKey);
             if (hasUnscopedDialogueTm || (ambiguousTmSources.Contains(sourceKey) && translationMemory.ContainsKey(sourceKey)))

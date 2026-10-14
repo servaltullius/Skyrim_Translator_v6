@@ -74,6 +74,35 @@ public sealed partial class TranslationService
             return false;
         }
 
+        return await TryApplyKnownTranslationAsync(id, sourceText, targetLang, tmText, TranslationConstants.TmHitNoteKind, "TM 적용",
+            onRowUpdated, cancellationToken);
+    }
+
+    /// <summary>
+    /// The player's game translation for a row (see GameStringDictionary), applied as a TM hit is. A text whose tags no
+    /// longer fit the row is left to the model.
+    /// </summary>
+    private Task<bool> TryApplyGameStringAsync(
+        long id,
+        string sourceText,
+        string targetLang,
+        XTranslatorAi.Core.Plugins.GameStringMatch match,
+        Func<long, StringEntryStatus, string, Task>? onRowUpdated,
+        CancellationToken cancellationToken
+    ) => TryApplyKnownTranslationAsync(id, sourceText, targetLang, match.Text, TranslationConstants.GameStringNoteKind,
+        $"게임 번역 적용({match.Origin})", onRowUpdated, cancellationToken);
+
+    private async Task<bool> TryApplyKnownTranslationAsync(
+        long id,
+        string sourceText,
+        string targetLang,
+        string tmText,
+        string hitNoteKind,
+        string hitNote,
+        Func<long, StringEntryStatus, string, Task>? onRowUpdated,
+        CancellationToken cancellationToken
+    )
+    {
         var final = MatchSourceLineEndings(sourceText, tmText);
         if (Ctx.EnableTemplateFixer)
         {
@@ -95,14 +124,15 @@ public sealed partial class TranslationService
         {
             // If a TM entry breaks tag/placeholder integrity, skip it and fall back to LLM translation.
             var detail = string.IsNullOrWhiteSpace(ex.Message) ? ex.GetType().Name : ex.Message;
-            await _db.UpsertStringNoteAsync(id, TranslationConstants.TmFallbackNoteKind, $"TM 폴백: {detail}", cancellationToken);
+            var origin = hitNoteKind == TranslationConstants.GameStringNoteKind ? "게임 번역" : "TM";
+            await _db.UpsertStringNoteAsync(id, TranslationConstants.TmFallbackNoteKind, $"{origin} 폴백: {detail}", cancellationToken);
             return false;
         }
         TryLearnSessionTermMemory(id, sourceText, final);
 
         await _db.UpdateStringTranslationAsync(id, final, StringEntryStatus.Done, null, cancellationToken);
         await _db.DeleteStringNoteAsync(id, TranslationConstants.TmFallbackNoteKind, cancellationToken);
-        await _db.UpsertStringNoteAsync(id, TranslationConstants.TmHitNoteKind, "TM 적용", cancellationToken);
+        await _db.UpsertStringNoteAsync(id, hitNoteKind, hitNote, cancellationToken);
         if (onRowUpdated != null)
         {
             NotifyRowUpdated(onRowUpdated, id, StringEntryStatus.Done, final);

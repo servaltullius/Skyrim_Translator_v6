@@ -39,6 +39,8 @@ public static class TranslationConstants
 
     public const string TmFallbackNoteKind = "tm_fallback";
 
+    public const string GameStringNoteKind = "game_string";
+
     public static string RemoveInvisibleSeparators(string text)
     {
         if (text.IndexOf('\u200B') < 0 && text.IndexOf('\uFEFF') < 0 && text.IndexOf('\u2060') < 0)
