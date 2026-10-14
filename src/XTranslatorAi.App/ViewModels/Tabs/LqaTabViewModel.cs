@@ -60,6 +60,8 @@ public sealed class LqaTabViewModel : ObservableObject, IDisposable
 
     public IAsyncRelayCommand SaveSelectedDestCommand => _host.SaveSelectedDestCommand;
 
+    public IAsyncRelayCommand<System.Collections.IList?> ToggleSourceFixCommand => _host.ToggleSourceFixCommand;
+
     // Read-only editor during a run, as in the strings tab.
     public bool IsTranslating => _host.IsTranslating;
 

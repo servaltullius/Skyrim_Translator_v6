@@ -18,6 +18,7 @@ public interface IStringsTabHost : INotifyPropertyChanged
     StringEntryViewModel? SelectedEntry { get; set; }
     IAsyncRelayCommand SaveSelectedDestCommand { get; }
     IAsyncRelayCommand<System.Collections.IList?> RetranslateSelectedCommand { get; }
+    IAsyncRelayCommand<System.Collections.IList?> ToggleSourceFixCommand { get; }
     IAsyncRelayCommand RetranslateVisibleCommand { get; }
 
     string GlossaryLookupText { get; set; }

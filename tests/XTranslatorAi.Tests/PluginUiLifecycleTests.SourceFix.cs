@@ -43,4 +43,41 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Contains(fixture.Vm.LqaIssues, i => i.Id == rows[0].Id && i.Code == "english_residue");
             Assert.Empty(await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None));
         });
+
+    [Fact]
+    public Task TheSourceFixButton_IsOffWithoutAProject()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+
+            Assert.False(fixture.Vm.RetranslateSelectedCommand.CanExecute(null));
+            Assert.False(fixture.Vm.ToggleSourceFixCommand.CanExecute(null));
+        });
+
+    /// <summary>
+    /// Each tab binds to its own view model, which passes on the main view model's commands. A command the tab view
+    /// model did not pass on bound to nothing: the button looked enabled and did nothing.
+    /// </summary>
+    [Theory]
+    [InlineData("StringsTabView")]
+    [InlineData("CompareTabView")]
+    [InlineData("LqaTabView")]
+    [InlineData("ProjectGlossaryTabView")]
+    [InlineData("GlobalGlossaryTabView")]
+    [InlineData("GlobalTranslationMemoryTabView")]
+    [InlineData("PromptTabView")]
+    [InlineData("ProjectContextTabView")]
+    [InlineData("ApiLogsTabView")]
+    public void TabCommands_ArePassedOnByTheTabViewModel(string view)
+    {
+        var xaml = File.ReadAllText(MainWindowSourcePath(Path.Combine("Views", view + ".xaml")));
+        var tab = typeof(XTranslatorAi.App.ViewModels.MainViewModel).Assembly.GetType("XTranslatorAi.App.ViewModels.Tabs." + view + "Model", throwOnError: true)!;
+
+        var missing = System.Text.RegularExpressions.Regex.Matches(xaml, @"Command=""\{Binding (?:Path=)?(\w+Command)[,}]")
+            .Select(match => match.Groups[1].Value)
+            .Where(name => tab.GetProperty(name) == null)
+            .ToList();
+
+        Assert.Empty(missing);
+    }
 }

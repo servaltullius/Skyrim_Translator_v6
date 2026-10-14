@@ -19,4 +19,5 @@ public interface ILqaTabHost : INotifyPropertyChanged
     bool IsTranslating { get; }
 
     IAsyncRelayCommand SaveSelectedDestCommand { get; }
+    IAsyncRelayCommand<System.Collections.IList?> ToggleSourceFixCommand { get; }
 }

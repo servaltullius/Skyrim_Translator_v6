@@ -70,6 +70,7 @@ public sealed class StringsTabViewModel : ObservableObject, IDisposable
     public IAsyncRelayCommand SaveSelectedDestCommand => _host.SaveSelectedDestCommand;
 
     public IAsyncRelayCommand<System.Collections.IList?> RetranslateSelectedCommand => _host.RetranslateSelectedCommand;
+    public IAsyncRelayCommand<System.Collections.IList?> ToggleSourceFixCommand => _host.ToggleSourceFixCommand;
 
     public IAsyncRelayCommand RetranslateVisibleCommand => _host.RetranslateVisibleCommand;
 
