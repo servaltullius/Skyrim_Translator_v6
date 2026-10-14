@@ -10,7 +10,9 @@ using XTranslatorAi.Core.Translation;
 namespace XTranslatorAi.Core.Plugins;
 
 /// <summary>One string of the Korean patch with the game's English and the first record that shows it.</summary>
-public sealed record KoreanPatchString(string Plugin, PluginStringTableKind Table, uint Id, string Rec, string? Edid, string English, string Korean);
+/// <param name="OverriddenBy">The later plugin whose override of every record using this string the game shows instead.</param>
+public sealed record KoreanPatchString(string Plugin, PluginStringTableKind Table, uint Id, string Rec, string? Edid, string English, string Korean,
+    string? OverriddenBy = null);
 
 /// <summary>A reviewed change: the Korean the reviewer saw, and the Korean to write.</summary>
 public sealed record KoreanPatchChange(string Plugin, PluginStringTableKind Table, uint Id, string Current, string Replacement);
@@ -31,7 +33,9 @@ public static class KoreanPatchStrings
     public static async Task<IReadOnlyList<KoreanPatchString>> ReadAsync(string gameDataFolder, string patchFolder, CancellationToken cancellationToken)
     {
         var folder = ResolveStringsFolder(patchFolder);
-        var strings = new List<KoreanPatchString>();
+        var strings = new List<(KoreanPatchString String, List<string> Fields)>();
+        // The plugins, in load order, that hold each record field: the game shows the last one's text.
+        var holders = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var name in GameStringDictionaryBuilder.BaseGamePlugins)
         {
             var path = Path.Combine(gameDataFolder, name);
@@ -42,18 +46,38 @@ public static class KoreanPatchStrings
             }
 
             var document = await PluginReader.ReadAsync(path, new PluginReadOptions(), cancellationToken).ConfigureAwait(false);
-            var seen = new HashSet<(PluginStringTableKind, uint)>();
+            var byId = new Dictionary<(PluginStringTableKind, uint), int>();
             foreach (var field in document.Fields)
             {
-                if (field.TableKind is { } kind && field.StringId is { } id && seen.Add((kind, id))
-                    && tables.TryGetValue(kind, out var table) && table.Strings.TryGetValue(id, out var korean))
+                if (field.TableKind is not { } kind || field.StringId is not { } id)
                 {
-                    strings.Add(new KoreanPatchString(name, kind, id, field.Rec, field.EditorId, field.SourceText, korean));
+                    continue;
+                }
+
+                var identity = GameStringDictionary.FieldIdentity(field.Key, document.Info.Masters, name);
+                if (identity != null)
+                {
+                    holders[identity] = name;
+                }
+
+                if (byId.TryGetValue((kind, id), out var index))
+                {
+                    strings[index].Fields.Add(identity ?? "");
+                }
+                else if (tables.TryGetValue(kind, out var table) && table.Strings.TryGetValue(id, out var korean))
+                {
+                    byId[(kind, id)] = strings.Count;
+                    strings.Add((new KoreanPatchString(name, kind, id, field.Rec, field.EditorId, field.SourceText, korean), new List<string> { identity ?? "" }));
                 }
             }
         }
 
-        return strings;
+        // A string still shown through one of its records is not hidden.
+        return strings.Select(entry =>
+        {
+            var shownBy = entry.Fields.Select(identity => holders.GetValueOrDefault(identity, entry.String.Plugin)).Distinct().ToList();
+            return shownBy.Contains(entry.String.Plugin) ? entry.String : entry.String with { OverriddenBy = shownBy[^1] };
+        }).ToList();
     }
 
     /// <summary>

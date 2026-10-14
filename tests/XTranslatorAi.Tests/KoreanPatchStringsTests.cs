@@ -77,6 +77,23 @@ public sealed class KoreanPatchStringsTests : IDisposable
         Assert.Equal("철 검", (await KoreanPatchStrings.ReadAsync(Data, Patch, CancellationToken.None)).Single(s => s.Id == 1).Korean);
     }
 
+    // The game shows the last plugin's text for a record: a reviewer told which strings are hidden by an Update or DLC
+    // override does not "fix" Skyrim.esm's 뼈다귀 제련 while Update.esm's 제련 is what players see.
+    [Fact]
+    public async Task StringsAnOverrideHides_NameThePluginThePlayerSees()
+    {
+        File.WriteAllBytes(Path.Combine(Data, "Update.esm"), Header(localized: true).Concat(Group(
+            Record("WEAP", 0x800, Sub("EDID", Z("IronSword")), Sub("FULL", UInt(1))))).ToArray());
+        WriteTable(Path.Combine(Data, "Strings", "Update_english.STRINGS"), false, new() { [1] = "Iron Sword" });
+        WriteTable(Path.Combine(Patch, "Strings", "Update_english.STRINGS"), false, new() { [1] = "철검" });
+
+        var strings = await KoreanPatchStrings.ReadAsync(Data, Patch, CancellationToken.None);
+
+        Assert.Equal("Update.esm", strings.Single(s => s.Plugin == "Skyrim.esm" && s.Id == 1).OverriddenBy);
+        Assert.Null(strings.Single(s => s.Plugin == "Update.esm" && s.Id == 1).OverriddenBy);
+        Assert.Null(strings.Single(s => s.Plugin == "Skyrim.esm" && s.Id == 3).OverriddenBy);
+    }
+
     // Books whose patch text already lays out its tags unlike the English: a spelling fix that keeps the patch's own
     // tags (덮힌 → 덮인) is not a tag problem.
     [Fact]

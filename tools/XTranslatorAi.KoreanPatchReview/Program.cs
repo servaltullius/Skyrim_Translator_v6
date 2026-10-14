@@ -59,11 +59,11 @@ async Task<int> Export()
         for (var part = 0; part * chunk < rows.Count; part++)
         {
             var name = $"{group.Key}-{part + 1:00}.csv";
-            var csv = new StringBuilder("plugin,table,id,rec,edid,source_en,current_ko\n");
+            var csv = new StringBuilder("plugin,table,id,rec,edid,overridden_by,source_en,current_ko\n");
             foreach (var s in rows.Skip(part * chunk).Take(chunk))
             {
                 csv.AppendLine(string.Join(',', Csv(s.Plugin), TableName(s.Table), s.Id.ToString("X8"), Csv(s.Rec), Csv(s.Edid ?? ""),
-                    Csv(s.English), Csv(s.Korean)));
+                    Csv(s.OverriddenBy ?? ""), Csv(s.English), Csv(s.Korean)));
             }
 
             await File.WriteAllTextAsync(Path.Combine(target, name), csv.ToString(), new UTF8Encoding(true));
