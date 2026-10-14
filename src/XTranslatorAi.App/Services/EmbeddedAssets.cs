@@ -46,9 +46,10 @@ public static class EmbeddedAssets
     public static string? LoadBundledFranchiseTmSeedChanges(BethesdaFranchise franchise, string fromVersion)
         => (franchise, fromVersion) switch
         {
-            (BethesdaFranchise.ElderScrolls, "v3") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v4-changes-from-v3.tsv"),
-            (BethesdaFranchise.ElderScrolls, "v2") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v4-changes-from-v2.tsv"),
-            (BethesdaFranchise.ElderScrolls, "v1") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v4-changes-from-v1.tsv"),
+            (BethesdaFranchise.ElderScrolls, "v4") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v5-changes-from-v4.tsv"),
+            (BethesdaFranchise.ElderScrolls, "v3") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v5-changes-from-v3.tsv"),
+            (BethesdaFranchise.ElderScrolls, "v2") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v5-changes-from-v2.tsv"),
+            (BethesdaFranchise.ElderScrolls, "v1") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v5-changes-from-v1.tsv"),
             _ => null,
         };
 

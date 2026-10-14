@@ -436,7 +436,7 @@ Adonato's Book	아도나토의 책
 Adrenaline Rush	아드레날린 분출
 Adrianne Avenicci	에이드리안 아베니치
 Adril	아드릴
-Adril Arano	아드릴
+Adril Arano	아드릴 아라노
 Adril Arano said you might be able to help me.	아드릴 아라노가 말하길 당신이 나를 도와줄 수 있다던데.
 Adril's Survey Results	아드릴의 조사결과
 Aduri Sarethi	아두리 사레시
@@ -540,7 +540,7 @@ Alchemy	연금술
 Alchemy Lab	연금술 실험대
 Alchemy Laboratory - Remove Workbench	연금술 실험실 - 작업선반 제거
 Alchemy Laboratory - Workbench	연금술 실험실 - 작업선반
-Alchemy Laboratory, Doors	연금술 실험실,문들
+Alchemy Laboratory, Doors	연금술 실험실, 문
 Alchemy Laboratory, First Floor Walls	연금술 실험실, 1층 벽
 Alchemy Laboratory, Floor	연금술 실험실, 바닥
 Alchemy Laboratory, Foundation	연금술 실험실, 토대
@@ -648,7 +648,7 @@ Altar	제단
 Altar of Dibella	디벨라의 제단
 Altar of Mehrunes Dagon	메이룬스 데이건의 제단
 Altar of Thrond	쓰론드 제단
-Altar of Thrond Cave	쓰론드 동굴 제단
+Altar of Thrond Cave	쓰론드 제단 동굴
 ALTERATION	변화마법
 Alteration Dual Casting	변화마법 이중 시전
 Alteration Perks	변화마법 퍽
@@ -688,7 +688,7 @@ Am I to become a Nightingale?	내가 나이팅게일이 되는 건가?
 Am I to do this alone?	이 일은 나 혼자 해야 합니까?
 Amaund Motierre	아먼드 모티에르
 Amaund Motierre's Sealed Letter	아먼드 모티에르의 봉인된 편지
-Ambarys	앰바리스
+Ambarys	엠바리스
 Ambarys Rendar	엠바리스 렌다르
 AMBER	호박
 Amethyst	자수정
@@ -710,7 +710,7 @@ Amulet of Draining Grip	아뮬렛 - 흡수의 손아귀
 Amulet of Julianos	아뮬렛 - 줄리아노스
 Amulet of Kynareth	아뮬렛 - 키나레스
 Amulet of Mara	아뮬렛 - 마라
-Amulet of Mara (Possessed)	마라의 아뮬렛 (소유)
+Amulet of Mara (Possessed)	아뮬렛 - 마라 (소유)
 Amulet of Mist Form	아뮬렛 - 안개 형상
 Amulet of Stendarr	아뮬렛 - 스텐다르
 Amulet of Supernatural Reflexes	아뮬렛 - 초자연적인 반응
@@ -740,7 +740,7 @@ Ancarion	안카리온
 Ancestor Glade	선조의 공터
 Ancestor Moth	선조 나방
 Ancestor Moth Wing	선조나방 날개
-Ancestor's Wrath	선조의 영혼
+Ancestor's Wrath	선조의 분노
 Ancestors and the Dunmer	선조와 던머
 Ancestral Worship	선조 숭배
 Anchor Chain	닻줄
@@ -1173,7 +1173,7 @@ Armored Troll	무장 트롤
 Armorer Workbench	방어구용 작업선반
 Armory - Remove Workbench	병기고 - 작업선반 제거
 Armory - Workbench	병기고 - 작업선반
-Armory, Doors	병기고,문들
+Armory, Doors	병기고, 문
 Armory, Floor	병기고, 바닥
 Armory, Foundation	병기고, 토대
 Armory, Roof	병기고, 지붕
@@ -1411,9 +1411,9 @@ Baked Potatoes	구운 감자
 Balagog	발라고그
 Balagog gro-Nolob	발라고그 그로-놀로브
 Balbus	발부스
-Balbus's Fork	발부스의 집게
+Balbus's Fork	발부스의 포크
 Baldor	발도어
-Baldor Iron-Shaper	발도어
+Baldor Iron-Shaper	발도어 아이언-셰이퍼
 Baldor Iron-Shaper's House	발도어의 집
 Baldor's House Key	열쇠 - 발도어의 집
 Balgruuf	발그루프
@@ -1810,7 +1810,7 @@ Blue Butterfly Wing	파란 나비 날개
 Blue Dartwing	파란 파리잠자리
 Blue Mage Robes	파란색 두건달린 마법사 로브
 Blue Mountain Flower	파란 들꽃
-Blue Mountain Flower (3)	푸른 들꽃 (3)
+Blue Mountain Flower (3)	파란 들꽃 (3)
 Blue Palace	푸른 궁전
 Blue Palace Servants Key	열쇠 - 푸른 궁전 시종
 Blue Robes	파란색 로브
@@ -2519,7 +2519,7 @@ Castle Karstaag Key	열쇠 - 카스태그 성
 Castle Karstaag Ruins	카스태그 성 폐허
 Castle Volkihar	볼키하 성
 Castle Volkihar Balcony	볼키하 성 발코니
-Castor the Puzzlemaker's Corpse	캐스터의 시체
+Castor the Puzzlemaker's Corpse	퍼즐 제작자 캐스터의 시체
 Catalogue of Armor Enchantments	완전 분석 - 방어구 마법부여
 Catalogue of Weapon Enchantments	완전 분석 - 무기 마법부여
 Catalyst	촉매
@@ -3697,8 +3697,8 @@ Darkfall Cave	다크폴 동굴
 Darkfall Cave Note	다크폴 동굴의 쪽지
 Darkfall Grotto	다크폴 동굴
 Darkfall Passage	다크폴 통로
-Darkfall Passage Note I	다크폴 통로 쪽지
-Darkfall Passage Note II	다크폴 통로 쪽지
+Darkfall Passage Note I	다크폴 통로 쪽지 1
+Darkfall Passage Note II	다크폴 통로 쪽지 2
 Darklight Chambers	다크라이트 탑 회의실
 Darklight Tower	다크라이트 탑
 Darklight Tower Closet Key	열쇠 - 다크라이트 탑 벽장
@@ -3799,7 +3799,7 @@ Death Hounds are used as guardians by vampires. How they came to be is unknown, 
 Death Incarnate	죽음의 화신
 Death of a Wanderer	한 방랑자의 죽음
 Deathbell	데스벨
-Deathbell (3)	데쓰벨 (3)
+Deathbell (3)	데스벨 (3)
 Deathbrand	데스브랜드
 Deathbrand Armor	데스브랜드 방어구
 Deathbrand Boots	데스브랜드 전투화
@@ -3939,7 +3939,7 @@ Dengeir's House	덴기어의 집
 Dented Iron Shield	손상된 철 방패
 Deor	디오어
 Deor Woodcutter	디오어 우드커터
-Deor Woodcutter's House	나무꾼 디오어의 집
+Deor Woodcutter's House	디오어 우드커터의 집
 Deor's House Key	열쇠 - 디오어의 집
 Depart for Japhet's Folly	자펫의 어리석음 섬으로 출발하기
 Depends how much you're paying.	당신이 얼마를 지불하느냐에 따라서 다르지.
@@ -3950,7 +3950,7 @@ Dervenin	더베닌
 Desecrated Corpse	바짝마른 시체
 Desk	책상
 Desperate Gambler	필사적인 도박꾼
-Dessicated Corpse	바짝마른 시체
+Dessicated Corpse	바짝 마른 시체
 Destroy Attackers (<Global=CWPercentPoolRemainingAttacker>% Remaining)	공격해온 적 전멸시키기 (<Global=CWPercentPoolRemainingAttacker>% 남음)
 Destroy Malkoran	맬코런을 물리치기
 Destroy Malyn Varen's soul	메일린 바렌의 영혼을 파괴하기
@@ -4742,7 +4742,7 @@ Dremora Lord	드레모라 군주
 Dremora Markynaz	드레모라 마키나스
 Dremora Merchant	드레모라 상인
 Dremora Messenger	드레모라 메신저
-Dremora Prices	드레모라 군주
+Dremora Prices	드레모라 가격
 Dremora Valkynaz	드레모라 발키나스
 Dremora Valynaz	드레모라 발키나스
 Drennen	드레넌
@@ -4873,7 +4873,7 @@ Dwarven Boots of Brawn	드워프제 전투화 - 상급 운반 증가
 Dwarven Boots of Dwindling Flames	드워프제 전투화 - 중급 화염 저항
 Dwarven Boots of Dwindling Frost	드워프제 전투화 - 중급 냉기 저항
 Dwarven Boots of Dwindling Shock	드워프제 전투화 - 중급 전격 저항
-Dwarven Boots of Extreme Stamina	드워프제 전투화 - 최상급 지구력 증가
+Dwarven Boots of Extreme Stamina	드워프제 전투화 - 상급 지구력 증가
 Dwarven Boots of Flame Suppression	드워프제 전투화 - 상급 화염 저항
 Dwarven Boots of Frost Suppression	드워프제 전투화 - 상급 냉기 저항
 Dwarven Boots of Hauling	드워프제 전투화 - 하급 운반 증가
@@ -6213,7 +6213,7 @@ Enchanter's Potion	물약 - 마법부여 하급
 Enchanter's Primer	마법부여가의 초급독본
 Enchanter's Tower - Remove Workbench	마법부가 연구탑 - 작업선반 제거
 Enchanter's Tower - Workbench	마법부가 연구탑 - 작업선반
-Enchanter's Tower, Doors	마법부가 연구탑,문들
+Enchanter's Tower, Doors	마법부가 연구탑, 문
 Enchanter's Tower, First Floor Walls	마법부가 연구탑, 1층 벽
 Enchanter's Tower, Floor	마법부가 연구탑, 바닥
 Enchanter's Tower, Foundation	마법부가 연구탑, 토대
@@ -6574,7 +6574,7 @@ Fastred	패스트리드
 Father Of The Niben	니벤의 아버지
 Father's Love	부친의 자애
 Father's Missive	아버지의 편지
-Fathom	파돔
+Fathom	페덤
 FAVORITES	즐겨찾기
 Fear	공포
 Fear Poison	독 - 공포 중급
@@ -7461,7 +7461,7 @@ Glass Armor of Recuperation	글래스 방어구 - 중급 지구력 재생
 Glass Armor of Regeneration	글래스 방어구 - 최상급 체력 재생
 Glass Armor of Rejuvenation	글래스 방어구 - 상급 지구력 재생
 Glass Armor of Remedy	글래스 방어구 - 중급 체력 재생
-Glass Armor of Resurgence	글래스 방어구 - 최상급 매지카 재생
+Glass Armor of Resurgence	글래스 투구 - 최상급 매지카 재생
 Glass Armor of the Eminent Knight	글래스 방어구 - 상급 경갑
 Glass Armor of the Major Squire	글래스 방어구 - 중급 경갑
 Glass Armor of the Noble Knight	글래스 방어구 - 최상급 경갑
@@ -7847,7 +7847,7 @@ Gloves of the Pugilist	권투선수의 장갑
 Glow Dust	빛나는 가루
 Glowing Crystal Shard	빛나는 크리스털 파편
 Glowing Mushroom	발광 버섯
-Glowing Mushroom (5)	형광 버섯 (5)
+Glowing Mushroom (5)	발광 버섯 (5)
 Glowing Mushrooms	발광 버섯
 Glowing Spider	빛나는 거미
 Gnashing Blades	악무는 칼날
@@ -7944,7 +7944,7 @@ Grand Elixir of Larceny	물약 - 절도 최상급
 Grand Elixir of Plunder	물약 - 운반 최상급
 Grand Healing	특급 치유
 Grand Soul Gem	소울젬 - 특급
-Grand Staff of Charming	지팡이 - 진정
+Grand Staff of Charming	지팡이 - 광역 진정
 Grand Staff of Repulsion	지팡이 - 상급 광역 언데드 퇴치
 Grand Staff of Turning	지팡이 - 상급 언데드 퇴치
 Granite Hill	그래니트 힐
@@ -7953,7 +7953,7 @@ Grants you the Dragon Infusion perk.	영구적으로 드래곤에게 대항할 �
 Grass Fade	풀 가시거리
 Grass Pod	잔디 꼬투리
 Grass Pod (3)	잔디 꼬투리 (3)
-Grate	강판
+Grate	창살문
 Gratian Caerellius	그라시안 카렐리우스
 Gratian's Journal	그라시안의 일기
 Gratian's Letter	그라시안의 편지
@@ -7978,7 +7978,7 @@ Green Robes	수도사의 녹색 로브
 Green Thumb	원예가
 Greenhouse - Remove Workbench	온실 - 작업선반 제거
 Greenhouse - Workbench	온실 - 작업선반
-Greenhouse, Doors	온실,문들
+Greenhouse, Doors	온실, 문
 Greenhouse, Fireplace	온실, 난로
 Greenhouse, Floor	온실, 바닥
 Greenhouse, Foundation	온실, 토대
@@ -7993,7 +7993,7 @@ Greetings.	안녕하시오.
 Gregor	그레거
 Grelka	그렐카
 Grelka's Market Key	열쇠 - 그렐카의 상점
-Grelka's Strongbox	그레카의 튼튼한 상자
+Grelka's Strongbox	그렐카의 튼튼한 상자
 Grelod the Kind	친절한 그렐로드
 Grelod the Kind is dead.	'친절한 그렐로드'는 죽었다.
 Grelod? As it turns out... I already killed her.	그렐로드? 그러고 보니... 이미 죽였는데.
@@ -8008,7 +8008,7 @@ Greywater Grotto	그레이워터 암굴
 Griefstricken Chef	비탄에 빠진 요리사
 Grilled Chicken Breast	구운 닭 가슴살
 Grilled Leeks	구운 파
-Grim Shieldmaiden	그림 실드메이든
+Grim Shieldmaiden	음울한 여전사
 Grimsever	그림세버
 Grimsever's Return	그림세버의 반환
 Grimvar	그림바
@@ -8712,7 +8712,7 @@ High Seeker	시커 군주
 Highborn	고귀한 혈통
 Highmoon Hall	하이문 회관
 Highpoint Tower	하이포인트 탑
-Hilde	힐드
+Hilde	힐데
 Hillevi Cruel-Sea	힐레비 크루얼-시
 Hillgrund's Chest Key	열쇠 - 힐그룬드의 상자
 Hillgrund's Tomb	힐그룬드의 무덤
@@ -10840,7 +10840,7 @@ Ice Terror	얼음 공포
 Ice Vine	얼음 포도덩굴
 Ice Volley	냉기 일제 사격
 Ice Wizard	얼음 마도사
-Ice Wolf	설원 늑대
+Ice Wolf	설원늑대
 Ice Wolf Pelt	모피 - 설원늑대
 Ice Wraith	얼음 망령
 Ice Wraith Bane	독 - 얼음 망령 독소
@@ -10926,7 +10926,7 @@ Illusion spells are <mag>% stronger for <dur> seconds.	<dur> 초 동안 환영�
 Illusion spells cost <mag>% less to cast.	환영마법의 매지카 소모량이 <mag>% 감소합니다.
 Illusion Staff	환영마법 지팡이
 Illusory War Axe	환각의 도끼
-Imbued Spider	얼룩진 거미
+Imbued Spider	마력이 깃든 거미
 Imbuing Chamber	작업용 용기
 Imbuing Switch	염색 스위치
 Imedhnain	아이메드네인
@@ -11802,7 +11802,7 @@ J'zargo's Flame Cloak	지'자르고의 불꽃 망토
 J'zargo's Flame Cloak Scroll	마법 주문서 - 지'자르고의 불꽃 망토
 J'zhar	지'자르
 J'zhar's Journal	지'자르의 일기
-J'zhar's Pack	지자르의 짐
+J'zhar's Pack	지'자르의 짐
 Jade and Emerald Circlet	서클렛 - 에메랄드 비취 서클렛
 Jade and Sapphire Circlet	서클렛 - 사파이어 비취 서클렛
 Jagged Crown	가시 왕관
@@ -12258,7 +12258,7 @@ Kitchen - Workbench	부엌 - 작업선반
 Kitchen furnishings. (<Global=HDRiftenKitchen> gold)	주방 가구. (<Global=HDRiftenKitchen> 골드)
 Kitchen furnishings. (<Global=HDWhiterunKitchen> gold)	주방 가구. (<Global=HDWhiterunKitchen> 골드)
 Kitchen furnishings. (<Global=HDWindhelmKitchen> gold)	주방가구. (<Global=HDWindhelmKitchen> 골드)
-Kitchen, Doors	부엌,문들
+Kitchen, Doors	부엌, 문
 Kitchen, Fireplace	부엌, 난로
 Kitchen, Floor	부엌, 바닥
 Kitchen, Foundation	부엌, 토대
@@ -12665,7 +12665,7 @@ Liberate Winterhold Hold	윈터홀드 해방하기
 Liberation of Skyrim	스카이림의 해방
 Library - Remove Workbench	도서실 - 작업선반 제거
 Library - Workbench	도서실 - 작업선반
-Library, Doors	도서실,문들
+Library, Doors	도서실, 문
 Library, First Floor Walls	도서실, 1층 벽
 Library, Floor	도서실, 바닥
 Library, Foundation	도서실, 토대
@@ -12696,7 +12696,7 @@ Light.	경갑.
 Lighthouse Brazier	등대의 화로
 Lighthouse Lamp	등대 램프
 Lightning Apparatus	빛나는 장치
-Lightning Attractor	빛나는 끌개
+Lightning Attractor	번개 유도장치
 Lightning Bolt	번개 화살
 Lightning bolt that does <mag> points of shock damage to Health and half to Magicka, then leaps to a new target.	번개의 사슬을 날려 <mag> 의 전격 피해와 절반의 매지카 피해를 입힙니다. 사슬 번개는 주변에 튕겨 나가며 같은 피해를 입힙니다.
 Lightning Cloak	번개 망토
@@ -13027,7 +13027,7 @@ Maluril's Room Key	열쇠 - 말루릴의 방
 Malyn	메일린
 Malyn Varen	메일린 바렌
 Malyn Varen's Grimoire	메일린 바렌의 마도서
-Malyn's Black Soul Gem	멀린의 검은 소울젬
+Malyn's Black Soul Gem	메일린의 검은 소울젬
 Mammoth	매머드
 Mammoth Cheese	매머드 치즈
 Mammoth Cheese Bowl	매머드 치즈
@@ -13097,7 +13097,7 @@ Master Conjurer	달인 소환마법사
 Master Cultist	특급 광신도
 Master Destruction	파괴마법 달인
 Master Illusion	환영마법 달인
-Master Illusion Text	달인 환상마법 서적
+Master Illusion Text	달인 환영마법 서적
 Master Locks	잠금해제 달인
 Master Necromancer	달인 강령술사
 Master Neloth? What did he do?	넬로스 말인가? 뭘 어쨌길래?
@@ -13379,7 +13379,7 @@ Mora Tapinella (3)	은행잎 버섯 (3)
 Mora's Agony	모라의 고뇌
 Mora's Boon	모라의 친절
 Mora's Curse	모라의 저주
-Mora's Grasp	모라의 이해
+Mora's Grasp	모라의 손아귀
 Morag Tong Armor	모락 통 방어구
 Morag Tong Assassin	모락 통 암살자
 Morag Tong Boots	모락 통 전투화
@@ -13435,7 +13435,7 @@ Mount Moesring	모스링 산
 Mountain Flower	들꽃
 Mounted Bear Head	곰 머리 박제
 Mounted Elk Antlers	큰 뿔 박제
-Mounted Elk Head	큰 뿔 사슴 박제
+Mounted Elk Head	큰 뿔 사슴 머리 박제
 Mounted Goat Head	염소 머리 박제
 Mounted Horker Head	호커 머리 박제
 Mounted Mudcrab	진흙게 박제
@@ -14380,7 +14380,7 @@ Nords of Skyrim	스카이림의 노드
 North Brittleshin Pass	북부 브리틀쉰 길목
 North Cold Rock Pass	북부 싸늘바위 통로
 North Shriekwind Bastion	북부 쉬리크윈드 보루요새
-North Skybound Watch	스카이바운드 감시대
+North Skybound Watch	북부 스카이바운드 감시대
 North Wind	북풍
 Northshore Landing	북쪽해안 부두
 Northwatch Archer	노스와치 궁수
@@ -14682,21 +14682,21 @@ Orcish Armor of Eminent Destruction	오크제 방어구 - 상급 파괴마법
 Orcish Armor of Eminent Health	오크제 방어구 - 상급 체력 증가
 Orcish Armor of Eminent Illusion	오크제 방어구 - 상급 환영마법
 Orcish Armor of Eminent Restoration	오크제 방어구 - 상급 회복마법
-Orcish Armor of Eminent Stamina	오크제 방어구 - 상급 지구력 증가
+Orcish Armor of Eminent Stamina	오크제 전투화 - 상급 지구력 증가
 Orcish Armor of Extreme Alteration	오크제 방어구 - 최상급 변화마법
 Orcish Armor of Extreme Conjuring	오크제 방어구 - 최상급 소환마법
 Orcish Armor of Extreme Destruction	오크제 방어구 - 최상급 파괴마법
 Orcish Armor of Extreme Health	오크제 방어구 - 최상급 체력 증가
 Orcish Armor of Extreme Illusion	오크제 방어구 - 최상급 환영마법
 Orcish Armor of Extreme Restoration	오크제 방어구 - 최상급 회복마법
-Orcish Armor of Extreme Stamina	오크제 방어구 - 최상급 지구력 증가
+Orcish Armor of Extreme Stamina	오크제 전투화 - 최상급 지구력 증가
 Orcish Armor of Major Alteration	오크제 방어구 - 중급 변화마법
 Orcish Armor of Major Conjuring	오크제 방어구 - 중급 소환마법
 Orcish Armor of Major Destruction	오크제 방어구 - 중급 파괴마법
 Orcish Armor of Major Health	오크제 방어구 - 중급 체력 증가
 Orcish Armor of Major Illusion	오크제 방어구 - 중급 환영마법
 Orcish Armor of Major Restoration	오크제 방어구 - 중급 회복마법
-Orcish Armor of Major Stamina	오크제 방어구 - 중급 지구력 증가
+Orcish Armor of Major Stamina	오크제 전투화 - 중급 지구력 증가
 Orcish Armor of the Eminent Knight	오크제 방어구 - 상급 중갑
 Orcish Armor of the Major Knight	오크제 방어구 - 중급 중갑
 Orcish Armor of the Noble Knight	오크제 방어구 - 최상급 중갑
@@ -15257,7 +15257,7 @@ Place a workbench in your house for crafting furniture.	가구들을 제작하�
 Place Balwen's Ring	발웬의 반지 놓기
 Place Katarina's Ring	카타리나의 반지 놓기
 Place Marker	표시 놓기
-Place Pithiken's Ring	피쉬켄의 반지 놓기
+Place Pithiken's Ring	피씨켄의 반지 놓기
 Place Shagrol's Hammer on the shrine in Largashbur	샤그롤의 망치를 라가쉬버의 성소에 놓기
 Place Soul Gem	소울젬을 놓기
 Place the Aetherium Shards	에테리움 조각들을 놓기
@@ -15307,7 +15307,7 @@ Point the way and I'll get them.	어디있는지 알려주면 내가 가져오�
 Poison	독
 Poison Bloom	독초
 Poison Cloak	맹독 망토
-Poison Cloaked Spider	마법 주문서 - 독 망토 거미
+Poison Cloaked Spider	마법 주문서 - 맹독 망토 거미
 Poison Damage	독 피해
 Poison Gas	독 안개
 Poison of	제조 독 -
@@ -15322,7 +15322,7 @@ Poisoned	독살
 Poisoned talons do <mag> points of damage for <dur> seconds.	독 발톱으로 <dur> 초 동안 <mag> 의 피해를 입힙니다.
 Poisoner	독술사
 Poisoner's nook. (5,000 gold)	독살자의 방. (5,000 골드)
-Poisonous Cloaked Spider	독 거미
+Poisonous Cloaked Spider	맹독 망토 거미
 Politics be damned. Alduin has returned! (Persuade)	정치는 엿이나 먹으라 해. 알두인이 돌아왔다고! (설득)
 Polymorph Skeever	스키버 변신
 Pommel Stone of Mehrunes' Razor	메이룬스의 면도칼자루 장식
@@ -15931,7 +15931,7 @@ Remove the workbench from the small house.	집에서 작업선반을 제거합�
 Remove the workbench from the Storage Room.	창고에서 작업선반을 제거합니다.
 Remove the workbench from the Trophy Room.	전시실에서 작업선반을 제거합니다.
 Remove the workbenches from the Main Hall.	대청에서 작업선반을 제거합니다.
-Remove Tree	나무의 바위효과 제거
+Remove Tree	나무의 바위 효과 제거
 Remove Water	물의 바위 효과 제거
 Remove Wind	바람의 바위 효과 제거
 Removed	제거되었습니다.
@@ -16047,7 +16047,7 @@ Resolution	해상도
 Resonance Gem	공진 보석
 Respite	한숨 돌리기
 Response to Bero's Speech	베로의 주장에 대한 답변
-Rested	휴식효과
+Rested	휴식 효과
 Restless Draugr	잠들지 못하는 드로거
 Restocking Soul Gems	소울젬 보충하기
 Restoration	회복마법
@@ -16284,7 +16284,7 @@ Reverent Iron Mace	철 철퇴 - 중급 신성
 Reverent Iron Sword	철 검 - 중급 신성
 Reverent Iron War Axe	철 도끼 - 중급 신성
 Reverent Iron Warhammer	철 전투 망치 - 중급 신성
-Reverent Nordic Battleaxe	노드제 전투 도끼 - 상급 신성
+Reverent Nordic Battleaxe	노드제 전투 도끼 - 중급 신성
 Reverent Nordic Bow	노드제 활 - 중급 신성
 Reverent Nordic Dagger	노드제 단검 - 중급 신성
 Reverent Nordic Greatsword	노드제 대검 - 중급 신성
@@ -16720,7 +16720,7 @@ Sabine's Footlocker	사빈의 상자
 Sabine's Footlocker Key	열쇠 - 사빈의 상자
 Sabjorn	사비욘
 Sabjorn seems like more than just friendly competition.	사비욘이 단순한 선의의 경쟁자는 아닌가 보군.
-Sabjorn's Dresser	사비욘의 옷상자
+Sabjorn's Dresser	사비욘의 서랍장
 Sabjorn's Dresser Key	열쇠 - 사비욘의 서랍장
 Sabotage?	방해공작을 합니까?
 Sabre Cat	검치호랑이
@@ -16732,7 +16732,7 @@ Sacellum of Boethiah	보에디아의 기도소
 Sack	자루
 Sack of Flour	곡물가루 부대
 Sacred Font	신성한 세례반
-Sacred Stones only confer powers once a day	신성한 바위은 하루에 한 번만 능력을 부여해 줍니다.
+Sacred Stones only confer powers once a day	신성한 바위는 하루에 한 번만 능력을 부여해 줍니다.
 Sacred Witness	거룩한 목격자
 Sacrifice	제물
 Saddle	안장
@@ -17261,7 +17261,7 @@ Shiv	칼
 Shock	번개
 Shock Barrier	폭풍의 벽
 Shock Cloak	천둥 망토
-Shock Cloaked Spider	전격 거미
+Shock Cloaked Spider	천둥 망토 거미
 Shock Damage	전격 피해
 Shock Rune	벼락의 룬
 Shock spells do <25>% more damage.	전격 마법의 위력이 <25>% 증가합니다.
@@ -17290,7 +17290,7 @@ Showing respect to the Greybeards will increase your prestige.	그레이비어�
 Shows the path to the current goal.	현재 퀘스트 목표까지 가는 길을 표시합니다.
 Shriekwind Bastion	쉬리크윈드 전망대
 Shriekwind Overlook	쉬리크윈드 전망대
-Shrine Base	신전 영역
+Shrine Base	신전
 Shrine of Akatosh	아카토쉬의 성소
 Shrine of Arkay	아케이의 성소
 Shrine of Auriel	아우리엘의 성소
@@ -18270,7 +18270,7 @@ Staff of Banishing	지팡이 - 하급 데이드라 추방
 Staff of Calm	지팡이 - 진정
 Staff of Chain Lightning	지팡이 - 사슬 번개
 Staff of Courage	지팡이 - 고무
-Staff of Daedric Command	지팡이 - 데이드라제 지배
+Staff of Daedric Command	지팡이 - 데이드라 지배
 Staff of Dread Zombies	지팡이 - 최상급 강령술
 Staff of Expulsion	지팡이 - 상급 데이드라 추방
 Staff of Fear	지팡이 - 공포
@@ -18300,7 +18300,7 @@ Staff of Revenants	지팡이 - 상급 강령술
 Staff of Ruunvald	룬발드의 지팡이
 Staff of Sheogorath	쉐오고라스의 지팡이
 Staff of Soul Trapping	지팡이 - 소울 트랩
-Staff of Sparks	지팡이 - 최하급 번갯불
+Staff of Sparks	지팡이 - 번갯불
 Staff of Tandil	탄딜의 지팡이
 Staff of the Familiar	지팡이 - 늑대 소환
 Staff of the Flame Atronach	지팡이 - 화염 아트로나크 소환
@@ -18312,7 +18312,7 @@ Staff of the Storm Atronach	지팡이 - 폭풍 아트로나크 소환
 Staff of the Storm Wall	지팡이 - 폭풍의 벽
 Staff of Thunderbolts	지팡이 - 낙뢰
 Staff of Turning	지팡이 - 중급 언데드 퇴치
-Staff of Vanquishment	지팡이 - 중급 공포
+Staff of Vanquishment	지팡이 - 광역 공포
 Staff of Zombies	지팡이 - 하급 강령술
 Stagger	비틀거림
 Stalf	스탈프
@@ -18322,7 +18322,7 @@ Stalhrim Armor of Eminent Alteration	스탈림 방어구 - 상급 변화마법
 Stalhrim Armor of Eminent Conjuring	스탈림 방어구 - 상급 소환마법
 Stalhrim Armor of Eminent Destruction	스탈림 방어구 - 상급 파괴마법
 Stalhrim Armor of Eminent Health	스탈림 방어구 - 상급 체력 증가
-Stalhrim Armor of Eminent Illusion	스탈림 방어구 - 최상급 환영마법
+Stalhrim Armor of Eminent Illusion	스탈림 방어구 - 상급 환영마법
 Stalhrim Armor of Eminent Restoration	스탈림 방어구 - 상급 회복마법
 Stalhrim Armor of Extreme Alteration	스탈림 방어구 - 최상급 변화마법
 Stalhrim Armor of Extreme Conjuring	스탈림 방어구 - 최상급 소환마법
@@ -18780,7 +18780,7 @@ Stand aside, woman. I'm here for Fjola!	비켜라. 나는 피욜라를 찾으러
 Stand Clear	물러나서 떨어져있기
 Stand on vacant floor glyph	비어있는 상징이 새겨진 바닥 위에 서기
 Standing Stone - Tree	신성한 바위 - 나무
-Stands-In-Shallows	스탠드-인-스왈로즈
+Stands-In-Shallows	스탠드-인-섈로즈
 Start a new game?	새로운 게임을 시작하겠습니까?
 Start a new game? Creations are currently loaded. Note: Achievements are disabled.	새 게임을 시작하시겠습니까? 현재 모드가 로드되어 있습니다. 경고: 도전과제 달성이 비활성화 됩니다.
 Start a new game? Creations are currently loaded. Note: Trophies are disabled.	현재 모드를 사용하고 있습니다. 새 게임을 시작할까요? 주의: 업적 달성을 할 수 없습니다.
@@ -18840,7 +18840,7 @@ Steel Armor of Major Destruction	강철 방어구 - 중급 파괴마법
 Steel Armor of Major Health	강철 방어구 - 중급 체력 증가
 Steel Armor of Major Illusion	강철 방어구 - 중급 환영마법
 Steel Armor of Major Restoration	강철 방어구 - 중급 회복마법
-Steel Armor of Major Stamina	강철 방어구 - 중급 지구력 증가
+Steel Armor of Major Stamina	강철 전투화 - 중급 지구력 증가
 Steel Armor of Minor Alteration	강철 방어구 - 최하급 변화마법
 Steel Armor of Minor Conjuring	강철 방어구 - 최하급 소환마법
 Steel Armor of Minor Destruction	강철 방어구 - 최하급 파괴마법
@@ -19207,9 +19207,9 @@ Stop the wedding! I can't go through with this.	결혼식을 그만두겠소! �
 Stop wasting my time, Garan.	더 이상 내 시간을 낭비하지 마시오. 가란.
 Stops poison's continuing effects.	모든 독을 치료합니다.
 Storage Cabinet	저장소 캐비닛
-Storage Room - Remove Workbench	창고 - 작업선반 제거
-Storage Room - Workbench	창고 - 작업선반
-Storage Room, Doors	저장고,문들
+Storage Room - Remove Workbench	저장고 - 작업선반 제거
+Storage Room - Workbench	저장고 - 작업선반
+Storage Room, Doors	저장고, 문
 Storage Room, Floor	저장고, 바닥
 Storage Room, Foundation	저장고, 토대
 Storage Room, Roof	저장고, 지붕
@@ -19670,7 +19670,7 @@ Tel Mithryn Apothecary Key	열쇠 - 텔 미스린 약제소
 Tel Mithryn Kitchen	텔 미스린 주방
 Tel Mithryn Kitchen Key	열쇠 - 텔 미스린 주방
 Tel Mithryn Steward	텔 미스린 행정관
-Tel Mithryn Steward's House	텔 미스린 집사의 집
+Tel Mithryn Steward's House	텔 미스린 행정관의 집
 Tel Mithryn Steward's Key	열쇠 - 텔 미스린 행정관
 Tel Mithryn Tower	텔 미스린 탑
 Teldryn Sero	텔드린 세로
@@ -19820,7 +19820,7 @@ Telvanni? What are the Telvanni?	텔바니? 텔바니란게 뭐지?
 Temba Wide-Arm	템바 와이드-암
 Temper a Hide Helmet	생가죽 투구를 강화하기
 Temper an Iron Dagger	철 단검을 강화하기
-Tempered Sphere	단련된 드워프 스피어
+Tempered Sphere	단련된 드워프 구체
 Temple	신전
 Temple Ancestral Tomb	사원 선조의 무덤
 Temple Location	사원 지역
@@ -20741,7 +20741,7 @@ Tolan	톨란
 Tolan said you're a vampire hunter.	톨란이 말하길 당신이 흡혈귀 사냥꾼이라고 하던데.
 Tolan was right. And he's dead. The vampires killed him.	톨란이 말이 맞았소. 하지만 죽어버렸소. 흡혈귀들 짓이지.
 Tolenos	톨레노스
-Tolenos Omoren	톨레노트 오모렌
+Tolenos Omoren	톨레노스 오모렌
 Tolfdir	톨프딜
 Tolfdir sent me to help you.	톨프딜이 저보고 당신을 도와주라고 했습니다.
 Tolfdir the Absent-Minded	건망증 심한 톨프딜
@@ -20910,7 +20910,7 @@ Trophy Base, Large	전시용 받침대, 대
 Trophy Base, Small	전시용 받침대, 소
 Trophy Room - Remove Workbench	전시실 - 작업선반 제거
 Trophy Room - Workbench	전시실 - 작업선반
-Trophy Room, Doors	전시실,문들
+Trophy Room, Doors	전시실, 문
 Trophy Room, Floor	전시실, 바닥
 Trophy Room, Foundation	전시실, 토대
 Trophy Room, Roof	전시실, 지붕
@@ -21196,7 +21196,7 @@ Vampire Fortify Dmg Resist	흡혈귀 강화 - 피해 저항
 Vampire Gauntlets	흡혈귀 장갑
 Vampire Gloves	흡혈귀 장갑
 Vampire Hood	흡혈귀 두건
-Vampire Hunter	사냥꾼 흡혈귀
+Vampire Hunter	흡혈귀 사냥꾼
 Vampire Jailor	흡혈귀 간수
 Vampire Lord	흡혈귀 군주
 Vampire Lord Armor	흡혈귀 군주 방어구
@@ -21220,7 +21220,7 @@ Vampire's Thrall	흡혈귀의 노예
 Vampires Grip	흡혈귀의 손아귀
 Vampires heal <mag> points of Health.	흡혈귀는 체력을 <mag> 회복합니다.
 Vampires threaten all of Skyrim. We need your help.	흡혈귀들이 스카이림 전역을 위협하고 있소. 당신의 도움이 필요하군.
-Vampiric Blood Rested	흡혈귀의 피가 편안한 휴식을 취했습니다.
+Vampiric Blood Rested	안식을 취한 흡혈귀의 피
 Vampiric Drain	흡혈귀의 흡수
 Vampiric Drain(Shade)	흡혈귀의 흡수
 Vampiric Grip	흡혈귀의 손아귀
@@ -21269,7 +21269,7 @@ Vernaccus and Bourlor	베르나쿠스와 볼로어
 Verner	버너
 Verner and Anneke's House Key	열쇠 - 버너와 애니카의 집
 Verner and Annekke's House	버너와 애니카의 집
-Verner Rock-Chucker	버너 락-크러셔
+Verner Rock-Chucker	버너 락-처커
 Verner's House	버너의 집
 Verner's Satchel	버너의 가방
 Verulus	베룰루스
@@ -21301,7 +21301,7 @@ Vighar is Dead.	비그하는 죽었소.
 Vigil Enforcer Armor Set	경계병 집행자 방어구 세트
 Vigilance	비졀런스
 Vigilant	경계병
-Vigilant Adalvald	아달발드 경계병
+Vigilant Adalvald	경계병 아달발드
 Vigilant of Stendarr	스텐다르의 경계병
 Vigilant Tolan	경계병 톨란
 Vigilant Tyranus	경계병 티라누스
@@ -22978,7 +22978,7 @@ Why?	어째서?
 Why? Is he loyal to the Empire?	그는 제국에 충성적입니까?
 Why? What's going on?	음? 무슨 일이지?
 Why? What's happened?	아니? 무슨 일이오?
-Widow's Watch Ruins	미망감시대 폐허
+Widow's Watch Ruins	미망인의 감시대 폐허
 Wild Horses	야생마
 Wilhelm	윌헴
 Will I be able to keep the ring?	이 반지를 제가 가져도 되오?

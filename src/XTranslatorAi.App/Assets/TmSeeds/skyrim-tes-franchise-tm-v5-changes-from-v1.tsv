@@ -2,98 +2,192 @@ Source	Target	Previous
 "Bent a few folks' arms the wrong way"?	'주민들의 팔을 좀 비틀었다'고?	'주민들의 무기가 엉뚱한 방향을 향했다'고?
 (Optional) Retrieve the Blade of Woe	(선택) 비통의 단검을 가지기	(선택) 비통의 단검를 가지기
 <Alias=PlayerIsIt> is it. Hide from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt> 이/가 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요
+A blast of cold that does <mag> points of damage per second to Health and Stamina.	차가운 돌풍을 뿜어내어 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.	매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
+About to change back...	변신이 곧 풀어집니다...	변신이 풀리고 있습니다...
 Add a tower that can be turned into a fully-equipped enchanting laboratory.	완벽한 마법부여 연구실로 전환할 수 있는 탑을 추가합니다.	완벽한 마법부가 연구실로 전환할 수 있는 탑을 추가합니다.
+Adril Arano	아드릴 아라노	아드릴
 AETHERIUM	에테리움	아테리움
+Alchemy Laboratory, Doors	연금술 실험실, 문	연금술 실험실,문들
 Allegiance	충성	명령을 내려주십시오.
+Altar of Thrond Cave	쓰론드 제단 동굴	쓰론드 동굴 제단
 ALTERATION	변화마법	변화
+Ambarys	엠바리스	앰바리스
+Amulet of Mara (Possessed)	아뮬렛 - 마라 (소유)	마라의 아뮬렛 (소유)
+Ancestor's Wrath	선조의 분노	선조의 영혼
+Are you all right?	괜찮나?	당신 괜찮은 거 맞아?
+Armory, Doors	병기고, 문	병기고,문들
+Balbus's Fork	발부스의 포크	발부스의 집게
+Baldor Iron-Shaper	발도어 아이언-셰이퍼	발도어
+Bats	박쥐 떼	박쥐
+Beast Form	야수의 형상	짐승의 형상
+Black Robes	검은색 로브	검은 로브
 Blacksmith's Forge	대장간의 화로	대장간 모루
+Blue Mountain Flower (3)	파란 들꽃 (3)	푸른 들꽃 (3)
 Break through the Second Barricade	두 번째 바리케이드를 파괴하기	두 번째 바리케이트를 파괴하기
 Breath of Nchuak	느츄악의 숨결	느챠닥의 숨결
 Bring 10 fire salts to Balimund (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개를 가져다 주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개을 가져다 주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)
+Bye.	그럼 이만.	안녕히 가시오.
 Call of the Wild	야생의 외침	아생의 외침
+Can you train me in Enchanting?	마법부여에 관해서 가르쳐주시겠소?	마법부여를 가르쳐 줄 수 있나?
+Castor the Puzzlemaker's Corpse	퍼즐 제작자 캐스터의 시체	캐스터의 시체
 Claim Mehrunes' Razor	메이룬스 데이건의 단검을 가지기	메이룬스의 면도칼을 가지기
 Clay. (<Global=BYOHHPAmountClay> for <Global=BYOHHPCostClay> gold)	점토. (<Global=BYOHHPAmountClay>개에 <Global=BYOHHPCostClay> 골드)	점토. (<Global=BYOHHPAmountClay> for <Global=BYOHHPCostClay> 골드)
 Come on. Let's go.	어서. 가자.	여기서 나가자.
 CONJURATION	소환마법	소환
+Consider it done.	곧바로 처리하겠습니다.	곧바로 처리하지.
 CONTAINERS	보관함	상자
+Creation Club Cell	Creation Club Cell	던가드 흡혈귀 사냥꾼
 Cure Poison	독 치료	물약 - 독 치료
+Daedric Relic	데이드라 유물	데이드라제 유물
+Darkfall Passage Note I	다크폴 통로 쪽지 1	다크폴 통로 쪽지
+Darkfall Passage Note II	다크폴 통로 쪽지 2	다크폴 통로 쪽지
+Deathbell (3)	데스벨 (3)	데쓰벨 (3)
 Decrease the target's Stamina regeneration by <mag>% for <dur> seconds.	<dur> 초 동안 지구력 재생을 <mag>% 감소시킵니다.	<dur> 초 동안 지구력 재생이 <mag>% 감소시킵니다.
 Decree of Monument	기념비 포고령	법령의 기념비
 Demonstrate your "Unrelenting Force" Shout	"거침없는 힘" 함성을 보여주기	'거침없는 힘' 함성을 보여주기
 Demonstrate your "Unrelenting Force" Shout (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	"거침없는 힘" 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	'거침없는 힘' 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)
 Demonstrate your "Whirlwind Sprint" Shout	"회오리 질주" 함성을 사용하기	'회오리 질주' 함성을 사용하기
+Deor Woodcutter's House	디오어 우드커터의 집	나무꾼 디오어의 집
+Dessicated Corpse	바짝 마른 시체	바짝마른 시체
 Discerning the Transmundane	다른 차원의 것을 인식	다른 차원의 것을 알아내기
 Distribute %d Point	분배하세요 - %d 포인트	분배하세요- %d Point
 Don't be ridiculous. Dreams are harmless.	되지도 않는 소리 마시오. 꿈은 위험하지 않소.	되도 않는 소리 마시오. 꿈은 위험하지 않소.
 Door to Garvey's Room	가비의 방 문	가비
 Dragonscale Armor of the Eminent Knight	드래곤 비늘 방어구 - 상급 경갑	드래곤 비늘 방어구 - 상급 중갑
 Dragonscale Armor of the Noble Knight	드래곤 비늘 방어구 - 최상급 경갑	드래곤 비늘 방어구 - 최상급 중갑
+Dremora Prices	드레모라 가격	드레모라 군주
+Dresser	옷 상자	옷상자
+Dwarven Boots of Extreme Stamina	드워프제 전투화 - 상급 지구력 증가	드워프제 전투화 - 최상급 지구력 증가
+Enchanter's Tower, Doors	마법부가 연구탑, 문	마법부가 연구탑,문들
 Enemies who strike you with a melee attack have a small chance of being paralyzed.	근접 공격 피해를 입으면 적을 일정한 확률로 마비시킵니다.	근접 공격 피해를 입으면 적을 일정한 확률로 <dur> 초 동안 마비시킵니다.
+Exploding Flame Spider	폭발형 화염 거미	마법 주문서 - 폭발형 화염 거미
+Fair enough.	알았어.	할만 하군.
+Fathom	페덤	파돔
 Fellow dovah? I am not a dragon.	도바 동료? 나는 드래곤이 아닌데.	Dovah 동료? 나는 드래곤이 아닌데.
 Finished?	완료?	완료?
 Follow Legate Rikke	리카 군단장을 따라가기	리카 군단장를 따라가기
+Follow me.	나를 따라오게.	나를 따라오시오.
+Footwraps	죄수의 발싸개	발싸개
 For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	불꽃의 망토를 둘러 <dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 For <dur> seconds, undead in melee range take <10> points sun damage per second.	<dur> 초 동안 주변 언데드에게 매 초마다 <10> 의 태양 피해를 입힙니다.	<dur> 초 동안 주변 언데드에게 매 초마다 <mag> 의 태양 피해를 입힙니다.
+Forget it.	관둬.	내키지 않는데.
+Frenzy	광분	광역 분노
+Frost Breath	서리 숨결	냉기 숨결
 Fur-Trimmed Cloak	야를의 털가죽 망토로 장식된 의상	털가죽 망토
+Fury	분노	광분
 Gadnor's Staff of Charming	개드너의 매혹 지팡이	개드너의 지팡이
 Gharol's Message	가롤의 메시지	가롤의 메세지
-Glass Armor of Resurgence	글래스 방어구 - 최상급 매지카 재생	글래스 투구 - 최상급 매지카 재생
+Glowing Mushroom (5)	발광 버섯 (5)	형광 버섯 (5)
 Gold Necklace	금 목걸이	황금 목걸이
+Good luck with that.	잘 해보게.	잘 해보시오.
 Goodbye	잘 가시오.	잘 가.
+Grand Staff of Charming	지팡이 - 광역 진정	지팡이 - 진정
+Grate	창살문	강판
+Greenhouse, Doors	온실, 문	온실,문들
+Grelka's Strongbox	그렐카의 튼튼한 상자	그레카의 튼튼한 상자
+Grim Shieldmaiden	음울한 여전사	그림 실드메이든
 Gunjar	건냐르	건쟈
 Have Need of Cynric	신릭의 도움 요청	마지막 제안
 Have you thought about getting cured of vampirism?	흡혈귀 증상을 치료하는 것에 관하여 생각해 본 적은 없나?	흡혈귀 증상을 치료하는 것에 관해여 생각해 본 적은 없나?
 He still needs to pay for his crimes.	그래도 죗값을 치러야 합니다.	그래도 죗값을 치르어야 합니다.
 He wants the "secrets of the Skaal" in exchange for teaching me the third Word.	세번째 힘의 단어를 가르쳐주는 대가로 '스칼의 비밀'을 원하고 있습니다.	세번째 힘의 단어를 가르쳐주는 댓가로 '스칼의 비밀'을 원하고 있습니다.
+Heart Stone Deposit	하트스톤 광맥	하트스톤 매장층
+Here we go.	그럼 해 보자.	간다.
 Here's your money. He'd better be safe. (Give <Global=BYOHHBA2Ransom> gold)	돈을 낼테니 그를 풀어줘라. (<Global=BYOHHBA2Ransom> 골드 주기)	돈을 낼테니 그를 풀어줘라. (Give <Global=BYOHHBA2Ransom> 골드)
 Here's your money. She'd better be safe. (Give <Global=BYOHHBA2Ransom> gold)	요구한 돈을 주겠다. 그녀는 안전한가? (<Global=BYOHHBA2Ransom> 골드 주기)	요구한 돈을 주겠다. 그녀는 안전한가? (Give <Global=BYOHHBA2Ransom> 골드)
 Here. Have a gold piece. (1 gold)	여기. 한 푼 받게나. (1 골드)	여기. 한푼 받게나. (1 골드)
 herself	그녀 자신	그녀의
+Hilde	힐데	힐드
 himself	그 자신	그의
+How can I help?	무엇을 도와줄까?	뭔가 도움이 필요한가?
+How can we lure a dragon to Dragonsreach?	어떻게 하면 '드래곤스리치'로 유인할 수 있습니까?	어떻게 하면 드래곤스리치로 유인할 수 있습니까?
 How did it end up in Lake Honrich?	어쩌다 혼리크 호수에 빠지게 된 거야?	어쩌다 혼리크 호수로 보내버린 거야?
 How does the Ebonmere affect all of us?	에본미어가 어떻게 우리 모두에게 영향을 끼치는 거지?	에본미어가 어떻게 우리 모두에게 영향를 끼치는 거지?
 How long have you been down here?	얼마나 오랫동안 이 아래에 있었소?	얼마나 오랬동안 이 아래에 있었소?
+How's business?	장사는 잘 됩니까?	사업은 어떻지?
 Howl of Terror	공포의 울부짖음	피의 자취
 I agree. This will set the tone for the whole negotiation. Elenwen should go.	동의합니다. 이것은 협상에 대한 전반적인 영향을 끼칠테니 엘렌웬은 가야됩니다.	동의합니다. 이것은 협상에 대한 전반적인 영향를 끼칠테니 엘렌웬은 가야됩니다.
+I don't have time for this.	이런 일에 낭비할 시간은 없군.	그럴 시간이 없군요.
+I don't know what you're talking about.	무슨 말 하는 건지 모르겠는데.	무슨 말을 하는 것인지 모르겠군.
+I don't think so.	아닌 것 같은데.	안 될 것 같은데.
 I found King Olaf's Verse.	올라프 왕의 시를 발견했습니다.	올라프 왕의 시을 발견했습니다.
 I found this in Shroud Hearth Barrow. (Give journal)	이걸 장막덮인 난로 무덤에서 찾았는데. (일기를 주기)	이걸 장막덮힌 난로 무덤에서 찾았는데. (일기를 주기)
 I know where the Blood Horkers are.	블러드 호커 해적단이 있는 장소를 알아냈다.	블러드 호커 해적단이 있는 잘소를 알아냈다.
+I need to talk to you.	당신에게 할 말이 있는데.	할 말이 있는데.
 I was hoping you might want to talk about it.	너도 그 이야기를 하고 싶어 하길 바랐는데.	너도 이 말을 듣고 싶어하길 바랬는데.
+I'll do it.	내가 하지.	제가 하겠습니다.
+I'll have to think about it.	생각해보겠다.	조금 더 생각을 해 봐야겠군.
+I'll take it. (<Global=BYOHHPCost> gold)	구입하겠다. (<Global=BYOHHPCost> 골드)	그렇게 하겠다. (<Global=BYOHHPCost> 골드)
+I'm a bit short of money right now. (<Global=BYOHHPCost> gold)	그 정도의 돈은 없다. (<Global=BYOHHPCost> 골드)	부른 값보다는 가지고 있는 돈이 모자라다. (<Global=BYOHHPCost> 골드)
+I'm ready.	준비 되었소.	준비완료.
+I'm ready. Let's go.	준비 됐어. 가자.	준비 되었습니다. 갑시다.
 I've collected all the Rings of Blood Magic.	피의 마법 반지를 모두 모았소.	피의 마법 반지을 모두 모았소.
 I've recovered all of Arondil's Journals.	아론딜의 일지를 전부 회수했소.	당신 운이 좋은가 본데.
+Ice Spike	얼음 가시	얼음 창
+Ice Storm	얼음 폭풍	얼음의 형상
+Ice Wolf	설원늑대	설원 늑대
+Imbued Spider	마력이 깃든 거미	얼룩진 거미
 Imperial Legion	제국군	임페리얼
+Imperial Military Camp	제국군 주둔지	제국군 야영지
 Investigate Shroud Hearth Barrow	장막덮인 난로 무덤을 조사하기	장막덮힌 난로 무덤을 조사하기
+Is there a problem?	무슨 문제라도 있습니까?	무슨 문제라도 있나?
+J'zhar's Pack	지'자르의 짐	지자르의 짐
 Key to Evette San's House	열쇠 - 이베트 산의 집	열쇠 - 이베트 산의 열쇠
+Kitchen, Doors	부엌, 문	부엌,문들
 Krag's Journal	크라그의 일기	크래그의 일기
 Lay off the old man. Now. (Intimidate)	그 노인을 내버려 둬. 당장. (위협)	그 노인를 내버려 둬. 당장. (위협)
 Leave this island now, or your life is forfeit. (Intimidate)	당장 이 섬을 떠나, 아니면 네 목숨은 없다. (위협)	당장 이 섬을 떠나, 아니면 네 목숨을 없다. (위협)
 Let her back in, or you answer to me! (Intimidate)	그녀를 들여보내든가, 내 질문에 대답을 해! (협박)	그녀를 들려보내든가, 내 질문에 대답을 해! (협박)
+Let's go!	그러면, 가자!	해보지!
 Letter from the Steward of <Alias=HoldCity>	<Alias=HoldCity> 행정관의 편지	행정관 <Alias=HoldCity>의 편지
+Library, Doors	도서실, 문	도서실,문들
+Lightning Attractor	번개 유도장치	빛나는 끌개
 Lisbet	리스벳	리즈벳
 Llewellyn the Nightingale	나이팅게일 르웰린	르웰린
 Lumber. (<Global=BYOHHPAmountLogs> for <Global=BYOHHPCostLogs> gold)	목재. (<Global=BYOHHPAmountLogs>개에 <Global=BYOHHPCostLogs> 골드)	목재. (<Global=BYOHHPAmountLogs> for <Global=BYOHHPCostLogs> 골드)
 Lymdrenn Tenvanni's Journal	림드렌 텔바니의 일기	림드렌 트레반니의 일기
+Malyn's Black Soul Gem	메일린의 검은 소울젬	멀린의 검은 소울젬
+Master Illusion Text	달인 환영마법 서적	달인 환상마법 서적
 Message from General Tullius	툴리우스 장군의 메시지	툴리우스 장군의 메세지
 Molag Bal created the first vampire.	몰락 발이 첫 흡혈귀를 만들었소.	몰락-발이 첫 흡혈귀를 만들었소.
+Mora's Grasp	모라의 손아귀	모라의 이해
+Mudcrab	진흙게	진흙 게
 Never mind that... it worked!	신경 쓰지마... 제대로 되었어!	신경 쓰지마... 재대로 되었어!
+No thanks.	필요없소.	필요없어.
+No, not yet.	아직은.	아니, 아직은.
 Noble Clothes	야를의 기품있는 의상	귀족의 의상
+North Skybound Watch	북부 스카이바운드 감시대	스카이바운드 감시대
+Now what?	이 다음은?	이제 어쩌지?
 On second thought, I'll be leaving.	다시 생각해보니, 그냥 가는 게 낫겠군.	다시 생각해보니, 그냥 가는 게 났겠군.
 Opponents in melee range take <mag> points shock damage per second.	주변 적에게 매 초마다 <mag> 의 전격 피해를 입힙니다.	주변 적에게 매 초마다 <mag> 의 전격 피해와 매지카 피해를 입힙니다.
-Orcish Armor of Eminent Stamina	오크제 방어구 - 상급 지구력 증가	오크제 전투화 - 상급 지구력 증가
-Orcish Armor of Extreme Stamina	오크제 방어구 - 최상급 지구력 증가	오크제 전투화 - 최상급 지구력 증가
-Orcish Armor of Major Stamina	오크제 방어구 - 중급 지구력 증가	오크제 전투화 - 중급 지구력 증가
 Orichalcum Ingot	주괴 - 오리칼쿰	윌란드리아의 오리칼쿰 주괴
+Place Pithiken's Ring	피씨켄의 반지 놓기	피쉬켄의 반지 놓기
 Planter	화분	농장주
-Quick Test Cell	빠른 테스트 셀	Quick Test Cell
-Rage Of The Ancients	고대인의 분노	Rage Of The Ancients
+Poison Cloaked Spider	마법 주문서 - 맹독 망토 거미	마법 주문서 - 독 망토 거미
+Poison Gas	독 안개	독가스
+Poisonous Cloaked Spider	맹독 망토 거미	독 거미
+Quick Test Cell	빠른 테스트 셀	방어구를 장착하지 않을 시 피부 마법의 위력이 2.5배 증가합니다.
+Rage Of The Ancients	고대인의 분노	쇠뇌 - 하급 화염
+Raise Zombie	하급 강령술	좀비 부활
 Read Nepos's Journal	네포스의 일기를 읽기	네포스의 일기을 읽기
+Reanimate	중급 강령술	강령술
 Reanimate a powerful dead body to fight for you for <dur> seconds.	<dur> 초 동안 나를 위해 싸울 강력한 시체를 하나 부활시킵니다.	<dur> 초 동안 나를 위해 싸울 조금 강력한 시체를 하나 부활시킵니다.
+Reanimate Corpse	중급 강령술	시체 부활
 Refined Tunic	야를의 세련된 의상	세련된 의상
+Remove Tree	나무의 바위 효과 제거	나무의 바위효과 제거
 Replace the beacon	표식을 교체하기	등불을 교체하기
+Rested	휴식 효과	휴식효과
 Return the East Empire Shipping Map to Delvin	델빈에게 동 제국 해상운송 지도를 가져가기	델빈에게 동제국 해상운송 지도를 가져가기
+Reverent Nordic Battleaxe	노드제 전투 도끼 - 중급 신성	노드제 전투 도끼 - 상급 신성
 Ring of the Major Knight	반지 - 중급 중갑	반지 - 하급 중갑
 Room 7Workbench Enable	Room 7 작업선반 설치	Room 7작업선반 설치
+Sabjorn's Dresser	사비욘의 서랍장	사비욘의 옷상자
+Sabre Cat	검치호랑이	검치 호랑이
+Sacred Stones only confer powers once a day	신성한 바위는 하루에 한 번만 능력을 부여해 줍니다.	신성한 바위은 하루에 한 번만 능력을 부여해 줍니다.
 Secunda's Kiss	세쿤다의 입맞춤	세쿤다의 선반
+Shock	번개	전격
+Shock Cloaked Spider	천둥 망토 거미	마법 주문서 - 폭발형 전격 거미
+Shrine Base	신전	신전 영역
 Shroud Hearth Barrow	장막덮인 난로 무덤	장막덮힌 난로 무덤
 Shroud Hearth Barrows Key	열쇠 - 장막덮인 난로 무덤	열쇠 - 장막덮힌 난로 무덤
 Shroud Hearth Depths	장막덮인 난로 심층부	장막덮힌 난로 심층부
@@ -101,6 +195,7 @@ Shrouded Grove	장막덮인 숲	장막덮힌 숲
 Shrouded Grove Cave	장막덮인 숲 동굴	장막덮힌 숲 동굴
 Smelter	용광로	도가니
 Smithing	제련	뼈다귀 제련
+Snow Bear	설원곰	설원 곰
 Snowclad Ruins	눈덮인 유적	눈덮힌 유적
 Snowy Ice Vine	눈덮인 얼음 포도덩굴	눈덮힌 얼음 포도덩굴
 Soul trap me. I won't feel right as a vampire.	소울 트랩을 걸어 줘. 흡혈귀가 돼서는 안 될 것 같아.	소울 트랩을 걸어 줘. 흡혈귀가 되서는 안 될 것 같아.
@@ -108,41 +203,81 @@ Speak to Mercer Frey	머서 프레이와 대화하기	머서 프레이와와 대
 Speak to Thorald Gray-Mane	쏘럴드 그레이-메인과 대화하기	프랄리아 그레이-메인에게 돌아가기
 Speak with Golldir	골디어와 대화하기	골디어과 대화하기
 Stabilized	안정	안 정
+Staff of Daedric Command	지팡이 - 데이드라 지배	지팡이 - 데이드라제 지배
+Staff of Sparks	지팡이 - 번갯불	지팡이 - 최하급 번갯불
+Staff of Vanquishment	지팡이 - 광역 공포	지팡이 - 중급 공포
+Stalhrim Armor of Eminent Illusion	스탈림 방어구 - 상급 환영마법	스탈림 방어구 - 최상급 환영마법
 Stalhrim Armor of Extreme Illusion	스탈림 방어구 - 최상급 환영마법	스탈림 방어구 - 특급 환영마법
 Stamina regenerates <mag> points more slowly.	지구력 재생이 <mag> 감소합니다.	<dur> 초 동안 지구력 재생이 감소합니다.
-Steel Armor of Major Stamina	강철 방어구 - 중급 지구력 증가	강철 전투화 - 중급 지구력 증가
-Steel Arrow	화살 - 강철	화살 - 강철 화살
+Stands-In-Shallows	스탠드-인-섈로즈	스탠드-인-스왈로즈
 Stone. (<Global=BYOHHPAmountStone> for <Global=BYOHHPCostStone> gold)	석재. (<Global=BYOHHPAmountStone>개에 <Global=BYOHHPCostStone> 골드)	석재. (<Global=BYOHHPAmountStone> for <Global=BYOHHPCostStone> 골드)
+Storage Room - Remove Workbench	저장고 - 작업선반 제거	창고 - 작업선반 제거
+Storage Room - Workbench	저장고 - 작업선반	창고 - 작업선반
+Storage Room, Doors	저장고, 문	저장고,문들
 Sure, I'd like the help.	물론, 기꺼이 도와주지.	물론, 기꺼지 도와주지.
 Suvaris Atheron's Logbook	수바리스 아테론의 항해일지	수바리스 아테론의 항박일지
 Talk to Legate Rikke	리카 군단장과 대화하기	리카 군단장와 대화하기
+Tel Mithryn Steward's House	텔 미스린 행정관의 집	텔 미스린 집사의 집
+Tell me about your family.	당신 가문에 대해서 알려주실까.	당신의 가족에 대해서 말해줄 수 있나.
+Tell me about yourself.	댁은 뭐하는 사람이오?	네 이야기를 들어보고 싶다.
+Tempered Sphere	단련된 드워프 구체	단련된 드워프 스피어
 Temporarily reanimates corpses in the immediate area.	잠깐 동안 나를 위해 싸울 주변의 시체들을 부활시킵니다.	잠깐 동안 나를 위해 싸울 주변의 시체들를 부활시킵니다.
 The Apprentice's Assistant	수습생의 조수	수습생
+Thief Cache	도둑의 은닉품	도둑의 저장고
 Together until the end, then.	최후까지 함께하자.	최후가지 함께하자.
+Tolenos Omoren	톨레노스 오모렌	톨레노트 오모렌
+Trophy Room, Doors	전시실, 문	전시실,문들
 Unknown Book, Vol. II	알 수 없는 책, 제 2권	알 수 없는 책, 2 권
 Unknown Book, Vol. IV	알 수 없는 책, 제 4권	알 수 없는 책, 4 권
 up to level	최대 레벨:	다음 레벨까지:
 Vahlok the Jailor	간수 발록	발록
+Vampire Hunter	흡혈귀 사냥꾼	사냥꾼 흡혈귀
+Vampiric Blood Rested	안식을 취한 흡혈귀의 피	흡혈귀의 피가 휴식을 취함
+Verner Rock-Chucker	버너 락-처커	버너 락-크러셔
+Vigilant Adalvald	경계병 아달발드	아달발드 경계병
 Visit Proudspire Manor, your new house	당신의 새 집, 프라우드스파이어 저택을 방문하기	당신의 새 집, 프라우드스파이어 저택를 방문하기
+Wait here.	여기서 기다리게.	여기서 기다려.
+Waking Nightmare	깨어있는 악몽	깨어나는 악몽
 We didn't really get along. Best that I haven't seen them in a while.	잘 지내진 못했지. 안 보게 돼서 기쁘군.	잘 지내진 못했지. 안 보게 되서 기쁘군.
+We should keep moving.	계속 이동하지.	계속 가지.
 What about them?	걔네가 왜?	조금 더 알려줄 수 있나?
 What about you?	당신께선 어떻습니까?	당신에 대한 이야기?
+What are you doing?	뭐하는 거지?	뭘 하고 있소?
+What are you talking about?	무슨 말을 하고 있는 거지?	무슨 말을 하고 있는거요?
 What brings you to this remote place?	이렇게 먼 곳까지 무슨일로 온 거지?	이렇게 먼곳까지 무슨일로 온거요?
+What can I do for you?	무엇을 도와 드릴까요?	무엇을 도와 드릴까?
+What did you need?	뭐 필요하시다고?	필요한 게 뭐라고 했지?
 What do you have against the Blades?	블레이드를 꺼려하는 이유는 무엇입니까?	블레이드을 꺼려하는 이유는 무엇입니까?
 What do you mean "saviors of Mer"?	'머의 구세주'라는 게 무슨 뜻이오?	'머의 구세주'라는 게 무슨 듯이오?
+What do you want with me?	내게 뭘 원하는 것이오?	내게 뭘 원하는 겁니까?
+What do you want?	뭐가 필요한가?	뭐가 필요합니까?
 What exactly is "ash-grown food?"	'화산재에서 키운'이라니 정확히 무슨 뜻이지?	'화산재에서 키운'이라니 정확히 무슨 뜩이지?
 What is "oneness with the land?"	'땅과의 하나됨'이라는 게 뭐지?	'땅의의 하나됨'이라는 게 뭐지?
+What is it now?	이번엔 또 무슨 일이지?	이번엔 또 뭐지?
+What is it?	뭔가?	그게 뭐지?
+What now?	이제 어떻게 할까?	이 다음은?
 What of it?	그게 어쨌다는 겁니까?	그게 어쨋다는 겁니까?
+What will you do now?	이제 어떻게 할 생각이오?	이제 어쩔 거지?
 What would you ask of me?	나에게 어떠한 것을 부탁하러 온 겐가?	나에게 어떠 한 것을 부탁하러 온 겐가?
+What'll you give me for these?	이건 얼마에 쳐줄 텐가?	어떤 것을 팔고 있소?
+What's going on?	무슨 일이지?	무슨 일이오?
+What's in it for me?	내가 협력하면 어떤 이득이 있지?	내가 도와주면 어떤 이득이 있지?
+What's on your mind?	뭔데? 말해 봐.	뭐지?
+What's the problem?	문제라도 있소?	문제라도 있나?
 Where can I find him?	어디에서 찾을 수 있습니까?	어디에서 찾으면 되요?
 Whirlwind Sprint	회오리 질주	회오리의 질주
 Why are you after Talos worshippers?	왜 탈로스 숭배자들을 추적하는 겁니까?	왜 탈로스 숭배자들을 추척하는 겁니까?
+Why build a shrine outside of town?	어째서 마을 바깥에 성소를 세운 거지?	어째서 마을 바깥에 성소를 세운 겁니까?
 Why do you hate the Blades?	왜 블레이드를 증오합니까?	왜 블레이드을 증오합니까?
 Why is that?	어째서지?	왜 불가능한 거요?
+Why not?	어째서?	왜 안 믿는 거지?
 Why?	어째서?	어째서 그렇소?
+Widow's Watch Ruins	미망인의 감시대 폐허	미망감시대 폐허
 Wulf Wild-Blood	울프 와일드-블러드	울프
 Wulf Wild-Blood's House	울프 와일드-블러드의 집	울프 와일드-불러드의 집
+Yes, sir.	알겠습니다.	알아들었소.
 You become invulnerable, but unable to attack. However you recover magicka and stamina.	안개의 형상으로 변하여 피해를 입히지도, 입지도 않게 되며 매지카와 지구력이 회복됩니다.	안개의 형상으로 변하여 피해를 입히지도, 입지도 않게 됩니다.
+You're awfully... mature for your age.	너는 엄청... 나이에 비해 성숙하구나.	당신은 확실히... 나이에 비해 늙어보이는군.
 You're dead.	넌 이제 죽었어.	이미 죽은 겁니다.
 Your Wards are <25>% less effective, but absorb <50>% of the magicka from incoming spells.	방어막 마법의 위력이 <25>% 감소하지만 적의 마법으로부터 <50>%의 매지카를 흡수합니다.	방어막 마법의 위력이 <25>% 감소하지만 매지카 흡수량이 <50>% 증가합니다.
 Ysolda's Message	이솔다의 메시지	이솔다의 메세지
