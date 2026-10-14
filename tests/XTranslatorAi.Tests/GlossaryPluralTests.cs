@@ -28,6 +28,34 @@ public class GlossaryPluralTests
         }
     }
 
+    // Elden Rim's RimSkills wrote "Rain of Arrow" in 7 rows, which escaped the glossary's "Rain of Arrows" (애로우 레인)
+    // and came out as 화살비. A multi-word term in a regular plural also matches its singular.
+    [Theory]
+    [InlineData("Rain of Arrows", "Rain of Arrow: shoots arrows.", true)]
+    [InlineData("Rain of Arrows", "Rain of Arrows: shoots arrows.", true)]
+    [InlineData("Rain of Arrows", "Rain of Arrowheads", false)]
+    [InlineData("Petty Soul Gems", "A Petty Soul Gem.", true)]
+    [InlineData("Arrows", "An Arrow.", false)]
+    [InlineData("Call to Arms", "Call to Arm", false)]
+    [InlineData("Captain Aldis", "Captain Aldi", false)]
+    [InlineData("General Tullius", "General Tulliu", false)]
+    [InlineData("Molten Glass", "Molten Glas", false)]
+    public void MultiWordPluralTerm_MatchesItsSingular(string source, string text, bool matches)
+        => Assert.Equal(matches, Applier(source, "용어").Apply(text).TokenToReplacement.Count > 0);
+
+    [Fact]
+    public void PluralTerm_LeavesTheSingularToItsOwnEntry()
+    {
+        var applier = new GlossaryApplier(new[]
+        {
+            new GlossaryEntry(1, null, "Steel Arrows", "강철 화살 묶음", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null),
+            new GlossaryEntry(2, null, "Steel Arrow", "강철 화살", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null),
+        });
+
+        Assert.Equal("강철 화살", Assert.Single(applier.Apply("A Steel Arrow.").TokenToReplacement).Value);
+        Assert.Equal("강철 화살 묶음", Assert.Single(applier.Apply("Some Steel Arrows.").TokenToReplacement).Value);
+    }
+
     [Fact]
     public void SingleWordTerm_StillMatchesOnlyAsWritten()
         => Assert.Empty(Applier("Rune", "룬").Apply("Runes glow.").TokenToReplacement);

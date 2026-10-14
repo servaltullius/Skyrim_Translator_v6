@@ -16,10 +16,15 @@ public sealed class GlossaryApplier
     {
         var compiled = new List<CompiledGlossaryEntry>();
         var invalid = new List<string>();
-        foreach (var entry in entries
-                     .Where(e => e.Enabled)
-                     .OrderByDescending(e => e.Priority)
-                     .ThenByDescending(e => e.SourceTerm.Length))
+        var enabled = entries
+            .Where(e => e.Enabled)
+            .OrderByDescending(e => e.Priority)
+            .ThenByDescending(e => e.SourceTerm.Length)
+            .ToList();
+        var wordTerms = enabled.Where(e => e.MatchMode != GlossaryMatchMode.Regex)
+            .Select(e => e.SourceTerm.Trim())
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        foreach (var entry in enabled)
         {
             // A user-written pattern ("[Dragon") must not fail the whole run; it is skipped and reported.
             if (entry.MatchMode == GlossaryMatchMode.Regex
@@ -30,7 +35,13 @@ public sealed class GlossaryApplier
                 continue;
             }
 
-            compiled.Add(new CompiledGlossaryEntry(entry, CreateRegex(entry)));
+            var singular = SingularOf(entry);
+            if (singular != null && wordTerms.Contains(singular.Trim()))
+            {
+                singular = null; // The singular has its own entry.
+            }
+
+            compiled.Add(new CompiledGlossaryEntry(entry, CreateRegex(entry, singular), singular ?? entry.SourceTerm));
         }
 
         _entries = compiled;
@@ -130,7 +141,7 @@ public sealed class GlossaryApplier
         // the ~640 terms took 6.7 s for LotD (17,373 rows); skipping absent terms first takes 0.8 s, same result.
         // The plain-text match below uses the same test, so nothing it would replace is skipped.
         if (entry.Entry.MatchMode != GlossaryMatchMode.Regex
-            && input.IndexOf(entry.Entry.SourceTerm, StringComparison.OrdinalIgnoreCase) < 0)
+            && input.IndexOf(entry.Literal, StringComparison.OrdinalIgnoreCase) < 0)
         {
             return input;
         }
@@ -173,7 +184,7 @@ public sealed class GlossaryApplier
         }
 
         if (matchMode == GlossaryMatchMode.WordBoundary
-            && input.IndexOf(entry.Entry.SourceTerm, StringComparison.OrdinalIgnoreCase) < 0)
+            && input.IndexOf(entry.Literal, StringComparison.OrdinalIgnoreCase) < 0)
         {
             return input;
         }
@@ -504,7 +515,40 @@ public sealed class GlossaryApplier
             : "";
     }
 
-    private static Regex? CreateRegex(GlossaryEntry entry)
+    // Words whose singular is another word ("Call to Arms" is not "arm").
+    private static readonly HashSet<string> PluralOnlyWords = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Arms", "Means", "News", "Goods", "Remains",
+    };
+
+    /// <summary>
+    /// A multi-word term in a regular plural also matches its singular: Elden Rim wrote "Rain of Arrow" in 7 rows, which
+    /// escaped the glossary's "Rain of Arrows" (애로우 레인) and came out as 화살비. Only "-s" after a letter other than s,
+    /// u or i, so "Glass", "Tullius" and "Aldis" keep their exact form; single words keep it too, as for the plural.
+    /// </summary>
+    private static string? SingularOf(GlossaryEntry entry)
+    {
+        var term = entry.SourceTerm;
+        if (entry.MatchMode != GlossaryMatchMode.WordBoundary || term.Length != term.TrimEnd().Length)
+        {
+            return null;
+        }
+
+        var lastSpace = term.Trim().LastIndexOf(' ');
+        var lastWord = lastSpace < 0 ? "" : term.Trim()[(lastSpace + 1)..];
+        if (lastWord.Length < 4
+            || lastWord[^1] != 's'
+            || !char.IsAsciiLetterLower(lastWord[^2])
+            || lastWord[^2] is 's' or 'u' or 'i'
+            || PluralOnlyWords.Contains(lastWord))
+        {
+            return null;
+        }
+
+        return term[..^1];
+    }
+
+    private static Regex? CreateRegex(GlossaryEntry entry, string? singular)
     {
         if (entry.ForceMode == GlossaryForceMode.PromptOnly)
         {
@@ -523,6 +567,7 @@ public sealed class GlossaryApplier
             // Use \w-based guards instead so terms like "A skill beyond the reach of most." can still match as a whole.
             // Korean does not mark the plural: a multi-word term also matches with a plural s/es ("NPC Weapon Arts"
             // stayed plain text and came out as 전투 기술 instead of 전기). Single words keep their exact form.
+            GlossaryMatchMode.WordBoundary when singular != null => $@"(?<!\w){Regex.Escape(singular)}s?(?!\w)",
             GlossaryMatchMode.WordBoundary => $@"(?<!\w){Regex.Escape(entry.SourceTerm)}{PluralSuffixFor(entry)}(?!\w)",
             GlossaryMatchMode.Regex => entry.SourceTerm,
             _ => throw new ArgumentOutOfRangeException(nameof(entry), entry.MatchMode, "Unsupported glossary match mode."),
@@ -572,7 +617,9 @@ public sealed class GlossaryApplier
         }
     }
 
-    private sealed record CompiledGlossaryEntry(GlossaryEntry Entry, Regex? Regex);
+    // Literal: text every match contains, to skip absent terms before splitting the text (the singular when the
+    // regex also matches it).
+    private sealed record CompiledGlossaryEntry(GlossaryEntry Entry, Regex? Regex, string Literal);
 }
 
 public sealed record GlossaryApplication(
