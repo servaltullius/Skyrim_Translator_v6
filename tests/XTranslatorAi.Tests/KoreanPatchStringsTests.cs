@@ -77,6 +77,22 @@ public sealed class KoreanPatchStringsTests : IDisposable
         Assert.Equal("철 검", (await KoreanPatchStrings.ReadAsync(Data, Patch, CancellationToken.None)).Single(s => s.Id == 1).Korean);
     }
 
+    // Books whose patch text already lays out its tags unlike the English: a spelling fix that keeps the patch's own
+    // tags (덮힌 → 덮인) is not a tag problem.
+    [Fact]
+    public async Task AFixKeepingThePatchsOwnTags_IsApplied_WhenThePatchAlreadyDiffersFromTheEnglish()
+    {
+        WriteTable(Path.Combine(Patch, "Strings", "Skyrim_english.DLSTRINGS"), true, new() { [2] = "눈덮힌 곳에 피해를 줍니다." });
+
+        var result = await KoreanPatchStrings.ApplyAsync(Data, Patch, new[]
+        {
+            new KoreanPatchChange("Skyrim.esm", PluginStringTableKind.DlStrings, 2, "눈덮힌 곳에 피해를 줍니다.", "눈덮인 곳에 피해를 줍니다."),
+        }, write: true, backupFolder: null, CancellationToken.None);
+
+        Assert.Single(result.Applied);
+        Assert.Equal("눈덮인 곳에 피해를 줍니다.", (await KoreanPatchStrings.ReadAsync(Data, Patch, CancellationToken.None)).Single(s => s.Id == 2).Korean);
+    }
+
     private static void WriteTable(string path, bool lengthPrefixed, Dictionary<uint, string> values)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);

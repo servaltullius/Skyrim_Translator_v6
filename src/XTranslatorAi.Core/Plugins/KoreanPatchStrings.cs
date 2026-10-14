@@ -99,8 +99,10 @@ public static class KoreanPatchStrings
                 {
                     skipped.Add((change, "바꿀 내용 없음"));
                 }
+                // A patch text whose tags already differ from the English (books laid out anew) is held to its own tags.
                 else if (english.TryGetValue((change.Plugin.ToLowerInvariant(), change.Table, change.Id), out var source)
-                         && TagProblem(source, change.Replacement) is { } problem)
+                         && TagProblem(source, change.Replacement) is { } problem
+                         && (TagProblem(source, current) == null || TagProblem(current, change.Replacement) != null))
                 {
                     skipped.Add((change, "태그 불일치: " + problem));
                 }
