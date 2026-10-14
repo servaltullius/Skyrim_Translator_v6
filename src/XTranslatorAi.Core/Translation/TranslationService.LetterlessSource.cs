@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -15,6 +16,19 @@ public sealed partial class TranslationService
         @"<" + TranslationConstants.StageDirectionGuard + @"[^<>]*>|\[pagebreak\]|%[-+0-9.]*[a-zA-Z]|\{[^{}]*\}",
         RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
+    // <mag>, <dur>, numbers and variables: their particles and word order may still need the model.
+    private static readonly Regex SemanticPlaceholderTokenRegex = new(
+        @"__XT_PH_[A-Z]+_[0-9]{4}__", RegexOptions.CultureInvariant);
+
     internal static bool HasLettersToTranslate(string? sourceText)
         => !string.IsNullOrEmpty(sourceText) && NonTextMarkupRegex.Replace(sourceText, " ").Any(char.IsLetter);
+
+    /// <summary>
+    /// A row that is only forced names or glossary terms once they are tokens ("Iron Sword", "Spell Tome: Maven")
+    /// has no words left for the model, which only echoed the tokens back: 21 of 379 items in the 1.12 eval run.
+    /// </summary>
+    internal static bool IsOnlyForcedTerms(string maskedText)
+        => maskedText.Contains("__XT_TERM_", StringComparison.Ordinal)
+           && !SemanticPlaceholderTokenRegex.IsMatch(maskedText)
+           && !TranslationConstants.XtTokenRegex.Replace(maskedText, " ").Any(char.IsLetter);
 }

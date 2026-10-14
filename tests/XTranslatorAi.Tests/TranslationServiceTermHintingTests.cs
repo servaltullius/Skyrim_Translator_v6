@@ -51,8 +51,8 @@ public sealed class TranslationServiceTermHintingTests
                 db,
                 new[]
                 {
-                    (OrderIndex: 1, SourceText: "bandit"),
-                    (OrderIndex: 2, SourceText: "bandit"),
+                    (OrderIndex: 1, SourceText: "Watch out for the bandit."),
+                    (OrderIndex: 2, SourceText: "The bandit fled."),
                 }
             );
             var ids = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending }, CancellationToken.None);

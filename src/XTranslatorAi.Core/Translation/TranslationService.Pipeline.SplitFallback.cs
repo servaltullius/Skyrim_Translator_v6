@@ -26,6 +26,7 @@ public sealed partial class TranslationService
         using var generationScope = EnterGenerationScope(batch.Select(row => row.Id));
 
         batch = PrepareBatchWithSessionTermForceTokens(batch);
+        batch = await FinishRowsOnlyForcedTermsAsync(ctx, batch);
 
         if (batch.Count == 0)
         {
@@ -144,6 +145,36 @@ public sealed partial class TranslationService
             var translations = await TranslateBatchWithRetriesAsync(batchCtx, batch);
             // Retry only the original request here; repair has its own bounded retries.
             await ProcessBatchResultsAsync(batchCtx, batch, translations, PersistProgress);
+	    }
+
+	    /// <summary>
+	    /// Finishes the rows that are only forced terms (<see cref="IsOnlyForcedTerms"/>) as if the model had echoed
+	    /// their tokens, through the same post-edits, duplicates and session memory, and returns the other rows.
+	    /// </summary>
+	    private async Task<IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>> FinishRowsOnlyForcedTermsAsync(
+	        PipelineContext ctx,
+	        IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> batch
+	    )
+	    {
+	        if (!batch.Any(row => IsOnlyForcedTerms(row.Masked)))
+	        {
+	            return batch;
+	        }
+
+	        var rest = new List<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>(capacity: batch.Count);
+	        foreach (var row in batch)
+	        {
+	            if (!IsOnlyForcedTerms(row.Masked))
+	            {
+	                rest.Add(row);
+	                continue;
+	            }
+
+	            using var rowScope = EnterGenerationScope(new[] { row.Id });
+	            var updates = await BuildDoneUpdatesAsync(ctx, new Dictionary<long, string> { [row.Id] = row.Masked }, BuildBatchById(new[] { row }), 1);
+	            await PersistDoneUpdatesAsync(ctx, updates);
+	        }
+	        return rest;
 	    }
 
 	    private static BatchTranslateContext CreateBatchTranslateContext(PipelineContext ctx)

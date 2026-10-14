@@ -97,6 +97,48 @@ public class LetterlessSourceTests
     }
 
     /// <summary>
+    /// A row that is one forced name or glossary term ("Iron Sword", "Spell Tome: Maven") has no letters left once the
+    /// terms are tokens, and the model only echoed the tokens back: 21 of 379 items in the 1.12 eval run. Such a row is
+    /// finished from its tokens without a request, alone or in a batch, and so is its duplicate.
+    /// </summary>
+    [Theory]
+    [InlineData(1)]
+    [InlineData(10)]
+    public async Task RowsThatAreOnlyForcedTerms_AreFinishedWithoutARequest(int batchSize)
+    {
+        await using var fixture = await TranslationRunFixture.CreateAsync(
+            ("Iron Sword", "WEAP:FULL"), ("Spell Tome: Maven", "BOOK:FULL"), ("Iron Sword", "WEAP:FULL"), ("Maven's house", "LCTN:FULL"));
+        var request = fixture.Request with
+        {
+            TargetLang = "korean",
+            BatchSize = batchSize,
+            GlobalGlossary = new[]
+            {
+                new GlossaryEntry(1, null, "Iron Sword", "철검", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null),
+                new GlossaryEntry(2, null, "Spell Tome", "마법서", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null),
+                new GlossaryEntry(3, null, "Maven", "메이븐", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null),
+            },
+        };
+
+        await fixture.Service.TranslateIdsAsync(request);
+
+        var rows = (await fixture.RowsAsync()).Values.ToList();
+        Assert.All(rows, row => Assert.Equal(StringEntryStatus.Done, row.Status));
+        Assert.All(rows.Where(r => r.SourceText == "Iron Sword"), row => Assert.Equal("철검", row.DestText));
+        Assert.Equal("마법서: 메이븐", rows.Single(r => r.SourceText == "Spell Tome: Maven").DestText);
+        // Only "Maven's house" still has words to translate.
+        var sentItems = fixture.Client.Requests.Sum(r =>
+        {
+            var prompt = r.Contents[0].Parts[0].Text!;
+            var json = prompt.IndexOf("Input JSON:", StringComparison.Ordinal);
+            if (json < 0) return 1;
+            using var payload = System.Text.Json.JsonDocument.Parse(prompt[(json + "Input JSON:".Length)..]);
+            return payload.RootElement.GetProperty("items").GetArrayLength();
+        });
+        Assert.Equal(1, sentItems);
+    }
+
+    /// <summary>
     /// A hidden dialogue topic's name is an identifier the player never sees; the quality check says to leave it as is
     /// and the Serana review put 8 of 11 translated ones back. They were still translated ("FeedingTest" → "흡혈 테스트").
     /// </summary>

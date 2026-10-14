@@ -16,6 +16,11 @@ public sealed partial class TranslationService
         ctx.CancellationToken.ThrowIfCancellationRequested();
         using var generationScope = EnterGenerationScope(new[] { row.Id });
         row = PrepareRowWithSessionTermForceTokens(row);
+        if (IsOnlyForcedTerms(row.Masked))
+        {
+            await FinishRowsOnlyForcedTermsAsync(ctx, new[] { row });
+            return;
+        }
 
         try
         {

@@ -38,6 +38,20 @@ public class TranslationCostEstimatorTests
         Assert.Equal(2, result.ItemCount);
     }
 
+    // A row that is only forced glossary terms is finished from its tokens without a request.
+    [Fact]
+    public async Task RowsThatAreOnlyForcedTerms_AreNotEstimated()
+    {
+        var db = new StubProjectDb { RowCount = 2, ExtraRows = new[] { ("Iron Sword", "WEAP:FULL"), ("Iron Sword of Fire", "WEAP:FULL") } };
+        var request = MakeRequest("fixture", GeminiModelCatalog.DefaultModel) with
+        {
+            BatchSize = 1,
+            GlobalGlossary = new[] { new GlossaryEntry(1, null, "Iron Sword", "철검", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null) },
+        };
+        var result = await new TranslationCostEstimator(db, new StubGeminiClient()).EstimateAsync(request, CancellationToken.None);
+        Assert.Equal(3, result.ItemCount);
+    }
+
     [Fact]
     public async Task EmptyWork_HasNoCacheStorageOrGenerationCost()
     {

@@ -37,13 +37,17 @@ public sealed partial class TranslationCostEstimator
         foreach (var (id, sourceText, rec, edid, _) in rows)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            totalSourceChars += sourceText.Length;
-            ctxById[id] = (rec, edid);
-
             var sourceForMask = PlaceholderUnitBinder.InjectUnitsForTranslation(targetLang, sourceText);
             var masked = placeholderMasker.Mask(sourceForMask);
             var glossed = glossaryApplier.Apply(masked.Text);
             var expanded = PairedSlashListExpander.Expand(glossed.Text);
+            if (TranslationService.IsOnlyForcedTerms(expanded))
+            {
+                continue; // The run finishes it from its tokens without a request.
+            }
+
+            totalSourceChars += sourceText.Length;
+            ctxById[id] = (rec, edid);
             totalMaskedChars += expanded.Length;
 
             items.Add(new PreparedRow(id, sourceText, expanded, glossed.PromptOnlyPairs));
