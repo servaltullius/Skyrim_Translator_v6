@@ -516,6 +516,8 @@ public class BundledFranchiseTmSeedServiceTests
             Assert.Contains("\nGallows Hall\t교수대 회관\t교수대 바위\n", changes, StringComparison.Ordinal);
             // The last batch, of game settings text: Nose Length was 코 높이.
             Assert.Contains("\nNose Length\t코 길이\t코 높이\n", changes, StringComparison.Ordinal);
+            // The decisions after it: the Companions take the patch's spelling.
+            Assert.Contains("\nWho are the Companions?\t컴패니언이 누구요?\t컴패니언즈가 누구요?\n", changes, StringComparison.Ordinal);
             Assert.DoesNotContain("\nExploding Spider\t", changes, StringComparison.Ordinal);
             Assert.Equal(beforeV4, changes.Contains("\nSuvaris Atheron's Logbook\t수바리스 아테론의 항해일지\t수바리스 아테론의 항박일지\n", StringComparison.Ordinal));
             // v1 had 화살 - 강철; v2 took the 화살 - 강철 화살 of the records the game does not show, and v4 goes back.
