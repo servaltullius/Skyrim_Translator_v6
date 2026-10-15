@@ -44,7 +44,7 @@ Source	Target
 (Optional) Attempt to pick the lock to the cage	(선택) 쇠창살감옥의 자물쇠를 열어보기
 (Optional) Choose a high profile victim	(선택) 저명인사들 중에서 희생자를 선택하기
 (Optional) Destroy the Summerset Shadow's Banner	(선택) 서머셋 섀도 현수막을 파괴하기
-(Optional) Discover leverage to sway Niranye	(선택) 니랴네의 마음을 바꾸기 위한 수단을 찾기
+(Optional) Discover leverage to sway Niranye	(선택) 니라녜의 마음을 바꾸기 위한 수단을 찾기
 (Optional) Drag Balagog's body to a hiding place	(선택) 발라고그의 시체를 숨기기
 (Optional) Enter Goldenglow using sewer	(선택) 하수도를 이용하여 골든글로우 지구에 들어가기
 (Optional) Find Skorm Snow-Strider's journal	(선택) 스콤의 일기를 찾기
@@ -69,7 +69,7 @@ Source	Target
 (Optional) Search for Crafting Materials	(선택) 제작에 필요한 재료들을 찾기
 (Optional) Search the barrel for potions	(선택) 통을 뒤져서 물약을 찾기
 (Optional) Shoot the mechanism to lower the ramp	(선택) 경사로를 내리기 위해 기계장치를 쏘아 맞추기
-(Optional) Show Skorm Snow-Strider's journal to Valmir	(선택) 발머에게 스콤의 일지를 보여주기
+(Optional) Show Skorm Snow-Strider's journal to Valmir	(선택) 발머에게 스콤의 일기를 보여주기
 (Optional) Shut off the Steam	(선택) 증기를 멈추기
 (Optional) Smash Bersi's prized Dwarven Urn	(선택) 베르시가 아끼는 드워프제 항아리를 부수기
 (Optional) Speak to Brynjolf	(선택) 브린욜프와 대화하기
@@ -142,7 +142,7 @@ Source	Target
 <Alias=Player>'s Horse	<Alias=Player>의 말
 <Alias=Player>'s Wolf Spirit	<Alias=Player>의 늑대 정령
 <Alias=PlayerIsIt> is it. Hide from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt> 이/가 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요
-<Alias=PlayerIsIt> is it. Keep away from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt> 입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요
+<Alias=PlayerIsIt> is it. Keep away from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요
 <Alias=QuestGiver>'s <BaseName>	<Alias=QuestGiver>의 <BaseName>
 <Alias=RiverwoodFriend> sent me. Riverwood is in danger.	<Alias=RiverwoodFriend>가 부탁해서 왔습니다. 리버우드가 위험합니다.
 <Alias=Steward> says there's a shipment of coin traveling to Solitude...	<Alias=Steward>가 말하길 솔리튜드로 가는 현금수송이 있다고 합니다...
@@ -170,7 +170,7 @@ Source	Target
 [INACCESSIBLE]	[사용불가]
 [NEW SAVE]	[새로 저장]
 [NO SAVES FOUND]	[저장파일 없음]
-[Optional] Find <Alias=Jarl> and escape with <Alias.PronounObj=Jarl> through the city.	(선택) <Alias=Jarl>을 찾고 <Alias.PronounObj=Jarl>과 함께 도시를 통하여 탈출하기.
+[Optional] Find <Alias=Jarl> and escape with <Alias.PronounObj=Jarl> through the city.	(선택) <Alias=Jarl>을 찾고 <Alias.PronounObj=Jarl>과 함께 도시를 통하여 탈출하기
 [SUCCESS]	[성공]
 [SURV=Warmth is increased by <mag> points for <dur> seconds.]	[SURV=<dur> 초 동안 온기가 <mag> 증가합니다.]
 A <mag> point fiery explosion centered on the caster. Does more damage to closer targets.	거대한 불길의 폭풍을 일으켜 <mag> 의 화염 피해를 입힙니다. 가까운 적일수록 더 큰 피해를 입습니다.
@@ -1248,9 +1248,9 @@ Ashen Grass Pod	화산 잔디 꼬투리
 Ashfallow Citadel	애쉬팔로우 성채
 Ashfire Mead	술 - 잿불 벌꿀술
 Ashland	화산지대
-Ask <Alias.ShortName=Target> for information about <Alias.ShortName=Questgiver>'s daughter.	<Alias.ShortName=Questgiver>의 딸에 대한 정보를 <Alias.ShortName=Target>에게 전하기
+Ask <Alias.ShortName=Target> for information about <Alias.ShortName=Questgiver>'s daughter.	<Alias.ShortName=Questgiver>의 딸에 대한 정보를 <Alias.ShortName=Target>에게 물어보기
 Ask a prisoner about Madanach	매더낙에 관해서 죄수에게 물어보기
-Ask about Balgruuf's strange children	발그루프에게 자녀들의 이상한 점에 관해서 물어보기
+Ask about Balgruuf's strange children	발그루프의 이상한 자녀들에 관해 물어보기
 Ask about Sam and the staff in Rorikstead	로릭스테드에서 샘과 지팡이에 대해 물어보기
 Ask around about Laelette	레일레트에 관해 여러사람에게 물어보기
 Ask Deor about Baldor's disappearance	발도어가 사라진 것에 관하여 디오어에게 물어보기
@@ -1274,7 +1274,7 @@ Assassinate the Silver Hand leader	실버핸드의 우두머리를 제거하기
 Assassinations don't come cheap, boy.	암살이란건 그렇게 간단한 일이 아니란다, 꼬마야.
 Assassins? Really? That's ridiculous. Who would want to kill her?	암살자? 터무니없군. 누가 그녀를 죽이고 싶어 할까?
 Assault	습격
-Assault <Alias=Enemy> but don't kill <Alias=Enemy.pronoun>	죽이지 않고 <Alias=Enemy> 습격하기
+Assault <Alias=Enemy> but don't kill <Alias=Enemy.pronoun>	<Alias=Enemy>를 습격하되 <Alias=Enemy.pronoun>를 죽이지 않기
 Assault Alias=Enemy>, killing <Alias=Enemy.pronoun> will earn bonus pay	<Alias=Enemy> 습격하기, <Alias=Enemy.PronounObj> 죽이면 추가보상
 Assault.	습격.
 Assess the damage to the Great Hall	대 회랑의 피해규모를 가늠하기
@@ -1573,7 +1573,7 @@ Beg! Beg for your miserable life!	빌어! 네 하찮은 목숨을 살려달라�
 Beggar	거지
 Beggar Prince	거지 왕자
 Beggar's Row	거지 거리
-Begin the hunt	사냥 시작
+Begin the hunt	사냥 시작하기
 Behold Shadowmere	섀도미어가 있는 곳으로 가기
 Being happily married?	행복한 결혼을 하는 것?
 Beirand	베이란드
@@ -1817,7 +1817,7 @@ Blue Robes	파란색 로브
 Boar	멧돼지
 Boar Meat	멧돼지 고기
 Boar Tusk	멧돼지 상아
-Board the Katariah	카타리아호에 승선하라
+Board the Katariah	카타리아호에 승선하기
 Boarded Storeroom Door	빗장걸린 저장실 문
 BOBS	잡동사니
 Bodil	보딜
@@ -1846,7 +1846,7 @@ Bolgeir Bearclaw	볼기어 베어클로
 Bolli	볼리
 Bolli's House	볼리의 집
 Bolli's House Key	열쇠 - 볼리의 집
-Bolstering the Ranks	지위 강화
+Bolstering the Ranks	병력 보강
 Bolund	볼룬드
 Bone Break Fever	골절
 Bone Breaker	골격 파괴자
@@ -2084,11 +2084,11 @@ Bring a briarheart to Elynea	엘리니아에게 찔레심장 하나를 가져다
 Bring a daedra heart to Elynea	엘리니아에게 데이드라의 심장 하나를 가져다 주기
 Bring a Daedra's Heart to Moth	모쓰에게 데이드라의 심장을 가져가기
 Bring a Dragon Scale and a Dragon Bone to Esbern	에스번에게 드래곤 비늘과 드래곤 뼈를 가져가기
-Bring a filled Black Soul Gem to Morthal	모탈로 충전된 검은 소울젬을 가져가기
+Bring a filled Black Soul Gem to Morthal	충전된 검은 소울젬을 모탈로 가져가기
 Bring a Filled Grand Soul Gem to Sergius Turrianus	서지우스 투리아누스에게 충전된 특급 소울젬을 가져가기
 Bring a follower to Delphine	델핀에게 동료 한 명을 데리고 가기
-Bring a giant's toe to Elynea	엘리니아에게 거인의 발톱 하나를 가져다 주기
-Bring a hagraven's claw to Elynea	엘리니아에게 헤그레이븐의 발톱을 몇개 가져다 주기
+Bring a giant's toe to Elynea	엘리니아에게 거인의 발가락 하나를 가져다 주기
+Bring a hagraven's claw to Elynea	엘리니아에게 해그레이븐 발톱 하나를 가져다 주기
 Bring a Hide Helmet to <Alias=QuestGiver>	생가죽 투구를 <Alias=QuestGiver>에게 주기
 Bring a Tempered Hide Helmet to <Alias=QuestGiver>	강화된 생가죽 투구를 <Alias=QuestGiver>에게 주기
 Bring a Tempered Iron Dagger to <Alias=QuestGiver>	강화된 철 단검을 <Alias=QuestGiver>에게 주기
@@ -2100,8 +2100,8 @@ Bring Barrel of Mead to <Alias=TG03SPJarlAlias>	벌꿀술통을 <Alias=TG03SPJar
 Bring blood to Septimus	셉티무스에게 피를 가져다 주기
 Bring both Elder Scrolls to Dexion	두개의 엘더스크롤을 덱시온에게 가져가기
 Bring Dragon Heartscales to Tolfdir	드래곤 심장비늘을 톨프딜에게 전해주기
-Bring Elmus some Ashfire Mead from Thirsk Mead Hall	터스크 연회장에서 잿불 벌꿀술을 몇개 구해서 엘무스에게 주기
-Bring Elmus some Juniper Berries	엘무스에게 향나무 열매를 몇개 가져다 주기
+Bring Elmus some Ashfire Mead from Thirsk Mead Hall	터스크 연회장에서 잿불 벌꿀술을 몇 개 구해서 엘무스에게 주기
+Bring Elmus some Juniper Berries	엘무스에게 향나무 열매를 몇 개 가져다 주기
 Bring evidence to <Alias=Jarl>	<Alias=Jarl>에게 증거를 가져가기
 Bring Fenrig to Ruki	펜릭을 루키에게 데려다 주기
 Bring Fjotra to the Temple	피요트라를 신전으로 데려가기
@@ -2117,22 +2117,22 @@ Bring Ogmund's Amulet of Talos to Ondolemar	오그문드의 탈로스 아뮬렛�
 Bring one <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 '<Alias=QuestItem>' 가져다 주기
 Bring Reyda's Necklace to Narfi	나피에게 레이다의 목걸이를 가져다 주기
 Bring some Frost Salts to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 냉기 소금을 전해주기
-Bring some vampire dust to Elynea	엘리니아에게 흡혈귀 가루를 몇개 가져다 주기
-Bring some void salts to Elynea	엘리니아에게 공허 소금 몇개를 가져다 주기
-Bring the <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=Questgiver> 에게 <Alias=QuestItem> 가져다 주기
+Bring some vampire dust to Elynea	엘리니아에게 흡혈귀 가루를 몇 개 가져다 주기
+Bring some void salts to Elynea	엘리니아에게 공허 소금 몇 개를 가져다 주기
+Bring the <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver> 에게 <Alias=QuestItem> 가져다 주기
 Bring the <Alias=QuestItem> to Olda	<Alias=QuestItem>를 올다에게 가져다 주기
 Bring the blade shards to Silus	단검 칼날을 사일러스에게 가져가기
-Bring the Bonemold Formula to Glover Mallory	뼈다귀 물품 제작법을 글로버에게 전해주기
+Bring the Bonemold Formula to Glover Mallory	뼈다귀 물품 제조법을 글로버에게 전해주기
 Bring the claw to Camilla	카밀라에게 발톱을 가져다 주기
 Bring the claw to Lucan	루칸에게 황금 발톱을 가져다 주기
 Bring the deathbell to Ingun Black-Briar	데스벨을 잉건에게 가져다 주기
-Bring the Dibella Statue to Lisbet	디벨라의 동상을 리즈벳에게 가져다 주기
+Bring the Dibella Statue to Lisbet	디벨라의 동상을 리스벳에게 가져다 주기
 Bring the documents to <Alias=FieldCO>	문서를 <Alias=FieldCO> 에게 전달하기
 Bring the evidence to Adril Arano	아드릴 아라노에게 증거를 전달하기
 Bring the flawless sapphires to Madesi	완벽한 사파이어를 마데시에게 가져다 주기
 Bring the forged documents to <Alias=EnemyFieldCO>	위조된 문서를 <Alias=EnemyFieldCO> 에게 전달하기
 Bring the Forgemaster's Fingers to <Alias.ShortName=Chief>	포지마스터의 손가락을 <Alias.ShortName=Chief> 에게 가져가기
-Bring the Four Master Illusion texts to Drevis Neloren	드레비스 넬로렌에게 에게 달인 환영마법 책 4권을 가져가기
+Bring the Four Master Illusion texts to Drevis Neloren	드레비스 넬로렌에게 달인 환영마법 책 4권을 가져가기
 Bring the gold ore to Madesi	금광석을 마데시에게 가져다 주기
 Bring the hilt to Silus	단검 손잡이 부분을 사일러스에게 가져가기
 Bring the Jazbay to Avrusa Sarethi	아브루사 사레시에게 재즈베이를 가져다 주기
@@ -2282,7 +2282,7 @@ Butterfly in a Jar	병 속의 나비
 Butterfly Wing	나비 날개
 Button	버튼
 Button Inactive	버튼 작동하지 않음
-Buy back the Elder Scroll (Dragon) from Urag gro-Shub	우라그에게 팔았던 엘더스크롤을 다시 구입하기.
+Buy back the Elder Scroll (Dragon) from Urag gro-Shub	우라그에게 팔았던 '엘더스크롤 - 드래곤'을 다시 구입하기
 Buy Health	체력 얻기
 Buy lumber for building your house	집을 건설하기 위하여 목재를 구입하기
 Buy Magicka	매지카 얻기
@@ -2974,7 +2974,7 @@ Commentaries on the Mysterium Xarxes	작시스의 신비 해설집
 Common	보통
 Common Soul Gem	소울젬 - 중급
 Commoner	일반인
-Commune with Hrothmund's Spirit	흐로스문드의 영혼과 대화하기
+Commune with Hrothmund's Spirit	흐로스문드의 유령과 대화하기
 Companion Ghost	컴패니언 유령
 Companion's Insight	동료의 통찰력
 Compelling Tribute	억지 공물
@@ -3785,7 +3785,7 @@ Deadly Paralysis Poison	독 - 마비 특급
 Deadly Poison	독 - 체력 피해 특급
 Deadly Recovery Poison	독 - 매지카 재생 감소 특급
 Deadly Stamina Poison	독 - 지구력 피해 특급
-Deal with the rogue wizard	도둑 마도사와 거래하기
+Deal with the rogue wizard	변절한 마법사를 처리하기
 Deal with your own curses.	당신네 저주는 스스로 처리하시오.
 Deal.	좋습니다.
 Deal. (Give Book)	좋소. (책을 주기)
@@ -3838,7 +3838,7 @@ Defeat Bujold	부졸드를 물리치기
 Defeat Deeja	디자를 물리치기
 Defeat Haknir Death-Brand	하크니어 데스-브랜드를 물리치기
 Defeat Hevnoraak	헤브노락을 처치하기
-Defeat Hofgrir in an unarmed brawl	호프기어를 싸움으로 물리치기
+Defeat Hofgrir in an unarmed brawl	호프기어를 맨손 싸움으로 물리치기
 Defeat Illia's mother at the top of Darklight Tower	다크라이트 탑 정상에서 일리아의 모친을 물리치기
 Defeat Jaree-Ra	자리-라를 물리치기
 Defeat Kvenel	크베넬을 물리치기
@@ -3860,7 +3860,7 @@ Defeat the Guardian Sabre Cat	검치 호랑이 수호자를 물리치기
 Defeat the Guardian Skeever	스키버 수호자를 물리치기
 Defeat the Guardian Troll	트롤 수호자를 물리치기
 Defeat the Guardian Wolf	늑대 수호자를 물리치기
-Defeat the Guardians of the Forge	화로의 수호자를 물리치기
+Defeat the Guardians of the Forge	대장간의 수호자를 물리치기
 Defeat the Lurker	러커를 물리치기
 Defeat the wolf spirit	늑대 영혼을 물리치기
 Defeat Vahlok	발록을 물리치기
@@ -3892,7 +3892,7 @@ Deliver Faleen's letter	팔린의 편지를 배달하기
 Deliver Gharol's sword to Lash	가롤의 검을 라쉬에게 가져다 주기
 Deliver Gorm's letter to Captain Aldis	고엄의 편지를 장교 알디스에게 배달하기
 Deliver Harrald's Sword	하랄드의 검을 전달하기
-Deliver Mead to Wilhelm	윌헴에게 벌꿀주를 배달하기
+Deliver Mead to Wilhelm	윌헴에게 벌꿀술을 배달하기
 Deliver message to the Jarl of Whiterun	화이트런의 야를에게 메시지를 전달하기
 Deliver Moon Sugar to Ri'saad	리'사드에게 문 슈거를 배달하기
 Deliver poem	시를 배달하기
@@ -4057,7 +4057,7 @@ Discerning the Transmundane	다른 차원의 것을 인식
 Discover evidence of Mercer's location	머서가 있는 위치에 관한 증거를 찾기
 Discover Svidi's whereabouts	스비디가 있는 곳을 찾기
 Discover the identity of the tomb's visitor	무덤 방문자의 신원을 밝혀내기
-Discover the location of the Elder Scroll (Dragon)	엘더스크롤이 있는 장소를 찾기
+Discover the location of the Elder Scroll (Dragon)	'엘더스크롤 - 드래곤'이 있는 장소를 찾기
 Discover the significance of Crimson Nirnroot	붉은 넌루트의 중요성을 밝혀내기
 Discover the treasure of Angarvunde	앙가푼데의 보물을 발견하기
 discovered	발견
@@ -6280,7 +6280,7 @@ Enter Riften Warehouse	리프튼의 창고에 들어가기
 Enter Snow Veil Sanctum	스노우 베일성역에 들어가기
 Enter Sovngarde	소븐가드에 들어가기
 Enter the Alik'r hideout	알리키어의 은신처에 들어가기
-Enter the column of light and read the Elder Scroll (Blood)	빛의 기둥을 밝히고 엘더스크롤 읽기
+Enter the column of light and read the Elder Scroll (Blood)	빛의 기둥 안으로 들어가 '엘더스크롤 - 피'를 읽기
 Enter the Dark Brotherhood Sanctuary	다크 브라더후드 성역으로 들어가기
 Enter the Dawnstar Sanctuary	던스타 성역에 들어가기
 Enter the Keep with Hadvar or Ralof	해드버 또는 레일로프를 따라서 요새안으로 들어가기
@@ -6332,13 +6332,13 @@ Esbern? Open the door. I'm a friend.	에스번? 문을 열어주시오. 당신 �
 Escape Bloodskal Barrow	블러드스칼 무덤을 탈출하기
 Escape Cidhna Mine	시드나 광산을 탈출하기
 Escape from Irkngthand	어큰싼드에서 탈출하기
-Escape from the Blue Palace	파란 궁전에서 탈출하기
+Escape from the Blue Palace	푸른 궁전에서 탈출하기
 Escape Helgen	헬겐을 탈출하기
 Escape Jail	감옥을 탈출하기
 Escape the Sanctuary	성역에서 벗어나기
 Escape the Thalmor	탈모어로부터 탈출하기
 Escape the Thalmor Embassy	탈모어 대사관을 탈출하기
-Escape the Tower!	탑에서 탈출하라!
+Escape the Tower!	탑에서 탈출하기
 Escape Yngol's Barrow	잉골의 무덤을 탈출하기
 Escaped Criminal	탈주범
 Escaped Prisoner	탈출한 죄수
@@ -6431,7 +6431,7 @@ Explore Castle Volkihar's Courtyard	볼키하 성의 안뜰을 탐색하기
 Explore Castle Volkihar's Ruined Tower	볼키하 성의 폐허가 된 탑을 탐색하기
 Explore Gyldenhul Barrow	길든헐 무덤을 탐색하기
 Explore the Temple	사원을 탐색하기
-Explore Vahlok's Tomb	발록의 무덤을 탐색하기
+Explore Vahlok's Tomb	발록의 묘지을 탐색하기
 Explore Yngol's Barrow	잉골의 무덤을 탐색하기
 Exquisite	상급
 Exquisite Sapphire	보석 - 최고급 사파이어
@@ -6639,7 +6639,7 @@ Filnjar's House	필른냐르의 집
 Final Lesson	마지막 수업
 Final warning. Leave Octieve alone.	마지막 경고다. 옥티브를 내버려 둬.
 Find 2 flawless sapphires for Madesi (<Global=FFR18GemCount>/<Global=FFR18GemTotal>)	마데시에게 줄 완벽한 사파이어 2개를 찾기 (<Global=FFR18GemCount>/<Global=FFR18GemTotal>)
-Find 20 deathbell for Ingun Black-Briar (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)
+Find 20 deathbell for Ingun Black-Briar (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 가져다 줄 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)
 Find 20 Jazbay (<Global=FFSarethi01JazCount>/<Global=FFSarethi01JazTotal>)	재즈베이 20개를 찾기 (<Global=FFSarethi01JazCount>/<Global=FFSarethi01JazTotal>)
 Find 20 nightshade for Ingun Black-Briar (<Global=FFR04NightshadeCount>/<Global=FFR04NightshadeTotal>)	잉건에게 가져다 줄 나이트쉐이드 20개를 찾기 (<Global=FFR04NightshadeCount>/<Global=FFR04NightshadeTotal>)
 Find 20 nirnroot for Ingun Black-Briar (<Global=FFR04NirnCount>/<Global=FFR04NirnTotal>)	잉건에게 가져다 줄 넌루트 20개를 찾기 (<Global=FFR04NirnCount>/<Global=FFR04NirnTotal>)
@@ -6695,16 +6695,16 @@ Find out what's wrong with Nelkir	넬키어에게 무슨 문제가 있는지 조
 Find out where Jaree-Ra's bandits took the loot	자리-라의 산적들이 노획물을 둔 장소를 찾아내기
 Find out who "N" is	누가 'N' 인지 찾아내기
 Find out who sent the Cultists	누가 광신도를 보낸 것인지 알아내기
-Find pages from Saint Jiub's Opus (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaintTotal>)	지웁의 작품에서 잃어버린 페이지를 찾기 (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaintTotal>)
+Find pages from Saint Jiub's Opus (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaintTotal>)	성자 지웁의 작품에서 잃어버린 페이지를 찾기 (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaintTotal>)
 Find Pantea's Flute	판티아의 플루트를 찾기
 Find Red Eagle's sword	붉은 독수리의 검을 찾기
-Find Resonance Gems across Solstheim to complete the Kagrumez trials	카그루메즈의 시험을 통과하기 위하여 슬츠하임에 있는 몇개의 공진 보석을 찾기
+Find Resonance Gems across Solstheim to complete the Kagrumez trials	카그루메즈의 시험을 통과하기 위하여 솔스트하임에 있는 몇 개의 공진 보석을 찾기
 Find Rjorn's Drum	리욘의 북을 찾기
 Find Sam Guevenne	샘 게베인을 찾기
 Find Septimus Signus	셉티무스 시그누스를 찾기
 Find Shalidor's writings	샬리도어의 문서를 찾기
-Find some equipment	장비할 몇가지의 물건들을 찾기
-Find some Mammoth Tusk Powder	매머드 상아 가루 몇개를 찾기
+Find some equipment	장비할 몇 가지의 물건들을 찾기
+Find some Mammoth Tusk Powder	매머드 상아 가루 몇 개를 찾기
 Find someone who can identify the Unusual Gem	특이한 보석에 관해 알고있는 사람을 찾기
 Find someone who knows about the expedition.	탐험대에 관해 알고 있는 사람을 찾기
 Find the <Alias=Courier>	<Alias=Courier> 찾기
@@ -6719,8 +6719,8 @@ Find the courier	배달부를 찾기
 Find the cult of Boethiah	보에디아 교단을 찾기
 Find the danger within Saarthal	사아쌀 내부의 위험요소를 찾기
 Find the Dog outside Falkreath	팔크리스 부근에서 개를 찾기
-Find The Elder Scroll (Blood)	엘더스크롤 찾기
-Find The Elder Scroll (Dragon)	엘더스크롤 찾기
+Find The Elder Scroll (Blood)	'엘더스크롤 - 피'를 찾기
+Find The Elder Scroll (Dragon)	'엘더스크롤 - 드래곤'을 찾기
 Find the elven mage from Aranea's vision	아라니아의 예언에 나온 엘프 마법사를 찾기
 Find the Focusing Crystal	집속 크리스털을 찾기
 Find the Forgemaster's Fingers	포지마스터의 손가락을 찾기
@@ -6737,7 +6737,7 @@ Find the ruins of Mzulft	므줄프트 유적을 찾기
 Find the secret of Bleak Falls Barrow	황량한 폭포 무덤의 비밀을 찾기
 Find the Secret Passage in Hillgrund's Tomb	힐그룬드의 무덤의 비밀통로를 찾기
 Find the shrine of Boethiah	보에디아의 성지를 찾기
-Find the skooma dealers in Cragslane Cavern	크래그슬레인 동굴에서 스쿠마 상인들을 찾기
+Find the skooma dealers in Cragslane Cavern	크래그슬레인 대동굴에서 스쿠마 상인들을 찾기
 Find the source of Miraak's power	미락에게 힘을 주는 원천을 찾기
 Find the source of power in <Alias=Dungeon>	<Alias=Dungeon> 에서 힘의 원천을 찾기
 Find the source of the attacks	공격의 출처를 찾기
@@ -6893,7 +6893,7 @@ Follow Erandur to the Library	에란더를 따라서 도서관으로 가기
 Follow Erandur to the Skull of Corruption	타락의 두개골이 있는 곳으로 에란더를 따라가기
 Follow Farkas to your quarters	팔카스를 따라 숙소로 가기
 Follow Garan	가란을 따라가기
-Follow Gianna to the dining room	지아나를 따라 주방으로 가기
+Follow Gianna to the dining room	지아나를 따라 식당으로 가기
 Follow Isran	이스란을 따라가기
 Follow Karliah	칼라이아를 따라가기
 Follow Kyr and Ra'jirr into the tunnels	카이어와 라'지어를 따라 터널로 들어가기
@@ -7226,7 +7226,7 @@ Gadba	개드바
 Gadba gro-Largash	개드바 그로-라가쉬
 Gadnor	개드너
 Gadnor's Staff of Charming	개드너의 매혹 지팡이
-Gain access to the Pelagius Wing of the Blue Palace	파란 궁전에 있는 펠라지우스 구역에 접근할 방법을 찾기
+Gain access to the Pelagius Wing of the Blue Palace	푸른 궁전에 있는 펠라지우스 구역에 접근할 방법을 찾기
 Gain admittance to the Hall of Valor	용맹의 회랑으로 들어가기 위한 허가를 받기
 Gain entrance to Sky Haven Temple	스카이 헤이븐 사원으로 들어가기
 Gain entry to Calcelmo's Museum	칼셀모의 박물관에 들어갈 방법을 찾기
@@ -7412,10 +7412,10 @@ Give Potema's remains to Styrr	포테마의 유해를 스티어에게 전달하�
 Give Rjorn's Drum to Giraud	지로에게 리욘의 북을 주기
 Give the Argonian Ale to Brenuin	브레뉴인에게 아르고니안 맥주를 전해주기
 Give the final fragment to Eorlund	에올룬드에게 마지막 파편조각을 주기
-Give the fragments of Wuuthrad to Eorlund	에올룬드에게 조각들을 주기
+Give the fragments of Wuuthrad to Eorlund	에올룬드에게 우쓰라드의 조각들을 주기
 Give the Frost Salts to Arcadia	아케디아에게 냉기 소금을 전해주기
 Give the Lexicon to Septimus	셉티무스에게 고대사전을 주기
-Give the logbook to Orthus	오서스에게 항박일지를 주기
+Give the logbook to Orthus	오서스에게 항해일지를 주기
 Give the note to Captain Veleth	벨레스 대장에게 노트를 주기
 Give the Rueful Axe to Clavicus Vile OR kill Barbas with the Rueful Axe	회한의 도끼를 클라비쿠스 바일에게 주기 또는 회한의 도끼로 바바스를 죽이기
 Give the staff to me before someone gets hurt. (Persuade)	누가 다치기 전에 지팡이를 주시오. (설득)
@@ -10855,7 +10855,7 @@ Ideas?	뭔가 제안이라도?
 Identify Riften's skooma dealer	리프튼의 스쿠마 판매상이 누구인지 알아내기
 Identify Sabjorn's silent partner	사비욘의 '익명의 동업자'가 누구인지 알아내기
 Identify the buyer and we'll forget what we know. (Persuade)	그 구매자가 누군지 확인한 뒤에, 전부 잊어버리면 되지. (설득)
-Identify the Crystal Shard	크리스털 조각을 찾기
+Identify the Crystal Shard	크리스털 조각의 정체를 알아내기
 Idesa Sadri	이데사 사드리
 Idgrod	이드그로드
 Idgrod Ravencrone	이드그로드 레이븐크론
@@ -11868,7 +11868,7 @@ Job's finished. Here's the information you requested.	일이 끝났어. 이게 �
 Jod	요드
 Jofthor	요프쏘어
 Join Barbas outside Haemar's Shame	헤이마의 수치 바깥에서 바바스와 만나기
-Join Barbas outside Rimerock Burrow	서리바위 동굴 바깥에서 바바스와 만나기
+Join Barbas outside Rimerock Burrow	라임락 땅굴 바깥에서 바바스와 만나기
 Join the assault	습격에 참가하기
 Join the assault on Thirsk Mead Hall	터스크 연회장 습격에 참가하기
 Join the College of Winterhold	윈터홀드의 마법 대학에 가입하기
@@ -12170,7 +12170,7 @@ Kill Cicero	시세로를 죽이기
 Kill Cicero, or leave the Sanctuary	시세로를 죽이기 또는 성역에서 나가기
 Kill Deekus	디커스를 죽이기
 Kill Ennodius Papius	에노디우스 파피우스를 죽이기
-Kill everyone in the Sanctuary!	성역에 있는 자를 전부 죽여라!
+Kill everyone in the Sanctuary!	성역에 있는 자를 전부 죽이기
 Kill Gaius Maro	가이우스 마로를 죽이기
 Kill General Falx Carius	폭스 카리우스 장군을 죽이기
 Kill Grelod the Kind	친절한 그렐로드를 죽이기
@@ -12190,7 +12190,7 @@ Kill Ma'randru-jo	마'란드루-조를 죽이기
 Kill Madanach	매더낙을 죽이기
 Kill Maluril	말루릴을 죽이기
 Kill Narfi	나피를 죽이기
-Kill Nazir's attacker!	나지어를 공격하는 자들을 죽여라!
+Kill Nazir's attacker!	나지어를 공격하는 자를 죽이기
 Kill Nimhe inside Nchuand-Zel	느츄안-젤 내부의 님히를 죽이기
 Kill one of the captives	인질 한 명을 죽이기
 Kill Orchendor	오챈더를 죽이기
@@ -12217,7 +12217,7 @@ Kill the Dragon in <Alias=DragonLair>	<Alias=DragonLair>에 있는 드래곤을 
 Kill the dragon located at <Alias=BountyLocation>	<Alias=BountyLocation>에 있는 드래곤을 죽이기
 Kill the dragon Sahloknir	드래곤 샬록니어를 죽이기
 Kill the Emperor	황제를 죽이기
-Kill the Emperor!	황제를 죽여라!
+Kill the Emperor!	황제를 죽이기
 Kill the escaped criminal	탈출한 범죄자를 죽이기
 Kill the Forsworn Leader (Jarl)	포스원 우두머리를 죽이기
 Kill the Giant (Jarl)	거인을 죽이기
@@ -12775,7 +12775,7 @@ Locate the Aetherium Forge	에테리움 대장간의 위치를 찾기
 Locate the assassin of old	고대의 암살자를 찾기
 Locate The Ceremonial Weapons	의식용 무기들을 찾기
 Locate the dragon burial site	드래곤 매장지를 찾아내기
-Locate the East Empire Pendants for Fethis Alor in Raven Rock	동제국 회사 펜던트를 레이븐 락에 있는 페디스 알로어에게 전하기
+Locate the East Empire Pendants for Fethis Alor in Raven Rock	레이븐 락에 있는 페디스 알로어를 위해 동제국 회사 펜던트를 찾기
 Locate the face sculptor in Riften	리프튼에서 성형전문가를 찾기
 Locate the hidden stash of Emberbrand Wine in Raven Rock	레이븐 락에 숨겨진 엠버브랜드 포도주의 위치를 찾기
 Locate the Quill of Gemination under Lake Honrich	복제의 깃털펜을 혼리크 호수 바닥에서 찾기
@@ -13203,13 +13203,13 @@ Meet Karliah at the standing stone	비석앞에서 칼라이아와 만나기
 Meet Legate Rikke outside Korvanjund	코반준드 입구 근처에서 리카를 만나기
 Meet Malborn in Solitude	솔리튜드에서 맬보언을 만나기
 Meet Mercer Frey outside Snow Veil Sanctum	스노우 베일성역 바깥에서 머서 프레이와 만나기
-Meet Silus at the Shrine of Mehrunes Dagon	메이룬스 데이건의 성지에서 사일러스를 만나기
+Meet Silus at the Shrine of Mehrunes Dagon	메이룬스 데이건의 성소에서 사일러스를 만나기
 Meet the Circle	서클 멤버와 만나기
-Meet the Ebony Warrior at the Last Vigil	라스트 비질에서 에보니 전사를 만나기
+Meet the Ebony Warrior at the Last Vigil	마지막 기원에서 에보니 전사를 만나기
 Meet the Family	가족을 만나기
 Meet the men	병사들과 만나기
 Meet the men near <Alias=AttackPoint>	<Alias=AttackPoint> 근처에서 병사들을 만나기
-Meet Tolan at Stendarr's Beacon	스텐다르의 표지에서 톨란과 만나기
+Meet Tolan at Stendarr's Beacon	스텐다르의 봉화대에서 톨란과 만나기
 Meet Tolfdir outside Saarthal	사아쌀 바깥에서 톨프딜을 만나기
 Meet up with Stalleo in the courtyard.	안뜰에서 스탈리오와 만나기
 Meet up with the Redoran Guard	레도란 경비병과 합류하기
@@ -13221,7 +13221,7 @@ Meet with Skjor at night	밤중에 스키욜과 만나기
 Meet with the <Alias=General>	<Alias=General>와 만나기
 Meet with the <Alias=General> on the Front Line.	<Alias=General> 와 최전선에서 만나기
 Meet with whoever took the horn	나팔을 가져간 자와 만나기
-Meet Yamarz at Fallowstone Cave	팔로우 스톤의 동굴에서 야마즈를 만나기
+Meet Yamarz at Fallowstone Cave	팔로우 스톤 동굴에서 야마즈를 만나기
 Mehrune's Razor Blade	메이룬스의 면도칼 칼날
 Mehrune's Razor Gem	메이룬스의 면도칼 자루 장식
 Mehrune's Razor Hilt	메이룬스의 면도칼 자루
@@ -14503,7 +14503,7 @@ Obtain a Silver Ingot	은 주괴를 구하기
 Obtain Calcelmo's Falmer Translating Guide	칼셀모의 '팔머 언어 번역 가이드'라는 책을 얻기
 Obtain Ore Sample from Filnjar	필른냐르로부터 광석 표본을 얻기
 Obtain Rahgot's mask	라고트의 가면을 구하기
-Obtain some Vampire Dust	몇개의 흡혈귀 가루를 구하기
+Obtain some Vampire Dust	몇 개의 흡혈귀 가루를 구하기
 Obtain the key to the whispering door	속삭이는 문의 열쇠를 얻기
 Obviously. Now tell me what you need.	물론이지. 자, 그럼 원하는 걸 말하라.
 Octieve	옥티브
@@ -14652,7 +14652,7 @@ Open the Elder's Cairn	선조의 돌무덤 열기
 Open the exterior gate	외벽문을 열기
 Open the First Exterior Gate	첫 번째 외벽문을 열기
 Open the Hall of Stories door	이야기의 회랑 문을 열기
-Open the Last Exterior Gate	마지만 외벽문을 열기
+Open the Last Exterior Gate	마지막 외벽문을 열기
 Open the other gate	다른 문을 열기
 Open the trap.	덫을 풀어주시오.
 Open the whispering door	속삭이는 문을 열기
@@ -15106,7 +15106,7 @@ Pay Nazir the fine	나지어에게 벌금내기
 Pay or kill Mogrul	지불하거나 모그룰을 죽이기
 Pay them, or things will get ugly. (Brawl)	돈을 지불하지 않으면 얼굴을 뭉개주지. (싸움)
 Pay them, or things will get ugly. (Intimidate)	돈을 내지 않으면 아주 곤란해 질텐데. (위협)
-Pay Tolfidr 1000 gold to lift your suspension	정학 해제를 위해 톨프딜에게 100골드 지불하기
+Pay Tolfidr 1000 gold to lift your suspension	정학 해제를 위해 톨프딜에게 1000골드 지불하기
 Pay Tolfidr 500 gold to lift your suspension	정학 해제를 위해 톨프딜에게 500골드 지불하기
 Pay? How?	배상? 어떻게?
 Payment Delivery	배달도착 지불
@@ -15277,7 +15277,7 @@ Plant letter on <Alias=Victim>'s corpse	<Alias=Victim>의 시체에 편지를 �
 Plant Madesi's Ring	마데시의 반지를 넣기
 Plant the <Alias=Evidence> in <Alias=WealthyHome> in <Alias=City>	<Alias=City>에 있는 <Alias=WealthyHome> 에 <Alias=Evidence> 몰래 두고오기
 Plant the Balmora Blue	발모라 블루를 숨겨놓기
-Plant the Incriminating Letter on Gaius Maro's body	가이우스 마로의 시체에 조작된 편지를 숨겨두기
+Plant the Incriminating Letter on Gaius Maro's body	가이우스 마로의 시체에 유죄증명 편지를 숨겨두기
 Plant the taproot	곧은 뿌리를 심기
 Planter	화분
 Plate	접시
@@ -15690,7 +15690,7 @@ Reach Miraak's Temple	미락의 사원에 접근하기
 Reach Stormcloak Camp	리치 스톰클록 주둔지
 Reach the Hall of the Elements	원소의 회랑에 도달하기
 Reach the Oculory	오큘러리에 도달하기
-Reach the summit of Arkngthamz	아큰담즈의 정상에 도달히기
+Reach the summit of Arkngthamz	아큰담즈의 정상에 도달하기
 Reach the Temple of Miraak	미락의 사원에 가기
 Reachcliff Cave	리치클리프 동굴
 Reachcliff Secret Entrance	리치클리프 비밀 입구
@@ -15709,8 +15709,8 @@ Read Margret's Journal	마그레트의 일기를 읽기
 Read Nepos's Journal	네포스의 일기를 읽기
 Read the bandit's ransom note for <Alias=Spouse>	산적이 남겨둔 <Alias=Spouse>에 대한 몸값 요구쪽지를 읽기
 Read the Black Book	검은 책을 읽기
-Read the Elder Scroll (Blood)	엘더스크롤 읽기
-Read the Elder Scroll at the Time-Wound	시간의 상처에서 엘더스크롤을 읽기
+Read the Elder Scroll (Blood)	'엘더스크롤 - 피'를 읽기
+Read the Elder Scroll at the Time-Wound	시간의 틈에서 엘더스크롤을 읽기
 Read the letter from <Alias=Enemy>	<Alias=Enemy>의 편지를 읽기
 Read the note	노트를 읽기
 Read the Vampire's Note	흡혈귀의 쪽지를 읽기
@@ -15800,7 +15800,7 @@ Recover Krag's journal	크라그의 일기를 회수하기
 Recover skooma source information	스쿠마의 출처에 관한 정보를 회수하기
 Recover Staubs' journal	스터번의 일지를 회수하기
 Recover Stromm's journal	스트롬의 일기를 회수하기
-Recover the Bonemold Formula for Glover Mallory	글로버 말로리를 위하여 뼈다귀 물품 제작법을 찾아내기
+Recover the Bonemold Formula for Glover Mallory	글로버 말로리를 위하여 뼈다귀 물품 제조법을 찾아내기
 Recover the Crown of Barenziah	바렌자이아의 왕관을 복구하기
 Recover the Elder Scroll	엘더스크롤을 되찾기
 Recover the Stones of Barenziah  (<Global=TGCrownGemsFound>/<Global=TGCrownGemsTotal>)	바렌자이아의 왕관 보석을 회수하기 (<Global=TGCrownGemsFound>/<Global=TGCrownGemsTotal>)
@@ -16094,7 +16094,7 @@ Retrieve Dravin's Bow	드레이븐의 활을 회수하기
 Retrieve Eldergleam sap	엘더글림 수액을 구하기
 Retrieve Gratian Caerellius's Journal	그라시안 카렐리우스의 일기를 회수하기
 Retrieve Kodlak's fragment	코들락이 가지고 있던 조각을 회수하기
-Retrieve Lisbet's shipment from <Alias=ForswornCamp>	<Alias=ForswornCamp>에서 리즈벳의 짐을 회수하기
+Retrieve Lisbet's shipment from <Alias=ForswornCamp>	<Alias=ForswornCamp>에서 리스벳의 짐을 회수하기
 Retrieve netch jelly for Milore Ienth  (<Global=DLC2RRF02JellyCount>/<Global=DLC2RRF02JellyTotal>)	밀로리 아이엔스를 위하여 네치 젤리를 구하기 (<Global=DLC2RRF02JellyCount>/<Global=DLC2RRF02JellyTotal>)
 Retrieve Nettlebane	네틀베인을 회수하기
 Retrieve Potema's remains	포테마의 유해를 회수하기
@@ -16107,7 +16107,7 @@ Retrieve the <Alias=Item> from <Alias=Dungeon>	<Alias=Dungeon>에서 <Alias=Item
 Retrieve the <Alias=ItemToGet> from <Alias=Business> in <Alias=City>	<Alias=City>에 있는 <Alias=Business>에서 <Alias=ItemToGet> 찾아오기
 Retrieve the <Alias=ItemToGet> from <Alias=WealthyHome> in <Alias=City>	<Alias=City>에 있는 <Alias=WealthyHome>에서 <Alias=ItemToGet> 찾아오기
 Retrieve the <Alias=Remains> from <Alias=Dungeon>	<Alias=Dungeon>에서 <Alias=Remains> 회수하기
-Retrieve the Aetherium Crest	에테리움 방패문장을 회수하기
+Retrieve the Aetherium Crest	에테리움 문장을 회수하기
 Retrieve the Ancient Nordic Pickaxe	고대 노드 곡괭이를 회수하기
 Retrieve the Black Book	검은 책을 회수하기
 Retrieve the blade shards of Mehrunes' Razor	메이룬스의 면도칼 칼날을 회수하기
@@ -16128,7 +16128,7 @@ Retrieve the Skeleton Key	해골 열쇠를 회수하기
 Retrieve the Soul Essence Gem	영혼의 정수 회수하기
 Retrieve the soul gem	소울젬을 회수하기
 Retrieve the Staff of Magnus	매그너스의 지팡이를 회수하기
-Retrieve the Stalhrim Source Map	스탈림 근원의 지도를 회수하기
+Retrieve the Stalhrim Source Map	스탈림 원천 지도를 회수하기
 Retrieve the Totem of Hircine	허씬의 토템을 회수하기
 Retrieve the Unmelting Snow	'녹지않는 눈'을 회수하기
 Retrieve the White Phial	흰색 유리병을 회수하기
@@ -16229,7 +16229,7 @@ Return to Temba Wide-Arms	템바에게 돌아가기
 Return to the Bards College	바드 대학으로 돌아가기
 Return to the Jarl of Riften	리프튼의 야를에게 돌아가기
 Return to the Night Mother	나이트 마더에게 돌아가기
-Return to the Sanctuary	성지로 돌아가기
+Return to the Sanctuary	성역으로 돌아가기
 Return to the shrine of Clavicus Vile with Barbas and the Rueful Axe	회한의 도끼를 가지고 바바스와 함께 클라비쿠스 바일의 성지로 돌아가기
 Return to Tolfdir	톨프딜에게 돌아가기
 Return to Tonilia	토닐리아에게 돌아가기
@@ -17991,7 +17991,7 @@ Speak to Captain Veleth	벨레스 대장과 대화하기
 Speak to Clavicus Vile	클라비쿠스 바일과 대화하기
 Speak to Councilor Morvayn	모베인 의원과 대화하기
 Speak to Crescius Caerellius	크리시어스 카렐리우스와 대화하기
-Speak to Degaine	디게인과와 대화하기
+Speak to Degaine	디게인과 대화하기
 Speak to Durnehviir at his lair in the Soul Cairn	소울 케언에 있는 더네비어의 둥지에서 그와 대화하기
 Speak to Edla	에들라와 대화하기
 Speak to Endon the Silversmith	은 세공사 엔든과 대화하기
@@ -18030,7 +18030,7 @@ Speak to Nelacar	넬라카와 대화하기
 Speak to Nelkir	넬키어와 대화하기
 Speak to Niranye	니라녜와 대화하기
 Speak to Olfrid Battle-Born	올프리드 배틀-본과 대화하기
-Speak to Orthas Endario about the East Empire Company's problems	동제국 회사의 문제점에 관해서 오투스 엔다리오와 대화하기
+Speak to Orthas Endario about the East Empire Company's problems	동제국 회사의 문제점에 관해서 오서스 엔다리오와 대화하기
 Speak to Orthus	오서스와 대화하기
 Speak to Quintus	퀸투스와 대화하기
 Speak to Quintus Navale	퀸투스 나발레와 대화하기
@@ -18075,7 +18075,7 @@ Speak with Astrid	아스트리드와 대화하기
 Speak with Bryling	브라일링과 대화하기
 Speak with Calcelmo	칼셀모와 대화하기
 Speak with Commander Maro	마로 사령관과 대화하기
-Speak with Constance Michel about Adoption	입양에 관해서 콘스탄스 미쉘과 대화하기
+Speak with Constance Michel about Adoption	입양에 관해서 콘스턴스 미쉘과 대화하기
 Speak with Enthir	엔써와 대화하기
 Speak with Gabriella	가브리엘라와 대화하기
 Speak with Garan Marethi	가란과 대화하기
@@ -18808,7 +18808,7 @@ Steal Frost's Lineage Papers	프로스트의 혈통서를 훔치기
 Steal General Tullius' Coat	툴리우스 장군의 외투를 훔치기
 Steal Madesi's Ring	마데시의 반지를 훔치기
 Steal statue of Dibella	디벨라의 동상을 훔치기
-Steal Suvaris Atheron's logbook	수바리스 아세론의 항박일지를 훔치기
+Steal Suvaris Atheron's logbook	수바리스 아세론의 항해일지를 훔치기
 Steal the <Alias=QuestItem> for <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver> 를 위해 <Alias=QuestItem> 훔치기
 Steal the <Alias=QuestItem> for Olda	올다를 위해서 <Alias=QuestItem>를 훔치기
 Steal the Argonian Ale	아르고니안 맥주를 훔치기
@@ -19495,7 +19495,7 @@ Take over the caravan	짐마차를 뺏기
 Take over the fort	요새를 차지하기
 Take sapling	묘목을 가지기
 Take Shagrol's Hammer back to Largashbur	샤그롤의 망치를 라가쉬버에 돌려주기
-Take the Bloodstone Chalice to Redwater Spring	혈석 성배를 레드워터 샘으로 가져가기
+Take the Bloodstone Chalice to Redwater Spring	혈석 성배를 레드워터 샘터로 가져가기
 Take the Gauldur Amulet	골더 아뮬렛 가져가기
 Take the hidden treasure	숨겨진 보물을 가지기
 Take the Lexicon to Avanchnzel	고대사전을 아반츤젤에 가져가기
@@ -19523,7 +19523,7 @@ Talk to <Alias=RiverwoodFriend> in Riverwood	리버우드에서 <Alias=Riverwood
 Talk to <Alias=Victim>	<Alias=Victim>와 대화하기
 Talk to Adelaisa	아델라이자와 대화하기
 Talk to Aela	에일라와 대화하기
-Talk to Amaund Motierre	아먼드 모티에르와 대화하라
+Talk to Amaund Motierre	아먼드 모티에르와 대화하기
 Talk to Arnbjorn	안비욘과 대화하기
 Talk to Arngeir	안기어와 대화하기
 Talk to Arniel	아니얼과 대화하기
@@ -19687,7 +19687,7 @@ Tell Ainethach that Atar has been dealt with	아이너테치에게 아타르와�
 Tell Atar that Ainethach has been dealt with	아타르에게 아이너테치와의 문제를 해결했다고 알리기
 Tell Aventus Aretino that Grelod is dead	아벤투스 아레티노에게 그렐로드가 죽었다고 알리기
 Tell Azura you're ready to enter the Star	아주라에게 별의 내부로 들어갈 준비가 되었다고 말하기
-Tell Bralsa Drel she's welcome at the Retching Netch	그녀가 여관에 출입해도 된다는 것을 브랄사 드렐에게 전하기
+Tell Bralsa Drel she's welcome at the Retching Netch	그녀가 레칭 네치 여관에 출입해도 된다는 것을 브랄사 드렐에게 전하기
 Tell Calcelmo that Nimhe is dead	칼셀모에게 님히는 죽었다고 전하기
 Tell Dengeir that Vighar is dead	덴기어에게 비그하는 죽었다고 알려주기
 Tell Elder Othreloth that the Tomb has been cleansed	오쓰렐로스에게 묘지가 정화되었다고 말하기
@@ -20847,12 +20847,12 @@ Trapdoor	작은 문
 Trapper	덫 사냥꾼
 Travel	이동
 Travel to	이동하기 -
-Travel to Broken Oar Grotto	부서진 노 동굴로 가기
+Travel to Broken Oar Grotto	부러진 노 동굴로 가기
 Travel to Irkngthand	어큰싼드로 이동하기
 Travel to Nchardak with Neloth	넬로스와 함께 느챠닥으로 여행하기
 Travel to Solstheim	솔스트하임으로 가기
 Travel to Uttering Hills Cave	어터링 힐스 동굴에 가기
-Travel to Vahlok's Tomb	발록의 무덤으로 가기
+Travel to Vahlok's Tomb	발록의 묘지으로 가기
 Travel with Barbas to the shrine of Clavicus Vile	바바스와 함께 클라비쿠스 바일의 성소로 여행하기
 Traveler	여행자
 Traveling alone can be so dangerous...	혼자서 여행하는 건 상당히 위험한데...

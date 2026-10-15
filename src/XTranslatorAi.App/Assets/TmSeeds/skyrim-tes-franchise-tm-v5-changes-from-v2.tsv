@@ -1,9 +1,13 @@
 Source	Target	Previous
 "Bent a few folks' arms the wrong way"?	'주민들의 팔을 좀 비틀었다'고?	'주민들의 무기가 엉뚱한 방향을 향했다'고?
+(Optional) Discover leverage to sway Niranye	(선택) 니라녜의 마음을 바꾸기 위한 수단을 찾기	(선택) 니랴네의 마음을 바꾸기 위한 수단을 찾기
 (Optional) Retrieve the Blade of Woe	(선택) 비통의 단검을 가지기	(선택) 비통의 단검를 가지기
+(Optional) Show Skorm Snow-Strider's journal to Valmir	(선택) 발머에게 스콤의 일기를 보여주기	(선택) 발머에게 스콤의 일지를 보여주기
 50% chance for each attribute to absorb <mag> points of Health, Stamina and/or Magicka.	체력, 지구력, 매지카 각각에 대해 50% 확률로 <mag> 흡수합니다.	50% 확률로 체력, 지구력, 매지카 중 하나를 <mag> 흡수합니다.
 50% chance for each element of fire, frost and shock to do <mag> points of damage.	화염, 냉기, 전격 각각에 대해 50% 확률로 <mag> 의 피해를 입힙니다.	50% 확률로 <mag> 의 화염, 냉기, 전격 중 하나의 피해를 입힙니다.
 <Alias=PlayerIsIt> is it. Hide from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt> 이/가 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요
+<Alias=PlayerIsIt> is it. Keep away from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요	<Alias=PlayerIsIt> 입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요
+[Optional] Find <Alias=Jarl> and escape with <Alias.PronounObj=Jarl> through the city.	(선택) <Alias=Jarl>을 찾고 <Alias.PronounObj=Jarl>과 함께 도시를 통하여 탈출하기	(선택) <Alias=Jarl>을 찾고 <Alias.PronounObj=Jarl>과 함께 도시를 통하여 탈출하기.
 A blast of flame that sets the target on fire, doing <mag> damage per second for <15> seconds.	불꽃의 화살을 날려 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	불꽃의 화살을 날려 <15> 초 동안 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 A freezing whirlwind that does <mag> points of damage per second, and twice as much Stamina damage.	얼어붙은 회오리바람을 날려 매 초마다 <mag> 의 냉기 피해와 2배의 지구력 피해를 입힙니다.	얼어붙은 회오리바람을 날려 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
 A spear of ice that does <mag> points of frost damage, and twice as much Stamina damage.	얼음의 가시를 날려 <mag> 의 냉기 피해와 2배의 지구력 피해를 입힙니다.	얼음의 가시를 날려 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
@@ -27,22 +31,41 @@ Any allies inside the ring will regenerate <mag> health per second.	치유의 �
 Any attacks done while both sneaking and undetected will do extra damage.	은신 중이며 발각되지 않은 상태에서 하는 모든 공격은 추가로 피해를 더 주게 됩니다.	은신 중이거나 발각되지 않은 상태에서 하는 모든 공격은 추가로 피해를 더 주게 됩니다.
 Any map locations that have been discovered and visited can be fast traveled to, from any area outdoors.	지도상에서 발견하고 직접 방문한 장소들은 실외의 어디에서든 빠른 이동으로 갈 수 있습니다.	지도상에서 한번 발견했거나 방문했던 장소들은 실외의 어디에서든 빠른 이동으로 갈 수 있습니다.
 Armory, Doors	병기고, 문	병기고,문들
+Ask <Alias.ShortName=Target> for information about <Alias.ShortName=Questgiver>'s daughter.	<Alias.ShortName=Questgiver>의 딸에 대한 정보를 <Alias.ShortName=Target>에게 물어보기	<Alias.ShortName=Questgiver>의 딸에 대한 정보를 <Alias.ShortName=Target>에게 전하기
+Ask about Balgruuf's strange children	발그루프의 이상한 자녀들에 관해 물어보기	발그루프에게 자녀들의 이상한 점에 관해서 물어보기
+Assault <Alias=Enemy> but don't kill <Alias=Enemy.pronoun>	<Alias=Enemy>를 습격하되 <Alias=Enemy.pronoun>를 죽이지 않기	죽이지 않고 <Alias=Enemy> 습격하기
 Astrid is the leader of the Dark Brotherhood Sanctuary, and her word is law.	아스트리드는 다크 브라더후드 성역의 우두머리이며, 그녀의 말이 곧 법입니다.	아스트리드는 다크 브라더후드 성지의 우두머리이며, 그녀의 말이 곧 법입니다.
 At the center of the Dunmer province of Morrowind lies the Red Mountain, the largest volcano in all of Tamriel.	던머들의 지역인 모로윈드의 중심부에는 탐리엘에서 가장 거대한 화산인 레드 마운틴이 있습니다.	던머지역의 중앙에 있는 모로윈드의 중심부에는 탐리엘에서 가장 거대한 화산인 레드 마운틴이 있습니다.
 Balbus's Fork	발부스의 포크	발부스의 집게
 Baldor Iron-Shaper	발도어 아이언-셰이퍼	발도어
+Begin the hunt	사냥 시작하기	사냥 시작
 Blacksmith's Forge	대장간의 화로	대장간 모루
 Blue Mountain Flower (3)	파란 들꽃 (3)	푸른 들꽃 (3)
+Board the Katariah	카타리아호에 승선하기	카타리아호에 승선하라
+Bolstering the Ranks	병력 보강	지위 강화
 Break through the Second Barricade	두 번째 바리케이드를 파괴하기	두 번째 바리케이트를 파괴하기
 Breath of Nchuak	느츄악의 숨결	느챠닥의 숨결
 Bring 10 fire salts to Balimund (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개를 가져다 주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개을 가져다 주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)
+Bring a filled Black Soul Gem to Morthal	충전된 검은 소울젬을 모탈로 가져가기	모탈로 충전된 검은 소울젬을 가져가기
+Bring a giant's toe to Elynea	엘리니아에게 거인의 발가락 하나를 가져다 주기	엘리니아에게 거인의 발톱 하나를 가져다 주기
+Bring a hagraven's claw to Elynea	엘리니아에게 해그레이븐 발톱 하나를 가져다 주기	엘리니아에게 헤그레이븐의 발톱을 몇개 가져다 주기
+Bring Elmus some Ashfire Mead from Thirsk Mead Hall	터스크 연회장에서 잿불 벌꿀술을 몇 개 구해서 엘무스에게 주기	터스크 연회장에서 잿불 벌꿀술을 몇개 구해서 엘무스에게 주기
+Bring Elmus some Juniper Berries	엘무스에게 향나무 열매를 몇 개 가져다 주기	엘무스에게 향나무 열매를 몇개 가져다 주기
+Bring some vampire dust to Elynea	엘리니아에게 흡혈귀 가루를 몇 개 가져다 주기	엘리니아에게 흡혈귀 가루를 몇개 가져다 주기
+Bring some void salts to Elynea	엘리니아에게 공허 소금 몇 개를 가져다 주기	엘리니아에게 공허 소금 몇개를 가져다 주기
+Bring the <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver> 에게 <Alias=QuestItem> 가져다 주기	<Alias.ShortName=Questgiver> 에게 <Alias=QuestItem> 가져다 주기
+Bring the Bonemold Formula to Glover Mallory	뼈다귀 물품 제조법을 글로버에게 전해주기	뼈다귀 물품 제작법을 글로버에게 전해주기
+Bring the Dibella Statue to Lisbet	디벨라의 동상을 리스벳에게 가져다 주기	디벨라의 동상을 리즈벳에게 가져다 주기
+Bring the Four Master Illusion texts to Drevis Neloren	드레비스 넬로렌에게 달인 환영마법 책 4권을 가져가기	드레비스 넬로렌에게 에게 달인 환영마법 책 4권을 가져가기
 Burns the target <mag> points per second. Targets on fire take extra damage.	매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	<mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
+Buy back the Elder Scroll (Dragon) from Urag gro-Shub	우라그에게 팔았던 '엘더스크롤 - 드래곤'을 다시 구입하기	우라그에게 팔았던 엘더스크롤을 다시 구입하기.
 Call of the Wild	야생의 외침	아생의 외침
 Cast on a nearby surface, it explodes for and freezes the target in place for <dur> seconds.	주변 표면에 정지의 룬을 설치합니다. 폭발하면 목표를 <dur> 초 동안 그 자리에 얼어붙게 합니다.	주변 표면에 정지의 룬을 설치합니다. 적이 접근 시 폭발하여 <mag> 의 냉기 피해를 입힙니다.
 Castor the Puzzlemaker's Corpse	퍼즐 제작자 캐스터의 시체	캐스터의 시체
 Claim Mehrunes' Razor	메이룬스 데이건의 단검을 가지기	메이룬스의 면도칼을 가지기
 Clay. (<Global=BYOHHPAmountClay> for <Global=BYOHHPCostClay> gold)	점토. (<Global=BYOHHPAmountClay>개에 <Global=BYOHHPCostClay> 골드)	점토. (<Global=BYOHHPAmountClay> for <Global=BYOHHPCostClay> 골드)
 Come on. Let's go.	어서. 가자.	여기서 나가자.
+Commune with Hrothmund's Spirit	흐로스문드의 유령과 대화하기	흐로스문드의 영혼과 대화하기
 CONJURATION	소환마법	소환
 CONTAINERS	보관함	상자
 Creates a wall of frost that does <mag> damage per second.	지면에 얼음의 장벽을 만들어 매 초마다 <mag> 의 냉기 피해를 입힙니다.	지면에 얼음의 장벽을 만들어 매 초마다 <50> 의 냉기 피해를 입힙니다.
@@ -50,15 +73,20 @@ Cure Poison	독 치료	물약 - 독 치료
 Damages the caster <mag> points per second.	시전자에게 매 초마다 <mag> 의 피해를 입힙니다.	매 초마다 <mag> 의 피해를 입힙니다.
 Darkfall Passage Note I	다크폴 통로 쪽지 1	다크폴 통로 쪽지
 Darkfall Passage Note II	다크폴 통로 쪽지 2	다크폴 통로 쪽지
+Deal with the rogue wizard	변절한 마법사를 처리하기	도둑 마도사와 거래하기
 Deathbell (3)	데스벨 (3)	데쓰벨 (3)
 Decrease the target's Stamina regeneration by <mag>% for <dur> seconds.	<dur> 초 동안 지구력 재생을 <mag>% 감소시킵니다.	<dur> 초 동안 지구력 재생이 <mag>% 감소시킵니다.
 Decree of Monument	기념비 포고령	법령의 기념비
+Defeat Hofgrir in an unarmed brawl	호프기어를 맨손 싸움으로 물리치기	호프기어를 싸움으로 물리치기
+Defeat the Guardians of the Forge	대장간의 수호자를 물리치기	화로의 수호자를 물리치기
+Deliver Mead to Wilhelm	윌헴에게 벌꿀술을 배달하기	윌헴에게 벌꿀주를 배달하기
 Demonstrate your "Unrelenting Force" Shout	"거침없는 힘" 함성을 보여주기	'거침없는 힘' 함성을 보여주기
 Demonstrate your "Unrelenting Force" Shout (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	"거침없는 힘" 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	'거침없는 힘' 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)
 Demonstrate your "Whirlwind Sprint" Shout	"회오리 질주" 함성을 사용하기	'회오리 질주' 함성을 사용하기
 Deor Woodcutter's House	디오어 우드커터의 집	나무꾼 디오어의 집
 Dessicated Corpse	바짝 마른 시체	바짝마른 시체
 Discerning the Transmundane	다른 차원의 것을 인식	다른 차원의 것을 알아내기
+Discover the location of the Elder Scroll (Dragon)	'엘더스크롤 - 드래곤'이 있는 장소를 찾기	엘더스크롤이 있는 장소를 찾기
 Distribute %d Point	분배하세요 - %d 포인트	분배하세요- %d Point
 Does <mag> points of Shock Damage.	<mag> 의 전격 피해를 입힙니다.	<mag> 의 전격 피해를 입힙니다..
 Don't be ridiculous. Dreams are harmless.	되지도 않는 소리 마시오. 꿈은 위험하지 않소.	되도 않는 소리 마시오. 꿈은 위험하지 않소.
@@ -81,9 +109,22 @@ Enchanter's Tower, Second Floor Supports	마법부여 연구탑, 2층 지지대	
 Enchanter's Tower, Second Floor Walls	마법부여 연구탑, 2층 벽	마법부가 연구탑, 2층 벽
 Enchanter's Tower. (<Global=BYOHHPCostEnchanting> gold)	마법부여 연구탑. (<Global=BYOHHPCostEnchanting> 골드)	마법 부가 연구탑. (<Global=BYOHHPCostEnchanting> 골드)
 Enemies who strike you with a melee attack have a small chance of being paralyzed.	근접 공격 피해를 입으면 적을 일정한 확률로 마비시킵니다.	근접 공격 피해를 입으면 적을 일정한 확률로 <dur> 초 동안 마비시킵니다.
+Enter the column of light and read the Elder Scroll (Blood)	빛의 기둥 안으로 들어가 '엘더스크롤 - 피'를 읽기	빛의 기둥을 밝히고 엘더스크롤 읽기
+Escape from the Blue Palace	푸른 궁전에서 탈출하기	파란 궁전에서 탈출하기
+Escape the Tower!	탑에서 탈출하기	탑에서 탈출하라!
+Explore Vahlok's Tomb	발록의 묘지을 탐색하기	발록의 무덤을 탐색하기
 Fathom	페덤	파돔
 Fellow dovah? I am not a dragon.	도바 동료? 나는 드래곤이 아닌데.	Dovah 동료? 나는 드래곤이 아닌데.
+Find 20 deathbell for Ingun Black-Briar (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 가져다 줄 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)
+Find pages from Saint Jiub's Opus (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaintTotal>)	성자 지웁의 작품에서 잃어버린 페이지를 찾기 (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaintTotal>)	지웁의 작품에서 잃어버린 페이지를 찾기 (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaintTotal>)
+Find Resonance Gems across Solstheim to complete the Kagrumez trials	카그루메즈의 시험을 통과하기 위하여 솔스트하임에 있는 몇 개의 공진 보석을 찾기	카그루메즈의 시험을 통과하기 위하여 슬츠하임에 있는 몇개의 공진 보석을 찾기
+Find some equipment	장비할 몇 가지의 물건들을 찾기	장비할 몇가지의 물건들을 찾기
+Find some Mammoth Tusk Powder	매머드 상아 가루 몇 개를 찾기	매머드 상아 가루 몇개를 찾기
+Find The Elder Scroll (Blood)	'엘더스크롤 - 피'를 찾기	엘더스크롤 찾기
+Find The Elder Scroll (Dragon)	'엘더스크롤 - 드래곤'을 찾기	엘더스크롤 찾기
+Find the skooma dealers in Cragslane Cavern	크래그슬레인 대동굴에서 스쿠마 상인들을 찾기	크래그슬레인 동굴에서 스쿠마 상인들을 찾기
 Finished?	완료?	완료?
+Follow Gianna to the dining room	지아나를 따라 식당으로 가기	지아나를 따라 주방으로 가기
 Follow Legate Rikke	리카 군단장을 따라가기	리카 군단장를 따라가기
 For <dur> seconds nearby opponents take <8> points of shock damage and half magicka damage.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 전격 피해와 절반의 매지카 피해를 입힙니다.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 전격 피해와 매지카 피해를 입힙니다.
 For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	불꽃의 망토를 둘러 <dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
@@ -91,7 +132,10 @@ For <dur> seconds, opponents that get too close take <8> points per second of fi
 For <dur> seconds, undead in melee range take <10> points sun damage per second.	<dur> 초 동안 주변 언데드에게 매 초마다 <10> 의 태양 피해를 입힙니다.	<dur> 초 동안 주변 언데드에게 매 초마다 <mag> 의 태양 피해를 입힙니다.
 Fur-Trimmed Cloak	야를의 털가죽 망토로 장식된 의상	털가죽 망토
 Gadnor's Staff of Charming	개드너의 매혹 지팡이	개드너의 지팡이
+Gain access to the Pelagius Wing of the Blue Palace	푸른 궁전에 있는 펠라지우스 구역에 접근할 방법을 찾기	파란 궁전에 있는 펠라지우스 구역에 접근할 방법을 찾기
 Gharol's Message	가롤의 메시지	가롤의 메세지
+Give the fragments of Wuuthrad to Eorlund	에올룬드에게 우쓰라드의 조각들을 주기	에올룬드에게 조각들을 주기
+Give the logbook to Orthus	오서스에게 항해일지를 주기	오서스에게 항박일지를 주기
 Glowing Mushroom (5)	발광 버섯 (5)	형광 버섯 (5)
 Glowing Spider	발광 거미	빛나는 거미
 Gold Necklace	금 목걸이	황금 목걸이
@@ -124,16 +168,21 @@ I was hoping you might want to talk about it.	너도 그 이야기를 하고 싶
 I've collected all the Rings of Blood Magic.	피의 마법 반지를 모두 모았소.	피의 마법 반지을 모두 모았소.
 I've recovered all of Arondil's Journals.	아론딜의 일지를 전부 회수했소.	당신 운이 좋은가 본데.
 Ice Wolf	설원늑대	설원 늑대
+Identify the Crystal Shard	크리스털 조각의 정체를 알아내기	크리스털 조각을 찾기
 Imbued Spider	마력이 깃든 거미	얼룩진 거미
 Imperial Legion	제국군	임페리얼
 Investigate Shroud Hearth Barrow	장막덮인 난로 무덤을 조사하기	장막덮힌 난로 무덤을 조사하기
 J'zhar's Pack	지'자르의 짐	지자르의 짐
+Join Barbas outside Rimerock Burrow	라임락 땅굴 바깥에서 바바스와 만나기	서리바위 동굴 바깥에서 바바스와 만나기
 Jumping Flame Spider	도약형 화염 거미	폭발형 화염 거미
 Jumping Frost Spider	도약형 냉기 거미	폭발형 냉기 거미
 Jumping Poison Spider	마법 주문서 - 도약형 독 거미	마법 주문서 - 폭발형 독 거미
 Jumping Poisonous Spider	도약형 독 거미	폭발형 독 거미
 Jumping Shock Spider	도약형 전격 거미	폭발형 전격 거미
 Key to Evette San's House	열쇠 - 이베트 산의 집	열쇠 - 이베트 산의 열쇠
+Kill everyone in the Sanctuary!	성역에 있는 자를 전부 죽이기	성역에 있는 자를 전부 죽여라!
+Kill Nazir's attacker!	나지어를 공격하는 자를 죽이기	나지어를 공격하는 자들을 죽여라!
+Kill the Emperor!	황제를 죽이기	황제를 죽여라!
 Kitchen, Doors	부엌, 문	부엌,문들
 Krag's Journal	크라그의 일기	크래그의 일기
 Lay off the old man. Now. (Intimidate)	그 노인을 내버려 둬. 당장. (위협)	그 노인를 내버려 둬. 당장. (위협)
@@ -144,11 +193,16 @@ Library, Doors	도서실, 문	도서실,문들
 Lightning Attractor	번개 유도장치	빛나는 끌개
 Lisbet	리스벳	리즈벳
 Llewellyn the Nightingale	나이팅게일 르웰린	르웰린
+Locate the East Empire Pendants for Fethis Alor in Raven Rock	레이븐 락에 있는 페디스 알로어를 위해 동제국 회사 펜던트를 찾기	동제국 회사 펜던트를 레이븐 락에 있는 페디스 알로어에게 전하기
 Lumber. (<Global=BYOHHPAmountLogs> for <Global=BYOHHPCostLogs> gold)	목재. (<Global=BYOHHPAmountLogs>개에 <Global=BYOHHPCostLogs> 골드)	목재. (<Global=BYOHHPAmountLogs> for <Global=BYOHHPCostLogs> 골드)
 Lymdrenn Tenvanni's Journal	림드렌 텔바니의 일기	림드렌 트레반니의 일기
 Malyn's Black Soul Gem	메일린의 검은 소울젬	멀린의 검은 소울젬
 Mara is the goddess of love and compassion. She has a temple in Riften.	마라는 사랑과 자비의 여신입니다. 그녀의 신전은 리프튼 에 있습니다.	마라는 정열과 사랑의 여신입니다. 그녀의 신전은 리프튼 에 있습니다.
 Master Illusion Text	달인 환영마법 서적	달인 환상마법 서적
+Meet Silus at the Shrine of Mehrunes Dagon	메이룬스 데이건의 성소에서 사일러스를 만나기	메이룬스 데이건의 성지에서 사일러스를 만나기
+Meet the Ebony Warrior at the Last Vigil	마지막 기원에서 에보니 전사를 만나기	라스트 비질에서 에보니 전사를 만나기
+Meet Tolan at Stendarr's Beacon	스텐다르의 봉화대에서 톨란과 만나기	스텐다르의 표지에서 톨란과 만나기
+Meet Yamarz at Fallowstone Cave	팔로우 스톤 동굴에서 야마즈를 만나기	팔로우 스톤의 동굴에서 야마즈를 만나기
 Message from General Tullius	툴리우스 장군의 메시지	툴리우스 장군의 메세지
 Molag Bal created the first vampire.	몰락 발이 첫 흡혈귀를 만들었소.	몰락-발이 첫 흡혈귀를 만들었소.
 Mora's Grasp	모라의 손아귀	모라의 이해
@@ -159,19 +213,26 @@ Never mind that... it worked!	신경 쓰지마... 제대로 되었어!	신경 �
 Noble Clothes	야를의 기품있는 의상	귀족의 의상
 North Skybound Watch	북부 스카이바운드 감시대	스카이바운드 감시대
 Obtain a Deathbell Flower	데스벨 꽃을 구하기	데쓰벨 꽃을 구하기
+Obtain some Vampire Dust	몇 개의 흡혈귀 가루를 구하기	몇개의 흡혈귀 가루를 구하기
 On second thought, I'll be leaving.	다시 생각해보니, 그냥 가는 게 낫겠군.	다시 생각해보니, 그냥 가는 게 났겠군.
 Once a source of pride for the people of Winterhold, the College is now shunned and feared.	한 때 윈터홀드 시민들에게 자부심을 주던 대학은 이제 기피와 두려움의 대상이 되었습니다.	한 때 윈터홀드 시민들에게 자부심을 주던 대학은 이제 기피와 두려움의 목표이 되었습니다.
+Open the Last Exterior Gate	마지막 외벽문을 열기	마지만 외벽문을 열기
 Opponents in melee range take <mag> points shock damage per second.	주변 적에게 매 초마다 <mag> 의 전격 피해를 입힙니다.	주변 적에게 매 초마다 <mag> 의 전격 피해와 매지카 피해를 입힙니다.
 Orichalcum Ingot	주괴 - 오리칼쿰	윌란드리아의 오리칼쿰 주괴
 Pacify	광역 진정	평온
+Pay Tolfidr 1000 gold to lift your suspension	정학 해제를 위해 톨프딜에게 1000골드 지불하기	정학 해제를 위해 톨프딜에게 100골드 지불하기
 Place a workbench in the Enchanter's Tower.	작업선반을 마법부여 연구탑에 설치합니다.	작업선반을 마법부가 연구탑에 설치합니다.
 Place Pithiken's Ring	피씨켄의 반지 놓기	피쉬켄의 반지 놓기
+Plant the Incriminating Letter on Gaius Maro's body	가이우스 마로의 시체에 유죄증명 편지를 숨겨두기	가이우스 마로의 시체에 조작된 편지를 숨겨두기
 Planter	화분	농장주
 Poison Cloaked Spider	마법 주문서 - 맹독 망토 거미	마법 주문서 - 독 망토 거미
 Poisonous Cloaked Spider	맹독 망토 거미	독 거미
 Quick Test Cell	빠른 테스트 셀	Quick Test Cell
 Rage Of The Ancients	고대인의 분노	Rage Of The Ancients
+Reach the summit of Arkngthamz	아큰담즈의 정상에 도달하기	아큰담즈의 정상에 도달히기
 Read Nepos's Journal	네포스의 일기를 읽기	네포스의 일기을 읽기
+Read the Elder Scroll (Blood)	'엘더스크롤 - 피'를 읽기	엘더스크롤 읽기
+Read the Elder Scroll at the Time-Wound	시간의 틈에서 엘더스크롤을 읽기	시간의 상처에서 엘더스크롤을 읽기
 Reanimate a powerful dead body to fight for you for <dur> seconds.	<dur> 초 동안 나를 위해 싸울 강력한 시체를 하나 부활시킵니다.	<dur> 초 동안 나를 위해 싸울 조금 강력한 시체를 하나 부활시킵니다.
 Recipe - Jumping Flame Spider	제조법 : 도약형 화염 거미	제조법 : 화염 거미
 Recipe - Jumping Flame Spider 2x	제조법 : 도약형 화염 거미 2x	제조법 : 화염 거미 2x
@@ -181,13 +242,18 @@ Recipe - Jumping Poison Spider	제조법 : 도약형 독 거미	제조법 : 독 
 Recipe - Jumping Poison Spider 2x	제조법 : 도약형 독 거미 2x	제조법 : 독 거미 2x
 Recipe - Jumping Shock Spider	제조법 : 도약형 전격 거미	제조법 : 폭발형 전격 거미
 Recipe - Jumping Shock Spider 2x	제조법 : 도약형 전격 거미 2x	제조법 : 폭발형 전격 거미 2x
+Recover the Bonemold Formula for Glover Mallory	글로버 말로리를 위하여 뼈다귀 물품 제조법을 찾아내기	글로버 말로리를 위하여 뼈다귀 물품 제작법을 찾아내기
 Refined Tunic	야를의 세련된 의상	세련된 의상
 Remove the workbench from the Enchanter's Tower.	마법부여 연구탑에서 작업선반을 제거합니다.	마법부가 연구탑에서 작업선반을 제거합니다.
 Remove Tree	나무의 바위 효과 제거	나무의 바위효과 제거
 Replace my Enchanting Lab with a Child's Room. (<Global=HDRiftenChildRoom> gold)	마법부여 연구실을 아이의 방으로 개조하고 싶다. (<Global=HDRiftenChildRoom> 골드)	마법 부가 연구실을 아이의 방으로 개조라고 싶다. (<Global=HDRiftenChildRoom> 골드)
 Replace the beacon	표식을 교체하기	등불을 교체하기
 Rested	휴식 효과	휴식효과
+Retrieve Lisbet's shipment from <Alias=ForswornCamp>	<Alias=ForswornCamp>에서 리스벳의 짐을 회수하기	<Alias=ForswornCamp>에서 리즈벳의 짐을 회수하기
+Retrieve the Aetherium Crest	에테리움 문장을 회수하기	에테리움 방패문장을 회수하기
+Retrieve the Stalhrim Source Map	스탈림 원천 지도를 회수하기	스탈림 근원의 지도를 회수하기
 Return the East Empire Shipping Map to Delvin	델빈에게 동 제국 해상운송 지도를 가져가기	델빈에게 동제국 해상운송 지도를 가져가기
+Return to the Sanctuary	성역으로 돌아가기	성지로 돌아가기
 Reverent Nordic Battleaxe	노드제 전투 도끼 - 중급 신성	노드제 전투 도끼 - 상급 신성
 Riften is home to the Black-Briar Meadery, one of the largest and most successful businesses of its kind.	리프튼에는 동종 업체중 가장 크고 성공한 사업체인 블랙-브라이어 양조장이 있습니다.	리프튼에는 동종 업체중 가장 크고 성공한 사업체인 블랙-브라이어 양조의 본사가 있습니다.
 Ring of the Major Knight	반지 - 중급 중갑	반지 - 하급 중갑
@@ -209,9 +275,12 @@ Snowy Ice Vine	눈덮인 얼음 포도덩굴	눈덮힌 얼음 포도덩굴
 Soul trap me. I won't feel right as a vampire.	소울 트랩을 걸어 줘. 흡혈귀가 돼서는 안 될 것 같아.	소울 트랩을 걸어 줘. 흡혈귀가 되서는 안 될 것 같아.
 Spawns a glowing spider that will follow you around.  Only one can be spawned at a time.	주위를 따라오는 발광 거미를 소환합니다. 한 번에 하나만 소환할 수 있습니다.	주위를 따라오는 발광 거미를 소환합니다.
 Spawns a spider that can be used to haul items.  Only one can be spawned at once.	물품을 운반하는 거미를 소환합니다. 한 번에 하나만 소환할 수 있습니다.	물품을 운반하는 거미를 소환합니다.
+Speak to Degaine	디게인과 대화하기	디게인과와 대화하기
 Speak to From Deepest Fathoms	프롬-디피스트-페덤스와 대화하기	프롬-디프스트-파돔과 대화하기
 Speak to Mercer Frey	머서 프레이와 대화하기	머서 프레이와와 대화하기
+Speak to Orthas Endario about the East Empire Company's problems	동제국 회사의 문제점에 관해서 오서스 엔다리오와 대화하기	동제국 회사의 문제점에 관해서 오투스 엔다리오와 대화하기
 Speak to Thorald Gray-Mane	쏘럴드 그레이-메인과 대화하기	프랄리아 그레이-메인에게 돌아가기
+Speak with Constance Michel about Adoption	입양에 관해서 콘스턴스 미쉘과 대화하기	입양에 관해서 콘스탄스 미쉘과 대화하기
 Speak with Golldir	골디어와 대화하기	골디어과 대화하기
 Stabilized	안정	안 정
 Staff of Daedric Command	지팡이 - 데이드라 지배	지팡이 - 데이드라제 지배
@@ -221,6 +290,7 @@ Stalhrim Armor of Eminent Illusion	스탈림 방어구 - 상급 환영마법	스
 Stalhrim Armor of Extreme Illusion	스탈림 방어구 - 최상급 환영마법	스탈림 방어구 - 특급 환영마법
 Stamina regenerates <mag> points more slowly.	지구력 재생이 <mag> 감소합니다.	<dur> 초 동안 지구력 재생이 감소합니다.
 Stands-In-Shallows	스탠드-인-섈로즈	스탠드-인-스왈로즈
+Steal Suvaris Atheron's logbook	수바리스 아세론의 항해일지를 훔치기	수바리스 아세론의 항박일지를 훔치기
 Steel Arrow	화살 - 강철	화살 - 강철 화살
 Stone. (<Global=BYOHHPAmountStone> for <Global=BYOHHPCostStone> gold)	석재. (<Global=BYOHHPAmountStone>개에 <Global=BYOHHPCostStone> 골드)	석재. (<Global=BYOHHPAmountStone> for <Global=BYOHHPCostStone> 골드)
 Storage Room - Remove Workbench	저장고 - 작업선반 제거	창고 - 작업선반 제거
@@ -233,10 +303,13 @@ Summons the ghost of the legendary assassin Lucien Lachance to fight by your sid
 Sure, I'd like the help.	물론, 기꺼이 도와주지.	물론, 기꺼지 도와주지.
 Suvaris Atheron's Logbook	수바리스 아테론의 항해일지	수바리스 아테론의 항박일지
 Swap my Child's Room with an Enchanting Lab. (<Global=HDRiftenEnchanting> gold)	아이들 방을 마법부여 연구실로 변경하고 싶다. (<Global=HDRiftenEnchanting> 골드)	아이들 방을 마법 부가 연구실로 변경하고 싶다. (<Global=HDRiftenEnchanting> 골드)
+Take the Bloodstone Chalice to Redwater Spring	혈석 성배를 레드워터 샘터로 가져가기	혈석 성배를 레드워터 샘으로 가져가기
+Talk to Amaund Motierre	아먼드 모티에르와 대화하기	아먼드 모티에르와 대화하라
 Talk to Legate Rikke	리카 군단장과 대화하기	리카 군단장와 대화하기
 Target is paralyzed for <dur> and takes 25 points of damage over <dur> seconds.	목표를 <dur> 초 동안 마비시키고, <dur> 초에 걸쳐 25 의 피해를 입힙니다.	<dur> 초 동안 <mag> 의 피해를 입히고 마비시킵니다.
 Targets that fail to resist are immobilized in hardened ash for <dur> seconds.	화산재의 마법을 날려 저항에 실패한 목표를 <dur> 초 동안 석화시킵니다.	<화산재>의 마법을 날려 저항에 실패한 목표를 <dur> 초 동안 석화시킵니다.
 Tel Mithryn Steward's House	텔 미스린 행정관의 집	텔 미스린 집사의 집
+Tell Bralsa Drel she's welcome at the Retching Netch	그녀가 레칭 네치 여관에 출입해도 된다는 것을 브랄사 드렐에게 전하기	그녀가 여관에 출입해도 된다는 것을 브랄사 드렐에게 전하기
 Tempered Sphere	단련된 드워프 구체	단련된 드워프 스피어
 Temporarily reanimates corpses in the immediate area.	잠깐 동안 나를 위해 싸울 주변의 시체들을 부활시킵니다.	잠깐 동안 나를 위해 싸울 주변의 시체들를 부활시킵니다.
 The Apprentice's Assistant	수습생의 조수	수습생
@@ -250,6 +323,8 @@ Tosses a Jumping Fire spider on the ground that will launch itself at nearby ene
 Tosses a Jumping Frost spider on the ground that will launch itself at nearby enemies and explode if it lands near them.	주변 적에게 돌진하여 폭발하는 도약형 냉기 거미를 살포합니다.	주변 적에게 돌진하여 폭발하는 폭발형 냉기 거미를 살포합니다.
 Tosses a Jumping Shock spider on the ground that will launch itself at enemies and explode if it lands near them.	주변 적에게 돌진하여 폭발하는 도약형 전격 거미를 살포합니다.	주변 적에게 돌진하여 폭발하는 폭발형 전격 거미를 살포합니다.
 Trading caravans sometimes pass through the ruins of Labyrinthian, but usually prefer safer, longer routes.	교역상인들이 가끔 미궁의 유적지를 통과해서 지나가기도 합니다. 하지만 대체로 더 안전하고, 먼 길을 선호합니다.	교역상인들이 가끔 라비린시안 미궁의 유적지를 통과해서 지나가기도 합니다. 하지만 대체로 더 안전하고, 먼 길을 선호합니다.
+Travel to Broken Oar Grotto	부러진 노 동굴로 가기	부서진 노 동굴로 가기
+Travel to Vahlok's Tomb	발록의 묘지으로 가기	발록의 무덤으로 가기
 Trophy Room, Doors	전시실, 문	전시실,문들
 Unknown Book, Vol. II	알 수 없는 책, 제 2권	알 수 없는 책, 2 권
 Unknown Book, Vol. IV	알 수 없는 책, 제 4권	알 수 없는 책, 4 권
