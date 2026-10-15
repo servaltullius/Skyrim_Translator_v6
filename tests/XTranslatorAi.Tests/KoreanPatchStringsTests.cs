@@ -147,6 +147,27 @@ public sealed class KoreanPatchStringsTests : IDisposable
         Assert.Empty(result.Applied);
     }
 
+    // A message the game formats (printf) writes a percent sign as %%; a patch text that already lost a line break and
+    // wrote a bare % can take the %% back, while a change that alters the number is still refused.
+    [Fact]
+    public async Task AFixRestoringAnEscapedPercent_IsApplied_WhenThePatchAlreadyDiffersFromTheEnglish()
+    {
+        WriteTable(Path.Combine(Data, "Strings", "Skyrim_english.DLSTRINGS"), true, new() { [2] = "Learn skills 20%% faster.\n\nOne blessing at a time." });
+        WriteTable(Path.Combine(Patch, "Strings", "Skyrim_english.DLSTRINGS"), true, new() { [2] = "기술을 20% 빨리 배웁니다.\n축복은 하나만." });
+
+        var result = await KoreanPatchStrings.ApplyAsync(Data, Patch, new[]
+        {
+            new KoreanPatchChange("Skyrim.esm", PluginStringTableKind.DlStrings, 2, "기술을 20% 빨리 배웁니다.\n축복은 하나만.", "기술을 20%% 빨리 배웁니다.\n축복은 하나만."),
+        }, write: false, backupFolder: null, CancellationToken.None);
+        var changedNumber = await KoreanPatchStrings.ApplyAsync(Data, Patch, new[]
+        {
+            new KoreanPatchChange("Skyrim.esm", PluginStringTableKind.DlStrings, 2, "기술을 20% 빨리 배웁니다.\n축복은 하나만.", "기술을 30%% 빨리 배웁니다.\n축복은 하나만."),
+        }, write: false, backupFolder: null, CancellationToken.None);
+
+        Assert.Single(result.Applied);
+        Assert.Empty(changedNumber.Applied);
+    }
+
     private static void WriteTable(string path, bool lengthPrefixed, Dictionary<uint, string> values)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);

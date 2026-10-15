@@ -168,17 +168,21 @@ public static class KoreanPatchStrings
 
     // Fewer tags differ from the English than before, and none is added that neither the English nor the patch had.
     // Formatting tags count together, since a translation may split a centered verse in two; a placeholder the game
-    // fills in (<mag>, <Alias=...>) or a page break is never further from the English than before.
+    // fills in (<mag>, <Alias=...>) or a page break is never further from the English than before. The text the
+    // validator protects counts too (a printf %% in a message, line breaks), under its own keys.
     private static bool BringsTagsCloser(string english, string current, string replacement)
     {
-        static Dictionary<string, int> Tags(string text) => RawTag.Matches(text).GroupBy(m => m.Value, StringComparer.Ordinal)
+        static Dictionary<string, int> Tags(string text) => RawTag.Matches(text).Select(m => m.Value)
+            .Concat(new XTranslatorAi.Core.Text.PlaceholderMasker().Mask(text).TokenToOriginal.Values.Select(v => "protected:" + v))
+            .GroupBy(t => t, StringComparer.Ordinal)
             .ToDictionary(g => g.Key, g => g.Count(), StringComparer.Ordinal);
         static int Gap(Dictionary<string, int> a, Dictionary<string, int> b, string tag) => Math.Abs(a.GetValueOrDefault(tag) - b.GetValueOrDefault(tag));
 
         var (source, before, after) = (Tags(english), Tags(current), Tags(replacement));
         var all = source.Keys.Union(before.Keys).Union(after.Keys).ToList();
         return after.Keys.All(tag => source.ContainsKey(tag) || before.ContainsKey(tag))
-            && all.Where(tag => !FormattingTag.IsMatch(tag)).All(tag => Gap(after, source, tag) <= Gap(before, source, tag))
+            && all.Where(tag => !FormattingTag.IsMatch(tag.StartsWith("protected:", StringComparison.Ordinal) ? tag["protected:".Length..] : tag))
+                .All(tag => Gap(after, source, tag) <= Gap(before, source, tag))
             && all.Sum(tag => Gap(after, source, tag)) < all.Sum(tag => Gap(before, source, tag));
     }
 
