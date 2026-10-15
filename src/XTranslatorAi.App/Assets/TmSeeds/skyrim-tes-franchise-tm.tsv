@@ -122,8 +122,8 @@ Source	Target
 360 Controller	Xbox 360 컨트롤러
 5 Gold	5 골드
 5,000 gold. (Lie)	5,000 골드. (거짓)
-50% chance for each attribute to absorb <mag> points of Health, Stamina and/or Magicka.	50% 확률로 체력, 지구력, 매지카 중 하나를 <mag> 흡수합니다.
-50% chance for each element of fire, frost and shock to do <mag> points of damage.	50% 확률로 <mag> 의 화염, 냉기, 전격 중 하나의 피해를 입힙니다.
+50% chance for each attribute to absorb <mag> points of Health, Stamina and/or Magicka.	체력, 지구력, 매지카 각각에 대해 50% 확률로 <mag> 흡수합니다.
+50% chance for each element of fire, frost and shock to do <mag> points of damage.	화염, 냉기, 전격 각각에 대해 50% 확률로 <mag> 의 피해를 입힙니다.
 6000 gold, and they're yours.	6,000 골드를 내면 당신에게 팔겠소.
 <Alias.Cap=SonsMinorHoldCapital> seems like a fair trade.	<Alias.Cap=SonsMinorHoldCapital>라면 공정한 거래 같은데.
 <Alias.ShortName=Client>'s <BaseName>	<Alias.ShortName=Client>의 <BaseName>
@@ -184,7 +184,7 @@ A blast of cold that does <mag> points of damage per second to Health and Stamin
 A blast of cold that does <mag> points per second damage to Health and Stamina.	차가운 돌풍을 뿜어내어 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
 A blast of fire that does <mag> points of damage. Targets on fire take extra damage.	타오르는 불덩이를 날려 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 A blast of fire that does <mag> points. Targets on fire take extra damage.	불꽃의 화살을 날려 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
-A blast of flame that sets the target on fire, doing <mag> damage per second for <15> seconds.	불꽃의 화살을 날려 <15> 초 동안 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
+A blast of flame that sets the target on fire, doing <mag> damage per second for <15> seconds.	불꽃의 화살을 날려 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 A blood-freezing poison that does <mag> points damage to Health and Stamina for <dur> seconds.	피가 굳어지는 독으로 <dur> 초 동안 매 초마다 <mag> 의 피해와 지구력 피해를 입힙니다.
 A blood-freezing poison that does <mag> points of damage to Health and Stamina per second.	피가 굳어지는 독으로 매 초마다 <mag> 의 피해와 지구력 피해를 입힙니다.
 A bolt of lightning that does <mag> points of shock damage to Health and half that to Magicka.	번개의 화살을 날려 <mag> 의 전격 피해와 절반의 매지카 피해를 입힙니다.
@@ -219,7 +219,7 @@ A False Front	위장 전술
 A Few Words with You	몇 마디의 대화
 A fiery explosion for <mag> points of damage in a 15 foot radius. Targets on fire take extra damage.	15 피트 범위의 격렬한 폭발로 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 A fox?	여우?
-A freezing whirlwind that does <mag> points of damage per second, and twice as much Stamina damage.	얼어붙은 회오리바람을 날려 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
+A freezing whirlwind that does <mag> points of damage per second, and twice as much Stamina damage.	얼어붙은 회오리바람을 날려 매 초마다 <mag> 의 냉기 피해와 2배의 지구력 피해를 입힙니다.
 A freezing whirlwind that does <mag> points of frost damage per second to Health and Stamina.	얼어붙은 회오리바람을 날려 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
 A Friend Indeed	진정한 친구
 A Friend to the Orcs	오크의 친구
@@ -275,7 +275,7 @@ A shiv?	칼?
 A skald? Is that some kind of bard?	스칼드? 바드와 비슷한 겁니까?
 A snow elf?	스노우 엘프?
 A spear of ice that does <mag> points of frost damage to Health and Stamina.	날카로운 얼음의 창을 날려 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
-A spear of ice that does <mag> points of frost damage, and twice as much Stamina damage.	얼음의 가시를 날려 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
+A spear of ice that does <mag> points of frost damage, and twice as much Stamina damage.	얼음의 가시를 날려 <mag> 의 냉기 피해와 2배의 지구력 피해를 입힙니다.
 A spell tome. (25 husks)	마법책. (25 껍질)
 A spike of ice that does <mag> points of frost damage to Health and Stamina and slows the target for <15> seconds.	얼음의 가시를 날려 <15> 초 동안 이동 속도를 감소시키고 <mag> 의 냉기 피해와 지구력 피해를 입힙니다. 일정한 확률로 적을 빙결시킵니다.
 A spike of ice that does <mag> points of frost damage to Health and Stamina.	얼음의 가시를 날려 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
@@ -292,7 +292,7 @@ A tidy, one-room house.	자그마한, 방 하나짜리 집.
 A Tragedy in Black	검은 비극
 A truly strong chief would break the curse, not suffer from it.	진정으로 강한 족장이라면 저주를 풀어야지, 저주때문에 고통받는 것이 아니고.
 A vampire? I don't think so.	흡혈귀라고? 안될 거 같군.
-A volley of frozen shards that do <mag> points of damage, and twice as much Stamina damage.	얼음 파편들을 발사하여 <mag> 냉기 피해를 입힙니다. 지구력에도 2 배의 피해를 입힙니다.
+A volley of frozen shards that do <mag> points of damage, and twice as much Stamina damage.	얼음 파편들을 발사하여 <mag> 의 냉기 피해를 입힙니다. 지구력에도 2배의 피해를 입힙니다.
 A Warning	경고
 A wedding?	결혼식?
 A... mudcrab?	뭐...? 진흙 게?
@@ -386,9 +386,9 @@ Add	추가
 Add a cellar beneath the Main Hall.	대청 아래쪽에 지하실을 추가합니다.
 Add a greenhouse with customizable planters.	마음대로 여러가지 식물을 재배할 수 있는 온실을 추가합니다.
 Add a kitchen that can be fitted out with cooking stations, food containers and the like.	여러가지 주방용품들과 음식 저장용기등이 구비된 부엌을 추가합니다.
-Add a residential wing with master bedroom and childrens' bedroom. Includes an exterior porch.	주 침실과 어린이용 침실들로 구성된 공간을 추가합니다. 외부로 통하는 문도 포함되어 있습니다.
-Add a room that can be equipped with smithing stations and weapon storage. Includes an exterior porch.	제련용 시설외에 무기들을 저장할 수 있는 공간을 추가합니다. 외부로 통하는 문도 포함되어 있습니다.
-Add a storage area which can be equipped with a variety of containers and weapon racks. Includes an exterior porch.	다양한 보관함 상자들과 무기 거치대등을 설치할 수 있는 창고를 추가합니다. 외부로 통하는 문도 포함되어 있습니다.
+Add a residential wing with master bedroom and childrens' bedroom. Includes an exterior porch.	주 침실과 어린이용 침실들로 구성된 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.
+Add a room that can be equipped with smithing stations and weapon storage. Includes an exterior porch.	제련용 시설외에 무기들을 저장할 수 있는 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.
+Add a storage area which can be equipped with a variety of containers and weapon racks. Includes an exterior porch.	다양한 보관함 상자들과 무기 거치대등을 설치할 수 있는 창고를 추가합니다. 야외 베란다도 포함되어 있습니다.
 Add a tower ready to be fitted out as an alchemy laboratory.	연금술 실험실로 꾸밀 수 있는 탑을 추가합니다.
 Add a tower ready to be turned into a comfortable library.	안락한 도서실로 꾸밀 수 있는 탑을 추가합니다.
 Add a tower that can be turned into a fully-equipped enchanting laboratory.	완벽한 마법부여 연구실로 전환할 수 있는 탑을 추가합니다.
@@ -407,7 +407,7 @@ Addition - West Wing - Bedrooms	추가 - 서쪽 부속 건물 - 침실
 Addition - West Wing - Enchanter's Tower	추가 - 서쪽 부속 건물 - 마법부가 연구탑
 Addition - West Wing - Greenhouse	추가 - 서쪽 부속 건물 - 온실
 Additional Werewolf Transformation	추가 늑대인간 변신
-Adds <mag>% to the dragon breath and spell absorption of Miraak's robes.	미락의 로브가 적의 마법과 드래곤의 숨결을 <mag>% 흡수합니다.
+Adds <mag>% to the dragon breath and spell absorption of Miraak's robes.	미락의 로브가 가진 드래곤의 숨결 및 마법 흡수 효과에 <mag>% 를 더합니다.
 Addvar	애드바
 Addvar's House	애드바의 집
 Addvild	애드빌드
@@ -897,8 +897,8 @@ Any advice for a new vampire hunter?	신참 흡혈귀 사냥꾼에게 해줄 조
 Any advice for fighting dragons?	드래곤과의 전투에 관해 뭔가 조언이라도 있소?
 Any advice on my current contract?	지금 내가 맡은 일에 관해서 뭔가 조언이 있소?
 Any advice?	무슨 조언이라도?
-Any allies inside the ring will regenerate <mag> health per second.	치유의 마법진을 생성하여 매 초마다 아군의 체력을 <mag> 회복시킵니다.
-Any attacks done while both sneaking and undetected will do extra damage.	은신 중이거나 발각되지 않은 상태에서 하는 모든 공격은 추가로 피해를 더 주게 됩니다.
+Any allies inside the ring will regenerate <mag> health per second.	치유의 마법진을 생성하여 매 초마다 마법진 안에 있는 아군의 체력을 <mag> 회복시킵니다.
+Any attacks done while both sneaking and undetected will do extra damage.	은신 중이며 발각되지 않은 상태에서 하는 모든 공격은 추가로 피해를 더 주게 됩니다.
 Any chance I could talk you into overlooking this? (Persuade)	한번만 봐주시오. (설득)
 Any clues about the other Elder Scroll?	다른 엘더스크롤에 관한 실마리는?
 Any clues where I can find these ingredients?	이 재료들을 찾을 수 있는 장소에 대한 단서는?
@@ -918,7 +918,7 @@ Any idea why?	이유를 알고있나?
 Any ideas where I can look?	어딜 찾아보면 좋을지에 대한 생각이 있나?
 Any information on the prison registry?	입소자 명단에 대한 정보는 없나?
 Any interest in ancient falmer tomes?	고대 팔머의 서적들에 흥미가 있소?
-Any map locations that have been discovered and visited can be fast traveled to, from any area outdoors.	지도상에서 한번 발견했거나 방문했던 장소들은 실외의 어디에서든 빠른 이동으로 갈 수 있습니다.
+Any map locations that have been discovered and visited can be fast traveled to, from any area outdoors.	지도상에서 발견하고 직접 방문한 장소들은 실외의 어디에서든 빠른 이동으로 갈 수 있습니다.
 Any news involving the Dark Brotherhood?	다크 브라더후드와 관련된 새로운 소식이 있나?
 Any other way to earn it?	그것을 구할 수 있는 다른 방법은?
 Any place I can find work?	뭔가 일거리를 구할만한 곳이?
@@ -1291,7 +1291,7 @@ Assist the people of Winterhold (<Global=FriendsCountWinterhold>/<Global=Friends
 Assur	아슈어
 Asta	아스타
 Astrid	아스트리드
-Astrid is the leader of the Dark Brotherhood Sanctuary, and her word is law.	아스트리드는 다크 브라더후드 성지의 우두머리이며, 그녀의 말이 곧 법입니다.
+Astrid is the leader of the Dark Brotherhood Sanctuary, and her word is law.	아스트리드는 다크 브라더후드 성역의 우두머리이며, 그녀의 말이 곧 법입니다.
 Astrid said you'd have some work for me.	아스트리드가 말하길 뭔가 나에게 부탁할 일이 있다던데.
 Astrid sent me for another contract.	아스트리드가 또 다른 의뢰를 위해서 나를 보냈다.
 Astrid thinks a Family member may be conspiring with Cicero.	아스트리드는 우리들 중 누군가가 시세로와 함께 음모를 꾸민다고 생각하고 있어.
@@ -1317,7 +1317,7 @@ At my house in Windhelm.	윈드헬름에 있는 내 집에.
 At Myrwatch.	미어와치에.
 At Nchuanthumz.	느츄안툼즈에.
 At Shadowfoot Sanctum.	섀도우풋 성역에.
-At the center of the Dunmer province of Morrowind lies the Red Mountain, the largest volcano in all of Tamriel.	던머지역의 중앙에 있는 모로윈드의 중심부에는 탐리엘에서 가장 거대한 화산인 레드 마운틴이 있습니다.
+At the center of the Dunmer province of Morrowind lies the Red Mountain, the largest volcano in all of Tamriel.	던머들의 지역인 모로윈드의 중심부에는 탐리엘에서 가장 거대한 화산인 레드 마운틴이 있습니다.
 At the Summit of Apocrypha	아포크리파의 끝에서
 At Tundra Homestead.	툰드라 주택에서.
 Ataf	에이타프
@@ -2246,7 +2246,7 @@ Burn three bee hives (<Global=TG02HiveCount>/3)	벌집 3개를 불태우기 (<Gl
 Burned Book	불타버린 책
 Burned House	불타버린 집
 Burning	불길
-Burns the target <mag> points per second. Targets on fire take extra damage.	<mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
+Burns the target <mag> points per second. Targets on fire take extra damage.	매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 Burns the target for <mag> points. Targets on fire take extra damage.	<mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 Burns Trolls for <mag> points.	트롤에게 <mag> 의 화염 피해를 입힙니다.
 Burnt Corpse	불타버린 시체
@@ -2497,7 +2497,7 @@ Cast Iron Pot	주철 냄비
 Cast on a nearby surface, it explodes for <mag> points of fire damage when enemies come near.	주변 표면에 화염의 룬을 설치합니다. 적이 접근 시 폭발하여 <mag> 의 화염 피해를 입힙니다.
 Cast on a nearby surface, it explodes for <mag> points of frost damage when enemies come near.	주변 표면에 냉기의 룬을 설치합니다. 적이 접근 시 폭발하여 <mag> 의 냉기 피해를 입힙니다.
 Cast on a nearby surface, it explodes for <mag> points of shock damage when enemies come near.	주변 표면에 전격의 룬을 설치합니다. 적이 접근 시 폭발하여 <mag> 의 전격 피해를 입힙니다.
-Cast on a nearby surface, it explodes for and freezes the target in place for <dur> seconds.	주변 표면에 정지의 룬을 설치합니다. 적이 접근 시 폭발하여 <mag> 의 냉기 피해를 입힙니다.
+Cast on a nearby surface, it explodes for and freezes the target in place for <dur> seconds.	주변 표면에 정지의 룬을 설치합니다. 폭발하면 목표를 <dur> 초 동안 그 자리에 얼어붙게 합니다.
 Cast on a nearby surface, it explodes when enemies are nearby, immobilizing them in hardened ash for <dur> seconds.	주변 표면에 화산재의 룬을 설치합니다. 적이 접근 시 폭발하여 <dur> 초 동안 석화시킵니다.
 Cast on the ground, it creates an area of fire that does <50> points of fire damage per second.	지면에 불의 장벽을 만들어 매 초마다 <50> 의 화염 피해를 입힙니다.
 Cast on the ground, it creates an area of frost that does <50> points of frost damage per second.	지면에 얼음의 장벽을 만들어 매 초마다 <50> 의 냉기 피해를 입힙니다.
@@ -3158,7 +3158,7 @@ Creates a magic battle axe for <dur> seconds. Sheathe it to dispel.	<dur> 초 �
 Creates a magic bow for <dur> seconds. Sheathe it to dispel.	<dur> 초 동안 마법의 활을 소환합니다. 무기를 집어넣으면 사라집니다.
 Creates a magic dagger for <dur> seconds. Sheathe it to dispel.	<dur> 초 동안 마법의 단검을 소환합니다. 무기를 집어넣으면 사라집니다.
 Creates a magic sword for <dur> seconds. Sheathe it to dispel.	<dur> 초 동안 마법의 검을 소환합니다. 무기를 집어넣으면 사라집니다.
-Creates a wall of frost that does <mag> damage per second.	지면에 얼음의 장벽을 만들어 매 초마다 <50> 의 냉기 피해를 입힙니다.
+Creates a wall of frost that does <mag> damage per second.	지면에 얼음의 장벽을 만들어 매 초마다 <mag> 의 냉기 피해를 입힙니다.
 Creates an Ash Guardian that guards that location until destroyed. Consumes a heart stone from your inventory.	하트스톤을 소모하여 소환된 장소를 수호하는 화산재 수호자를 소환합니다. 하트스톤이 없을 시 적대적인 상태가 됩니다.
 Creation Club Cell	Creation Club Cell
 Creations	모드
@@ -3673,7 +3673,7 @@ Damage Stamina Regen	지구력 재생 피해
 Damage Stamina Regeneration	지구력 재생 피해
 Damage taken from animals is reduced 10%.	동물에게 입는 피해량이 10% 감소합니다.
 Damaged Albino Spider Pod	손상된 백색 거미 고치
-Damages the caster <mag> points per second.	매 초마다 <mag> 의 피해를 입힙니다.
+Damages the caster <mag> points per second.	시전자에게 매 초마다 <mag> 의 피해를 입힙니다.
 Damn moths! Why are they doing that?	빌어먹을 나방들! 왜 이러는 거지?
 Dampened Spirits	꺾여진 기세
 Damphall Mine	댐프홀 광산
@@ -4271,7 +4271,7 @@ Does <mag> points of damage to health.	<mag> 의 피해를 입힙니다.
 Does <mag> points of Fire Damage.	<mag> 의 화염 피해를 입힙니다.
 Does <mag> points of Frost Damage.	<mag> 의 냉기 피해를 입힙니다.
 Does <mag> points of Magicka damage.	<mag> 의 매지카 피해를 입힙니다.
-Does <mag> points of Shock Damage.	<mag> 의 전격 피해를 입힙니다..
+Does <mag> points of Shock Damage.	<mag> 의 전격 피해를 입힙니다.
 Does <mag> points of Stamina damage.	<mag> 의 지구력 피해를 입힙니다.
 Does a woman named Margret stay here?	마그레트란 이름의 여자가 여기에 있소?
 Does an additional <mag> points of damage.	<mag> 의 추가 피해를 입힙니다.
@@ -4663,7 +4663,7 @@ Drain Vitality - Magicka	매지카 흡수
 Drain Vitality - Stamina	지구력 흡수
 Drainblood Battleaxe	흡혈 전투 도끼
 Drainheart Sword	생기흡수의 검
-Drains <mag> points from Carry Weight.	무게 한계를 <mag> 흡수합니다.
+Drains <mag> points from Carry Weight.	무게 한계가 <mag> 감소합니다.
 Drains <mag> points from magicka.	<mag> 의 매지카 피해를 입힙니다.
 Drains <mag> points from stamina.	지구력이 <mag> 감소합니다.
 Drains <mag> points of Health per second for <dur> seconds.	<dur> 초 동안 매 초마다 체력을 <mag> 흡수합니다.
@@ -6920,7 +6920,7 @@ FOOD	음식
 Fools? Why do you say that?	멍청이들? 왜 그 사람들이 멍청한 거지?
 Footstep	발자국소리
 Footwraps	죄수의 발싸개
-For <dur> seconds nearby opponents take <8> points of shock damage and half magicka damage.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 전격 피해와 매지카 피해를 입힙니다.
+For <dur> seconds nearby opponents take <8> points of shock damage and half magicka damage.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 전격 피해와 절반의 매지카 피해를 입힙니다.
 For <dur> seconds you automatically become invisible while sneaking.	<dur> 초 동안 은신 시 투명화합니다.
 For <dur> seconds, items are enchanted <mag>% stronger.	<dur> 초 동안 부여하는 마법의 위력이 <mag>% 증가합니다.
 For <dur> seconds, opponents in melee range are drained of <10> life.	<dur> 초 동안 주변 적에게 매 초마다 체력을 <10> 흡수합니다.
@@ -6934,7 +6934,7 @@ For <dur> seconds, opponents in melee range take <mag> points frost damage and s
 For <dur> seconds, opponents in melee range take <mag> points of damage per second.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 피해를 입힙니다.
 For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	불꽃의 망토를 둘러 <dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 For <dur> seconds, opponents in melee range take <mag> points shock damage and magicka damage per second.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 전격 피해와 매지카 피해를 입힙니다.
-For <dur> seconds, opponents that get too close take <8> points per second of fire damage.	<dur> 초 동안 주변 적에게 <8> 의 화염 피해를 입힙니다.
+For <dur> seconds, opponents that get too close take <8> points per second of fire damage.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 화염 피해를 입힙니다.
 For <dur> seconds, undead in melee range take <10> points sun damage per second.	<dur> 초 동안 주변 언데드에게 매 초마다 <10> 의 태양 피해를 입힙니다.
 For <dur> seconds, weapon and armor improving is <mag>% better.	<dur> 초 동안 강화하는 장비의 위력이 <mag>% 증가합니다.
 For a shaman, you fight pretty well. Who trained you?	주술사치고는 아주 잘 싸우던데. 누구한테 배웠지?
@@ -13052,7 +13052,7 @@ Many will die by my hand.	많은 사람들이 내 손에 죽게 될 것입니다
 Map of Dragon Burials	드래곤 매장지 지도
 Map of Skyrim	스카이림 지도
 Map updated.	지도가 갱신되었습니다.
-Mara is the goddess of love and compassion. She has a temple in Riften.	마라는 정열과 사랑의 여신입니다. 그녀의 신전은 리프튼 에 있습니다.
+Mara is the goddess of love and compassion. She has a temple in Riften.	마라는 사랑과 자비의 여신입니다. 그녀의 신전은 리프튼 에 있습니다.
 Mara Smiles Upon You!	마라 여신의 미소가 당신에게!
 Mara's Eye Den	마라의 눈망울 굴
 Mara's Eye Pond	마라의 눈망울 연못
@@ -13580,7 +13580,7 @@ Nchuanthumz: Dwarven Home	느추안툼즈: 드워프 집
 Nchunak's Fire and Faith	느츄낙의 불꽃과 믿음
 nd	일
 Nearby animals will not attack, and their life forces are visible for <dur> seconds.	주변의 동물들이 <dur> 초 동안 싸움을 멈추게 만들며 동물들의 생명력을 볼 수 있습니다.
-Nearby creatures, including undead, machines and daedra, can be seen through walls for <dur> seconds.	<dur> 초 동안 주변의 언데드, 기계, 데이드라를 제외한 생물체를 벽 너머로 볼 수 있습니다.
+Nearby creatures, including undead, machines and daedra, can be seen through walls for <dur> seconds.	<dur> 초 동안 주변의 언데드, 기계, 데이드라를 포함한 생물체를 벽 너머로 볼 수 있습니다.
 Nearby dead and undead can be seen through walls.	주변의 시체와 언데드를 벽 너머로 볼 수 있습니다.
 Nearby living creatures, but not undead or daedra, can be seen through walls.	주변의 언데드, 기계, 데이드라를 제외한 생물체를 벽 너머로 볼 수 있습니다.
 Nearby living creatures, but not undead, machines or daedra, can be seen through walls.	주변의 언데드, 기계, 데이드라를 제외한 생물체를 벽 너머로 볼 수 있습니다.
@@ -13726,7 +13726,7 @@ Neither side is making much headway. What's the harm in talking to Ulfric?	어�
 Nelacar	넬라카
 Nelkir	넬키어
 Neloth	넬로스
-Neloth's <mag> point health boost.	체력이 <mag> 증가합니다
+Neloth's <mag> point health boost.	체력이 <mag> 증가합니다.
 Neloth's Health Boost	넬로스의 체력 강화
 Neloth's Health Spell	넬로스의 체력 강화
 Neloth's Memory Spell	넬로스의 기억마법
@@ -14617,7 +14617,7 @@ On second thought, perhaps I'll invest another time.	흐음, 다음 기회에.
 On second thought, perhaps I'll wait a bit longer to decide.	생각해보니, 결정은 좀 미뤄야 되겠군.
 On Stepping Lightly	조심스러운 발걸음
 On the Great Collapse	대붕괴에 관하여
-Once a source of pride for the people of Winterhold, the College is now shunned and feared.	한 때 윈터홀드 시민들에게 자부심을 주던 대학은 이제 기피와 두려움의 목표이 되었습니다.
+Once a source of pride for the people of Winterhold, the College is now shunned and feared.	한 때 윈터홀드 시민들에게 자부심을 주던 대학은 이제 기피와 두려움의 대상이 되었습니다.
 Once I'm inside the Embassy, then what?	일단 대사관에 들어간 뒤에는 뭘 해야 합니까?
 Once I've got Stalhrim, how do I forge it into something useful?	스탈림을 구한 다음, 어떻게 그걸 쓸만하게 제련할 수 있지?
 Once the capital of Skyrim, Winterhold has been all but abandoned in the last few hundred years.	한때 스카이림의 수도였던 윈터홀드는 지난 몇 백년동안 완전히 방치되었습니다.
@@ -16356,7 +16356,7 @@ Riften Guard's Helmet	리프튼 경비병 투구
 Riften Guard's Shield	리프튼 경비병 방패
 Riften Hall of the Dead	리프튼 망자의 전당
 Riften Home Decorating Guide	리프튼 실내장식 안내서
-Riften is home to the Black-Briar Meadery, one of the largest and most successful businesses of its kind.	리프튼에는 동종 업체중 가장 크고 성공한 사업체인 블랙-브라이어 양조의 본사가 있습니다.
+Riften is home to the Black-Briar Meadery, one of the largest and most successful businesses of its kind.	리프튼에는 동종 업체중 가장 크고 성공한 사업체인 블랙-브라이어 양조장이 있습니다.
 Riften Jail	리프튼 감옥
 Riften Jail Key	열쇠 - 리프튼 감옥
 Riften Mercer's House	리프트윌드 저택
@@ -17966,8 +17966,8 @@ Spare me the details.	간략하게 듣고 싶군.
 Spare me the walk. Just tell me. (Persuade)	이제 그만하고, 말해주시오. (설득)
 Sparks	번갯불
 Spawn Ash	화산재 덩어리
-Spawns a glowing spider that will follow you around.  Only one can be spawned at a time.	주위를 따라오는 발광 거미를 소환합니다.
-Spawns a spider that can be used to haul items.  Only one can be spawned at once.	물품을 운반하는 거미를 소환합니다.
+Spawns a glowing spider that will follow you around.  Only one can be spawned at a time.	주위를 따라오는 발광 거미를 소환합니다. 한 번에 하나만 소환할 수 있습니다.
+Spawns a spider that can be used to haul items.  Only one can be spawned at once.	물품을 운반하는 거미를 소환합니다. 한 번에 하나만 소환할 수 있습니다.
 Spawns a spider that secretes a flammable oil when it feels threatened.	위험을 감지 시 인화성 기름을 분출하는 거미를 소환합니다.
 Spawns the Selected NPC	선택한 NPC를 생성합니다
 Speak	대화하기
@@ -19359,7 +19359,7 @@ Summons a Flame Atronach permanently.	영구적으로 화염 아트로나크를 
 Summons a Frost Atronach for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 서리 아트로나크를 소환합니다.
 Summons a Frost Atronach permanently.	영구적으로 서리 아트로나크를 소환합니다.
 Summons a Gargoyle for <dur> seconds.	<dur> 초 동안 가고일을 소환합니다.
-Summons a High Seeker for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 고위 시커를 소환합니다.
+Summons a High Seeker for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 시커 군주를 소환합니다.
 Summons a Mistman from the Soul Cairn for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 소울 케언으로부터 안개병사를 소환합니다.
 Summons a Seeker for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 시커를 소환합니다.
 Summons a Spectral Dragon for <dur> seconds.	<dur> 초 동안 영체 드래곤을 소환합니다.
@@ -19370,11 +19370,11 @@ Summons a Wrathman from the Soul Cairn for <dur> seconds wherever the caster is 
 Summons an Ash Guardian for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 화산재 수호자를 소환합니다.
 Summons an Ash Spawn for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 화산재 스폰을 소환합니다.
 Summons an Ice Wraith for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 얼음 망령을 소환합니다.
-Summons an unbound Dremora for <dur> seconds.	<dur> 초 동안 속박되지 않은 드레모라를 소환합니다.
-Summons Arvak in the Soul Cairn or Tamriel wilderness to act as your steed.	소울 케언으로부터 나의 말이 되어줄 아바크를 소환합니다.
+Summons an unbound Dremora for <dur> seconds.	<dur> 초 동안 계약없는 드레모라를 소환합니다.
+Summons Arvak in the Soul Cairn or Tamriel wilderness to act as your steed.	소울 케언이나 탐리엘의 야외에서 나의 말이 되어줄 아바크를 소환합니다.
 Summons Karstaag to fight for you for <dur> seconds.	<dur> 초 동안 나를 위해 싸울 카스태그를 소환합니다.
 Summons spectral instruments that play for you for <dur> seconds.	<dur> 초 동안 음악을 연주하여 아군의 지구력 재생을 증가시키는 영체 악기를 소환합니다.
-Summons the ghost of the legendary assassin Lucien Lachance to fight by your side, until he's defeated.	전설적인 암살자 루시엔 러찬스의 영혼을 소환합니다.
+Summons the ghost of the legendary assassin Lucien Lachance to fight by your side, until he's defeated.	전설적인 암살자 루시엔 러찬스의 영혼을 소환하여, 쓰러질 때까지 내 곁에서 싸우게 합니다.
 Summons the Shade of Arniel Gane for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 아니얼 게인의 유령을 소환합니다.
 Sun Fire	태양 불꽃
 Sun Flare	흑점 폭발
@@ -19624,7 +19624,7 @@ Target is <mag>% weaker to poison for <dur> seconds.	<dur> 초 동안 독 저항
 Target is <mag>% weaker to shock damage for <dur> seconds.	<dur> 초 동안 전격 저항력을 <mag>% 감소시킵니다.
 Target is frozen between Oblivion and Tamriel for <dur> seconds, and immune to all damage.	<dur> 초 동안 목표를 오블리비언과 탐리엘 사이의 차원에 고정시켜 피해를 입히지도, 입지도 않게 만듭니다.
 Target is invisible for <dur> seconds. Activating an object or attacking will break the spell.	<dur> 초 동안 투명화합니다. 물체를 작동하거나 공격 시 마법이 파괴됩니다.
-Target is paralyzed for <dur> and takes 25 points of damage over <dur> seconds.	<dur> 초 동안 <mag> 의 피해를 입히고 마비시킵니다.
+Target is paralyzed for <dur> and takes 25 points of damage over <dur> seconds.	목표를 <dur> 초 동안 마비시키고, <dur> 초에 걸쳐 25 의 피해를 입힙니다.
 Target is paralyzed for <dur> seconds.	<dur> 초 동안 마비시킵니다.
 Target Level	목표 레벨
 Target Location	목표 위치
@@ -19649,7 +19649,7 @@ Targets take <mag> points of frost damage for <dur> seconds, plus Stamina damage
 Targets take <mag> points of frost damage for <dur> seconds.	강렬한 폭풍설을 일으켜 <dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
 Targets take <mag> points of frost damage for <dur> seconds. Single use, then must be reacquired at the Wind Stone.	하루에 한 번 강렬한 폭풍설을 일으켜 <dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다. 사용 후엔 바람의 바위의 축복을 다시 받아야 사용할 수 있습니다.
 Targets that fail to resist are coated in solidified as for <dur> seconds.	저항에 실패한 목표를 <dur> 초 동안 석화시킵니다.
-Targets that fail to resist are immobilized in hardened ash for <dur> seconds.	<화산재>의 마법을 날려 저항에 실패한 목표를 <dur> 초 동안 석화시킵니다.
+Targets that fail to resist are immobilized in hardened ash for <dur> seconds.	화산재의 마법을 날려 저항에 실패한 목표를 <dur> 초 동안 석화시킵니다.
 Targets that fail to resist are paralyzed for <dur> seconds.	저항에 실패한 목표를 <dur> 초 동안 마비시킵니다.
 Targets that fail to resist take <mag> points of poison damage per second for <dur> seconds.	주변 표면에 맹독의 룬을 설치합니다. 적이 접근 시 폭발하여 <dur> 초 동안 매 초마다 <mag> 의 독 피해를 입힙니다.
 Targets up to level <20> that fail to resist are frenzied for <30> seconds.	주변 표면에 광란의 룬을 설치합니다. 적이 접근 시 폭발하여 레벨 <20> 이하인 목표가 <30> 초 동안 다른 이를 공격하게 합니다.
@@ -20020,7 +20020,7 @@ The Black Arrow, v2	검은 화살, 제 2권
 The Black Arts On Trial	흑마술에 대한 논의
 The Black Books have something to do with Hermaeus Mora?	검은 책들이 헤르메우스 모라와 뭔가 관련이 있는 거요?
 The Black Star	검은 별
-The Black-Briars of Riften are one of the most influential and well-connected clans in Skyrim.	리프튼에 있는 블랙-브라이어 회사는 스카이림에서 가장 영향력이 있고 잘 구성되어 있는 조직들 중 하나입니다.
+The Black-Briars of Riften are one of the most influential and well-connected clans in Skyrim.	리프튼의 블랙-브라이어 가문은 스카이림에서 가장 영향력이 크고 인맥이 넓은 가문 중 하나입니다.
 The blacksmith won't talk. You're wasting your time (Persuade)	대장장이는 말하지 않을 텐데. 시간낭비일 뿐이라고. (설득)
 The Blades are helping me. I'm not their puppet.	블레이드는 나를 도와줄 뿐입니다. 나는 꼭두각시는 아니에요.
 The Blades helped me find out about it.	블레이드가 그것을 찾게 도와주었습니다.
@@ -20083,7 +20083,7 @@ The Dark Brotherhood requires your services.	다크 브라더후드가 너의 �
 The Dark Brotherhood was once bound by a set of rules called the Five Tenets, but they have long since been abandoned.	다크 브라더후드는 한 때 다섯 교리로 묶여있었지만, 지금은 그 교리들이 사라진지 오래되었습니다.
 The Dark Brotherhood was once greatly feared and respected, but the organization is now but a shadow of its former self.	다크 브라더후드는 한 때 공포와 경외의 대상이었으나, 지금은 예전의 위용을 되찾지 못하고 있습니다.
 The Dark Brotherhood will return to greatness. With my help.	다크 브라더후드는 과거의 영광을 되찾게 될 것이다. 내 도움으로.
-The Dawnguard has armored battle trolls that they use when fighting vampires.	던가드들은 흡혈귀와 싸울 때 이용하는 강화 전투 트롤들을 가지고 있습니다.
+The Dawnguard has armored battle trolls that they use when fighting vampires.	던가드들은 흡혈귀와 싸울 때 이용하는 갑옷을 입힌 전투 트롤들을 가지고 있습니다.
 The Dawnguard tried to stop me, but they posed no threat.	던가드가 나를 막으려고 했지만, 전혀 위협도 되지 않았소.
 The Dawnguard were protecting him, and they nearly killed me.	던가드가 그를 보호하고 있었고 나는 거의 죽을뻔 했소.
 The Dawnguard were there. They fought well, but not well enough.	던가드가 거기 있었소. 잘 싸우긴 했지만 나를 막을 정도로 잘 싸우진 못했소.
@@ -20319,7 +20319,7 @@ The Poison Song, Book IV	독의 노래, 제 4권
 The Poison Song, Book V	독의 노래, 제 5권
 The Poison Song, Book VI	독의 노래, 제 6권
 The Poison Song, Book VII	독의 노래, 제 7권
-The poor in Markarth live in the Warrens, and are almost exclusively natives of the Reach.	마르카스의 가난한 자들은 빈민촌에 살고 있으며, 대부분은 리치의 원주민들입니다.
+The poor in Markarth live in the Warrens, and are almost exclusively natives of the Reach.	마르카스의 가난한 자들은 빈민굴에 살고 있으며, 대부분은 리치의 원주민들입니다.
 The Posting of the Hunt	사냥의 시작
 The power from the Lady's Stone lets you regenerate Health and Stamina much faster for a while.	'숙녀의 선돌'은 체력과 지구력을 잠깐동안 더 빠르게 회복할 수 있는 능력을 추가합니다.
 The power to crush all before me!	내 앞을 가로막는 모든 것을 부숴버릴 힘!
@@ -20418,7 +20418,7 @@ The Thalmor know nothing about the dragons.	탈모어들은 드래곤에 관해�
 The Thalmor?	탈모어?
 The Thief Doomstone	도적의 선돌
 The Thief Stone	도적의 선돌
-The Thief Stone ability lets you learn stealth skills more quickly.	'도적의 선돌'은 은신 기술을 더 빠르게 배울 수 있도록 해줍니다.
+The Thief Stone ability lets you learn stealth skills more quickly.	'도적의 선돌'은 도적 계열 기술을 더 빠르게 배울 수 있도록 해줍니다.
 The Thieves Guild has a problem out here?	도둑길드는 이 지역에서 뭔가 문제라도 있소?
 The Third Door	세 번째 문
 The Third Era Timeline	제3세기 연표
@@ -20824,7 +20824,7 @@ Tower of Dawn	새벽의 탑
 Tower of Mzark	므자크의 탑
 Tower of Strength	의지할 수 있는 자
 Toying With The Dead	죽은 자를 농락하기
-Trading caravans sometimes pass through the ruins of Labyrinthian, but usually prefer safer, longer routes.	교역상인들이 가끔 라비린시안 미궁의 유적지를 통과해서 지나가기도 합니다. 하지만 대체로 더 안전하고, 먼 길을 선호합니다.
+Trading caravans sometimes pass through the ruins of Labyrinthian, but usually prefer safer, longer routes.	교역상인들이 가끔 미궁의 유적지를 통과해서 지나가기도 합니다. 하지만 대체로 더 안전하고, 먼 길을 선호합니다.
 Train me to be a better Pickpocket.	소매치기 기술을 가르쳐 주시오.
 Train with Vilkas	빌카스와 대련하기
 Training	훈련
@@ -23059,7 +23059,7 @@ Witchmist Grove	위치미스트 숲
 With Friends Like These...	이런 친구들과 함께라면...
 With his own wife and child inside?	아내와 아이를 집에 둔 채로?
 With skills like yours? Why not?	그 기술을 가졌는데도? 왜?
-Withdrawals from the tainted Bloodspring lower your Magicka and Stamina regeneration by 40% for 2 days.	저주받은 피의 샘에서 벗어날 시 2 일 동안 매지카와 지구력의 재생이 40% 감소합니다.
+Withdrawals from the tainted Bloodspring lower your Magicka and Stamina regeneration by 40% for 2 days.	저주받은 피의 샘의 금단 증상으로 2 일 동안 매지카와 지구력의 재생이 40% 감소합니다.
 Withered Shrub	말라죽은 관목
 Withered Tree	말라죽은 나무
 Withered Trees	말라죽은 나무들
@@ -23298,9 +23298,9 @@ You appear to need help getting organized.	정리하는 걸 도와줄 사람이 
 You are <mag>% harder to detect for <dur> seconds.	<dur> 초 동안 발각되기가 <mag>% 어려워집니다.
 You are <mag>% harder to detect.	발각되기가 <mag>% 어려워집니다.
 You are <mag>% less effective with melee weapons.	근접 무기의 위력이 <mag>% 감소합니다.
-You are <mag>% more effective with missile weapons.	활의 공격력이 <mag> 증가합니다.
+You are <mag>% more effective with missile weapons.	활의 공격력이 <mag>% 증가합니다.
 You are a disgrace to our race! I spit on your fur!	넌 우리 종족의 수치다! 네 가죽을 벗겨 침을 뱉어 주마!
-You are able to move more quietly, and opponents that get too close take <5> points poison damage per second.	더 조용하게 움직입니다. 주변 적에게 매 초마다 <mag> 의 독 피해를 입힙니다.
+You are able to move more quietly, and opponents that get too close take <5> points poison damage per second.	더 조용하게 움직입니다. 주변 적에게 매 초마다 <5> 의 독 피해를 입힙니다.
 You are already at full health.	이미 체력이 꽉 차 있습니다.
 You are carrying too much to be able to run.	너무 무거운 짐들 때문에 달릴 수 없습니다.
 You are in danger. A vampire has infiltrated your court.	위험한 상황입니다. 흡혈귀가 당신의 궁정에 잠입해 있습니다.
@@ -23323,7 +23323,7 @@ You can drop the act now... Gajul-Lei.	이제 연기는 그만해... 가줄-라�
 You can find us at Fort Dawnguard, near Stendarr's Beacon.	스텐다르의 봉화 근처에, 던가드 요새로 와 주시오.
 You can find, make, or buy a variety of gifts for your children, including toys, clothing, and sweets.	당신의 아이들을 위하여 다양한 종류의 장난감, 의류, 과자 등을 발견 또는 제작하거나 구입할 수 있습니다.
 You can learn up to three words for a Shout. Each word adds to the power of the Shout.	하나의 함성을 사용하는 데 최대 세 가지 '힘의 단어'를 배울 수 있습니다. 각 단어는 함성의 위력을 더해줍니다.
-You can make Dragonbone weapons at a forge that are more deadly than daedric weapons, but weigh more.	대장간에서 데이드라제 무기들보다 더욱 강력한 드래곤본 무기를 제작할 수 있습니다. 그러나 당연하게도 더 무겁습니다.
+You can make Dragonbone weapons at a forge that are more deadly than daedric weapons, but weigh more.	대장간에서 데이드라제 무기들보다 더욱 강력한 드래곤 뼈 무기를 제작할 수 있습니다. 그러나 당연하게도 더 무겁습니다.
 You can meet me at Fort Dawnguard.	던가드 요새로 와 주시오.
 You can not drop objects while in the air.	공중에 떠 있을 때에는 물품을 버릴 수 없습니다.
 You can not eat quest items.	퀘스트에 관련된 물품은 먹을 수 없습니다.
@@ -23658,7 +23658,7 @@ You sure you won't buy it?	정말로 사지 않을건가?
 You sure? They might prove useful.	정말로? 그들은 꽤 능력이 뛰어난데.
 You suspect there's a motivation to their attacks?	공격에 뭔가 이유가 있다고 생각하시오?
 You take half damage and do double damage for <dur> seconds.	<dur> 초 동안 절반의 피해를 입고 2배의 피해를 입힙니다.
-You take half damage for <dur> seconds from all physical attacks and most magical attacks.	<dur> 초 동안 입는 피해량이 50% 감소합니다.
+You take half damage for <dur> seconds from all physical attacks and most magical attacks.	<dur> 초 동안 모든 물리 공격과 대부분의 마법 공격으로 입는 피해량이 50% 감소합니다.
 You take no falling damage for <dur> seconds.	<dur> 초 동안 낙하 피해를 입지 않습니다.
 You take your work very seriously.	당신은 일에 진지해 보이는군요.
 You talk about being lonely a lot.	외롭다는 소리를 너무 많이 하는데.
@@ -23926,7 +23926,7 @@ Your fine's been paid. Now tell me about Kematu.	당신의 벌금을 지불했�
 Your focal points have been, uh, cleansed.	그 중심점들은 음... 정화 되었습니다.
 Your follower is too far to trade with.	물건을 교환하기에는 추종자가 너무 멀리 떨어져 있습니다.
 Your friend Gavros is dead.	당신 친구 개브로스는 죽었다.
-Your Frost Breath Shout encases foes in ice for <15> seconds.	냉기 숨결이 <15> 초 동안 적을 빙결시킵니다.
+Your Frost Breath Shout encases foes in ice for <15> seconds.	서리 숨결이 <15> 초 동안 적을 빙결시킵니다.
 Your hands are bound.	양손이 묶여있습니다.
 Your Health, Magicka, and Stamina recover more slowly during the day.	낮 동안 체력 재생, 매지카 재생, 지구력 재생이 감소합니다.
 Your Health, Magicka, and Stamina recover more slowly while inside the Soul Cairn.	소울 케언에서는 체력, 매지카, 지구력 재생이 감소합니다.
