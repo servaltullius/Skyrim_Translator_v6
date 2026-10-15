@@ -512,6 +512,8 @@ public class BundledFranchiseTmSeedServiceTests
             Assert.Contains("\nAugur of Dunlain\t던레인의 예언자\t던레인의 예언\n", changes, StringComparison.Ordinal);
             // The sixth round, of the player's dialogue choices.
             Assert.Contains("\nI don't need your advice.\t당신의 조언은 필요 없소.\t당신의 조언이 필요한데.\n", changes, StringComparison.Ordinal);
+            // Gallows Hall, the Creation Club home, no longer shares 교수대 바위 with Gallows Rock.
+            Assert.Contains("\nGallows Hall\t교수대 회관\t교수대 바위\n", changes, StringComparison.Ordinal);
             Assert.DoesNotContain("\nExploding Spider\t", changes, StringComparison.Ordinal);
             Assert.Equal(beforeV4, changes.Contains("\nSuvaris Atheron's Logbook\t수바리스 아테론의 항해일지\t수바리스 아테론의 항박일지\n", StringComparison.Ordinal));
             // v1 had 화살 - 강철; v2 took the 화살 - 강철 화살 of the records the game does not show, and v4 goes back.

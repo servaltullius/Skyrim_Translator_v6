@@ -115,8 +115,9 @@ public sealed class BundledFranchiseTmSeedService
             // Spider 발광 거미), and the third, of descriptions (Drains ... Carry Weight 감소, not 흡수), with enchanting
             // 마법부여 in Hearthfire's strings too, and the fourth, of quests (Tolfidr's 1000골드, objectives in ~하기),
             // and the decisions after it (the Augur of Dunlain 던레인의 예언자; the Oil Spider recipe 기름 거미), and the
-            // sixth, of the player's dialogue choices (I don't need your advice → 필요 없소); 525 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v5", "bundled-skyrim-tes-franchise-tm.tsv", 1528344, "75cc1f0135a1899f77ddfdae97e67102689b586c22883933df3c40ed2bd6e2ce",
+            // sixth, of the player's dialogue choices (I don't need your advice → 필요 없소), with Gallows Hall, the
+            // Creation Club home, 교수대 회관 apart from Gallows Rock's 교수대 바위; 529 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v5", "bundled-skyrim-tes-franchise-tm.tsv", 1528344, "56a6953bc15509e3d9bf89b8a408b5d2584221b1fcb627defc0b7fef0aefcd48",
                 PreviousVersions: new[] { "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v5-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),

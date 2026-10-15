@@ -56,7 +56,7 @@ Assassinations don't come cheap, boy.	암살은 싸게 되는 일이 아니란�
 Assault <Alias=Enemy> but don't kill <Alias=Enemy.pronoun>	<Alias=Enemy>를 습격하되 <Alias=Enemy.pronoun>를 죽이지 않기	죽이지 않고 <Alias=Enemy> 습격하기
 Astrid is the leader of the Dark Brotherhood Sanctuary, and her word is law.	아스트리드는 다크 브라더후드 성역의 우두머리이며, 그녀의 말이 곧 법입니다.	아스트리드는 다크 브라더후드 성지의 우두머리이며, 그녀의 말이 곧 법입니다.
 At Dead Man's Dread.	망자의 공포 호에서.	망자의 공포 호 에서.
-At Gallows Hall.	교수대 바위에.	교수대 바위.
+At Gallows Hall.	교수대 회관에.	교수대 바위.
 At the center of the Dunmer province of Morrowind lies the Red Mountain, the largest volcano in all of Tamriel.	던머들의 지역인 모로윈드의 중심부에는 탐리엘에서 가장 거대한 화산인 레드 마운틴이 있습니다.	던머지역의 중앙에 있는 모로윈드의 중심부에는 탐리엘에서 가장 거대한 화산인 레드 마운틴이 있습니다.
 Augur of Dunlain	던레인의 예언자	던레인의 예언
 Balbus's Fork	발부스의 포크	발부스의 집게
@@ -184,6 +184,8 @@ Forget me, who are you?	나는 됐고, 당신은 누구요?	미안하지만, 당
 Fur-Trimmed Cloak	야를의 털가죽 망토로 장식된 의상	털가죽 망토
 Gadnor's Staff of Charming	개드너의 매혹 지팡이	개드너의 지팡이
 Gain access to the Pelagius Wing of the Blue Palace	푸른 궁전에 있는 펠라지우스 구역에 접근할 방법을 찾기	파란 궁전에 있는 펠라지우스 구역에 접근할 방법을 찾기
+Gallows Hall	교수대 회관	교수대 바위
+Gallows Hall.	교수대 회관.	교수대 바위.
 Gharol's Message	가롤의 메시지	가롤의 메세지
 Give me everything you are carrying.	가지고 있는 짐을 전부 나에게 줘.	자기고 있는 짐을 전부 나에게 줘.
 Give me the hilt, or things get ugly. (Brawl)	그 칼자루를 내놔, 그렇지 않으면 험한 꼴을 당하게 될 거야. (싸움)	그 칼자루를 내놔, 그렇지 않으면 험한 꼴을 당할게 될 거야. (싸움)
@@ -554,6 +556,7 @@ Vigilant Adalvald	경계병 아달발드	아달발드 경계병
 Vilkas said you can still be cured.	빌카스의 말로는 당신이 아직 치료될 수 있다고 합니다.	빌카스의 말로는 당신이 아직 저주에 걸려있다고 합니다.
 Visit Proudspire Manor, your new house	당신의 새 집, 프라우드스파이어 저택을 방문하기	당신의 새 집, 프라우드스파이어 저택를 방문하기
 Was it aboard a ship?	배에 실려 있었소?	선박에 실어졌다고?
+We could live in Gallows Hall.	교수대 회관에서 삽시다.	교수대 바위에서 삽시다.
 We could use your help in Tamriel.	탐리엘에서 당신의 도움이 필요하오.	탐리엘에서 당신의 도움을 받을 수도 있소.
 We didn't really get along. Best that I haven't seen them in a while.	잘 지내진 못했지. 안 보게 돼서 기쁘군.	잘 지내진 못했지. 안 보게 되서 기쁘군.
 We might have something, yes.	뭔가 있을지도 모르지, 그래.	확실히 뭔가 있기는 한데.
@@ -624,6 +627,7 @@ Would this loosen your tongue? (<bribecost> gold)	이거면 혀가 좀 풀리나
 Wulf Wild-Blood	울프 와일드-블러드	울프
 Wulf Wild-Blood's House	울프 와일드-블러드의 집	울프 와일드-불러드의 집
 Yes, but they're far from Skyrim.	있지, 하지만 스카이림에서 멀리 떨어져 있어.	있지, 하지만 스카이림 멀리 떨어져 있어.
+Yes, Gallows Hall.	그래, 교수대 회관.	그래, 교수대 바위.
 Yes, he said to meet him at Fort Dawnguard.	그렇소, 던가드 요새에서 만나자고 하더군.	그렇소, 던가드 요새로 오면 되오.
 Yes, I've got a house in Markarth.	그래, 나는 마르카스에 집이 있단다.	그래, 내는 마르카스에 집이 있단다.
 Yes. It's painfully obvious you don't know what you're doing.	그래. 당신이 뭘 하는지도 모른다는 게 뻔히 보이는군.	아쉽지만 지금 당신이 뭘 하고 있는지조차도 모르겠군.
