@@ -499,6 +499,10 @@ public class BundledFranchiseTmSeedServiceTests
             var changes = await File.ReadAllTextAsync(changesPath, CancellationToken.None);
             Assert.StartsWith("Source\tTarget\tPrevious\n", changes, StringComparison.Ordinal);
             Assert.Contains("\nLightning Attractor\t번개 유도장치\t빛나는 끌개\n", changes, StringComparison.Ordinal);
+            // Decisions after the review: Jumping spiders were named 폭발형 like the exploding ones.
+            Assert.Contains("\nJumping Frost Spider\t도약형 냉기 거미\t폭발형 냉기 거미\n", changes, StringComparison.Ordinal);
+            Assert.Contains("\nPacify\t광역 진정\t평온\n", changes, StringComparison.Ordinal);
+            Assert.DoesNotContain("\nExploding Spider\t", changes, StringComparison.Ordinal);
             Assert.Equal(beforeV4, changes.Contains("\nSuvaris Atheron's Logbook\t수바리스 아테론의 항해일지\t수바리스 아테론의 항박일지\n", StringComparison.Ordinal));
             // v1 had 화살 - 강철; v2 took the 화살 - 강철 화살 of the records the game does not show, and v4 goes back.
             Assert.Equal(beforeV4 && !fromV1, changes.Contains("\nSteel Arrow\t화살 - 강철\t화살 - 강철 화살\n", StringComparison.Ordinal));

@@ -39,6 +39,11 @@ I was hoping you might want to talk about it.	너도 그 이야기를 하고 싶
 Ice Wolf	설원늑대	설원 늑대
 Imbued Spider	마력이 깃든 거미	얼룩진 거미
 J'zhar's Pack	지'자르의 짐	지자르의 짐
+Jumping Flame Spider	도약형 화염 거미	폭발형 화염 거미
+Jumping Frost Spider	도약형 냉기 거미	폭발형 냉기 거미
+Jumping Poison Spider	마법 주문서 - 도약형 독 거미	마법 주문서 - 폭발형 독 거미
+Jumping Poisonous Spider	도약형 독 거미	폭발형 독 거미
+Jumping Shock Spider	도약형 전격 거미	폭발형 전격 거미
 Kitchen, Doors	부엌, 문	부엌,문들
 Leave this island now, or your life is forfeit. (Intimidate)	당장 이 섬을 떠나, 아니면 네 목숨은 없다. (위협)	당장 이 섬을 떠나, 아니면 네 목숨을 없다. (위협)
 Letter from the Steward of <Alias=HoldCity>	<Alias=HoldCity> 행정관의 편지	행정관 <Alias=HoldCity>의 편지
@@ -51,12 +56,22 @@ Molag Bal created the first vampire.	몰락 발이 첫 흡혈귀를 만들었소
 Mora's Grasp	모라의 손아귀	모라의 이해
 Mounted Elk Head	큰 뿔 사슴 머리 박제	큰 뿔 사슴 박제
 North Skybound Watch	북부 스카이바운드 감시대	스카이바운드 감시대
+Obtain a Deathbell Flower	데스벨 꽃을 구하기	데쓰벨 꽃을 구하기
 Orcish Armor of Eminent Stamina	오크제 전투화 - 상급 지구력 증가	오크제 방어구 - 상급 지구력 증가
 Orcish Armor of Extreme Stamina	오크제 전투화 - 최상급 지구력 증가	오크제 방어구 - 최상급 지구력 증가
 Orcish Armor of Major Stamina	오크제 전투화 - 중급 지구력 증가	오크제 방어구 - 중급 지구력 증가
+Pacify	광역 진정	평온
 Place Pithiken's Ring	피씨켄의 반지 놓기	피쉬켄의 반지 놓기
 Poison Cloaked Spider	마법 주문서 - 맹독 망토 거미	마법 주문서 - 독 망토 거미
 Poisonous Cloaked Spider	맹독 망토 거미	독 거미
+Recipe - Jumping Flame Spider	제조법 : 도약형 화염 거미	제조법 : 화염 거미
+Recipe - Jumping Flame Spider 2x	제조법 : 도약형 화염 거미 2x	제조법 : 화염 거미 2x
+Recipe - Jumping Frost Spider	제조법 : 도약형 냉기 거미	제조법 : 폭발형 냉기 거미
+Recipe - Jumping Frost Spider 2x	제조법 : 도약형 냉기 거미 2x	제조법 : 폭발형 냉기 거미 2x
+Recipe - Jumping Poison Spider	제조법 : 도약형 독 거미	제조법 : 독 거미
+Recipe - Jumping Poison Spider 2x	제조법 : 도약형 독 거미 2x	제조법 : 독 거미 2x
+Recipe - Jumping Shock Spider	제조법 : 도약형 전격 거미	제조법 : 폭발형 전격 거미
+Recipe - Jumping Shock Spider 2x	제조법 : 도약형 전격 거미 2x	제조법 : 폭발형 전격 거미 2x
 Remove Tree	나무의 바위 효과 제거	나무의 바위효과 제거
 Rested	휴식 효과	휴식효과
 Reverent Nordic Battleaxe	노드제 전투 도끼 - 중급 신성	노드제 전투 도끼 - 상급 신성
@@ -64,6 +79,7 @@ Sabjorn's Dresser	사비욘의 서랍장	사비욘의 옷상자
 Sacred Stones only confer powers once a day	신성한 바위는 하루에 한 번만 능력을 부여해 줍니다.	신성한 바위은 하루에 한 번만 능력을 부여해 줍니다.
 Shock Cloaked Spider	천둥 망토 거미	전격 거미
 Shrine Base	신전	신전 영역
+Speak to From Deepest Fathoms	프롬-디피스트-페덤스와 대화하기	프롬-디프스트-파돔과 대화하기
 Staff of Daedric Command	지팡이 - 데이드라 지배	지팡이 - 데이드라제 지배
 Staff of Sparks	지팡이 - 번갯불	지팡이 - 최하급 번갯불
 Staff of Vanquishment	지팡이 - 광역 공포	지팡이 - 중급 공포
@@ -79,6 +95,9 @@ Suvaris Atheron's Logbook	수바리스 아테론의 항해일지	수바리스 �
 Tel Mithryn Steward's House	텔 미스린 행정관의 집	텔 미스린 집사의 집
 Tempered Sphere	단련된 드워프 구체	단련된 드워프 스피어
 Tolenos Omoren	톨레노스 오모렌	톨레노트 오모렌
+Tosses a Jumping Fire spider on the ground that will launch itself at nearby enemies and explode if it lands near them.	주변 적에게 돌진하여 폭발하는 도약형 화염 거미를 살포합니다.	주변 적에게 돌진하여 폭발하는 폭발형 화염 거미를 살포합니다.
+Tosses a Jumping Frost spider on the ground that will launch itself at nearby enemies and explode if it lands near them.	주변 적에게 돌진하여 폭발하는 도약형 냉기 거미를 살포합니다.	주변 적에게 돌진하여 폭발하는 폭발형 냉기 거미를 살포합니다.
+Tosses a Jumping Shock spider on the ground that will launch itself at enemies and explode if it lands near them.	주변 적에게 돌진하여 폭발하는 도약형 전격 거미를 살포합니다.	주변 적에게 돌진하여 폭발하는 폭발형 전격 거미를 살포합니다.
 Trophy Room, Doors	전시실, 문	전시실,문들
 up to level	최대 레벨:	다음 레벨까지:
 Vahlok the Jailor	간수 발록	발록

@@ -11910,11 +11910,11 @@ Jug of Milk	우유
 Juggernaut	저거너트
 Julienne	줄리엔
 Julienne Lylvieve	줄리엔 릴비에브
-Jumping Flame Spider	폭발형 화염 거미
-Jumping Frost Spider	폭발형 냉기 거미
-Jumping Poison Spider	마법 주문서 - 폭발형 독 거미
-Jumping Poisonous Spider	폭발형 독 거미
-Jumping Shock Spider	폭발형 전격 거미
+Jumping Flame Spider	도약형 화염 거미
+Jumping Frost Spider	도약형 냉기 거미
+Jumping Poison Spider	마법 주문서 - 도약형 독 거미
+Jumping Poisonous Spider	도약형 독 거미
+Jumping Shock Spider	도약형 전격 거미
 Juniper	향나무
 Juniper Berries	향나무 열매
 Juniper Berries (4)	향나무 열매 (4)
@@ -14494,7 +14494,7 @@ Oblivion Binding	오블리비언의 결속
 Obscured Passage	외딴 통로
 Observe Arniel's experiment	아니얼의 실험을 지켜보기
 Observe Atub's ritual	에이텁의 의식을 지켜보기
-Obtain a Deathbell Flower	데쓰벨 꽃을 구하기
+Obtain a Deathbell Flower	데스벨 꽃을 구하기
 Obtain a Flawless Ruby	보석 - 완벽한 루비를 구하기
 Obtain a Mark of Dibella from Bolli	볼리에게서 디벨라의 징표를 얻기
 Obtain a Mark of Dibella from Hofgrir	호프기어에게서 디벨라의 징표를 얻기
@@ -15056,7 +15056,7 @@ Overwrite this game?	여기에 덮어씁니까?
 Owned	주인있음
 Paarthurnax	파써낙스
 Paarthurnax is dead.	파써낙스는 죽었소.
-Pacify	평온
+Pacify	광역 진정
 Pack Member	늑대 무리
 Pack Spider	운반용 거미
 Package for Grelka	그렐카에게 보내는 소포
@@ -15771,14 +15771,14 @@ Recipe - Flame Cloaked Spider 2x	제조법 : 불꽃 망토 거미 2x
 Recipe - Frost Cloaked Spider	제조법 : 서리 망토 거미
 Recipe - Frost Cloaked Spider 2x	제조법 : 서리 망토 거미 2x
 Recipe - Glowing Spider	제조법 : 발광 거미
-Recipe - Jumping Flame Spider	제조법 : 화염 거미
-Recipe - Jumping Flame Spider 2x	제조법 : 화염 거미 2x
-Recipe - Jumping Frost Spider	제조법 : 폭발형 냉기 거미
-Recipe - Jumping Frost Spider 2x	제조법 : 폭발형 냉기 거미 2x
-Recipe - Jumping Poison Spider	제조법 : 독 거미
-Recipe - Jumping Poison Spider 2x	제조법 : 독 거미 2x
-Recipe - Jumping Shock Spider	제조법 : 폭발형 전격 거미
-Recipe - Jumping Shock Spider 2x	제조법 : 폭발형 전격 거미 2x
+Recipe - Jumping Flame Spider	제조법 : 도약형 화염 거미
+Recipe - Jumping Flame Spider 2x	제조법 : 도약형 화염 거미 2x
+Recipe - Jumping Frost Spider	제조법 : 도약형 냉기 거미
+Recipe - Jumping Frost Spider 2x	제조법 : 도약형 냉기 거미 2x
+Recipe - Jumping Poison Spider	제조법 : 도약형 독 거미
+Recipe - Jumping Poison Spider 2x	제조법 : 도약형 독 거미 2x
+Recipe - Jumping Shock Spider	제조법 : 도약형 전격 거미
+Recipe - Jumping Shock Spider 2x	제조법 : 도약형 전격 거미 2x
 Recipe - Mind Control Spider	제조법 : 정신조종 거미
 Recipe - Oil Spider	제조법 : 기름분사 거미
 Recipe - Pack Spider	제조법 : 운반용 거미
@@ -18001,7 +18001,7 @@ Speak to Erandur	에란더와 대화하기
 Speak to Erikur	에리커와 대화하기
 Speak to Falion	팔리온과 대화하기
 Speak to Falk Firebeard	폴크 파이어비어드와 대화하기
-Speak to From Deepest Fathoms	프롬-디프스트-파돔과 대화하기
+Speak to From Deepest Fathoms	프롬-디피스트-페덤스와 대화하기
 Speak to Geldis Sadri	겔디스 사드리와 대화하기
 Speak to Gelebor	겔레보어와 대화하기
 Speak to Gulum-Ei	걸럼-아이와 대화하기
@@ -20798,9 +20798,9 @@ Torygg's War Horn	토리그의 전쟁 나팔
 Tosses a dead spider on the ground which explodes when an enemy gets too close.	적이 접근 시 폭발하는 죽은 거미를 살포합니다.
 Tosses a Flame Cloaked spider on the ground that will cause fire damage to enemies that get too close.	주변 적에게 화염 피해를 입히는 불꽃 망토를 두른 거미를 살포합니다.
 Tosses a Frost Cloaked spider on the ground that will apply Ice Damage to enemies that get too close.	주변 적에게 냉기 피해를 입히는 서리 망토를 두른 거미를 살포합니다.
-Tosses a Jumping Fire spider on the ground that will launch itself at nearby enemies and explode if it lands near them.	주변 적에게 돌진하여 폭발하는 폭발형 화염 거미를 살포합니다.
-Tosses a Jumping Frost spider on the ground that will launch itself at nearby enemies and explode if it lands near them.	주변 적에게 돌진하여 폭발하는 폭발형 냉기 거미를 살포합니다.
-Tosses a Jumping Shock spider on the ground that will launch itself at enemies and explode if it lands near them.	주변 적에게 돌진하여 폭발하는 폭발형 전격 거미를 살포합니다.
+Tosses a Jumping Fire spider on the ground that will launch itself at nearby enemies and explode if it lands near them.	주변 적에게 돌진하여 폭발하는 도약형 화염 거미를 살포합니다.
+Tosses a Jumping Frost spider on the ground that will launch itself at nearby enemies and explode if it lands near them.	주변 적에게 돌진하여 폭발하는 도약형 냉기 거미를 살포합니다.
+Tosses a Jumping Shock spider on the ground that will launch itself at enemies and explode if it lands near them.	주변 적에게 돌진하여 폭발하는 도약형 전격 거미를 살포합니다.
 Tosses a Poison Cloaked spider on the ground that will Poison enemies that get too close.	주변 적에게 독 피해를 입히는 맹독 망토를 두른 거미를 살포합니다.
 Tosses a Shock Cloaked spider on the ground that will apply Shock Damage to enemies that get too close.	주변 적에게 전격 피해를 입히는 천둥 망토를 두른 거미를 살포합니다.
 Totem of Brotherhood	형제의 토템
