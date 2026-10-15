@@ -505,6 +505,7 @@ public class BundledFranchiseTmSeedServiceTests
             Assert.Contains("\nGlowing Spider\t발광 거미\t빛나는 거미\n", changes, StringComparison.Ordinal);
             // The third review round, of descriptions.
             Assert.Contains("\nDrains <mag> points from Carry Weight.\t무게 한계가 <mag> 감소합니다.\t무게 한계를 <mag> 흡수합니다.\n", changes, StringComparison.Ordinal);
+            Assert.Contains("\nEnchanter's Tower, Doors\t마법부여 연구탑, 문\t마법부가 연구탑,문들\n", changes, StringComparison.Ordinal);
             Assert.DoesNotContain("\nExploding Spider\t", changes, StringComparison.Ordinal);
             Assert.Equal(beforeV4, changes.Contains("\nSuvaris Atheron's Logbook\t수바리스 아테론의 항해일지\t수바리스 아테론의 항박일지\n", StringComparison.Ordinal));
             // v1 had 화살 - 강철; v2 took the 화살 - 강철 화살 of the records the game does not show, and v4 goes back.

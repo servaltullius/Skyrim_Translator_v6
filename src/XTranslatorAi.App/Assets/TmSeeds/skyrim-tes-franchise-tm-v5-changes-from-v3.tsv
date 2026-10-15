@@ -8,6 +8,7 @@ A volley of frozen shards that do <mag> points of damage, and twice as much Stam
 Add a residential wing with master bedroom and childrens' bedroom. Includes an exterior porch.	주 침실과 어린이용 침실들로 구성된 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.	주 침실과 어린이용 침실들로 구성된 공간을 추가합니다. 외부로 통하는 문도 포함되어 있습니다.
 Add a room that can be equipped with smithing stations and weapon storage. Includes an exterior porch.	제련용 시설외에 무기들을 저장할 수 있는 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.	제련용 시설외에 무기들을 저장할 수 있는 공간을 추가합니다. 외부로 통하는 문도 포함되어 있습니다.
 Add a storage area which can be equipped with a variety of containers and weapon racks. Includes an exterior porch.	다양한 보관함 상자들과 무기 거치대등을 설치할 수 있는 창고를 추가합니다. 야외 베란다도 포함되어 있습니다.	다양한 보관함 상자들과 무기 거치대등을 설치할 수 있는 창고를 추가합니다. 외부로 통하는 문도 포함되어 있습니다.
+Addition - West Wing - Enchanter's Tower	추가 - 서쪽 부속 건물 - 마법부여 연구탑	추가 - 서쪽 부속 건물 - 마법부가 연구탑
 Adds <mag>% to the dragon breath and spell absorption of Miraak's robes.	미락의 로브가 가진 드래곤의 숨결 및 마법 흡수 효과에 <mag>% 를 더합니다.	미락의 로브가 적의 마법과 드래곤의 숨결을 <mag>% 흡수합니다.
 Adril Arano	아드릴 아라노	아드릴
 AETHERIUM	에테리움	아테리움
@@ -41,7 +42,18 @@ Does <mag> points of Shock Damage.	<mag> 의 전격 피해를 입힙니다.	<mag
 Drains <mag> points from Carry Weight.	무게 한계가 <mag> 감소합니다.	무게 한계를 <mag> 흡수합니다.
 Dremora Prices	드레모라 가격	드레모라 군주
 Dwarven Boots of Extreme Stamina	드워프제 전투화 - 상급 지구력 증가	드워프제 전투화 - 최상급 지구력 증가
-Enchanter's Tower, Doors	마법부가 연구탑, 문	마법부가 연구탑,문들
+Enchanter's Tower - Remove Workbench	마법부여 연구탑 - 작업선반 제거	마법부가 연구탑 - 작업선반 제거
+Enchanter's Tower - Workbench	마법부여 연구탑 - 작업선반	마법부가 연구탑 - 작업선반
+Enchanter's Tower, Doors	마법부여 연구탑, 문	마법부가 연구탑,문들
+Enchanter's Tower, First Floor Walls	마법부여 연구탑, 1층 벽	마법부가 연구탑, 1층 벽
+Enchanter's Tower, Floor	마법부여 연구탑, 바닥	마법부가 연구탑, 바닥
+Enchanter's Tower, Foundation	마법부여 연구탑, 토대	마법부가 연구탑, 토대
+Enchanter's Tower, Main Supports	마법부여 연구탑, 큰 기둥	마법부가 연구탑, 큰 기둥
+Enchanter's Tower, Roof	마법부여 연구탑, 지붕	마법부가 연구탑, 지붕
+Enchanter's Tower, Roof Canopy	마법부여 연구탑, 지붕 덮개	마법부가 연구탑, 지붕 덮개
+Enchanter's Tower, Second Floor Supports	마법부여 연구탑, 2층 지지대	마법부가 연구탑, 2층 지지대
+Enchanter's Tower, Second Floor Walls	마법부여 연구탑, 2층 벽	마법부가 연구탑, 2층 벽
+Enchanter's Tower. (<Global=BYOHHPCostEnchanting> gold)	마법부여 연구탑. (<Global=BYOHHPCostEnchanting> 골드)	마법 부가 연구탑. (<Global=BYOHHPCostEnchanting> 골드)
 Fathom	페덤	파돔
 For <dur> seconds nearby opponents take <8> points of shock damage and half magicka damage.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 전격 피해와 절반의 매지카 피해를 입힙니다.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 전격 피해와 매지카 피해를 입힙니다.
 For <dur> seconds, opponents that get too close take <8> points per second of fire damage.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 화염 피해를 입힙니다.	<dur> 초 동안 주변 적에게 <8> 의 화염 피해를 입힙니다.
@@ -89,6 +101,7 @@ Orcish Armor of Eminent Stamina	오크제 전투화 - 상급 지구력 증가	�
 Orcish Armor of Extreme Stamina	오크제 전투화 - 최상급 지구력 증가	오크제 방어구 - 최상급 지구력 증가
 Orcish Armor of Major Stamina	오크제 전투화 - 중급 지구력 증가	오크제 방어구 - 중급 지구력 증가
 Pacify	광역 진정	평온
+Place a workbench in the Enchanter's Tower.	작업선반을 마법부여 연구탑에 설치합니다.	작업선반을 마법부가 연구탑에 설치합니다.
 Place Pithiken's Ring	피씨켄의 반지 놓기	피쉬켄의 반지 놓기
 Poison Cloaked Spider	마법 주문서 - 맹독 망토 거미	마법 주문서 - 독 망토 거미
 Poisonous Cloaked Spider	맹독 망토 거미	독 거미
@@ -100,7 +113,9 @@ Recipe - Jumping Poison Spider	제조법 : 도약형 독 거미	제조법 : 독 
 Recipe - Jumping Poison Spider 2x	제조법 : 도약형 독 거미 2x	제조법 : 독 거미 2x
 Recipe - Jumping Shock Spider	제조법 : 도약형 전격 거미	제조법 : 폭발형 전격 거미
 Recipe - Jumping Shock Spider 2x	제조법 : 도약형 전격 거미 2x	제조법 : 폭발형 전격 거미 2x
+Remove the workbench from the Enchanter's Tower.	마법부여 연구탑에서 작업선반을 제거합니다.	마법부가 연구탑에서 작업선반을 제거합니다.
 Remove Tree	나무의 바위 효과 제거	나무의 바위효과 제거
+Replace my Enchanting Lab with a Child's Room. (<Global=HDRiftenChildRoom> gold)	마법부여 연구실을 아이의 방으로 개조하고 싶다. (<Global=HDRiftenChildRoom> 골드)	마법 부가 연구실을 아이의 방으로 개조라고 싶다. (<Global=HDRiftenChildRoom> 골드)
 Rested	휴식 효과	휴식효과
 Reverent Nordic Battleaxe	노드제 전투 도끼 - 중급 신성	노드제 전투 도끼 - 상급 신성
 Riften is home to the Black-Briar Meadery, one of the largest and most successful businesses of its kind.	리프튼에는 동종 업체중 가장 크고 성공한 사업체인 블랙-브라이어 양조장이 있습니다.	리프튼에는 동종 업체중 가장 크고 성공한 사업체인 블랙-브라이어 양조의 본사가 있습니다.
@@ -127,6 +142,7 @@ Summons an unbound Dremora for <dur> seconds.	<dur> 초 동안 계약없는 드�
 Summons Arvak in the Soul Cairn or Tamriel wilderness to act as your steed.	소울 케언이나 탐리엘의 야외에서 나의 말이 되어줄 아바크를 소환합니다.	소울 케언으로부터 나의 말이 되어줄 아바크를 소환합니다.
 Summons the ghost of the legendary assassin Lucien Lachance to fight by your side, until he's defeated.	전설적인 암살자 루시엔 러찬스의 영혼을 소환하여, 쓰러질 때까지 내 곁에서 싸우게 합니다.	전설적인 암살자 루시엔 러찬스의 영혼을 소환합니다.
 Suvaris Atheron's Logbook	수바리스 아테론의 항해일지	수바리스 아테론의 항박일지
+Swap my Child's Room with an Enchanting Lab. (<Global=HDRiftenEnchanting> gold)	아이들 방을 마법부여 연구실로 변경하고 싶다. (<Global=HDRiftenEnchanting> 골드)	아이들 방을 마법 부가 연구실로 변경하고 싶다. (<Global=HDRiftenEnchanting> 골드)
 Target is paralyzed for <dur> and takes 25 points of damage over <dur> seconds.	목표를 <dur> 초 동안 마비시키고, <dur> 초에 걸쳐 25 의 피해를 입힙니다.	<dur> 초 동안 <mag> 의 피해를 입히고 마비시킵니다.
 Targets that fail to resist are immobilized in hardened ash for <dur> seconds.	화산재의 마법을 날려 저항에 실패한 목표를 <dur> 초 동안 석화시킵니다.	<화산재>의 마법을 날려 저항에 실패한 목표를 <dur> 초 동안 석화시킵니다.
 Tel Mithryn Steward's House	텔 미스린 행정관의 집	텔 미스린 집사의 집

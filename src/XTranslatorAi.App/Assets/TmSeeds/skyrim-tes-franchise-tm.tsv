@@ -404,7 +404,7 @@ Addition - North Wing - Alchemy Laboratory	추가 - 북쪽 부속 건물 - 연�
 Addition - North Wing - Storage Room	추가 - 북쪽 부속 건물 - 저장고
 Addition - North Wing - Trophy Room	추가 - 북쪽 부속 건물 - 전시실
 Addition - West Wing - Bedrooms	추가 - 서쪽 부속 건물 - 침실
-Addition - West Wing - Enchanter's Tower	추가 - 서쪽 부속 건물 - 마법부가 연구탑
+Addition - West Wing - Enchanter's Tower	추가 - 서쪽 부속 건물 - 마법부여 연구탑
 Addition - West Wing - Greenhouse	추가 - 서쪽 부속 건물 - 온실
 Additional Werewolf Transformation	추가 늑대인간 변신
 Adds <mag>% to the dragon breath and spell absorption of Miraak's robes.	미락의 로브가 가진 드래곤의 숨결 및 마법 흡수 효과에 <mag>% 를 더합니다.
@@ -6211,18 +6211,18 @@ Enchanter's Elixir	물약 - 마법부여 특급
 Enchanter's Philter	물약 - 마법부여 최상급
 Enchanter's Potion	물약 - 마법부여 하급
 Enchanter's Primer	마법부여가의 초급독본
-Enchanter's Tower - Remove Workbench	마법부가 연구탑 - 작업선반 제거
-Enchanter's Tower - Workbench	마법부가 연구탑 - 작업선반
-Enchanter's Tower, Doors	마법부가 연구탑, 문
-Enchanter's Tower, First Floor Walls	마법부가 연구탑, 1층 벽
-Enchanter's Tower, Floor	마법부가 연구탑, 바닥
-Enchanter's Tower, Foundation	마법부가 연구탑, 토대
-Enchanter's Tower, Main Supports	마법부가 연구탑, 큰 기둥
-Enchanter's Tower, Roof	마법부가 연구탑, 지붕
-Enchanter's Tower, Roof Canopy	마법부가 연구탑, 지붕 덮개
-Enchanter's Tower, Second Floor Supports	마법부가 연구탑, 2층 지지대
-Enchanter's Tower, Second Floor Walls	마법부가 연구탑, 2층 벽
-Enchanter's Tower. (<Global=BYOHHPCostEnchanting> gold)	마법 부가 연구탑. (<Global=BYOHHPCostEnchanting> 골드)
+Enchanter's Tower - Remove Workbench	마법부여 연구탑 - 작업선반 제거
+Enchanter's Tower - Workbench	마법부여 연구탑 - 작업선반
+Enchanter's Tower, Doors	마법부여 연구탑, 문
+Enchanter's Tower, First Floor Walls	마법부여 연구탑, 1층 벽
+Enchanter's Tower, Floor	마법부여 연구탑, 바닥
+Enchanter's Tower, Foundation	마법부여 연구탑, 토대
+Enchanter's Tower, Main Supports	마법부여 연구탑, 큰 기둥
+Enchanter's Tower, Roof	마법부여 연구탑, 지붕
+Enchanter's Tower, Roof Canopy	마법부여 연구탑, 지붕 덮개
+Enchanter's Tower, Second Floor Supports	마법부여 연구탑, 2층 지지대
+Enchanter's Tower, Second Floor Walls	마법부여 연구탑, 2층 벽
+Enchanter's Tower. (<Global=BYOHHPCostEnchanting> gold)	마법부여 연구탑. (<Global=BYOHHPCostEnchanting> 골드)
 Enchanting	마법부여
 Enchanting laboratory. (<Global=HDMarkarthEnchanting> gold)	마법부여 연구실. (<Global=HDMarkarthEnchanting> 골드)
 Enchanting laboratory. (<Global=HDRiftenEnchanting> gold)	마법부여 연구실. (<Global=HDRiftenEnchanting> 골드)
@@ -15246,7 +15246,7 @@ Place a workbench in the Alchemy Laboratory.	작업선반을 연금술 실험실
 Place a workbench in the Armory.	작업선반을 병기고에 설치합니다.
 Place a workbench in the Bedrooms.	작업선반을 침실에 설치합니다.
 Place a workbench in the Cellar.	작업선반을 지하실에 설치합니다.
-Place a workbench in the Enchanter's Tower.	작업선반을 마법부가 연구탑에 설치합니다.
+Place a workbench in the Enchanter's Tower.	작업선반을 마법부여 연구탑에 설치합니다.
 Place a workbench in the entryway for crafting furniture.	가구들을 제작하기 위한 작업선반을 현관에 설치합니다.
 Place a workbench in the Greenhouse.	작업선반을 온실에 설치합니다.
 Place a workbench in the Kitchen.	작업선반을 부엌에 설치합니다.
@@ -15922,7 +15922,7 @@ Remove the workbench from the Alchemy Laboratory.	연금술 실험실에서 작�
 Remove the workbench from the Armory.	병기고에서 작업선반을 제거합니다.
 Remove the workbench from the Bedrooms.	침실에서 작업선반을 제거합니다.
 Remove the workbench from the Cellar.	지하실에서 작업선반을 제거합니다.
-Remove the workbench from the Enchanter's Tower.	마법부가 연구탑에서 작업선반을 제거합니다.
+Remove the workbench from the Enchanter's Tower.	마법부여 연구탑에서 작업선반을 제거합니다.
 Remove the workbench from the entryway.	현관에서 작업선반을 제거합니다.
 Remove the workbench from the Greenhouse.	온실에서 작업선반을 제거합니다.
 Remove the workbench from the Kitchen.	부엌에서 작업선반을 제거합니다.
@@ -15952,7 +15952,7 @@ Replace my Alchemy Lab with a Child's Room. (<Global=HDMarkarthChildRoom> gold)	
 Replace my Alchemy Lab with a Child's Room. (<Global=HDWhiterunChildRoom> gold)	연금술 실험실을 아이의 방으로 개조하고 싶다. (<Global=HDWhiterunChildRoom> 골드)
 Replace my Child's Room with an Alchemy Lab. (<Global=HDMarkarthAlchemy> gold)	아이들 방을 연금술 실험실로 변경하고 싶다. (<Global=HDMarkarthAlchemy> 골드)
 Replace my Child's Room with an Alchemy Lab. (<Global=HDWhiterunAlchemy> gold)	아이들 방을 연금술 실험실로 변경하고 싶다. (<Global=HDWhiterunAlchemy> 골드)
-Replace my Enchanting Lab with a Child's Room. (<Global=HDRiftenChildRoom> gold)	마법 부가 연구실을 아이의 방으로 개조라고 싶다. (<Global=HDRiftenChildRoom> 골드)
+Replace my Enchanting Lab with a Child's Room. (<Global=HDRiftenChildRoom> gold)	마법부여 연구실을 아이의 방으로 개조하고 싶다. (<Global=HDRiftenChildRoom> 골드)
 Replace Skeleton Key	해골 열쇠 돌려놓기
 Replace the beacon	표식을 교체하기
 Report Astrid's death to a guard	아스트리드의 죽음을 경비병에게 보고하기
@@ -19448,7 +19448,7 @@ Swallow a soul gem?	소울젬을 삼키면?
 Swamp Fungal Pod	습지균 꼬투리
 Swamp Fungal Pod (3)	습지균 꼬투리 (3)
 Swanhvir	스완비르
-Swap my Child's Room with an Enchanting Lab. (<Global=HDRiftenEnchanting> gold)	아이들 방을 마법 부가 연구실로 변경하고 싶다. (<Global=HDRiftenEnchanting> 골드)
+Swap my Child's Room with an Enchanting Lab. (<Global=HDRiftenEnchanting> gold)	아이들 방을 마법부여 연구실로 변경하고 싶다. (<Global=HDRiftenEnchanting> 골드)
 Sweep	싹쓸이
 Sweet Roll	달콤한 빵
 Swindler's Den	사기꾼의 굴
