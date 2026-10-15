@@ -29,14 +29,18 @@ public static class KoreanPatchStrings
 {
     private static readonly Encoding StrictUtf8 = new UTF8Encoding(false, true);
 
-    /// <summary>Every patch string that a base game record uses, with the record that shows it.</summary>
-    public static async Task<IReadOnlyList<KoreanPatchString>> ReadAsync(string gameDataFolder, string patchFolder, CancellationToken cancellationToken)
+    /// <summary>
+    /// Every patch string that a record of the given plugins uses (the base game's when none are named), with the record
+    /// that shows it. A Creation Club plugin's English comes from its own BSA.
+    /// </summary>
+    public static async Task<IReadOnlyList<KoreanPatchString>> ReadAsync(string gameDataFolder, string patchFolder, CancellationToken cancellationToken,
+        IReadOnlyList<string>? plugins = null)
     {
         var folder = ResolveStringsFolder(patchFolder);
         var strings = new List<(KoreanPatchString String, List<string> Fields)>();
         // The plugins, in load order, that hold each record field: the game shows the last one's text.
         var holders = new Dictionary<string, string>(StringComparer.Ordinal);
-        foreach (var name in GameStringDictionaryBuilder.BaseGamePlugins)
+        foreach (var name in plugins ?? GameStringDictionaryBuilder.BaseGamePlugins)
         {
             var path = Path.Combine(gameDataFolder, name);
             var tables = ReadTables(folder, Path.GetFileNameWithoutExtension(name));
@@ -93,7 +97,11 @@ public static class KoreanPatchStrings
         string? backupFolder,
         CancellationToken cancellationToken)
     {
-        var english = (await ReadAsync(gameDataFolder, patchFolder, cancellationToken).ConfigureAwait(false))
+        // A change to another plugin's table (Creation Club) is checked against that plugin's English too.
+        var plugins = GameStringDictionaryBuilder.BaseGamePlugins
+            .Concat(changes.Select(c => c.Plugin).Where(p => !GameStringDictionaryBuilder.BaseGamePlugins.Contains(p, StringComparer.OrdinalIgnoreCase)))
+            .Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        var english = (await ReadAsync(gameDataFolder, patchFolder, cancellationToken, plugins).ConfigureAwait(false))
             .ToDictionary(s => (s.Plugin.ToLowerInvariant(), s.Table, s.Id), s => s.English);
         var folder = ResolveStringsFolder(patchFolder);
         var applied = new List<KoreanPatchChange>();

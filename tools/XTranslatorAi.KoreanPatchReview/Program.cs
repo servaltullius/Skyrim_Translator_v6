@@ -4,7 +4,7 @@ using XTranslatorAi.Core.Plugins;
 using XTranslatorAi.Core.Text;
 
 // Reviews of the community Korean patch the app's game translation dictionary is built from (see README.md).
-//   export     <game Data> <patch folder> <new output folder> [--projects <projects folder>] [--chunk N]
+//   export     <game Data> <patch folder> <new output folder> [--projects <projects folder>] [--chunk N] [--plugins cc|a.esl,b.esm]
 //   apply      <game Data> <patch folder> <review.csv> [--write] [--backup <folder>]
 //   dictionary <game Data> <patch folder> <output .gz>
 if (args.Length < 4)
@@ -47,7 +47,12 @@ async Task<int> Export()
 
     var chunk = int.TryParse(Option("--chunk"), out var size) ? size : 2000;
     var used = Option("--projects") is { } projects ? ReadProjectSources(projects) : new HashSet<string>();
-    var strings = await KoreanPatchStrings.ReadAsync(data, patch, CancellationToken.None);
+    var strings = await KoreanPatchStrings.ReadAsync(data, patch, CancellationToken.None, Option("--plugins") switch
+    {
+        null => null,
+        "cc" => CreationClubPlugins(data, patch),
+        var list => list.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
+    });
     Directory.CreateDirectory(target);
     var groups = strings
         .GroupBy(s => used.Contains(TranslationMemoryKey.NormalizeSource(s.English)) ? "01-used-by-mods" : Category(s.Rec))
@@ -108,6 +113,20 @@ async Task<int> Apply()
     }
 
     return 0;
+}
+
+// The Creation Club plugins the patch translates: every table that is not the base game's, matched to its plugin in the
+// game's Data folder (the English is in that plugin's BSA).
+static IReadOnlyList<string> CreationClubPlugins(string data, string patch)
+{
+    var folder = Directory.GetDirectories(patch).FirstOrDefault(d => string.Equals(Path.GetFileName(d), "Strings", StringComparison.OrdinalIgnoreCase)) ?? patch;
+    var stems = Directory.EnumerateFiles(folder).Select(f => Path.GetFileNameWithoutExtension(f))
+        .Where(n => n.EndsWith("_english", StringComparison.OrdinalIgnoreCase)).Select(n => n[..^"_english".Length])
+        .ToHashSet(StringComparer.OrdinalIgnoreCase);
+    stems.ExceptWith(GameStringDictionaryBuilder.BaseGamePlugins.Select(Path.GetFileNameWithoutExtension)!);
+    return Directory.EnumerateFiles(data)
+        .Where(f => Path.GetExtension(f).ToLowerInvariant() is ".esm" or ".esl" or ".esp" && stems.Contains(Path.GetFileNameWithoutExtension(f)))
+        .Select(Path.GetFileName).OrderBy(n => n, StringComparer.OrdinalIgnoreCase).ToList()!;
 }
 
 static HashSet<string> ReadProjectSources(string folder)

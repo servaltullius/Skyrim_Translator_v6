@@ -44,6 +44,28 @@ public sealed class KoreanPatchStringsTests : IDisposable
     }
 
     [Fact]
+    public async Task ACreationClubPlugin_IsReadWhenNamed_AndItsChangesKeepTheEnglishTags()
+    {
+        File.WriteAllBytes(Path.Combine(Data, "ccTest-Fish.esl"), Header(localized: true).Concat(Group(
+            Record("SPEL", 0x802, Sub("FULL", UInt(1)), Sub("DESC", UInt(2))))).ToArray());
+        WriteTable(Path.Combine(Data, "Strings", "ccTest-Fish_english.STRINGS"), false, new() { [1] = "Fish Lure" });
+        WriteTable(Path.Combine(Data, "Strings", "ccTest-Fish_english.DLSTRINGS"), true, new() { [2] = "Lures fish for <dur> seconds." });
+        WriteTable(Path.Combine(Patch, "Strings", "ccTest-Fish_english.STRINGS"), false, new() { [1] = "물고기 미끼" });
+        WriteTable(Path.Combine(Patch, "Strings", "ccTest-Fish_english.DLSTRINGS"), true, new() { [2] = "<dur>초 동안 물고기를 꾑니다." });
+
+        Assert.DoesNotContain(await KoreanPatchStrings.ReadAsync(Data, Patch, CancellationToken.None), s => s.Plugin == "ccTest-Fish.esl");
+        var lure = (await KoreanPatchStrings.ReadAsync(Data, Patch, CancellationToken.None, new[] { "ccTest-Fish.esl" })).Single(s => s.Id == 2);
+        Assert.Equal(("ccTest-Fish.esl", "SPEL:DESC", "Lures fish for <dur> seconds."), (lure.Plugin, lure.Rec, lure.English));
+
+        var result = await KoreanPatchStrings.ApplyAsync(Data, Patch, new[]
+        {
+            new KoreanPatchChange("ccTest-Fish.esl", PluginStringTableKind.DlStrings, 2, "<dur>초 동안 물고기를 꾑니다.", "잠시 물고기를 꾑니다."),
+        }, write: false, backupFolder: null, CancellationToken.None);
+
+        Assert.Empty(result.Applied);
+    }
+
+    [Fact]
     public async Task ReviewedChanges_AreWrittenIntoThePatch_WithABackup()
     {
         var backup = Path.Combine(_root, "backup");

@@ -11,6 +11,10 @@ $patch = "Skyrim_Latest_Kor\01-main"
 # 1. Review batches for Gemini (rows used by local mods first). The output folder must be new.
 dotnet run --project tools/XTranslatorAi.KoreanPatchReview -- export $data $patch artifacts/patch-review-<date> --projects "$env:LOCALAPPDATA\XTranslatorAi\Projects"
 
+# Creation Club content: --plugins cc exports the patch's tables for the CC plugins in Data, their English read from each
+# plugin's BSA. apply checks a change to such a table against that plugin's English as well.
+dotnet run --project tools/XTranslatorAi.KoreanPatchReview -- export $data $patch artifacts/patch-review-<date>-cc --plugins cc
+
 # 2. Check a review CSV (plugin,table,id,current_ko,suggested_ko,...), then write it.
 dotnet run --project tools/XTranslatorAi.KoreanPatchReview -- apply $data $patch review.csv
 dotnet run --project tools/XTranslatorAi.KoreanPatchReview -- apply $data $patch review.csv --write --backup artifacts/patch-review-<date>/backup
