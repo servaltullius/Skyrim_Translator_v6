@@ -111,8 +111,9 @@ public sealed class BundledFranchiseTmSeedService
             // override replaces a text, the one the game shows (Lisbet 리스벳, not the 리즈벳 it replaces); 126 rows changed.
             // v4 takes the patch's first review round (화살 - 강철 화살 → 화살 - 강철, 항박일지 → 항해일지); 21 rows changed.
             // v5 takes its second, of names (빛나는 끌개 → 번개 유도장치, 오크제 방어구 → 오크제 전투화 on boots), and the
-            // decisions after it (Jumping spiders 도약형, not the 폭발형 of the exploding ones; Pacify 광역 진정); 89 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v5", "bundled-skyrim-tes-franchise-tm.tsv", 1527489, "ebd748c218303fcae82e7e0d82b7fdd6cc26c71864ef8ab2e2b259747aff151b",
+            // decisions after it (Jumping spiders 도약형, not the 폭발형 of the exploding ones; Pacify 광역 진정; Glowing
+            // Spider 발광 거미); 90 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v5", "bundled-skyrim-tes-franchise-tm.tsv", 1527486, "7e19dc367f7315e624583efc7964355d80077158e070096fb4b130ef08c70451",
                 PreviousVersions: new[] { "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v5-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
