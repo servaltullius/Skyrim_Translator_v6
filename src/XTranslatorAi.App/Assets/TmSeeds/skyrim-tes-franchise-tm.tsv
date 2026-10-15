@@ -1354,7 +1354,7 @@ Atub	에이텁
 Augmented Flames	화염 증강
 Augmented Frost	냉기 증강
 Augmented Shock	전격 증강
-Augur of Dunlain	던레인의 예언
+Augur of Dunlain	던레인의 예언자
 Aura Whisper	정령의 속삭임
 Auriel's Arrow	아우리엘의 화살
 Auriel's Bow	아우리엘의 활
@@ -2410,7 +2410,7 @@ Can you tell me about the wedding ring?	결혼 반지에 대해 말해주시오.
 Can you tell me anything about him?	그에 관해서 뭔가 말해주시겠소?
 Can you tell me anything about the "Butcher"?	'도살자'에 관해서 뭔가 말해줄 게 있소?
 Can you tell me anything else about what's going on?	무슨 일인지 더 알려줄 게 있소?
-Can you tell me more about the Augur of Dunlain?	'던레인의 예언'에 관해 더 알려주시오.
+Can you tell me more about the Augur of Dunlain?	던레인의 예언자에 관해 더 알려주시오.
 Can you tell me more about the old Dawnguard?	예전의 던가드에 관해서 더 말해주시오.
 Can you tell me more about the Severin family?	세브린 가문에 대해서 더 말해줄 수 있소?
 Can you tell me more about the shrine near town?	마을 주변의 성소에 관해서 조금 더 알려주시오.
@@ -6712,7 +6712,7 @@ Find the <Alias=QuestItem> for <Alias.ShortName=QuestGiver>	<Alias.ShortName=Que
 Find the <Alias=QuestItem> inside <Alias=Dungeon>	<Alias=Dungeon>안에서 <Alias=QuestItem>를 찾기
 Find the Aetherium Forge	에테리움 대장간 찾기
 Find the Arch-Mage	대마법사를 찾기
-Find the Augur of Dunlain	던레인의 예언을 찾기
+Find the Augur of Dunlain	던레인의 예언자를 찾기
 Find the Black Book in <Alias=Dungeon>	<Alias=Dungeon>에서 검은 책을 찾기
 Find the copy of <Alias=Book>	<Alias=Book> 사본을 찾기
 Find the courier	배달부를 찾기
@@ -9960,7 +9960,7 @@ I seek my fortune.	돈을 벌러 왔소.
 I seek the knowledge of the Elder Scrolls.	엘더스크롤에 관한 지식을 찾습니다.
 I shouldn't have brought it up again.	이 말 다시 꺼내지 말 걸.
 I spoke to Hermaeus Mora. He asked for the "secrets of the Skaal."	헤르메우스 모라와 이야기했소. 그는 '스칼의 비밀'을 원하던데.
-I spoke with the Augur of Dunlain.	던레인의 예언과 이야기했습니다.
+I spoke with the Augur of Dunlain.	던레인의 예언자와 이야기했습니다.
 I spoke with Vex about Isabelle.	이자벨에 관해 벡스와 이야기했소.
 I still think you're crazy.	여전히 당신이 좀 이상해 보이는데.
 I stopped some Necromancers from summoning Potema.	어떤 강령술사들이 포테마를 소환하려는 것을 막았습니다.
@@ -15780,7 +15780,7 @@ Recipe - Jumping Poison Spider 2x	제조법 : 도약형 독 거미 2x
 Recipe - Jumping Shock Spider	제조법 : 도약형 전격 거미
 Recipe - Jumping Shock Spider 2x	제조법 : 도약형 전격 거미 2x
 Recipe - Mind Control Spider	제조법 : 정신조종 거미
-Recipe - Oil Spider	제조법 : 기름분사 거미
+Recipe - Oil Spider	제조법 : 기름 거미
 Recipe - Pack Spider	제조법 : 운반용 거미
 Recipe - Poison Cloaked Spider	제조법 : 맹독 망토 거미
 Recipe - Poison Cloaked Spider 2x	제조법 : 맹독 망토 거미 2x
@@ -17719,7 +17719,7 @@ So you're from Daggerfall, then?	그래서 당신은 대거폴 출신입니까?
 So you're in charge of Anga's Mill?	당신이 앙가의 목재소 책임자인가?
 So you're just going to give up?	그래서 그냥 포기할 생각인가?
 So you're supposed to train me?	그럼 당신이 나를 훈련 시키는 겁니까?
-So you're the Augur of Dunlain?	그래서 당신이 '던레인의 예언'입니까?
+So you're the Augur of Dunlain?	그래서 당신이 던레인의 예언자입니까?
 So you're treated badly because of your work?	그러니까 당신의 직업때문에 부당한 대우를 받고 있다고요?
 So, buy him off?	그러니까 뇌물을 주면 된다?
 So, can you teach me this Shout?	그래서 이 함성을 가르쳐 주실 수 있겠습니까?
@@ -19997,7 +19997,7 @@ The Art of War Magic	전투마법의 기술
 The ashfall from Red Mountain has driven much of Solstheim's native wildlife into the northern half of the island.	레드 마운틴에서 날아온 화산재 때문에 솔스트하임 섬의 야생 동물들은 북쪽 절반지역까지 몰려났습니다.
 The Atronach Doomstone	아트로나크의 선돌
 The Atronach Stone	아트로나크의 선돌
-The Augur referred to it as the Eye of Magnus, not me.	예언은 '매그너스의 눈'과 관련이 있다고 했지, 내가 아니오.
+The Augur referred to it as the Eye of Magnus, not me.	그걸 '매그너스의 눈'이라고 부른 건 예언자지, 내가 아니오.
 The Axe Man	도끼꾼
 The bandit leader at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation> 의 산적 두목은 죽었습니다. 현상금을 받으러 왔습니다.
 The bandits won't be a problem anymore.	산적들은 더 이상 문제가 되지 않을거요.
@@ -21968,7 +21968,7 @@ What does Maven want from me?	메이븐이 내게 원하는 게 뭐지?
 What does she do with the memories?	기억은 어디다 쓰려고 모으는 거지?
 What does Talos have to do with the war?	탈로스와 이 전쟁에 무슨 관계가 있소?
 What does that mean?	그게 도대체 무슨 뜻이오?
-What does the Augur have to do with this?	'예언'은 이걸로 뭘 할 생각입니까?
+What does the Augur have to do with this?	예언자가 이 일과 무슨 상관입니까?
 What does the Dragonrend Shout actually do?	드래곤렌드 함성이 정확히 어떤 작용을 하는 것입니까?
 What does the Guild get if I do that?	내가 그 일을 하면 길드는 어떤 이득을 얻지?
 What does the Miasma do?	미아즈마는 무슨 작용을 하는 거지?

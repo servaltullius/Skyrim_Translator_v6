@@ -29,6 +29,7 @@ Ask about Balgruuf's strange children	발그루프의 이상한 자녀들에 관
 Assault <Alias=Enemy> but don't kill <Alias=Enemy.pronoun>	<Alias=Enemy>를 습격하되 <Alias=Enemy.pronoun>를 죽이지 않기	죽이지 않고 <Alias=Enemy> 습격하기
 Astrid is the leader of the Dark Brotherhood Sanctuary, and her word is law.	아스트리드는 다크 브라더후드 성역의 우두머리이며, 그녀의 말이 곧 법입니다.	아스트리드는 다크 브라더후드 성지의 우두머리이며, 그녀의 말이 곧 법입니다.
 At the center of the Dunmer province of Morrowind lies the Red Mountain, the largest volcano in all of Tamriel.	던머들의 지역인 모로윈드의 중심부에는 탐리엘에서 가장 거대한 화산인 레드 마운틴이 있습니다.	던머지역의 중앙에 있는 모로윈드의 중심부에는 탐리엘에서 가장 거대한 화산인 레드 마운틴이 있습니다.
+Augur of Dunlain	던레인의 예언자	던레인의 예언
 Balbus's Fork	발부스의 포크	발부스의 집게
 Baldor Iron-Shaper	발도어 아이언-셰이퍼	발도어
 Begin the hunt	사냥 시작하기	사냥 시작
@@ -48,6 +49,7 @@ Bring the Dibella Statue to Lisbet	디벨라의 동상을 리스벳에게 가져
 Bring the Four Master Illusion texts to Drevis Neloren	드레비스 넬로렌에게 달인 환영마법 책 4권을 가져가기	드레비스 넬로렌에게 에게 달인 환영마법 책 4권을 가져가기
 Burns the target <mag> points per second. Targets on fire take extra damage.	매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	<mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 Buy back the Elder Scroll (Dragon) from Urag gro-Shub	우라그에게 팔았던 '엘더스크롤 - 드래곤'을 다시 구입하기	우라그에게 팔았던 엘더스크롤을 다시 구입하기.
+Can you tell me more about the Augur of Dunlain?	던레인의 예언자에 관해 더 알려주시오.	'던레인의 예언'에 관해 더 알려주시오.
 Cast on a nearby surface, it explodes for and freezes the target in place for <dur> seconds.	주변 표면에 정지의 룬을 설치합니다. 폭발하면 목표를 <dur> 초 동안 그 자리에 얼어붙게 합니다.	주변 표면에 정지의 룬을 설치합니다. 적이 접근 시 폭발하여 <mag> 의 냉기 피해를 입힙니다.
 Castor the Puzzlemaker's Corpse	퍼즐 제작자 캐스터의 시체	캐스터의 시체
 Commune with Hrothmund's Spirit	흐로스문드의 유령과 대화하기	흐로스문드의 영혼과 대화하기
@@ -89,6 +91,7 @@ Find pages from Saint Jiub's Opus (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaint
 Find Resonance Gems across Solstheim to complete the Kagrumez trials	카그루메즈의 시험을 통과하기 위하여 솔스트하임에 있는 몇 개의 공진 보석을 찾기	카그루메즈의 시험을 통과하기 위하여 슬츠하임에 있는 몇개의 공진 보석을 찾기
 Find some equipment	장비할 몇 가지의 물건들을 찾기	장비할 몇가지의 물건들을 찾기
 Find some Mammoth Tusk Powder	매머드 상아 가루 몇 개를 찾기	매머드 상아 가루 몇개를 찾기
+Find the Augur of Dunlain	던레인의 예언자를 찾기	던레인의 예언을 찾기
 Find The Elder Scroll (Blood)	'엘더스크롤 - 피'를 찾기	엘더스크롤 찾기
 Find The Elder Scroll (Dragon)	'엘더스크롤 - 드래곤'을 찾기	엘더스크롤 찾기
 Find the skooma dealers in Cragslane Cavern	크래그슬레인 대동굴에서 스쿠마 상인들을 찾기	크래그슬레인 동굴에서 스쿠마 상인들을 찾기
@@ -107,6 +110,7 @@ Greenhouse, Doors	온실, 문	온실,문들
 Grelka's Strongbox	그렐카의 튼튼한 상자	그레카의 튼튼한 상자
 Grim Shieldmaiden	음울한 여전사	그림 실드메이든
 Hilde	힐데	힐드
+I spoke with the Augur of Dunlain.	던레인의 예언자와 이야기했습니다.	던레인의 예언과 이야기했습니다.
 Ice Wolf	설원늑대	설원 늑대
 Identify the Crystal Shard	크리스털 조각의 정체를 알아내기	크리스털 조각을 찾기
 Imbued Spider	마력이 깃든 거미	얼룩진 거미
@@ -161,6 +165,7 @@ Recipe - Jumping Poison Spider	제조법 : 도약형 독 거미	제조법 : 독 
 Recipe - Jumping Poison Spider 2x	제조법 : 도약형 독 거미 2x	제조법 : 독 거미 2x
 Recipe - Jumping Shock Spider	제조법 : 도약형 전격 거미	제조법 : 폭발형 전격 거미
 Recipe - Jumping Shock Spider 2x	제조법 : 도약형 전격 거미 2x	제조법 : 폭발형 전격 거미 2x
+Recipe - Oil Spider	제조법 : 기름 거미	제조법 : 기름분사 거미
 Recover the Bonemold Formula for Glover Mallory	글로버 말로리를 위하여 뼈다귀 물품 제조법을 찾아내기	글로버 말로리를 위하여 뼈다귀 물품 제작법을 찾아내기
 Remove the workbench from the Enchanter's Tower.	마법부여 연구탑에서 작업선반을 제거합니다.	마법부가 연구탑에서 작업선반을 제거합니다.
 Remove Tree	나무의 바위 효과 제거	나무의 바위효과 제거
@@ -176,6 +181,7 @@ Sabjorn's Dresser	사비욘의 서랍장	사비욘의 옷상자
 Sacred Stones only confer powers once a day	신성한 바위는 하루에 한 번만 능력을 부여해 줍니다.	신성한 바위은 하루에 한 번만 능력을 부여해 줍니다.
 Shock Cloaked Spider	천둥 망토 거미	전격 거미
 Shrine Base	신전	신전 영역
+So you're the Augur of Dunlain?	그래서 당신이 던레인의 예언자입니까?	그래서 당신이 '던레인의 예언'입니까?
 Spawns a glowing spider that will follow you around.  Only one can be spawned at a time.	주위를 따라오는 발광 거미를 소환합니다. 한 번에 하나만 소환할 수 있습니다.	주위를 따라오는 발광 거미를 소환합니다.
 Spawns a spider that can be used to haul items.  Only one can be spawned at once.	물품을 운반하는 거미를 소환합니다. 한 번에 하나만 소환할 수 있습니다.	물품을 운반하는 거미를 소환합니다.
 Speak to Degaine	디게인과 대화하기	디게인과와 대화하기
@@ -204,6 +210,7 @@ Targets that fail to resist are immobilized in hardened ash for <dur> seconds.	�
 Tel Mithryn Steward's House	텔 미스린 행정관의 집	텔 미스린 집사의 집
 Tell Bralsa Drel she's welcome at the Retching Netch	그녀가 레칭 네치 여관에 출입해도 된다는 것을 브랄사 드렐에게 전하기	그녀가 여관에 출입해도 된다는 것을 브랄사 드렐에게 전하기
 Tempered Sphere	단련된 드워프 구체	단련된 드워프 스피어
+The Augur referred to it as the Eye of Magnus, not me.	그걸 '매그너스의 눈'이라고 부른 건 예언자지, 내가 아니오.	예언은 '매그너스의 눈'과 관련이 있다고 했지, 내가 아니오.
 The Black-Briars of Riften are one of the most influential and well-connected clans in Skyrim.	리프튼의 블랙-브라이어 가문은 스카이림에서 가장 영향력이 크고 인맥이 넓은 가문 중 하나입니다.	리프튼에 있는 블랙-브라이어 회사는 스카이림에서 가장 영향력이 있고 잘 구성되어 있는 조직들 중 하나입니다.
 The Dawnguard has armored battle trolls that they use when fighting vampires.	던가드들은 흡혈귀와 싸울 때 이용하는 갑옷을 입힌 전투 트롤들을 가지고 있습니다.	던가드들은 흡혈귀와 싸울 때 이용하는 강화 전투 트롤들을 가지고 있습니다.
 The poor in Markarth live in the Warrens, and are almost exclusively natives of the Reach.	마르카스의 가난한 자들은 빈민굴에 살고 있으며, 대부분은 리치의 원주민들입니다.	마르카스의 가난한 자들은 빈민촌에 살고 있으며, 대부분은 리치의 원주민들입니다.
@@ -220,6 +227,7 @@ Vampire Hunter	흡혈귀 사냥꾼	사냥꾼 흡혈귀
 Vampiric Blood Rested	안식을 취한 흡혈귀의 피	흡혈귀의 피가 편안한 휴식을 취했습니다.
 Verner Rock-Chucker	버너 락-처커	버너 락-크러셔
 Vigilant Adalvald	경계병 아달발드	아달발드 경계병
+What does the Augur have to do with this?	예언자가 이 일과 무슨 상관입니까?	'예언'은 이걸로 뭘 할 생각입니까?
 Widow's Watch Ruins	미망인의 감시대 폐허	미망감시대 폐허
 Withdrawals from the tainted Bloodspring lower your Magicka and Stamina regeneration by 40% for 2 days.	저주받은 피의 샘의 금단 증상으로 2 일 동안 매지카와 지구력의 재생이 40% 감소합니다.	저주받은 피의 샘에서 벗어날 시 2 일 동안 매지카와 지구력의 재생이 40% 감소합니다.
 You are <mag>% more effective with missile weapons.	활의 공격력이 <mag>% 증가합니다.	활의 공격력이 <mag> 증가합니다.
