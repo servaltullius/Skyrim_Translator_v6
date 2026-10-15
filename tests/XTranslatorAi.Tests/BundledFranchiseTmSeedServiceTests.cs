@@ -514,6 +514,8 @@ public class BundledFranchiseTmSeedServiceTests
             Assert.Contains("\nI don't need your advice.\t당신의 조언은 필요 없소.\t당신의 조언이 필요한데.\n", changes, StringComparison.Ordinal);
             // Gallows Hall, the Creation Club home, no longer shares 교수대 바위 with Gallows Rock.
             Assert.Contains("\nGallows Hall\t교수대 회관\t교수대 바위\n", changes, StringComparison.Ordinal);
+            // The last batch, of game settings text: Nose Length was 코 높이.
+            Assert.Contains("\nNose Length\t코 길이\t코 높이\n", changes, StringComparison.Ordinal);
             Assert.DoesNotContain("\nExploding Spider\t", changes, StringComparison.Ordinal);
             Assert.Equal(beforeV4, changes.Contains("\nSuvaris Atheron's Logbook\t수바리스 아테론의 항해일지\t수바리스 아테론의 항박일지\n", StringComparison.Ordinal));
             // v1 had 화살 - 강철; v2 took the 화살 - 강철 화살 of the records the game does not show, and v4 goes back.

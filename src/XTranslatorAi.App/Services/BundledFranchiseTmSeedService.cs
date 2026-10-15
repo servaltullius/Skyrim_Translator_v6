@@ -117,8 +117,8 @@ public sealed class BundledFranchiseTmSeedService
             // and the decisions after it (the Augur of Dunlain 던레인의 예언자; the Oil Spider recipe 기름 거미), and the
             // sixth, of the player's dialogue choices (I don't need your advice → 필요 없소), with Gallows Hall, the
             // Creation Club home, 교수대 회관 apart from Gallows Rock's 교수대 바위, and the quests' NPC lines (the
-            // Stormcloak oath whole again); 530 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v5", "bundled-skyrim-tes-franchise-tm.tsv", 1528381, "6bd9fa660f0a1a5310607332d0307de7b4b9587778d1026ca801dd85700d7ca4",
+            // Stormcloak oath whole again), and the last batch, of game settings text (Nose Length 코 길이); 547 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v5", "bundled-skyrim-tes-franchise-tm.tsv", 1528408, "d0c382bb47e98c28345ab531d567632e346c9ee1cf72ae58b8d75a3fa84d93b0",
                 PreviousVersions: new[] { "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v5-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),

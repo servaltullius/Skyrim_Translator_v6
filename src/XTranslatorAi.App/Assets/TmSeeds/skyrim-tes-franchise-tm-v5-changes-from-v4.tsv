@@ -1,5 +1,7 @@
 Source	Target	Previous
 "As Talos is my witness, may this oath bind me to death and beyond..."	'탈로스께서 내 증인이시니, 이 맹세가 죽음과 그 너머까지 나를 묶을지어다...'	'탈로스께서 내 증인이시며, 죽음과 그 너머라도...'
+%s discovered from %s	효과 : %s - %s에서 발견했습니다	효과 : %s - %s 에서 발견했습니다
+%s Increased to %i	%s 기술 증가 - 현재 %i	%s 기술 증가- 현재 %i
 (Optional) Discover leverage to sway Niranye	(선택) 니라녜의 마음을 바꾸기 위한 수단을 찾기	(선택) 니랴네의 마음을 바꾸기 위한 수단을 찾기
 (Optional) Show Skorm Snow-Strider's journal to Valmir	(선택) 발머에게 스콤의 일기를 보여주기	(선택) 발머에게 스콤의 일지를 보여주기
 50% chance for each attribute to absorb <mag> points of Health, Stamina and/or Magicka.	체력, 지구력, 매지카 각각에 대해 50% 확률로 <mag> 흡수합니다.	50% 확률로 체력, 지구력, 매지카 중 하나를 <mag> 흡수합니다.
@@ -71,6 +73,7 @@ Bring the <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=Que
 Bring the Bonemold Formula to Glover Mallory	뼈다귀 물품 제조법을 글로버에게 전해주기	뼈다귀 물품 제작법을 글로버에게 전해주기
 Bring the Dibella Statue to Lisbet	디벨라의 동상을 리스벳에게 가져다 주기	디벨라의 동상을 리즈벳에게 가져다 주기
 Bring the Four Master Illusion texts to Drevis Neloren	드레비스 넬로렌에게 달인 환영마법 책 4권을 가져가기	드레비스 넬로렌에게 에게 달인 환영마법 책 4권을 가져가기
+Brow Width	눈썹 폭	눈썹 넓이
 Burns the target <mag> points per second. Targets on fire take extra damage.	매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	<mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 But there's nobody else here.	하지만 여기에 다른 사람은 전혀 안 보입니다.	하지만 여기에 다른사람은 전혀 안 보입니다.
 Buy back the Elder Scroll (Dragon) from Urag gro-Shub	우라그에게 팔았던 '엘더스크롤 - 드래곤'을 다시 구입하기	우라그에게 팔았던 엘더스크롤을 다시 구입하기.
@@ -106,6 +109,7 @@ Does <mag> points of Shock Damage.	<mag> 의 전격 피해를 입힙니다.	<mag
 Does the Arch-Mage often ask for advice?	대마법사가 자주 조언을 구하러 옵니까?	대마법사가 가끔 조언을 구하러 옵니까?
 Does Ulfric have much need for magic?	울프릭은 마법을 많이 필요로 합니까?	울프릭은 마법이 많이 필요로 합니까?
 Don't know why I bothered. This place is a mess.	내가 왜 이런 귀찮은 짓을 하는지 모르겠군. 여기 완전 개판인데.	내가 왜 이런 귀찮은 짓을 하지 모르겠군. 여기 완전 개판인데.
+Dragon Souls are required to unlock shouts.	함성을 해제하려면 드래곤의 영혼이 필요합니다.	드래곤의 영혼을 사용하여 함성을 해제하세요.
 Drains <mag> points from Carry Weight.	무게 한계가 <mag> 감소합니다.	무게 한계를 <mag> 흡수합니다.
 Dremora Prices	드레모라 가격	드레모라 군주
 Drop the debt or answer to me. (Intimidate)	빚을 없애 주든가, 아니면 나를 상대하든가. (위협)	빚을 없애주거나, 내 상담을 받거나. (위협)
@@ -129,6 +133,9 @@ Erik the Slayer, huh? Sounds fearsome.	'학살자 에릭'? 무시무시한 이�
 Escape from the Blue Palace	푸른 궁전에서 탈출하기	파란 궁전에서 탈출하기
 Escape the Tower!	탑에서 탈출하기	탑에서 탈출하라!
 Explore Vahlok's Tomb	발록의 묘지을 탐색하기	발록의 무덤을 탐색하기
+Eye Shadow	눈 위 화장	눈위 화장
+Eye Tint	눈 아래 색상	눈 아래색상
+Fast travel to %s?	%s까지 빠른 이동을 사용할까요?	%s 까지 빠른 이동을 사용할까요?
 Fathom	페덤	파돔
 Find 20 deathbell for Ingun Black-Briar (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 가져다 줄 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)
 Find pages from Saint Jiub's Opus (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaintTotal>)	성자 지웁의 작품에서 잃어버린 페이지를 찾기 (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaintTotal>)	지웁의 작품에서 잃어버린 페이지를 찾기 (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaintTotal>)
@@ -282,6 +289,7 @@ Lightning Attractor	번개 유도장치	빛나는 끌개
 Living room furnishings. (<Global=HDWhiterunLiving> gold)	거실 가구들. (<Global=HDWhiterunLiving> 골드)	거실 가구 (<Global=HDWhiterunLiving> 골드)
 Locate the East Empire Pendants for Fethis Alor in Raven Rock	레이븐 락에 있는 페디스 알로어를 위해 동제국 회사 펜던트를 찾기	동제국 회사 펜던트를 레이븐 락에 있는 페디스 알로어에게 전하기
 Loft decorations (<Global=HDWhiterunLoft> gold)	다락 장식들. (<Global=HDWhiterunLoft> 골드)	다락 장식들.(<Global=HDWhiterunLoft> 골드)
+Log Pile	통나무 더미	나무 말뚝
 Look out - you're about to step in your own Shock Rune.	조심해! 당신이 설치한 벼락의 룬을 밟겠어.	조심해! 번개 룬을 밟을 뻔 했어.
 Lots of gold to be had plundering ships.	배를 약탈하면 금화를 잔뜩 챙길 수 있겠군.	수많은 금화들을 쌓아두었겠지.
 Malyn's Black Soul Gem	메일린의 검은 소울젬	멀린의 검은 소울젬
@@ -299,11 +307,13 @@ Nasty bit of business, Roggvir's execution.	로그비어의 처형이라, 볼썽
 Nearby creatures, including undead, machines and daedra, can be seen through walls for <dur> seconds.	<dur> 초 동안 주변의 언데드, 기계, 데이드라를 포함한 생물체를 벽 너머로 볼 수 있습니다.	<dur> 초 동안 주변의 언데드, 기계, 데이드라를 제외한 생물체를 벽 너머로 볼 수 있습니다.
 Neloth's <mag> point health boost.	체력이 <mag> 증가합니다.	체력이 <mag> 증가합니다
 Nirya wanted me to steal your notes.	니리야가 당신의 쪽지를 훔쳐달라더군.	니리야가 당신의 쪽지를 훔져달라더군.
+No bolts equipped.	장비 중인 볼트가 없습니다.	장비중인 볼트가 없습니다.
 No more self loathing for Pelagius.	펠라지우스는 더 이상 자신을 혐오하지 않을 것이오.	펠라지우스는 더 이상의 자신을 혐오하지 않을 것이오.
 No. Dragons like mountains, right?	아니요. 드래곤이 산을 좋아해서 그런 겁니까?	그게. 드래곤이 산을 좋아해서 그런 겁니까?
 No. No pets. Ever.	안 된다. 애완동물은 안 돼. 절대로.	난 동물이 싫다.
 No. We expected some kind of artifact.	아니오. 우리는 어떤 유물이 있을 거라 생각했소.	우리는 어떤 종류의 유물이라고 생각하고 있소.
 North Skybound Watch	북부 스카이바운드 감시대	스카이바운드 감시대
+Nose Length	코 길이	코 높이
 Not good enough. I'll hold onto this. You'll need to find another one.	그걸로는 부족하군. 이건 내가 가지고 있을 테니 다른 걸 찾아 보시오.	그걸로는 부족하군. 이건 내가 가지고 있을 테니 다른 사람을 찾아 보시오.
 Now, now, Gianna. Who's the Gourmet here?	이봐, 지아나. 여기서 '미식가'가 누구지?	이봐, 지아나. '미식가'는 누구지?
 Obtain a Deathbell Flower	데스벨 꽃을 구하기	데쓰벨 꽃을 구하기
@@ -414,10 +424,12 @@ The Alik'r won't trouble you anymore.	알리키어 걱정은 이제 안 해도 �
 The Augur referred to it as the Eye of Magnus, not me.	그걸 '매그너스의 눈'이라고 부른 건 예언자지, 내가 아니오.	예언은 '매그너스의 눈'과 관련이 있다고 했지, 내가 아니오.
 The Black-Briars of Riften are one of the most influential and well-connected clans in Skyrim.	리프튼의 블랙-브라이어 가문은 스카이림에서 가장 영향력이 크고 인맥이 넓은 가문 중 하나입니다.	리프튼에 있는 블랙-브라이어 회사는 스카이림에서 가장 영향력이 있고 잘 구성되어 있는 조직들 중 하나입니다.
 The College of Winterhold seems like a good place to start.	윈터홀드 대학에서부터 시작하는 게 좋을 것 같군.	윈터홀드의 대학에서부터 시작하는 게 좋을 것 같군.
+The Creation selection / load order has changed.  The game will now reload your data files.	모드 선택/ 로드 오더가 변경되었습니다.  데이터 파일을 다시 불러오겠습니다.	모드 선택/ 로드 오더가 변경 되었습니다.  데이타 파일을 다시 불러오겠습니다.
 The Dawnguard has armored battle trolls that they use when fighting vampires.	던가드들은 흡혈귀와 싸울 때 이용하는 갑옷을 입힌 전투 트롤들을 가지고 있습니다.	던가드들은 흡혈귀와 싸울 때 이용하는 강화 전투 트롤들을 가지고 있습니다.
 The Empire supported Elisif, but Ulfric now controls Skyrim.	제국은 엘리시프를 지지했지만, 이제는 울프릭이 스카이림을 지배하고 있소.	제국은 엘리시프를 지지하고 있지만, 울프릭이 스카이림을 지배하고 있소.
 The Empire supports Elisif, and killed Ulfric for his rebellion.	제국이 엘리시프를 지지하고 있고, 울프릭을 반역죄로 처형했지.	제국이 엘리시프를 지지하고 있고, 울프릭을 반역죄로 처형 당했지.
 The Empire supports Elisif, but there are many in Skyrim loyal to Ulfric.	제국은 엘리시프를 지지하고 있지만, 스카이림에는 울프릭에게 충성하는 사람들도 많지.	제국은 엘리시프를 지지하고 있지만, 스카이림 울프릭에게 충성하는 사람들도 많지.
+The lock has been broken.	자물쇠가 망가졌습니다.	자물쇠는 망가졌습니다.
 The poor in Markarth live in the Warrens, and are almost exclusively natives of the Reach.	마르카스의 가난한 자들은 빈민굴에 살고 있으며, 대부분은 리치의 원주민들입니다.	마르카스의 가난한 자들은 빈민촌에 살고 있으며, 대부분은 리치의 원주민들입니다.
 The Thief Stone ability lets you learn stealth skills more quickly.	'도적의 선돌'은 도적 계열 기술을 더 빠르게 배울 수 있도록 해줍니다.	'도적의 선돌'은 은신 기술을 더 빠르게 배울 수 있도록 해줍니다.
 There's a ghost haunting you.	너를 괴롭히는 유령이 있어.	너를 괴롭히는 유령들이 있어.
@@ -427,6 +439,8 @@ They won't stop until you do. (Persuade)	당신이 팔 때까지 그들은 포�
 They're at Cragslane Cavern.	그들은 크래그슬레인 대동굴에 있습니다.	그들은 크래그슬레인 동굴에 있습니다.
 They're bound to bring me fortune and glory.	스크롤이 나에게 부와 명예를 안겨 줄 것이오.	스크롤이 나를 부와 명예를 안내할 것이오.
 This heart stone is the source of the attacks.	이 하트스톤이 공격의 근원이던데.	이 하트 스톤이 공격의 근원이던데.
+This NPC cannot help you train any higher.	이 NPC는 지금 단계 이상으로는 훈련을 도와줄 수 없습니다.	이 NPC는 지금단계 이상으로는 훈련을 도와줄 수 없습니다.
+This person is busy.	이 사람은 바쁜 것 같습니다.	이 사람은 바쁜 것 같다.
 Tolan was right. And he's dead. The vampires killed him.	톨란의 말이 맞았소. 하지만 죽어버렸소. 흡혈귀들 짓이지.	톨란이 말이 맞았소. 하지만 죽어버렸소. 흡혈귀들 짓이지.
 Tolenos Omoren	톨레노스 오모렌	톨레노트 오모렌
 Tosses a Jumping Fire spider on the ground that will launch itself at nearby enemies and explode if it lands near them.	주변 적에게 돌진하여 폭발하는 도약형 화염 거미를 살포합니다.	주변 적에게 돌진하여 폭발하는 폭발형 화염 거미를 살포합니다.
@@ -436,6 +450,8 @@ Trading caravans sometimes pass through the ruins of Labyrinthian, but usually p
 Travel to Broken Oar Grotto	부러진 노 동굴로 가기	부서진 노 동굴로 가기
 Travel to Vahlok's Tomb	발록의 묘지으로 가기	발록의 무덤으로 가기
 Trophy Room, Doors	전시실, 문	전시실,문들
+Turn into Vampire	흡혈귀로 만들기	바꾸기
+Turn off 360 Controller in the Controls section of the Settings menu to switch back to Keyboard/Mouse.	키보드/마우스로 전환하려면 설정메뉴에서 360컨트롤러 항목을 해제해야 합니다.	키보드/마우스 로 전환하려면 설정메뉴에서 360컨트롤러 항목을 해제해야합니다.
 Um... The one where you saw a lady in half?	음... 여자를 톱으로 반토막 내는 거?	음... 두동강이 난 여자를 보았던 곳?
 Vampire Hunter	흡혈귀 사냥꾼	사냥꾼 흡혈귀
 Vampiric Blood Rested	안식을 취한 흡혈귀의 피	흡혈귀의 피가 편안한 휴식을 취했습니다.
@@ -506,6 +522,7 @@ You are <mag>% more effective with missile weapons.	활의 공격력이 <mag>% �
 You are able to move more quietly, and opponents that get too close take <5> points poison damage per second.	더 조용하게 움직입니다. 주변 적에게 매 초마다 <5> 의 독 피해를 입힙니다.	더 조용하게 움직입니다. 주변 적에게 매 초마다 <mag> 의 독 피해를 입힙니다.
 You can find us at Fort Dawnguard, near Stendarr's Beacon.	스텐다르의 봉화대 근처, 던가드 요새로 와 주시오.	스텐다르의 봉화 근처에, 던가드 요새로 와 주시오.
 You can make Dragonbone weapons at a forge that are more deadly than daedric weapons, but weigh more.	대장간에서 데이드라제 무기들보다 더욱 강력한 드래곤 뼈 무기를 제작할 수 있습니다. 그러나 당연하게도 더 무겁습니다.	대장간에서 데이드라제 무기들보다 더욱 강력한 드래곤본 무기를 제작할 수 있습니다. 그러나 당연하게도 더 무겁습니다.
+You cannot cast a spell while shouting	함성을 사용하는 도중에는 마법을 사용할 수 없습니다.	함성 사용하는 도중에는 마법을 사용할 수 없습니다.
 You dare question my skill?	감히 내 실력을 의심하는 겁니까?	감히 내 실력을 묻는 겁니까?
 You do realize this is treason...	이건 명백한 반역 행위인데...	이건 명백한 배신 행위인데...
 You don't seem very grateful.	그다지 고마워하는 것 같지 않군.	그다지 환영받지 못하는 것 같군.
