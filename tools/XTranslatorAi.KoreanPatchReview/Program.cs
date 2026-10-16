@@ -16,7 +16,10 @@ using XTranslatorAi.Core.Text;
 //   override-scan <game Data> <MO2 profile folder> <new output folder> --mods <MO2 mods folder> --old <patch folder> --new <patch folder>
 //                 [--overwrite <MO2 overwrite folder>]
 //   override-fix  <game Data> <winners.csv from override-scan> <new output folder> --mods <MO2 mods folder> [--exclude a.esp,b.esp]
+//                 [--class base-english] (another CSV with the same columns, such as override-english's, and the rows of that class)
 //                 (writes each plugin with its older-patch text, and its base game English, replaced by the patch's Korean)
+//   override-english <game Data> <winners.csv from override-scan> <new output folder> --mods <MO2 mods folder>
+//                 (finds the English of the "own" fields in other copies of their plugin, and compares it with the base game's)
 if (args.Length < 4)
 {
     Console.Error.WriteLine("usage: export|apply|dictionary|plugin-pair|plugin-write <game Data or plugin> <patch folder or plugin> <output or review.csv> [options]");
@@ -50,6 +53,8 @@ switch (command)
         return await OverrideScan();
     case "override-fix":
         return await OverrideFix();
+    case "override-english":
+        return await OverrideEnglish();
     default:
         Console.Error.WriteLine("unknown command: " + command);
         return 2;
@@ -370,7 +375,9 @@ async Task<int> OverrideFix()
     var (kindCol, sameCol, pluginCol, modCol, keyCol, identityCol, textCol, newCol) =
         (Col("class"), Col("same_english"), Col("plugin"), Col("mod"), Col("field_key"), Col("identity"), Col("text"), Col("new_ko"));
     var targets = rows.Skip(1)
-        .Where(r => r.Count > newCol && (r[kindCol] == "old-patch" || (r[kindCol] == "english" && r[sameCol] == "1")))
+        .Where(r => r.Count > newCol && (Option("--class") is { } only
+            ? r[kindCol] == only
+            : r[kindCol] == "old-patch" || (r[kindCol] == "english" && sameCol >= 0 && r[sameCol] == "1")))
         .Where(r => !excluded.Contains(r[pluginCol]))
         .GroupBy(r => (Mod: r[modCol], Plugin: r[pluginCol]))
         .ToList();
@@ -474,6 +481,126 @@ async Task<int> OverrideFix()
     await File.WriteAllLinesAsync(Path.Combine(output, "problems.tsv"), problems, new UTF8Encoding(true));
     await File.WriteAllLinesAsync(Path.Combine(output, "patch-text-as-is.tsv"), patchTextAsIs, new UTF8Encoding(true));
     Console.WriteLine($"플러그인 {written}개 씀, 바뀐 필드 {changedTotal:N0}, 영어와 태그가 다른 패치 글자 그대로 {patchTextAsIs.Count}, 문제 {problems.Count}");
+    return 0;
+}
+
+// A mod's own Korean for a base game field ("own") is a translation of the mod's English, which may be the base game's
+// line as it is or a line the mod rewrote. A Korean mod list often keeps the English release of a translated plugin in
+// another mod folder (the translation installed over it). Each "own" field is looked up there: an English that is the
+// base game's means the translator chose other words than the patch; an English the mod changed keeps its translation.
+async Task<int> OverrideEnglish()
+{
+    var (winnersCsv, output) = (patch, target);
+    if (Option("--mods") is not { } modsFolder)
+    {
+        Console.Error.WriteLine("--mods를 지정하세요.");
+        return 2;
+    }
+
+    if (Directory.Exists(output) && Directory.EnumerateFileSystemEntries(output).Any())
+    {
+        Console.Error.WriteLine("새 빈 폴더를 지정하세요: " + output);
+        return 2;
+    }
+
+    var rows = ReadCsv(await File.ReadAllTextAsync(winnersCsv));
+    var header = rows[0].Select(h => h.Trim().TrimStart('\uFEFF')).ToList();
+    int Col(string name) => header.IndexOf(name);
+    var (kindCol, pluginCol, modCol, keyCol, identityCol, recCol, textCol, newCol) =
+        (Col("class"), Col("plugin"), Col("mod"), Col("field_key"), Col("identity"), Col("rec"), Col("text"), Col("new_ko"));
+    var own = rows.Skip(1).Where(r => r.Count > newCol && r[kindCol] == "own").ToList();
+
+    var englishByIdentity = new Dictionary<string, string>(StringComparer.Ordinal);
+    foreach (var plugin in GameStringDictionaryBuilder.BaseGamePlugins)
+    {
+        var document = await PluginReader.ReadAsync(Path.Combine(data, plugin), new PluginReadOptions(), CancellationToken.None);
+        foreach (var field in document.Fields)
+        {
+            if (GameStringDictionary.FieldIdentity(field.Key, document.Info.Masters, plugin) is { } identity)
+            {
+                englishByIdentity[identity] = field.SourceText;
+            }
+        }
+    }
+
+    // Every copy of each plugin in any mod folder, enabled or not.
+    var copies = new Dictionary<string, List<(string Mod, string Path)>>(StringComparer.OrdinalIgnoreCase);
+    foreach (var folder in Directory.EnumerateDirectories(modsFolder))
+    {
+        foreach (var file in Directory.EnumerateFiles(folder))
+        {
+            var extension = Path.GetExtension(file);
+            if (extension.Equals(".esp", StringComparison.OrdinalIgnoreCase) || extension.Equals(".esm", StringComparison.OrdinalIgnoreCase)
+                || extension.Equals(".esl", StringComparison.OrdinalIgnoreCase))
+            {
+                (copies.TryGetValue(Path.GetFileName(file), out var list) ? list : copies[Path.GetFileName(file)] = new()).Add((Path.GetFileName(folder), file));
+            }
+        }
+    }
+
+    static bool HasHangul(string text) => text.Any(c => c is >= '\uAC00' and <= '\uD7A3');
+    static string Normalize(string text) => text.ReplaceLineEndings("\n").Trim();
+    var englishByPlugin = new Dictionary<string, (string Mod, Dictionary<string, string> Text)?>(StringComparer.OrdinalIgnoreCase);
+    var result = new List<string> { "class,plugin,mod,english_from,field_key,identity,rec,mod_english,base_english,text,new_ko" };
+    var counts = new Dictionary<string, int>();
+    foreach (var row in own)
+    {
+        var plugin = row[pluginCol];
+        if (!englishByPlugin.TryGetValue(plugin, out var english))
+        {
+            english = null;
+            foreach (var (mod, path) in copies.GetValueOrDefault(plugin) ?? new())
+            {
+                if (mod == row[modCol])
+                {
+                    continue;
+                }
+
+                try
+                {
+                    var document = await PluginReader.ReadAsync(path, new PluginReadOptions(), CancellationToken.None);
+                    // An English release: most of its text has no Hangul.
+                    var texts = document.Fields.Where(f => f.SourceText.Length > 0).ToList();
+                    if (texts.Count > 0 && texts.Count(f => HasHangul(f.SourceText)) * 10 < texts.Count)
+                    {
+                        english = (mod, document.Fields.GroupBy(f => f.Key, StringComparer.Ordinal).ToDictionary(g => g.Key, g => g.First().SourceText, StringComparer.Ordinal));
+                        break;
+                    }
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException)
+                {
+                }
+            }
+
+            englishByPlugin[plugin] = english;
+        }
+
+        var baseEnglish = englishByIdentity.GetValueOrDefault(row[identityCol]) ?? "";
+        string kind, modEnglish = "", from = "";
+        if (english is not { } found)
+        {
+            kind = "no-english";
+        }
+        else if (!found.Text.TryGetValue(row[keyCol], out var text))
+        {
+            kind = "not-in-english";
+            from = found.Mod;
+        }
+        else
+        {
+            modEnglish = text;
+            from = found.Mod;
+            kind = Normalize(text) == Normalize(baseEnglish) ? "base-english" : "mod-english";
+        }
+
+        counts[kind] = counts.GetValueOrDefault(kind) + 1;
+        result.Add(string.Join(',', new[] { kind, plugin, row[modCol], from, row[keyCol], row[identityCol], row[recCol],
+            Normalize(modEnglish), Normalize(baseEnglish), row[textCol], row[newCol] }.Select(Csv)));
+    }
+
+    Directory.CreateDirectory(output);
+    await File.WriteAllLinesAsync(Path.Combine(output, "own-english.csv"), result, new UTF8Encoding(true));
+    Console.WriteLine($"자체 번역 {own.Count:N0}필드: " + string.Join(", ", counts.Select(pair => $"{pair.Key} {pair.Value:N0}")));
     return 0;
 }
 

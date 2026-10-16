@@ -42,6 +42,11 @@ dotnet run --project tools/XTranslatorAi.KoreanPatchReview -- override-scan $dat
 dotnet run --project tools/XTranslatorAi.KoreanPatchReview -- override-fix $data artifacts/<scan>/winners.csv artifacts/<fix> --mods G:\TAKEALOOK\mods [--exclude a.esp]
 ```
 
+`override-english` looks for each `own` field's English in another copy of its plugin (the English release a
+translation was installed over) and sorts it: `mod-english` (the mod rewrote the line), `base-english` (the base game's
+line, translated in other words), `no-english`. A `base-english` field of an overhaul mod may follow that mod's own
+terms; read them before writing any with `override-fix --class base-english`.
+
 `summary.csv` counts each plugin's fields by kind, and `not_utf8_fields` the fields that did not read as UTF-8:
 exclude such a plugin, as writing it back would keep the replacement characters. Where the patch's own text differs
 from the English in a tag or a number's brackets, `override-fix` checks it against itself and lists it in
