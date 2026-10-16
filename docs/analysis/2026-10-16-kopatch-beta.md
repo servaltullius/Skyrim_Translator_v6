@@ -196,3 +196,20 @@ USSEP 한국어판은 플러그인을 통째로 바꾸므로 원본과 버전이
     - 기본 패치와 4.3.9c 한국어판은 원래부터 이 줄을 옮기지 않았다.
     - 옛 USSEP 4.2.9a·4.2.5b 한국어판도 같은 표지("알두인 / 아카토쉬 이분법 … 알렉산더 사이먼 지음")로 바꾸고, 섞인 줄은 빈 줄로 두어 줄 수를 영어와 맞췄다(`result-review-fixes.csv`).
 - 패키지 `artifacts/kopatch-26.10.16-beta3/Skyrim-Korean-Patch-26.10.16-beta3.zip`: 파일 262개, 69.1MB. 압축을 풀어 fomod 경로 10곳이 대소문자까지 있고, 파일이 저장소와 같은지 확인했다.
+
+### 상호작용 아이콘이 네모로 나오는 문제 (툴리우스 채널 댓글)
+
+- **증상**: 껄룩 2.1.2 모드팩에 베타를 설치하자 상호작용 아이콘이 모두 네모로 나왔다. 패치를 끄면 정상이다.
+- **원인**
+  - 아이콘은 Oblivion Interaction Icons의 `Interface/Fonticon.swf` 글꼴(`$Iconographia`)로 그린다. Dynamic String Distributor 설정이 활성화 문구에 `<font face='$Iconographia'>`를 넣는다.
+  - 모드팩에서는 UI 한국어판(Vel'dun UI - Korean 등)의 `fontconfig.txt`가 이기고, 거기에 이 글꼴 두 줄이 있다.
+  - 새로 설치한 패치는 MO2가 가장 높은 우선순위에 둔다. 그러면 갤러리 원본 그대로인 패치 `fontconfig.txt`(이 두 줄 없음)가 이겨서 글리프가 없어졌다. 25.3.14 원본도 같다.
+- **조사**
+  - 모드팩의 UI fontconfig 8종(Untarnished UI, Norden UI, Vel'dun UI와 한국어판, 모드팩 Font Edit)이 기본 게임 밖에서 쓰는 글꼴은 `$Iconographia`뿐이다. Norden 영어판의 `$Berserker`는 Norden 한국어판도 쓰지 않는다.
+  - `Fonticon.swf`를 넣는 모드는 Oblivion Interaction Icons 하나다. 그런데도 Untarnished·Norden·Vel'dun UI는 이 줄을 늘 적어 둔다. 파일이 없어도 문제없이 쓰이고 있다는 뜻이다.
+  - fomod는 플러그인만 알아볼 수 있고, UI 한국어판에는 플러그인이 없다. 사용자가 글꼴 설치 여부를 판단하기도 어렵다.
+- **조치**
+  - 고르는 단계 없이, 패치 `fontconfig.txt`에 `fontlib "Interface\Fonticon.swf"`와 `map "$Iconographia" = "Iconographia" Normal`을 늘 넣었다.
+  - 패치가 UI 모드보다 우선해도 아이콘은 나온다. 대신 글꼴 모양은 패치 글꼴이다.
+  - 한글패치는 관례대로 MO2 목록 위쪽(USSEP·USCCCP 원본 바로 아래, 낮은 우선순위)에 두는 것이 맞다. 그러면 UI 한국어판 설정이 이긴다. 읽어보기 설치 4번에 이 위치와 "새로 설치하면 맨 아래에 들어가니 끌어 올리기"를 적었다.
+  - 아이콘 글꼴 줄은 맨 아래에 둔 경우의 안전장치로 남긴다.
