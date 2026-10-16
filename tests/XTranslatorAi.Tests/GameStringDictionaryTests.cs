@@ -84,6 +84,17 @@ public sealed class GameStringDictionaryTests
         Assert.Null(game.Find(Identity("INFO/03012345/0/NAM1/0"), "INFO:NAM1", "What do you want?"));
     }
 
+    // A patch that fixes a vanilla line's English (USSEP) is reviewed against the line it replaces.
+    [Fact]
+    public void RecordText_IsFoundForChangedEnglish_AndSaysSo()
+    {
+        var game = Build();
+
+        Assert.Equal(("뭐가 필요한가?", false), game.FindRecord(Identity("INFO/00012345/0/NAM1/0"), "What do you want, stranger?"));
+        Assert.Equal(("뭐가 필요한가?", true), game.FindRecord(Identity("INFO/00012345/0/NAM1/0"), "What do you want?"));
+        Assert.Null(game.FindRecord(Identity("INFO/03012345/0/NAM1/0"), "What do you want?"));
+    }
+
     [Fact]
     public void SameText_IsMatchedOutsideDialogue_ByTheMostCommonSpelling()
     {

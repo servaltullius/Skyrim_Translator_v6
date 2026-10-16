@@ -149,6 +149,21 @@ public sealed class GameStringDictionary
         return !IsDialogue(rec) && _byText.TryGetValue(key, out var korean) ? new GameStringMatch(korean, "같은 문장") : null;
     }
 
+    /// <summary>
+    /// The base game's Korean for a record field whatever its English now is, and whether the English is still the
+    /// same: a patch that fixes a vanilla line is reviewed against the line it replaces.
+    /// </summary>
+    public (string Korean, bool SameEnglish)? FindRecord(string? fieldIdentity, string sourceText)
+    {
+        if (fieldIdentity == null || !_byField.TryGetValue(fieldIdentity, out var field))
+        {
+            return null;
+        }
+
+        var key = TranslationMemoryKey.NormalizeSource(sourceText);
+        return (field.Korean, !string.IsNullOrWhiteSpace(key) && string.Equals(field.EnglishHash, Fingerprint(key), StringComparison.Ordinal));
+    }
+
     /// <summary>The game translations for the given rows of a project, by row id.</summary>
     public async System.Threading.Tasks.Task<IReadOnlyDictionary<long, GameStringMatch>> MatchAsync(
         XTranslatorAi.Core.Data.IProjectDb db,
