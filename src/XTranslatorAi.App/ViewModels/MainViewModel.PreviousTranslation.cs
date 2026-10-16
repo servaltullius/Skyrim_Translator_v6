@@ -23,6 +23,7 @@ public partial class MainViewModel
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ClearPreviousTranslationCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ImportPreviousSourceCommand))]
     private bool _hasPreviousTranslation;
 
     private bool CanImportPreviousTranslation()
@@ -96,7 +97,75 @@ public partial class MainViewModel
             StatusMessage = $"이전 번역 {result.TextByFieldKey.Count}행을 연결했습니다({Path.GetFileName(path)}). "
                 + $"제외: 이전 판에 없음 {result.NotInPreviousRelease}, 레코드 구성이 바뀜 {result.ChangedRecord}, "
                 + $"원문 그대로 {result.SameAsSource}, 번역 안 됨 {result.NotTranslated}. "
-                + "다음 번역부터 참고합니다. 이미 번역된 행에 반영하려면 '다시 번역'을 쓰세요.";
+                + "다음 번역부터 참고합니다. 이미 번역된 행에 반영하려면 '다시 번역'을 쓰세요. "
+                + "이전 번역판의 영어 원본도 있으면 '이전 영어판 연결'로 고르세요. 영어가 같은 행은 이전 번역을 그대로 씁니다.";
+        });
+    }
+
+    /// <summary>
+    /// Links the English release the earlier translation was made from. Where a field's English is the same in both
+    /// releases, the earlier translation is reused as it is when translating, like xTranslator's SST dictionaries;
+    /// where it changed, the earlier translation stays a reference for the model.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanClearPreviousTranslation))]
+    private async Task ImportPreviousSourceAsync()
+    {
+        var document = _projectState.PluginDocument;
+        if (document == null)
+        {
+            return;
+        }
+
+        var path = _uiInteractionService.ShowOpenFileDialog(new OpenFileDialogRequest(
+            "Skyrim SE/AE 플러그인 (*.esp;*.esm;*.esl)|*.esp;*.esm;*.esl",
+            "이전 번역판이 번역한 영어 원본 선택 (예: 이전 버전 영어판)"));
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        await RunProjectOperationAsync("이전 영어판 연결", async cancellationToken =>
+        {
+            var db = _projectState.Db;
+            if (db == null)
+            {
+                return;
+            }
+
+            StatusMessage = "이전 영어판을 읽는 중...";
+            // The earlier English is read as the current English is, with its own Strings next to it.
+            var options = document.Info.Options with { StringsDirectory = null, ArchivePaths = null };
+            var previous = await Task.Run(() => PluginReader.ReadAsync(path, options, cancellationToken), cancellationToken);
+            var result = PreviousTranslationMatcher.MatchSources(document.Fields, document.Info.Masters,
+                previous.Fields, previous.Info.Masters);
+            var name = Path.GetFileName(path);
+            if (result.SourceByFieldKey.Count == 0)
+            {
+                StatusMessage = $"이전 영어판을 연결하지 못했습니다: {name}에서 같은 레코드를 찾지 못했습니다. 같은 모드의 이전 버전인지 확인하세요.";
+                return;
+            }
+
+            // A translated release here would make every row "unchanged" against itself.
+            if (LanguageHelper.IsKoreanLanguage(TargetLang)
+                && result.WithHangul * 2 > result.SourceByFieldKey.Count)
+            {
+                StatusMessage = $"이전 영어판을 연결하지 못했습니다: {name}은 한국어로 번역된 파일입니다. 이전 번역판이 번역한 영어 원본을 고르세요.";
+                return;
+            }
+
+            await db.ReplacePreviousSourcesAsync(name, result.SourceByFieldKey, cancellationToken);
+            if (!ReferenceEquals(db, _projectState.Db))
+            {
+                return;
+            }
+
+            var reusable = await db.GetReusablePreviousTranslationsByStringIdAsync(cancellationToken);
+            await RefreshPreviousTranslationsAsync(cancellationToken);
+            StatusMessage = $"이전 영어판({name})과 비교했습니다. 영어가 같고 이전 번역이 있는 {reusable.Count}행은 "
+                + "다음 번역 때 AI 없이 이전 번역을 그대로 씁니다. "
+                + $"영어가 바뀐 {result.Changed}행은 이전 번역을 참고해 새로 번역합니다. "
+                + $"(이전 판에 없음 {result.NotInPreviousRelease}, 레코드 구성이 바뀜 {result.ChangedRecord}) "
+                + "이미 번역된 행에 반영하려면 '다시 번역'을 쓰세요.";
         });
     }
 
@@ -134,6 +203,10 @@ public partial class MainViewModel
 
         var byId = await db.GetPreviousTranslationsByStringIdAsync(cancellationToken);
         var source = await db.GetPreviousTranslationSourceAsync(cancellationToken);
+        var sourceFile = await db.GetPreviousSourceFileNameAsync(cancellationToken);
+        var reusable = sourceFile == null
+            ? new System.Collections.Generic.Dictionary<long, string>()
+            : await db.GetReusablePreviousTranslationsByStringIdAsync(cancellationToken);
         if (!ReferenceEquals(db, _projectState.Db))
         {
             return;
@@ -147,6 +220,7 @@ public partial class MainViewModel
         HasPreviousTranslation = byId.Count > 0;
         PreviousTranslationSummary = source is { } s && byId.Count > 0
             ? $"{s.FileName}에서 {byId.Count}행 연결됨"
+              + (sourceFile == null ? "" : $" · 영어판 {sourceFile}: 영어가 같은 {reusable.Count}행은 그대로 씀")
             : "연결된 이전 번역 없음";
     }
 }

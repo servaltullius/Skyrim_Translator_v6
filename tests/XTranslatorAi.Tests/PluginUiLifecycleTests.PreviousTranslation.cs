@@ -54,6 +54,74 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Contains("연결하지 못했습니다", fixture.Vm.StatusMessage);
         });
 
+    /// <summary>
+    /// With the earlier release's English linked too, a row whose English did not change keeps the earlier
+    /// translation as it is, without a request; a row whose English changed is translated with it as a reference.
+    /// </summary>
+    [Theory]
+    [InlineData("Iron Sword", true)]
+    [InlineData("Steel Sword", false)]
+    public Task PreviousSource_ReusesTheEarlierTranslationOnlyWhereTheEnglishIsTheSame(string earlierEnglish, bool reused)
+        => RunOnSta(async () =>
+        {
+            var handler = new FakeGeminiHandler { GeneratedText = "철검" };
+            await using var fixture = new Fixture(handler);
+            await fixture.LoadPluginWorkspaceAsync();
+            var row = Assert.Single(fixture.Vm.Entries);
+            var oldRelease = Path.Combine(fixture.Root, "old-ko", "Test.esp");
+            var oldEnglish = Path.Combine(fixture.Root, "old-en", "Test.esp");
+            Directory.CreateDirectory(Path.GetDirectoryName(oldRelease)!);
+            Directory.CreateDirectory(Path.GetDirectoryName(oldEnglish)!);
+            await File.WriteAllBytesAsync(oldRelease, PluginProjectIntegrationTests.CreateMinimalPlugin("강철 장검"));
+            await File.WriteAllBytesAsync(oldEnglish, PluginProjectIntegrationTests.CreateMinimalPlugin(earlierEnglish));
+
+            Assert.False(fixture.Vm.ImportPreviousSourceCommand.CanExecute(null));
+            fixture.Ui.OpenPath = oldRelease;
+            await fixture.Vm.ImportPreviousTranslationCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+            fixture.Ui.OpenPath = oldEnglish;
+            Assert.True(fixture.Vm.ImportPreviousSourceCommand.CanExecute(null));
+            await fixture.Vm.ImportPreviousSourceCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            Assert.Contains($"{(reused ? 1 : 0)}행은 다음 번역 때 AI 없이", fixture.Vm.StatusMessage);
+            Assert.Contains("영어판 Test.esp", fixture.Vm.PreviousTranslationSummary);
+
+            await fixture.Vm.StartTranslationCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            if (reused)
+            {
+                Assert.Empty(handler.Requests);
+                Assert.Equal((StringEntryStatus.Done, "강철 장검"), (row.Status, row.DestText));
+            }
+            else
+            {
+                Assert.Contains("Earlier translation: 강철 장검", PromptText(Assert.Single(handler.Requests).Body));
+                Assert.Equal((StringEntryStatus.Done, "철검"), (row.Status, row.DestText));
+            }
+
+            // Linking another earlier translation drops the English that belonged to the last one.
+            fixture.Ui.OpenPath = oldRelease;
+            await fixture.Vm.ImportPreviousTranslationCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+            Assert.DoesNotContain("영어판", fixture.Vm.PreviousTranslationSummary);
+        });
+
+    [Fact]
+    public Task PreviousSource_ThatIsATranslatedRelease_IsRefused()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            await fixture.LoadPluginWorkspaceAsync();
+            var oldRelease = Path.Combine(fixture.Root, "old-ko", "Test.esp");
+            Directory.CreateDirectory(Path.GetDirectoryName(oldRelease)!);
+            await File.WriteAllBytesAsync(oldRelease, PluginProjectIntegrationTests.CreateMinimalPlugin("강철 장검"));
+            fixture.Ui.OpenPath = oldRelease;
+            await fixture.Vm.ImportPreviousTranslationCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            await fixture.Vm.ImportPreviousSourceCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            Assert.Contains("한국어로 번역된 파일", fixture.Vm.StatusMessage);
+            Assert.DoesNotContain("영어판", fixture.Vm.PreviousTranslationSummary);
+        });
+
     /// <summary>The prompt parts of a generateContent body; the JSON escapes non-ASCII text.</summary>
     private static string PromptText(string body)
     {

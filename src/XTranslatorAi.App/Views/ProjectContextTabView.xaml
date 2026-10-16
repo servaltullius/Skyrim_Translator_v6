@@ -28,7 +28,12 @@
             <Button Content="이전 번역 불러오기"
                     Command="{Binding ImportPreviousTranslationCommand}"
                     Style="{StaticResource XT.ToolbarButton}"
-                    ToolTip="같은 플러그인의 이전 번역판(예: 이전 버전 한글판 ESP)을 고르면 레코드별로 짝지어, 번역할 때 기존 이름·용어를 참고하게 합니다. 이전 번역을 그대로 복사하지는 않습니다." />
+                    ToolTip="같은 플러그인의 이전 번역판(예: 이전 버전 한글판 ESP)을 고르면 레코드별로 짝지어, 번역할 때 기존 이름·용어를 참고하게 합니다. 이전 영어판도 연결하면 영어가 같은 행은 이전 번역을 그대로 씁니다." />
+            <Button Content="이전 영어판 연결"
+                    Command="{Binding ImportPreviousSourceCommand}"
+                    Style="{StaticResource XT.ToolbarButton}"
+                    Margin="6,0,0,0"
+                    ToolTip="이전 번역판이 번역한 영어 원본(예: 이전 버전 영어판 ESP)을 고르면, 영어가 바뀌지 않은 행은 AI 없이 이전 번역을 그대로 씁니다. 영어가 바뀐 행만 이전 번역을 참고해 새로 번역합니다." />
             <Button Content="연결 해제"
                     Command="{Binding ClearPreviousTranslationCommand}"
                     Style="{StaticResource XT.ToolbarButton}"

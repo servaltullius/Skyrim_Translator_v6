@@ -134,6 +134,7 @@ public partial class MainViewModel
     [NotifyCanExecuteChangedFor(nameof(ToggleSourceFixCommand))]
     [NotifyCanExecuteChangedFor(nameof(ImportPreviousTranslationCommand))]
     [NotifyCanExecuteChangedFor(nameof(ClearPreviousTranslationCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ImportPreviousSourceCommand))]
     private bool _isProjectLoaded;
 
     [ObservableProperty]
@@ -173,6 +174,7 @@ public partial class MainViewModel
     [NotifyCanExecuteChangedFor(nameof(ToggleSourceFixCommand))]
     [NotifyCanExecuteChangedFor(nameof(ImportPreviousTranslationCommand))]
     [NotifyCanExecuteChangedFor(nameof(ClearPreviousTranslationCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ImportPreviousSourceCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenXmlCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenPluginCommand))]
     [NotifyCanExecuteChangedFor(nameof(RunCompare1Command))]

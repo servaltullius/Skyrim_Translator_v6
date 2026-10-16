@@ -33,6 +33,7 @@ public partial class MainViewModel
         ToggleSourceFixCommand.NotifyCanExecuteChanged();
         ImportPreviousTranslationCommand.NotifyCanExecuteChanged();
         ClearPreviousTranslationCommand.NotifyCanExecuteChanged();
+        ImportPreviousSourceCommand.NotifyCanExecuteChanged();
         NotifyProjectOperationCommands();
     }
 

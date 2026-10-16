@@ -14,6 +14,7 @@ public interface IProjectContextTabHost : INotifyPropertyChanged
     string PreviousTranslationSummary { get; }
     IAsyncRelayCommand ImportPreviousTranslationCommand { get; }
     IAsyncRelayCommand ClearPreviousTranslationCommand { get; }
+    IAsyncRelayCommand ImportPreviousSourceCommand { get; }
     bool CanLinkDroppedPreviousTranslation(string? path);
     Task LinkDroppedPreviousTranslationAsync(string path);
 }

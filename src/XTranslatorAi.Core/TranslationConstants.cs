@@ -41,6 +41,9 @@ public static class TranslationConstants
 
     public const string GameStringNoteKind = "game_string";
 
+    /// <summary>A row given its earlier translation as it is, because its English did not change since that release.</summary>
+    public const string PreviousReleaseNoteKind = "previous_release";
+
     /// <summary>A row translated against its English on purpose because the English is wrong ("원문 오류 수정").</summary>
     public const string SourceFixNoteKind = "source_fix";
 

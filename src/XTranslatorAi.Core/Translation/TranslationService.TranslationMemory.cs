@@ -124,7 +124,12 @@ public sealed partial class TranslationService
         {
             // If a TM entry breaks tag/placeholder integrity, skip it and fall back to LLM translation.
             var detail = string.IsNullOrWhiteSpace(ex.Message) ? ex.GetType().Name : ex.Message;
-            var origin = hitNoteKind == TranslationConstants.GameStringNoteKind ? "게임 번역" : "TM";
+            var origin = hitNoteKind switch
+            {
+                TranslationConstants.GameStringNoteKind => "게임 번역",
+                TranslationConstants.PreviousReleaseNoteKind => "이전 번역",
+                _ => "TM",
+            };
             await _db.UpsertStringNoteAsync(id, TranslationConstants.TmFallbackNoteKind, $"{origin} 폴백: {detail}", cancellationToken);
             return false;
         }

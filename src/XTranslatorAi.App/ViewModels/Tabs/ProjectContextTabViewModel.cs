@@ -46,6 +46,7 @@ public sealed class ProjectContextTabViewModel : ObservableObject, IDisposable
     public string PreviousTranslationSummary => _host.PreviousTranslationSummary;
     public IAsyncRelayCommand ImportPreviousTranslationCommand => _host.ImportPreviousTranslationCommand;
     public IAsyncRelayCommand ClearPreviousTranslationCommand => _host.ClearPreviousTranslationCommand;
+    public IAsyncRelayCommand ImportPreviousSourceCommand => _host.ImportPreviousSourceCommand;
 
     public bool CanLinkDroppedPreviousTranslation(string? path) => _host.CanLinkDroppedPreviousTranslation(path);
 

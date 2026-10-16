@@ -78,6 +78,10 @@ public interface IProjectDb
     Task<IReadOnlyDictionary<long, string>> GetPreviousTranslationsByStringIdAsync(CancellationToken cancellationToken)
         => Task.FromResult<IReadOnlyDictionary<long, string>>(new Dictionary<long, string>());
 
+    /// <summary>Earlier translations to reuse as they are, by row id (see <see cref="ProjectDb.GetReusablePreviousTranslationsByStringIdAsync"/>).</summary>
+    Task<IReadOnlyDictionary<long, string>> GetReusablePreviousTranslationsByStringIdAsync(CancellationToken cancellationToken)
+        => Task.FromResult<IReadOnlyDictionary<long, string>>(new Dictionary<long, string>());
+
     /// <summary>The plugin field each row of a plugin project was read from ("INFO/01012345/0/NAM1/0"), by row id.</summary>
     Task<IReadOnlyDictionary<long, string>> GetPluginFieldKeysByStringIdAsync(CancellationToken cancellationToken)
         => Task.FromResult<IReadOnlyDictionary<long, string>>(new Dictionary<long, string>());

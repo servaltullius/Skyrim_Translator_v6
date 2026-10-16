@@ -167,6 +167,63 @@ public class PreviousTranslationTests
         }
     }
 
+    [Fact]
+    public void MatchSources_PairsTheEarlierEnglishAndCountsWhatDidNotChange()
+    {
+        var current = new[]
+        {
+            Field("MGEF/05000867/0/FULL/0", "Blood Sea chop"),
+            Field("MGEF/05000868/0/FULL/0", "Elden Parry"),
+            Field("MGEF/05000869/0/FULL/0", "New in this release"),
+        };
+        var earlierEnglish = new[]
+        {
+            Field("MGEF/05000867/0/FULL/0", "Blood Sea chop"),
+            Field("MGEF/05000868/0/FULL/0", "Elden Parry (old)"),
+        };
+
+        var result = PreviousTranslationMatcher.MatchSources(current, Array.Empty<string>(), earlierEnglish, Array.Empty<string>());
+
+        Assert.Equal("Elden Parry (old)", result.SourceByFieldKey["MGEF/05000868/0/FULL/0"]);
+        Assert.Equal((1, 1, 1, 0, 0), (result.Unchanged, result.Changed, result.NotInPreviousRelease, result.ChangedRecord, result.WithHangul));
+    }
+
+    [Fact]
+    public async Task ReusableTranslations_AreThoseWhoseEnglishIsExactlyTheSame()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"xt-previous-{Guid.NewGuid():N}.sqlite");
+        var input = Path.Combine(Path.GetTempPath(), $"xt-previous-{Guid.NewGuid():N}.esp");
+        await File.WriteAllBytesAsync(input, PluginProjectIntegrationTests.CreateMinimalPlugin());
+        var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
+        try
+        {
+            var document = await PluginReader.ReadAsync(input, new PluginReadOptions(), CancellationToken.None);
+            var project = new ProjectInfo(1, "", "Test.esp", BethesdaFranchise.ElderScrolls, "english", "korean", "", false,
+                "", "model", "", "", false, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow);
+            var row = Assert.Single(await db.ReplaceImportedPluginStringsAsync(document.Info, document.Fields, project, "utf-8", CancellationToken.None));
+            var key = Assert.Single(document.Fields).Key;
+            await db.ReplacePreviousTranslationsAsync("Old.esp", new Dictionary<string, string> { [key] = "철검" }, CancellationToken.None);
+            Assert.Empty(await db.GetReusablePreviousTranslationsByStringIdAsync(CancellationToken.None));
+
+            await db.ReplacePreviousSourcesAsync("OldEn.esp", new Dictionary<string, string> { [key] = "Iron sword" }, CancellationToken.None);
+            Assert.Empty(await db.GetReusablePreviousTranslationsByStringIdAsync(CancellationToken.None));
+            Assert.Equal("OldEn.esp", await db.GetPreviousSourceFileNameAsync(CancellationToken.None));
+
+            await db.ReplacePreviousSourcesAsync("OldEn.esp", new Dictionary<string, string> { [key] = "Iron Sword" }, CancellationToken.None);
+            Assert.Equal("철검", (await db.GetReusablePreviousTranslationsByStringIdAsync(CancellationToken.None))[row.Id]);
+
+            await db.ClearPreviousTranslationsAsync(CancellationToken.None);
+            Assert.Empty(await db.GetReusablePreviousTranslationsByStringIdAsync(CancellationToken.None));
+            Assert.Null(await db.GetPreviousSourceFileNameAsync(CancellationToken.None));
+        }
+        finally
+        {
+            await db.DisposeAsync();
+            TestDbHelper.TryDeleteDbFiles(path);
+            File.Delete(input);
+        }
+    }
+
     private static PluginField Field(string key, string source)
         => new(key, 0, "MGEF", "FULL", 0x05000867u, "ES_BloodCombo1", 1, 1, source);
 

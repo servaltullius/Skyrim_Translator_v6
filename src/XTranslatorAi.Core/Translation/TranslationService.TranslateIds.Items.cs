@@ -24,6 +24,9 @@ public sealed partial class TranslationService
             : null);
         var previousTranslations = await _db.GetPreviousTranslationsByStringIdAsync(request.CancellationToken);
         Ctx.PreviousTranslationById = previousTranslations.Count == 0 ? null : previousTranslations;
+        var reusablePrevious = previousTranslations.Count == 0
+            ? new Dictionary<long, string>()
+            : await _db.GetReusablePreviousTranslationsByStringIdAsync(request.CancellationToken);
 
         var items = new List<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>();
         var canonicalIdByMaskedText = new Dictionary<DuplicateKey, long>();
@@ -75,6 +78,15 @@ public sealed partial class TranslationService
 
             if (request.GameStringMatches?.TryGetValue(row.Id, out var gameString) == true
                 && await TryApplyGameStringAsync(row.Id, row.SourceText, request.TargetLang, gameString, request.OnRowUpdated, request.CancellationToken))
+            {
+                continue;
+            }
+
+            // The English is the same as in the earlier translated release: its translation, a person's choice for
+            // this very field, is kept as it is rather than translated again. The game's own text still comes first.
+            if (reusablePrevious.TryGetValue(row.Id, out var earlier)
+                && await TryApplyKnownTranslationAsync(row.Id, row.SourceText, request.TargetLang, earlier,
+                    TranslationConstants.PreviousReleaseNoteKind, "이전 번역 그대로(영어 같음)", request.OnRowUpdated, request.CancellationToken))
             {
                 continue;
             }

@@ -115,6 +115,17 @@ public sealed partial class ProjectDb : IAsyncDisposable, IProjectDb
           ImportedAt TEXT NOT NULL
         );
 
+        CREATE TABLE IF NOT EXISTS PreviousSource (
+          FieldKey TEXT PRIMARY KEY,
+          Text TEXT NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS PreviousSourceFile (
+          Id INTEGER PRIMARY KEY CHECK (Id = 1),
+          FileName TEXT NOT NULL,
+          ImportedAt TEXT NOT NULL
+        );
+
         CREATE TABLE IF NOT EXISTS RetiredTranslation (
           ImportIdentity TEXT NOT NULL,
           OrderIndex INTEGER NOT NULL,
