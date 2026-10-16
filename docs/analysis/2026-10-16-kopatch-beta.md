@@ -187,7 +187,12 @@ USSEP 한국어판은 플러그인을 통째로 바꾸므로 원본과 버전이
   - 앱의 "이전 번역 연결"도 같은 짝짓기로 번역문 앞뒤를 잘라 저장했다. 그래서 이전 영어판까지 연결해도, 줄바꿈으로 끝나는 필드는 저장 검사에 걸려 AI로 다시 번역됐고, 앞뒤 공백은 잘린 채 저장됐다.
   - 7885d11에서 번역문을 그대로 두고 비교할 때만 다듬게 고쳤다. 테스트 2개를 추가했다.
   - 이미 연결해 둔 프로젝트는 이전 번역판을 다시 연결해야 반영된다.
-- **결정 필요**
-  - CC "Hand Ethra Mavandes": USCCCP가 Mavandas를 Mavandes로 고쳤다. CC 본편 표기 "핸드 에스라 마반다스"를 유지했다.
-  - Alduin/Akatosh 이분법 표지의 "Book Seven of 2920" 오류 줄: 옛 영어에 있어 번역해 넣었다(4.3.9c 영어에는 없음).
+- **조사한 표기 두 가지**
+  - **"Hand Ethra Mavandes"** (Ghosts of the Tribunal)
+    - CC 원래 영어, UESP 위키, 최신 USCCCP 8.5가 모두 "Mavandas"다. "Mavandes"는 USCCCP 7.7 무렵의 표기로, EditorID `ccASVSSE001_HandMavandes`에 맞춘 것으로 보이며 이후 판에서 돌아갔다.
+    - 그래서 모든 판에서 "핸드 에스라 마반다스"를 유지한다. 7.7 한국어판도 이 표기다.
+  - **알두인/아카토쉬 이분법 표지의 "Book Seven of 2920 / The Last Year of the First Era"와 "by / By Alexandre Simon"**
+    - 바닐라 영어 자체의 복사 실수로, 「2920」 표지가 잘못 섞였다. USSEP 4.3.x는 지웠다.
+    - 기본 패치와 4.3.9c 한국어판은 원래부터 이 줄을 옮기지 않았다.
+    - 옛 USSEP 4.2.9a·4.2.5b 한국어판도 같은 표지("알두인 / 아카토쉬 이분법 … 알렉산더 사이먼 지음")로 바꾸고, 섞인 줄은 빈 줄로 두어 줄 수를 영어와 맞췄다(`result-review-fixes.csv`).
 - 패키지 `artifacts/kopatch-26.10.16-beta3/Skyrim-Korean-Patch-26.10.16-beta3.zip`: 파일 262개, 69.1MB. 압축을 풀어 fomod 경로 10곳이 대소문자까지 있고, 파일이 저장소와 같은지 확인했다.
