@@ -35,4 +35,4 @@ publish-single/
 /benchmarks/translation/lotd-v1/evidence/*.png
 
 # USSEP is Arthmoor's plugin, not a translation: kept locally, not redistributed.
-Skyrim_Latest_Kor/03-USSEP/*.esp
+Skyrim_Latest_Kor/03-USSEP/**/*.esp
