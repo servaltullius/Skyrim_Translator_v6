@@ -16,7 +16,8 @@ public static class PluginWriter
     /// Every translation the export would refuse for losing the English's tags or placeholders, with the reason:
     /// the export stops at the first one, and a large plugin's translations are checked all at once first.
     /// </summary>
-    public static IReadOnlyList<string> FindInvalidTranslations(PluginDocument document, IReadOnlyDictionary<string, string> translations)
+    public static IReadOnlyList<string> FindInvalidTranslations(PluginDocument document, IReadOnlyDictionary<string, string> translations,
+        bool allowDroppedInitialsAndPronouns = false)
     {
         ArgumentNullException.ThrowIfNull(document);
         var sources = document.Fields.GroupBy(f => f.Key, StringComparer.Ordinal).ToDictionary(g => g.Key, g => g.First().SourceText, StringComparer.Ordinal);
@@ -29,17 +30,47 @@ public static class PluginWriter
                 continue;
             }
 
-            try
-            {
-                TokenValidator.ValidateFinalTextIntegrity(source, translated, $"plugin:{key}");
-            }
-            catch (Exception ex) when (ex is not OperationCanceledException)
-            {
-                problems.Add(ex.Message);
-            }
+            problems.AddRange(FindTranslationProblems(source, translated, $"plugin:{key}", allowDroppedInitialsAndPronouns));
         }
 
         return problems;
+    }
+
+    /// <summary>The reason the export refuses a translation, or nothing.</summary>
+    public static IReadOnlyList<string> FindTranslationProblems(string source, string translated, string context, bool allowDroppedInitialsAndPronouns)
+    {
+        try
+        {
+            TokenValidator.ValidateFinalTextIntegrity(
+                allowDroppedInitialsAndPronouns ? WithoutDroppedInitialsAndPronouns(source, translated) : source, translated, context);
+            return Array.Empty<string>();
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            return new[] { ex.Message };
+        }
+    }
+
+    // The English initial's picture stands for the English word's first letter, and a pronoun the game fills in is an
+    // English word: an existing Korean translation leaves both out. Those the translation does not have are taken out of
+    // the source it is checked against; nothing else is.
+    private static readonly System.Text.RegularExpressions.Regex DroppableToken = new(
+        @"<img\s[^<>]*Illuminated_Letters[^<>]*>|<Alias\.Pronoun\w*=[^<>]+>",
+        System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+    private static string WithoutDroppedInitialsAndPronouns(string source, string translated)
+    {
+        var kept = DroppableToken.Matches(translated).GroupBy(m => m.Value, StringComparer.Ordinal).ToDictionary(g => g.Key, g => g.Count(), StringComparer.Ordinal);
+        return DroppableToken.Replace(source, m =>
+        {
+            if (kept.TryGetValue(m.Value, out var n) && n > 0)
+            {
+                kept[m.Value] = n - 1;
+                return m.Value;
+            }
+
+            return "";
+        });
     }
 
     /// <summary>Publishes a complete new folder. Never replaces an input plugin or a partly written output set.</summary>
@@ -62,7 +93,8 @@ public static class PluginWriter
             if (!fields.TryGetValue(key, out var field)) throw new InvalidDataException($"원본에 없는 번역 필드: {key}");
             if (translated == null || (field.RequiresNonEmpty && string.IsNullOrWhiteSpace(translated)))
                 throw new InvalidDataException($"비어 있는 번역을 저장할 수 없습니다: {field.Rec}/{field.FormId:X8}");
-            TokenValidator.ValidateFinalTextIntegrity(field.SourceText, translated, $"plugin:{key}");
+            if (FindTranslationProblems(field.SourceText, translated, $"plugin:{key}", options.AllowDroppedInitialsAndPronouns) is { Count: > 0 } problems)
+                throw new InvalidOperationException(problems[0]);
         }
 
         // Strict representability check before any output, for every text the output will hold: a kept source

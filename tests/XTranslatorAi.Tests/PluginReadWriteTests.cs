@@ -71,6 +71,20 @@ public sealed class PluginReadWriteTests
         Assert.Contains(problems, p => p.Contains("WEAP/00000999/0/FULL/0", StringComparison.Ordinal));
     }
 
+    // An existing Korean translation leaves out the English initial's picture and the English pronoun the game fills
+    // in; a caller carrying such translations asks for that, and nothing else, to pass.
+    [Fact]
+    public void DroppedInitialAndPronoun_PassOnlyWhenAllowed()
+    {
+        const string english = "<img src='img://Textures/Interface/Books/Illuminated_Letters/T_letter.png'>he <Alias.PronounCap=Smith> forged <mag> blades.";
+        const string korean = "그 대장장이는 칼날 <mag>개를 벼렸다.";
+
+        Assert.Single(PluginWriter.FindTranslationProblems(english, korean, "plugin:x", allowDroppedInitialsAndPronouns: false));
+        Assert.Empty(PluginWriter.FindTranslationProblems(english, korean, "plugin:x", allowDroppedInitialsAndPronouns: true));
+        // Losing a placeholder the game fills with a value still fails.
+        Assert.Single(PluginWriter.FindTranslationProblems(english, "그 대장장이는 칼날을 벼렸다.", "plugin:x", allowDroppedInitialsAndPronouns: true));
+    }
+
     [Theory]
     [InlineData(65534, 65535, false)]
     [InlineData(65535, 65534, true)]

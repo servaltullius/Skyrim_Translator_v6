@@ -164,7 +164,7 @@ async Task<int> PluginWrite()
     }
 
     // The writer stops at the first text that loses the English's tags; list them all first.
-    var broken = PluginWriter.FindInvalidTranslations(english, translations).ToList();
+    var broken = PluginWriter.FindInvalidTranslations(english, translations, allowDroppedInitialsAndPronouns: true).ToList();
 
     if (broken.Count > 0)
     {
@@ -173,7 +173,7 @@ async Task<int> PluginWrite()
         return 2;
     }
 
-    var result = await PluginWriter.ExportAsync(english, translations, new PluginExportOptions(target), CancellationToken.None);
+    var result = await PluginWriter.ExportAsync(english, translations, new PluginExportOptions(target, AllowDroppedInitialsAndPronouns: true), CancellationToken.None);
     Console.WriteLine($"{result.PluginPath}: 바뀐 필드 {result.ChangedFields:N0}, sha256 {result.Sha256}");
     return 0;
 }

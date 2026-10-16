@@ -33,6 +33,9 @@ public sealed record PluginSourceInfo(
     IReadOnlyList<string> Masters, IReadOnlyList<PluginDiagnostic> Diagnostics,
     IReadOnlyDictionary<PluginStringTableKind, string>? StringTableSources = null);
 
-public sealed record PluginExportOptions(string OutputDirectory, string TargetEncoding = "utf-8", string? OutputLanguage = null);
+/// <param name="AllowDroppedInitialsAndPronouns">For translations carried from an existing translated release: the English
+/// initial's picture (Illuminated_Letters) and the English pronoun the game fills in (Alias.Pronoun...) may be left out.</param>
+public sealed record PluginExportOptions(string OutputDirectory, string TargetEncoding = "utf-8", string? OutputLanguage = null,
+    bool AllowDroppedInitialsAndPronouns = false);
 
 public sealed record PluginExportResult(string PluginPath, IReadOnlyList<string> Files, int ChangedFields, string Sha256);
