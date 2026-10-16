@@ -15,8 +15,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <AssemblyName>TulliusTranslator</AssemblyName>
-    <Version>1.13.0</Version>
-    <InformationalVersion>1.14-preview1</InformationalVersion>
+    <Version>1.14.0</Version>
+    <InformationalVersion>1.14</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
