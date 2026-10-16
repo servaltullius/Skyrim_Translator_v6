@@ -58,7 +58,6 @@ Equip and cast to Learn Raise Zombie	장비하고 사용 시 하급 강령술 �
 Equip and cast to learn the Bound Sword Spell	장비하고 사용 시 마법 검 소환 마법을 배웁니다.	장비하고 사용 시 마법 검 소환 마법을 배웁니다
 Equip and cast to learn the Oakflesh spell	장비하고 사용 시 참나무 피부 마법을 배웁니다.	장비하고 사용 시 참나무 피부 마법을 배웁니다
 Explore Vahlok's Tomb	발록의 묘지를 탐색하기	발록의 묘지을 탐색하기
-Eydis	아이디스	에이디스
 Faded Diary	빛바랜 일기	빛 바랜 일기
 Fall from Glory	영광에서의 몰락	영광에서 몰락
 First Letter from EEC	동제국 회사의 첫 번째 편지	동제국 회사의 첫번째 편지
@@ -79,6 +78,7 @@ Horker and Ash Yam Stew	호커와 화산 참마 스튜	호커와 화산참마 �
 Imbuing Switch	주입 스위치	염색 스위치
 In 3E 389 Emperor Uriel VII was imprisoned by his Imperial Battlemage, Jagar Tharn, who then impersonated him for years.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄에 의해 갇히게 되었습니다. 그 후 수 년동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄 에 의해 갇히게 되었습니다. 그 후 수 년동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.
 Iron Door	철문	강철 문
+Khajiit have deadly claws that can be used in unarmed combat. They can use Night Eye to see better in the dark.	카짓은 육탄전에서 치명적인 위력을 발휘하는 발톱을 가지고 있습니다. 또한 밤눈 기술을 사용하여 어둠에서 시야를 확보할 수 있습니다.	카짓은 육탄전에서 치명적인 위력을 발휘하는 손톱을 가지고 있습니다. 또한 밤눈 기술을 사용하여 어둠에서 시야를 확보할 수 있습니다.
 Kust	쿠스트	커스트
 Lesser Magic Resistance	하급 마법 저항력	하급 마법 저항
 Lightning Apparatus	번개 장치	빛나는 장치
@@ -115,6 +115,7 @@ Promissory Note	약속어음	약속 메모
 QuickShot	신속 사격	속사
 Radiant Raiment Fine Clothes	화려한 의상실 고급 의상	고급 화려하게 반짝이는 의상
 Raerek's Inscribed Amulet of Talos	레이렉의 글귀가 새겨진 탈로스 아뮬렛	레이렉의 탈로스 아뮬렛
+Raldbthar Deep Market	랄드브타르 지하 시장	랄드브타르 암시장
 Recipe - Mind Control Spider	제조법 : 정신 조종 거미	제조법 : 정신조종 거미
 Remove all furniture from entryway and remodel it to match the main hall.	현관에 배치된 모든 가구를 제거하고 대청에 맞게 개조합니다.	현관에 배치된 모든 가구를 제거하고 대청에 맞게 재배치하기.
 Remove the workbench from the Storage Room.	저장고에서 작업선반을 제거합니다.	창고에서 작업선반을 제거합니다.
@@ -134,6 +135,7 @@ Self Doubt	자기 의심	자아 의문
 Shadow Warrior Invisibility	그림자 전사 투명화	어둠의 전사 투명화
 Shards of Mehrunes' Razor	메이룬스의 면도칼 칼날 파편	메이룬스의 면도칼 칼날파편
 Shriekwind Bastion	쉬리크윈드 보루요새	쉬리크윈드 전망대
+Shrine Base	성소 받침대	신전
 Shrouded Cowl Maskless	암살자의 가면 없는 두건	암살자의 가면없는 두건
 Sibbi's Stash Key	열쇠 - 시비의 은닉처	열쇠 - 시비의 비밀 열쇠
 Sightless Pit	보이지 않는 구덩이	보이지않는 구덩이
@@ -146,17 +148,18 @@ Steady Hand (2)	안정된 활시위	안정된 활 시위
 Steamed Mudcrab Legs	찐 진흙게 다리	구운 진흙게 다리
 Steel Battleaxe of Fiery Souls	강철 전투 도끼 - 화염 소울 트랩	강철 전투 도끼 - 불꽃영혼
 Strengthened by the infamy of its bearer	소유자의 악명으로 강화됩니다.	소유자의 악명으로 강화합니다.
-Summon Ice Wolves 1	설원 늑대 소환 1	설원 늑대소환 1
-Summon Ice Wolves 2	설원 늑대 소환 2	설원 늑대소환 2
-Summon Ice Wolves 3	설원 늑대 소환 3	설원 늑대소환 3
+Summon Ice Wolves 1	설원늑대 소환 1	설원 늑대소환 1
+Summon Ice Wolves 2	설원늑대 소환 2	설원 늑대소환 2
+Summon Ice Wolves 3	설원늑대 소환 3	설원 늑대소환 3
 Sunlight explosion that does <mag> points of damage in a 15 foot radius to undead, and half that to living targets	15 피트 범위의 태양빛 폭발을 일으켜 언데드에게 <mag> 의 피해를 입히고 생명체에게는 절반의 피해를 입힙니다.	15 피트 범위의 태양빛 폭발을 일으키는 화염구를 날려 언데드에게 <mag> 의 피해를 입히고 생명체에게는 절반의 피해를 입힙니다.
 Sunlight explosion that does <mag> points of damage in a 15 foot radius to undead.	15 피트 범위의 태양빛 폭발을 일으켜 언데드에게 <mag> 의 피해를 입힙니다.	15 피트 범위의 태양빛 폭발을 일으키는 화염구를 날려 언데드에게 <mag> 의 피해를 입힙니다.
 Tainted Blood Withdrawals	저주받은 피 금단 증상	저주받은 피 효과
 Taron Dreth's Robes	타론 드레스의 로브	타론의 로브
 Temple Ancestral Tomb	신전 선조의 무덤	사원 선조의 무덤
-The Five Far Stars	다섯 개의 별	다섯개의 별
+The Five Far Stars	멀리 떨어진 다섯 개의 별	다섯개의 별
 The Fourth Era began 200 years ago when Martin Septim sacrificed himself to save the world from the Oblivion Crisis.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대 위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.
 The Nords first conquered Markarth from the native people of the Reach thousands of years ago.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 빼앗았습니다.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 뺏았습니다.
+The Stormcloaks kept control of <Alias=Hold>.	스톰클록군이 <Alias=Hold> 를 지켜냈습니다.	스톰클록군이 <Alias=Hold>를 지켜냈습니다.
 The wooden mask hums with an unfamiliar energy.	나무 가면에서 이상한 기운이 흘러넘치고 있습니다.	나무 가면에서 이상한 기운이 흘러 넘치고 있습니다.
 The Woodsman's Friend	나무꾼의 친구	나무꾼의 전투 도끼
 Third Letter from EEC	동제국 회사의 세 번째 편지	동제국 회사의 세번째 편지
@@ -171,6 +174,7 @@ Undead targets takes <mag> points of sun damage,	언데드에게 <mag> 의 태�
 Unmelting Snow	녹지 않는 눈	녹지않는 눈
 Unmelting Snowbank	녹지 않는 눈더미	녹지않는 눈더미
 Until Next Time	다음에 만날 때까지	다음에 만날때까지
+Vahlok the Jailer	간수 발록	발록
 Vigilance	비질런스	비졀런스
 Vignar	비그나	비그너
 Vignar Gray-Mane	비그나 그레이-메인	비그너 그레이-메인

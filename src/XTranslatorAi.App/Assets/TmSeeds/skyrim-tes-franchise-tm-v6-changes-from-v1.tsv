@@ -233,7 +233,6 @@ Escape from the Blue Palace	푸른 궁전에서 탈출하기	파란 궁전에서
 Escape the Tower!	탑에서 탈출하기	탑에서 탈출하라!
 Exploding Flame Spider	폭발형 화염 거미	마법 주문서 - 폭발형 화염 거미
 Explore Vahlok's Tomb	발록의 묘지를 탐색하기	발록의 무덤을 탐색하기
-Eydis	아이디스	에이디스
 Eye Shadow	눈 위 화장	눈위 화장
 Eye Tint	눈 아래 색상	눈 아래색상
 Faded Diary	빛바랜 일기	빛 바랜 일기
@@ -463,6 +462,7 @@ Just you?	너 혼자뿐인가?	너 혼자 뿐인가?
 Karthwasten.	카스웨이스튼.	카쓰웨이스튼.
 Key to Evette San's House	열쇠 - 이베트 산의 집	열쇠 - 이베트 산의 열쇠
 Key to Solitude Fletcher	열쇠 - 화살 공방	열쇠 - 화살깃털 상점
+Khajiit have deadly claws that can be used in unarmed combat. They can use Night Eye to see better in the dark.	카짓은 육탄전에서 치명적인 위력을 발휘하는 발톱을 가지고 있습니다. 또한 밤눈 기술을 사용하여 어둠에서 시야를 확보할 수 있습니다.	카짓은 육탄전에서 치명적인 위력을 발휘하는 손톱을 가지고 있습니다. 또한 밤눈 기술을 사용하여 어둠에서 시야를 확보할 수 있습니다.
 Kill everyone in the Sanctuary!	성역에 있는 자를 전부 죽이기	성역에 있는 자를 전부 죽여라!
 Kill Nazir's attacker!	나지어를 공격하는 자를 죽이기	나지어를 공격하는 자들을 죽여라!
 Kill the Emperor!	황제를 죽이기	황제를 죽여라!
@@ -586,6 +586,7 @@ Radiant Raiment Fine Clothes	화려한 의상실 고급 의상	고급 화려하�
 Raerek's Inscribed Amulet of Talos	레이렉의 글귀가 새겨진 탈로스 아뮬렛	레이렉의 탈로스 아뮬렛
 Rage Of The Ancients	고대인의 분노	쇠뇌 - 하급 화염
 Raise Zombie	하급 강령술	좀비 부활
+Raldbthar Deep Market	랄드브타르 지하 시장	랄드브타르 암시장
 Reach the summit of Arkngthamz	아큰담즈의 정상에 도달하기	아큰담즈의 정상에 도달히기
 Read Nepos's Journal	네포스의 일기를 읽기	네포스의 일기을 읽기
 Read the Elder Scroll (Blood)	'엘더스크롤 - 피'를 읽기	엘더스크롤 읽기
@@ -645,7 +646,7 @@ She's not exactly young anymore.	모웬도 이제 젊은 나이가 아니잖소.
 Shock	번개	전격
 Shock Cloaked Spider	천둥 망토 거미	마법 주문서 - 폭발형 전격 거미
 Shriekwind Bastion	쉬리크윈드 보루요새	쉬리크윈드 전망대
-Shrine Base	신전	신전 영역
+Shrine Base	성소 받침대	신전 영역
 Shroud Hearth Barrow	장막덮인 난로 무덤	장막덮힌 난로 무덤
 Shroud Hearth Barrows Key	열쇠 - 장막덮인 난로 무덤	열쇠 - 장막덮힌 난로 무덤
 Shroud Hearth Depths	장막덮인 난로 심층부	장막덮힌 난로 심층부
@@ -706,9 +707,9 @@ Storage Room - Workbench	저장고 - 작업선반	창고 - 작업선반
 Storage Room, Doors	저장고, 문	저장고,문들
 Storn didn't die for nothing. Miraak will never threaten Solstheim again.	스토언의 죽음은 헛되지 않았어. 미락이 다시는 솔스트하임을 위협하지 못할 테니까.	스토언의 죽음은 헛되지 않았어. 미락이 다시는 솔스트하임으로 돌아올 수 없을테니까.
 Strengthened by the infamy of its bearer	소유자의 악명으로 강화됩니다.	소유자의 악명으로 강화합니다.
-Summon Ice Wolves 1	설원 늑대 소환 1	설원 늑대소환 1
-Summon Ice Wolves 2	설원 늑대 소환 2	설원 늑대소환 2
-Summon Ice Wolves 3	설원 늑대 소환 3	설원 늑대소환 3
+Summon Ice Wolves 1	설원늑대 소환 1	설원 늑대소환 1
+Summon Ice Wolves 2	설원늑대 소환 2	설원 늑대소환 2
+Summon Ice Wolves 3	설원늑대 소환 3	설원 늑대소환 3
 Summons a High Seeker for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 시커 군주를 소환합니다.	<dur> 초 동안 고위 시커를 소환합니다.
 Summons an unbound Dremora for <dur> seconds.	<dur> 초 동안 계약없는 드레모라를 소환합니다.	<dur> 초 동안 속박되지 않은 드레모라를 소환합니다.
 Summons Arvak in the Soul Cairn or Tamriel wilderness to act as your steed.	소울 케언이나 탐리엘의 야외에서 나의 말이 되어줄 아바크를 소환합니다.	소울 케언으로부터 나의 말이 되어줄 아바크를 소환합니다.
@@ -753,11 +754,12 @@ The Dawnguard has armored battle trolls that they use when fighting vampires.	�
 The Empire supported Elisif, but Ulfric now controls Skyrim.	제국은 엘리시프를 지지했지만, 이제는 울프릭이 스카이림을 지배하고 있소.	제국은 엘리시프를 지지하고 있지만, 울프릭이 스카이림을 지배하고 있소.
 The Empire supports Elisif, and killed Ulfric for his rebellion.	제국이 엘리시프를 지지하고 있고, 울프릭을 반역죄로 처형했지.	제국이 엘리시프를 지지하고 있고, 울프릭을 반역죄로 처형 당했지.
 The Empire supports Elisif, but there are many in Skyrim loyal to Ulfric.	제국은 엘리시프를 지지하고 있지만, 스카이림에는 울프릭에게 충성하는 사람들도 많지.	제국은 엘리시프를 지지하고 있지만, 스카이림 울프릭에게 충성하는 사람들도 많지.
-The Five Far Stars	다섯 개의 별	다섯개의 별
+The Five Far Stars	멀리 떨어진 다섯 개의 별	다섯개의 별
 The Fourth Era began 200 years ago when Martin Septim sacrificed himself to save the world from the Oblivion Crisis.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대 위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.
 The lock has been broken.	자물쇠가 망가졌습니다.	자물쇠는 망가졌습니다.
 The Nords first conquered Markarth from the native people of the Reach thousands of years ago.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 빼앗았습니다.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 뺏았습니다.
 The poor in Markarth live in the Warrens, and are almost exclusively natives of the Reach.	마르카스의 가난한 자들은 빈민굴에 살고 있으며, 대부분은 리치의 원주민들입니다.	마르카스의 가난한 자들은 빈민촌에 살고 있으며, 대부분은 리치의 원주민들입니다.
+The Stormcloaks kept control of <Alias=Hold>.	스톰클록군이 <Alias=Hold> 를 지켜냈습니다.	스톰클록군이 <Alias=Hold>를 지켜냈습니다.
 The Thief Stone ability lets you learn stealth skills more quickly.	'도적의 선돌'은 도적 계열 기술을 더 빠르게 배울 수 있도록 해줍니다.	'도적의 선돌'은 은신 기술을 더 빠르게 배울 수 있도록 해줍니다.
 The wooden mask hums with an unfamiliar energy.	나무 가면에서 이상한 기운이 흘러넘치고 있습니다.	나무 가면에서 이상한 기운이 흘러 넘치고 있습니다.
 The Woodsman's Friend	나무꾼의 친구	나무꾼의 전투 도끼
@@ -799,6 +801,7 @@ Unmelting Snow	녹지 않는 눈	녹지않는 눈
 Unmelting Snowbank	녹지 않는 눈더미	녹지않는 눈더미
 Until Next Time	다음에 만날 때까지	다음에 만날때까지
 up to level	최대 레벨:	다음 레벨까지:
+Vahlok the Jailer	간수 발록	발록
 Vahlok the Jailor	간수 발록	발록
 Vampire Hunter	흡혈귀 사냥꾼	사냥꾼 흡혈귀
 Vampiric Blood Rested	안식을 취한 흡혈귀의 피	흡혈귀의 피가 휴식을 취함
