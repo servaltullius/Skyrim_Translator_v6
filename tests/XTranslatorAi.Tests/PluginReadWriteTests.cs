@@ -85,6 +85,23 @@ public sealed class PluginReadWriteTests
         Assert.Single(PluginWriter.FindTranslationProblems(english, "그 대장장이는 칼날을 벼렸다.", "plugin:x", allowDroppedInitialsAndPronouns: true));
     }
 
+    // Writing into an earlier translated release: its text is a translation, and the new one is checked against the
+    // English it translates, not against the old translation's tags.
+    [Fact]
+    public async Task ChecksAgainstGivenEnglish_WhenTheDocumentIsATranslation()
+    {
+        using var fixture = new Fixture(Build(false));
+        var document = await PluginReader.ReadAsync(fixture.Input, new(), default);
+        var field = Assert.Single(document.Fields);
+        var translations = new Dictionary<string, string> { [field.Key] = "강철 검 <mag>" };
+        var english = new Dictionary<string, string> { [field.Key] = "Steel sword <mag>" };
+
+        Assert.NotEmpty(PluginWriter.FindInvalidTranslations(document, translations));
+        Assert.Empty(PluginWriter.FindInvalidTranslations(document, translations, checkAgainst: english));
+        var result = await PluginWriter.ExportAsync(document, translations, new(fixture.Output, CheckAgainst: english), default);
+        Assert.Equal("강철 검 <mag>", Assert.Single((await PluginReader.ReadAsync(result.PluginPath, new(), default)).Fields).SourceText);
+    }
+
     [Theory]
     [InlineData(65534, 65535, false)]
     [InlineData(65535, 65534, true)]

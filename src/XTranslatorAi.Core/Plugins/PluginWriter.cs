@@ -17,7 +17,7 @@ public static class PluginWriter
     /// the export stops at the first one, and a large plugin's translations are checked all at once first.
     /// </summary>
     public static IReadOnlyList<string> FindInvalidTranslations(PluginDocument document, IReadOnlyDictionary<string, string> translations,
-        bool allowDroppedInitialsAndPronouns = false)
+        bool allowDroppedInitialsAndPronouns = false, IReadOnlyDictionary<string, string>? checkAgainst = null)
     {
         ArgumentNullException.ThrowIfNull(document);
         var sources = document.Fields.GroupBy(f => f.Key, StringComparer.Ordinal).ToDictionary(g => g.Key, g => g.First().SourceText, StringComparer.Ordinal);
@@ -30,7 +30,7 @@ public static class PluginWriter
                 continue;
             }
 
-            problems.AddRange(FindTranslationProblems(source, translated, $"plugin:{key}", allowDroppedInitialsAndPronouns));
+            problems.AddRange(FindTranslationProblems(checkAgainst?.GetValueOrDefault(key) ?? source, translated, $"plugin:{key}", allowDroppedInitialsAndPronouns));
         }
 
         return problems;
@@ -93,7 +93,8 @@ public static class PluginWriter
             if (!fields.TryGetValue(key, out var field)) throw new InvalidDataException($"원본에 없는 번역 필드: {key}");
             if (translated == null || (field.RequiresNonEmpty && string.IsNullOrWhiteSpace(translated)))
                 throw new InvalidDataException($"비어 있는 번역을 저장할 수 없습니다: {field.Rec}/{field.FormId:X8}");
-            if (FindTranslationProblems(field.SourceText, translated, $"plugin:{key}", options.AllowDroppedInitialsAndPronouns) is { Count: > 0 } problems)
+            if (FindTranslationProblems(options.CheckAgainst?.GetValueOrDefault(key) ?? field.SourceText, translated, $"plugin:{key}",
+                    options.AllowDroppedInitialsAndPronouns) is { Count: > 0 } problems)
                 throw new InvalidOperationException(problems[0]);
         }
 

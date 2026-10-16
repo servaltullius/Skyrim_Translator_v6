@@ -10,7 +10,8 @@ using XTranslatorAi.Core.Text;
 // A patch shipped as a translated plugin (USSEP) instead of string tables:
 //   plugin-pair  <english plugin> <translated plugin of an earlier release> <new output folder> [--older-english <its English>]
 //                [--dictionary <game strings .gz>] [--game-data <game Data>] [--chunk N]
-//   plugin-write <english plugin> <review.csv with id = field key, suggested_ko> <new output folder>
+//   plugin-write <plugin> <review.csv with id = field key, suggested_ko> <new output folder> [--english <its English plugin>]
+//                (--english: the plugin is itself a translation, written over; texts are checked against that English)
 if (args.Length < 4)
 {
     Console.Error.WriteLine("usage: export|apply|dictionary|plugin-pair|plugin-write <game Data or plugin> <patch folder or plugin> <output or review.csv> [options]");
@@ -164,7 +165,14 @@ async Task<int> PluginWrite()
     }
 
     // The writer stops at the first text that loses the English's tags; list them all first.
-    var broken = PluginWriter.FindInvalidTranslations(english, translations, allowDroppedInitialsAndPronouns: true).ToList();
+    IReadOnlyDictionary<string, string>? checkAgainst = null;
+    if (Option("--english") is { } englishPath)
+    {
+        var source = await PluginReader.ReadAsync(englishPath, new PluginReadOptions(), CancellationToken.None);
+        checkAgainst = source.Fields.GroupBy(f => f.Key, StringComparer.Ordinal).ToDictionary(g => g.Key, g => g.First().SourceText, StringComparer.Ordinal);
+    }
+
+    var broken = PluginWriter.FindInvalidTranslations(english, translations, allowDroppedInitialsAndPronouns: true, checkAgainst).ToList();
 
     if (broken.Count > 0)
     {
@@ -173,7 +181,7 @@ async Task<int> PluginWrite()
         return 2;
     }
 
-    var result = await PluginWriter.ExportAsync(english, translations, new PluginExportOptions(target, AllowDroppedInitialsAndPronouns: true), CancellationToken.None);
+    var result = await PluginWriter.ExportAsync(english, translations, new PluginExportOptions(target, AllowDroppedInitialsAndPronouns: true, CheckAgainst: checkAgainst), CancellationToken.None);
     Console.WriteLine($"{result.PluginPath}: 바뀐 필드 {result.ChangedFields:N0}, sha256 {result.Sha256}");
     return 0;
 }

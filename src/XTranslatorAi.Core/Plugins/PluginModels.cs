@@ -35,7 +35,10 @@ public sealed record PluginSourceInfo(
 
 /// <param name="AllowDroppedInitialsAndPronouns">For translations carried from an existing translated release: the English
 /// initial's picture (Illuminated_Letters) and the English pronoun the game fills in (Alias.Pronoun...) may be left out.</param>
+/// <param name="CheckAgainst">The English each translation is checked against, by field key, when the document read is itself a
+/// translation (an earlier translated release written over): its text is not the source.</param>
 public sealed record PluginExportOptions(string OutputDirectory, string TargetEncoding = "utf-8", string? OutputLanguage = null,
-    bool AllowDroppedInitialsAndPronouns = false);
+    bool AllowDroppedInitialsAndPronouns = false,
+    System.Collections.Generic.IReadOnlyDictionary<string, string>? CheckAgainst = null);
 
 public sealed record PluginExportResult(string PluginPath, IReadOnlyList<string> Files, int ChangedFields, string Sha256);
