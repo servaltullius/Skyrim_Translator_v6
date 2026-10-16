@@ -98,6 +98,9 @@ public sealed partial class PluginUiLifecycleTests
                 Assert.Equal((StringEntryStatus.Done, "철검"), (row.Status, row.DestText));
             }
 
+            // Kept without a request, the row keeps the TM color after the run ends, as a TM hit does.
+            Assert.Equal(reused, row.IsTranslationMemoryApplied);
+
             // Linking another earlier translation drops the English that belonged to the last one.
             fixture.Ui.OpenPath = oldRelease;
             await fixture.Vm.ImportPreviousTranslationCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));

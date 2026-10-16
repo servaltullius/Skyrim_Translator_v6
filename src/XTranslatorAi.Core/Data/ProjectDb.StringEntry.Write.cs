@@ -55,8 +55,10 @@ public sealed partial class ProjectDb
 
             await using var deleteNotes = _connection.CreateCommand();
             deleteNotes.Transaction = tx;
-            deleteNotes.CommandText = "DELETE FROM StringNote WHERE StringId=$Id AND Kind IN ($TmHit, $TmFallback, $SourceFix);";
+            deleteNotes.CommandText = "DELETE FROM StringNote WHERE StringId=$Id AND Kind IN ($TmHit, $GameString, $PreviousRelease, $TmFallback, $SourceFix);";
             deleteNotes.Parameters.AddWithValue("$TmHit", TranslationConstants.TmHitNoteKind);
+            deleteNotes.Parameters.AddWithValue("$GameString", TranslationConstants.GameStringNoteKind);
+            deleteNotes.Parameters.AddWithValue("$PreviousRelease", TranslationConstants.PreviousReleaseNoteKind);
             deleteNotes.Parameters.AddWithValue("$TmFallback", TranslationConstants.TmFallbackNoteKind);
             deleteNotes.Parameters.AddWithValue("$SourceFix", TranslationConstants.SourceFixNoteKind);
             var deleteId = deleteNotes.Parameters.Add("$Id", Microsoft.Data.Sqlite.SqliteType.Integer);

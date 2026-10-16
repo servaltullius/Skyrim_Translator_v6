@@ -44,6 +44,9 @@ public static class TranslationConstants
     /// <summary>A row given its earlier translation as it is, because its English did not change since that release.</summary>
     public const string PreviousReleaseNoteKind = "previous_release";
 
+    /// <summary>Notes of a row finished from a known translation without a request; the grid colors these rows.</summary>
+    public static readonly string[] KnownTranslationNoteKinds = { TmHitNoteKind, GameStringNoteKind, PreviousReleaseNoteKind };
+
     /// <summary>A row translated against its English on purpose because the English is wrong ("원문 오류 수정").</summary>
     public const string SourceFixNoteKind = "source_fix";
 

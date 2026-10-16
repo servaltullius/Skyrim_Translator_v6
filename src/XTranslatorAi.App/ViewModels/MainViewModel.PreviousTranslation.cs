@@ -163,7 +163,7 @@ public partial class MainViewModel
             await RefreshPreviousTranslationsAsync(cancellationToken);
             StatusMessage = $"이전 영어판({name})과 비교했습니다. 영어가 같고 이전 번역이 있는 {reusable.Count}행은 "
                 + "다음 번역 때 AI 없이 이전 번역을 그대로 씁니다. "
-                + $"영어가 바뀐 {result.Changed}행은 이전 번역을 참고해 새로 번역합니다. "
+                + $"영어가 바뀐 {result.Changed}행은 이전 번역이 있으면 참고해 새로 번역합니다. "
                 + $"(이전 판에 없음 {result.NotInPreviousRelease}, 레코드 구성이 바뀜 {result.ChangedRecord}) "
                 + "이미 번역된 행에 반영하려면 '다시 번역'을 쓰세요.";
         });

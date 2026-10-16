@@ -363,9 +363,7 @@ public partial class MainViewModel
         var total = (int)Math.Min(int.MaxValue, await db.GetStringCountAsync(CancellationToken.None));
         TotalCount = total;
 
-        var tmHitIds = new System.Collections.Generic.HashSet<long>(
-            (await db.GetStringNotesByKindAsync(TranslationConstants.TmHitNoteKind, CancellationToken.None)).Keys
-        );
+        var tmHitIds = await GetKnownTranslationIdsAsync(db, CancellationToken.None);
         var sourceFixIds = new System.Collections.Generic.HashSet<long>(
             (await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None)).Keys
         );
