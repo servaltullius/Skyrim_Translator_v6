@@ -97,7 +97,7 @@ public sealed partial class ProjectWorkspaceService
 
     private static void DeleteUnimportedProject(string dbPath)
     {
-        SqliteConnection.ClearAllPools();
+        ProjectDb.ReleasePool(dbPath);
         foreach (var path in new[] { dbPath, dbPath + "-wal", dbPath + "-shm", dbPath + "-journal" })
         {
             try

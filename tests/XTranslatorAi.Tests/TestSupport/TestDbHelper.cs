@@ -30,12 +30,7 @@ internal static class TestDbHelper
     // connection string so parallel tests using other databases keep their pools.
     public static void ReleaseProjectPoolAndDeleteDbFiles(string path)
     {
-        using var connection = new SqliteConnection(new SqliteConnectionStringBuilder
-        {
-            DataSource = path,
-            Mode = SqliteOpenMode.ReadWriteCreate,
-        }.ToString());
-        SqliteConnection.ClearPool(connection);
+        XTranslatorAi.Core.Data.ProjectDb.ReleasePool(path);
         TryDeleteDbFiles(path);
     }
 }

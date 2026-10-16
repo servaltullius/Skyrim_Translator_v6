@@ -32,7 +32,11 @@ public sealed class PluginMovedProjectTests : IAsyncLifetime
     public async Task DisposeAsync()
     {
         await _global.DisposeAsync();
-        Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
+        // Only these tests' DBs: clearing every pool broke DBs other tests were opening at the same time.
+        foreach (var db in Directory.EnumerateFiles(_root, "*.sqlite", SearchOption.AllDirectories))
+        {
+            XTranslatorAi.Core.Data.ProjectDb.ReleasePool(db);
+        }
         try { Directory.Delete(_root, recursive: true); } catch (IOException) { }
     }
 

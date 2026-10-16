@@ -157,11 +157,7 @@ public sealed partial class ProjectDb : IAsyncDisposable, IProjectDb
     {
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(dbPath))!);
 
-        var connString = new SqliteConnectionStringBuilder
-        {
-            DataSource = dbPath,
-            Mode = SqliteOpenMode.ReadWriteCreate,
-        }.ToString();
+        var connString = ConnectionString(dbPath);
 
         var connection = new SqliteConnection(connString);
         try
@@ -190,6 +186,23 @@ public sealed partial class ProjectDb : IAsyncDisposable, IProjectDb
             await connection.DisposeAsync();
             throw;
         }
+    }
+
+    private static string ConnectionString(string dbPath) => new SqliteConnectionStringBuilder
+    {
+        DataSource = dbPath,
+        Mode = SqliteOpenMode.ReadWriteCreate,
+    }.ToString();
+
+    /// <summary>
+    /// Closes the pooled connections of the DB at <paramref name="dbPath"/> so its files can be deleted, after every
+    /// ProjectDb on it is disposed. Only that DB's pool: SqliteConnection.ClearAllPools also disposes connections
+    /// another thread is opening on other databases, which then fail with "Cannot access a disposed object".
+    /// </summary>
+    public static void ReleasePool(string dbPath)
+    {
+        using var connection = new SqliteConnection(ConnectionString(dbPath));
+        SqliteConnection.ClearPool(connection);
     }
 
     private static async Task ExecPragmaAsync(SqliteConnection connection, string sql, CancellationToken cancellationToken)
