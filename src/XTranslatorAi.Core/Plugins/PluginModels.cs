@@ -14,7 +14,15 @@ public sealed record PluginReadOptions(
     string SourceEncoding = "utf-8",
     string? StringsDirectory = null,
     IReadOnlyList<string>? ArchivePaths = null,
-    string MetadataEncoding = "windows-1252");
+    string MetadataEncoding = "windows-1252")
+{
+    /// <summary>
+    /// Options for another release of the same plugin (an earlier English or translated release in its own folder):
+    /// the Strings folder and archives named for this plugin are dropped, so that release's tables are found next to
+    /// it, loose or in its own BSA.
+    /// </summary>
+    public PluginReadOptions ForOtherRelease() => this with { StringsDirectory = null, ArchivePaths = null };
+}
 
 /// <summary>Identity points at the original record and repeated subrecord occurrence, never at source text alone.</summary>
 public sealed record PluginField(

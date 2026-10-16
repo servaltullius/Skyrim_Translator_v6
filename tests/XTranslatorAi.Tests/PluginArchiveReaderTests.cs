@@ -245,6 +245,33 @@ public sealed class PluginArchiveReaderTests
     }
 
     /// <summary>
+    /// An earlier release of a mod often keeps its string tables only in its own BSA. Linked as the earlier English (or
+    /// the earlier translation), it is read from its own folder: not from the Strings folder or archives the open
+    /// plugin was read with, which hold the new release's text.
+    /// </summary>
+    [Fact]
+    public async Task OtherRelease_ReadsTheTablesOfItsOwnArchive_NotThoseOfTheOpenPlugin()
+    {
+        using var fixture = new LocalizedFixture();
+        var current = fixture.Archive("example.bsa", "New title");
+        var loose = Path.GetDirectoryName(fixture.LooseTable(PluginStringTableKind.Strings, "New title"))!;
+        var opened = await PluginReader.ReadAsync(fixture.Input,
+            new(StringsDirectory: loose, ArchivePaths: new[] { current.Path }), default);
+        var earlierFolder = Path.Combine(fixture.Root, "earlier");
+        Directory.CreateDirectory(earlierFolder);
+        var earlierPlugin = Path.Combine(earlierFolder, "example.esp");
+        File.Copy(fixture.Input, earlierPlugin);
+        var earlierArchive = fixture.Archive(Path.Combine("earlier", "example.bsa"), "Old title");
+
+        var earlier = await PluginReader.ReadAsync(earlierPlugin, opened.Info.Options.ForOtherRelease(), default);
+
+        Assert.Equal("Old title", earlier.Fields.Single(field => field.TableKind == PluginStringTableKind.Strings).SourceText);
+        Assert.All(earlier.Info.StringTableSources!.Values, path => Assert.Equal(earlierArchive.Path, path));
+        var result = PreviousTranslationMatcher.MatchSources(opened.Fields, opened.Info.Masters, earlier.Fields, earlier.Info.Masters);
+        Assert.Equal((2, 1), (result.Unchanged, result.Changed));
+    }
+
+    /// <summary>
     /// The interface archive is only a fallback: an unreadable or replaced one must not stop a plugin that has its own
     /// archive from opening, and is not read for tables the plugin's own archive already holds.
     /// </summary>

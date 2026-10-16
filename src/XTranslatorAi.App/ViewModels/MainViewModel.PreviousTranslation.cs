@@ -69,12 +69,10 @@ public partial class MainViewModel
             }
 
             StatusMessage = "이전 번역 플러그인을 읽는 중...";
-            // A translated release is written in the target encoding, with its Strings next to it.
-            var options = document.Info.Options with
+            // A translated release is written in the target encoding, with its Strings or BSA next to it.
+            var options = document.Info.Options.ForOtherRelease() with
             {
                 SourceEncoding = _projectState.PluginTargetEncoding ?? PluginTargetEncoding,
-                StringsDirectory = null,
-                ArchivePaths = null,
             };
             var previous = await Task.Run(() => PluginReader.ReadAsync(path, options, cancellationToken), cancellationToken);
             // The master lists let a release that added or dropped a master still pair its FormIDs.
@@ -133,8 +131,8 @@ public partial class MainViewModel
             }
 
             StatusMessage = "이전 영어판을 읽는 중...";
-            // The earlier English is read as the current English is, with its own Strings next to it.
-            var options = document.Info.Options with { StringsDirectory = null, ArchivePaths = null };
+            // The earlier English is read as the current English is, with its own Strings or BSA next to it.
+            var options = document.Info.Options.ForOtherRelease();
             var previous = await Task.Run(() => PluginReader.ReadAsync(path, options, cancellationToken), cancellationToken);
             var result = PreviousTranslationMatcher.MatchSources(document.Fields, document.Info.Masters,
                 previous.Fields, previous.Info.Masters);
