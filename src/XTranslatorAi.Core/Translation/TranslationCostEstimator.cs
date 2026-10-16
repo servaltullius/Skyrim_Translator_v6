@@ -29,7 +29,8 @@ public sealed partial class TranslationCostEstimator
         ValidateEstimateRequest(request);
         var (batchSize, maxChars) = NormalizeBatchAndCharLimits(request);
 
-        var rows = await LoadRowsForEstimationAsync(request, cancellationToken);
+        var loaded = await LoadRowsForEstimationAsync(request, cancellationToken);
+        var (rows, gameStringRows, previousReleaseRows) = await DropKnownTranslationsAsync(request, loaded, cancellationToken);
         var prepared = await PrepareEstimationInputAsync(request, rows, cancellationToken);
 
         var (batchPrompts, textPrompts) = await BuildEstimationPromptsAsync(
@@ -65,7 +66,58 @@ public sealed partial class TranslationCostEstimator
         var resultInputs = new TranslationCostEstimateBuildInputs(
             request, prepared, batchSize, maxChars, requestCountBatch, requestCountText, tokenCounts, outputEstimate, costEstimates
         );
-        return BuildTranslationCostEstimate(resultInputs) with { CountTokensFallbacks = _countTokensFallbacks };
+        return BuildTranslationCostEstimate(resultInputs) with
+        {
+            CountTokensFallbacks = _countTokensFallbacks,
+            GameStringRows = gameStringRows,
+            PreviousReleaseRows = previousReleaseRows,
+        };
+    }
+
+    /// <summary>
+    /// Leaves out the rows a run fills without a request, in the run's order: the game's own translation, then the
+    /// earlier translation where the English did not change (see TranslationService.BuildTranslationItemsAsync).
+    /// A text that fails the tag check there goes to the model after all, so this is the most the run can skip.
+    /// </summary>
+    private async Task<(IReadOnlyList<(long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)> Rows, int GameStrings, int PreviousRelease)>
+        DropKnownTranslationsAsync(
+            TranslationCostEstimateRequest request,
+            IReadOnlyList<(long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)> rows,
+            CancellationToken cancellationToken)
+    {
+        if (rows.Count == 0)
+        {
+            return (rows, 0, 0);
+        }
+
+        var game = request.GameStrings == null
+            ? new Dictionary<long, XTranslatorAi.Core.Plugins.GameStringMatch>()
+            : await request.GameStrings.MatchAsync(_db, rows.Select(row => row.Id).ToList(), cancellationToken);
+        var previous = await _db.GetReusablePreviousTranslationsByStringIdAsync(cancellationToken);
+        if (game.Count == 0 && previous.Count == 0)
+        {
+            return (rows, 0, 0);
+        }
+
+        int gameRows = 0, previousRows = 0;
+        var kept = new List<(long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)>(rows.Count);
+        foreach (var row in rows)
+        {
+            if (game.ContainsKey(row.Id))
+            {
+                gameRows++;
+            }
+            else if (previous.ContainsKey(row.Id))
+            {
+                previousRows++;
+            }
+            else
+            {
+                kept.Add(row);
+            }
+        }
+
+        return (kept, gameRows, previousRows);
     }
 
     private readonly record struct TranslationCostEstimateBuildInputs(

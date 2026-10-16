@@ -419,11 +419,13 @@ public sealed partial class PluginUiLifecycleTests
         public Queue<UiMessageBoxResult> Responses { get; } = new();
         public bool NetworkOrDialogUsed { get; private set; }
         public List<string> Titles { get; } = new();
+        public List<string> Messages { get; } = new();
         // Saving with unfinished rows asks first; tests that are not about that question save anyway.
         public UiMessageBoxResult ShowMessage(string message, string title, UiMessageBoxButton button, UiMessageBoxImage image, UiMessageBoxResult defaultResult)
         {
             NetworkOrDialogUsed = true;
             Titles.Add(title);
+            Messages.Add(message);
             return Responses.Count > 0 ? Responses.Dequeue() : title == "저장 확인" ? UiMessageBoxResult.Yes : UiMessageBoxResult.Ok;
         }
         public string? ShowOpenFileDialog(OpenFileDialogRequest request) { NetworkOrDialogUsed = true; return OpenPath; }

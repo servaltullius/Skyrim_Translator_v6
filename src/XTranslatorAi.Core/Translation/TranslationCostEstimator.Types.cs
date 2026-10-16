@@ -25,6 +25,12 @@ public sealed record TranslationCostEstimate(
     /// <summary>countTokens calls that failed (rate limit, server error) and were estimated from character counts.</summary>
     public int CountTokensFallbacks { get; init; }
 
+    /// <summary>Rows in the scope the run fills from the game's own translation, without a request.</summary>
+    public int GameStringRows { get; init; }
+
+    /// <summary>Rows in the scope the run fills with the earlier translation (English unchanged), without a request.</summary>
+    public int PreviousReleaseRows { get; init; }
+
     public string ToHumanReadableString()
     {
         static string N(long v) => v.ToString("N0", CultureInfo.InvariantCulture);
@@ -33,6 +39,10 @@ public sealed record TranslationCostEstimate(
         sb.AppendLine($"범위: {ScopeLabel}");
         sb.AppendLine($"모델: {ModelName}");
         sb.AppendLine($"항목 수: {N(ItemCount)}");
+        if (GameStringRows + PreviousReleaseRows > 0)
+        {
+            sb.AppendLine($"요청 없이 채울 행: {N(GameStringRows + PreviousReleaseRows)} (게임 번역 {N(GameStringRows)}, 이전 번역 그대로 {N(PreviousReleaseRows)}) - 항목 수와 비용에서 뺐습니다.");
+        }
         sb.AppendLine($"설정: batch={BatchSize}, maxChars={MaxCharsPerBatch}, maxOut={MaxOutputTokens}");
         sb.AppendLine($"요청 수: {N(BatchRequestCount + TextRequestCount)} (배치={N(BatchRequestCount)}, 텍스트/청크={N(TextRequestCount)})");
         sb.AppendLine($"문자 수: 원문={N(TotalSourceChars)}, 마스킹+용어집={N(TotalMaskedChars)}");
@@ -100,6 +110,7 @@ public sealed record TranslationCostEstimate(
         sb.AppendLine("- 다른 모델의 비용은 선택 모델과 동일한 토큰 수를 사용한다고 가정한 단가 비교입니다. 모델별 실제 사용량은 다릅니다.");
         sb.AppendLine("- 캐시 비용은 생성 가능·모든 요청 적중·보관 2시간 가정입니다. 실제 캐시 실패/재생성/실행 시간에 따라 달라집니다.");
         sb.AppendLine("- TM 재사용, 문맥 추가, 복구·후보 재평가, 모델 전환은 완전히 모사하지 않습니다. 최종 비용은 실제 호출 누계에서 확인하세요.");
+        sb.AppendLine("- 게임 번역이나 이전 번역이 태그 검사에 걸리는 행은 실제 번역에서 모델로 넘어가므로, 그만큼 비용이 더 들 수 있습니다.");
     }
 }
 

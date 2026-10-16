@@ -329,7 +329,8 @@ public partial class MainViewModel
             RunSampleToEstimateOutputTokens: runSample,
             IncludeCompletedItems: includeCompletedItems,
             GlobalGlossary: await TryLoadGlobalGlossaryAsync(cancellationToken),
-            KeepSkyrimTagsRaw: KeepSkyrimTagsRaw
+            KeepSkyrimTagsRaw: KeepSkyrimTagsRaw,
+            GameStrings: await TryLoadGameStringsAsync(cancellationToken)
         );
     }
 

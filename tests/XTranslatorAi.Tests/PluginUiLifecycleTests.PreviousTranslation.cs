@@ -1,3 +1,4 @@
+using XTranslatorAi.App.Services;
 using System.Text.Json;
 using XTranslatorAi.Core.Models;
 
@@ -105,6 +106,32 @@ public sealed partial class PluginUiLifecycleTests
             fixture.Ui.OpenPath = oldRelease;
             await fixture.Vm.ImportPreviousTranslationCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
             Assert.DoesNotContain("영어판", fixture.Vm.PreviousTranslationSummary);
+        });
+
+    [Fact]
+    public Task PreviousSource_RowsKeptAsTheyAre_AreLeftOutOfTheCostEstimate()
+        => RunOnSta(async () =>
+        {
+            var handler = new FakeGeminiHandler();
+            await using var fixture = new Fixture(handler);
+            await fixture.LoadPluginWorkspaceAsync();
+            var oldRelease = Path.Combine(fixture.Root, "old-ko", "Test.esp");
+            var oldEnglish = Path.Combine(fixture.Root, "old-en", "Test.esp");
+            Directory.CreateDirectory(Path.GetDirectoryName(oldRelease)!);
+            Directory.CreateDirectory(Path.GetDirectoryName(oldEnglish)!);
+            await File.WriteAllBytesAsync(oldRelease, PluginProjectIntegrationTests.CreateMinimalPlugin("강철 장검"));
+            await File.WriteAllBytesAsync(oldEnglish, PluginProjectIntegrationTests.CreateMinimalPlugin());
+            fixture.Ui.OpenPath = oldRelease;
+            await fixture.Vm.ImportPreviousTranslationCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+            fixture.Ui.OpenPath = oldEnglish;
+            await fixture.Vm.ImportPreviousSourceCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            fixture.Ui.Responses.Enqueue(UiMessageBoxResult.No); // Remaining rows.
+            fixture.Ui.Responses.Enqueue(UiMessageBoxResult.No); // countTokens only.
+            await fixture.Vm.EstimateCostCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            Assert.DoesNotContain(handler.Requests, request => request.Body.Contains("Iron Sword", StringComparison.Ordinal));
+            Assert.Contains("요청 없이 채울 행: 1 (게임 번역 0, 이전 번역 그대로 1)", fixture.Ui.Messages[^1]);
         });
 
     [Fact]

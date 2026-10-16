@@ -52,6 +52,38 @@ public class TranslationCostEstimatorTests
         Assert.Equal(3, result.ItemCount);
     }
 
+    // The run fills these rows without a request: the game's own translation, and the earlier translation where the
+    // English did not change. With an earlier English release linked that is most of a mod update, and the estimate
+    // counted every row as model work.
+    [Fact]
+    public async Task RowsFilledFromTheGameOrTheEarlierRelease_AreNotEstimated()
+    {
+        var db = new StubProjectDb
+        {
+            RowCount = 3,
+            ExtraRows = new[] { ("Ice Storm", "SPEL:FULL") },
+            ReusableIds = new[] { 1L },
+        };
+        var game = XTranslatorAi.Core.Plugins.GameStringDictionary.Build(new[]
+        {
+            new XTranslatorAi.Core.Plugins.GameStringPlugin("Skyrim.esm", Array.Empty<string>(), new[]
+            {
+                new XTranslatorAi.Core.Plugins.PluginField("SPEL/0002B96C/0/FULL/0", 0, "SPEL", "FULL", 0x0002B96Cu, null, 0, 0,
+                    "Ice Storm", XTranslatorAi.Core.Plugins.PluginStringTableKind.Strings, 3),
+            }, new Dictionary<(XTranslatorAi.Core.Plugins.PluginStringTableKind, uint), string>
+            {
+                [(XTranslatorAi.Core.Plugins.PluginStringTableKind.Strings, 3)] = "얼음 폭풍",
+            }),
+        });
+
+        var result = await new TranslationCostEstimator(db, new StubGeminiClient())
+            .EstimateAsync(MakeRequest("fixture", GeminiModelCatalog.DefaultModel) with { BatchSize = 1, GameStrings = game }, CancellationToken.None);
+
+        Assert.Equal(2, result.ItemCount);
+        Assert.Equal((1, 1), (result.GameStringRows, result.PreviousReleaseRows));
+        Assert.Contains("요청 없이 채울 행: 2 (게임 번역 1, 이전 번역 그대로 1)", result.ToHumanReadableString());
+    }
+
     [Fact]
     public async Task EmptyWork_HasNoCacheStorageOrGenerationCost()
     {
@@ -256,6 +288,14 @@ public class TranslationCostEstimatorTests
     {
         public int RowCount { get; init; }
         public (string Source, string Rec)[] ExtraRows { get; init; } = Array.Empty<(string, string)>();
+        public long[] ReusableIds { get; init; } = Array.Empty<long>();
+
+        public Task<IReadOnlyDictionary<long, string>> GetReusablePreviousTranslationsByStringIdAsync(CancellationToken cancellationToken)
+            => Task.FromResult<IReadOnlyDictionary<long, string>>(ReusableIds.ToDictionary(id => id, _ => "이전 번역"));
+
+        private IEnumerable<(long Id, string Source, string Rec)> AllRows()
+            => Enumerable.Range(1, RowCount).Select(i => ((long)i, "source " + i, "INFO:NAM1"))
+                .Concat(ExtraRows.Select((r, i) => ((long)(1000 + i), r.Source, r.Rec)));
         public Task<IReadOnlyList<GlossaryEntry>> GetGlossaryAsync(CancellationToken cancellationToken)
             => Task.FromResult<IReadOnlyList<GlossaryEntry>>(Array.Empty<GlossaryEntry>());
 
@@ -277,7 +317,8 @@ public class TranslationCostEstimatorTests
         public Task<IReadOnlyDictionary<long, (long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status, string? DialogueScope)>>
             GetStringTranslationContextsByIdsAsync(IReadOnlyList<long> ids, CancellationToken cancellationToken)
             => Task.FromResult<IReadOnlyDictionary<long, (long, string, string?, string?, StringEntryStatus, string?)>>(
-                new Dictionary<long, (long, string, string?, string?, StringEntryStatus, string?)>());
+                AllRows().Where(row => ids.Contains(row.Id)).ToDictionary(row => row.Id,
+                    row => (row.Id, row.Source, (string?)row.Rec, (string?)null, StringEntryStatus.Pending, (string?)null)));
 
         public Task<IReadOnlyDictionary<long, StringEntryStatus>> GetStringStatusesByIdsAsync(IReadOnlyList<long> ids, CancellationToken cancellationToken)
             => Task.FromResult<IReadOnlyDictionary<long, StringEntryStatus>>(new Dictionary<long, StringEntryStatus>());

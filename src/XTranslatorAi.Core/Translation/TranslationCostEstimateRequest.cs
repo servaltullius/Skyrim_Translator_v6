@@ -15,5 +15,7 @@ public sealed record TranslationCostEstimateRequest(
     bool RunSampleToEstimateOutputTokens,
     bool IncludeCompletedItems,
     IReadOnlyList<GlossaryEntry>? GlobalGlossary = null,
-    bool KeepSkyrimTagsRaw = true
+    bool KeepSkyrimTagsRaw = true,
+    // The player's game translation: rows it covers are finished without a request, as in a run.
+    XTranslatorAi.Core.Plugins.GameStringDictionary? GameStrings = null
 );
