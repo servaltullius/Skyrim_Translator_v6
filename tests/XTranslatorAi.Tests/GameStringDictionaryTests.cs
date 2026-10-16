@@ -95,6 +95,29 @@ public sealed class GameStringDictionaryTests
         Assert.Null(game.FindRecord(Identity("INFO/03012345/0/NAM1/0"), "What do you want?"));
     }
 
+    /// <summary>
+    /// Game 1.6 renamed some 1.5.97 strings "Creation Club Cell" for its hidden Creation Club cells, while a Dragonborn
+    /// magic effect still points at one; the patch translates that string for what the 1.5.97 game shows there. The
+    /// record keeps its translation, but the placeholder text is no text to translate any other record's name by.
+    /// </summary>
+    [Fact]
+    public void CreationClubCellPlaceholder_IsMatchedByRecordOnly()
+    {
+        var dragonborn = new GameStringPlugin("Dragonborn.esm", new[] { "Skyrim.esm" }, new[]
+        {
+            Field("MGEF/010145CD/0/FULL/0", "Creation Club Cell", PluginStringTableKind.Strings, 0xDF),
+        }, new Dictionary<(PluginStringTableKind, uint), string>
+        {
+            [(PluginStringTableKind.Strings, 0xDF)] = "폭발형 거미",
+        });
+
+        var game = GameStringDictionary.Build(new[] { dragonborn });
+
+        Assert.Null(game.Find(null, "CELL:FULL", "Creation Club Cell"));
+        Assert.Equal(("폭발형 거미", true), game.FindRecord(
+            GameStringDictionary.FieldIdentity("MGEF/010145CD/0/FULL/0", new[] { "Skyrim.esm" }, "Dragonborn.esm"), "Creation Club Cell"));
+    }
+
     [Fact]
     public void SameText_IsMatchedOutsideDialogue_ByTheMostCommonSpelling()
     {

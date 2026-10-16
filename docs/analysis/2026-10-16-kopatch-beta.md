@@ -41,3 +41,30 @@
 - `artifacts/kopatch-26.10.16-beta/Skyrim-Korean-Patch-26.10.16-beta.zip`: 파일 250개, 39.9MB.
   - 압축을 풀어 fomod 경로 4개가 대소문자까지 있는지, 파일이 저장소와 같은지 확인했다.
   - USSEP esp는 gitignore라 로컬 파일에서 묶었다.
+
+## 게임 1.5.97 대응 (베타 2)
+
+- 사용자 승인으로 Steam 콘솔에서 1.5.97 데이터 묶음을 받았다. 명령은 사용자가 직접 넣었다.
+  - `download_depot 489830 489831 7848722008564294070`(4.9GB)
+  - `download_depot 489830 489832 8702665189575304780`(7.9GB, 기본 게임 esm 5개와 `Skyrim - Interface.bsa`)
+  - 받은 곳은 `C:\Program Files (x86)\Steam\steamapps\content\app_489830\`이고, 설치된 게임은 바뀌지 않았다.
+- 1.5.97과 1.7.104의 영어 문자열 표를 번호별로 비교했다.
+  - 거의 같다. 영어 오타 수정 12개(Dragonborn 책 11, 레벨업 안내 1)는 지금 한국어가 두 판에 모두 맞는다.
+  - **1.5.97에만 있는 번호 2개**를 추가했다.
+    - Update `0x22` "Skyrim" → 스카이림
+    - Dawnguard 대사 `0xE4` "Death to the Dawnguard!" → 던가드에게 죽음을!(1.7에서 옮겨 간 번호의 번역)
+  - **1.6부터 "Creation Club Cell"(보이지 않는 CC 셀 이름)로 재활용된 번호 3개**를 1.5.97에서 보이는 이름으로 바꿨다.
+    - Dawnguard `0x92` 퀘스트 Touching the Sky → 하늘에 닿아(1.7에서 옮겨 간 0x28E2와 같은 번역)
+    - Dawnguard `0x9F` 퀘스트 Dawnguard Vampire Hunters → 던가드 흡혈귀 사냥꾼
+    - Dragonborn `0xDF` 마법 효과 `DLC2ExpSpiderAlbinoScrollFF` Exploding Spider → 폭발형 거미
+      - 이 효과는 1.7에서도 이 번호를 가리켜 이름이 "Creation Club Cell"로 보였다. 1.7의 원래 버그도 함께 고친 셈이다.
+- 결과:
+  - 1.5.97·1.7 모두 영어가 있는 번호 중 한패에 없는 것 0개
+  - "Creation Club Cell"이 잘못 보이는 곳 0개
+  - 1.5.97 메뉴 항목 388개 모두 한패 메뉴 파일에 있다. 1.5.97 영어에는 " TO PLACE"처럼 앞 공백이 실제로 있어, 앞 공백을 지킨 판단이 맞았다.
+  - 한패 글꼴 설정이 1.5.97 메뉴가 쓰는 글꼴 이름 16개를 모두 연결한다.
+- **게임 번역 사전**
+  - 1.7 영어 기준으로 만들기 때문에, "Creation Club Cell" 글자가 0xDF의 "폭발형 거미"로 글자 기준 번역이 되어 버렸다.
+  - 이 자리표시 이름은 글자 기준 번역에서 빼고 레코드 기준으로만 찾게 했다(`GameStringDictionaryTests.CreationClubCellPlaceholder_IsMatchedByRecordOnly`).
+  - 검수 도구는 솔루션에 없어서 따로 빌드해야 사전에 반영된다.
+- fomod 권장 버전에 1.5.97을 넣었다. info.xml과 읽어보기는 `26.10.16 베타 2`로 올렸다.

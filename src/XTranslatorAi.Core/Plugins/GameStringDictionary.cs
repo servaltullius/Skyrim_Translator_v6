@@ -65,6 +65,8 @@ public sealed class GameStringDictionary
             $"{parts[0]}/{owner.ToLowerInvariant()}:{formId & 0x00FFFFFFu:X6}/{parts[2]}/{parts[3]}/{parts[4]}");
     }
 
+    private const string CreationClubCellPlaceholder = "creation club cell"; // As TranslationMemoryKey.NormalizeSource has it.
+
     /// <summary>Plugins in load order: a later plugin's text for a record (Update, DLC) replaces the earlier one.</summary>
     public static GameStringDictionary Build(IEnumerable<GameStringPlugin> plugins)
     {
@@ -92,7 +94,11 @@ public sealed class GameStringDictionary
 
                 var key = Fingerprint(normalized);
                 byField[identity] = (key, korean, plugin.FileName);
-                if (kind == PluginStringTableKind.IlStrings || IsDialogue(field.Rec))
+                // Game 1.6 renamed some 1.5.97 strings "Creation Club Cell" for its hidden Creation Club cells, and the
+                // patch translates such a string for what the 1.5.97 game shows (a Dragonborn effect still points at
+                // one): the record keeps it, but the placeholder text translates no other record's name.
+                if (kind == PluginStringTableKind.IlStrings || IsDialogue(field.Rec)
+                    || string.Equals(normalized, CreationClubCellPlaceholder, StringComparison.Ordinal))
                 {
                     continue;
                 }
