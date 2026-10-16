@@ -108,6 +108,40 @@ public sealed partial class PluginUiLifecycleTests
             Assert.DoesNotContain("영어판", fixture.Vm.PreviousTranslationSummary);
         });
 
+    /// <summary>
+    /// A text that starts or ends with a line break or a space (a book, an effect description) keeps it: linking trimmed
+    /// the earlier translation, so the reused row lost its spaces, or failed the line break check and went to the model.
+    /// </summary>
+    [Theory]
+    [InlineData("Iron Sword\r\n", "강철 장검\r\n")]
+    [InlineData("\r\nIron Sword\r\n\r\n", "\r\n강철 장검\r\n\r\n")]
+    [InlineData(" Iron Sword ", " 강철 장검 ")]
+    public Task PreviousSource_ReusedTranslation_KeepsTheLineBreaksAndSpacesAroundIt(string english, string earlier)
+        => RunOnSta(async () =>
+        {
+            var handler = new FakeGeminiHandler { GeneratedText = "철검" };
+            await using var fixture = new Fixture(handler);
+            await fixture.LoadPluginWorkspaceAsync(PluginProjectIntegrationTests.CreateMinimalPlugin(english));
+            var row = Assert.Single(fixture.Vm.Entries);
+            var oldRelease = Path.Combine(fixture.Root, "old-ko", "Test.esp");
+            var oldEnglish = Path.Combine(fixture.Root, "old-en", "Test.esp");
+            Directory.CreateDirectory(Path.GetDirectoryName(oldRelease)!);
+            Directory.CreateDirectory(Path.GetDirectoryName(oldEnglish)!);
+            await File.WriteAllBytesAsync(oldRelease, PluginProjectIntegrationTests.CreateMinimalPlugin(earlier));
+            await File.WriteAllBytesAsync(oldEnglish, PluginProjectIntegrationTests.CreateMinimalPlugin(english));
+            fixture.Ui.OpenPath = oldRelease;
+            await fixture.Vm.ImportPreviousTranslationCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+            fixture.Ui.OpenPath = oldEnglish;
+            await fixture.Vm.ImportPreviousSourceCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            await fixture.Vm.StartTranslationCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            Assert.Empty(handler.Requests);
+            Assert.Equal((StringEntryStatus.Done, earlier), (row.Status, row.DestText));
+            var saved = Assert.Single(await fixture.State.Db!.GetStringsAsync(10, 0, CancellationToken.None));
+            Assert.Equal(earlier, saved.DestText);
+        });
+
     [Fact]
     public Task PreviousSource_RowsKeptAsTheyAre_AreLeftOutOfTheCostEstimate()
         => RunOnSta(async () =>

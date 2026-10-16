@@ -57,8 +57,10 @@ public static class PreviousTranslationMatcher
                 continue;
             }
 
-            var text = old.SourceText.Trim();
-            if (string.Equals(text, field.SourceText.Trim(), StringComparison.Ordinal))
+            // Only the comparison trims: the text is reused as it is where the English did not change, so a book or
+            // effect text keeps the line breaks and spaces around it.
+            var text = old.SourceText;
+            if (string.Equals(text.Trim(), field.SourceText.Trim(), StringComparison.Ordinal))
             {
                 same++;
                 continue;

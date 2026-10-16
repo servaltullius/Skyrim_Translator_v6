@@ -39,6 +39,30 @@ public class PreviousTranslationTests
     }
 
     /// <summary>
+    /// A book or effect text that ends with a line break keeps it: the earlier text is reused as it is when the English
+    /// did not change, and a trimmed one lost the break or failed the line break check. Only the comparison trims.
+    /// </summary>
+    [Fact]
+    public void Matcher_KeepsTheEarlierTextAsItIsWritten()
+    {
+        var current = new[]
+        {
+            Field("MGEF/05000867/0/DNAM/0", "Deals <mag> damage.\r\n"),
+            Field("MGEF/05000868/0/DNAM/0", " Elden Parry\r\n"),
+        };
+        var previous = new[]
+        {
+            Field("MGEF/05000867/0/DNAM/0", "\r\n<mag>의 피해를 줍니다.\r\n"),
+            Field("MGEF/05000868/0/DNAM/0", "Elden Parry"),
+        };
+
+        var result = PreviousTranslationMatcher.Match(current, previous, requireHangul: true);
+
+        Assert.Equal("\r\n<mag>의 피해를 줍니다.\r\n", Assert.Single(result.TextByFieldKey).Value);
+        Assert.Equal(1, result.SameAsSource);
+    }
+
+    /// <summary>
     /// v2 adds a master, so v1's own records (02xxxxxx) are 03xxxxxx in v2 and 02xxxxxx now names the new master.
     /// Pairing by key gave v2's override of a new-master record the translation of v1's own record.
     /// </summary>

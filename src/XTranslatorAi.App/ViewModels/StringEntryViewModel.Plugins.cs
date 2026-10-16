@@ -15,7 +15,7 @@ public partial class StringEntryViewModel
     [NotifyPropertyChangedFor(nameof(PreviousTranslationText))]
     private string? _previousTranslation;
 
-    public string PreviousTranslationText => string.IsNullOrWhiteSpace(PreviousTranslation) ? "" : "이전 번역: " + PreviousTranslation;
+    public string PreviousTranslationText => string.IsNullOrWhiteSpace(PreviousTranslation) ? "" : "이전 번역: " + PreviousTranslation.Trim();
 
     public string PluginLocationText => PluginLocation is not { } location ? ""
         : $"FormID {location.FormId:X8} · {location.Rec}"
