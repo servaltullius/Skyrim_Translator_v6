@@ -93,7 +93,7 @@ Source	Target
 (Remain silent)	(아무말도 하지 않는다)
 (Show Astrid the amulet and sealed letter)	(아스트리드에게 아뮬렛과 봉인된 편지를 보여준다)
 (Show Maro the Gourmet's Writ of Passage)	(마로에게 미식가의 통행증을 보여 준다)
-+<mag> carrying capacity, and no movement penalty from armor.	무게한계 <mag> 증가, 무거운 방어구를 착용해도 이동에 영향을 받지 않게 됩니다.
++<mag> carrying capacity, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.
 +<mag> damage resistance for <dur> seconds.	<dur> 초 동안 피해 저항력이 <mag> 증가합니다.
 +<mag> damage resistance, if wearer is undead.	착용자가 언데드라면 피해 저항력이 <mag> 증가합니다.
 +<mag> magicka, if wearer is undead.	착용자가 언데드라면 매지카가 <mag> 증가합니다.
@@ -155,8 +155,8 @@ Source	Target
 <font color='#FF0000'>Steal</font>	<font color='#FF0000'> 훔치기 </font>
 <Global=WE17GoldAmount> gold? You can have it, if you can take it from me.	<Global=WE17GoldAmount> 골드? 어디 한번 뺏어가 보시지.
 <mag> points of damage for <dur> seconds.	<dur> 초 동안 <mag> 의 피해를 입힙니다.
-<mag> points of extra damage to Animals.	동물에게 <mag>의 추가 피해를 입힙니다.
-<mag> points of extra damage to Nords.	노드에게 <mag>의 추가 피해를 입힙니다.
+<mag> points of extra damage to Animals.	동물에게 <mag> 의 추가 피해를 입힙니다.
+<mag> points of extra damage to Nords.	노드에게 <mag> 의 추가 피해를 입힙니다.
 <mag> points of extra damage which ignores armor.	방어력을 무시하고 <mag> 의 추가 피해를 입힙니다.
 <mag> points of sun damage. Undead targets take triple damage.	<mag> 의 태양 피해를 입힙니다. 언데드에게는 3배의 피해를 입힙니다.
 <mag>% resistant to disease.	질병 저항력이 <mag>% 증가합니다.
@@ -227,7 +227,7 @@ A Game at Dinner	만찬의 유희
 A Gentleman's Guide to Whiterun	신사의 화이트런 안내서
 A good death?	좋은 죽음?
 A gout of fire that does <mag> points per second. Targets on fire take extra damage.	불길을 뿜어내어 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
-A Grand Soul gem filled with a Grand Soul is required to build the Arcane Enchanter.	마법 부여대를 제작하기 위해서는 특급 소울젬(특급)이 필요합니다.
+A Grand Soul gem filled with a Grand Soul is required to build the Arcane Enchanter.	마법부여대를 제작하기 위해서는 특급 소울젬(특급)이 필요합니다.
 A greatsword swings faster than a battleaxe, and a battleaxe swings faster than a warhammer.	대검은 전투 도끼보다 빠르게, 그리고 전투 도끼는 전투 망치보다 빠르게 휘두를 수 있습니다.
 A guard said you own the Dwemer Museum.	경비병이 말하길, 당신이 드웨머 박물관의 주인이라던데.
 A guard sent me. I killed the leader of the Dark Brotherhood.	경비병이 날 보냈소. 내가 다크 브라더후드의 우두머리를 죽였지.
@@ -288,7 +288,7 @@ A swarm that does <mag> poison damage for <dur> seconds.	곤충 떼가 <dur> 초
 A sweetroll.	달콤한 빵.
 A sword. (25 husks)	검. (25 껍질)
 A Thunderbolt that does <mag> points of shock damage to Health and half that to Magicka.	치명적인 벼락을 날려 <mag> 의 전격 피해와 절반의 매지카 피해를 입힙니다.
-A tidy, one-room house.	자그마한, 방 하나짜리 집.
+A tidy, one-room house.	깔끔한 방 하나짜리 집.
 A Tragedy in Black	검은 비극
 A truly strong chief would break the curse, not suffer from it.	진정으로 강한 족장이라면 저주를 풀어야지, 저주때문에 고통받는 것이 아니고.
 A vampire? I don't think so.	흡혈귀라고? 안될 거 같군.
@@ -384,15 +384,15 @@ Adalvald	아달발드
 Adara	아다라
 Add	추가
 Add a cellar beneath the Main Hall.	대청 아래쪽에 지하실을 추가합니다.
-Add a greenhouse with customizable planters.	마음대로 여러가지 식물을 재배할 수 있는 온실을 추가합니다.
-Add a kitchen that can be fitted out with cooking stations, food containers and the like.	여러가지 주방용품들과 음식 저장용기등이 구비된 부엌을 추가합니다.
+Add a greenhouse with customizable planters.	마음대로 여러 가지 식물을 재배할 수 있는 온실을 추가합니다.
+Add a kitchen that can be fitted out with cooking stations, food containers and the like.	여러 가지 주방용품들과 음식 저장 용기 등이 구비된 부엌을 추가합니다.
 Add a residential wing with master bedroom and childrens' bedroom. Includes an exterior porch.	주 침실과 어린이용 침실들로 구성된 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.
-Add a room that can be equipped with smithing stations and weapon storage. Includes an exterior porch.	제련용 시설외에 무기들을 저장할 수 있는 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.
-Add a storage area which can be equipped with a variety of containers and weapon racks. Includes an exterior porch.	다양한 보관함 상자들과 무기 거치대등을 설치할 수 있는 창고를 추가합니다. 야외 베란다도 포함되어 있습니다.
+Add a room that can be equipped with smithing stations and weapon storage. Includes an exterior porch.	제련용 시설 외에 무기들을 저장할 수 있는 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.
+Add a storage area which can be equipped with a variety of containers and weapon racks. Includes an exterior porch.	다양한 보관함 상자들과 무기 거치대 등을 설치할 수 있는 창고를 추가합니다. 야외 베란다도 포함되어 있습니다.
 Add a tower ready to be fitted out as an alchemy laboratory.	연금술 실험실로 꾸밀 수 있는 탑을 추가합니다.
 Add a tower ready to be turned into a comfortable library.	안락한 도서실로 꾸밀 수 있는 탑을 추가합니다.
 Add a tower that can be turned into a fully-equipped enchanting laboratory.	완벽한 마법부여 연구실로 전환할 수 있는 탑을 추가합니다.
-Add a trophy room that can be equipped with display cases, animal trophies, and weapon racks.	진열장, 동물 전리품, 무기 거치대등을 설치할 수 있는 전시실을 추가합니다.
+Add a trophy room that can be equipped with display cases, animal trophies, and weapon racks.	진열장, 동물 전리품, 무기 거치대 등을 설치할 수 있는 전시실을 추가합니다.
 Added	추가됨
 Added Effects	추가된 효과
 Addict	중독자
@@ -441,7 +441,7 @@ Adril Arano said you might be able to help me.	아드릴 아라노가 말하길 
 Adril's Survey Results	아드릴의 조사결과
 Aduri Sarethi	아두리 사레시
 Advanced Armors	고급 방어구
-Advances in Lockpicking	상급 잠금해제
+Advances in Lockpicking	잠금해제의 발전
 Advard	애드버드
 Adventurer	모험가
 Adventurer's Backpack	모험가의 배낭
@@ -468,7 +468,7 @@ Aetherium Crest	에테리움 문장
 Aetherium Forge	에테리움 대장간
 Aetherium Shard	에테리움 파편
 Aevar Stone-Singer	에바 스톤-싱어
-Affable Gent	정중한 겐트
+Affable Gent	상냥한 신사
 Afflicted	병자
 Afflicted Devotee	병든 광신도
 Afflicted Refugee	병든 피난민
@@ -481,7 +481,7 @@ Aftershock	여진
 Age	나이
 Agent Lorcalin	첩보원 로칼린
 Agent of Dibella	디벨라의 사도
-Agent of Dibella added	디벨라의 대행자가 추가되었습니다
+Agent of Dibella added	디벨라의 사도가 추가되었습니다
 Agent of Kynareth	키나레스의 사도
 Agent of Mara	마라의 사도
 Agent of Mara added	마라의 사도 추가됨
@@ -503,13 +503,13 @@ Ahzidal's Arcana	아지달의 비전
 Ahzidal's Armor of Retribution	아지달 방어구 - 응징
 Ahzidal's Boots of Waterwalking	아지달 전투화 - 수상 보행
 Ahzidal's Descent	아지달의 추락
-Ahzidal's Gauntlets of Warding	아지달 장갑 - 보호
+Ahzidal's Gauntlets of Warding	아지달 장갑 - 방어막
 Ahzidal's Genius	아지달의 재능
-Ahzidal's Helm of Vision	아지달 투구 - 시각
+Ahzidal's Helm of Vision	아지달 투구 - 시야
 Ahzidal's Necromancy	아지달의 강령술
 Ahzidal's Rage	아지달의 분노
 Ahzidal's Retribution	아지달의 응징
-Ahzidal's Ring of Arcana	아지달 반지 - 마력
+Ahzidal's Ring of Arcana	아지달 반지 - 비전
 Ahzidal's Ring of Necromancy	아지달 반지 - 강령술
 Ahzidal's Vision	아지달의 시야
 Ahzidal's Warding	아지달의 방어막
@@ -713,7 +713,7 @@ Amulet of Mara	아뮬렛 - 마라
 Amulet of Mara (Possessed)	아뮬렛 - 마라 (소유)
 Amulet of Mist Form	아뮬렛 - 안개 형상
 Amulet of Stendarr	아뮬렛 - 스텐다르
-Amulet of Supernatural Reflexes	아뮬렛 - 초자연적인 반응
+Amulet of Supernatural Reflexes	아뮬렛 - 초자연적 반사신경
 Amulet of Talos	아뮬렛 - 탈로스
 Amulet of the Elder Council	원로 위원회의 아뮬렛
 Amulet of the Empath	아뮬렛 - 동조
@@ -867,7 +867,7 @@ Animal Extermination	해를 끼치는 동물 제거하기
 Animal Pelt Collection	동물 모피 수집
 Animal Pen	가축 우리
 Animal Vigor	동물적 기운
-Animals take <mag> points of extra damage.	동물을 상대로 <mag>의 추가 피해를 입힙니다.
+Animals take <mag> points of extra damage.	동물을 상대로 <mag> 의 추가 피해를 입힙니다.
 Anise	아니스
 Anise's Cabin	아니스의 오두막
 Anise's Letter	아니스의 편지
@@ -990,10 +990,10 @@ Arcana Restored	아르카나 복원
 Arcane Accessories	마법 팩
 Arcane Archer Pack	마법 화살 팩
 Arcane Blacksmith	비전 대장장이
-Arcane Enchanter	마법 부여대
-Arcane Enchanter Recipe	마법 부여대 제작법
+Arcane Enchanter	마법부여대
+Arcane Enchanter Recipe	마법부여대 제작법
 Arcane Enchanters are worktables used by mages to enchant weapons and armor.	마법부여대는 마법사들이 무기와 방어구에 마법을 부여할 때 쓰는 작업선반입니다.
-Arch Conjurer	대 소환마도사
+Arch Conjurer	대 소환마법사
 Arch Cryomancer	대 냉기 마도사
 Arch Cultist	광신도 지도자
 Arch Electromancer	대 전격 마도사
@@ -1132,7 +1132,7 @@ Aren't you just an advisor here?	당신은 단지 조언자 아닙니까?
 Aren't you worried about the dragons?	드래곤이 걱정되지 않소?
 Aren't you worried about Wolfskull Cave?	늑대해골 동굴이 걱정 되지 않습니까?
 Aren't you worried you'll be arrested?	체포되는 것이 두렵지 않습니까?
-Aretino Family Heirloom	아렌티노 가문의 가보
+Aretino Family Heirloom	아레티노 가문의 가보
 Aretino Residence	아레티노 거주지
 Aretino Residence Key	열쇠 - 아레티노 거주지
 Argi	아르기
@@ -1190,7 +1190,7 @@ Arniel	아니얼
 Arniel Gane	아니얼 게인
 Arniel's Convection	아니얼의 불길
 Arniel's Endeavor	아니얼의 노력
-Arniel's Shade	아니얼의 망령
+Arniel's Shade	아니얼의 유령
 Arnleif and Sons Trading Company	안리프 부자 상회
 Arnskar Ember-Master	안슈커 앰버-마스터
 Arob	아로브
@@ -1217,9 +1217,9 @@ As long as you don't get in my way.	나를 방해하지 않겠다면.
 As long as you're ready to kill him, that's all that matters.	죽일 준비만 되어 있다면, 그걸로 충분해.
 As the Archmage of Winterhold, you and I should share our secrets.	윈터홀드의 대마법사로서, 당신과 내가 비법을 공유하는 게 좋겠군.
 Asbjorn Fire-Tamer	애스비욘 파이어-테이머
-Ascendant Conjurer	숙련된 소환마법사
+Ascendant Conjurer	상급 소환마법사
 Ascendant Cultist	상급 광신도
-Ascendant Necromancer	숙련된 강령술사
+Ascendant Necromancer	상급 강령술사
 Asgeir Snow-Shod	아스기어 스노-쇼드
 Asgeir's Wedding Band	아스기어의 결혼 반지
 Ash and embers cause <mag> points of damage.	화산재와 잿불이 <mag> 의 피해를 입힙니다.
@@ -1377,10 +1377,10 @@ Avanchnzel Key	열쇠 - 아반츤젤
 Aventus	아벤투스
 Aventus Aretino	아벤투스 아레티노
 Aventus Aretino says hello.	아벤투스 아레티노가 안부를 전해달라더군.
-Aversion to Fire	독 - 화염 중급
-Aversion to Frost	독 - 냉기 중급
-Aversion to Magic	독 - 마법 저항 중급
-Aversion to Shock	독 - 전격 중급
+Aversion to Fire	독 - 화염 약점 중급
+Aversion to Frost	독 - 냉기 약점 중급
+Aversion to Magic	독 - 마법 약점 중급
+Aversion to Shock	독 - 전격 약점 중급
 Avoid Death	죽음 회피
 Avrusa Sarethi	아브루사 사레시
 Avulstein Gray-Mane	애벌스타인 그레이-메인
@@ -1403,7 +1403,7 @@ Back	뒤로
 Back off. I know the drill.	그만. 뭔지 알겠어.
 Back off. Now. (Intimidate)	꺼져. 당장. (위협)
 Back on its feet?	재건한다고?
-Backstab	백스텝
+Backstab	백스탭
 Bad day?	운이 나쁜 날입니까?
 Badnir	배드니어
 Bagrak	바그락
@@ -1759,7 +1759,7 @@ Blisterwort	왕그물 버섯
 Blisterwort (4)	왕그물 버섯 (4)
 Blizzard	눈보라
 Blizzard Rest	블리자드 휴게소
-Bloated Man's Grotto	부풀은 사내의 암굴
+Bloated Man's Grotto	부푼 사내의 암굴
 Block	방어
 Block <mag>% more damage with your shield.	방패 방어의 피해 흡수가 <mag>% 증가합니다.
 Block Perks	방어 퍽
@@ -1818,7 +1818,7 @@ Boar	멧돼지
 Boar Meat	멧돼지 고기
 Boar Tusk	멧돼지 상아
 Board the Katariah	카타리아호에 승선하기
-Boarded Storeroom Door	빗장걸린 저장실 문
+Boarded Storeroom Door	판자로 막힌 저장실 문
 BOBS	잡동사니
 Bodil	보딜
 Body	체형
@@ -1855,7 +1855,7 @@ Bone Hawk Amulet	해골 독수리 아뮬렛
 Bone Hawk Claw	해골 독수리 발톱
 Bone Hawk Feathers	해골 독수리 깃털
 Bone Hawk Ring	해골 독수리 반지
-Bone Hawk Skull	해골 독수리 뼈
+Bone Hawk Skull	해골 독수리 두개골
 Bone Meal	뼛가루
 Bone Wolf	뼈 늑대
 Bone, Part I	뼈, 제 1권
@@ -1939,7 +1939,7 @@ Bonemold Helmet of Minor Conjuration	뼈다귀 투구 - 최하급 소환마법
 Bonemold Helmet of Minor Destruction	뼈다귀 투구 - 최하급 파괴마법
 Bonemold Helmet of Minor Illusion	뼈다귀 투구 - 최하급 환영마법
 Bonemold Helmet of Minor Magicka	뼈다귀 투구 - 최하급 매지카 증가
-Bonemold Pauldron Armor	뼈다귀 방어구
+Bonemold Pauldron Armor	뼈다귀 견갑 방어구
 Bonemold Shield	뼈다귀 방패
 Bonemold Shield of Blocking	뼈다귀 방패 - 하급 방어
 Bonemold Shield of Dwindling Flames	뼈다귀 방패 - 중급 화염 저항
@@ -1989,7 +1989,7 @@ Bottar	보타
 Boulderfall Cave	볼더폴 동굴
 Bouncer	경비원
 Bound Arrow	마법 화살
-Bound Axe	마법 전투 도끼 소환
+Bound Axe	마법 전투 도끼
 Bound Battleaxe	마법 전투 도끼
 Bound Bow	마법 활
 Bound Dagger	마법 단검
@@ -2016,7 +2016,7 @@ Boy's Grey Tunic	남자아이용 회색 옷
 Boy's Red Tunic	남자아이용 빨간색 옷
 Boy's Yellow Tunic	남자아이용 노란색 옷
 Bradyn	브레딘
-Braided Bread	바게트 빵
+Braided Bread	땋은 빵
 Braidwood Inn	브레이드우드 여관
 Braig	브레이그
 Brain	뇌
@@ -2126,7 +2126,7 @@ Bring the Bonemold Formula to Glover Mallory	뼈다귀 물품 제조법을 글�
 Bring the claw to Camilla	카밀라에게 발톱을 가져다 주기
 Bring the claw to Lucan	루칸에게 황금 발톱을 가져다 주기
 Bring the deathbell to Ingun Black-Briar	데스벨을 잉건에게 가져다 주기
-Bring the Dibella Statue to Lisbet	디벨라의 동상을 리스벳에게 가져다 주기
+Bring the Dibella Statue to Lisbet	디벨라의 동상을 리즈벳에게 가져다 주기
 Bring the documents to <Alias=FieldCO>	문서를 <Alias=FieldCO> 에게 전달하기
 Bring the evidence to Adril Arano	아드릴 아라노에게 증거를 전달하기
 Bring the flawless sapphires to Madesi	완벽한 사파이어를 마데시에게 가져다 주기
@@ -2182,7 +2182,7 @@ Broken Steel Greatsword Handle	부서진 강철 대검 자루
 Broken Steel Sword Blade	부서진 강철 검 칼날
 Broken Steel Sword Handle	부서진 강철 검 자루
 Broken Steel Warhammer Handle	부서진 강철 전쟁망치 자루
-Broken Steel Warhammer Head	부서진 강철 전쟁망치 머릿부분
+Broken Steel Warhammer Head	부서진 강철 전쟁망치 머리부분
 Broken Tower Prison Key	열쇠 - 부서진 탑 감옥
 Broken Tower Redoubt	부서진 탑 보루
 Broken Tusk Mine	부러진 상아 광산
@@ -2232,7 +2232,7 @@ Bthardamz Workshop	브타담즈 작업실
 Bucket	물통
 BUILDING MATERIALS	건축용 자재
 Bujold the Intrepid	용맹한 부졸드
-Bujold the Unworthy	자격없는 부졸드
+Bujold the Unworthy	자격 없는 부졸드
 Bujold's Retreat	부졸드의 은신처
 Bulfrek	불프렉
 Bull Netch	황소 네치
@@ -2305,7 +2305,7 @@ Cabbage Potato Soup	양배추 감자 수프
 Cabbage Soup	양배추 수프
 Caerellius House	카렐리우스의 집
 Caerellius House Key	열쇠 - 카렐리우스의 집
-Cage	벽장
+Cage	우리
 Cage Door	우리 문
 Cage Gate	우리 출입문
 Cage Key	열쇠 - 우리
@@ -2565,7 +2565,7 @@ Chandelier, Small	샹들리에, 소
 Change Item Selection	물품 선택 변경
 Change Pose	자세 바꾸기
 Change preset and lose your changes?	변경사항을 버리고 사전설정으로 바꿀까요?
-Changed Ones	변절한 자들
+Changed Ones	변화한 자들
 Chaos Damage	혼돈 피해
 Chapter I	제 I 편
 Chapter I Footnote	제 I 편 각주
@@ -2581,7 +2581,7 @@ Character menu is not available.	캐릭터 메뉴를 사용할 수 없습니다.
 Character menu not available to werewolves.	늑대인간은 캐릭터 메뉴를 사용할 수 없습니다.
 Charcoal	목탄
 Charm	매료
-Charm - Master of the Mind	매료 - 정신마법의 달인
+Charm - Master of the Mind	매료 - 정신의 지배자
 Charmed Necklace	마법의 목걸이
 Charmed Vigilant	매혹당한 경계병
 Charred Skeever	검게 탄 스키버
@@ -2978,7 +2978,7 @@ Commune with Hrothmund's Spirit	흐로스문드의 유령과 대화하기
 Companion Ghost	컴패니언 유령
 Companion's Insight	동료의 통찰력
 Compelling Tribute	억지 공물
-Complaint Letter	고소 편지
+Complaint Letter	항의 편지
 Complete the book Powers of the Elements	서적 '원소의 힘'을 모두 읽기
 Completed	완료
 Completely restore Health.	체력을 모두 회복합니다.
@@ -3125,7 +3125,7 @@ Courier Items	배송물품
 Courier's Letter	배달부의 편지
 Coven? What do you mean?	마법회? 무슨 뜻이지?
 Cow	소
-Cow Hand	카우 핸드
+Cow Hand	목동
 Cow Hide	가죽 - 소
 Cow. (<Global=BYOHHPCostCow> gold)	소. (<Global=BYOHHPCostCow> 골드)
 Cowflop Farm Key	열쇠 - 쇠똥 농가
@@ -3695,7 +3695,7 @@ Dark Souls	어둠의 영혼
 Darkest Darkness	가장 어두운 암흑
 Darkfall Cave	다크폴 동굴
 Darkfall Cave Note	다크폴 동굴의 쪽지
-Darkfall Grotto	다크폴 동굴
+Darkfall Grotto	다크폴 암굴
 Darkfall Passage	다크폴 통로
 Darkfall Passage Note I	다크폴 통로 쪽지 1
 Darkfall Passage Note II	다크폴 통로 쪽지 2
@@ -3731,7 +3731,7 @@ Dawnguard Orders - Hakar	던가드 명령서 - 하카
 Dawnguard Orders - Lynoit	던가드 명령서 - 리노이트
 Dawnguard Orders - Saliah	던가드 명령서 - 살리아
 Dawnguard Rune Axe	던가드 룬 도끼
-Dawnguard Rune Hammer	던가드 룬 철퇴
+Dawnguard Rune Hammer	던가드 룬 망치
 Dawnguard Rune Shield	던가드 룬 방패
 Dawnguard Scout	던가드 정찰병
 Dawnguard Shield	던가드 방패
@@ -3772,10 +3772,10 @@ Dead Vine	죽은 포도덩굴
 Dead.	죽었지.
 Deadbeats? What'd they do?	빚쟁이라고? 뭘 했는데?
 Deadly Aim	치명적인 조준
-Deadly Aversion to Fire	독 - 화염 특급
-Deadly Aversion to Frost	독 - 냉기 특급
-Deadly Aversion to Magic	독 - 마법 저항 특급
-Deadly Aversion to Shock	독 - 전격 특급
+Deadly Aversion to Fire	독 - 화염 약점 특급
+Deadly Aversion to Frost	독 - 냉기 약점 특급
+Deadly Aversion to Magic	독 - 마법 약점 특급
+Deadly Aversion to Shock	독 - 전격 약점 특급
 Deadly Bash	치명적인 밀어치기
 Deadly Fear Poison	독 - 공포 특급
 Deadly Frenzy Poison	독 - 광분 특급
@@ -3947,7 +3947,7 @@ Depends. Who's asking?	그런 질문을 하는 당신은 누구지?
 Derelict Pumphouse	버려진 펌프실
 Derkeethus	더키서스
 Dervenin	더베닌
-Desecrated Corpse	바짝마른 시체
+Desecrated Corpse	훼손된 시체
 Desk	책상
 Desperate Gambler	필사적인 도박꾼
 Dessicated Corpse	바짝 마른 시체
@@ -4266,7 +4266,7 @@ Do you worship Talos?	탈로스를 믿소?
 Dockmaster	부두 관리인
 Dockworker	부두 노동자
 Does <mag> bleeding damage for <dur> seconds.	<dur> 초 동안 <mag> 의 출혈 피해를 입힙니다.
-Does <mag> damage over <dur> seconds. Additional opponents in melee range have a chance to be infected.	<dur> 초 동안 <mag> 의 피해를 입힙니다. 일정한 확률로 주변 적에게 피해를 줍니다.
+Does <mag> damage over <dur> seconds. Additional opponents in melee range have a chance to be infected.	<dur> 초 동안 <mag> 의 피해를 입힙니다. 일정한 확률로 주변 적도 감염시킵니다.
 Does <mag> points of damage to health.	<mag> 의 피해를 입힙니다.
 Does <mag> points of Fire Damage.	<mag> 의 화염 피해를 입힙니다.
 Does <mag> points of Frost Damage.	<mag> 의 냉기 피해를 입힙니다.
@@ -4361,7 +4361,7 @@ Dormitory	기숙사
 Dorthe	도르시
 Double Bed	2인용 침대
 Double sneak attack damage with one-handed weapons.	한손무기로 은신 공격 시 2배의 피해를 입힙니다.
-Double-Distilled Skooma	재 증류한 스쿠마
+Double-Distilled Skooma	재증류한 스쿠마
 Down	아래로
 Downloads still in progress. Are you sure you want to exit?	다운로드가 아직 진행 중입니다. 정말 나가시겠습니까?
 Drafting Table	제도판 작업대
@@ -4384,7 +4384,7 @@ Dragon Investigation: Current Status	드래곤 조사: 현재 상황
 Dragon Lair 3	드래곤의 둥지
 Dragon Language: Myth no More	드래곤 언어: 더 이상 신화가 아니다.
 Dragon Priest	드래곤 사제
-Dragon Priest Dagger	드래곤의 사제 단검
+Dragon Priest Dagger	드래곤 사제의 단검
 Dragon Priest Staff	드래곤 사제의 지팡이
 Dragon Research	드래곤 연구
 Dragon Riding	드래곤 탑승
@@ -4770,7 +4770,7 @@ Druadach Redoubt	드루아다크 보루
 Druadach Redoubt Cave	드루아다크 보루 동굴
 Drum	북
 Drum.	드럼.
-Drunk Cultist	술취한 신도
+Drunk Cultist	술 취한 신도
 Drunken Huntsman	술취한 사냥꾼
 Dryston	드라이스턴
 Dryston's Note	드라이스턴의 노트
@@ -6303,10 +6303,10 @@ Eorlund	에올룬드
 Eorlund Gray-Mane	에올룬드 그레이-메인
 Epic	영웅
 Equilibrium	평형
-Equip and cast to Learn Raise Zombie	장비하고 사용 시 하급 강령술 마법을 배웁니다
-Equip and cast to learn the Bound Sword Spell	장비하고 사용 시 마법 검 소환 마법을 배웁니다
+Equip and cast to Learn Raise Zombie	장비하고 사용 시 하급 강령술 마법을 배웁니다.
+Equip and cast to learn the Bound Sword Spell	장비하고 사용 시 마법 검 소환 마법을 배웁니다.
 Equip and cast to learn the Candlelight spell	장비하고 사용 시 마법의 촛불 마법을 배웁니다.
-Equip and cast to learn the Oakflesh spell	장비하고 사용 시 참나무 피부 마법을 배웁니다
+Equip and cast to learn the Oakflesh spell	장비하고 사용 시 참나무 피부 마법을 배웁니다.
 Equip the Nightingale Armor	나이팅게일 방어구를 장착하기
 Equipped weapon of all allies swing faster for <dur> seconds.	<dur> 초 동안 아군의 공격 속도가 증가합니다.
 Equipped weapon swings faster for <dur> seconds.	<dur> 초 동안 장착 중인 근접 무기의 공격 속도가 증가합니다.
@@ -6431,7 +6431,7 @@ Explore Castle Volkihar's Courtyard	볼키하 성의 안뜰을 탐색하기
 Explore Castle Volkihar's Ruined Tower	볼키하 성의 폐허가 된 탑을 탐색하기
 Explore Gyldenhul Barrow	길든헐 무덤을 탐색하기
 Explore the Temple	사원을 탐색하기
-Explore Vahlok's Tomb	발록의 묘지을 탐색하기
+Explore Vahlok's Tomb	발록의 묘지를 탐색하기
 Explore Yngol's Barrow	잉골의 무덤을 탐색하기
 Exquisite	상급
 Exquisite Sapphire	보석 - 최고급 사파이어
@@ -6446,7 +6446,7 @@ Extra Effect	추가 효과
 Extra Pockets	여분 주머니
 Extract Ash	재 추출하기
 Extraction Perk	추출 퍽
-Eydis	에이디스
+Eydis	아이디스
 Eydis's Journal	에이디스의 일기
 Eye Color	눈 색상
 Eye Depth	눈 깊이
@@ -6465,7 +6465,7 @@ Face	얼굴
 Face Target	목표를 향하기
 Facial Hair	수염
 Facial Hair Color	수염 색상
-Faded Diary	빛 바랜 일기
+Faded Diary	빛바랜 일기
 Faendal	페인달
 Faendal asked me to give you this letter, and say it was from Sven.	페인달이 당신에게 이 편지를 전해주라고 하더군, 스벤이 보낸거라고 말하라던데.
 Faendal wanted me to deliver this letter to Camilla, and say it was from you.	페인달이 카밀라에게 이 편지를 전해주고, 당신이 보낸거라고 거짓말 하라던데.
@@ -6512,7 +6512,7 @@ Falkreath.	팔크리스.
 Falkreath. (<Global=CarriageCostSmall> gold)	팔크리스까지. (<Global=CarriageCostSmall> 골드)
 Fall	가을
 Fall back and defend the Barricade.	후퇴해서 바리케이드를 지키기
-Fall from Glory	영광에서 몰락
+Fall from Glory	영광에서의 몰락
 Fall of the Snow Prince	눈의 왕자의 몰락
 Fallaise	팔라이스
 Fallowstone Cave	팔로우 스톤 동굴
@@ -6815,7 +6815,7 @@ Firewood	장작
 Firiniel's End	피리니엘의 종말
 Firir	피릴
 First Lessons	첫 번째 수업
-First Letter from EEC	동제국 회사의 첫번째 편지
+First Letter from EEC	동제국 회사의 첫 번째 편지
 First Letter from Linwe	린웨의 첫 번째 편지
 First Mate	일등 항해사
 First Remains	첫 번째 유해
@@ -6925,7 +6925,7 @@ For <dur> seconds you automatically become invisible while sneaking.	<dur> 초 �
 For <dur> seconds, items are enchanted <mag>% stronger.	<dur> 초 동안 부여하는 마법의 위력이 <mag>% 증가합니다.
 For <dur> seconds, opponents in melee range are drained of <10> life.	<dur> 초 동안 주변 적에게 매 초마다 체력을 <10> 흡수합니다.
 For <dur> seconds, opponents in melee range have a chance of being flung away.	<dur> 초 동안 일정한 확률로 주변 적을 날려버립니다.
-For <dur> seconds, opponents in melee range have a chance to be infected.	<dur> 초 동안 일정한 확률로 주변 적에게 피해를 줍니다.
+For <dur> seconds, opponents in melee range have a chance to be infected.	<dur> 초 동안 일정한 확률로 주변 적을 감염시킵니다.
 For <dur> seconds, opponents in melee range take <15> points frost damage and Stamina damage per second.	<dur> 초 동안 주변 적에게 매 초마다 <15> 의 냉기 피해와 지구력 피해를 입힙니다.
 For <dur> seconds, opponents in melee range take <8> points fire damage per second. Targets on fire take extra damage.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 For <dur> seconds, opponents in melee range take <8> points frost damage and Stamina damage per second.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 냉기 피해와 지구력 피해를 입힙니다.
@@ -7017,7 +7017,7 @@ Fort Dunstad Commander's Quarters	던스타드 요새 지휘관의 공간
 Fort Dunstad Prison	던스타드 요새 감옥
 Fort Fellhammer	펠해머 요새
 Fort Fellhammer Garrison	펠해머 요새 주둔지
-Fort Fellhammer Mines	펠해머 광산 요새
+Fort Fellhammer Mines	펠해머 요새 광산
 Fort Frostmoth	프로스트모스 요새
 Fort Frostmoth Key	열쇠 - 프로스트모스 요새
 Fort Greenwall	그린월 요새
@@ -7076,7 +7076,7 @@ Fortify Light Armor	경갑 방어구 강화
 Fortify Lockpicking	잠금해제 강화
 Fortify Magicka	매지카 강화
 Fortify Magicka and Magic Resist	매지카 & 마법 저항 강화
-Fortify Magicka Rate	매지카재생 강화
+Fortify Magicka Rate	매지카 재생 강화
 Fortify Magicka Regen	매지카 재생 강화
 Fortify Marksman	궁술 강화
 Fortify One-handed	한손무기 강화
@@ -7106,13 +7106,13 @@ Found you!	찾았다!
 Fountain of Knowledge	지식의 샘
 Four Shields Tavern	포실드 선술집
 Four Skull Lookout	네 개의 해골 망루
-Fourth Ring	네 번째 반지
+Fourth Ring	네 번째 고리
 Fox	여우
 Fox Handle	여우 손잡이
 Fox Pelt	모피 - 여우
 Frabbi	프라비
 Fragment of Wuuthrad	우쓰라드의 조각
-Fragment: On Artaeum	단편 - 아테이움에서
+Fragment: On Artaeum	단편: 아테이움에 관하여
 Fragments of Wuuthrad	우쓰라드 조각들
 Fralia	프랄리아
 Fralia Gray-Mane	프랄리아 그레이-메인
@@ -7133,7 +7133,7 @@ Fresh Meat	신선한 고기
 Frida	프리다
 Fridrika	프리드리카
 Friends of the Jarls in Falkreath, Hjaalmarch and the Pale may buy land in those holds and build their own home on it.	팔크리스, 히얄마치, 페일의 야를과 친구가 되면 그 지역의 땅을 구입하고 자신의 집을 지을 수 있습니다.
-Frightened Woman	겁에질린 여성
+Frightened Woman	겁에 질린 여성
 Frodnar	프로드나
 Frofnir Trollsbane	프로프닐 트롤스베인
 Froki	프로키
@@ -7202,7 +7202,7 @@ Fugitive	도망자
 Full Moon Crest	보름달 문장
 Full Moon Rising	보름달
 Fultheim	풀트하임
-Fultheim the Fearless	두려움없는 풀트하임
+Fultheim the Fearless	두려움 없는 풀트하임
 Fund the excavation of Kolbjorn Barrow (1000 gold)	콜비욘 무덤 발굴작업에 투자하기 (1000 골드)
 Fund the next phase of the excavation (2000 gold)	다음 발굴작업을 위해 투자하기 (2000 골드)
 Fund the next phase of the excavation (3000 gold)	다음 발굴작업을 위해 투자하기 (3000 골드)
@@ -7236,7 +7236,7 @@ Gaius	가이우스
 Gaius Maro	가이우스 마로
 Gaius Maro is dead.	가이우스 마로는 죽었다.
 Gaius Maro will die! Hail Sithis!	가이우스 마로에게 죽음을! 시디스 만세!
-Gaius Maro's Schedule	가이우스 마로의 예정
+Gaius Maro's Schedule	가이우스 마로의 일정
 Galathil	갈라씰
 Galdrus	갈드루스
 Galdrus Hlervu	갈드루스 흘레부
@@ -7279,7 +7279,7 @@ Gaston Bellefort	가스톤 벨르포트
 Gat	가트
 Gat gro-Shargakh	가트 그로-샤가크
 Gate	관문
-Gate Barred	빗장걸린 관문
+Gate Barred	빗장 걸린 관문
 Gatekeeper	수문장
 Gather 10 bear pelts for Temba Wide-Arms  (<Global=FFI03BearCount>/<Global=FFI03BearTotal>)	템바를 위해 곰 모피 10개를 모으기 (<Global=FFI03BearCount>/<Global=FFI03BearTotal>)
 Gather bark from a Canticle Tree	찬송나무에서 나무껍질을 모으기
@@ -7363,7 +7363,7 @@ Ghost of Old Hroldan	올드 흐롤단의 유령
 Ghostblade	유령 검
 Ghostly Remains	악령의 잔해
 Ghostly Voice	유령의 목소리
-Ghosts in the Storm	폭풍속의 유령들
+Ghosts in the Storm	폭풍 속의 유령들
 Ghosts of the Tribunal	트라이뷰널의 유령들
 Ghostveil	유령 장막
 Ghunzul	건절
@@ -7969,7 +7969,7 @@ Great Lift at Mzinchaleft	므진차레프트 대형 승강기
 Great Lift at Raldbthar	랄드브타르 대형 승강기
 Great. How do I do that?	멋지군. 어떻게 하는 겁니까?
 Greater	상급
-Greater Magic Resistance	상급 마법 저항
+Greater Magic Resistance	상급 마법 저항력
 Greater Soul Gem	소울젬 - 상급
 Greater Ward	상급 방어막
 Greathall	스칼 대회랑
@@ -8585,7 +8585,7 @@ Hestla	헤슬라
 Hevnoraak	헤브노락
 Hevnoraak's Bust	헤브노락의 흉상
 Hevnoraak's Staff	헤브노락의 지팡이
-Hewnon Black-Skeever	휴논 블랙-스키버
+Hewnon Black-Skeever	휴넌 블랙-스키버
 Hey, I'm not a Breton!	이봐, 난 브레튼이 아냐!
 Hey, I'm not your servant.	이봐, 난 당신 하인이 아니야.
 Hey, take it easy.	이봐, 진정하라구.
@@ -8830,7 +8830,7 @@ Honed Ancient Nord Sword of Frost	연마된 고대 노드 검 - 하급 냉기
 Honed Ancient Nord Sword of Ice	연마된 고대 노드 검 - 중급 냉기
 Honed Ancient Nord War Axe of Frost	연마된 고대 노드 도끼 - 하급 냉기
 Honed Ancient Nord War Axe of Ice	연마된 고대 노드 도끼 - 중급 냉기
-Honed Draugr War Axe	연마된 드로거 도끼
+Honed Draugr War Axe	연마된 고대 노드 도끼
 Honed Falmer Sword	연마된 팔머 검
 Honed Falmer War Axe	연마된 팔머 도끼
 Honey	벌꿀
@@ -8869,7 +8869,7 @@ Horgeir's House Key	열쇠 - 호기어의 집
 Horik	호릭
 Horik Halfhand	호릭 하프핸드
 Horker	호커
-Horker and Ash Yam Stew	호커와 화산참마 스튜
+Horker and Ash Yam Stew	호커와 화산 참마 스튜
 Horker Attacks	호커의 습격
 Horker Island	호커 섬
 Horker King	거대 호커
@@ -10928,7 +10928,7 @@ Illusion Staff	환영마법 지팡이
 Illusory War Axe	환각의 도끼
 Imbued Spider	마력이 깃든 거미
 Imbuing Chamber	작업용 용기
-Imbuing Switch	염색 스위치
+Imbuing Switch	주입 스위치
 Imedhnain	아이메드네인
 Imitation Amnesty	위조 사면
 Immortal Blood	불사의 피
@@ -11141,7 +11141,7 @@ Improved Swindler's Voice	향상된 사기꾼의 목소리
 Improved Virulity	독성 강화
 Improvement	강화
 Improves the caster's armor rating by <mag> points for <dur> seconds.	시전자는 <dur> 초 동안 총 방어력이 <mag> 증가합니다.
-In 3E 389 Emperor Uriel VII was imprisoned by his Imperial Battlemage, Jagar Tharn, who then impersonated him for years.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄 에 의해 갇히게 되었습니다. 그 후 수 년동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.
+In 3E 389 Emperor Uriel VII was imprisoned by his Imperial Battlemage, Jagar Tharn, who then impersonated him for years.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄에 의해 갇히게 되었습니다. 그 후 수 년동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.
 In Castle Volkihar?	볼키하 성은 어떻지?
 In My Time Of Need	긴급사태
 In order to use the Add-Ons associated with this profile, you will need to restart.	이 프로필에 연계된 DLC를 이용하려면 게임을 다시 시작해야합니다.
@@ -11354,7 +11354,7 @@ Iron Dagger of Souls	철 단검 - 최하급 소울 트랩
 Iron Dagger of Sparks	철 단검 - 최하급 전격
 Iron Dagger of Torpor	철 단검 - 중급 지구력 피해
 Iron Dagger of Weariness	철 단검 - 하급 지구력 피해
-Iron Door	강철 문
+Iron Door	철문
 Iron Fittings	이음쇠
 Iron Gauntlets	철 장갑
 Iron Gauntlets of Alchemy	철 장갑 - 하급 연금술
@@ -12325,7 +12325,7 @@ Krosis' Bust	크로시스의 흉상
 Krosis' Subterfuge	크로시스의 속임수
 Krosulhah	크로슬하
 Kruziikrel	크루지크렐
-Kust	커스트
+Kust	쿠스트
 Kuvar	쿠바
 Kvenel the Tongue	혀 크베넬
 Kynareth is the goddess of the air, wind and sky. She has a temple in Whiterun.	키나레스는 공기와 바람, 하늘의 여신입니다. 그녀의 신전은 화이트런에 있습니다.
@@ -12550,7 +12550,7 @@ Leonara Arius	레오나라 아리우스
 Leontius	레온티우스
 Leontius Salvius	레온티우스 살비우스
 Lesser	하급
-Lesser Magic Resistance	하급 마법 저항
+Lesser Magic Resistance	하급 마법 저항력
 Lesser Power	하급 특수능력
 Lesser Recovery	하급 매지카 재생
 Lesser Shield	하급 방패
@@ -12695,7 +12695,7 @@ Light Touch	가벼운 손길
 Light.	경갑.
 Lighthouse Brazier	등대의 화로
 Lighthouse Lamp	등대 램프
-Lightning Apparatus	빛나는 장치
+Lightning Apparatus	번개 장치
 Lightning Attractor	번개 유도장치
 Lightning Bolt	번개 화살
 Lightning bolt that does <mag> points of shock damage to Health and half to Magicka, then leaps to a new target.	번개의 사슬을 날려 <mag> 의 전격 피해와 절반의 매지카 피해를 입힙니다. 사슬 번개는 주변에 튕겨 나가며 같은 피해를 입힙니다.
@@ -12897,7 +12897,7 @@ Lurbuk is dead.	러벅은 죽었다.
 Lurker	러커
 Lurker Guardian	러커 수호병
 Lurker Sentinel	러커 감시병
-Lurker Vindicator	러커 지원병
+Lurker Vindicator	러커 응징자
 Lurkers are thought to be native to the murky waters of Hermaeus Mora's realm of Apocrypha.	러커들은 헤르메우스 모라의 영역인 아포크리파의 흙탕물에서 발생한 것으로 간주되고 있습니다.
 Lusty Argonian Maid Folio	음란한 아르고니안 메이드 한정판
 Lute	류트
@@ -13005,10 +13005,10 @@ Malborn, it's good to see you.	맬보언, 만나서 반갑소.
 Malborn, what are you doing here?	맬보언, 여기서 뭘 하고 있는 건가?
 male	남
 Malfunctioning Dwarven Sphere	고장난 드워프 구체
-Malign Aversion to Fire	독 - 화염 최상급
-Malign Aversion to Frost	독 - 냉기 최상급
-Malign Aversion to Magic	독 - 마법 저항 최상급
-Malign Aversion to Shock	독 - 전격 최상급
+Malign Aversion to Fire	독 - 화염 약점 최상급
+Malign Aversion to Frost	독 - 냉기 약점 최상급
+Malign Aversion to Magic	독 - 마법 약점 최상급
+Malign Aversion to Shock	독 - 전격 약점 최상급
 Malign Lingering Poison	독 - 지속 체력 피해 최상급
 Malign Magicka Poison	독 - 매지카 피해 최상급
 Malign Recovery Poison	독 - 매지카 재생 감소 최상급
@@ -13052,7 +13052,7 @@ Many will die by my hand.	많은 사람들이 내 손에 죽게 될 것입니다
 Map of Dragon Burials	드래곤 매장지 지도
 Map of Skyrim	스카이림 지도
 Map updated.	지도가 갱신되었습니다.
-Mara is the goddess of love and compassion. She has a temple in Riften.	마라는 사랑과 자비의 여신입니다. 그녀의 신전은 리프튼 에 있습니다.
+Mara is the goddess of love and compassion. She has a temple in Riften.	마라는 사랑과 자비의 여신입니다. 그녀의 신전은 리프튼에 있습니다.
 Mara Smiles Upon You!	마라 여신의 미소가 당신에게!
 Mara's Eye Den	마라의 눈망울 굴
 Mara's Eye Pond	마라의 눈망울 연못
@@ -13417,7 +13417,7 @@ Mossy Glen Cave	이끼 낀 협곡 동굴
 Most Nords of Skyrim assumed the dragons were only a legend. Until now.	대부분의 노드들은 드래곤을 단순한 전설이라고 생각했습니다. 지금까지는 말입니다.
 Most of the dogs in Skyrim are domesticated, and serve as faithful companions to their Nord masters.	스카이림에 있는 대부분의 개들은 길들여져 있습니다. 그리고 노드 주인을 따르는 충실한 동료이기도 합니다.
 Most of the shipping in Solitude is run by the Imperial-financed East Empire Company.	솔리튜드에서는 대부분의 물자유통을 제국의 자금지원을 받는 동제국 회사가 운영하고 있습니다.
-Most of Winterhold was lost to the sea in the Great Collapse of 4E 122, but the College was left mysteriously unharmed.	윈터홀드의 대부분은 4시대 122년의 대붕괴 때 바닷속으로 가라앉아 버렸지만, 불가사의하게도 대학만은 무사했습니다.
+Most of Winterhold was lost to the sea in the Great Collapse of 4E 122, but the College was left mysteriously unharmed.	윈터홀드의 대부분은 제 4시대 122년의 대붕괴 때 바닷속으로 가라앉아 버렸지만, 불가사의하게도 대학만은 무사했습니다.
 Most shops are open from about 8am to 8pm. If a shop is closed, wait until morning... or pick the lock and break in.	대부분의 상점은 오전 8시부터 오후 8시까지 영업을 합니다. 만약 상점이 문을 닫았다면, 아침까지 기다리거나... 자물쇠를 따고 무단 침입하는 방법도 있습니다.
 Most snow elves?	대부분의 스노우 엘프들?
 Moth	모쓰
@@ -13434,8 +13434,8 @@ Mount Anthor	앤소어 산
 Mount Moesring	모스링 산
 Mountain Flower	들꽃
 Mounted Bear Head	곰 머리 박제
-Mounted Elk Antlers	큰 뿔 박제
-Mounted Elk Head	큰 뿔 사슴 머리 박제
+Mounted Elk Antlers	큰뿔사슴 뿔 박제
+Mounted Elk Head	큰뿔사슴 머리 박제
 Mounted Goat Head	염소 머리 박제
 Mounted Horker Head	호커 머리 박제
 Mounted Mudcrab	진흙게 박제
@@ -13516,7 +13516,7 @@ Mystery of Talara, v5	탈라라의 미스터리, 제 5권
 Mystic Axe	신비한 전투 도끼
 Mystic Binding	신비한 결속
 Mystic Bow	신비한 활
-Mystic Dagger	신비한 마법 단검
+Mystic Dagger	신비한 단검
 Mystic Focal Point	에너지 중심점
 Mystic Sword	신비한 검
 Mystic Tuning Gloves	신비한 조율 장갑
@@ -13566,7 +13566,7 @@ Nazeem	나짐
 Nazir	나지어
 Nchardak	느챠닥
 Nchardak Aqueduct	느챠닥 수로
-Nchardak Great Chamber	느챠닥 대매장묘실
+Nchardak Great Chamber	느챠닥 대석실
 Nchardak Reading Room	느챠닥 서재
 Nchardak Workshop	느챠닥 작업실
 Nchuand-Zel	느츄안-젤
@@ -13957,7 +13957,7 @@ Noblewoman	귀족 여성
 Nobody hears from them much anymore.	더이상 소식들을 일은 없을 거야.
 Nobody. I just walked in here.	아무도. 그냥 들어왔을 뿐이오.
 Nocturnal	녹터널
-Nocturnal is the daedric mistress of stealth and shadow, and a patron to thieves.	녹터널은 잠행과 그림자의 데이드라 프린스이며, 도둑들의 후원자입니다.
+Nocturnal is the daedric mistress of stealth and shadow, and a patron to thieves.	녹터널은 잠행과 그림자의 데이드릭 프린스이며, 도둑들의 후원자입니다.
 Nocturnal's Clothes	녹터널의 의상
 Nocturnal's Hat	녹터널의 두건
 None	없음
@@ -14433,7 +14433,7 @@ Note From Maven	메이븐의 쪽지
 Note from Mogrul	모그룰의 쪽지
 Note to Rhorlak	롤락에게 보내는 편지
 Note to Rodulf	로덜프에게
-Note to the Authorities	당국의 메모
+Note to the Authorities	당국에 보내는 메모
 Note to Thomas	토마스에게 보내는 메모
 Notes on Dimhollow Crypt, Vol. 3	딤할로우 묘지에 대한 노트 제 3권
 Notes On The Lunar Forge	달빛 대장간에 대한 노트
@@ -14536,7 +14536,7 @@ Offering Box	공물 상자
 Official warning	공식 경고
 Oghma Infinium	오그마 인피니움
 OghmaInfinium	오그마인피니움
-Oglub	오글로프
+Oglub	오글럽
 Ogmund	오그문드
 Ogmund's Amulet of Talos	오그문드의 탈로스의 아뮬렛
 Ogmund's House	오그문드의 집
@@ -14601,7 +14601,7 @@ Olfrid Battle-Born	올프리드 배틀-본
 Ollrod	올로드
 Olur	올러
 Omluag	옴러그
-On Apocrypha: Boneless Limbs	아포크리파 : 무수한 촉수
+On Apocrypha: Boneless Limbs	아포크리파 : 촉수
 On Apocrypha: Delving Pincers	아포크리파 : 탐구하는 집게발
 On Apocrypha: Gnashing Blades	아포크리파 : 악무는 칼날
 On Apocrypha: Prying Orbs	아포크리파 : 엿보는 구체
@@ -14620,9 +14620,9 @@ On the Great Collapse	대붕괴에 관하여
 Once a source of pride for the people of Winterhold, the College is now shunned and feared.	한 때 윈터홀드 시민들에게 자부심을 주던 대학은 이제 기피와 두려움의 대상이 되었습니다.
 Once I'm inside the Embassy, then what?	일단 대사관에 들어간 뒤에는 뭘 해야 합니까?
 Once I've got Stalhrim, how do I forge it into something useful?	스탈림을 구한 다음, 어떻게 그걸 쓸만하게 제련할 수 있지?
-Once the capital of Skyrim, Winterhold has been all but abandoned in the last few hundred years.	한때 스카이림의 수도였던 윈터홀드는 지난 몇 백년동안 완전히 방치되었습니다.
+Once the capital of Skyrim, Winterhold has been all but abandoned in the last few hundred years.	한때 스카이림의 수도였던 윈터홀드는 지난 몇 백년동안 거의 버려지다시피 했습니다.
 Once you've helped someone, they will like you. Some people may even be willing to follow you and carry out your orders.	일단 당신이 누군가를 도와주었다면, 그들은 당신에게 호감을 가지게 됩니다. 어떤 사람들은 기꺼이 당신을 따라다니며 명령을 수행할 것입니다.
-Once, the dragons sought to eliminate or enslave all mortal races. If given the chance, they would surely do so again...	한때, 드래곤들은 필멸자들을 제거하거나 노예로 삼기 위해 눈에 불을 켜고 찾았던 적이 있습니다. 만약 기회가 주어진다면, 같은 일을 반복하게 될 것입니다...
+Once, the dragons sought to eliminate or enslave all mortal races. If given the chance, they would surely do so again...	한때, 드래곤들은 모든 필멸의 종족을 제거하거나 노예로 삼으려 했던 적이 있습니다. 만약 기회가 주어진다면, 분명 같은 일을 반복하게 될 것입니다...
 Ondolemar	온돌레마
 One last time: Would. Someone. Pay. To. Have. You. Killed? (Intimidate)	마지막 기회다. 누가. 널. 죽여달라고. 암살자를. 고용했을까? (위협)
 One more chance. That's it.	마지막으로 딱 한 번만이야.
@@ -14670,7 +14670,7 @@ Opus? What do you mean?	작품? 무슨 뜻이오?
 Opusculus Lamae Bal	오푸스쿨루스 라마에 발
 or	또는
 Or I could just kill you now.	또는, 지금 너를 죽여버릴 수도 있지.
-Orange Dartwing	노란 파리잠자리
+Orange Dartwing	주황 파리잠자리
 Orc	오크
 Orc Hunter	오크 사냥꾼
 Orchendor	오챈더
@@ -15251,7 +15251,7 @@ Place a workbench in the entryway for crafting furniture.	가구들을 제작하
 Place a workbench in the Greenhouse.	작업선반을 온실에 설치합니다.
 Place a workbench in the Kitchen.	작업선반을 부엌에 설치합니다.
 Place a workbench in the Library.	작업선반을 도서실에 설치합니다.
-Place a workbench in the Storage Room.	창고에 작업선반을 설치합니다.
+Place a workbench in the Storage Room.	저장고에 작업선반을 설치합니다.
 Place a workbench in the Trophy Room.	작업선반을 전시실에 설치합니다.
 Place a workbench in your house for crafting furniture.	가구들을 제작하기 위한 작업선반을 집 안에 설치합니다.
 Place Balwen's Ring	발웬의 반지 놓기
@@ -15298,7 +15298,7 @@ Please, it's very important that I find him. (Persuade)	내가 그를 찾아내�
 Please, take this. Consider it a gift... (<BribeCost> gold)	이걸 선물로 치고 받아주시오. (<BribeCost> 골드)
 Please, we need your help.	부탁하오, 당신의 도움이 꼭 필요하오.
 Pleased? She sounded indifferent.	기뻐한다고? 무관심해 보이던데.
-Pleated Shoes	야를의 주름잡힌 신발
+Pleated Shoes	야를의 주름 잡힌 신발
 PM	오후
 Poacher	밀렵꾼
 Poacher's Axe	밀렵꾼의 도끼
@@ -15325,13 +15325,13 @@ Poisoner's nook. (5,000 gold)	독살자의 방. (5,000 골드)
 Poisonous Cloaked Spider	맹독 망토 거미
 Politics be damned. Alduin has returned! (Persuade)	정치는 엿이나 먹으라 해. 알두인이 돌아왔다고! (설득)
 Polymorph Skeever	스키버 변신
-Pommel Stone of Mehrunes' Razor	메이룬스의 면도칼자루 장식
+Pommel Stone of Mehrunes' Razor	메이룬스의 면도칼 자루 장식
 Poor Fishwife	가난한 생선장수 아낙네
 Porch. (<Global=HDRiftenPorch> gold)	현관. (<Global=HDRiftenPorch> 골드)
 Port Stone	활석 문
 Portal	차원문
 Portal to Darkfall Cave	차원문 - 다크폴 동굴
-Portal to Darkfall Grotto	차원문 - 다크폴 동굴
+Portal to Darkfall Grotto	차원문 - 다크폴 암굴
 Portal to Darkfall Passage	차원문 - 다크폴 통로
 Portal To Entrance	입구로 가는 차원문
 Portal to Forgotten Vale	차원문 - 잊혀진 계곡
@@ -15339,14 +15339,14 @@ Portal to Forgotten Vale Forest	차원문 - 잊혀진 계곡 숲
 Portal to Forgotten Vale Overlook	차원문 - 잊혀진 계곡 전망대
 Portal to Glacial Crevice	차원문 - 빙하의 균열
 Portal to Inner Sanctum	차원문 - 지성소
-Portal to Paragon Platform	차원문 - 파라곤 포탈
+Portal to Paragon Platform	차원문 - 파라곤 단상
 Portal to Shrine of Illumination	차원문 - 빛의 성소
 Portal to Shrine of Learning	차원문 - 배움의 성소
 Portal to Shrine of Radiance	차원문 - 광휘의 성소
 Portal to Shrine of Resolution	차원문 - 해결의 성소
 Portal to Shrine of Sight	차원문 - 예지의 성소
 Portal to Temple Balcony	차원문 - 신전 발코니
-Portal Vessel	문의 그릇
+Portal Vessel	차원문 그릇
 Porthole	둥그런 문
 Possible Rivals	예상되는 경쟁자
 Posted Notice	게시판 공고문
@@ -15364,10 +15364,10 @@ Potema's Remains	포테마의 유해
 Potema's Sanctum	포테마의 성역
 Potema's Sanctum Key	열쇠 - 포테마의 성역
 Potema's Skull	포테마의 두개골
-Potent Aversion to Fire	독 - 화염 상급
-Potent Aversion to Frost	독 - 냉기 상급
-Potent Aversion to Magic	독 - 마법 저항 상급
-Potent Aversion to Shock	독 - 전격 상급
+Potent Aversion to Fire	독 - 화염 약점 상급
+Potent Aversion to Frost	독 - 냉기 약점 상급
+Potent Aversion to Magic	독 - 마법 약점 상급
+Potent Aversion to Shock	독 - 전격 약점 상급
 Potent Fear Poison	독 - 공포 상급
 Potent Flame Atronach	강력한 화염 아트로나크
 Potent Frenzy Poison	독 - 광분 상급
@@ -15473,7 +15473,7 @@ Powers can only be used once a day.	하루에 한 번만 사용할 수 있습니
 Practice Arrow	화살 - 연습용
 Pray	기원하기
 Pray at Dibella's Altar	디벨라의 제단에 기도하기
-Predator's Grace	약탈자의 가호
+Predator's Grace	포식자의 가호
 Preemptive Strike	선제공격
 Prelate Athring	고위 성직자 애트링
 Prelate Celegriath	고위 성직자 셀레그리아쓰
@@ -15510,7 +15510,7 @@ Problem?	무슨 문제라도?
 Proceed to center of Cistern	본부의 중앙으로 이동하기
 Profanity	비속어 사용
 Promises to Keep	지켜야 할 약속
-Promissory Note	약속 메모
+Promissory Note	약속어음
 Proper Lock Design	올바른 자물쇠 설계
 Prophet	예언자
 Protect the Jarl to prevent his surrender.	야를을 보호하고 항복하지 않도록 지켜주기
@@ -15578,7 +15578,7 @@ Quick Test Cell	빠른 테스트 셀
 Quickloading...	빠른 저장 불러오는 중...
 Quicksave	빠른 저장
 Quicksaving...	빠른 저장 중...
-QuickShot	속사
+QuickShot	신속 사격
 Quicksilver Ingot	주괴 - 수은
 Quicksilver Mine	수은 광산
 Quicksilver Ore	광석 - 수은
@@ -15604,11 +15604,11 @@ Race	종족
 Racial Discrimination	인종 차별
 Racial Phylogeny	종의 계통발생론
 Radiant Raiment	화려한 의상실
-Radiant Raiment Fine Clothes	고급 화려하게 반짝이는 의상
+Radiant Raiment Fine Clothes	화려한 의상실 고급 의상
 Radiant Raiments	화려한 의상실
 Raen	라엔
 Raerek	레이렉
-Raerek's Inscribed Amulet of Talos	레이렉의 탈로스 아뮬렛
+Raerek's Inscribed Amulet of Talos	레이렉의 글귀가 새겨진 탈로스 아뮬렛
 Rage	격노
 Rage Of The Ancients	고대인의 분노
 Ragged Boots	누더기 신발
@@ -15779,7 +15779,7 @@ Recipe - Jumping Poison Spider	제조법 : 도약형 독 거미
 Recipe - Jumping Poison Spider 2x	제조법 : 도약형 독 거미 2x
 Recipe - Jumping Shock Spider	제조법 : 도약형 전격 거미
 Recipe - Jumping Shock Spider 2x	제조법 : 도약형 전격 거미 2x
-Recipe - Mind Control Spider	제조법 : 정신조종 거미
+Recipe - Mind Control Spider	제조법 : 정신 조종 거미
 Recipe - Oil Spider	제조법 : 기름 거미
 Recipe - Pack Spider	제조법 : 운반용 거미
 Recipe - Poison Cloaked Spider	제조법 : 맹독 망토 거미
@@ -15914,7 +15914,7 @@ Remove "Boneless Limbs"	'촉수' 제거하기
 Remove "Delving Pincers"	'탐구하는 집게발' 제거하기
 Remove "Gnashing Blades"	'악무는 칼날' 제거하기
 Remove "Prying Orbs"	'엿보는 구체' 제거하기
-Remove all furniture from entryway and remodel it to match the main hall.	현관에 배치된 모든 가구를 제거하고 대청에 맞게 재배치하기.
+Remove all furniture from entryway and remodel it to match the main hall.	현관에 배치된 모든 가구를 제거하고 대청에 맞게 개조합니다.
 Remove Earth	땅의 바위 효과 제거
 Remove It	삭제
 Remove the armor.	마갑을 벗기겠습니다.
@@ -15928,7 +15928,7 @@ Remove the workbench from the Greenhouse.	온실에서 작업선반을 제거합
 Remove the workbench from the Kitchen.	부엌에서 작업선반을 제거합니다.
 Remove the workbench from the Library.	도서실에서 작업선반을 제거합니다.
 Remove the workbench from the small house.	집에서 작업선반을 제거합니다.
-Remove the workbench from the Storage Room.	창고에서 작업선반을 제거합니다.
+Remove the workbench from the Storage Room.	저장고에서 작업선반을 제거합니다.
 Remove the workbench from the Trophy Room.	전시실에서 작업선반을 제거합니다.
 Remove the workbenches from the Main Hall.	대청에서 작업선반을 제거합니다.
 Remove Tree	나무의 바위 효과 제거
@@ -16094,7 +16094,7 @@ Retrieve Dravin's Bow	드레이븐의 활을 회수하기
 Retrieve Eldergleam sap	엘더글림 수액을 구하기
 Retrieve Gratian Caerellius's Journal	그라시안 카렐리우스의 일기를 회수하기
 Retrieve Kodlak's fragment	코들락이 가지고 있던 조각을 회수하기
-Retrieve Lisbet's shipment from <Alias=ForswornCamp>	<Alias=ForswornCamp>에서 리스벳의 짐을 회수하기
+Retrieve Lisbet's shipment from <Alias=ForswornCamp>	<Alias=ForswornCamp>에서 리즈벳의 짐을 회수하기
 Retrieve netch jelly for Milore Ienth  (<Global=DLC2RRF02JellyCount>/<Global=DLC2RRF02JellyTotal>)	밀로리 아이엔스를 위하여 네치 젤리를 구하기 (<Global=DLC2RRF02JellyCount>/<Global=DLC2RRF02JellyTotal>)
 Retrieve Nettlebane	네틀베인을 회수하기
 Retrieve Potema's remains	포테마의 유해를 회수하기
@@ -16130,7 +16130,7 @@ Retrieve the soul gem	소울젬을 회수하기
 Retrieve the Staff of Magnus	매그너스의 지팡이를 회수하기
 Retrieve the Stalhrim Source Map	스탈림 원천 지도를 회수하기
 Retrieve the Totem of Hircine	허씬의 토템을 회수하기
-Retrieve the Unmelting Snow	'녹지않는 눈'을 회수하기
+Retrieve the Unmelting Snow	'녹지 않는 눈'을 회수하기
 Retrieve the White Phial	흰색 유리병을 회수하기
 Retrieve Wylandriah's Ingot	윌란드리아의 주괴를 회수하기
 Retrieve Wylandriah's Soul Gem	윌란드리아의 소울젬을 회수하기
@@ -16360,7 +16360,7 @@ Riften is home to the Black-Briar Meadery, one of the largest and most successfu
 Riften Jail	리프튼 감옥
 Riften Jail Key	열쇠 - 리프튼 감옥
 Riften Mercer's House	리프트윌드 저택
-Riften Military Camp	리프튼 군용 주둔지
+Riften Military Camp	리프튼 군영지
 Riften Mistveil Keep	미스트베일 요새
 Riften North Gate Key	열쇠 - 리프튼 북쪽 관문
 Riften Ratway	리프튼 쥐소굴
@@ -16486,7 +16486,7 @@ Ring of Peerless Stamina	반지 - 특급 지구력 증가
 Ring of Peerless Sure Grip	반지 - 특급 양손무기
 Ring of Peerless Wielding	반지 - 특급 한손무기
 Ring of Pure Mixtures	순수한 화합물의 반지
-Ring of Reanimate Corpse	반지 - 시체 조종
+Ring of Reanimate Corpse	반지 - 중급 강령술
 Ring of Recharging	반지 - 중급 매지카 재생
 Ring of Recovery	반지 - 특급 매지카 재생
 Ring of Recuperation	반지 - 중급 지구력 재생
@@ -16703,7 +16703,7 @@ Runil was one of the Thalmor during the war...	루닐은 전쟁 때 탈모어의
 Runil's Dark Past	루닐의 어두운 과거
 Runil's Journal	루닐의 일기
 Rustleif	러스틀레이프
-Rustleif's House	러스틀레프의 집
+Rustleif's House	러스틀레이프의 집
 Rusty Arrow	화살 - 녹슨 화살
 Rusty Mace	녹슨 철퇴
 Ruunvald Excavation	룬발드 발굴지
@@ -16741,7 +16741,7 @@ Saden's Journal	세이든의 일지
 Sadri's Sujamma	술 - 사드리의 수자마
 Sadri's Used Wares	사드리의 고물상
 Sadri's Used Wares Key	열쇠 - 사드리의 고물상
-Saerek's Skull Key	세이렉의 두개골 열쇠
+Saerek's Skull Key	세렉의 두개골 열쇠
 Saering's Watch	새링의 전망대
 Saerlund	세일룬드
 Safe	금고
@@ -16754,7 +16754,7 @@ Sahloknir	샬록니어
 Sahrotaar	사흐로타르
 Sailor	선원
 Sailor's Repose	선원의 휴식
-Saint Jiub's Kiss	성인 지웁의 키스
+Saint Jiub's Kiss	성자 지웁의 키스
 Saint Jiub's Opus	성자 지웁의 작품
 Saints & Seducers	세인트 & 세듀서
 Saliah	살리아
@@ -16773,7 +16773,7 @@ Salvius Farm	살비우스 농장
 Salvius Farmhouse	살비우스 농가
 Sam	샘
 Sam Guevenne	샘 게베인
-Samuel	사뮤엘
+Samuel	사무엘
 Sanctified Crossbow	쇠뇌 - 하급 신성
 Sanctified Dwarven Battleaxe	드워프제 전투 도끼 - 하급 신성
 Sanctified Dwarven Bow	드워프제 활 - 하급 신성
@@ -16964,7 +16964,7 @@ Scholastic Mastery	학문 수련
 Scimitar	반월도
 Sconce	받침대
 Scoundrel's Folly	악당의 어리석은 행동
-Scourge of the Gray Quarter	골칫거리 잿빛 지구
+Scourge of the Gray Quarter	잿빛 지구의 골칫거리
 Scouts-Many-Marshes	스카우츠-매니-마쉬즈
 Scrap of Paper	종이 조각
 Scrawled Note	휘갈겨 쓴 쪽지
@@ -17049,7 +17049,7 @@ Sea Cave	바다 동굴
 Sealed away like you were?	당신처럼 봉인당해 있을까?
 Sealed Door	봉인된 문
 Sealed Letter	봉인된 편지
-Sealed Scroll	봉인된 마법 주문서
+Sealed Scroll	봉인된 두루마리
 Sealing the Deal	계약 체결
 Search	살펴보기
 Search along the road south of Dragon Bridge	드래곤 브리지의 남쪽 길을 따라가며 수색하기
@@ -17076,13 +17076,13 @@ Search the Attius Farm for clues	아티우스 농장에서 단서를 찾기
 Search the Ratway for Esbern's hideout	쥐소굴을 수색해서 에스번의 은신처를 찾기
 Search the torture chamber	고문실을 수색하기
 Search the wreck below for the jewelry box.	아래의 난파선에서 보석 상자를 찾기
-Seared Slaughterfish	말린 식인물고기
+Seared Slaughterfish	구운 식인물고기
 Season Unending	끝없는 계절
 Seasoned Hunter	노련한 사냥꾼
 Sebastian Lort	세바스찬 로트
 sec	초
 Secluded Chamber	외딴 방
-Second Letter from EEC	동제국 회사의 두번째 편지
+Second Letter from EEC	동제국 회사의 두 번째 편지
 Second Letter from Linwe	린웨의 두 번째 편지
 Second Remains	두 번째 유해
 Second Seed	5월
@@ -17119,7 +17119,7 @@ Seen any Imperial couriers lately?	최근에 제국군 전령을 본 적이 있�
 Seen any Stormcloak couriers lately?	최근에 스톰클록의 전령을 본 적 있소?
 Select	선택
 Self	자신
-Self Doubt	자아 의문
+Self Doubt	자기 의심
 Self loathing? Conquered. Paranoia? Abolished.	자기혐오? 극복했소. 피해망상은? 사라졌고.
 Self Pacify	호흡 가다듬기
 Sell Stalhrim Armor and Weapons to Ancarion	안카리온에게 스탈림 방어구와 무기를 팔기
@@ -17169,7 +17169,7 @@ Shackles	족쇄
 Shade	그림자
 Shadow Gulum-Ei	걸럼-아이를 미행하기
 Shadow Warrior	그림자 전사
-Shadow Warrior Invisibility	어둠의 전사 투명화
+Shadow Warrior Invisibility	그림자 전사 투명화
 Shadowcloak Invisibility	그림자 망토 투명화
 Shadowcloak of Nocturnal	녹터널의 그림자 망토
 Shadowfoot Sanctum	섀도우풋 성역
@@ -17199,7 +17199,7 @@ Shall we see what your father thinks of this letter?	당신의 아버지가 이 
 Shaman's Hut	주술사의 오두막
 Shaman's Key	열쇠 - 주술사의 열쇠
 Sharamph	샤람프
-Shards of Mehrunes' Razor	메이룬스의 면도칼 칼날파편
+Shards of Mehrunes' Razor	메이룬스의 면도칼 칼날 파편
 Sharpslope Cave	오르막경사지 동굴
 Shavari	샤바리
 Shavari's Note	샤바리의 쪽지
@@ -17288,7 +17288,7 @@ Show Mead to Indaryn	인다린에게 벌꿀술을 보여주기
 Show the amulet to Delvin Mallory	델빈 말로리에게 아뮬렛을 보여주기
 Showing respect to the Greybeards will increase your prestige.	그레이비어드에게 경의를 표하는 것은 당신의 명성을 높여줄 것입니다.
 Shows the path to the current goal.	현재 퀘스트 목표까지 가는 길을 표시합니다.
-Shriekwind Bastion	쉬리크윈드 전망대
+Shriekwind Bastion	쉬리크윈드 보루요새
 Shriekwind Overlook	쉬리크윈드 전망대
 Shrine Base	신전
 Shrine of Akatosh	아카토쉬의 성소
@@ -17318,7 +17318,7 @@ Shrouded Armor	암살자의 방어구
 Shrouded Armor Full Set	암살자의 방어구
 Shrouded Boots	암살자의 전투화
 Shrouded Cowl	암살자의 두건
-Shrouded Cowl Maskless	암살자의 가면없는 두건
+Shrouded Cowl Maskless	암살자의 가면 없는 두건
 Shrouded Gloves	암살자의 장갑
 Shrouded Grove	장막덮인 숲
 Shrouded Grove Cave	장막덮인 숲 동굴
@@ -17333,7 +17333,7 @@ Sibbi	시비
 Sibbi Black-Briar	시비 블랙-브라이어
 Sibbi Black-Briar.	시비 블랙-브라이어.
 Sibbi's Chest Key	열쇠 - 시비의 상자
-Sibbi's Stash Key	열쇠 - 시비의 비밀 열쇠
+Sibbi's Stash Key	열쇠 - 시비의 은닉처
 Sickly Farmer	병약한 농부
 Siddgeir	시드기어
 Siege on the Dragon Cult	드래곤 교단의 포위
@@ -17341,7 +17341,7 @@ Sifnar Ironkettle	시프나 아이언케틀
 Sigaar	시가르
 Sigar	시거
 Sigdis Gauldurson	시그디스 골더슨
-Sightless Pit	보이지않는 구덩이
+Sightless Pit	보이지 않는 구덩이
 Sigil of Alteration	변화마법의 표지
 Sigil of Destruction	파괴마법의 표지
 Sigil of Illusion	환영마법의 표지
@@ -17774,7 +17774,7 @@ Solitude is the center of Imperial power in Skyrim. It is also home to the famou
 Solitude Jail	솔리튜드 감옥
 Solitude Lighthouse	솔리튜드 등대
 Solitude Lighthouse Fire	솔리튜드 등대 불
-Solitude Military Camp	솔리튜드 군용 주둔지
+Solitude Military Camp	솔리튜드 군영지
 Solitude Sawmill	솔리튜드 목재소
 Solitude sits on a natural arch, giving its port much needed shelter from the strong winds of the Ghost Sea.	솔리튜드는 자연적인 아치형의 언덕에 자리잡고 있기 때문에 부두지역으로 불어오는 강한 바람을 충분히 막아주고 있습니다.
 Solitude Stables	솔리튜드 마구간
@@ -17784,7 +17784,7 @@ Solitude. (<Global=DLC1FerryCostSmall> gold)	솔리튜드. (<Global=DLC1FerryCos
 Solitude? Then why am I here in Whiterun?	솔리튜드? 그럼 내가 왜 화이트런에 있는거지?
 Soljund's Sinkhole	솔준드의 구덩이
 Solstheim	솔스트하임
-Solstheim Mudcrab	솔스트하임 진흙 게
+Solstheim Mudcrab	솔스트하임 진흙게
 Solstheim?	솔스트하임?
 Solstheim? Where's that?	솔스트하임? 그게 어디지?
 Solution of Enhanced Stamina	물약 - 지구력 증가 상급
@@ -18139,7 +18139,7 @@ Spell Tome: Conjure Wrathman	마법책: 악령병사 소환
 Spell Tome: Courage	마법책: 고무
 Spell Tome: Dead Thrall	마법책: 죽음의 노예
 Spell Tome: Detect Life	마법책: 생명 탐지
-Spell Tome: Detect Undead	마법책: 사체 탐지
+Spell Tome: Detect Undead	마법책: 시체 탐지
 Spell Tome: Dragonhide	마법책: 드래곤의 가죽
 Spell Tome: Dread Zombie	마법책: 최상급 강령술
 Spell Tome: Ebonyflesh	마법책: 에보니 피부
@@ -18758,7 +18758,7 @@ Stalhrim Warhammer of Winter	스탈림 전투 망치 - 특급 냉기
 Stalhrim? What's that?	스탈림? 그게 뭐지?
 Stalleo	스탈리오
 Stalleo's Bodyguard	스탈리오의 경호원
-Stallion's Potion	스탈리온의 물약
+Stallion's Potion	종마의 물약
 Stamina	지구력
 Stamina Damage	지구력 피해
 Stamina is increased by <mag> points for <dur> seconds.	<dur> 초 동안 지구력이 <mag> 증가합니다.
@@ -18798,8 +18798,8 @@ Steadfast Dwarven Sphere	튼튼한 드워프 구체
 Steadfast Dwarven Spider	튼튼한 드워프 거미
 Steadfast Ward	중급 방어막
 Steady Hand	안정된 활시위
-Steady Hand (1)	안정된 활 시위
-Steady Hand (2)	안정된 활 시위
+Steady Hand (1)	안정된 활시위
+Steady Hand (2)	안정된 활시위
 Steal	도둑질
 Steal <Global=TGRNGold> gold in goods from <Alias=City>	<Alias=City>에서 <Global=TGRNGold> 골드 만큼의 물품을 훔치기
 Steal case of Firebrand Wine	파이어브랜드 포도주 상자를 훔치기
@@ -18822,7 +18822,7 @@ Steam Damage	증기 피해
 Steam Damage / Restoration	증기 피해 / 회복
 Steam Valve	증기 밸브
 Steamcrag Camp	스팀크래그 야영지
-Steamed Mudcrab Legs	구운 진흙게 다리
+Steamed Mudcrab Legs	찐 진흙게 다리
 Steamscorch Gully Mine	스팀스코치 도랑 광산
 Steamscorch Mine	스팀스코치 광산
 STEEL	강철
@@ -18864,7 +18864,7 @@ Steel Battleaxe of Draining	강철 전투 도끼 - 하급 매지카 피해
 Steel Battleaxe of Embers	강철 전투 도끼 - 최하급 화염
 Steel Battleaxe of Fatigue	강철 전투 도끼 - 최하급 지구력 피해
 Steel Battleaxe of Fear	강철 전투 도끼 - 중급 공포
-Steel Battleaxe of Fiery Souls	강철 전투 도끼 - 불꽃영혼
+Steel Battleaxe of Fiery Souls	강철 전투 도끼 - 화염 소울 트랩
 Steel Battleaxe of Frost	강철 전투 도끼 - 하급 냉기
 Steel Battleaxe of Ice	강철 전투 도끼 - 중급 냉기
 Steel Battleaxe of Sapping	강철 전투 도끼 - 최하급 매지카 피해
@@ -19259,7 +19259,7 @@ Strange Vessel	이상한 관
 Straw	밀짚
 Stray Dog	떠돌이 개
 Strengthened by the blood of deceit	피로 물든 배신에 의해 강화됩니다.
-Strengthened by the infamy of its bearer	소유자의 악명으로 강화합니다.
+Strengthened by the infamy of its bearer	소유자의 악명으로 강화됩니다.
 Strident Squall	스트라이던트 스퀄 호
 Strike	공격
 Striking the Heart	심장부를 쳐라
@@ -19323,9 +19323,9 @@ Summon Durnehviir in Tamriel	탐리엘에 더네비어를 소환하기
 Summon Gargoyle	가고일 소환
 Summon Ghost	유령 소환
 Summon Hero from Sovngarde	소븐가드의 영웅 소환
-Summon Ice Wolves 1	설원 늑대소환 1
-Summon Ice Wolves 2	설원 늑대소환 2
-Summon Ice Wolves 3	설원 늑대소환 3
+Summon Ice Wolves 1	설원 늑대 소환 1
+Summon Ice Wolves 2	설원 늑대 소환 2
+Summon Ice Wolves 3	설원 늑대 소환 3
 Summon Karstaag	카스태그 소환
 Summon Portal	전이문 소환
 Summon Spectral Assassin	영계의 암살자 소환
@@ -19387,8 +19387,8 @@ Sunder & Wraithguard	선더 & 레이스가드
 Sundered Towers	흩어진 탑
 Sunderstone Gorge	선더스톤 협곡
 Sunhallowed Elven Arrow	화살 - 태양의 신성함을 받은 엘프제
-Sunlight explosion that does <mag> points of damage in a 15 foot radius to undead, and half that to living targets	15 피트 범위의 태양빛 폭발을 일으키는 화염구를 날려 언데드에게 <mag> 의 피해를 입히고 생명체에게는 절반의 피해를 입힙니다.
-Sunlight explosion that does <mag> points of damage in a 15 foot radius to undead.	15 피트 범위의 태양빛 폭발을 일으키는 화염구를 날려 언데드에게 <mag> 의 피해를 입힙니다.
+Sunlight explosion that does <mag> points of damage in a 15 foot radius to undead, and half that to living targets	15 피트 범위의 태양빛 폭발을 일으켜 언데드에게 <mag> 의 피해를 입히고 생명체에게는 절반의 피해를 입힙니다.
+Sunlight explosion that does <mag> points of damage in a 15 foot radius to undead.	15 피트 범위의 태양빛 폭발을 일으켜 언데드에게 <mag> 의 피해를 입힙니다.
 sunrise	일출
 sunset	일몰
 Superior	중급
@@ -19476,7 +19476,7 @@ Tacitus	타시투스
 Tacitus Sallustius	타시투스 살루스티우스
 Tag, you're it!	술래잡기
 Tainted Blood of the Ancients	고대의 저주받은 피
-Tainted Blood Withdrawals	저주받은 피 효과
+Tainted Blood Withdrawals	저주받은 피 금단 증상
 Take	가지기
 Take <Alias=Item> to the Shrine of Talos for <Alias=Questgiver>.	<Alias=Questgiver> 를 위해서 탈로스의 성소로 <Alias=Item> 가져가기
 Take a city back? What's that mean?	도시를 되찾자고? 그게 무슨 뜻이지?
@@ -19655,7 +19655,7 @@ Targets that fail to resist take <mag> points of poison damage per second for <d
 Targets up to level <20> that fail to resist are frenzied for <30> seconds.	주변 표면에 광란의 룬을 설치합니다. 적이 접근 시 폭발하여 레벨 <20> 이하인 목표가 <30> 초 동안 다른 이를 공격하게 합니다.
 Targets won't flee for <dur> seconds and get extra health and stamina.	목표들을 <dur> 초 동안 도망치지 않게 만들며 체력과 지구력을 증가시킵니다.
 Taron Dreth	타론 드레스
-Taron Dreth's Robes	타론의 로브
+Taron Dreth's Robes	타론 드레스의 로브
 Tasius	타시우스
 Tasius Tragus	타시우스 트라구스
 Tattered Journal	찢어진 일기
@@ -19822,7 +19822,7 @@ Temper a Hide Helmet	생가죽 투구를 강화하기
 Temper an Iron Dagger	철 단검을 강화하기
 Tempered Sphere	단련된 드워프 구체
 Temple	신전
-Temple Ancestral Tomb	사원 선조의 무덤
+Temple Ancestral Tomb	신전 선조의 무덤
 Temple Location	사원 지역
 Temple of Dibella	디벨라의 신전
 Temple of Kynareth	키나레스의 신전
@@ -20136,14 +20136,14 @@ The Fire Within	내면의 불꽃
 The Firmament	창공
 The Firsthold Revolt	퍼스트홀드 반란
 The Fishing Job	낚아채기 작업
-The Five Far Stars	다섯개의 별
+The Five Far Stars	다섯 개의 별
 The Forgemaster	대장간 관리자
 The Forgemaster's Fingers	포지마스터의 손가락
 The Forsworn Conspiracy	포스원의 음모
 The Forsworn have a king?	포스원에게 왕이 있다고?
 The fort is yours.	요새는 당신 것이오.
 The Four Totems of Volskygge	볼스카이그 4개의 토템
-The Fourth Era began 200 years ago when Martin Septim sacrificed himself to save the world from the Oblivion Crisis.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대 위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.
+The Fourth Era began 200 years ago when Martin Septim sacrificed himself to save the world from the Oblivion Crisis.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.
 The Frost Troll is the most fearsome of its kind found in Skyrim, and is at home in the province's most frozen regions.	설원 트롤은 스카이림에서 발견된 트롤들 중 가장 무시무시하며, 그 지역의 가장 얼음이 많은 곳에 집을 가지고 있습니다.
 The Frozen Hearth	프로즌 하스
 The Frozen Hearth Cellar	프로즌 하스 저장고
@@ -20292,7 +20292,7 @@ The Nightingales Vol. 2	나이팅게일, 제 2권
 The Nirnoot Missive	넌루트에 관한 공문서
 The Nirnroot Missive	넌루트에 관한 공문서
 The Nords are dead.	노드들은 죽었다.
-The Nords first conquered Markarth from the native people of the Reach thousands of years ago.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 뺏았습니다.
+The Nords first conquered Markarth from the native people of the Reach thousands of years ago.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 빼앗았습니다.
 The Numbers Job	장부 조작 작업
 The Oblivion Crisis	오블리비언 대위기
 The Old Ways	고전 풍습
@@ -20474,8 +20474,8 @@ The Wolf Queen, v8	늑대 여왕, 제 8권
 The wolves of Skyrim are feral, savage beasts, and hunt in packs to take down any prey available... be it animal or man.	스카이림의 늑대들은 흉폭하고 몹시 사나운 짐승이며, 어떤 먹이라도 무리 지어 사냥하여 해치울 수 있습니다... 동물이든 사람이든 말입니다.
 The woman was a vampire, and they wanted her back.	그 여성은 흡혈귀였고, 그녀를 돌려받길 원했소.
 The Woodcutter's Wife	나무꾼의 아내, 제 1권
-The wooden mask hums with an unfamiliar energy.	나무 가면에서 이상한 기운이 흘러 넘치고 있습니다.
-The Woodsman's Friend	나무꾼의 전투 도끼
+The wooden mask hums with an unfamiliar energy.	나무 가면에서 이상한 기운이 흘러넘치고 있습니다.
+The Woodsman's Friend	나무꾼의 친구
 The Words of Power	힘의 단어
 The world is a better place without Alduin.	알두인이 없는 세상이 더 나을 겁니다.
 The world is dangerous, and you're not ready for it. (Intimidate)	세상은 위험해, 그리고 넌 아직 준비되지 않았어. (위협)
@@ -20613,11 +20613,11 @@ Thieves Guild Variant Hood	도둑 길드 이형 두건
 Things to Do	해야 할 일들
 Think he'll give me trouble?	그놈이 나한테 문제 될 거 있나?
 Think you'll win the fight?	이길 수 있다고 생각하나?
-Third Letter from EEC	동제국 회사의 세번째 편지
+Third Letter from EEC	동제국 회사의 세 번째 편지
 Third Remains	세 번째 유해
 Thirsk	터스크
 Thirsk Mead Hall	터스크 연회장
-Thirsk, A Revised History	터스크, 역사의 재 조명
+Thirsk, A Revised History	터스크, 역사의 재조명
 Thirst for Blood	피의 굶주림
 This "Ruminations" book is incomprehensible.	이 '고찰'이라는 책은 이해가 안되는군.
 This cave is a temple to Auriel?	이 동굴이 아우리엘의 신전이오?
@@ -20694,7 +20694,7 @@ Those interested in learning more about magic may consider joining the College o
 Those sellswords won't be a problem now.	그 용병들 문제는 해결되었소.
 Those trained to use Heavy Armor make more effective use of Iron, Steel, Dwarven, Orcish, Ebony, and Daedric armors.	중갑 방어구는 철, 강철, 드워프제, 오크제, 에보니, 데이드라제 등의 중갑 방어구를 효과적으로 사용하는 기술입니다. 무거운 재료를 사용한 이 방어구들은 착용자의 몸을 보호하는데 큰 도움을 줍니다.
 Those with the blood of a werewolf can never gain resting bonuses from sleeping.	늑대인간은 잠을 자도 휴식 효과를 얻을 수 없습니다.
-Three Thieves	세명의 도둑들
+Three Thieves	세 명의 도둑들
 Threki the Innocent	순진한 트레키
 Throat of the World	세계의 목
 Throne	왕좌
@@ -20723,7 +20723,7 @@ Titus Mede II is dead... by my hand.	타이투스 메데 2세는... 바로 내�
 Titus Mede II lies dead.	타이투스 메데 2세는 죽었다.
 To	이동하기 -
 To A Concerned Citizen	걱정하고 있는 시민에게
-To Be Read Immedately!	즉시 읽을것!
+To Be Read Immedately!	즉시 읽을 것!
 To blazes with Nocturnal. I'm here for the Eyes.	녹터널은 염병. 난 그 눈을 찾으러 온 거다.
 To get the maximum range and damage with a bow, hold down Attack until the bow is fully drawn.	활을 이용해서 최고의 사거리와 공격력을 얻기 위해서는, 활이 끝까지 당겨질 때까지 공격버튼을 길게 누르세요.
 To Kill an Empire	제국을 쓰러트리기 위해서
@@ -20770,7 +20770,7 @@ Torchbug	형광벌레
 Torchbug in a Jar	병 속의 형광벌레
 Torchbug Thorax	형광벌레 가슴
 Torkild	토킬드
-Torkild the Fearsome	대담한 토킬드
+Torkild the Fearsome	무시무시한 토킬드
 Torkild's Letter to Wulf	울프에게 보내는 토킬드의 편지
 Torkild? Your brother is looking for you.	토킬드? 당신의 형제가 찾고있던데.
 Tormir	토미어
@@ -20783,7 +20783,7 @@ Torpor Ingredient 1	나른함 재료 1
 Torpor Ingredient 2	나른함 재료 2
 Torpor Ingredient 3	나른함 재료 3
 Torsten Cruel-Sea	토르스턴 크루얼-시
-Torsten's Skull Key	토르스턴의 해골 열쇠
+Torsten's Skull Key	토르스턴의 두개골 열쇠
 Torture chamber. (5,000 gold)	고문실. (5,000 골드)
 Torture Tool	고문 도구
 Torture Tools	고문 도구
@@ -20852,12 +20852,12 @@ Travel to Irkngthand	어큰싼드로 이동하기
 Travel to Nchardak with Neloth	넬로스와 함께 느챠닥으로 여행하기
 Travel to Solstheim	솔스트하임으로 가기
 Travel to Uttering Hills Cave	어터링 힐스 동굴에 가기
-Travel to Vahlok's Tomb	발록의 묘지으로 가기
+Travel to Vahlok's Tomb	발록의 묘지로 가기
 Travel with Barbas to the shrine of Clavicus Vile	바바스와 함께 클라비쿠스 바일의 성소로 여행하기
 Traveler	여행자
 Traveling alone can be so dangerous...	혼자서 여행하는 건 상당히 위험한데...
 Traveling Bard	여행 중인 바드
-Traveling Dignitary	여행중인 고위관리
+Traveling Dignitary	여행 중인 고위관리
 Traveling Merchant	여행 중인 상인
 Traveling Pilgrim	여행 중인 순례자
 Treasure Hunter	보물 사냥꾼
@@ -21027,7 +21027,7 @@ Unceasing Stamina Poison	독 - 지속 지구력 피해 특급
 Uncommon Taste	대단한 맛
 Uncommon Taste - Signed	대단한 맛 - 서명본
 Undead take <mag> points of sun damage. Other targets take half of that.	언데드에게 <mag> 의 태양 피해를 입히고 다른 이에게는 절반의 피해를 입힙니다.
-Undead targets takes <mag> points of sun damage,	언데드에게 <mag>의 태양 피해를 입힙니다.
+Undead targets takes <mag> points of sun damage,	언데드에게 <mag> 의 태양 피해를 입힙니다.
 Undead up to level <mag> are set on fire and flee for <dur> seconds.	레벨 <mag> 이하인 언데드를 불태우며 <dur> 초 동안 도망가게 합니다.
 Undead up to level <mag> entering the circle will flee.	마법진 안에 들어온 레벨 <mag> 이하인 언데드들을 도망가게 합니다.
 Undead up to level <mag> entering the circle will flee. Caster heals <20> health per second inside it.	마법진에 들어온 레벨 <mag> 이하인 언데드들을 도망가게 하고 시전자는 마법진 안에서 매 초마다 체력을 <20> 회복합니다.
@@ -21064,14 +21064,14 @@ Unlock the Sarcophagus in Ragnvald	라근발드에 있는 석관을 열기
 Unlock the secret of Red Eagle's Tomb	붉은 독수리 무덤의 비밀을 풀기
 Unlock your "Bend Will" Shout	'의지 꺾기' 함성을 해제하기
 Unlocked with %s.	%s 로 잠금장치를 해제했습니다.
-Unmelting Snow	녹지않는 눈
-Unmelting Snowbank	녹지않는 눈더미
+Unmelting Snow	녹지 않는 눈
+Unmelting Snowbank	녹지 않는 눈더미
 Unmid Snow-Shod	운미드 스노-쇼드
 Unowned Chest	주인 없는 상자
 Unrelenting Force	거침없는 힘
 Unseen Visions	보이지 않은 예지
 Unsent Afflicted Letter	감염자의 발송되지 않은 편지
-Until Next Time	다음에 만날때까지
+Until Next Time	다음에 만날 때까지
 Until?	언제까지?
 Unusual Gem	특이한 보석
 Up	위로
@@ -21299,7 +21299,7 @@ Vigdis Salvius	비그디스 살비우스
 Vighar	비그하
 Vighar is Dead.	비그하는 죽었소.
 Vigil Enforcer Armor Set	경계병 집행자 방어구 세트
-Vigilance	비졀런스
+Vigilance	비질런스
 Vigilant	경계병
 Vigilant Adalvald	경계병 아달발드
 Vigilant of Stendarr	스텐다르의 경계병
@@ -21307,8 +21307,8 @@ Vigilant Tolan	경계병 톨란
 Vigilant Tyranus	경계병 티라누스
 Vigilant Vampire Hunter	흡혈귀 사냥꾼 경계병
 Vigilants? Dawnguard? What are you talking about?	경계병? 던가드? 그게 다 무슨 소리요?
-Vignar	비그너
-Vignar Gray-Mane	비그너 그레이-메인
+Vignar	비그나
+Vignar Gray-Mane	비그나 그레이-메인
 Vigor Poison	독 - 지구력 재생 감소 중급
 Viinturuth	빈투루쓰
 Vile	바일
@@ -21400,8 +21400,8 @@ Visit the werewolves at Frostmoon Crag	프로스트문 바위산의 늑대인간
 Visit Vlindrel Hall, your new house	당신의 새 집, 블린드렐 회관을 방문하기
 Visit your new property in <Alias=Hold> hold	<Alias=Hold> 영지내에 있는 당신의 새 부동산을 방문하기
 Visit your spouse's house	부부의 집을 방문하기
-Visiting Advisor	여행 중인 조언자
-Visiting Noble	방문중인 귀족
+Visiting Advisor	방문 중인 조언자
+Visiting Noble	방문 중인 귀족
 Vittoria	비토리아
 Vittoria Vici	비토리아 비치
 Vittoria Vici's House	비토리아의 집
@@ -21620,10 +21620,10 @@ We've got men on the outside. We're taking over the fort.	바깥에 병사들이
 We've killed your beast spirit.	당신의 늑대 영혼은 제거되었습니다.
 We've run out of patience.	인내심이 바닥났다.
 We?	우리?
-Weak Aversion to Fire	독 - 화염 하급
-Weak Aversion to Frost	독 - 냉기 하급
-Weak Aversion to Magic	독 - 마법 저항 하급
-Weak Aversion to Shock	독 - 전격 하급
+Weak Aversion to Fire	독 - 화염 약점 하급
+Weak Aversion to Frost	독 - 냉기 약점 하급
+Weak Aversion to Magic	독 - 마법 약점 하급
+Weak Aversion to Shock	독 - 전격 약점 하급
 Weak Fear Poison	독 - 공포 하급
 Weak Frenzy Poison	독 - 광분 하급
 Weak Lingering Poison	독 - 지속 체력 피해 하급
@@ -23094,7 +23094,7 @@ Wooden Plate	목제 접시
 Wooden Sword	목검
 Word Chest	힘의 단어 상자
 Word is your outfit isn't doing well. True?	당신네 조직이 잘 안 된다는 거, 사실인가?
-Word of Power	힘의 언어
+Word of Power	힘의 단어
 Word of Power Learned	힘의 단어를 익혔습니다
 Words and Philosophy	단어와 철학
 Words of Clan Mother Ahnissi	부족의 어머니 아닛시의 말

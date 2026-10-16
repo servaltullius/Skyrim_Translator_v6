@@ -122,8 +122,11 @@ public sealed class BundledFranchiseTmSeedService
             // typo reports the review took (Kvenel the Tongue 혀 크베넬), with Majni 마지니 as his eight lines say, and
             // the decisions after the mod list review (Goldenglow Estate 골든글로우 농장, an apiary, not a 지구; the
             // Solitude Fletcher 화살 공방); 573 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v5", "bundled-skyrim-tes-franchise-tm.tsv", 1528360, "1aa05d8bb8f743812f7870aea4a5b444028fc07647b2cdb71ecedbde3371477d",
-                PreviousVersions: new[] { "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v5-changes.tsv"),
+            // v6 takes the patch's second review of what the game shows all the time, names and descriptions (Iron Door 철문,
+            // not the 강철 문 of Steel; the weakness poisons 독 - 마법 약점, not a 마법 저항 that reads as a resistance;
+            // Backstab 백스탭; Vignar 비그나 as his lines say); 182 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v6", "bundled-skyrim-tes-franchise-tm.tsv", 1528459, "7170c2f72473ec11c36d55884d2ef179fcfb4ef196df377a6249f81226b3699f",
+                PreviousVersions: new[] { "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v6-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,
