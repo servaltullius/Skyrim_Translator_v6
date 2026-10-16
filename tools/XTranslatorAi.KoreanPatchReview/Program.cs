@@ -12,6 +12,11 @@ using XTranslatorAi.Core.Text;
 //                [--dictionary <game strings .gz>] [--game-data <game Data>] [--chunk N]
 //   plugin-write <plugin> <review.csv with id = field key, suggested_ko> <new output folder> [--english <its English plugin>]
 //                (--english: the plugin is itself a translation, written over; texts are checked against that English)
+// A mod list's plugins that override base game records with their own copy of the patch text:
+//   override-scan <game Data> <MO2 profile folder> <new output folder> --mods <MO2 mods folder> --old <patch folder> --new <patch folder>
+//                 [--overwrite <MO2 overwrite folder>]
+//   override-fix  <game Data> <winners.csv from override-scan> <new output folder> --mods <MO2 mods folder> [--exclude a.esp,b.esp]
+//                 (writes each plugin with its older-patch text, and its base game English, replaced by the patch's Korean)
 if (args.Length < 4)
 {
     Console.Error.WriteLine("usage: export|apply|dictionary|plugin-pair|plugin-write <game Data or plugin> <patch folder or plugin> <output or review.csv> [options]");
@@ -41,6 +46,10 @@ switch (command)
         return await PluginPair();
     case "plugin-write":
         return await PluginWrite();
+    case "override-scan":
+        return await OverrideScan();
+    case "override-fix":
+        return await OverrideFix();
     default:
         Console.Error.WriteLine("unknown command: " + command);
         return 2;
@@ -183,6 +192,288 @@ async Task<int> PluginWrite()
 
     var result = await PluginWriter.ExportAsync(english, translations, new PluginExportOptions(target, AllowDroppedInitialsAndPronouns: true, CheckAgainst: checkAgainst), CancellationToken.None);
     Console.WriteLine($"{result.PluginPath}: 바뀐 필드 {result.ChangedFields:N0}, sha256 {result.Sha256}");
+    return 0;
+}
+
+// A plugin that overrides a base game record carries its own copy of the record's text, which the game shows over the
+// patch's string tables. A Korean mod list's plugins often copied the patch text of their time: where the record that
+// wins in the load order holds exactly the older patch's Korean, and the patch has since changed it, the player still
+// sees the older text. Each base game field is followed to its winning plugin and compared with both patches.
+async Task<int> OverrideScan()
+{
+    var (profile, output) = (patch, target);
+    if (Option("--mods") is not { } modsFolder || Option("--old") is not { } oldPatch || Option("--new") is not { } newPatch)
+    {
+        Console.Error.WriteLine("--mods, --old, --new를 지정하세요.");
+        return 2;
+    }
+
+    if (Directory.Exists(output) && Directory.EnumerateFileSystemEntries(output).Any())
+    {
+        Console.Error.WriteLine("새 빈 폴더를 지정하세요: " + output);
+        return 2;
+    }
+
+    Directory.CreateDirectory(output);
+    var (oldDictionary, _) = await GameStringDictionaryBuilder.BuildAsync(data, oldPatch, CancellationToken.None);
+    var (newDictionary, _) = await GameStringDictionaryBuilder.BuildAsync(data, newPatch, CancellationToken.None);
+
+    // Where MO2 finds each plugin: the game's Data, then the enabled mods from the lowest priority up (modlist.txt
+    // lists the highest first), then the overwrite folder.
+    var pathByName = new Dictionary<string, (string Path, string Mod)>(StringComparer.OrdinalIgnoreCase);
+    foreach (var file in Directory.EnumerateFiles(data))
+    {
+        pathByName[Path.GetFileName(file)] = (file, "(Data)");
+    }
+
+    var mods = File.ReadAllLines(Path.Combine(profile, "modlist.txt"))
+        .Where(line => line.StartsWith('+'))
+        .Select(line => line[1..])
+        .Reverse();
+    foreach (var mod in mods)
+    {
+        var folder = Path.Combine(modsFolder, mod);
+        if (!Directory.Exists(folder))
+        {
+            continue;
+        }
+
+        foreach (var file in Directory.EnumerateFiles(folder))
+        {
+            pathByName[Path.GetFileName(file)] = (file, mod);
+        }
+    }
+
+    if (Option("--overwrite") is { } overwrite && Directory.Exists(overwrite))
+    {
+        foreach (var file in Directory.EnumerateFiles(overwrite))
+        {
+            pathByName[Path.GetFileName(file)] = (file, "(overwrite)");
+        }
+    }
+
+    // plugins.txt marks the enabled plugins with *; the base game and Creation Club plugins are not listed and always load.
+    var listed = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+    foreach (var line in File.ReadAllLines(Path.Combine(profile, "plugins.txt")))
+    {
+        if (line.Length > 0 && line[0] != '#')
+        {
+            listed[line.TrimStart('*')] = line[0] == '*';
+        }
+    }
+
+    var loadOrder = File.ReadAllLines(Path.Combine(profile, "loadorder.txt"))
+        .Where(line => line.Length > 0 && line[0] != '#')
+        .Where(name => !listed.TryGetValue(name, out var enabled) || enabled)
+        .ToList();
+
+    var skipped = new HashSet<string>(GameStringDictionaryBuilder.BaseGamePlugins, StringComparer.OrdinalIgnoreCase);
+    var winners = new Dictionary<string, (string Plugin, string Mod, PluginField Field)>(StringComparer.Ordinal);
+    var failures = new List<string>();
+    var brokenText = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+    var read = 0;
+    foreach (var name in loadOrder)
+    {
+        if (skipped.Contains(name) || !pathByName.TryGetValue(name, out var location))
+        {
+            continue;
+        }
+
+        PluginDocument document;
+        try
+        {
+            document = await PluginReader.ReadAsync(location.Path, new PluginReadOptions(SourceLanguage: "korean"), CancellationToken.None);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            failures.Add($"{name}\t{ex.GetType().Name}: {ex.Message.ReplaceLineEndings(" ")}");
+            continue;
+        }
+
+        read++;
+        // Text that is not UTF-8 (CP949) reads with replacement characters, and writing the plugin back would keep them.
+        if (document.Fields.Count(field => field.SourceText.Contains('�')) is var broken and > 0)
+        {
+            brokenText[name] = broken;
+        }
+
+        foreach (var field in document.Fields)
+        {
+            if (GameStringDictionary.FieldIdentity(field.Key, document.Info.Masters, name) is { } identity
+                && newDictionary.FindRecord(identity, field.SourceText) != null)
+            {
+                winners[identity] = (name, location.Mod, field);
+            }
+        }
+    }
+
+    static string Normalize(string text) => text.ReplaceLineEndings("\n").Trim();
+    // same_english: the winning text is the base game's English itself, so the patch's Korean fits it as it is.
+    var rows = new List<string> { "class,same_english,plugin,mod,field_key,identity,rec,edid,text,old_ko,new_ko" };
+    var counts = new Dictionary<(string Plugin, string Class), int>();
+    foreach (var (identity, (plugin, mod, field)) in winners.OrderBy(pair => pair.Value.Plugin, StringComparer.OrdinalIgnoreCase).ThenBy(pair => pair.Value.Field.Key, StringComparer.Ordinal))
+    {
+        var text = Normalize(field.SourceText);
+        var found = newDictionary.FindRecord(identity, field.SourceText)!.Value;
+        var newKo = Normalize(found.Korean);
+        var oldKo = oldDictionary.FindRecord(identity, field.SourceText) is { } old ? Normalize(old.Korean) : "";
+        var kind = text == newKo ? "same"
+            : text == oldKo ? "old-patch"
+            : !text.Any(c => c is >= '가' and <= '힣') ? "english"
+            : "own";
+        counts[(plugin, kind)] = counts.GetValueOrDefault((plugin, kind)) + 1;
+        if (kind != "same")
+        {
+            rows.Add(string.Join(',', new[] { kind, found.SameEnglish ? "1" : "", plugin, mod, field.Key, identity, field.Rec, field.EditorId ?? "", text, oldKo, newKo }.Select(Csv)));
+        }
+    }
+
+    await File.WriteAllLinesAsync(Path.Combine(output, "winners.csv"), rows, new UTF8Encoding(true));
+    var summary = new List<string> { "plugin,same,old_patch,own,english,not_utf8_fields" };
+    foreach (var plugin in counts.Keys.Select(key => key.Plugin).Distinct(StringComparer.OrdinalIgnoreCase)
+        .OrderByDescending(p => counts.GetValueOrDefault((p, "old-patch"))))
+    {
+        summary.Add(string.Join(',', Csv(plugin), counts.GetValueOrDefault((plugin, "same")), counts.GetValueOrDefault((plugin, "old-patch")),
+            counts.GetValueOrDefault((plugin, "own")), counts.GetValueOrDefault((plugin, "english")), brokenText.GetValueOrDefault(plugin)));
+    }
+
+    await File.WriteAllLinesAsync(Path.Combine(output, "summary.csv"), summary, new UTF8Encoding(true));
+    await File.WriteAllLinesAsync(Path.Combine(output, "failures.tsv"), failures, new UTF8Encoding(true));
+    Console.WriteLine($"플러그인 {read:N0}개 읽음(실패 {failures.Count}), 기본 게임 필드를 덮는 승자 {winners.Count:N0}개: "
+        + string.Join(", ", counts.GroupBy(pair => pair.Key.Class).Select(group => $"{group.Key} {group.Sum(pair => pair.Value):N0}")));
+    return 0;
+}
+
+// Writes the fields override-scan found: a plugin's copy of the older patch text ("old-patch"), and a base game English
+// it left untranslated ("english" with same_english), take the patch's Korean. Only the text of those fields changes;
+// each plugin is written to <output>/<mod folder>/<plugin name>/<plugin> for checking before it replaces the mod's file.
+async Task<int> OverrideFix()
+{
+    var (winnersCsv, output) = (patch, target);
+    if (Option("--mods") is not { } modsFolder)
+    {
+        Console.Error.WriteLine("--mods를 지정하세요.");
+        return 2;
+    }
+
+    if (Directory.Exists(output) && Directory.EnumerateFileSystemEntries(output).Any())
+    {
+        Console.Error.WriteLine("새 빈 폴더를 지정하세요: " + output);
+        return 2;
+    }
+
+    var excluded = (Option("--exclude") ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+        .ToHashSet(StringComparer.OrdinalIgnoreCase);
+    var rows = ReadCsv(await File.ReadAllTextAsync(winnersCsv));
+    var header = rows[0].Select(h => h.Trim().TrimStart('\uFEFF')).ToList();
+    int Col(string name) => header.IndexOf(name);
+    var (kindCol, sameCol, pluginCol, modCol, keyCol, identityCol, textCol, newCol) =
+        (Col("class"), Col("same_english"), Col("plugin"), Col("mod"), Col("field_key"), Col("identity"), Col("text"), Col("new_ko"));
+    var targets = rows.Skip(1)
+        .Where(r => r.Count > newCol && (r[kindCol] == "old-patch" || (r[kindCol] == "english" && r[sameCol] == "1")))
+        .Where(r => !excluded.Contains(r[pluginCol]))
+        .GroupBy(r => (Mod: r[modCol], Plugin: r[pluginCol]))
+        .ToList();
+
+    // The base game English of each field, which the new Korean is checked against: the plugin's own text is the
+    // older Korean (or that English), not the source.
+    var englishByIdentity = new Dictionary<string, string>(StringComparer.Ordinal);
+    foreach (var plugin in GameStringDictionaryBuilder.BaseGamePlugins)
+    {
+        var document = await PluginReader.ReadAsync(Path.Combine(data, plugin), new PluginReadOptions(), CancellationToken.None);
+        foreach (var field in document.Fields)
+        {
+            if (GameStringDictionary.FieldIdentity(field.Key, document.Info.Masters, plugin) is { } identity)
+            {
+                englishByIdentity[identity] = field.SourceText;
+            }
+        }
+    }
+
+    static string Normalize(string text) => text.ReplaceLineEndings("\n").Trim();
+    // The new text in the field's own frame: its line-ending style and its leading and trailing blank space.
+    static string InFrame(string raw, string core)
+    {
+        var newline = raw.Contains("\r\n", StringComparison.Ordinal) ? "\r\n" : "\n";
+        var lead = raw[..(raw.Length - raw.TrimStart().Length)];
+        var trail = raw[raw.TrimEnd().Length..];
+        return lead + Normalize(core).Replace("\n", newline, StringComparison.Ordinal) + trail;
+    }
+
+    Directory.CreateDirectory(output);
+    var manifest = new List<string> { "mod,plugin,source,output,planned,changed,skipped,sha256" };
+    var problems = new List<string>();
+    var patchTextAsIs = new List<string>();
+    int written = 0, changedTotal = 0;
+    foreach (var group in targets)
+    {
+        var source = Path.Combine(modsFolder, group.Key.Mod, group.Key.Plugin);
+        if (!File.Exists(source))
+        {
+            problems.Add($"{group.Key.Plugin}\t파일 없음: {source}");
+            continue;
+        }
+
+        var document = await PluginReader.ReadAsync(source, new PluginReadOptions(SourceLanguage: "korean"), CancellationToken.None);
+        if (document.Info.IsLocalized)
+        {
+            problems.Add($"{group.Key.Plugin}\t문자열 파일을 쓰는 플러그인이라 건너뜀");
+            continue;
+        }
+
+        var fields = document.Fields.ToDictionary(f => f.Key, StringComparer.Ordinal);
+        var translations = new Dictionary<string, string>(StringComparer.Ordinal);
+        var checkAgainst = new Dictionary<string, string>(StringComparer.Ordinal);
+        var skipped = 0;
+        foreach (var row in group)
+        {
+            if (!fields.TryGetValue(row[keyCol], out var field) || Normalize(field.SourceText) != row[textCol]
+                || !englishByIdentity.TryGetValue(row[identityCol], out var english))
+            {
+                problems.Add($"{group.Key.Plugin}\t{row[keyCol]}\t스캔 뒤 글자가 바뀌었거나 영어를 찾지 못함");
+                skipped++;
+                continue;
+            }
+
+            translations[field.Key] = InFrame(field.SourceText, row[newCol]);
+            checkAgainst[field.Key] = InFrame(field.SourceText, english);
+        }
+
+        // The patch's own text differs from the English in a tag or a number's brackets ("3%" as "<3>%") in some fields.
+        // The game shows that very text for the base record when nothing overrides it, so it is checked against itself
+        // here, and listed.
+        foreach (var broken in PluginWriter.FindInvalidTranslations(document, translations, allowDroppedInitialsAndPronouns: true, checkAgainst))
+        {
+            var match = System.Text.RegularExpressions.Regex.Match(broken, @"plugin:([A-Z_0-9]{4}/[0-9A-F]{8}/\d+/[A-Z_0-9]{4}/\d+)");
+            if (match.Success && translations.TryGetValue(match.Groups[1].Value, out var text))
+            {
+                checkAgainst[match.Groups[1].Value] = text;
+                patchTextAsIs.Add($"{group.Key.Plugin}\t{broken.ReplaceLineEndings(" ")}");
+            }
+            else
+            {
+                problems.Add($"{group.Key.Plugin}\t{broken.ReplaceLineEndings(" ")}");
+            }
+        }
+
+        if (translations.Count == 0)
+        {
+            continue;
+        }
+
+        var folder = Path.Combine(output, group.Key.Mod, Path.GetFileNameWithoutExtension(group.Key.Plugin));
+        var result = await PluginWriter.ExportAsync(document, translations,
+            new PluginExportOptions(folder, AllowDroppedInitialsAndPronouns: true, CheckAgainst: checkAgainst), CancellationToken.None);
+        written++;
+        changedTotal += result.ChangedFields;
+        manifest.Add(string.Join(',', new[] { group.Key.Mod, group.Key.Plugin, source, result.PluginPath,
+            translations.Count.ToString(), result.ChangedFields.ToString(), skipped.ToString(), result.Sha256 }.Select(Csv)));
+    }
+
+    await File.WriteAllLinesAsync(Path.Combine(output, "manifest.csv"), manifest, new UTF8Encoding(true));
+    await File.WriteAllLinesAsync(Path.Combine(output, "problems.tsv"), problems, new UTF8Encoding(true));
+    await File.WriteAllLinesAsync(Path.Combine(output, "patch-text-as-is.tsv"), patchTextAsIs, new UTF8Encoding(true));
+    Console.WriteLine($"플러그인 {written}개 씀, 바뀐 필드 {changedTotal:N0}, 영어와 태그가 다른 패치 글자 그대로 {patchTextAsIs.Count}, 문제 {problems.Count}");
     return 0;
 }
 

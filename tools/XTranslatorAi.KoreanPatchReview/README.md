@@ -26,3 +26,23 @@ dotnet run --project tools/XTranslatorAi.KoreanPatchReview -- dictionary $data $
 `apply` skips a change when the patch no longer holds the `current_ko` the reviewer saw, or when the new text loses
 the English's tags and placeholders. Read every suggestion before `--write`: reviews from a model can be wrong or
 misaligned between rows.
+
+## A mod list's copies of the patch text
+
+A plugin that overrides a base game record carries its own copy of the record's text, shown over the patch's string
+tables. `override-scan` follows each base game field to its winning plugin in an MO2 profile and compares it with two
+patch releases: `old-patch` is a copy of the older patch's text, `english` with `same_english` is the base game's
+English left untranslated, `own` is the mod's own text (not touched: without the mod's English it cannot be judged).
+`override-fix` writes those first two kinds with the newer patch's Korean, each plugin to its own folder; compare the
+written plugins with their sources before they replace the mod's files.
+
+```powershell
+$profile = "G:\TAKEALOOK\profiles\<profile>"
+dotnet run --project tools/XTranslatorAi.KoreanPatchReview -- override-scan $data $profile artifacts/<scan> --mods G:\TAKEALOOK\mods --overwrite G:\TAKEALOOK\overwrite --old <older patch folder> --new $patch
+dotnet run --project tools/XTranslatorAi.KoreanPatchReview -- override-fix $data artifacts/<scan>/winners.csv artifacts/<fix> --mods G:\TAKEALOOK\mods [--exclude a.esp]
+```
+
+`summary.csv` counts each plugin's fields by kind, and `not_utf8_fields` the fields that did not read as UTF-8:
+exclude such a plugin, as writing it back would keep the replacement characters. Where the patch's own text differs
+from the English in a tag or a number's brackets, `override-fix` checks it against itself and lists it in
+`patch-text-as-is.tsv`: the game already shows that text for the record when nothing overrides it.
