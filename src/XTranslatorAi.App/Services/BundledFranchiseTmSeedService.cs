@@ -118,8 +118,9 @@ public sealed class BundledFranchiseTmSeedService
             // sixth, of the player's dialogue choices (I don't need your advice → 필요 없소), with Gallows Hall, the
             // Creation Club home, 교수대 회관 apart from Gallows Rock's 교수대 바위, and the quests' NPC lines (the
             // Stormcloak oath whole again), and the last batch, of game settings text (Nose Length 코 길이), and the
-            // decisions after it (the Companions 컴패니언, the patch's spelling, not 컴패니언즈); 550 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v5", "bundled-skyrim-tes-franchise-tm.tsv", 1528399, "ef60631c519d6a19fab0c8fe3960d68a7671f9b116480da3d178639fde23aaa8",
+            // decisions after it (the Companions 컴패니언, the patch's spelling, not 컴패니언즈), and the gallery's own
+            // typo reports the review took (Kvenel the Tongue 혀 크베넬); 558 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v5", "bundled-skyrim-tes-franchise-tm.tsv", 1528378, "d49e6863bbad00ba27245feaae4105c61a508b0f081c1f2a55f4649a351f18eb",
                 PreviousVersions: new[] { "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v5-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
