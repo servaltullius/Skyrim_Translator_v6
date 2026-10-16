@@ -12,6 +12,36 @@ namespace XTranslatorAi.Core.Plugins;
 
 public static class PluginWriter
 {
+    /// <summary>
+    /// Every translation the export would refuse for losing the English's tags or placeholders, with the reason:
+    /// the export stops at the first one, and a large plugin's translations are checked all at once first.
+    /// </summary>
+    public static IReadOnlyList<string> FindInvalidTranslations(PluginDocument document, IReadOnlyDictionary<string, string> translations)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        var sources = document.Fields.GroupBy(f => f.Key, StringComparer.Ordinal).ToDictionary(g => g.Key, g => g.First().SourceText, StringComparer.Ordinal);
+        var problems = new List<string>();
+        foreach (var (key, translated) in translations)
+        {
+            if (!sources.TryGetValue(key, out var source))
+            {
+                problems.Add($"원본에 없는 번역 필드: {key}");
+                continue;
+            }
+
+            try
+            {
+                TokenValidator.ValidateFinalTextIntegrity(source, translated, $"plugin:{key}");
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                problems.Add(ex.Message);
+            }
+        }
+
+        return problems;
+    }
+
     /// <summary>Publishes a complete new folder. Never replaces an input plugin or a partly written output set.</summary>
     public static async Task<PluginExportResult> ExportAsync(PluginDocument document,
         IReadOnlyDictionary<string, string> translations, PluginExportOptions options, CancellationToken cancellationToken)

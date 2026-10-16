@@ -53,6 +53,24 @@ public sealed class PluginReadWriteTests
         Assert.Equal(originalBytes, File.ReadAllBytes(fixture.Input));
     }
 
+    // A large plugin's translations are checked all at once: the export would stop at the first one it refuses.
+    [Fact]
+    public async Task InvalidTranslations_AreAllListedBeforeExport()
+    {
+        using var fixture = new Fixture(Build(false));
+        var document = await PluginReader.ReadAsync(fixture.Input, new(), default);
+        var field = Assert.Single(document.Fields);
+
+        Assert.Empty(PluginWriter.FindInvalidTranslations(document, new Dictionary<string, string> { [field.Key] = "강철 검" }));
+        var problems = PluginWriter.FindInvalidTranslations(document, new Dictionary<string, string>
+        {
+            [field.Key] = "<b>강철 검</b>",
+            ["WEAP/00000999/0/FULL/0"] = "없는 필드",
+        });
+        Assert.Equal(2, problems.Count);
+        Assert.Contains(problems, p => p.Contains("WEAP/00000999/0/FULL/0", StringComparison.Ordinal));
+    }
+
     [Theory]
     [InlineData(65534, 65535, false)]
     [InlineData(65535, 65534, true)]

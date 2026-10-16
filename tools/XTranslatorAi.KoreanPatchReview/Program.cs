@@ -163,6 +163,16 @@ async Task<int> PluginWrite()
         translations[row[id]] = row[suggested];
     }
 
+    // The writer stops at the first text that loses the English's tags; list them all first.
+    var broken = PluginWriter.FindInvalidTranslations(english, translations).ToList();
+
+    if (broken.Count > 0)
+    {
+        broken.ForEach(Console.Error.WriteLine);
+        Console.Error.WriteLine($"태그가 영어와 다른 번역 {broken.Count:N0}개");
+        return 2;
+    }
+
     var result = await PluginWriter.ExportAsync(english, translations, new PluginExportOptions(target), CancellationToken.None);
     Console.WriteLine($"{result.PluginPath}: 바뀐 필드 {result.ChangedFields:N0}, sha256 {result.Sha256}");
     return 0;
