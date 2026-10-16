@@ -522,6 +522,8 @@ public class BundledFranchiseTmSeedServiceTests
             Assert.Contains("\nKvenel the Tongue\t혀 크베넬\t언어의 크베넬\n", changes, StringComparison.Ordinal);
             // Majni takes the spelling of his eight lines.
             Assert.Contains("\nMajni\t마지니\t매즈니\n", changes, StringComparison.Ordinal);
+            // Goldenglow Estate is an apiary on its own island, a farm rather than a district.
+            Assert.Contains("\nGoldenglow Estate\t골든글로우 농장\t골든글로우 지구\n", changes, StringComparison.Ordinal);
             Assert.DoesNotContain("\nExploding Spider\t", changes, StringComparison.Ordinal);
             Assert.Equal(beforeV4, changes.Contains("\nSuvaris Atheron's Logbook\t수바리스 아테론의 항해일지\t수바리스 아테론의 항박일지\n", StringComparison.Ordinal));
             // v1 had 화살 - 강철; v2 took the 화살 - 강철 화살 of the records the game does not show, and v4 goes back.

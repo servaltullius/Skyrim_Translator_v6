@@ -119,9 +119,10 @@ public sealed class BundledFranchiseTmSeedService
             // Creation Club home, 교수대 회관 apart from Gallows Rock's 교수대 바위, and the quests' NPC lines (the
             // Stormcloak oath whole again), and the last batch, of game settings text (Nose Length 코 길이), and the
             // decisions after it (the Companions 컴패니언, the patch's spelling, not 컴패니언즈), and the gallery's own
-            // typo reports the review took (Kvenel the Tongue 혀 크베넬), with Majni 마지니 as his eight lines say;
-            // 559 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v5", "bundled-skyrim-tes-franchise-tm.tsv", 1528378, "a81aaafd8ab2461e48fce7049d00cdcd4aec5210eadda569ff73400636bce5fa",
+            // typo reports the review took (Kvenel the Tongue 혀 크베넬), with Majni 마지니 as his eight lines say, and
+            // the decisions after the mod list review (Goldenglow Estate 골든글로우 농장, an apiary, not a 지구; the
+            // Solitude Fletcher 화살 공방); 573 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v5", "bundled-skyrim-tes-franchise-tm.tsv", 1528360, "1aa05d8bb8f743812f7870aea4a5b444028fc07647b2cdb71ecedbde3371477d",
                 PreviousVersions: new[] { "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v5-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),

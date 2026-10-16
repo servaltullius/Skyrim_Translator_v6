@@ -4,8 +4,10 @@ Source	Target	Previous
 %s discovered from %s	효과 : %s - %s에서 발견했습니다	효과 : %s - %s 에서 발견했습니다
 %s Increased to %i	%s 기술 증가 - 현재 %i	%s 기술 증가- 현재 %i
 (Optional) Discover leverage to sway Niranye	(선택) 니라녜의 마음을 바꾸기 위한 수단을 찾기	(선택) 니랴네의 마음을 바꾸기 위한 수단을 찾기
+(Optional) Enter Goldenglow using sewer	(선택) 하수도를 이용하여 골든글로우 농장에 들어가기	(선택) 하수도를 이용하여 골든글로우 지구에 들어가기
 (Optional) Retrieve the Blade of Woe	(선택) 비통의 단검을 가지기	(선택) 비통의 단검를 가지기
 (Optional) Show Skorm Snow-Strider's journal to Valmir	(선택) 발머에게 스콤의 일기를 보여주기	(선택) 발머에게 스콤의 일지를 보여주기
+(Optional) Speak to Vex about Goldenglow Estate	(선택) 골든글로우 농장에 관해 벡스와 대화하기	(선택) 골든글로우 지구에 관해 벡스와 대화하기
 50% chance for each attribute to absorb <mag> points of Health, Stamina and/or Magicka.	체력, 지구력, 매지카 각각에 대해 50% 확률로 <mag> 흡수합니다.	50% 확률로 체력, 지구력, 매지카 중 하나를 <mag> 흡수합니다.
 50% chance for each element of fire, frost and shock to do <mag> points of damage.	화염, 냉기, 전격 각각에 대해 50% 확률로 <mag> 의 피해를 입힙니다.	50% 확률로 <mag> 의 화염, 냉기, 전격 중 하나의 피해를 입힙니다.
 <Alias=PlayerIsIt> is it. Hide from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt> 이/가 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요
@@ -100,6 +102,7 @@ Can you repair and refit the Dawnstar Sanctuary?	던스타 성역을 보수하�
 Can you tell me more about the Augur of Dunlain?	던레인의 예언자에 관해 더 알려주시오.	'던레인의 예언'에 관해 더 알려주시오.
 Can you train me in Enchanting?	마법부여에 관해서 가르쳐주시겠소?	마법부여를 가르쳐 줄 수 있나?
 Cast on a nearby surface, it explodes for and freezes the target in place for <dur> seconds.	주변 표면에 정지의 룬을 설치합니다. 폭발하면 목표를 <dur> 초 동안 그 자리에 얼어붙게 합니다.	주변 표면에 정지의 룬을 설치합니다. 적이 접근 시 폭발하여 <mag> 의 냉기 피해를 입힙니다.
+Castle Fletcher	화살 공방	화살깃털 상점
 Castor the Puzzlemaker's Corpse	퍼즐 제작자 캐스터의 시체	캐스터의 시체
 Claim Mehrunes' Razor	메이룬스 데이건의 단검을 가지기	메이룬스의 면도칼을 가지기
 Clay. (<Global=BYOHHPAmountClay> for <Global=BYOHHPCostClay> gold)	점토. (<Global=BYOHHPAmountClay>개에 <Global=BYOHHPCostClay> 골드)	점토. (<Global=BYOHHPAmountClay> for <Global=BYOHHPCostClay> 골드)
@@ -193,6 +196,7 @@ Find The Elder Scroll (Blood)	'엘더스크롤 - 피'를 찾기	엘더스크롤 
 Find The Elder Scroll (Dragon)	'엘더스크롤 - 드래곤'을 찾기	엘더스크롤 찾기
 Find the skooma dealers in Cragslane Cavern	크래그슬레인 대동굴에서 스쿠마 상인들을 찾기	크래그슬레인 동굴에서 스쿠마 상인들을 찾기
 Finished?	완료?	완료?
+Fletcher	화살 공방	화살깃털 상점
 Follow Gianna to the dining room	지아나를 따라 식당으로 가기	지아나를 따라 주방으로 가기
 Follow Legate Rikke	리카 군단장을 따라가기	리카 군단장를 따라가기
 Follow me.	나를 따라오게.	나를 따라오시오.
@@ -224,6 +228,10 @@ Give the logbook to Orthus	오서스에게 항해일지를 주기	오서스에�
 Glowing Mushroom (5)	발광 버섯 (5)	형광 버섯 (5)
 Glowing Spider	발광 거미	빛나는 거미
 Gold Necklace	금 목걸이	황금 목걸이
+Goldenglow Estate	골든글로우 농장	골든글로우 지구
+Goldenglow Estate Basement	골든글로우 농장 지하실	골든글로우 지구 지하실
+Goldenglow Estate Second Floor	골든글로우 농장 2층	골든글로우 지구 2층
+Goldenglow Estate Sewer	골든글로우 농장 하수구	골든글로우 지구 하수구
 Good luck with that.	잘 해보게.	잘 해보시오.
 Goodbye	잘 가시오.	잘 가.
 Grand Staff of Charming	지팡이 - 광역 진정	지팡이 - 진정
@@ -334,6 +342,7 @@ I'm a Thane? What does that mean?	내가 쎄인이라고? 그게 무슨 뜻이�
 I'm Arch-Mage of the College of Winterhold.	난 윈터홀드 대학의 대마법사다.	난 윈터홀드 대학의 대 마법사다.
 I'm going to put it on Olaf's Effigy.	올라프 왕의 모형에 입힐 것입니다.	올라프의 인형에게 입힐 것입니다.
 I'm Harbinger of the Companions.	난 컴패니언의 인도자다.	난 컴페니언의 선도자다.
+I'm here about Goldenglow Estate.	골든글로우 농장 일로 왔다.	골든글로우 지구 일로 왔다.
 I'm ready.	준비 되었소.	준비완료.
 I'm ready. Let's go get them.	준비되었소. 놈들을 치러 갑시다.	준비되었소. 그걸 구하러 갑시다.
 I'm ready. Let's go.	준비 됐어. 가자.	준비 되었습니다. 갑시다.
@@ -378,11 +387,13 @@ Just checking on our take. How are we doing?	우리 몫을 확인하러 왔지. 
 Just you?	너 혼자뿐인가?	너 혼자 뿐인가?
 Karthwasten.	카스웨이스튼.	카쓰웨이스튼.
 Key to Evette San's House	열쇠 - 이베트 산의 집	열쇠 - 이베트 산의 열쇠
+Key to Solitude Fletcher	열쇠 - 화살 공방	열쇠 - 화살깃털 상점
 Kill everyone in the Sanctuary!	성역에 있는 자를 전부 죽이기	성역에 있는 자를 전부 죽여라!
 Kill Nazir's attacker!	나지어를 공격하는 자를 죽이기	나지어를 공격하는 자들을 죽여라!
 Kill the Emperor!	황제를 죽이기	황제를 죽여라!
 Kitchen furnishings. (<Global=HDWindhelmKitchen> gold)	주방 가구. (<Global=HDWindhelmKitchen> 골드)	주방가구. (<Global=HDWindhelmKitchen> 골드)
 Kitchen, Doors	부엌, 문	부엌,문들
+Know anything about Goldenglow Estate?	골든글로우 농장에 대해서 뭔가 아는 게 있나?	골든글로우 지구에 대해서 뭔가 아는 게 있나?
 Krag's Journal	크라그의 일기	크래그의 일기
 Kvenel the Tongue	혀 크베넬	언어의 크베넬
 Lay off the old man. Now. (Intimidate)	그 노인을 내버려 둬. 당장. (위협)	그 노인를 내버려 둬. 당장. (위협)
@@ -415,6 +426,7 @@ Meet Silus at the Shrine of Mehrunes Dagon	메이룬스 데이건의 성소에�
 Meet the Ebony Warrior at the Last Vigil	마지막 기원에서 에보니 전사를 만나기	라스트 비질에서 에보니 전사를 만나기
 Meet Tolan at Stendarr's Beacon	스텐다르의 봉화대에서 톨란과 만나기	스텐다르의 표지에서 톨란과 만나기
 Meet Yamarz at Fallowstone Cave	팔로우 스톤 동굴에서 야마즈를 만나기	팔로우 스톤의 동굴에서 야마즈를 만나기
+Mercer wants me to discover Goldenglow's buyer.	머서는 골든글로우 농장의 구매자가 누군지 알아내길 원하는데.	머서는 골든글로우 지구의 구매자가 누군지 알아내길 원하는데.
 Message from General Tullius	툴리우스 장군의 메시지	툴리우스 장군의 메세지
 Molag Bal created the first vampire.	몰락 발이 첫 흡혈귀를 만들었소.	몰락-발이 첫 흡혈귀를 만들었소.
 Money's not going to do you much good after I've killed you.	널 죽이고 나면 돈 따위는 아무 소용 없을 거다.	그냥 죽여주마.
@@ -641,6 +653,7 @@ We could use your help in Tamriel.	탐리엘에서 당신의 도움이 필요하
 We didn't really get along. Best that I haven't seen them in a while.	잘 지내진 못했지. 안 보게 돼서 기쁘군.	잘 지내진 못했지. 안 보게 되서 기쁘군.
 We might have something, yes.	뭔가 있을지도 모르지, 그래.	확실히 뭔가 있기는 한데.
 We should keep moving.	계속 이동하지.	계속 가지.
+What about the information on Goldenglow Estate?	골든글로우 농장에 대한 정보는?	골든글로우 지구에 대한 정보는?
 What about them?	걔네가 왜?	조금 더 알려줄 수 있나?
 What about you?	당신께선 어떻습니까?	당신에 대한 이야기?
 What are you doing?	뭐하는 거지?	뭘 하고 있소?
@@ -706,6 +719,7 @@ Why are you after Talos worshippers?	왜 탈로스 숭배자들을 추적하는 
 Why are you so concerned about this?	왜 이 일에 그렇게 신경 쓰는 겁니까?	왜 이 일에 관여하는 겁니까?
 Why aren't you part of the coven anymore?	왜 이제 마법회의 일원이 아닌 거지?	이제 더 이상 마법회의 일원이 아닌 건가?
 Why build a shrine outside of town?	어째서 마을 바깥에 성소를 세운 거지?	어째서 마을 바깥에 성소를 세운 겁니까?
+Why did Karliah purchase Goldenglow Estate?	칼라이아가 골든글로우 농장을 구입한 이유가 뭐지?	칼라이아가 골든글로우 지구를 구입한 이유가 뭐지?
 Why did you join the Companions?	어쩌다 컴패니언에 가입하게 되었소?	어쩌다 컴패니언즈에 가입하게 되었소?
 Why do Dunmer leave ash yams in their tombs?	왜 던머가 무덤에 화산 참마를 두는 거요?	왜 던머가 무덤에 화산재 참마를 두는 거요?
 Why do I need this Word of Power to defeat Miraak?	미락을 물리치는 데 왜 이 힘의 단어가 필요하지?	미락을 물리치기 위해서는 이 힘의 단어가 필요하다고?

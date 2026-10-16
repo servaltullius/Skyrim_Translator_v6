@@ -46,7 +46,7 @@ Source	Target
 (Optional) Destroy the Summerset Shadow's Banner	(선택) 서머셋 섀도 현수막을 파괴하기
 (Optional) Discover leverage to sway Niranye	(선택) 니라녜의 마음을 바꾸기 위한 수단을 찾기
 (Optional) Drag Balagog's body to a hiding place	(선택) 발라고그의 시체를 숨기기
-(Optional) Enter Goldenglow using sewer	(선택) 하수도를 이용하여 골든글로우 지구에 들어가기
+(Optional) Enter Goldenglow using sewer	(선택) 하수도를 이용하여 골든글로우 농장에 들어가기
 (Optional) Find Skorm Snow-Strider's journal	(선택) 스콤의 일기를 찾기
 (Optional) Find the key to the well in the Catacombs	(선택) 지하묘지안에서 우물의 열쇠를 찾기
 (Optional) Free Orthorn	(선택) 오쏜을 풀어주기
@@ -73,7 +73,7 @@ Source	Target
 (Optional) Shut off the Steam	(선택) 증기를 멈추기
 (Optional) Smash Bersi's prized Dwarven Urn	(선택) 베르시가 아끼는 드워프제 항아리를 부수기
 (Optional) Speak to Brynjolf	(선택) 브린욜프와 대화하기
-(Optional) Speak to Vex about Goldenglow Estate	(선택) 골든글로우 지구에 관해 벡스와 대화하기
+(Optional) Speak to Vex about Goldenglow Estate	(선택) 골든글로우 농장에 관해 벡스와 대화하기
 (Optional) Speak to Vex about Vald	(선택) 볼드에 관해서 벡스와 대화하기
 (Optional) Steal Gaius Maro's travel schedule	(선택) 가이우스 마로의 여행 계획을 훔치기
 (Optional) Steal Haelga's Statue of Dibella	(선택) 헬가의 디벨라 동상을 훔치기
@@ -2512,7 +2512,7 @@ Castle Dour Dungeon	다우어 성 지하감옥
 Castle Dour Dungeon Key	열쇠 - 다우어 성 지하감옥
 Castle Dour, Emperor's Tower	다우어 성, 황제의 탑
 Castle Dour, Tower	다우어 성, 탑
-Castle Fletcher	화살깃털 상점
+Castle Fletcher	화살 공방
 Castle Karstaag Caverns	카스태그 성 동굴
 Castle Karstaag Courtyard	카스태그 성 안뜰
 Castle Karstaag Key	열쇠 - 카스태그 성
@@ -6857,7 +6857,7 @@ Flawless Garnet	보석 - 완벽한 석류석
 Flawless Ruby	보석 - 완벽한 루비
 Flawless Sapphire	보석 - 완벽한 사파이어
 Flee	도망
-Fletcher	화살깃털 상점
+Fletcher	화살 공방
 Flight from the Thalmor	탈모어 탈출
 Flight or Fight	회피 또는 싸움
 Flin	술 - 플린
@@ -7894,10 +7894,10 @@ Golden Urn	황금 항아리
 Goldenglow	골든글로우
 Goldenglow Bill of Sale	골든글로우 매도 증서
 Goldenglow Cellar Key	열쇠 - 골든글로우 저장고
-Goldenglow Estate	골든글로우 지구
-Goldenglow Estate Basement	골든글로우 지구 지하실
-Goldenglow Estate Second Floor	골든글로우 지구 2층
-Goldenglow Estate Sewer	골든글로우 지구 하수구
+Goldenglow Estate	골든글로우 농장
+Goldenglow Estate Basement	골든글로우 농장 지하실
+Goldenglow Estate Second Floor	골든글로우 농장 2층
+Goldenglow Estate Sewer	골든글로우 농장 하수구
 Goldenglow Gate Key	열쇠 - 골든글로우 관문
 Goldenglow Safe Key	열쇠 - 골든글로우 금고
 Goldenhills Plantation	황금빛언덕 농장
@@ -10461,7 +10461,7 @@ I'm Harbinger of the Companions.	난 컴패니언의 인도자다.
 I'm having some difficulties with the guards. Can you take care of that?	경비병들과 문제가 좀 있는데. 처리해 줄 수 있겠소?
 I'm heading towards Eldergleam.	엘더글림에 갈 예정이오.
 I'm here about Fjotli.	표틀리 때문에 왔다.
-I'm here about Goldenglow Estate.	골든글로우 지구 일로 왔다.
+I'm here about Goldenglow Estate.	골든글로우 농장 일로 왔다.
 I'm here about the <Alias=Item>.	<Alias=Item>때문에 왔습니다.
 I'm here about the Stalhrim map.	스탈림 지도 때문에 왔는데.
 I'm here for Elgrim's ore sample.	엘그림의 광석 표본때문에 왔소.
@@ -12109,7 +12109,7 @@ Key to Skaggi's House	열쇠 - 스케기의 집
 Key to Sleeping Giant Inn	열쇠 - 잠자는 거인 여관
 Key to Solitude Blacksmith	열쇠 - 솔리튜드 대장간
 Key to Solitude Cemetary	열쇠 - 솔리튜드 공동묘지
-Key to Solitude Fletcher	열쇠 - 화살깃털 상점
+Key to Solitude Fletcher	열쇠 - 화살 공방
 Key to Solitude Lighthouse	열쇠 - 솔리튜드 등대
 Key to Solitude Sawmill	열쇠 - 솔리튜드 목재소
 Key to Solitude Stables	열쇠 - 솔리튜드 마구간
@@ -12284,7 +12284,7 @@ Knight-Paladin Gelebor	성기사 겔레보어
 Knjakr	크냐크르
 Know anyone that might take the job?	이런 일을 원하는 사람을 혹시 알고 있나?
 Know anything about a Moth Priest visiting Dragon Bridge?	드래곤 브리지를 방문한 나방 사제에 관해서 뭔가 알고 있나?
-Know anything about Goldenglow Estate?	골든글로우 지구에 대해서 뭔가 아는 게 있나?
+Know anything about Goldenglow Estate?	골든글로우 농장에 대해서 뭔가 아는 게 있나?
 Know anything about the Thieves Guild?	도둑길드에 대해 조금이라도 아는게 있소?
 Know of an old guy hiding out in Riften, name of Esbern?	리프튼에 숨어있는 에스번이라는 늙은이를 알고 있소?
 Known Effects	습득한 효과
@@ -13240,7 +13240,7 @@ Mercer doesn't have to know.	머서가 알 필요는 없지.
 Mercer Frey	머서 프레이
 Mercer killed Gallus, not Karliah.	머서가 갤러스를 죽였어, 칼라이아가 아니라.
 Mercer needs you in Markarth right away! (Persuade)	머서가 당장 마르카스로 오라 하더군! (설득)
-Mercer wants me to discover Goldenglow's buyer.	머서는 골든글로우 지구의 구매자가 누군지 알아내길 원하는데.
+Mercer wants me to discover Goldenglow's buyer.	머서는 골든글로우 농장의 구매자가 누군지 알아내길 원하는데.
 Mercer's House Key	열쇠 - 리프트윌드 저택
 Mercer's Plans	머서의 계획서
 Mercer's Vault Lock	머서의 금고 자물쇠
@@ -21717,7 +21717,7 @@ What about my pay?	내 보수는?
 What about my reward?	제 보상은?
 What about Paarthurnax?	파써낙스는?
 What about the Dragonborn?	드래곤본이라면 어떻소?
-What about the information on Goldenglow Estate?	골든글로우 지구에 대한 정보는?
+What about the information on Goldenglow Estate?	골든글로우 농장에 대한 정보는?
 What about the scroll?	엘더스크롤에 대한 이야기?
 What about them?	걔네가 왜?
 What about you?	당신께선 어떻습니까?
@@ -22772,7 +22772,7 @@ Why did Councilor Morvayn execute an Ulen?	왜 모베인 의원이 울렌을 처
 Why did Elisif forbid the festival?	엘리시프가 축제를 금지시킨 이유는 뭡니까?
 Why did Falion leave the College?	팔리온은 왜 대학을 떠난 겁니까?
 Why did Gallus scribe his journal in Falmer?	왜 갤러스는 일기를 팔머어로 쓴 거지?
-Why did Karliah purchase Goldenglow Estate?	칼라이아가 골든글로우 지구를 구입한 이유가 뭐지?
+Why did Karliah purchase Goldenglow Estate?	칼라이아가 골든글로우 농장을 구입한 이유가 뭐지?
 Why did Leifnarr go to Broken Helm Hollow?	레이프나는 왜 부서진 투구 동굴에 간 거지?
 Why did she care where used souls went?	영혼의 행방에 대해 신경쓴 이유가 뭘까?
 Why did she kill him?	왜 갤러스를 죽인 거지?
