@@ -129,8 +129,10 @@ public sealed class BundledFranchiseTmSeedService
             // Burial Urn 유골 단지), and the second review of the quests (Chasing Echoes 메아리를 쫓아서, not 따라오는; the
             // Shrine of Talos 탈로스의 성소 as the note says), and the reading of the books and the quests' dialogue (The
             // Keepers of the Razor 면도칼의 파수꾼, the quest's Razor; Pelagius Wing Key 열쇠 - 펠라지우스 구역; "And that won't
-            // work?" 그걸로는 안 되는 거요?, not a 작동하지 않은 that happened before); 324 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v6", "bundled-skyrim-tes-franchise-tm.tsv", 1528411, "567229948aa3c0490ef590d0b2103f6efbfcf9f0fdcf44543b03f7d4b4d08f6c",
+            // work?" 그걸로는 안 되는 거요?, not a 작동하지 않은 that happened before), and the decisions after it (a particle
+            // after an <Alias> that takes any name in both forms, <Alias=Victim>을(를); the College 윈터홀드 대학 as the
+            // map names it); 388 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v6", "bundled-skyrim-tes-franchise-tm.tsv", 1528654, "f7d1743aee7dbfe8054c75491112d232fdc3ca23c425aa917b4e4fe1146b8285",
                 PreviousVersions: new[] { "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v6-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
