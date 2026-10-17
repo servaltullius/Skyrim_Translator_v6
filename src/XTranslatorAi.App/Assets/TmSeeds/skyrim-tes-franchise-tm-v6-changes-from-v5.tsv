@@ -2,9 +2,11 @@ Source	Target	Previous
 (Optional) Find the key to the well in the Catacombs	(선택) 지하묘지 안에서 우물의 열쇠를 찾기	(선택) 지하묘지안에서 우물의 열쇠를 찾기
 (Optional) Travel to Riverwood with <Alias=FactionFriend>	(선택) <Alias=FactionFriend>와(과) 함께 리버우드로 가기	(선택) <Alias=FactionFriend>와 함께 리버우드로 가기
 +<mag> carrying capacity, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.	무게한계 <mag> 증가, 무거운 방어구를 착용해도 이동에 영향을 받지 않게 됩니다.
+<Alias.Cap=SonsMinorHoldCapital> seems like a fair trade.	<Alias.Cap=SonsMinorHoldCapital>(이)라면 공정한 거래 같은데.	<Alias.Cap=SonsMinorHoldCapital>라면 공정한 거래 같은데.
 <Alias.ShortName=QuestGiver> gave me this ring. I think it's yours.	<Alias.ShortName=QuestGiver>이(가) 이 반지를 주었는데, 당신 것 같군.	<Alias.ShortName=QuestGiver>가 이 반지를 주었는데, 당신 것 같군.
 <Alias.ShortName=Target> will be paying you all more.	<Alias.ShortName=Target>이(가) 당신들에게 더 지불해 줄 것이다.	<Alias.ShortName=Target> 이/가 당신들에게 더 지불해 줄 것이다.
 <Alias=Brute> was killed.	<Alias=Brute>은(는) 죽어버렸소.	<Alias=Brute> 는 죽어버렸소.
+<Alias=ImperialMinorHoldCapital> seems like a fair trade.	<Alias=ImperialMinorHoldCapital>(이)라면 공정한 거래같이 보이는군.	<Alias=ImperialMinorHoldCapital>라면 공정한 거래같이 보이는군.
 <Alias=Player>'s Wolf Spirit	<Alias=Player>의 늑대 영혼	<Alias=Player>의 늑대 정령
 <Alias=RiverwoodFriend> sent me. Riverwood is in danger.	<Alias=RiverwoodFriend>이(가) 부탁해서 왔습니다. 리버우드가 위험합니다.	<Alias=RiverwoodFriend>가 부탁해서 왔습니다. 리버우드가 위험합니다.
 <Alias=Steward> says there's a shipment of coin traveling to Solitude...	<Alias=Steward>이(가) 말하길 솔리튜드로 가는 현금수송이 있다고 합니다...	<Alias=Steward>가 말하길 솔리튜드로 가는 현금수송이 있다고 합니다...
@@ -17,6 +19,7 @@ A dragon attacked Helgen and destroyed it. Ralof and I escaped together.	드래�
 A dragon destroyed Helgen. <Alias=RiverwoodFriend> is afraid Riverwood is next.	드래곤이 헬겐을 파괴했습니다. <Alias=RiverwoodFriend>은(는) 다음 목표가 리버우드라고 걱정하고 있습니다.	드래곤이 헬겐을 파괴했습니다. <Alias=RiverwoodFriend> 는 다음 목표가 리버우드라고 걱정하고 있습니다.
 A Grand Soul gem filled with a Grand Soul is required to build the Arcane Enchanter.	마법부여대를 제작하기 위해서는 특급 소울젬(특급)이 필요합니다.	마법 부여대를 제작하기 위해서는 특급 소울젬(특급)이 필요합니다.
 A tidy, one-room house.	깔끔한 방 하나짜리 집.	자그마한, 방 하나짜리 집.
+Accept Jarl <Alias=Jarl>'s surrender	<Alias=Jarl>의 항복을 받기	<Alias=Jarl> 의 항복을 받기
 Add a greenhouse with customizable planters.	마음대로 여러 가지 식물을 재배할 수 있는 온실을 추가합니다.	마음대로 여러가지 식물을 재배할 수 있는 온실을 추가합니다.
 Add a kitchen that can be fitted out with cooking stations, food containers and the like.	여러 가지 주방용품들과 음식 저장 용기 등이 구비된 부엌을 추가합니다.	여러가지 주방용품들과 음식 저장용기등이 구비된 부엌을 추가합니다.
 Add a room that can be equipped with smithing stations and weapon storage. Includes an exterior porch.	제련용 시설 외에 무기들을 저장할 수 있는 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.	제련용 시설외에 무기들을 저장할 수 있는 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.
@@ -54,8 +57,12 @@ Bone Hawk Skull	해골 독수리 두개골	해골 독수리 뼈
 Bonemold Pauldron Armor	뼈다귀 견갑 방어구	뼈다귀 방어구
 Bound Axe	마법 전투 도끼	마법 전투 도끼 소환
 Braided Bread	땋은 빵	바게트 빵
+Bring the <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 <Alias=QuestItem> 가져다 주기	<Alias.ShortName=QuestGiver> 에게 <Alias=QuestItem> 가져다 주기
 Bring the <Alias=QuestItem> to Olda	<Alias=QuestItem>을 올다에게 가져다 주기	<Alias=QuestItem>를 올다에게 가져다 주기
 Bring the Dibella Statue to Lisbet	디벨라의 동상을 리즈벳에게 가져다 주기	디벨라의 동상을 리스벳에게 가져다 주기
+Bring the documents to <Alias=FieldCO>	문서를 <Alias=FieldCO>에게 전달하기	문서를 <Alias=FieldCO> 에게 전달하기
+Bring the forged documents to <Alias=EnemyFieldCO>	위조된 문서를 <Alias=EnemyFieldCO>에게 전달하기	위조된 문서를 <Alias=EnemyFieldCO> 에게 전달하기
+Bring the Forgemaster's Fingers to <Alias.ShortName=Chief>	포지마스터의 손가락을 <Alias.ShortName=Chief>에게 가져가기	포지마스터의 손가락을 <Alias.ShortName=Chief> 에게 가져가기
 Bring the note to a guard in Raven Rock	레이븐 락의 경비병에게 쪽지를 전달하기	레이븐 락의 경비병에게 노트를 전달하기
 Bring Troll Fat and a Daedra Heart to Atub	에이텁에게 트롤 지방과 데이드라 심장을 가져가기	에이텁에게 트롤지방과 데이드라 심장을 가져가기
 Broken Steel Warhammer Head	부서진 강철 전쟁망치 머리부분	부서진 강철 전쟁망치 머릿부분
@@ -67,6 +74,7 @@ Changed Ones	변화한 자들	변절한 자들
 Charm - Master of the Mind	매료 - 정신의 지배자	매료 - 정신마법의 달인
 Chasing Echoes	메아리를 쫓아서	따라오는 메아리
 Cleanse the focal points for magical energies around the College	대학 주변의 마법 에너지 중심점을 정화하기	대학주변의 마법 에너지 중심점을 정화하기
+Clear <Alias=WealthyHome> in <Alias=City> of valuables (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)	<Alias=City> 도시의 <Alias=WealthyHome>에서 귀중품들을 싹쓸이하기 (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)	<Alias=City> 도시의 <Alias=WealthyHome> 에서 귀중품들을 싹쓸이하기 (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)
 Collect <Alias=SamplePelt>s (<Global=CR03PeltsGotten>/<Global=CR03TotalPeltsNeeded>)	<Alias=SamplePelt>을(를) 모으기 (<Global=CR03PeltsGotten>/<Global=CR03TotalPeltsNeeded>)	<Alias=SamplePelt>를 모으기 (<Global=CR03PeltsGotten>/<Global=CR03TotalPeltsNeeded>)
 Collect the reward from <Alias=Enemy> for killing <Alias=Victim>	<Alias=Enemy>(으)로부터 <Alias=Victim>을(를) 죽인 보수를 받기	<Alias=Enemy> 으로부터 <Alias=Victim>를 죽인 보수를 받기
 Complaint Letter	항의 편지	고소 편지
@@ -80,6 +88,7 @@ Deadly Aversion to Frost	독 - 냉기 약점 특급	독 - 냉기 특급
 Deadly Aversion to Magic	독 - 마법 약점 특급	독 - 마법 저항 특급
 Deadly Aversion to Shock	독 - 전격 약점 특급	독 - 전격 특급
 Defend <Alias=Capital>	<Alias=Capital>을(를) 방어하기	<Alias=Capital> 을 방어하기
+Deliver <Alias=QuestItem> to <Alias.ShortName=Target>	<Alias.ShortName=Target>에게 <Alias=QuestItem> 배달하기	<Alias.ShortName=Target> 에게 <Alias=QuestItem> 배달하기
 Deliver the stone to Phinis	시질 스톤을 피니스에게 전달하기	시질스톤을 피니스에게 전달하기
 Deliver the sword to Proventus Avenicci	프로벤투스 아베니치에게 검을 배달하기	프로벤투스 아베니치 에게 검을 배달하기
 Desecrated Corpse	훼손된 시체	바짝마른 시체
@@ -124,6 +133,8 @@ First Letter from EEC	동제국 회사의 첫 번째 편지	동제국 회사의 
 Follow <Alias=Friend> and ambush enemy scout	<Alias=Friend>을(를) 따라가서 매복하고 적의 정찰병을 습격하기	<Alias=Friend>를 따라가서 매복하고 적의 정찰병을 습격하기
 Follow the <Alias=General>	<Alias=General>을(를) 따라가기	<Alias=General> 를 따라가기
 For <dur> seconds, opponents in melee range have a chance to be infected.	<dur> 초 동안 일정한 확률로 주변 적을 감염시킵니다.	<dur> 초 동안 일정한 확률로 주변 적에게 피해를 줍니다.
+Force <Alias=Jarl>'s surrender	<Alias=Jarl>의 항복을 강요하기	<Alias=Jarl> 의 항복을 강요하기
+Force <Alias=Jarl>'s surrender.	<Alias=Jarl>에게 항복을 강요하기	<Alias=Jarl> 에게 항복을 강요하기
 Forge the prison registry	입소자 명부를 위조하기	감옥 등록부를 위조하기
 Fort Fellhammer Mines	펠해머 요새 광산	펠해머 광산 요새
 Fortify Magicka Rate	매지카 재생 강화	매지카재생 강화
@@ -233,6 +244,7 @@ Pelagius Wing Key	열쇠 - 펠라지우스 구역	열쇠 - 펠라지우스 별�
 Place a workbench in the Storage Room.	저장고에 작업선반을 설치합니다.	창고에 작업선반을 설치합니다.
 Place the Aetherium Shards	에테리움 파편들을 놓기	에테리움 조각들을 놓기
 Place the burial urn in Yngol Barrow	잉골 고분에 유골 단지를 놓기	잉골 고분에 유물 단지를 놓기
+Plant the <Alias=Evidence> in <Alias=WealthyHome> in <Alias=City>	<Alias=City>에 있는 <Alias=WealthyHome>에 <Alias=Evidence> 몰래 두고오기	<Alias=City>에 있는 <Alias=WealthyHome> 에 <Alias=Evidence> 몰래 두고오기
 Pleated Shoes	야를의 주름 잡힌 신발	야를의 주름잡힌 신발
 Pommel Stone of Mehrunes' Razor	메이룬스의 면도칼 자루 장식	메이룬스의 면도칼자루 장식
 Portal to Darkfall Grotto	차원문 - 다크폴 암굴	차원문 - 다크폴 동굴
@@ -257,6 +269,13 @@ Recipe - Mind Control Spider	제조법 : 정신 조종 거미	제조법 : 정신
 Recognize this? (Show <Alias.PronounObj=Steward> <Alias=Evidence>)	이게 뭔지 알겠나? (<Alias.PronounObj=Steward>에게 <Alias=Evidence>을(를) 보여준다)	이게 뭔지 알겠나? (<Alias.PronounObj=Steward>에게 <Alias=Evidence>를 보여준다)
 Remove all furniture from entryway and remodel it to match the main hall.	현관에 배치된 모든 가구를 제거하고 대청에 맞게 개조합니다.	현관에 배치된 모든 가구를 제거하고 대청에 맞게 재배치하기.
 Remove the workbench from the Storage Room.	저장고에서 작업선반을 제거합니다.	창고에서 작업선반을 제거합니다.
+Report failure to <Alias=FactionLeader>.	<Alias=FactionLeader>에게 작전실패를 보고하기	<Alias=FactionLeader> 에게 작전실패를 보고하기
+Report success to <Alias=FactionLeader>.	<Alias=FactionLeader>에게 작전성공을 보고하기	<Alias=FactionLeader> 에게 작전성공을 보고하기
+Report to <Alias=CWFieldCOSonsWhiterunCamp>	<Alias=CWFieldCOSonsWhiterunCamp>에게 보고하기	<Alias=CWFieldCOSonsWhiterunCamp> 에게 보고하기
+Report to <Alias=FieldCO>.	<Alias=FieldCO>에게 보고하기	<Alias=FieldCO> 에게 보고하기
+Report to <Alias=ImperialFieldCO>	<Alias=ImperialFieldCO>에게 보고하기	<Alias=ImperialFieldCO> 에게 보고하기
+Report to <Alias=WhiterunCapitalImperialFieldCO>	<Alias=WhiterunCapitalImperialFieldCO>에게 보고하기	<Alias=WhiterunCapitalImperialFieldCO> 에게 보고하기
+Retrieve <Alias=ItemToGet> from <Alias=Mark> in <Alias=City>	<Alias=City>에 있는 <Alias=Mark>에게서 <Alias=ItemToGet> 훔쳐오기	<Alias=City>에 있는 <Alias=Mark> 에게서 <Alias=ItemToGet> 훔쳐오기
 Retrieve Lisbet's shipment from <Alias=ForswornCamp>	<Alias=ForswornCamp>에서 리즈벳의 짐을 회수하기	<Alias=ForswornCamp>에서 리스벳의 짐을 회수하기
 Retrieve the Soul Essence Gem	영혼 정수의 보석 회수하기	영혼의 정수 회수하기
 Retrieve the Unmelting Snow	'녹지 않는 눈'을 회수하기	'녹지않는 눈'을 회수하기
@@ -299,6 +318,7 @@ Steady Hand (2)	안정된 활시위	안정된 활 시위
 Steal <Global=TGRNGold> gold in goods from <Alias=City>	<Alias=City>에서 <Global=TGRNGold> 골드만큼의 물품을 훔치기	<Alias=City>에서 <Global=TGRNGold> 골드 만큼의 물품을 훔치기
 Steal the <Alias=QuestItem> for <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>을(를) 위해 <Alias=QuestItem> 훔치기	<Alias.ShortName=QuestGiver> 를 위해 <Alias=QuestItem> 훔치기
 Steal the <Alias=QuestItem> for Olda	올다를 위해서 <Alias=QuestItem>을 훔치기	올다를 위해서 <Alias=QuestItem>를 훔치기
+Steal the plans from <Alias=Camp>	<Alias=Camp>에서 계획서를 입수하기	<Alias=Camp> 에서 계획서를 입수하기
 Steamed Mudcrab Legs	찐 진흙게 다리	구운 진흙게 다리
 Steel Battleaxe of Fiery Souls	강철 전투 도끼 - 화염 소울 트랩	강철 전투 도끼 - 불꽃영혼
 Strengthened by the infamy of its bearer	소유자의 악명으로 강화됩니다.	소유자의 악명으로 강화합니다.
@@ -319,19 +339,24 @@ Talk to Lucan about the robbery	도난 사건에 관해서 루칸과 이야기�
 Talk with <Alias=FactionLeader>.	<Alias=FactionLeader>와(과) 대화하기	<Alias=FactionLeader> 와 대화하기
 Taron Dreth's Robes	타론 드레스의 로브	타론의 로브
 Tell <Alias.ShortName=Questgiver> that <Alias.ShortName=Target> is taken care of	<Alias.ShortName=Questgiver>에게 <Alias.ShortName=Target>을(를) 처리했다고 말하기	<Alias.ShortName=Questgiver>에게 <Alias.ShortName=Target>을 처리했다고 말하기
+Tell <Alias.ShortName=Questgiver> the vampire is dead	<Alias.ShortName=Questgiver>에게 흡혈귀가 죽었다고 말하기	<Alias.ShortName=Questgiver> 에게 흡혈귀가 죽었다고 말하기
 Tell <Alias.ShortName=Questgiver> what <Alias.ShortName=Target> said about the outfit.	<Alias.ShortName=Target>가 복장에 관해 한 말을 <Alias.ShortName=Questgiver>에게 전하기	<Alias.ShortName=Target> 이 복장에 관해 한 말을 <Alias.ShortName=Questgiver>에게 전하기
 Temple Ancestral Tomb	신전 선조의 무덤	사원 선조의 무덤
 That was... a bit before my time.	그건... 내가 태어나기 한참 전의 일인데.	그것은... 몇시대 전에 일어났던 일인데.
 The <Alias=Beast> is dead.	<Alias=Beast>은(는) 죽었다.	<Alias=Beast>는 죽었다.
 The <Alias=Boss> at <Alias=Dungeon> has been dealt with.	<Alias=Dungeon>에 있던 <Alias=Boss>은(는) 처리되었소.	<Alias=Dungeon>에 있던 <Alias=Boss>는 처리되었소.
 The <Alias=Boss> at <Alias=Dungeon> has been destroyed.	<Alias=Dungeon>의 <Alias=Boss>은(는) 죽었습니다.	<Alias=Dungeon>의 <Alias=Boss>는 죽었습니다.
+The bandit leader at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>의 산적 두목은 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 의 산적 두목은 죽었습니다. 현상금을 받으러 왔습니다.
+The dragon at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>에 있던 드래곤은 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 에 있던 드래곤은 죽었습니다. 현상금을 받으러 왔습니다.
 The Five Far Stars	멀리 떨어진 다섯 개의 별	다섯개의 별
 The Fourth Era began 200 years ago when Martin Septim sacrificed himself to save the world from the Oblivion Crisis.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대 위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.
+The giant at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>에 있던 거인은 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 에 있던 거인은 죽었습니다. 현상금을 받으러 왔습니다.
 The Gourmet. Who is he? Where is he?	'미식가'는 누구지? 어디에 있지?	'미식가'는 누구이며? 어디에 있지?
 The Imperials gained control of <Alias=Hold>.	제국군이 <Alias=Hold>을(를) 점령했습니다.	제국군이 <Alias=Hold> 를 점령했습니다.
 The Imperials kept control of <Alias=Hold>.	제국군이 <Alias=Hold>을(를) 지켜냈습니다.	제국군이 <Alias=Hold> 를 지켜냈습니다.
 The Imperials lost control of <Alias=Hold>.	제국군이 <Alias=Hold>을(를) 잃었습니다.	제국군이 <Alias=Hold> 를 잃었습니다.
 The Keepers of the Razor	면도칼의 파수꾼	메이룬스 단검의 파수꾼
+The leader of <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>의 우두머리는 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 의 우두머리는 죽었습니다. 현상금을 받으러 왔습니다.
 The Nords first conquered Markarth from the native people of the Reach thousands of years ago.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 빼앗았습니다.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 뺏았습니다.
 The Stormcloaks gained control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 점령했습니다.	스톰클록군이 <Alias=Hold> 를 점령했습니다.
 The Stormcloaks kept control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 지켜냈습니다.	스톰클록군이 <Alias=Hold>를 지켜냈습니다.

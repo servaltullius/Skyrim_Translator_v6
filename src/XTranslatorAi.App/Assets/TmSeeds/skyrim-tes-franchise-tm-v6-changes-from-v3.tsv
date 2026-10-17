@@ -11,9 +11,11 @@ Source	Target	Previous
 +<mag> carrying capacity, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.	무게한계 <mag> 증가, 무거운 방어구를 착용해도 이동에 영향을 받지 않게 됩니다.
 50% chance for each attribute to absorb <mag> points of Health, Stamina and/or Magicka.	체력, 지구력, 매지카 각각에 대해 50% 확률로 <mag> 흡수합니다.	50% 확률로 체력, 지구력, 매지카 중 하나를 <mag> 흡수합니다.
 50% chance for each element of fire, frost and shock to do <mag> points of damage.	화염, 냉기, 전격 각각에 대해 50% 확률로 <mag> 의 피해를 입힙니다.	50% 확률로 <mag> 의 화염, 냉기, 전격 중 하나의 피해를 입힙니다.
+<Alias.Cap=SonsMinorHoldCapital> seems like a fair trade.	<Alias.Cap=SonsMinorHoldCapital>(이)라면 공정한 거래 같은데.	<Alias.Cap=SonsMinorHoldCapital>라면 공정한 거래 같은데.
 <Alias.ShortName=QuestGiver> gave me this ring. I think it's yours.	<Alias.ShortName=QuestGiver>이(가) 이 반지를 주었는데, 당신 것 같군.	<Alias.ShortName=QuestGiver>가 이 반지를 주었는데, 당신 것 같군.
 <Alias.ShortName=Target> will be paying you all more.	<Alias.ShortName=Target>이(가) 당신들에게 더 지불해 줄 것이다.	<Alias.ShortName=Target> 이/가 당신들에게 더 지불해 줄 것이다.
 <Alias=Brute> was killed.	<Alias=Brute>은(는) 죽어버렸소.	<Alias=Brute> 는 죽어버렸소.
+<Alias=ImperialMinorHoldCapital> seems like a fair trade.	<Alias=ImperialMinorHoldCapital>(이)라면 공정한 거래같이 보이는군.	<Alias=ImperialMinorHoldCapital>라면 공정한 거래같이 보이는군.
 <Alias=Player>'s Wolf Spirit	<Alias=Player>의 늑대 영혼	<Alias=Player>의 늑대 정령
 <Alias=PlayerIsIt> is it. Keep away from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요	<Alias=PlayerIsIt> 입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요
 <Alias=RiverwoodFriend> sent me. Riverwood is in danger.	<Alias=RiverwoodFriend>이(가) 부탁해서 왔습니다. 리버우드가 위험합니다.	<Alias=RiverwoodFriend>가 부탁해서 왔습니다. 리버우드가 위험합니다.
@@ -35,6 +37,7 @@ A volley of frozen shards that do <mag> points of damage, and twice as much Stam
 A... mudcrab?	뭐...? 진흙게?	뭐...? 진흙 게?
 About that amulet...	아뮬렛 말인데...	아뮬렛에 말인데...
 Absolutely not. No pets. Ever.	절대 안 된다. 애완동물은 안 돼. 절대로.	난 동물이 싫다.
+Accept Jarl <Alias=Jarl>'s surrender	<Alias=Jarl>의 항복을 받기	<Alias=Jarl> 의 항복을 받기
 Add a greenhouse with customizable planters.	마음대로 여러 가지 식물을 재배할 수 있는 온실을 추가합니다.	마음대로 여러가지 식물을 재배할 수 있는 온실을 추가합니다.
 Add a kitchen that can be fitted out with cooking stations, food containers and the like.	여러 가지 주방용품들과 음식 저장 용기 등이 구비된 부엌을 추가합니다.	여러가지 주방용품들과 음식 저장용기등이 구비된 부엌을 추가합니다.
 Add a residential wing with master bedroom and childrens' bedroom. Includes an exterior porch.	주 침실과 어린이용 침실들로 구성된 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.	주 침실과 어린이용 침실들로 구성된 공간을 추가합니다. 외부로 통하는 문도 포함되어 있습니다.
@@ -123,9 +126,12 @@ Bring Elmus some Ashfire Mead from Thirsk Mead Hall	터스크 연회장에서 �
 Bring Elmus some Juniper Berries	엘무스에게 향나무 열매를 몇 개 가져다 주기	엘무스에게 향나무 열매를 몇개 가져다 주기
 Bring some vampire dust to Elynea	엘리니아에게 흡혈귀 가루를 몇 개 가져다 주기	엘리니아에게 흡혈귀 가루를 몇개 가져다 주기
 Bring some void salts to Elynea	엘리니아에게 공허 소금 몇 개를 가져다 주기	엘리니아에게 공허 소금 몇개를 가져다 주기
-Bring the <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver> 에게 <Alias=QuestItem> 가져다 주기	<Alias.ShortName=Questgiver> 에게 <Alias=QuestItem> 가져다 주기
+Bring the <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 <Alias=QuestItem> 가져다 주기	<Alias.ShortName=Questgiver> 에게 <Alias=QuestItem> 가져다 주기
 Bring the <Alias=QuestItem> to Olda	<Alias=QuestItem>을 올다에게 가져다 주기	<Alias=QuestItem>를 올다에게 가져다 주기
 Bring the Bonemold Formula to Glover Mallory	뼈다귀 물품 제조법을 글로버에게 전해주기	뼈다귀 물품 제작법을 글로버에게 전해주기
+Bring the documents to <Alias=FieldCO>	문서를 <Alias=FieldCO>에게 전달하기	문서를 <Alias=FieldCO> 에게 전달하기
+Bring the forged documents to <Alias=EnemyFieldCO>	위조된 문서를 <Alias=EnemyFieldCO>에게 전달하기	위조된 문서를 <Alias=EnemyFieldCO> 에게 전달하기
+Bring the Forgemaster's Fingers to <Alias.ShortName=Chief>	포지마스터의 손가락을 <Alias.ShortName=Chief>에게 가져가기	포지마스터의 손가락을 <Alias.ShortName=Chief> 에게 가져가기
 Bring the Four Master Illusion texts to Drevis Neloren	드레비스 넬로렌에게 달인 환영마법 책 4권을 가져가기	드레비스 넬로렌에게 에게 달인 환영마법 책 4권을 가져가기
 Bring the note to a guard in Raven Rock	레이븐 락의 경비병에게 쪽지를 전달하기	레이븐 락의 경비병에게 노트를 전달하기
 Bring Troll Fat and a Daedra Heart to Atub	에이텁에게 트롤 지방과 데이드라 심장을 가져가기	에이텁에게 트롤지방과 데이드라 심장을 가져가기
@@ -147,6 +153,7 @@ Changed Ones	변화한 자들	변절한 자들
 Charm - Master of the Mind	매료 - 정신의 지배자	매료 - 정신마법의 달인
 Chasing Echoes	메아리를 쫓아서	따라오는 메아리
 Cleanse the focal points for magical energies around the College	대학 주변의 마법 에너지 중심점을 정화하기	대학주변의 마법 에너지 중심점을 정화하기
+Clear <Alias=WealthyHome> in <Alias=City> of valuables (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)	<Alias=City> 도시의 <Alias=WealthyHome>에서 귀중품들을 싹쓸이하기 (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)	<Alias=City> 도시의 <Alias=WealthyHome> 에서 귀중품들을 싹쓸이하기 (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)
 Collect <Alias=SamplePelt>s (<Global=CR03PeltsGotten>/<Global=CR03TotalPeltsNeeded>)	<Alias=SamplePelt>을(를) 모으기 (<Global=CR03PeltsGotten>/<Global=CR03TotalPeltsNeeded>)	<Alias=SamplePelt>를 모으기 (<Global=CR03PeltsGotten>/<Global=CR03TotalPeltsNeeded>)
 Collect the reward from <Alias=Enemy> for killing <Alias=Victim>	<Alias=Enemy>(으)로부터 <Alias=Victim>을(를) 죽인 보수를 받기	<Alias=Enemy> 으로부터 <Alias=Victim>를 죽인 보수를 받기
 Commune with Hrothmund's Spirit	흐로스문드의 유령과 대화하기	흐로스문드의 영혼과 대화하기
@@ -171,6 +178,7 @@ Decree of Monument	기념비 포고령	법령의 기념비
 Defeat Hofgrir in an unarmed brawl	호프기어를 맨손 싸움으로 물리치기	호프기어를 싸움으로 물리치기
 Defeat the Guardians of the Forge	대장간의 수호자를 물리치기	화로의 수호자를 물리치기
 Defend <Alias=Capital>	<Alias=Capital>을(를) 방어하기	<Alias=Capital> 을 방어하기
+Deliver <Alias=QuestItem> to <Alias.ShortName=Target>	<Alias.ShortName=Target>에게 <Alias=QuestItem> 배달하기	<Alias.ShortName=Target> 에게 <Alias=QuestItem> 배달하기
 Deliver Mead to Wilhelm	윌헴에게 벌꿀술을 배달하기	윌헴에게 벌꿀주를 배달하기
 Deliver the stone to Phinis	시질 스톤을 피니스에게 전달하기	시질스톤을 피니스에게 전달하기
 Deliver the sword to Proventus Avenicci	프로벤투스 아베니치에게 검을 배달하기	프로벤투스 아베니치 에게 검을 배달하기
@@ -276,6 +284,8 @@ For <dur> seconds nearby opponents take <8> points of shock damage and half magi
 For <dur> seconds, opponents in melee range have a chance to be infected.	<dur> 초 동안 일정한 확률로 주변 적을 감염시킵니다.	<dur> 초 동안 일정한 확률로 주변 적에게 피해를 줍니다.
 For <dur> seconds, opponents that get too close take <8> points per second of fire damage.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 화염 피해를 입힙니다.	<dur> 초 동안 주변 적에게 <8> 의 화염 피해를 입힙니다.
 For the Dark Brotherhood, that can be easily arranged. (Intimidate)	다크 브라더후드에게 그 정도는 쉬운 일이지. (위협)	다크 브라더후드 앞에서 그런건 중요하지 않을텐데. (위협)
+Force <Alias=Jarl>'s surrender	<Alias=Jarl>의 항복을 강요하기	<Alias=Jarl> 의 항복을 강요하기
+Force <Alias=Jarl>'s surrender.	<Alias=Jarl>에게 항복을 강요하기	<Alias=Jarl> 에게 항복을 강요하기
 Forge the prison registry	입소자 명부를 위조하기	감옥 등록부를 위조하기
 Forget it! It could kill me!	됐소! 이걸 마시면 죽을지도 모르오!	됐소! 이 걸 마시면 죽을 지도 모르오!
 Forget it. I'll be back.	관둬. 다시 오겠다.	관 둬. 다시 오겠다.
@@ -584,6 +594,7 @@ Place a workbench in the Storage Room.	저장고에 작업선반을 설치합니
 Place Pithiken's Ring	피씨켄의 반지 놓기	피쉬켄의 반지 놓기
 Place the Aetherium Shards	에테리움 파편들을 놓기	에테리움 조각들을 놓기
 Place the burial urn in Yngol Barrow	잉골 고분에 유골 단지를 놓기	잉골 고분에 유물 단지를 놓기
+Plant the <Alias=Evidence> in <Alias=WealthyHome> in <Alias=City>	<Alias=City>에 있는 <Alias=WealthyHome>에 <Alias=Evidence> 몰래 두고오기	<Alias=City>에 있는 <Alias=WealthyHome> 에 <Alias=Evidence> 몰래 두고오기
 Plant the Incriminating Letter on Gaius Maro's body	가이우스 마로의 시체에 유죄증명 편지를 숨겨두기	가이우스 마로의 시체에 조작된 편지를 숨겨두기
 Pleated Shoes	야를의 주름 잡힌 신발	야를의 주름잡힌 신발
 Poison Cloaked Spider	마법 주문서 - 맹독 망토 거미	마법 주문서 - 독 망토 거미
@@ -627,7 +638,14 @@ Remove the workbench from the Enchanter's Tower.	마법부여 연구탑에서 �
 Remove the workbench from the Storage Room.	저장고에서 작업선반을 제거합니다.	창고에서 작업선반을 제거합니다.
 Remove Tree	나무의 바위 효과 제거	나무의 바위효과 제거
 Replace my Enchanting Lab with a Child's Room. (<Global=HDRiftenChildRoom> gold)	마법부여 연구실을 아이의 방으로 개조하고 싶다. (<Global=HDRiftenChildRoom> 골드)	마법 부가 연구실을 아이의 방으로 개조라고 싶다. (<Global=HDRiftenChildRoom> 골드)
+Report failure to <Alias=FactionLeader>.	<Alias=FactionLeader>에게 작전실패를 보고하기	<Alias=FactionLeader> 에게 작전실패를 보고하기
+Report success to <Alias=FactionLeader>.	<Alias=FactionLeader>에게 작전성공을 보고하기	<Alias=FactionLeader> 에게 작전성공을 보고하기
+Report to <Alias=CWFieldCOSonsWhiterunCamp>	<Alias=CWFieldCOSonsWhiterunCamp>에게 보고하기	<Alias=CWFieldCOSonsWhiterunCamp> 에게 보고하기
+Report to <Alias=FieldCO>.	<Alias=FieldCO>에게 보고하기	<Alias=FieldCO> 에게 보고하기
+Report to <Alias=ImperialFieldCO>	<Alias=ImperialFieldCO>에게 보고하기	<Alias=ImperialFieldCO> 에게 보고하기
+Report to <Alias=WhiterunCapitalImperialFieldCO>	<Alias=WhiterunCapitalImperialFieldCO>에게 보고하기	<Alias=WhiterunCapitalImperialFieldCO> 에게 보고하기
 Rested	휴식 효과	휴식효과
+Retrieve <Alias=ItemToGet> from <Alias=Mark> in <Alias=City>	<Alias=City>에 있는 <Alias=Mark>에게서 <Alias=ItemToGet> 훔쳐오기	<Alias=City>에 있는 <Alias=Mark> 에게서 <Alias=ItemToGet> 훔쳐오기
 Retrieve the Aetherium Crest	에테리움 문장을 회수하기	에테리움 방패문장을 회수하기
 Retrieve the Soul Essence Gem	영혼 정수의 보석 회수하기	영혼의 정수 회수하기
 Retrieve the Stalhrim Source Map	스탈림 원천 지도를 회수하기	스탈림 근원의 지도를 회수하기
@@ -707,6 +725,7 @@ Steal <Global=TGRNGold> gold in goods from <Alias=City>	<Alias=City>에서 <Glob
 Steal Suvaris Atheron's logbook	수바리스 아세론의 항해일지를 훔치기	수바리스 아세론의 항박일지를 훔치기
 Steal the <Alias=QuestItem> for <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>을(를) 위해 <Alias=QuestItem> 훔치기	<Alias.ShortName=QuestGiver> 를 위해 <Alias=QuestItem> 훔치기
 Steal the <Alias=QuestItem> for Olda	올다를 위해서 <Alias=QuestItem>을 훔치기	올다를 위해서 <Alias=QuestItem>를 훔치기
+Steal the plans from <Alias=Camp>	<Alias=Camp>에서 계획서를 입수하기	<Alias=Camp> 에서 계획서를 입수하기
 Steamed Mudcrab Legs	찐 진흙게 다리	구운 진흙게 다리
 Steel Armor of Major Stamina	강철 전투화 - 중급 지구력 증가	강철 방어구 - 중급 지구력 증가
 Steel Arrow	화살 - 강철	화살 - 강철 화살
@@ -747,6 +766,7 @@ Targets that fail to resist are immobilized in hardened ash for <dur> seconds.	�
 Taron Dreth's Robes	타론 드레스의 로브	타론의 로브
 Tel Mithryn Steward's House	텔 미스린 행정관의 집	텔 미스린 집사의 집
 Tell <Alias.ShortName=Questgiver> that <Alias.ShortName=Target> is taken care of	<Alias.ShortName=Questgiver>에게 <Alias.ShortName=Target>을(를) 처리했다고 말하기	<Alias.ShortName=Questgiver>에게 <Alias.ShortName=Target>을 처리했다고 말하기
+Tell <Alias.ShortName=Questgiver> the vampire is dead	<Alias.ShortName=Questgiver>에게 흡혈귀가 죽었다고 말하기	<Alias.ShortName=Questgiver> 에게 흡혈귀가 죽었다고 말하기
 Tell <Alias.ShortName=Questgiver> what <Alias.ShortName=Target> said about the outfit.	<Alias.ShortName=Target>가 복장에 관해 한 말을 <Alias.ShortName=Questgiver>에게 전하기	<Alias.ShortName=Target> 이 복장에 관해 한 말을 <Alias.ShortName=Questgiver>에게 전하기
 Tell Bralsa Drel she's welcome at the Retching Netch	그녀가 레칭 네치 여관에 출입해도 된다는 것을 브랄사 드렐에게 전하기	그녀가 여관에 출입해도 된다는 것을 브랄사 드렐에게 전하기
 Tell me about the Briar Heart.	찔레 심장에 대해 말해주시오.	찔레심장에 대해 말해주시오.
@@ -766,21 +786,25 @@ The <Alias=Boss> at <Alias=Dungeon> has been dealt with.	<Alias=Dungeon>에 있�
 The <Alias=Boss> at <Alias=Dungeon> has been destroyed.	<Alias=Dungeon>의 <Alias=Boss>은(는) 죽었습니다.	<Alias=Dungeon>의 <Alias=Boss>는 죽었습니다.
 The Alik'r won't trouble you anymore.	알리키어 걱정은 이제 안 해도 되오.	알리키어는 걱정은 이제 안 해도 되오.
 The Augur referred to it as the Eye of Magnus, not me.	그걸 '매그너스의 눈'이라고 부른 건 예언자지, 내가 아니오.	예언은 '매그너스의 눈'과 관련이 있다고 했지, 내가 아니오.
+The bandit leader at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>의 산적 두목은 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 의 산적 두목은 죽었습니다. 현상금을 받으러 왔습니다.
 The Black-Briars of Riften are one of the most influential and well-connected clans in Skyrim.	리프튼의 블랙-브라이어 가문은 스카이림에서 가장 영향력이 크고 인맥이 넓은 가문 중 하나입니다.	리프튼에 있는 블랙-브라이어 회사는 스카이림에서 가장 영향력이 있고 잘 구성되어 있는 조직들 중 하나입니다.
 The College of Winterhold seems like a good place to start.	윈터홀드 대학에서부터 시작하는 게 좋을 것 같군.	윈터홀드의 대학에서부터 시작하는 게 좋을 것 같군.
 The Companions are werewolves?	컴패니언은 모두 늑대인간인가?	컴패니언즈는 모두 늑대인간인가?
 The Creation selection / load order has changed.  The game will now reload your data files.	모드 선택/ 로드 오더가 변경되었습니다.  데이터 파일을 다시 불러오겠습니다.	모드 선택/ 로드 오더가 변경 되었습니다.  데이타 파일을 다시 불러오겠습니다.
 The Dawnguard has armored battle trolls that they use when fighting vampires.	던가드들은 흡혈귀와 싸울 때 이용하는 갑옷을 입힌 전투 트롤들을 가지고 있습니다.	던가드들은 흡혈귀와 싸울 때 이용하는 강화 전투 트롤들을 가지고 있습니다.
+The dragon at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>에 있던 드래곤은 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 에 있던 드래곤은 죽었습니다. 현상금을 받으러 왔습니다.
 The Empire supported Elisif, but Ulfric now controls Skyrim.	제국은 엘리시프를 지지했지만, 이제는 울프릭이 스카이림을 지배하고 있소.	제국은 엘리시프를 지지하고 있지만, 울프릭이 스카이림을 지배하고 있소.
 The Empire supports Elisif, and killed Ulfric for his rebellion.	제국이 엘리시프를 지지하고 있고, 울프릭을 반역죄로 처형했지.	제국이 엘리시프를 지지하고 있고, 울프릭을 반역죄로 처형 당했지.
 The Empire supports Elisif, but there are many in Skyrim loyal to Ulfric.	제국은 엘리시프를 지지하고 있지만, 스카이림에는 울프릭에게 충성하는 사람들도 많지.	제국은 엘리시프를 지지하고 있지만, 스카이림 울프릭에게 충성하는 사람들도 많지.
 The Five Far Stars	멀리 떨어진 다섯 개의 별	다섯개의 별
 The Fourth Era began 200 years ago when Martin Septim sacrificed himself to save the world from the Oblivion Crisis.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대 위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.
+The giant at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>에 있던 거인은 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 에 있던 거인은 죽었습니다. 현상금을 받으러 왔습니다.
 The Gourmet. Who is he? Where is he?	'미식가'는 누구지? 어디에 있지?	'미식가'는 누구이며? 어디에 있지?
 The Imperials gained control of <Alias=Hold>.	제국군이 <Alias=Hold>을(를) 점령했습니다.	제국군이 <Alias=Hold> 를 점령했습니다.
 The Imperials kept control of <Alias=Hold>.	제국군이 <Alias=Hold>을(를) 지켜냈습니다.	제국군이 <Alias=Hold> 를 지켜냈습니다.
 The Imperials lost control of <Alias=Hold>.	제국군이 <Alias=Hold>을(를) 잃었습니다.	제국군이 <Alias=Hold> 를 잃었습니다.
 The Keepers of the Razor	면도칼의 파수꾼	메이룬스 단검의 파수꾼
+The leader of <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>의 우두머리는 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 의 우두머리는 죽었습니다. 현상금을 받으러 왔습니다.
 The lock has been broken.	자물쇠가 망가졌습니다.	자물쇠는 망가졌습니다.
 The Nords first conquered Markarth from the native people of the Reach thousands of years ago.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 빼앗았습니다.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 뺏았습니다.
 The poor in Markarth live in the Warrens, and are almost exclusively natives of the Reach.	마르카스의 가난한 자들은 빈민굴에 살고 있으며, 대부분은 리치의 원주민들입니다.	마르카스의 가난한 자들은 빈민촌에 살고 있으며, 대부분은 리치의 원주민들입니다.

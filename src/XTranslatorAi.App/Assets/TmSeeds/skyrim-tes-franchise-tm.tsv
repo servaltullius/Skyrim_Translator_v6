@@ -125,7 +125,7 @@ Source	Target
 50% chance for each attribute to absorb <mag> points of Health, Stamina and/or Magicka.	체력, 지구력, 매지카 각각에 대해 50% 확률로 <mag> 흡수합니다.
 50% chance for each element of fire, frost and shock to do <mag> points of damage.	화염, 냉기, 전격 각각에 대해 50% 확률로 <mag> 의 피해를 입힙니다.
 6000 gold, and they're yours.	6,000 골드를 내면 당신에게 팔겠소.
-<Alias.Cap=SonsMinorHoldCapital> seems like a fair trade.	<Alias.Cap=SonsMinorHoldCapital>라면 공정한 거래 같은데.
+<Alias.Cap=SonsMinorHoldCapital> seems like a fair trade.	<Alias.Cap=SonsMinorHoldCapital>(이)라면 공정한 거래 같은데.
 <Alias.ShortName=Client>'s <BaseName>	<Alias.ShortName=Client>의 <BaseName>
 <Alias.ShortName=QuestGiver> gave me this ring. I think it's yours.	<Alias.ShortName=QuestGiver>이(가) 이 반지를 주었는데, 당신 것 같군.
 <Alias.ShortName=Target> will be paying you all more.	<Alias.ShortName=Target>이(가) 당신들에게 더 지불해 줄 것이다.
@@ -136,7 +136,7 @@ Source	Target
 <Alias=Dungeon> is free of bandits.	<Alias=Dungeon>의 산적들은 처리되었소.
 <Alias=Follower> is waiting for you	<Alias=Follower> : 당신을 기다리고 있습니다.
 <Alias=Home> Furnishings	<Alias=Home> 가구들
-<Alias=ImperialMinorHoldCapital> seems like a fair trade.	<Alias=ImperialMinorHoldCapital>라면 공정한 거래같이 보이는군.
+<Alias=ImperialMinorHoldCapital> seems like a fair trade.	<Alias=ImperialMinorHoldCapital>(이)라면 공정한 거래같이 보이는군.
 <Alias=Mark>'s <BaseName>	<Alias=Mark>의 <BaseName>
 <Alias=Player>'s <BaseName>	<Alias=Player>의 <BaseName>
 <Alias=Player>'s Horse	<Alias=Player>의 말
@@ -347,7 +347,7 @@ Absorb Spells	마법 흡수
 Absorb Stamina	지구력 흡수
 Accept	승인
 Accept <Alias=Jarl>'s surrender.	<Alias=Jarl>의 항복을 받기
-Accept Jarl <Alias=Jarl>'s surrender	<Alias=Jarl> 의 항복을 받기
+Accept Jarl <Alias=Jarl>'s surrender	<Alias=Jarl>의 항복을 받기
 Accept Sign	승인
 Accompany Frea to Skaal Village	프레아와 함께 스칼 마을로 가기
 Acolyte Jenssen	복사 옌센
@@ -2119,7 +2119,7 @@ Bring Reyda's Necklace to Narfi	나피에게 레이다의 목걸이를 가져다
 Bring some Frost Salts to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 냉기 소금을 전해주기
 Bring some vampire dust to Elynea	엘리니아에게 흡혈귀 가루를 몇 개 가져다 주기
 Bring some void salts to Elynea	엘리니아에게 공허 소금 몇 개를 가져다 주기
-Bring the <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver> 에게 <Alias=QuestItem> 가져다 주기
+Bring the <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 <Alias=QuestItem> 가져다 주기
 Bring the <Alias=QuestItem> to Olda	<Alias=QuestItem>을 올다에게 가져다 주기
 Bring the blade shards to Silus	단검 칼날을 사일러스에게 가져가기
 Bring the Bonemold Formula to Glover Mallory	뼈다귀 물품 제조법을 글로버에게 전해주기
@@ -2127,11 +2127,11 @@ Bring the claw to Camilla	카밀라에게 발톱을 가져다 주기
 Bring the claw to Lucan	루칸에게 황금 발톱을 가져다 주기
 Bring the deathbell to Ingun Black-Briar	데스벨을 잉건에게 가져다 주기
 Bring the Dibella Statue to Lisbet	디벨라의 동상을 리즈벳에게 가져다 주기
-Bring the documents to <Alias=FieldCO>	문서를 <Alias=FieldCO> 에게 전달하기
+Bring the documents to <Alias=FieldCO>	문서를 <Alias=FieldCO>에게 전달하기
 Bring the evidence to Adril Arano	아드릴 아라노에게 증거를 전달하기
 Bring the flawless sapphires to Madesi	완벽한 사파이어를 마데시에게 가져다 주기
-Bring the forged documents to <Alias=EnemyFieldCO>	위조된 문서를 <Alias=EnemyFieldCO> 에게 전달하기
-Bring the Forgemaster's Fingers to <Alias.ShortName=Chief>	포지마스터의 손가락을 <Alias.ShortName=Chief> 에게 가져가기
+Bring the forged documents to <Alias=EnemyFieldCO>	위조된 문서를 <Alias=EnemyFieldCO>에게 전달하기
+Bring the Forgemaster's Fingers to <Alias.ShortName=Chief>	포지마스터의 손가락을 <Alias.ShortName=Chief>에게 가져가기
 Bring the Four Master Illusion texts to Drevis Neloren	드레비스 넬로렌에게 달인 환영마법 책 4권을 가져가기
 Bring the gold ore to Madesi	금광석을 마데시에게 가져다 주기
 Bring the hilt to Silus	단검 손잡이 부분을 사일러스에게 가져가기
@@ -2871,7 +2871,7 @@ Cleansing Light	정화하는 빛
 Cleansing of the Fane	신전의 정화
 Cleansing the Stones	바위를 정화하기
 Clear	제거
-Clear <Alias=WealthyHome> in <Alias=City> of valuables (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)	<Alias=City> 도시의 <Alias=WealthyHome> 에서 귀중품들을 싹쓸이하기 (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)
+Clear <Alias=WealthyHome> in <Alias=City> of valuables (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)	<Alias=City> 도시의 <Alias=WealthyHome>에서 귀중품들을 싹쓸이하기 (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)
 Clear out <Alias=AnimalDen>	<Alias=AnimalDen>의 적들을 쓸어버리기
 Clear out Aringoth's safe	애린고쓰의 금고에 있는 물품을 모두 털어내기
 Clear out Fort Hraggstad	흐라그스타드 요새의 적들을 쓸어버리기
@@ -3884,7 +3884,7 @@ Degaine	디게인
 Delacourt	딜라쿠어
 Delayed Burial	지연된 장례식
 Delete this game?	이 저장파일을 삭제하겠습니까?
-Deliver <Alias=QuestItem> to <Alias.ShortName=Target>	<Alias.ShortName=Target> 에게 <Alias=QuestItem> 배달하기
+Deliver <Alias=QuestItem> to <Alias.ShortName=Target>	<Alias.ShortName=Target>에게 <Alias=QuestItem> 배달하기
 Deliver axe to Jarl Ulfric	야를 울프릭에게 도끼를 전달하기
 Deliver axe to the Jarl of Whiterun	화이트런의 야를에게 도끼를 전달하기
 Deliver Faendal's letter to Camilla	카밀라에게 페인달의 편지를 전달하기
@@ -6942,8 +6942,8 @@ For Shelly	쉘리에게
 For the Dark Brotherhood, that can be easily arranged. (Intimidate)	다크 브라더후드에게 그 정도는 쉬운 일이지. (위협)
 For the Good of Morthal	모탈의 이익을 위하여
 Forbidden Legend	금지된 전설
-Force <Alias=Jarl>'s surrender	<Alias=Jarl> 의 항복을 강요하기
-Force <Alias=Jarl>'s surrender.	<Alias=Jarl> 에게 항복을 강요하기
+Force <Alias=Jarl>'s surrender	<Alias=Jarl>의 항복을 강요하기
+Force <Alias=Jarl>'s surrender.	<Alias=Jarl>에게 항복을 강요하기
 Force General Tullius to surrender	툴리우스 장군을 항복시키기
 Force Jarl <Alias=Jarl> to surrender	<Alias=Jarl> 항복시키기
 Force of habit, I guess.	습관인가 보군.
@@ -15275,7 +15275,7 @@ Plans for what?	무슨 계획?
 Plant <Alias=QuestItem> in <Alias=TargetHouse>	<Alias=TargetHouse>에 <Alias=QuestItem> 놓기
 Plant letter on <Alias=Victim>'s corpse	<Alias=Victim>의 시체에 편지를 숨겨두기
 Plant Madesi's Ring	마데시의 반지를 넣기
-Plant the <Alias=Evidence> in <Alias=WealthyHome> in <Alias=City>	<Alias=City>에 있는 <Alias=WealthyHome> 에 <Alias=Evidence> 몰래 두고오기
+Plant the <Alias=Evidence> in <Alias=WealthyHome> in <Alias=City>	<Alias=City>에 있는 <Alias=WealthyHome>에 <Alias=Evidence> 몰래 두고오기
 Plant the Balmora Blue	발모라 블루를 숨겨놓기
 Plant the Incriminating Letter on Gaius Maro's body	가이우스 마로의 시체에 유죄증명 편지를 숨겨두기
 Plant the taproot	곧은 뿌리를 심기
@@ -15970,21 +15970,21 @@ Report back to Neloth	넬로스에게 보고하기
 Report back to Orthus	오서스에게 돌아가 보고하기
 Report Cicero to the guard	시세로에게 누명을 씌워 경비병에게 고발하기
 Report Creation for explicit content, general abuse or violations of Code of Conduct/Terms of Service?	유해 콘텐츠, 욕설, 혹은 행위 규범이나 약관 위배로 모드를 신고하시겠습니까?
-Report failure to <Alias=FactionLeader>.	<Alias=FactionLeader> 에게 작전실패를 보고하기
+Report failure to <Alias=FactionLeader>.	<Alias=FactionLeader>에게 작전실패를 보고하기
 Report Leifnarr's death to his family	레이프나의 죽음을 그의 가족에게 알리기
 Report Orchendor's death to Peryite	페리아이트에게 오챈더의 죽음을 보고하기
 Report Sarthis Idren to the Jarl of Riften	리프튼의 야를에게 사시스 이드렌에 관해 보고하기
 Report skooma source to Jarl of Riften	리프튼의 야를에게 스쿠마의 출처를 보고하기
-Report success to <Alias=FactionLeader>.	<Alias=FactionLeader> 에게 작전성공을 보고하기
+Report success to <Alias=FactionLeader>.	<Alias=FactionLeader>에게 작전성공을 보고하기
 Report success to <Alias=FieldCO>	<Alias=FieldCO>에게 임무 성공을 보고하기
 Report success to <Alias=QuestGiver>	<Alias=QuestGiver>에게 성공을 보고하기
 Report the stash of Emberbrand Wine to Captain Veleth	엠버브랜드 포도주에 관해서 벨레스 대장에게 보고하기
-Report to <Alias=CWFieldCOSonsWhiterunCamp>	<Alias=CWFieldCOSonsWhiterunCamp> 에게 보고하기
+Report to <Alias=CWFieldCOSonsWhiterunCamp>	<Alias=CWFieldCOSonsWhiterunCamp>에게 보고하기
 Report to <Alias=FieldCO>	<Alias=FieldCO>에게 보고하기
-Report to <Alias=FieldCO>.	<Alias=FieldCO> 에게 보고하기
+Report to <Alias=FieldCO>.	<Alias=FieldCO>에게 보고하기
 Report to <Alias=Friend>	<Alias=Friend>에게 보고하기
-Report to <Alias=ImperialFieldCO>	<Alias=ImperialFieldCO> 에게 보고하기
-Report to <Alias=WhiterunCapitalImperialFieldCO>	<Alias=WhiterunCapitalImperialFieldCO> 에게 보고하기
+Report to <Alias=ImperialFieldCO>	<Alias=ImperialFieldCO>에게 보고하기
+Report to <Alias=WhiterunCapitalImperialFieldCO>	<Alias=WhiterunCapitalImperialFieldCO>에게 보고하기
 Report to Amaund Motierre	아먼드 모티에르에게 보고하기
 Report to Astrid	아스트리드에게 보고하기
 Report to Commander Maro	마로 사령관에게 보고하기
@@ -16083,7 +16083,7 @@ Retaking Thirsk	터스크 탈환
 Retching Netch Key	열쇠 - 레칭 네치
 Retrieval	유물 복원
 Retrieve <Alias.ShortName=Item> off of <Alias.ShortName=DeadPerson>.	<Alias.ShortName=DeadPerson> 시체에서 <Alias.ShortName=Item> 회수하기
-Retrieve <Alias=ItemToGet> from <Alias=Mark> in <Alias=City>	<Alias=City>에 있는 <Alias=Mark> 에게서 <Alias=ItemToGet> 훔쳐오기
+Retrieve <Alias=ItemToGet> from <Alias=Mark> in <Alias=City>	<Alias=City>에 있는 <Alias=Mark>에게서 <Alias=ItemToGet> 훔쳐오기
 Retrieve and equip the Ebony Mail	에보니 메일을 회수하고 장비하기
 Retrieve Arondil's Journals (<Global=FFRiften21JFound>/<Global=FFRiften21JTotal>)	아론딜의 일지를 회수하기 (<Global=FFRiften21JFound>/<Global=FFRiften21JTotal>)
 Retrieve Arvak's skull	아바크의 해골을 회수하기
@@ -18813,7 +18813,7 @@ Steal the <Alias=QuestItem> for <Alias.ShortName=QuestGiver>	<Alias.ShortName=Qu
 Steal the <Alias=QuestItem> for Olda	올다를 위해서 <Alias=QuestItem>을 훔치기
 Steal the Argonian Ale	아르고니안 맥주를 훔치기
 Steal the letter incriminating Arn	안의 범죄행위에 관한 편지를 훔치기
-Steal the plans from <Alias=Camp>	<Alias=Camp> 에서 계획서를 입수하기
+Steal the plans from <Alias=Camp>	<Alias=Camp>에서 계획서를 입수하기
 Steal the statue in the Temple of Dibella	디벨라의 신전에서 동상을 훔치기
 Stealing Plans	작전 훔치기
 Stealth	잠행
@@ -19680,7 +19680,7 @@ Tell <Alias.ShortName=Questgiver> <Alias=QuestItem> has been planted	<Alias.Shor
 Tell <Alias.ShortName=Questgiver> that <Alias.ShortName=Target> agreed to release the shipment	<Alias.ShortName=Questgiver>에게 <Alias.ShortName=Target>가 선적물을 풀어주는 데 동의했다고 전하기
 Tell <Alias.ShortName=Questgiver> that <Alias.ShortName=Target> is taken care of	<Alias.ShortName=Questgiver>에게 <Alias.ShortName=Target>을(를) 처리했다고 말하기
 Tell <Alias.ShortName=Questgiver> the bandit is dead	<Alias.ShortName=Questgiver>에게 산적 두목이 죽었다고 전하기
-Tell <Alias.ShortName=Questgiver> the vampire is dead	<Alias.ShortName=Questgiver> 에게 흡혈귀가 죽었다고 말하기
+Tell <Alias.ShortName=Questgiver> the vampire is dead	<Alias.ShortName=Questgiver>에게 흡혈귀가 죽었다고 말하기
 Tell <Alias.ShortName=Questgiver> what <Alias.ShortName=Target> said about the outfit.	<Alias.ShortName=Target>가 복장에 관해 한 말을 <Alias.ShortName=Questgiver>에게 전하기
 Tell <Alias.ShortName=Questgiver> what <Alias.ShortName=Target> said.	<Alias.ShortName=Questgiver>에게 <Alias.ShortName=Target>가 한 말을 전해주기
 Tell Ainethach that Atar has been dealt with	아이너테치에게 아타르와의 문제를 해결했다고 알리기
@@ -19999,7 +19999,7 @@ The Atronach Doomstone	아트로나크의 선돌
 The Atronach Stone	아트로나크의 선돌
 The Augur referred to it as the Eye of Magnus, not me.	그걸 '매그너스의 눈'이라고 부른 건 예언자지, 내가 아니오.
 The Axe Man	도끼꾼
-The bandit leader at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation> 의 산적 두목은 죽었습니다. 현상금을 받으러 왔습니다.
+The bandit leader at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>의 산적 두목은 죽었습니다. 현상금을 받으러 왔습니다.
 The bandits won't be a problem anymore.	산적들은 더 이상 문제가 되지 않을거요.
 The Bannered Mare	일류 암말
 The Bards College	바드 대학
@@ -20092,7 +20092,7 @@ The difference is I still have honor.	난 아직 명예를 지키고 있다는 �
 The Doors of Oblivion	오블리비언 관문
 The Doors of the Spirit	영혼의 문
 The Dowry	결혼지참금
-The dragon at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation> 에 있던 드래곤은 죽었습니다. 현상금을 받으러 왔습니다.
+The dragon at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>에 있던 드래곤은 죽었습니다. 현상금을 받으러 왔습니다.
 The Dragon Break	드래곤 브레이크
 The dragon destroyed Helgen. And last I saw it was heading this way.	드래곤이 헬겐을 파괴했습니다. 마지막으로 봤을 때 이쪽으로 날아갔습니다.
 The dragon is dead.	드래곤은 죽었습니다.
@@ -20154,7 +20154,7 @@ The Gauldur Amulet	골더 아뮬렛
 The ghost is looking for his sword.	그 유령은 히얄티의 검을 찾고 있던데.
 The ghost mentioned a "Hjalti."	유령이 '히얄티'에 대해 말하던데.
 The Ghost of Old Hroldan	올드 흐롤단의 유령
-The giant at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation> 에 있던 거인은 죽었습니다. 현상금을 받으러 왔습니다.
+The giant at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>에 있던 거인은 죽었습니다. 현상금을 받으러 왔습니다.
 The giant in <Alias=GiantCamp> is dead.	<Alias=GiantCamp>의 거인은 죽었습니다.
 The Gift	선물
 The Gift of Charity	자비의 선물
@@ -20228,7 +20228,7 @@ The last battle here was hundreds of years ago.	여기서 벌어진 마지막 �
 The Last King of the Ayleids	에일리드의 마지막 왕
 The last of the hunters is dead.	마지막 사냥꾼이 죽었다.
 The last? What happened to the rest?	마지막? 나머지는 어떻게 되었는데?
-The leader of <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation> 의 우두머리는 죽었습니다. 현상금을 받으러 왔습니다.
+The leader of <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>의 우두머리는 죽었습니다. 현상금을 받으러 왔습니다.
 The leader of <Alias=Dungeon> is dead.	<Alias=Dungeon>의 우두머리는 죽었습니다.
 The Legend of Red Eagle	붉은 독수리의 전설
 The Legendary Sancre Tor	전설의 생크 토르
