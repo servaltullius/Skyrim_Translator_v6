@@ -1,4 +1,5 @@
 Source	Target	Previous
+(Optional) Find the key to the well in the Catacombs	(선택) 지하묘지 안에서 우물의 열쇠를 찾기	(선택) 지하묘지안에서 우물의 열쇠를 찾기
 +<mag> carrying capacity, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.	무게한계 <mag> 증가, 무거운 방어구를 착용해도 이동에 영향을 받지 않게 됩니다.
 <Alias=Player>'s Wolf Spirit	<Alias=Player>의 늑대 영혼	<Alias=Player>의 늑대 정령
 <mag> points of extra damage to Animals.	동물에게 <mag> 의 추가 피해를 입힙니다.	동물에게 <mag>의 추가 피해를 입힙니다.
@@ -25,6 +26,9 @@ Aretino Family Heirloom	아레티노 가문의 가보	아렌티노 가문의 가
 Arniel's Shade	아니얼의 유령	아니얼의 망령
 Ascendant Conjurer	상급 소환마법사	숙련된 소환마법사
 Ascendant Necromancer	상급 강령술사	숙련된 강령술사
+Ask around about Laelette	레일레트에 관해 여러 사람에게 물어보기	레일레트에 관해 여러사람에게 물어보기
+Assess the damage to the Great Hall	대회랑의 피해규모를 가늠하기	대 회랑의 피해규모를 가늠하기
+Assist the people of the Reach (<Global=FriendsCountReach>/<Global=FriendsTotalMajorHold>)	리치 지역의 주민들을 돕기 (<Global=FriendsCountReach>/<Global=FriendsTotalMajorHold>)	리치지역의 주민들을 돕기 (<Global=FriendsCountReach>/<Global=FriendsTotalMajorHold>)
 Aversion to Fire	독 - 화염 약점 중급	독 - 화염 중급
 Aversion to Frost	독 - 냉기 약점 중급	독 - 냉기 중급
 Aversion to Magic	독 - 마법 약점 중급	독 - 마법 저항 중급
@@ -37,12 +41,17 @@ Bonemold Pauldron Armor	뼈다귀 견갑 방어구	뼈다귀 방어구
 Bound Axe	마법 전투 도끼	마법 전투 도끼 소환
 Braided Bread	땋은 빵	바게트 빵
 Bring the Dibella Statue to Lisbet	디벨라의 동상을 리즈벳에게 가져다 주기	디벨라의 동상을 리스벳에게 가져다 주기
+Bring the note to a guard in Raven Rock	레이븐 락의 경비병에게 쪽지를 전달하기	레이븐 락의 경비병에게 노트를 전달하기
+Bring Troll Fat and a Daedra Heart to Atub	에이텁에게 트롤 지방과 데이드라 심장을 가져가기	에이텁에게 트롤지방과 데이드라 심장을 가져가기
 Broken Steel Warhammer Head	부서진 강철 전쟁망치 머리부분	부서진 강철 전쟁망치 머릿부분
 Bujold the Unworthy	자격 없는 부졸드	자격없는 부졸드
 Burial Urn	유골 단지	유물 단지
+Buy the Book off Lod	로드에게서 그 책을 구입하기	로드에게 그 책을 구입하기
 Cage	우리	벽장
 Changed Ones	변화한 자들	변절한 자들
 Charm - Master of the Mind	매료 - 정신의 지배자	매료 - 정신마법의 달인
+Chasing Echoes	메아리를 쫓아서	따라오는 메아리
+Cleanse the focal points for magical energies around the College	대학 주변의 마법 에너지 중심점을 정화하기	대학주변의 마법 에너지 중심점을 정화하기
 Complaint Letter	항의 편지	고소 편지
 Conjure Spectral Dragon	유령 드래곤 소환	영체 드래곤 소환
 Cow Hand	목동	카우 핸드
@@ -52,7 +61,11 @@ Deadly Aversion to Fire	독 - 화염 약점 특급	독 - 화염 특급
 Deadly Aversion to Frost	독 - 냉기 약점 특급	독 - 냉기 특급
 Deadly Aversion to Magic	독 - 마법 약점 특급	독 - 마법 저항 특급
 Deadly Aversion to Shock	독 - 전격 약점 특급	독 - 전격 특급
+Deliver the stone to Phinis	시질 스톤을 피니스에게 전달하기	시질스톤을 피니스에게 전달하기
+Deliver the sword to Proventus Avenicci	프로벤투스 아베니치에게 검을 배달하기	프로벤투스 아베니치 에게 검을 배달하기
 Desecrated Corpse	훼손된 시체	바짝마른 시체
+Destroy the barricade blocking the Jarl's house.	야를의 집을 막고 있는 바리케이드를 파괴하기	야를의 집을 지키고있는 장벽을 파괴하기
+Discreetly kill <Alias=Target>	은밀하게 <Alias=Target> 죽이기	신중하게 <Alias=Target> 죽이기
 Does <mag> damage over <dur> seconds. Additional opponents in melee range have a chance to be infected.	<dur> 초 동안 <mag> 의 피해를 입힙니다. 일정한 확률로 주변 적도 감염시킵니다.	<dur> 초 동안 <mag> 의 피해를 입힙니다. 일정한 확률로 주변 적에게 피해를 줍니다.
 Double-Distilled Skooma	재증류한 스쿠마	재 증류한 스쿠마
 Dragon Priest Dagger	드래곤 사제의 단검	드래곤의 사제 단검
@@ -72,14 +85,21 @@ Dwarven Bracers of Major Wielding	드워프제 장갑 - 중급 한손무기	드�
 Dwarven Bracers of Smithing	드워프제 장갑 - 하급 제련	드워프제 손목 보호대 - 하급 제련
 Dwarven Bracers of Sure Grip	드워프제 장갑 - 하급 양손무기	드워프제 손목 보호대 - 하급 양손무기
 Dwarven Bracers of Wielding	드워프제 장갑 - 하급 한손무기	드워프제 손목 보호대 - 하급 한손무기
+End the threat to Councilor Morvayn	모베인 의원에 대한 위협을 끝내기	모베인 의원의 위협을 끝내기
+Enter the Keep with Hadvar or Ralof	해드버 또는 레일로프를 따라서 요새 안으로 들어가기	해드버 또는 레일로프를 따라서 요새안으로 들어가기
 Equip and cast to Learn Raise Zombie	장비하고 사용 시 하급 강령술 마법을 배웁니다.	장비하고 사용 시 하급 강령술 마법을 배웁니다
 Equip and cast to learn the Bound Sword Spell	장비하고 사용 시 마법 검 소환 마법을 배웁니다.	장비하고 사용 시 마법 검 소환 마법을 배웁니다
 Equip and cast to learn the Oakflesh spell	장비하고 사용 시 참나무 피부 마법을 배웁니다.	장비하고 사용 시 참나무 피부 마법을 배웁니다
+Escape Yngol's Barrow	잉골 고분을 탈출하기	잉골의 무덤을 탈출하기
+Execute Ulfric Stormcloak	울프릭 스톰클록을 처형하기	울프릭 처형하기
+Experimental Subject	실험 대상	실험 과제
 Explore Vahlok's Tomb	발록의 묘지를 탐색하기	발록의 묘지을 탐색하기
+Explore Yngol's Barrow	잉골 고분을 탐색하기	잉골의 무덤을 탐색하기
 Faded Diary	빛바랜 일기	빛 바랜 일기
 Fall from Glory	영광에서의 몰락	영광에서 몰락
 First Letter from EEC	동제국 회사의 첫 번째 편지	동제국 회사의 첫번째 편지
 For <dur> seconds, opponents in melee range have a chance to be infected.	<dur> 초 동안 일정한 확률로 주변 적을 감염시킵니다.	<dur> 초 동안 일정한 확률로 주변 적에게 피해를 줍니다.
+Forge the prison registry	입소자 명부를 위조하기	감옥 등록부를 위조하기
 Fort Fellhammer Mines	펠해머 요새 광산	펠해머 광산 요새
 Fortify Magicka Rate	매지카 재생 강화	매지카재생 강화
 Fourth Ring	네 번째 고리	네 번째 반지
@@ -89,23 +109,33 @@ Fultheim the Fearless	두려움 없는 풀트하임	두려움없는 풀트하임
 Gaius Maro's Schedule	가이우스 마로의 일정	가이우스 마로의 예정
 Gate Barred	빗장 걸린 관문	빗장걸린 관문
 General Falx Carius	팔크스 카리우스 장군	폭스 카리우스 장군
+Get the staff	지팡이를 손에 넣기	지팡이를 가지기
 Ghosts in the Storm	폭풍 속의 유령들	폭풍속의 유령들
+Give the note to Captain Veleth	벨레스 대장에게 쪽지를 주기	벨레스 대장에게 노트를 주기
+Go to the Shrine of Talos	탈로스의 성소로 가기	탈로스의 성지로 가기
 Greater Magic Resistance	상급 마법 저항력	상급 마법 저항
 Hallowed Dead	신성한 시신	신성한 사체
+Here, take them. (Give fragments)	여기, 받으시오. (조각들을 건넨다)	여기, 받으시오. (파편들을 건넨다)
 Hewnon Black-Skeever	휴넌 블랙-스키버	휴논 블랙-스키버
 Honed Draugr War Axe	연마된 고대 노드 도끼	연마된 드로거 도끼
 Horker and Ash Yam Stew	호커와 화산 참마 스튜	호커와 화산참마 스튜
+I return them with honor. (Give fragments)	명예롭게 반환합니다. (조각들을 건넨다)	명예롭게 반환합니다. (파편들을 건넨다)
+Identify the Crystal Shard	크리스털 파편의 정체를 알아내기	크리스털 조각의 정체를 알아내기
 Imbuing Switch	주입 스위치	염색 스위치
 In 3E 389 Emperor Uriel VII was imprisoned by his Imperial Battlemage, Jagar Tharn, who then impersonated him for years.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄에 의해 갇히게 되었습니다. 그 후 수 년동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄 에 의해 갇히게 되었습니다. 그 후 수 년동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.
 Increase the damage and decrease the cost of Destruction spells for <dur> seconds.	<dur> 초 동안 파괴마법의 위력이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 파괴마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Increase the duration and decrease the cost of Conjuration spells for <dur> seconds.	<dur> 초 동안 소환마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 소환마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Increase the duration and decrease the cost of Illusion spells for <dur> seconds.	<dur> 초 동안 환영마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 환영마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Iron Door	철문	강철 문
+Join the men defending <Alias=Fort>	<Alias=Fort> 를 방어 중인 병사들과 합류하기	<Alias=Fort> 방어중인 병사들과 합류하기
 Khajiit have deadly claws that can be used in unarmed combat. They can use Night Eye to see better in the dark.	카짓은 육탄전에서 치명적인 위력을 발휘하는 발톱을 가지고 있습니다. 또한 밤눈 기술을 사용하여 어둠에서 시야를 확보할 수 있습니다.	카짓은 육탄전에서 치명적인 위력을 발휘하는 손톱을 가지고 있습니다. 또한 밤눈 기술을 사용하여 어둠에서 시야를 확보할 수 있습니다.
 Kill General Falx Carius	팔크스 카리우스 장군을 죽이기	폭스 카리우스 장군을 죽이기
 Kust	쿠스트	커스트
 Lesser Magic Resistance	하급 마법 저항력	하급 마법 저항
 Lightning Apparatus	번개 장치	빛나는 장치
+Listen to Mercer Frey	머서 프레이의 말을 듣기	머서 프레이와 대화하기
+Locate the East Empire Pendants for Fethis Alor in Raven Rock	페디스 알로어를 위해 레이븐 락에서 동제국 회사 펜던트를 찾기	레이븐 락에 있는 페디스 알로어를 위해 동제국 회사 펜던트를 찾기
+Locate Valdr's hunting party.	발더의 사냥 일행을 찾기	발더의 사냥 집단을 찾기
 Lowers the cost and increases the duration of Alteration spells for <dur> seconds.	<dur> 초 동안 변화마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 변화마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Lowers the cost and increases the potency of Restoration spells for <dur> seconds.	<dur> 초 동안 회복마법의 위력이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 회복마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Lurker Vindicator	러커 응징자	러커 지원병
@@ -114,6 +144,8 @@ Malign Aversion to Frost	독 - 냉기 약점 최상급	독 - 냉기 최상급
 Malign Aversion to Magic	독 - 마법 약점 최상급	독 - 마법 저항 최상급
 Malign Aversion to Shock	독 - 전격 약점 최상급	독 - 전격 최상급
 Mara is the goddess of love and compassion. She has a temple in Riften.	마라는 사랑과 자비의 여신입니다. 그녀의 신전은 리프튼에 있습니다.	마라는 사랑과 자비의 여신입니다. 그녀의 신전은 리프튼 에 있습니다.
+Meet Bujold at Hrothmund's Barrow	흐로스문드의 무덤에서 부졸드를 만나기	흐로스문드 무덤에서 부졸드를 만나기
+Meet Karliah at the standing stone	선돌 앞에서 칼라이아와 만나기	비석앞에서 칼라이아와 만나기
 Most of Winterhold was lost to the sea in the Great Collapse of 4E 122, but the College was left mysteriously unharmed.	윈터홀드의 대부분은 제 4시대 122년의 대붕괴 때 바닷속으로 가라앉아 버렸지만, 불가사의하게도 대학만은 무사했습니다.	윈터홀드의 대부분은 4시대 122년의 대붕괴 때 바닷속으로 가라앉아 버렸지만, 불가사의하게도 대학만은 무사했습니다.
 Mounted Elk Antlers	큰뿔사슴 뿔 박제	큰 뿔 박제
 Mounted Elk Head	큰뿔사슴 머리 박제	큰 뿔 사슴 머리 박제
@@ -121,12 +153,15 @@ Mystic Dagger	신비한 단검	신비한 마법 단검
 Nchardak Great Chamber	느챠닥 대석실	느챠닥 대매장묘실
 Nocturnal is the daedric mistress of stealth and shadow, and a patron to thieves.	녹터널은 잠행과 그림자의 데이드릭 프린스이며, 도둑들의 후원자입니다.	녹터널은 잠행과 그림자의 데이드라 프린스이며, 도둑들의 후원자입니다.
 Note to the Authorities	당국에 보내는 메모	당국의 메모
+Obtain some Vampire Dust	흡혈귀 가루를 구하기	몇 개의 흡혈귀 가루를 구하기
 Oglub	오글럽	오글로프
 On Apocrypha: Boneless Limbs	아포크리파 : 촉수	아포크리파 : 무수한 촉수
 Once the capital of Skyrim, Winterhold has been all but abandoned in the last few hundred years.	한때 스카이림의 수도였던 윈터홀드는 지난 몇 백년동안 거의 버려지다시피 했습니다.	한때 스카이림의 수도였던 윈터홀드는 지난 몇 백년동안 완전히 방치되었습니다.
 Once, the dragons sought to eliminate or enslave all mortal races. If given the chance, they would surely do so again...	한때, 드래곤들은 모든 필멸의 종족을 제거하거나 노예로 삼으려 했던 적이 있습니다. 만약 기회가 주어진다면, 분명 같은 일을 반복하게 될 것입니다...	한때, 드래곤들은 필멸자들을 제거하거나 노예로 삼기 위해 눈에 불을 켜고 찾았던 적이 있습니다. 만약 기회가 주어진다면, 같은 일을 반복하게 될 것입니다...
 Orange Dartwing	주황 파리잠자리	노란 파리잠자리
+Pay Nazir the fine	나지어에게 벌금 내기	나지어에게 벌금내기
 Place a workbench in the Storage Room.	저장고에 작업선반을 설치합니다.	창고에 작업선반을 설치합니다.
+Place the Aetherium Shards	에테리움 파편들을 놓기	에테리움 조각들을 놓기
 Place the burial urn in Yngol Barrow	잉골 고분에 유골 단지를 놓기	잉골 고분에 유물 단지를 놓기
 Pleated Shoes	야를의 주름 잡힌 신발	야를의 주름잡힌 신발
 Pommel Stone of Mehrunes' Razor	메이룬스의 면도칼 자루 장식	메이룬스의 면도칼자루 장식
@@ -139,23 +174,31 @@ Potent Aversion to Magic	독 - 마법 약점 상급	독 - 마법 저항 상급
 Potent Aversion to Shock	독 - 전격 약점 상급	독 - 전격 상급
 Predator's Grace	포식자의 가호	약탈자의 가호
 Promissory Note	약속어음	약속 메모
+Purchase a house in Windhelm	윈드헬름에서 집을 구입하기	윈드헬름의 집을 구입하기
 QuickShot	신속 사격	속사
 Radiant Raiment Fine Clothes	화려한 의상실 고급 의상	고급 화려하게 반짝이는 의상
 Raerek's Inscribed Amulet of Talos	레이렉의 글귀가 새겨진 탈로스 아뮬렛	레이렉의 탈로스 아뮬렛
 Raldbthar Deep Market	랄드브타르 지하 시장	랄드브타르 암시장
+Re-activate Nchuand-Zel's automated defenses	느츄안-젤의 자동방어를 다시 작동시키기	느츄안-젤의 자동방어를 다시 작동 시키기
+Read Daynas Valen's notes	데이나스 발렌의 메모를 읽기	데이나스 발렌의 기록들을 읽기
+Read Nepos's Journal	네포스의 기록을 읽기	네포스의 일기를 읽기
+Read the bandit's ransom note for <Alias=Spouse>	산적이 남겨둔 <Alias=Spouse>에 대한 몸값 요구 쪽지를 읽기	산적이 남겨둔 <Alias=Spouse>에 대한 몸값 요구쪽지를 읽기
 Recipe - Mind Control Spider	제조법 : 정신 조종 거미	제조법 : 정신조종 거미
 Remove all furniture from entryway and remodel it to match the main hall.	현관에 배치된 모든 가구를 제거하고 대청에 맞게 개조합니다.	현관에 배치된 모든 가구를 제거하고 대청에 맞게 재배치하기.
 Remove the workbench from the Storage Room.	저장고에서 작업선반을 제거합니다.	창고에서 작업선반을 제거합니다.
 Retrieve Lisbet's shipment from <Alias=ForswornCamp>	<Alias=ForswornCamp>에서 리즈벳의 짐을 회수하기	<Alias=ForswornCamp>에서 리스벳의 짐을 회수하기
+Retrieve the Soul Essence Gem	영혼 정수의 보석 회수하기	영혼의 정수 회수하기
 Retrieve the Unmelting Snow	'녹지 않는 눈'을 회수하기	'녹지않는 눈'을 회수하기
 Riften Military Camp	리프튼 군영지	리프튼 군용 주둔지
 Ring of Reanimate Corpse	반지 - 중급 강령술	반지 - 시체 조종
+Rogue Wizard	변절한 마법사	도둑 마도사
 Rustleif's House	러스틀레이프의 집	러스틀레프의 집
 Saerek's Skull Key	세렉의 두개골 열쇠	세이렉의 두개골 열쇠
 Saint Jiub's Kiss	성자 지웁의 키스	성인 지웁의 키스
 Samuel	사무엘	사뮤엘
 Scourge of the Gray Quarter	잿빛 지구의 골칫거리	골칫거리 잿빛 지구
 Sealed Scroll	봉인된 두루마리	봉인된 마법 주문서
+Search for the Aetherium Shards (<Global=DLC1LD_ShardsFound>/<Global=DLC1LD_ShardsTotal>)	에테리움 파편을 찾기 (<Global=DLC1LD_ShardsFound>/<Global=DLC1LD_ShardsTotal>)	에테리움 조각을 찾기 (<Global=DLC1LD_ShardsFound>/<Global=DLC1LD_ShardsTotal>)
 Seared Slaughterfish	구운 식인물고기	말린 식인물고기
 Second Letter from EEC	동제국 회사의 두 번째 편지	동제국 회사의 두번째 편지
 Self Doubt	자기 의심	자아 의문
@@ -168,10 +211,15 @@ Sibbi's Stash Key	열쇠 - 시비의 은닉처	열쇠 - 시비의 비밀 열쇠
 Sightless Pit	보이지 않는 구덩이	보이지않는 구덩이
 Solitude Military Camp	솔리튜드 군영지	솔리튜드 군용 주둔지
 Solstheim Mudcrab	솔스트하임 진흙게	솔스트하임 진흙 게
+Speak to Brynjolf about being Guild Master	길드 지도자의 역할에 관해서 브린욜프와 대화하기	브린욜프에게 길드 지도자로 살아가는 것에 관해서 대화하기
+Speak to the Jarl of Dawnstar about the land for sale	판매 중인 토지에 관해서 던스타의 야를과 대화하기	판매중인 토지에 관해서 던스타의 야를과 대화하기
+Speak to the Steward of Falkreath about the land for sale	판매 중인 토지에 관해서 팔크리스의 행정관과 대화하기	판매중인 토지에 관해서 팔크리스의 행정관과 대화하기
+Speak to the Steward of Morthal about the land for sale	판매 중인 토지에 관해서 모탈의 행정관과 대화하기	판매중인 토지에 관해서 모탈의 행정관과 대화하기
 Spell Tome: Detect Undead	마법책: 시체 탐지	마법책: 사체 탐지
 Stallion's Potion	종마의 물약	스탈리온의 물약
 Steady Hand (1)	안정된 활시위	안정된 활 시위
 Steady Hand (2)	안정된 활시위	안정된 활 시위
+Steal <Global=TGRNGold> gold in goods from <Alias=City>	<Alias=City>에서 <Global=TGRNGold> 골드만큼의 물품을 훔치기	<Alias=City>에서 <Global=TGRNGold> 골드 만큼의 물품을 훔치기
 Steamed Mudcrab Legs	찐 진흙게 다리	구운 진흙게 다리
 Steel Battleaxe of Fiery Souls	강철 전투 도끼 - 화염 소울 트랩	강철 전투 도끼 - 불꽃영혼
 Strengthened by the infamy of its bearer	소유자의 악명으로 강화됩니다.	소유자의 악명으로 강화합니다.
@@ -183,6 +231,8 @@ Summons a Spectral Dragon for <dur> seconds.	<dur> 초 동안 유령 드래곤�
 Sunlight explosion that does <mag> points of damage in a 15 foot radius to undead, and half that to living targets	15 피트 범위의 태양빛 폭발을 일으켜 언데드에게 <mag> 의 피해를 입히고 생명체에게는 절반의 피해를 입힙니다.	15 피트 범위의 태양빛 폭발을 일으키는 화염구를 날려 언데드에게 <mag> 의 피해를 입히고 생명체에게는 절반의 피해를 입힙니다.
 Sunlight explosion that does <mag> points of damage in a 15 foot radius to undead.	15 피트 범위의 태양빛 폭발을 일으켜 언데드에게 <mag> 의 피해를 입힙니다.	15 피트 범위의 태양빛 폭발을 일으키는 화염구를 날려 언데드에게 <mag> 의 피해를 입힙니다.
 Tainted Blood Withdrawals	저주받은 피 금단 증상	저주받은 피 효과
+Take sapling	묘목을 챙기기	묘목을 가지기
+Talk to Lucan about the robbery	도난 사건에 관해서 루칸과 이야기하기	도둑에 관해서 루칸과 이야기하기
 Taron Dreth's Robes	타론 드레스의 로브	타론의 로브
 Temple Ancestral Tomb	신전 선조의 무덤	사원 선조의 무덤
 The Five Far Stars	멀리 떨어진 다섯 개의 별	다섯개의 별
@@ -203,10 +253,14 @@ Undead targets takes <mag> points of sun damage,	언데드에게 <mag> 의 태�
 Unmelting Snow	녹지 않는 눈	녹지않는 눈
 Unmelting Snowbank	녹지 않는 눈더미	녹지않는 눈더미
 Until Next Time	다음에 만날 때까지	다음에 만날때까지
+Use the key to gain access to the Pelagius Wing	열쇠를 사용해서 펠라지우스 구역에 들어가기	열쇠를 사용해서 펠라지우스 구역을 통과하기
 Vahlok the Jailer	간수 발록	발록
 Vigilance	비질런스	비졀런스
 Vignar	비그나	비그너
 Vignar Gray-Mane	비그나 그레이-메인	비그너 그레이-메인
+Visit the hunters at Frostmoon Crag	프로스트문 바위의 사냥꾼을 만나기	프로스트문 바위산의 사냥꾼을 만나기
+Visit the werewolves at Frostmoon Crag	프로스트문 바위의 늑대인간을 만나기	프로스트문 바위산의 늑대인간을 만나기
+Visit your new property in <Alias=Hold> hold	<Alias=Hold> 영지 내에 있는 당신의 새 부동산을 방문하기	<Alias=Hold> 영지내에 있는 당신의 새 부동산을 방문하기
 Visiting Advisor	방문 중인 조언자	여행 중인 조언자
 Visiting Noble	방문 중인 귀족	방문중인 귀족
 Weak Aversion to Fire	독 - 화염 약점 하급	독 - 화염 하급
@@ -214,3 +268,4 @@ Weak Aversion to Frost	독 - 냉기 약점 하급	독 - 냉기 하급
 Weak Aversion to Magic	독 - 마법 약점 하급	독 - 마법 저항 하급
 Weak Aversion to Shock	독 - 전격 약점 하급	독 - 전격 하급
 Word of Power	힘의 단어	힘의 언어
+Yngol's Barrow	잉골 고분	잉골의 무덤

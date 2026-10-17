@@ -126,8 +126,9 @@ public sealed class BundledFranchiseTmSeedService
             // not the 강철 문 of Steel; the weakness poisons 독 - 마법 약점, not a 마법 저항 that reads as a resistance;
             // Backstab 백스탭; Vignar 비그나 as his lines say), and the decisions after it (Sons of Skyrim 스카이림의 자손들, the
             // name the camps on the map carry; Shalidor's Insights by the perks it applies, duration or magnitude, not both;
-            // Burial Urn 유골 단지); 215 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v6", "bundled-skyrim-tes-franchise-tm.tsv", 1528287, "f6879a825119c477b062ac84aec68f8e2c5f73a1a63710d15de06fdd5ddd7ba2",
+            // Burial Urn 유골 단지), and the second review of the quests (Chasing Echoes 메아리를 쫓아서, not 따라오는; the
+            // Shrine of Talos 탈로스의 성소 as the note says); 270 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v6", "bundled-skyrim-tes-franchise-tm.tsv", 1528317, "13634f7904ccf50f8fe5d9f84dc312329270a5dab090b79e1d6d6dfeaa9e7798",
                 PreviousVersions: new[] { "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v6-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
