@@ -1,5 +1,6 @@
 Source	Target	Previous
 +<mag> carrying capacity, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.	무게한계 <mag> 증가, 무거운 방어구를 착용해도 이동에 영향을 받지 않게 됩니다.
+<Alias=Player>'s Wolf Spirit	<Alias=Player>의 늑대 영혼	<Alias=Player>의 늑대 정령
 <mag> points of extra damage to Animals.	동물에게 <mag> 의 추가 피해를 입힙니다.	동물에게 <mag>의 추가 피해를 입힙니다.
 <mag> points of extra damage to Nords.	노드에게 <mag> 의 추가 피해를 입힙니다.	노드에게 <mag>의 추가 피해를 입힙니다.
 A Grand Soul gem filled with a Grand Soul is required to build the Arcane Enchanter.	마법부여대를 제작하기 위해서는 특급 소울젬(특급)이 필요합니다.	마법 부여대를 제작하기 위해서는 특급 소울젬(특급)이 필요합니다.
@@ -38,10 +39,12 @@ Braided Bread	땋은 빵	바게트 빵
 Bring the Dibella Statue to Lisbet	디벨라의 동상을 리즈벳에게 가져다 주기	디벨라의 동상을 리스벳에게 가져다 주기
 Broken Steel Warhammer Head	부서진 강철 전쟁망치 머리부분	부서진 강철 전쟁망치 머릿부분
 Bujold the Unworthy	자격 없는 부졸드	자격없는 부졸드
+Burial Urn	유골 단지	유물 단지
 Cage	우리	벽장
 Changed Ones	변화한 자들	변절한 자들
 Charm - Master of the Mind	매료 - 정신의 지배자	매료 - 정신마법의 달인
 Complaint Letter	항의 편지	고소 편지
+Conjure Spectral Dragon	유령 드래곤 소환	영체 드래곤 소환
 Cow Hand	목동	카우 핸드
 Darkfall Grotto	다크폴 암굴	다크폴 동굴
 Dawnguard Rune Hammer	던가드 룬 망치	던가드 룬 철퇴
@@ -54,6 +57,21 @@ Does <mag> damage over <dur> seconds. Additional opponents in melee range have a
 Double-Distilled Skooma	재증류한 스쿠마	재 증류한 스쿠마
 Dragon Priest Dagger	드래곤 사제의 단검	드래곤의 사제 단검
 Drunk Cultist	술 취한 신도	술취한 신도
+Dwarven Bracers of Alchemy	드워프제 장갑 - 하급 연금술	드워프제 손목 보호대 - 하급 연금술
+Dwarven Bracers of Archery	드워프제 장갑 - 하급 궁술	드워프제 손목 보호대 - 하급 궁술
+Dwarven Bracers of Eminent Alchemy	드워프제 장갑 - 상급 연금술	드워프제 손목 보호대 - 상급 연금술
+Dwarven Bracers of Eminent Archery	드워프제 장갑 - 상급 궁술	드워프제 손목 보호대 - 상급 궁술
+Dwarven Bracers of Eminent Smithing	드워프제 장갑 - 상급 제련	드워프제 손목 보호대 - 상급 제련
+Dwarven Bracers of Eminent Sure Grip	드워프제 장갑 - 상급 양손무기	드워프제 손목 보호대 - 상급 양손무기
+Dwarven Bracers of Eminent Wielding	드워프제 장갑 - 상급 한손무기	드워프제 손목 보호대 - 상급 한손무기
+Dwarven Bracers of Major Alchemy	드워프제 장갑 - 중급 연금술	드워프제 손목 보호대 - 중급 연금술
+Dwarven Bracers of Major Archery	드워프제 장갑 - 중급 궁술	드워프제 손목 보호대 - 중급 궁술
+Dwarven Bracers of Major Smithing	드워프제 장갑 - 중급 제련	드워프제 손목 보호대 - 중급 제련
+Dwarven Bracers of Major Sure Grip	드워프제 장갑 - 중급 양손무기	드워프제 손목 보호대 - 중급 양손무기
+Dwarven Bracers of Major Wielding	드워프제 장갑 - 중급 한손무기	드워프제 손목 보호대 - 중급 한손무기
+Dwarven Bracers of Smithing	드워프제 장갑 - 하급 제련	드워프제 손목 보호대 - 하급 제련
+Dwarven Bracers of Sure Grip	드워프제 장갑 - 하급 양손무기	드워프제 손목 보호대 - 하급 양손무기
+Dwarven Bracers of Wielding	드워프제 장갑 - 하급 한손무기	드워프제 손목 보호대 - 하급 한손무기
 Equip and cast to Learn Raise Zombie	장비하고 사용 시 하급 강령술 마법을 배웁니다.	장비하고 사용 시 하급 강령술 마법을 배웁니다
 Equip and cast to learn the Bound Sword Spell	장비하고 사용 시 마법 검 소환 마법을 배웁니다.	장비하고 사용 시 마법 검 소환 마법을 배웁니다
 Equip and cast to learn the Oakflesh spell	장비하고 사용 시 참나무 피부 마법을 배웁니다.	장비하고 사용 시 참나무 피부 마법을 배웁니다
@@ -70,18 +88,26 @@ Frightened Woman	겁에 질린 여성	겁에질린 여성
 Fultheim the Fearless	두려움 없는 풀트하임	두려움없는 풀트하임
 Gaius Maro's Schedule	가이우스 마로의 일정	가이우스 마로의 예정
 Gate Barred	빗장 걸린 관문	빗장걸린 관문
+General Falx Carius	팔크스 카리우스 장군	폭스 카리우스 장군
 Ghosts in the Storm	폭풍 속의 유령들	폭풍속의 유령들
 Greater Magic Resistance	상급 마법 저항력	상급 마법 저항
+Hallowed Dead	신성한 시신	신성한 사체
 Hewnon Black-Skeever	휴넌 블랙-스키버	휴논 블랙-스키버
 Honed Draugr War Axe	연마된 고대 노드 도끼	연마된 드로거 도끼
 Horker and Ash Yam Stew	호커와 화산 참마 스튜	호커와 화산참마 스튜
 Imbuing Switch	주입 스위치	염색 스위치
 In 3E 389 Emperor Uriel VII was imprisoned by his Imperial Battlemage, Jagar Tharn, who then impersonated him for years.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄에 의해 갇히게 되었습니다. 그 후 수 년동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄 에 의해 갇히게 되었습니다. 그 후 수 년동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.
+Increase the damage and decrease the cost of Destruction spells for <dur> seconds.	<dur> 초 동안 파괴마법의 위력이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 파괴마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
+Increase the duration and decrease the cost of Conjuration spells for <dur> seconds.	<dur> 초 동안 소환마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 소환마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
+Increase the duration and decrease the cost of Illusion spells for <dur> seconds.	<dur> 초 동안 환영마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 환영마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Iron Door	철문	강철 문
 Khajiit have deadly claws that can be used in unarmed combat. They can use Night Eye to see better in the dark.	카짓은 육탄전에서 치명적인 위력을 발휘하는 발톱을 가지고 있습니다. 또한 밤눈 기술을 사용하여 어둠에서 시야를 확보할 수 있습니다.	카짓은 육탄전에서 치명적인 위력을 발휘하는 손톱을 가지고 있습니다. 또한 밤눈 기술을 사용하여 어둠에서 시야를 확보할 수 있습니다.
+Kill General Falx Carius	팔크스 카리우스 장군을 죽이기	폭스 카리우스 장군을 죽이기
 Kust	쿠스트	커스트
 Lesser Magic Resistance	하급 마법 저항력	하급 마법 저항
 Lightning Apparatus	번개 장치	빛나는 장치
+Lowers the cost and increases the duration of Alteration spells for <dur> seconds.	<dur> 초 동안 변화마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 변화마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
+Lowers the cost and increases the potency of Restoration spells for <dur> seconds.	<dur> 초 동안 회복마법의 위력이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 회복마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Lurker Vindicator	러커 응징자	러커 지원병
 Malign Aversion to Fire	독 - 화염 약점 최상급	독 - 화염 최상급
 Malign Aversion to Frost	독 - 냉기 약점 최상급	독 - 냉기 최상급
@@ -101,6 +127,7 @@ Once the capital of Skyrim, Winterhold has been all but abandoned in the last fe
 Once, the dragons sought to eliminate or enslave all mortal races. If given the chance, they would surely do so again...	한때, 드래곤들은 모든 필멸의 종족을 제거하거나 노예로 삼으려 했던 적이 있습니다. 만약 기회가 주어진다면, 분명 같은 일을 반복하게 될 것입니다...	한때, 드래곤들은 필멸자들을 제거하거나 노예로 삼기 위해 눈에 불을 켜고 찾았던 적이 있습니다. 만약 기회가 주어진다면, 같은 일을 반복하게 될 것입니다...
 Orange Dartwing	주황 파리잠자리	노란 파리잠자리
 Place a workbench in the Storage Room.	저장고에 작업선반을 설치합니다.	창고에 작업선반을 설치합니다.
+Place the burial urn in Yngol Barrow	잉골 고분에 유골 단지를 놓기	잉골 고분에 유물 단지를 놓기
 Pleated Shoes	야를의 주름 잡힌 신발	야를의 주름잡힌 신발
 Pommel Stone of Mehrunes' Razor	메이룬스의 면도칼 자루 장식	메이룬스의 면도칼자루 장식
 Portal to Darkfall Grotto	차원문 - 다크폴 암굴	차원문 - 다크폴 동굴
@@ -151,6 +178,8 @@ Strengthened by the infamy of its bearer	소유자의 악명으로 강화됩니�
 Summon Ice Wolves 1	설원늑대 소환 1	설원 늑대소환 1
 Summon Ice Wolves 2	설원늑대 소환 2	설원 늑대소환 2
 Summon Ice Wolves 3	설원늑대 소환 3	설원 늑대소환 3
+Summon Spectral Dragon	유령 드래곤 소환	영체 드래곤 소환
+Summons a Spectral Dragon for <dur> seconds.	<dur> 초 동안 유령 드래곤을 소환합니다.	<dur> 초 동안 영체 드래곤을 소환합니다.
 Sunlight explosion that does <mag> points of damage in a 15 foot radius to undead, and half that to living targets	15 피트 범위의 태양빛 폭발을 일으켜 언데드에게 <mag> 의 피해를 입히고 생명체에게는 절반의 피해를 입힙니다.	15 피트 범위의 태양빛 폭발을 일으키는 화염구를 날려 언데드에게 <mag> 의 피해를 입히고 생명체에게는 절반의 피해를 입힙니다.
 Sunlight explosion that does <mag> points of damage in a 15 foot radius to undead.	15 피트 범위의 태양빛 폭발을 일으켜 언데드에게 <mag> 의 피해를 입힙니다.	15 피트 범위의 태양빛 폭발을 일으키는 화염구를 날려 언데드에게 <mag> 의 피해를 입힙니다.
 Tainted Blood Withdrawals	저주받은 피 금단 증상	저주받은 피 효과

@@ -140,7 +140,7 @@ Source	Target
 <Alias=Mark>'s <BaseName>	<Alias=Mark>의 <BaseName>
 <Alias=Player>'s <BaseName>	<Alias=Player>의 <BaseName>
 <Alias=Player>'s Horse	<Alias=Player>의 말
-<Alias=Player>'s Wolf Spirit	<Alias=Player>의 늑대 정령
+<Alias=Player>'s Wolf Spirit	<Alias=Player>의 늑대 영혼
 <Alias=PlayerIsIt> is it. Hide from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt> 이/가 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요
 <Alias=PlayerIsIt> is it. Keep away from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요
 <Alias=QuestGiver>'s <BaseName>	<Alias=QuestGiver>의 <BaseName>
@@ -2240,7 +2240,7 @@ Bullseye	불스아이
 Burguk	버국
 Burguk's Longhouse	버국의 공동주택
 Burial Chamber	묘실
-Burial Urn	유물 단지
+Burial Urn	유골 단지
 Burn	태우기
 Burn three bee hives (<Global=TG02HiveCount>/3)	벌집 3개를 불태우기 (<Global=TG02HiveCount> / 3)
 Burned Book	불타버린 책
@@ -3032,7 +3032,7 @@ Conjure Potent Frost Atronach	강력한 서리 아트로나크 소환
 Conjure Potent Frost Thrall	강력한 서리의 노예 소환
 Conjure Potent Storm Thrall	강력한 폭풍의 노예 소환
 Conjure Seeker	시커 소환
-Conjure Spectral Dragon	영체 드래곤 소환
+Conjure Spectral Dragon	유령 드래곤 소환
 Conjure Storm Atronach	폭풍 아트로나크 소환
 Conjure Storm Thrall	폭풍의 노예 소환
 Conjure Werebear	곰인간 소환
@@ -4907,21 +4907,21 @@ Dwarven Bow of Soul Snares	드워프제 활 - 하급 소울 트랩
 Dwarven Bow of Thunderbolts	드워프제 활 - 상급 전격
 Dwarven Bow of Torpor	드워프제 활 - 중급 지구력 피해
 Dwarven Bow of Weariness	드워프제 활 - 하급 지구력 피해
-Dwarven Bracers of Alchemy	드워프제 손목 보호대 - 하급 연금술
-Dwarven Bracers of Archery	드워프제 손목 보호대 - 하급 궁술
-Dwarven Bracers of Eminent Alchemy	드워프제 손목 보호대 - 상급 연금술
-Dwarven Bracers of Eminent Archery	드워프제 손목 보호대 - 상급 궁술
-Dwarven Bracers of Eminent Smithing	드워프제 손목 보호대 - 상급 제련
-Dwarven Bracers of Eminent Sure Grip	드워프제 손목 보호대 - 상급 양손무기
-Dwarven Bracers of Eminent Wielding	드워프제 손목 보호대 - 상급 한손무기
-Dwarven Bracers of Major Alchemy	드워프제 손목 보호대 - 중급 연금술
-Dwarven Bracers of Major Archery	드워프제 손목 보호대 - 중급 궁술
-Dwarven Bracers of Major Smithing	드워프제 손목 보호대 - 중급 제련
-Dwarven Bracers of Major Sure Grip	드워프제 손목 보호대 - 중급 양손무기
-Dwarven Bracers of Major Wielding	드워프제 손목 보호대 - 중급 한손무기
-Dwarven Bracers of Smithing	드워프제 손목 보호대 - 하급 제련
-Dwarven Bracers of Sure Grip	드워프제 손목 보호대 - 하급 양손무기
-Dwarven Bracers of Wielding	드워프제 손목 보호대 - 하급 한손무기
+Dwarven Bracers of Alchemy	드워프제 장갑 - 하급 연금술
+Dwarven Bracers of Archery	드워프제 장갑 - 하급 궁술
+Dwarven Bracers of Eminent Alchemy	드워프제 장갑 - 상급 연금술
+Dwarven Bracers of Eminent Archery	드워프제 장갑 - 상급 궁술
+Dwarven Bracers of Eminent Smithing	드워프제 장갑 - 상급 제련
+Dwarven Bracers of Eminent Sure Grip	드워프제 장갑 - 상급 양손무기
+Dwarven Bracers of Eminent Wielding	드워프제 장갑 - 상급 한손무기
+Dwarven Bracers of Major Alchemy	드워프제 장갑 - 중급 연금술
+Dwarven Bracers of Major Archery	드워프제 장갑 - 중급 궁술
+Dwarven Bracers of Major Smithing	드워프제 장갑 - 중급 제련
+Dwarven Bracers of Major Sure Grip	드워프제 장갑 - 중급 양손무기
+Dwarven Bracers of Major Wielding	드워프제 장갑 - 중급 한손무기
+Dwarven Bracers of Smithing	드워프제 장갑 - 하급 제련
+Dwarven Bracers of Sure Grip	드워프제 장갑 - 하급 양손무기
+Dwarven Bracers of Wielding	드워프제 장갑 - 하급 한손무기
 Dwarven Centurion	드워프 백부장
 Dwarven Centurion Guardian	드워프 백부장 수호자
 Dwarven Centurion Master	드워프 백부장 지배자
@@ -7307,7 +7307,7 @@ Gem Pedestal	보석 받침대
 Gemma	겜마
 Gemma Uriel	겜마 우리엘
 General Carius' Armor	카리우스 장군의 방어구
-General Falx Carius	폭스 카리우스 장군
+General Falx Carius	팔크스 카리우스 장군
 General Subtitles	일반 자막
 General Tullius	툴리우스 장군
 General Tullius has already agreed to attend.	툴리우스 장군은 이미 참석하기로 했소.
@@ -8133,7 +8133,7 @@ Hallowed Daedric Mace	데이드라제 철퇴 - 상급 신성
 Hallowed Daedric Sword	데이드라제 검 - 상급 신성
 Hallowed Daedric War Axe	데이드라제 도끼 - 상급 신성
 Hallowed Daedric Warhammer	데이드라제 전투 망치 - 상급 신성
-Hallowed Dead	신성한 사체
+Hallowed Dead	신성한 시신
 Hallowed Dwarven Battleaxe	드워프제 전투 도끼 - 상급 신성
 Hallowed Dwarven Bow	드워프제 활 - 상급 신성
 Hallowed Dwarven Crossbow	드워프제 쇠뇌 - 상급 신성
@@ -11154,9 +11154,9 @@ Increase %s?	%s 추가합니까?
 Increase Damage from Alduin	알두인의 피해 증가
 Increase Detection	탐지력 증가
 Increase Heavy Armor skill by <mag> points for <dur> seconds.	<dur> 초 동안 중갑 방어구 기술이 <mag> 증가합니다.
-Increase the damage and decrease the cost of Destruction spells for <dur> seconds.	<dur> 초 동안 파괴마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
-Increase the duration and decrease the cost of Conjuration spells for <dur> seconds.	<dur> 초 동안 소환마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
-Increase the duration and decrease the cost of Illusion spells for <dur> seconds.	<dur> 초 동안 환영마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
+Increase the damage and decrease the cost of Destruction spells for <dur> seconds.	<dur> 초 동안 파괴마법의 위력이 증가하고 매지카 소모량이 감소합니다.
+Increase the duration and decrease the cost of Conjuration spells for <dur> seconds.	<dur> 초 동안 소환마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.
+Increase the duration and decrease the cost of Illusion spells for <dur> seconds.	<dur> 초 동안 환영마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Increased Health, Magicka, and Stamina recovery.	체력 재생, 매지카 재생, 지구력 재생이 증가합니다.
 Increased Health, Magicka, and Stamina.	체력, 매지카, 지구력이 증가합니다.
 Increased Magicka Regen	매지카 재생 증가
@@ -12172,7 +12172,7 @@ Kill Deekus	디커스를 죽이기
 Kill Ennodius Papius	에노디우스 파피우스를 죽이기
 Kill everyone in the Sanctuary!	성역에 있는 자를 전부 죽이기
 Kill Gaius Maro	가이우스 마로를 죽이기
-Kill General Falx Carius	폭스 카리우스 장군을 죽이기
+Kill General Falx Carius	팔크스 카리우스 장군을 죽이기
 Kill Grelod the Kind	친절한 그렐로드를 죽이기
 Kill Grisvar the Unlucky	불행한 그리즈바를 죽이기
 Kill Haldyn	할딘을 죽이기
@@ -12864,8 +12864,8 @@ Low	낮음
 Low Table	낮은 탁자
 Lower Carry Weight	무게 한계 감소
 Lower Steepfall Burrow	저지대 내리막길 땅굴
-Lowers the cost and increases the duration of Alteration spells for <dur> seconds.	<dur> 초 동안 변화마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
-Lowers the cost and increases the potency of Restoration spells for <dur> seconds.	<dur> 초 동안 회복마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
+Lowers the cost and increases the duration of Alteration spells for <dur> seconds.	<dur> 초 동안 변화마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.
+Lowers the cost and increases the potency of Restoration spells for <dur> seconds.	<dur> 초 동안 회복마법의 위력이 증가하고 매지카 소모량이 감소합니다.
 Lowlife	하층민
 Loyalty? You never intended to let me live.	충성심? 나를 살려둘 생각이 없었군.
 Lu'ah	루'아
@@ -15261,7 +15261,7 @@ Place Pithiken's Ring	피씨켄의 반지 놓기
 Place Shagrol's Hammer on the shrine in Largashbur	샤그롤의 망치를 라가쉬버의 성소에 놓기
 Place Soul Gem	소울젬을 놓기
 Place the Aetherium Shards	에테리움 조각들을 놓기
-Place the burial urn in Yngol Barrow	잉골 고분에 유물 단지를 놓기
+Place the burial urn in Yngol Barrow	잉골 고분에 유골 단지를 놓기
 Place the Coat on the Effigy	모형에 외투를 입히기
 Place the Crystal into the Oculory	크리스털을 오큘러리 안에 놓기
 Place the ingredients in the vessel	재료들을 그릇에 담기
@@ -19329,7 +19329,7 @@ Summon Ice Wolves 3	설원늑대 소환 3
 Summon Karstaag	카스태그 소환
 Summon Portal	전이문 소환
 Summon Spectral Assassin	영계의 암살자 소환
-Summon Spectral Dragon	영체 드래곤 소환
+Summon Spectral Dragon	유령 드래곤 소환
 Summon Subjugated Ghost	예속된 유령 소환
 Summon them you mean?	그 언데드들을 소환한다는 소린가?
 Summon Unbound Dremora	속박되지 않은 드레모라 소환
@@ -19362,7 +19362,7 @@ Summons a Gargoyle for <dur> seconds.	<dur> 초 동안 가고일을 소환합니
 Summons a High Seeker for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 시커 군주를 소환합니다.
 Summons a Mistman from the Soul Cairn for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 소울 케언으로부터 안개병사를 소환합니다.
 Summons a Seeker for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 시커를 소환합니다.
-Summons a Spectral Dragon for <dur> seconds.	<dur> 초 동안 영체 드래곤을 소환합니다.
+Summons a Spectral Dragon for <dur> seconds.	<dur> 초 동안 유령 드래곤을 소환합니다.
 Summons a Storm Atronach for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 폭풍 아트로나크를 소환합니다.
 Summons a Storm Atronach permanently.	영구적으로 폭풍 아트로나크를 소환합니다.
 Summons a Subjugated Ghost for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 예속된 유령을 소환합니다.

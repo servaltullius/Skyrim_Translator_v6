@@ -11,6 +11,7 @@ Source	Target	Previous
 +<mag> carrying capacity, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.	무게한계 <mag> 증가, 무거운 방어구를 착용해도 이동에 영향을 받지 않게 됩니다.
 50% chance for each attribute to absorb <mag> points of Health, Stamina and/or Magicka.	체력, 지구력, 매지카 각각에 대해 50% 확률로 <mag> 흡수합니다.	50% 확률로 체력, 지구력, 매지카 중 하나를 <mag> 흡수합니다.
 50% chance for each element of fire, frost and shock to do <mag> points of damage.	화염, 냉기, 전격 각각에 대해 50% 확률로 <mag> 의 피해를 입힙니다.	50% 확률로 <mag> 의 화염, 냉기, 전격 중 하나의 피해를 입힙니다.
+<Alias=Player>'s Wolf Spirit	<Alias=Player>의 늑대 영혼	<Alias=Player>의 늑대 정령
 <Alias=PlayerIsIt> is it. Hide from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt> 이/가 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요
 <Alias=PlayerIsIt> is it. Keep away from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요	<Alias=PlayerIsIt> 입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요
 <mag> points of extra damage to Animals.	동물에게 <mag> 의 추가 피해를 입힙니다.	동물에게 <mag>의 추가 피해를 입힙니다.
@@ -128,6 +129,7 @@ Bring the Four Master Illusion texts to Drevis Neloren	드레비스 넬로렌에
 Broken Steel Warhammer Head	부서진 강철 전쟁망치 머리부분	부서진 강철 전쟁망치 머릿부분
 Brow Width	눈썹 폭	눈썹 넓이
 Bujold the Unworthy	자격 없는 부졸드	자격없는 부졸드
+Burial Urn	유골 단지	유물 단지
 Burns the target <mag> points per second. Targets on fire take extra damage.	매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	<mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 But there's nobody else here.	하지만 여기에 다른 사람은 전혀 안 보입니다.	하지만 여기에 다른사람은 전혀 안 보입니다.
 Buy back the Elder Scroll (Dragon) from Urag gro-Shub	우라그에게 팔았던 '엘더스크롤 - 드래곤'을 다시 구입하기	우라그에게 팔았던 엘더스크롤을 다시 구입하기.
@@ -148,6 +150,7 @@ Come on. Let's go.	어서. 가자.	여기서 나가자.
 Commune with Hrothmund's Spirit	흐로스문드의 유령과 대화하기	흐로스문드의 영혼과 대화하기
 Complaint Letter	항의 편지	고소 편지
 CONJURATION	소환마법	소환
+Conjure Spectral Dragon	유령 드래곤 소환	영체 드래곤 소환
 Consider it done.	곧바로 처리하겠습니다.	곧바로 처리하지.
 CONTAINERS	보관함	상자
 Cow Hand	목동	카우 핸드
@@ -209,6 +212,21 @@ Dresser	옷 상자	옷상자
 Drop the debt or answer to me. (Intimidate)	빚을 없애 주든가, 아니면 나를 상대하든가. (위협)	빚을 없애주거나, 내 상담을 받거나. (위협)
 Drunk Cultist	술 취한 신도	술취한 신도
 Dwarven Boots of Extreme Stamina	드워프제 전투화 - 상급 지구력 증가	드워프제 전투화 - 최상급 지구력 증가
+Dwarven Bracers of Alchemy	드워프제 장갑 - 하급 연금술	드워프제 손목 보호대 - 하급 연금술
+Dwarven Bracers of Archery	드워프제 장갑 - 하급 궁술	드워프제 손목 보호대 - 하급 궁술
+Dwarven Bracers of Eminent Alchemy	드워프제 장갑 - 상급 연금술	드워프제 손목 보호대 - 상급 연금술
+Dwarven Bracers of Eminent Archery	드워프제 장갑 - 상급 궁술	드워프제 손목 보호대 - 상급 궁술
+Dwarven Bracers of Eminent Smithing	드워프제 장갑 - 상급 제련	드워프제 손목 보호대 - 상급 제련
+Dwarven Bracers of Eminent Sure Grip	드워프제 장갑 - 상급 양손무기	드워프제 손목 보호대 - 상급 양손무기
+Dwarven Bracers of Eminent Wielding	드워프제 장갑 - 상급 한손무기	드워프제 손목 보호대 - 상급 한손무기
+Dwarven Bracers of Major Alchemy	드워프제 장갑 - 중급 연금술	드워프제 손목 보호대 - 중급 연금술
+Dwarven Bracers of Major Archery	드워프제 장갑 - 중급 궁술	드워프제 손목 보호대 - 중급 궁술
+Dwarven Bracers of Major Smithing	드워프제 장갑 - 중급 제련	드워프제 손목 보호대 - 중급 제련
+Dwarven Bracers of Major Sure Grip	드워프제 장갑 - 중급 양손무기	드워프제 손목 보호대 - 중급 양손무기
+Dwarven Bracers of Major Wielding	드워프제 장갑 - 중급 한손무기	드워프제 손목 보호대 - 중급 한손무기
+Dwarven Bracers of Smithing	드워프제 장갑 - 하급 제련	드워프제 손목 보호대 - 하급 제련
+Dwarven Bracers of Sure Grip	드워프제 장갑 - 하급 양손무기	드워프제 손목 보호대 - 하급 양손무기
+Dwarven Bracers of Wielding	드워프제 장갑 - 하급 한손무기	드워프제 손목 보호대 - 하급 한손무기
 Eight-sided. Jade, ringed with ebony. A worn carving.	팔각형. 에보니로 테를 두른 비취. 낡은 장식.	팔면체. 에보니로 테를 두른 비취. 낡은 장식.
 Elven Armor (<Global=CCHorseArmorCostSwapOnly> gold)	엘프제 마갑 (<Global=CCHorseArmorCostSwapOnly> 골드)	엘프제 마갑(<Global=CCHorseArmorCostSwapOnly> 골드)
 Enchanter's Tower - Remove Workbench	마법부여 연구탑 - 작업선반 제거	마법부가 연구탑 - 작업선반 제거
@@ -285,6 +303,7 @@ Gaius Maro's Schedule	가이우스 마로의 일정	가이우스 마로의 예�
 Gallows Hall	교수대 회관	교수대 바위
 Gallows Hall.	교수대 회관.	교수대 바위.
 Gate Barred	빗장 걸린 관문	빗장걸린 관문
+General Falx Carius	팔크스 카리우스 장군	폭스 카리우스 장군
 Gharol's Message	가롤의 메시지	가롤의 메세지
 Ghosts in the Storm	폭풍 속의 유령들	폭풍속의 유령들
 Give me everything you are carrying.	가지고 있는 짐을 전부 나에게 줘.	자기고 있는 짐을 전부 나에게 줘.
@@ -308,6 +327,7 @@ Greenhouse, Doors	온실, 문	온실,문들
 Grelka's Strongbox	그렐카의 튼튼한 상자	그레카의 튼튼한 상자
 Grim Shieldmaiden	음울한 여전사	그림 실드메이든
 Gunjar	건냐르	건쟈
+Hallowed Dead	신성한 시신	신성한 사체
 Hard to be sure. He put up a strong fight.	확신할 수는 없군. 상당히 거세게 저항했거든.	확신할 수는 없군. 그는 상당히 강력한 것 같던데.
 Have Need of Cynric	신릭의 도움 요청	마지막 제안
 Have you thought about getting cured of vampirism?	흡혈귀 증상을 치료하는 것에 관하여 생각해 본 적은 없나?	흡혈귀 증상을 치료하는 것에 관해여 생각해 본 적은 없나?
@@ -441,6 +461,9 @@ Imbuing Switch	주입 스위치	염색 스위치
 Imperial Legion	제국군	임페리얼
 Imperial Military Camp	제국군 주둔지	제국군 야영지
 In 3E 389 Emperor Uriel VII was imprisoned by his Imperial Battlemage, Jagar Tharn, who then impersonated him for years.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄에 의해 갇히게 되었습니다. 그 후 수 년동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄 에 의해 갇히게 되었습니다. 그 후 수 년동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.
+Increase the damage and decrease the cost of Destruction spells for <dur> seconds.	<dur> 초 동안 파괴마법의 위력이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 파괴마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
+Increase the duration and decrease the cost of Conjuration spells for <dur> seconds.	<dur> 초 동안 소환마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 소환마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
+Increase the duration and decrease the cost of Illusion spells for <dur> seconds.	<dur> 초 동안 환영마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 환영마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Investigate Shroud Hearth Barrow	장막덮인 난로 무덤을 조사하기	장막덮힌 난로 무덤을 조사하기
 Iron Door	철문	강철 문
 Is life better under Imperial rule?	제국의 통치하에서 삶이 좀 나아졌나?	제국이 통치 하에서 삶이 좀 나아졌나?
@@ -464,6 +487,7 @@ Key to Evette San's House	열쇠 - 이베트 산의 집	열쇠 - 이베트 산�
 Key to Solitude Fletcher	열쇠 - 화살 공방	열쇠 - 화살깃털 상점
 Khajiit have deadly claws that can be used in unarmed combat. They can use Night Eye to see better in the dark.	카짓은 육탄전에서 치명적인 위력을 발휘하는 발톱을 가지고 있습니다. 또한 밤눈 기술을 사용하여 어둠에서 시야를 확보할 수 있습니다.	카짓은 육탄전에서 치명적인 위력을 발휘하는 손톱을 가지고 있습니다. 또한 밤눈 기술을 사용하여 어둠에서 시야를 확보할 수 있습니다.
 Kill everyone in the Sanctuary!	성역에 있는 자를 전부 죽이기	성역에 있는 자를 전부 죽여라!
+Kill General Falx Carius	팔크스 카리우스 장군을 죽이기	폭스 카리우스 장군을 죽이기
 Kill Nazir's attacker!	나지어를 공격하는 자를 죽이기	나지어를 공격하는 자들을 죽여라!
 Kill the Emperor!	황제를 죽이기	황제를 죽여라!
 Kitchen furnishings. (<Global=HDWindhelmKitchen> gold)	주방 가구. (<Global=HDWindhelmKitchen> 골드)	주방가구. (<Global=HDWindhelmKitchen> 골드)
@@ -493,6 +517,8 @@ Loft decorations (<Global=HDWhiterunLoft> gold)	다락 장식들. (<Global=HDWhi
 Log Pile	통나무 더미	나무 말뚝
 Look out - you're about to step in your own Shock Rune.	조심해! 당신이 설치한 벼락의 룬을 밟겠어.	조심해! 번개 룬을 밟을 뻔 했어.
 Lots of gold to be had plundering ships.	배를 약탈하면 금화를 잔뜩 챙길 수 있겠군.	수많은 금화들을 쌓아두었겠지.
+Lowers the cost and increases the duration of Alteration spells for <dur> seconds.	<dur> 초 동안 변화마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 변화마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
+Lowers the cost and increases the potency of Restoration spells for <dur> seconds.	<dur> 초 동안 회복마법의 위력이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 회복마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Lumber. (<Global=BYOHHPAmountLogs> for <Global=BYOHHPCostLogs> gold)	목재. (<Global=BYOHHPAmountLogs>개에 <Global=BYOHHPCostLogs> 골드)	목재. (<Global=BYOHHPAmountLogs> for <Global=BYOHHPCostLogs> 골드)
 Lurker Vindicator	러커 응징자	러커 지원병
 Lymdrenn Tenvanni's Journal	림드렌 텔바니의 일기	림드렌 트레반니의 일기
@@ -564,6 +590,7 @@ Petty distractions?	사소한 유혹?	사소한 오락거리?
 Place a workbench in the Enchanter's Tower.	작업선반을 마법부여 연구탑에 설치합니다.	작업선반을 마법부가 연구탑에 설치합니다.
 Place a workbench in the Storage Room.	저장고에 작업선반을 설치합니다.	창고에 작업선반을 설치합니다.
 Place Pithiken's Ring	피씨켄의 반지 놓기	피쉬켄의 반지 놓기
+Place the burial urn in Yngol Barrow	잉골 고분에 유골 단지를 놓기	잉골 고분에 유물 단지를 놓기
 Plant the Incriminating Letter on Gaius Maro's body	가이우스 마로의 시체에 유죄증명 편지를 숨겨두기	가이우스 마로의 시체에 조작된 편지를 숨겨두기
 Planter	화분	농장주
 Pleated Shoes	야를의 주름 잡힌 신발	야를의 주름잡힌 신발
@@ -710,7 +737,9 @@ Strengthened by the infamy of its bearer	소유자의 악명으로 강화됩니�
 Summon Ice Wolves 1	설원늑대 소환 1	설원 늑대소환 1
 Summon Ice Wolves 2	설원늑대 소환 2	설원 늑대소환 2
 Summon Ice Wolves 3	설원늑대 소환 3	설원 늑대소환 3
+Summon Spectral Dragon	유령 드래곤 소환	영체 드래곤 소환
 Summons a High Seeker for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 시커 군주를 소환합니다.	<dur> 초 동안 고위 시커를 소환합니다.
+Summons a Spectral Dragon for <dur> seconds.	<dur> 초 동안 유령 드래곤을 소환합니다.	<dur> 초 동안 영체 드래곤을 소환합니다.
 Summons an unbound Dremora for <dur> seconds.	<dur> 초 동안 계약없는 드레모라를 소환합니다.	<dur> 초 동안 속박되지 않은 드레모라를 소환합니다.
 Summons Arvak in the Soul Cairn or Tamriel wilderness to act as your steed.	소울 케언이나 탐리엘의 야외에서 나의 말이 되어줄 아바크를 소환합니다.	소울 케언으로부터 나의 말이 되어줄 아바크를 소환합니다.
 Summons the ghost of the legendary assassin Lucien Lachance to fight by your side, until he's defeated.	전설적인 암살자 루시엔 러찬스의 영혼을 소환하여, 쓰러질 때까지 내 곁에서 싸우게 합니다.	전설적인 암살자 루시엔 러찬스의 영혼을 소환합니다.
