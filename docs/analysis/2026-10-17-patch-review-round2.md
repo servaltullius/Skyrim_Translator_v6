@@ -104,6 +104,7 @@
   - 모드팩 플러그인 5개: 13필드(DLC2 March of the Dead Fix 5 포함)
   - USCCCP에는 해당 글자가 없었다.
 - **TM v6**: 세 단계(2회차 → 2b → 2c)로 다시 계산해 v5에서 215행이 바뀐다.
+- **모드팩**: `modpack-r2c.py`로 한패 문자열 7개, USSEP, 플러그인 5개를 바꿨다(백업 `artifacts/modpack-backup-20261016/r2c/`). 다시 스캔한 `after13-r2c`에서 직전 글자는 0이다.
 
 ## 같은 글자를 가진 다른 곳
 
