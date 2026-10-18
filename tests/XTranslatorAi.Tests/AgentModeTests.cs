@@ -58,6 +58,46 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Contains("Then we have an understanding.", UserText(request));
     }
 
+    /// <summary>
+    /// IDE Thalmor's first request: the run saved a line from the game dictionary first, then asked with that line still
+    /// in its neighbor's context. The next run (the one an answer is replayed in) leaves saved lines out of the context,
+    /// so it asked differently and the answer was dropped.
+    /// </summary>
+    [Fact]
+    public async Task FirstRequest_AfterTheRunSavedGameLines_IsTheOneTheNextRunAsks()
+    {
+        var game = GameStringDictionary.Build(new[]
+        {
+            new GameStringPlugin("Skyrim.esm", Array.Empty<string>(), new[]
+            {
+                new PluginField("INFO/00001002/0/NAM1/0", 0, "INFO", "NAM1", 0x1002, null, 0, 0, "Then we have an understanding.",
+                    PluginStringTableKind.IlStrings, 1),
+            }, new Dictionary<(PluginStringTableKind, uint), string> { [(PluginStringTableKind.IlStrings, 1)] = "그럼 서로 이해한 걸로 하지." }),
+        });
+        using var saved = new MemoryStream();
+        game.Save(saved);
+        var bytes = saved.ToArray();
+        var session = new AgentSession(Path.Combine(_root, "work-game"), _global,
+            new GameStringService(Path.Combine(_root, "game"), () => new MemoryStream(bytes)), new AppSettings(),
+            projectsRootOverride: Path.Combine(_root, "projects-game"));
+        // Dialogue only, so the first request is the one with the saved line in its context.
+        var plugin = Path.Combine(_root, "Mod", "Dialogue.esp");
+        await File.WriteAllBytesAsync(plugin, Header().Concat(DialogueGroup(TopicChildren(0x1000,
+            Record("INFO", 0x1001, Sub("NAM1", Z("Your loyalty to the Dominion has been noted."))),
+            Record("INFO", 0x1002, Sub("NAM1", Z("Then we have an understanding."))),
+            Record("INFO", 0x1003, Sub("NAM1", Z("Speak with care, <Alias=Player>.")))))).ToArray());
+        var (project, _, _) = await session.OpenAsync(plugin, new PluginReadOptions(), "korean", "utf-8", batchSize: 2, CancellationToken.None);
+        _extraDbs.Add(project.DbPath);
+
+        var report = await session.NextAsync(project, CancellationToken.None);
+        Assert.Equal(1, report.Saved);
+
+        report = await session.SubmitAsync(project, Answer(report.Next!), CancellationToken.None);
+
+        Assert.Null(report.Problem);
+        Assert.True(report.Saved > 0);
+    }
+
     [Fact]
     public async Task Answers_AreSavedOneRequestAtATime_UntilThePluginIsDone()
     {

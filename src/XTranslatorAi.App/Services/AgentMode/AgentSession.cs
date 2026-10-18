@@ -246,8 +246,11 @@ public sealed class AgentSession
         var used = new HashSet<(string Hash, int Attempt)>(outcome.Used);
         // A request recorded after answers in the same run was built while the answered rows were still that run's
         // rows (and its name memory had their translations); the next run starts without them and asks differently.
-        // So the request kept is the first one of a fresh run, the one a replay will ask for.
-        for (var pass = 0; pass < 5 && outcome.Next != null && outcome.Used.Count > 0 && outcome.Error == null; pass++)
+        // So the request kept is the first one of a fresh run, the one a replay will ask for. The same goes for rows the
+        // run saved itself (game dictionary, TM): they were in the context of their neighbors' request, and are not
+        // among a later run's rows.
+        for (var pass = 0; pass < 5 && outcome.Next != null && (outcome.Used.Count > 0 || outcome.PendingAfter < outcome.PendingBefore)
+                           && outcome.Error == null; pass++)
         {
             outcome = await AgentTranslationRun.RunAsync(db, _settings, options, Answer, _globalDb, gameStrings, cancellationToken);
             used.UnionWith(outcome.Used);
