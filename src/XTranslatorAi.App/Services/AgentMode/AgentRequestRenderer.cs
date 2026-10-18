@@ -263,7 +263,7 @@ public static class AgentRequestRenderer
         if (root?["items"] is not JsonArray items) return payload;
         var sb = new StringBuilder();
         var languages = Value(root["source_language"]) is { } from && Value(root["target_language"]) is { } to ? $" ({from} → {to})" : "";
-        sb.AppendLine($"줄 목록{languages}: 한 줄이 한 항목(`id rec edid | 원문`). 원문 안의 줄바꿈은 `\\n`으로 적었다.");
+        sb.AppendLine($"줄 목록{languages}: 한 줄이 한 항목(`id rec edid | 원문`). 원문은 답의 JSON 문자열처럼 적었다(줄바꿈 `\\n`, 큰따옴표 `\\\"`).");
         sb.AppendLine("그 아래 들여쓴 줄은 그 항목의 `style`, `ctx`(앞뒤 줄, 참고만 하고 번역하지 않는다, 줄바꿈은 ` / `), `current`(고칠 앞 번역)다.");
         if (root["glossary"] is JsonArray glossary && glossary.Count > 0)
         {
@@ -292,7 +292,7 @@ public static class AgentRequestRenderer
 
     // As the answer's JSON string has it, so the model writes a line break back as \n.
     private static string Escaped(string text)
-        => text.Replace("\\", "\\\\").Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t");
+        => text.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t");
 
     private static string Flattened(string text)
         => text.Replace(" (reference only):", ":").Replace("\r\n", " / ").Replace("\n", " / ");
