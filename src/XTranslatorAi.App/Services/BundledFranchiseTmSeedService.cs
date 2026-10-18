@@ -132,8 +132,8 @@ public sealed class BundledFranchiseTmSeedService
             // work?" 그걸로는 안 되는 거요?, not a 작동하지 않은 that happened before), and the decisions after it (a particle
             // after an <Alias> that takes any name in both forms, <Alias=Victim>을(를); the College 윈터홀드 대학 as the
             // map names it), and the check of the changes no second reader had read (a particle written apart from its
-            // alias, <Alias=Location> 에서, joined to it); 413 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v6", "bundled-skyrim-tes-franchise-tm.tsv", 1528641, "1bedbe2e5ec3e39b2bd5af41254696de4eea39988c033dc474ece2610c946ebb",
+            // alias, <Alias=Location> 에서, joined to it), and the general dialogue a chunk at a time; 415 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v6", "bundled-skyrim-tes-franchise-tm.tsv", 1528651, "35527e0a4328e5df6ac5253a0ff36f37e6a6b88c9ee97e6a0efa6f18db19702e",
                 PreviousVersions: new[] { "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v6-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
