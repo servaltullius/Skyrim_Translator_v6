@@ -58,6 +58,9 @@ public sealed class BuiltInGlossaryService
         // Decided 2026-10-18 from the IDE Thalmor review: the Divine Prosecution is the Altmeri institution, and 검찰관
         // (a prosecutor) turned Ondolemar's "an officer of the Divine Prosecution" into "신성 검찰관의 장교".
         new("2026-10-18", Array.Empty<string>(), new[] { ("Divine Prosecution", "신성 검찰관") }),
+        // The speech-check tags of dialogue choices, as the game translation writes them: the GUI's Fists of Fury run
+        // wrote (Brawl) as 난투 and 맨손 격투 besides 싸움, and an agent run wrote (Lie) as 거짓말.
+        new("2026-10-18.2", new[] { "(Persuade)", "(Intimidate)", "(Bribe)", "(Lie)", "(Brawl)" }, Array.Empty<(string, string)>()),
     };
 
     /// <summary>

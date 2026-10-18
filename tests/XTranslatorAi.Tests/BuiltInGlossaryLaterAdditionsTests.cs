@@ -253,6 +253,29 @@ public class BuiltInGlossaryLaterAdditionsTests : IAsyncLifetime
         }
     }
 
+    /// <summary>
+    /// The speech-check tags of dialogue choices reach existing glossaries as the game translation writes them, and
+    /// match only with their parentheses: "brawling" and "persuade him" are plain words.
+    /// </summary>
+    [Fact]
+    public async Task DialogueChoiceTags_AreAddedAndMatchOnlyInParentheses()
+    {
+        await new BuiltInGlossaryService().AddLaterEntriesOnceAsync(_db, StampPathFor("2026-10-18.2"), "2026-10-18.2",
+            BethesdaFranchise.ElderScrolls, CancellationToken.None);
+
+        var tags = (await GlossaryAsync()).Where(e => e.SourceTerm.StartsWith('(')).ToDictionary(e => e.SourceTerm, e => e.TargetTerm);
+        Assert.Equal("(설득)", tags["(Persuade)"]);
+        Assert.Equal("(위협)", tags["(Intimidate)"]);
+        Assert.Equal("(뇌물)", tags["(Bribe)"]);
+        Assert.Equal("(거짓)", tags["(Lie)"]);
+        Assert.Equal("(싸움)", tags["(Brawl)"]);
+
+        var applied = new GlossaryApplier(await GlossaryAsync()).Apply("Let's settle this. (Brawl) I came for the brawling tourney. (Persuade) Persuade him.");
+        Assert.Equal(2, applied.TokenToReplacement.Count(t => t.Value is "(싸움)" or "(설득)"));
+        Assert.Contains("brawling", applied.Text, StringComparison.Ordinal);
+        Assert.Contains("Persuade him", applied.Text, StringComparison.Ordinal);
+    }
+
     private Task AddLaterEntriesAsync()
         => new BuiltInGlossaryService().AddLaterEntriesOnceAsync(_db, StampPath, "2026-10-01", BethesdaFranchise.ElderScrolls, CancellationToken.None);
 
