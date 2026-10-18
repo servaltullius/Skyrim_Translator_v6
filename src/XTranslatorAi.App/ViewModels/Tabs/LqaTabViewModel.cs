@@ -42,6 +42,12 @@ public sealed class LqaTabViewModel : ObservableObject, IDisposable
         set => _host.LqaHideInfo = value;
     }
 
+    public bool LqaHideReviewed
+    {
+        get => _host.LqaHideReviewed;
+        set => _host.LqaHideReviewed = value;
+    }
+
     public string LqaVisibleSummary => _host.LqaVisibleSummary;
 
     public ICollectionView LqaIssuesView => _host.LqaIssuesView;
@@ -61,6 +67,8 @@ public sealed class LqaTabViewModel : ObservableObject, IDisposable
     public IAsyncRelayCommand SaveSelectedDestCommand => _host.SaveSelectedDestCommand;
 
     public IAsyncRelayCommand<System.Collections.IList?> ToggleSourceFixCommand => _host.ToggleSourceFixCommand;
+
+    public IAsyncRelayCommand<System.Collections.IList?> ToggleLqaReviewedCommand => _host.ToggleLqaReviewedCommand;
 
     // Read-only editor during a run, as in the strings tab.
     public bool IsTranslating => _host.IsTranslating;

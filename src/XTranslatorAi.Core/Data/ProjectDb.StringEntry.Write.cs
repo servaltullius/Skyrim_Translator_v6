@@ -55,7 +55,10 @@ public sealed partial class ProjectDb
 
             await using var deleteNotes = _connection.CreateCommand();
             deleteNotes.Transaction = tx;
-            deleteNotes.CommandText = "DELETE FROM StringNote WHERE StringId=$Id AND Kind IN ($TmHit, $GameString, $PreviousRelease, $TmFallback, $SourceFix);";
+            // A "확인함" mark judged the old translation; the new one is checked afresh.
+            deleteNotes.CommandText = "DELETE FROM StringNote WHERE StringId=$Id AND (Kind IN ($TmHit, $GameString, $PreviousRelease, $TmFallback, $SourceFix) "
+                                      + "OR substr(Kind, 1, length($Reviewed)) = $Reviewed);";
+            deleteNotes.Parameters.AddWithValue("$Reviewed", TranslationConstants.LqaReviewedNoteKindPrefix);
             deleteNotes.Parameters.AddWithValue("$TmHit", TranslationConstants.TmHitNoteKind);
             deleteNotes.Parameters.AddWithValue("$GameString", TranslationConstants.GameStringNoteKind);
             deleteNotes.Parameters.AddWithValue("$PreviousRelease", TranslationConstants.PreviousReleaseNoteKind);

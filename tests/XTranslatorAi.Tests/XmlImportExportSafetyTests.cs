@@ -127,6 +127,29 @@ public sealed class XmlImportExportSafetyTests : IAsyncLifetime
         Assert.False(hits.ContainsKey(loaded.Single(r => r.SourceText == "Iron Axe").Id));
     }
 
+    // An XML project reopens through this import every time. A hand-edited row lost its "확인함" and "원문 오류 수정"
+    // marks on each reopen; its TM notes, stale once the row was edited, still drop.
+    [Fact]
+    public async Task Reopen_KeepsTheUsersMarksOnHandEditedRows()
+    {
+        await ImportAsync(Row("1", "Iron Sword", "") + Row("2", "Steel Sword", ""));
+        await _db.UpdateStringTranslationAsync(1, "Iron 검", StringEntryStatus.Edited, null, CancellationToken.None);
+        await _db.UpdateStringTranslationAsync(2, "Steel 검", StringEntryStatus.Done, null, CancellationToken.None);
+        await _db.UpsertStringNoteAsync(1, "tm_hit", "stale", CancellationToken.None);
+        await _db.SetSourceFixAsync(1, true, CancellationToken.None);
+        await _db.SetLqaReviewedAsync(new[] { (1L, "english_residue", "Iron 검"), (2L, "english_residue", "Steel 검") }, true, CancellationToken.None);
+
+        await ImportAsync(Row("1", "Iron Sword", "") + Row("2", "Steel Sword", ""), preserve: true);
+
+        var loaded = await _db.GetStringsAsync(10, 0, CancellationToken.None);
+        var (edited, done) = (loaded.Single(r => r.SourceText == "Iron Sword").Id, loaded.Single(r => r.SourceText == "Steel Sword").Id);
+        var marks = await _db.GetLqaReviewedMarksAsync(CancellationToken.None);
+        Assert.True(XTranslatorAi.Core.Text.LqaReviewedMarks.Holds(marks, edited, "english_residue", "Iron 검"));
+        Assert.True(XTranslatorAi.Core.Text.LqaReviewedMarks.Holds(marks, done, "english_residue", "Steel 검"));
+        Assert.Contains(edited, (await _db.GetStringNotesByKindAsync(XTranslatorAi.Core.TranslationConstants.SourceFixNoteKind, CancellationToken.None)).Keys);
+        Assert.Empty(await _db.GetStringNotesByKindAsync("tm_hit", CancellationToken.None));
+    }
+
     // Rows sharing an identity (LotD has 76, mostly repeated objectives such as "Talk to Captain Falx") were matched by
     // position only, so a row added above them dropped their translations without keeping them aside.
     [Fact]

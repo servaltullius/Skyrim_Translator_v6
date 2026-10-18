@@ -87,12 +87,20 @@ public sealed partial class ProjectDb
                 await insert.ExecuteNonQueryAsync(cancellationToken);
 
                 // Notes (TM applied, TM fallback) describe the translation, so a row that keeps it keeps them:
-                // reopening used to delete them all. A hand edit has none (saving one removes them).
-                if (kept != null && kept.Status != StringEntryStatus.Edited && status != StringEntryStatus.Pending
+                // reopening used to delete them all. A hand edit's TM notes are stale (saving the edit leaves them), but
+                // the marks the user put on it stay: "원문 오류 수정" and "확인함", which reopening dropped on edited rows.
+                if (kept != null && status != StringEntryStatus.Pending
                     && string.Equals(destText, kept.DestText, StringComparison.Ordinal)
                     && notes.TryGetValue((identity!, kept.OrderIndex), out var keptNotes))
                 {
-                    await RestorePluginStringNotesAsync(tx, await LastInsertedRowIdAsync(tx, cancellationToken), keptNotes, cancellationToken);
+                    var restored = kept.Status != StringEntryStatus.Edited
+                        ? keptNotes
+                        : keptNotes.Where(note => note.Kind == TranslationConstants.SourceFixNoteKind
+                                                  || note.Kind.StartsWith(TranslationConstants.LqaReviewedNoteKindPrefix, StringComparison.Ordinal)).ToList();
+                    if (restored.Count > 0)
+                    {
+                        await RestorePluginStringNotesAsync(tx, await LastInsertedRowIdAsync(tx, cancellationToken), restored, cancellationToken);
+                    }
                 }
             }
 

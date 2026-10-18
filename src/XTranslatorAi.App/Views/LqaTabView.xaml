@@ -17,6 +17,20 @@
         <WrapPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
             <Button Content="검사" Command="{Binding ScanLqaCommand}" Style="{StaticResource XT.ToolbarButton}" />
             <Button Content="지우기" Command="{Binding ClearLqaCommand}" Style="{StaticResource XT.ToolbarButton}" />
+            <Button Command="{Binding ToggleLqaReviewedCommand}"
+                    CommandParameter="{Binding SelectedItems, ElementName=LqaIssuesGrid}"
+                    ToolTip="고칠 필요가 없다고 본 결과(일부러 다르게 쓴 말투, 영어로 둔 모드 이름 등)를 표시합니다. 행의 번역문이 바뀌면 표시가 풀려 다시 나옵니다. 여러 결과를 골라 한 번에 표시할 수 있습니다.">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource XT.ToolbarButton}">
+                        <Setter Property="Content" Value="확인함으로 표시" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedLqaIssue.IsReviewed}" Value="True">
+                                <Setter Property="Content" Value="확인함 표시 해제" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
 
             <Separator Margin="12,0,12,0" Width="1" />
 
@@ -29,10 +43,16 @@
                       VerticalAlignment="Center"
                       Margin="12,0,0,0"
                       ToolTip="오류·경고만 보입니다. 참고는 다른 화자의 말투, TM의 이름 표기, TM 대체처럼 확인만 하면 되는 결과입니다." />
+            <CheckBox Content="확인한 항목 숨기기"
+                      IsChecked="{Binding LqaHideReviewed}"
+                      VerticalAlignment="Center"
+                      Margin="12,0,0,0"
+                      ToolTip="확인함으로 표시한 결과를 숨깁니다. 끄면 '확인' 칸에 '확인함'으로 보입니다." />
             <TextBlock Text="{Binding LqaVisibleSummary, Mode=OneWay}" VerticalAlignment="Center" Margin="12,0,0,0" />
         </WrapPanel>
 
         <DataGrid Grid.Row="1"
+                  x:Name="LqaIssuesGrid"
                   ItemsSource="{Binding LqaIssuesView}"
                   SelectedItem="{Binding SelectedLqaIssue}"
                   Style="{StaticResource XT.DataGrid}"
@@ -48,6 +68,7 @@
                   ScrollViewer.IsDeferredScrollingEnabled="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="심각도" Binding="{Binding SeverityDisplay}" Width="70" />
+                <DataGridTextColumn Header="확인" Binding="{Binding ReviewedDisplay}" Width="60" />
                 <DataGridTextColumn Header="종류" Binding="{Binding CodeDisplay}" Width="130" />
                 <DataGridTextColumn Header="#" Binding="{Binding OrderIndex}" Width="70" />
                 <DataGridTextColumn Header="EDID" Binding="{Binding Edid}" Width="140" />

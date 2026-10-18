@@ -11,6 +11,7 @@ public interface ILqaTabHost : INotifyPropertyChanged
 
     string LqaFilterText { get; set; }
     bool LqaHideInfo { get; set; }
+    bool LqaHideReviewed { get; set; }
     string LqaVisibleSummary { get; }
     ICollectionView LqaIssuesView { get; }
 
@@ -20,4 +21,5 @@ public interface ILqaTabHost : INotifyPropertyChanged
 
     IAsyncRelayCommand SaveSelectedDestCommand { get; }
     IAsyncRelayCommand<System.Collections.IList?> ToggleSourceFixCommand { get; }
+    IAsyncRelayCommand<System.Collections.IList?> ToggleLqaReviewedCommand { get; }
 }

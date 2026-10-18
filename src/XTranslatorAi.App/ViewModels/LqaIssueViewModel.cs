@@ -1,8 +1,9 @@
 using System;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace XTranslatorAi.App.ViewModels;
 
-public sealed class LqaIssueViewModel
+public sealed partial class LqaIssueViewModel : ObservableObject
 {
     public long Id { get; }
     public int OrderIndex { get; }
@@ -15,6 +16,13 @@ public sealed class LqaIssueViewModel
 
     public string SeverityDisplay => LqaIssueLabels.Severity(Severity);
     public string CodeDisplay => LqaIssueLabels.Code(Code);
+
+    /// <summary>Marked "확인함": looked at and left as it is (MainViewModel.ToggleLqaReviewedAsync).</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ReviewedDisplay))]
+    private bool _isReviewed;
+
+    public string ReviewedDisplay => IsReviewed ? "확인함" : "";
 
     public string SourcePreview { get; }
     public string DestPreview { get; }
@@ -57,6 +65,7 @@ public sealed class LqaIssueViewModel
                || ContainsIgnoreCase(SeverityDisplay, q)
                || ContainsIgnoreCase(Code, q)
                || ContainsIgnoreCase(CodeDisplay, q)
+               || ContainsIgnoreCase(ReviewedDisplay, q)
                || ContainsIgnoreCase(Message, q)
                || ContainsIgnoreCase(SourcePreview, q)
                || ContainsIgnoreCase(DestPreview, q);

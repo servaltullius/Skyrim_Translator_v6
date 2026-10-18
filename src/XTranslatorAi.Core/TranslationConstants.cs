@@ -50,6 +50,12 @@ public static class TranslationConstants
     /// <summary>A row translated against its English on purpose because the English is wrong ("원문 오류 수정").</summary>
     public const string SourceFixNoteKind = "source_fix";
 
+    /// <summary>
+    /// A quality-check result the user looked at and left as it is ("확인함"): the note's kind is this prefix and the
+    /// result's code, its message the row's translation when it was marked. A changed translation is judged again.
+    /// </summary>
+    public const string LqaReviewedNoteKindPrefix = "lqa_reviewed:";
+
     public static string RemoveInvisibleSeparators(string text)
     {
         if (text.IndexOf('\u200B') < 0 && text.IndexOf('\uFEFF') < 0 && text.IndexOf('\u2060') < 0)

@@ -363,6 +363,27 @@ public sealed class PluginProjectIntegrationTests
         Assert.Equal(new[] { reopened[0].Id }, notes.Keys.ToArray());
     }
 
+    // A "확인함" mark on a quality-check result is a row note too: it stays with the row's kept translation.
+    [Fact]
+    public async Task Reopening_KeepsTheReviewedMarksOfRowsWhoseSourceIsUnchanged()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        await fixture.ImportAsync(Field("sword", 0, "Iron Sword"), Field("shield", 1, "Iron Shield"));
+        var rows = await fixture.Db.GetStringsAsync(20, 0, CancellationToken.None);
+        await fixture.Db.UpdateStringTranslationAsync(rows[0].Id, "Iron 검", StringEntryStatus.Done, null, CancellationToken.None);
+        await fixture.Db.UpdateStringTranslationAsync(rows[1].Id, "Iron 방패", StringEntryStatus.Done, null, CancellationToken.None);
+        await fixture.Db.SetLqaReviewedAsync(new[] { (rows[0].Id, "english_residue", "Iron 검"), (rows[1].Id, "english_residue", "Iron 방패") },
+            true, CancellationToken.None);
+
+        var reopened = await fixture.Db.ReplaceImportedPluginStringsAsync(fixture.Source with { Sha256 = "v2" },
+            new[] { Field("shield", 1, "Steel Shield"), Field("sword", 0, "Iron Sword") }, fixture.Project, "utf-8", CancellationToken.None);
+
+        var marks = await fixture.Db.GetLqaReviewedMarksAsync(CancellationToken.None);
+        var sword = reopened.Single(r => r.SourceText == "Iron Sword").Id;
+        Assert.Equal(new[] { (sword, "english_residue") }, marks.Keys.Select(k => (k.StringId, k.Code)).ToArray());
+        Assert.True(XTranslatorAi.Core.Text.LqaReviewedMarks.Holds(marks, sword, "english_residue", "Iron 검"));
+    }
+
     // A row whose translation is not kept (it failed, so it reopens as Pending) showed a stale TM mark.
     [Fact]
     public async Task Reopening_DropsTheNotesOfRowsWhoseTranslationIsNotKept()

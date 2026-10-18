@@ -1,7 +1,11 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
+using XTranslatorAi.Core.Text;
 
 namespace XTranslatorAi.App.ViewModels;
 
@@ -28,6 +32,9 @@ public partial class MainViewModel
         {
             StatusMessage = "품질 검사 중...";
             var issues = await BuildLqaIssuesAsync();
+            var marks = db == null
+                ? new Dictionary<(long StringId, string Code), string>()
+                : await db.GetLqaReviewedMarksAsync(CancellationToken.None);
 
             // The scan runs off the UI thread, so the window stays usable; row Ids restart at 1 in every
             // project, so results of a project the user has since left must not be shown over the new one.
@@ -36,6 +43,8 @@ public partial class MainViewModel
                 return;
             }
 
+            _lqaReviewedMarks = new Dictionary<(long StringId, string Code), string>(marks);
+            ApplyLqaReviewedMarks(issues);
             LqaIssues.ReplaceAll(issues);
             LqaIssuesView.Refresh();
             await RecheckLqaRowsChangedDuringScanAsync();
@@ -46,9 +55,13 @@ public partial class MainViewModel
                 SelectedLqaIssue = first;
             }
 
+            var reviewed = LqaIssues.Count(i => i.IsReviewed);
             StatusMessage = LqaIssues.Count == 0
                 ? "품질 검사: 문제를 찾지 못했습니다."
-                : $"품질 검사: 오류 {CountSeverity("Error")}건, 경고 {CountSeverity("Warn")}건, 참고 {CountSeverity("Info")}건";
+                : LqaIssues.Count == reviewed
+                    ? $"품질 검사: 새 문제를 찾지 못했습니다(확인함 {reviewed}건)."
+                    : $"품질 검사: 오류 {CountSeverity("Error")}건, 경고 {CountSeverity("Warn")}건, 참고 {CountSeverity("Info")}건"
+                      + (reviewed > 0 ? $", 확인함 {reviewed}건" : "");
         }
         catch (Exception ex)
         {
@@ -62,8 +75,9 @@ public partial class MainViewModel
         }
     }
 
+    // Results marked "확인함" are counted apart.
     private int CountSeverity(string severity)
-        => LqaIssues.Count(i => string.Equals(i.Severity, severity, StringComparison.OrdinalIgnoreCase));
+        => LqaIssues.Count(i => !i.IsReviewed && string.Equals(i.Severity, severity, StringComparison.OrdinalIgnoreCase));
 
     private bool CanScanLqa() => IsProjectLoaded && !IsTranslating && !IsLqaScanning;
 
@@ -89,6 +103,7 @@ public partial class MainViewModel
         SelectedLqaIssue = null;
         LqaIssues.Clear();
         LqaIssuesView.Refresh();
+        _lqaReviewedMarks = new Dictionary<(long StringId, string Code), string>();
         ClearLqaCommand.NotifyCanExecuteChanged();
         ClearCompareOutputs();
         LastCostEstimateSummary = "";
@@ -97,6 +112,8 @@ public partial class MainViewModel
     partial void OnLqaFilterTextChanged(string value) => LqaIssuesView.Refresh();
 
     partial void OnLqaHideInfoChanged(bool value) => LqaIssuesView.Refresh();
+
+    partial void OnLqaHideReviewedChanged(bool value) => LqaIssuesView.Refresh();
 
     /// <summary>
     /// How many results the search and "참고 숨기기" leave. Information-only results can outnumber the warnings
@@ -112,7 +129,9 @@ public partial class MainViewModel
             }
 
             var visible = LqaIssuesView is System.Windows.Data.CollectionView view ? view.Count : LqaIssues.Count;
-            return visible == LqaIssues.Count ? $"전체 {LqaIssues.Count}건" : $"표시 {visible} / 전체 {LqaIssues.Count}건";
+            var reviewed = LqaIssues.Count(i => i.IsReviewed);
+            return (visible == LqaIssues.Count ? $"전체 {LqaIssues.Count}건" : $"표시 {visible} / 전체 {LqaIssues.Count}건")
+                   + (reviewed > 0 ? $" (확인함 {reviewed}건)" : "");
         }
     }
 
@@ -124,6 +143,11 @@ public partial class MainViewModel
         }
 
         if (LqaHideInfo && string.Equals(issue.Severity, "Info", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (LqaHideReviewed && issue.IsReviewed)
         {
             return false;
         }

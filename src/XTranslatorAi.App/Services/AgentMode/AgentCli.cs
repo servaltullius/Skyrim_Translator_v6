@@ -74,6 +74,7 @@ public static class AgentCli
         var rec = Option("--rec");
         var idsOption = Option("--id");
         var all = rest.Remove("--all");
+        var undo = rest.Remove("--undo");
         var session = new AgentSession(work, globalDb, new GameStringService(), settings, projectsRoot);
 
         try
@@ -86,6 +87,7 @@ public static class AgentCli
                 case "next": RefuseWhileAppRuns(); Print(await session.NextAsync(session.Find(Arg(0, "프로젝트")), ct)); break;
                 case "submit": await SubmitAsync(); break;
                 case "check": await CheckAsync(); break;
+                case "review": await ReviewAsync(); break;
                 case "export": await ExportAsync(); break;
                 case "edit": await EditAsync(); break;
                 case "show": await ShowAsync(); break;
@@ -186,10 +188,9 @@ public static class AgentCli
             }
         }
 
-        async Task CheckAsync()
+        // The quality check as the GUI runs it on the whole project, with each row's translation by id.
+        async Task<(List<LqaIssue> Issues, Dictionary<long, string> Dest)> ScanProjectAsync(ProjectDb db)
         {
-            var project = session.Find(Arg(0, "프로젝트"));
-            await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, ct);
             var global = await globalDb.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, ct);
             var rows = new List<StringEntry>();
             for (var offset = 0; ; offset += 1000)
@@ -216,17 +217,71 @@ public static class AgentCli
             var notes = memory.Count > 0 ? LqaScanner.DropTmFallbacksMatchingMemory(tmNotes, entries, memory) : tmNotes;
             var issues = await LqaScanner.ScanAsync(entries, "korean", glossary, tmFallbackNotes: notes,
                 referenceNames: memory.Count > 0 ? ReferenceNameIndex.Build(memory) : null, sourceFixIds: sourceFix);
+            return (issues, rows.ToDictionary(row => row.Id, row => row.DestText ?? ""));
+        }
+
+        async Task CheckAsync()
+        {
+            var project = session.Find(Arg(0, "프로젝트"));
+            await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, ct);
+            var (issues, dest) = await ScanProjectAsync(db);
+            // Results the user marked "확인함" (looked at and left as they are) are not listed again while the row's
+            // translation is the one they were marked with; --all lists them with the mark.
+            var marks = await db.GetLqaReviewedMarksAsync(ct);
+            bool Reviewed(LqaIssue i) => LqaReviewedMarks.Holds(marks, i.Id, i.Code, dest.GetValueOrDefault(i.Id));
+            var reviewedCount = issues.Count(Reviewed);
             // 참고(Info) findings need no fix (a TM line translated anew, say); they are listed only on request.
             // The speaker checks' reference findings are worth a look (a line in another level than the speaker's
             // others), so they are listed with the warnings; the other reference findings need no fix.
-            var shown = all ? issues : issues.Where(i => i.Severity != "Info" || i.Code is "speaker_tone_mixed" or "player_tone_inconsistent").ToList();
-            var hidden = issues.Count - shown.Count;
-            Console.WriteLine($"품질검사: {shown.Count}건" + (hidden > 0 ? $" (참고 {hidden}건은 고칠 것 없음, 보려면 check {project.Key} --all)" : ""));
+            var unreviewed = issues.Where(i => !Reviewed(i)).ToList();
+            var shown = all ? issues : unreviewed.Where(i => i.Severity != "Info" || i.Code is "speaker_tone_mixed" or "player_tone_inconsistent").ToList();
+            var hidden = unreviewed.Count - (all ? unreviewed.Count : shown.Count);
+            var notes = new List<string>();
+            if (hidden > 0) notes.Add($"참고 {hidden}건은 고칠 것 없음");
+            if (reviewedCount > 0) notes.Add(all ? $"확인함 {reviewedCount}건 포함" : $"확인함 {reviewedCount}건은 숨김");
+            Console.WriteLine($"품질검사: {shown.Count}건" + (notes.Count > 0 ? $" ({string.Join(", ", notes)}" + (all ? ")" : $", 보려면 check {project.Key} --all)") : ""));
             foreach (var i in shown)
             {
-                Console.WriteLine($"- #{i.Id} [{LqaIssueLabels.Severity(i.Severity)}] {LqaIssueLabels.Code(i.Code)}: {IssueMessage(i)}");
+                var label = LqaIssueLabels.Severity(i.Severity) + (Reviewed(i) ? "·확인함" : "");
+                Console.WriteLine($"- #{i.Id} [{label}] {LqaIssueLabels.Code(i.Code)}: {IssueMessage(i)}");
                 Console.WriteLine($"  영어: {Flat(i.SourceText)}");
                 Console.WriteLine($"  번역: {Flat(i.DestText)}");
+            }
+        }
+
+        // Marks the rows' quality-check results "확인함" (looked at and left as they are; the GUI's button does the same),
+        // or with --undo takes the marks off. A mark holds while the row's translation stays as it is.
+        async Task ReviewAsync()
+        {
+            RefuseWhileAppRuns();
+            var project = session.Find(Arg(0, "프로젝트"));
+            var ids = idsOption?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(s => long.TryParse(s, out var v) ? v : throw new AgentModeException($"--id에 숫자가 아닌 값: {s}")).ToHashSet()
+                ?? throw new AgentModeException("확인함으로 표시할 줄을 --id 12,40처럼 지정하세요.");
+            await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, ct);
+            if (undo)
+            {
+                var off = (await db.GetLqaReviewedMarksAsync(ct)).Keys.Where(key => ids.Contains(key.StringId))
+                    .Select(key => (key.StringId, key.Code, "")).ToList();
+                await db.SetLqaReviewedAsync(off, false, ct);
+                Console.WriteLine($"확인함 표시 해제: {off.Count}건");
+                return;
+            }
+
+            var (issues, dest) = await ScanProjectAsync(db);
+            var picked = issues.Where(i => ids.Contains(i.Id)).ToList();
+            await db.SetLqaReviewedAsync(picked.Select(i => (i.Id, i.Code, dest.GetValueOrDefault(i.Id, ""))).Distinct().ToList(), true, ct);
+            foreach (var i in picked)
+            {
+                Console.WriteLine($"- #{i.Id} [{LqaIssueLabels.Severity(i.Severity)}] {LqaIssueLabels.Code(i.Code)}: {IssueMessage(i)}");
+            }
+
+            var marked = picked.Select(i => i.Id).ToHashSet();
+            Console.WriteLine($"확인함으로 표시: {picked.Count}건(줄 {marked.Count}개). 번역문이 바뀌면 다시 나옵니다.");
+            var none = ids.Where(id => !marked.Contains(id)).OrderBy(id => id).ToList();
+            if (none.Count > 0)
+            {
+                Console.WriteLine($"품질검사 결과가 없는 줄: {string.Join(", ", none.Select(id => "#" + id))}");
             }
         }
 
@@ -409,7 +464,8 @@ public static class AgentCli
               tullius.cmd status <프로젝트>                                              진행 상황
               tullius.cmd next <프로젝트>                                                첫 요청 만들기(끊긴 뒤 다시 시작할 때도)
               tullius.cmd submit <프로젝트> <답 파일>                                    답 저장, 다음 요청 만들기
-              tullius.cmd check <프로젝트> [--all]                                       품질검사(--all: 고칠 것 없는 참고까지)
+              tullius.cmd check <프로젝트> [--all]                                       품질검사(--all: 고칠 것 없는 참고·확인함까지)
+              tullius.cmd review <프로젝트> --id 12,40 [--undo]                          그대로 둘 줄의 품질검사 결과를 확인함으로 표시(번역문이 바뀌면 다시 나옴)
               tullius.cmd show <프로젝트> [--find 글자] [--rec WEAP:FULL] [--id 12,40]   줄 보기(#id, 영어, 번역)
               tullius.cmd lookup <프로젝트> <낱말>                                       이름·용어의 기존 표기(용어집·게임 사전·TM, 앱이 켜져 있어도 됨)
               tullius.cmd edit <프로젝트> <수정.json>                                    줄 고치기([{"id": 번호, "text": "새 번역"}])

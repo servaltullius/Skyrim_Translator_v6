@@ -68,6 +68,7 @@ public partial class MainViewModel
 
     [ObservableProperty] private string _lqaFilterText = "";
     [ObservableProperty] private bool _lqaHideInfo;
+    [ObservableProperty] private bool _lqaHideReviewed = true;
 
     [ObservableProperty] private string _glossaryLookupText = "";
     [ObservableProperty] private bool _glossaryLookupIncludeProject = true;
@@ -135,6 +136,7 @@ public partial class MainViewModel
     [NotifyCanExecuteChangedFor(nameof(ImportPreviousTranslationCommand))]
     [NotifyCanExecuteChangedFor(nameof(ClearPreviousTranslationCommand))]
     [NotifyCanExecuteChangedFor(nameof(ImportPreviousSourceCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ToggleLqaReviewedCommand))]
     private bool _isProjectLoaded;
 
     [ObservableProperty]
@@ -188,6 +190,7 @@ public partial class MainViewModel
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ScanLqaCommand))]
     [NotifyCanExecuteChangedFor(nameof(ClearLqaCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ToggleLqaReviewedCommand))]
     private bool _isLqaScanning;
 
     [ObservableProperty]

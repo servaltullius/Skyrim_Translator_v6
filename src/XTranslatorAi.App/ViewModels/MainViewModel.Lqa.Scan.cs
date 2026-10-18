@@ -165,7 +165,9 @@ public partial class MainViewModel
 
         var ids = entries.Select(entry => entry.Id).ToHashSet();
         var kept = LqaIssues.Where(i => !ids.Contains(i.Id) || (ProjectWideLqaCodes.Contains(i.Code) && !sourceFixIds.Contains(i.Id))).ToList();
-        var replacements = fresh.Where(i => !ProjectWideLqaCodes.Contains(i.Code)).Select(ToIssueViewModel);
+        var replacements = fresh.Where(i => !ProjectWideLqaCodes.Contains(i.Code)).Select(ToIssueViewModel).ToList();
+        // A row saved with other text loses its "확인함" marks; one checked again with the same text keeps them.
+        ApplyLqaReviewedMarks(kept.Where(i => ids.Contains(i.Id)).Concat(replacements));
         var selected = SelectedLqaIssue;
         // The order of the full scan: errors, warnings, information, each by row.
         LqaIssues.ReplaceAll(kept.Concat(replacements)
