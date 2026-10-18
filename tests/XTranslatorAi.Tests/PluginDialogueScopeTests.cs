@@ -272,6 +272,39 @@ public sealed class PluginDialogueScopeTests
     }
 
     /// <summary>
+    /// A topic's text (DIAL:FULL) is the player's line too, said to the NPC who answers it; a topic two NPCs answer
+    /// names nobody. The rule says the player's level follows who is spoken to, one per listener.
+    /// </summary>
+    [Fact]
+    public async Task TopicText_IsThePlayersLine_ToTheNpcWhoAnswers()
+    {
+        var plugin = Header()
+            .Concat(Group(Record("NPC_", 0x01000800, Sub("FULL", Z("Ondolemar")))))
+            .Concat(DialogueGroup(
+                Record("DIAL", 0x01001000, Sub("EDID", Z("TopicAsk")), Sub("FULL", Z("Can I ask you something?"))),
+                TopicChildren(0x01001000,
+                    Record("INFO", 0x01001001, Sub("CTDA", GetIsId(0x01000800)), Sub("NAM1", Z("Ask, then.")))),
+                Record("DIAL", 0x01002000, Sub("EDID", Z("TopicRumor")), Sub("FULL", Z("Heard any rumors?"))),
+                TopicChildren(0x01002000,
+                    Record("INFO", 0x01002001, Sub("CTDA", GetIsId(0x01000800)), Sub("NAM1", Z("None worth telling."))),
+                    Record("INFO", 0x01002002, Sub("CTDA", GetIsId(0x00013269)), Sub("NAM1", Z("Only the usual."))))))
+            .ToArray();
+        await using var fixture = await Fixture.CreateAsync(plugin);
+        var client = new BatchEchoClient();
+        await new TranslationService(fixture.Db, client).TranslateIdsAsync(fixture.Request with
+        {
+            Ids = fixture.Ids.Skip(1).ToArray(), BatchSize = 10,
+        });
+
+        var prompt = Assert.Single(client.Prompts);
+        Assert.Contains("every player line to the same NAME keeps one level", prompt);
+        var ctx = client.Items.ToDictionary(item => item.Text, item => item.Ctx);
+        Assert.StartsWith(TranslationPrompt.SpeakerContextPrefix + "Player, to Ondolemar", ctx["Can I ask you something?"]);
+        Assert.StartsWith(TranslationPrompt.SpeakerContextPrefix + "Ondolemar", ctx["Ask, then."]);
+        Assert.False(TranslationPrompt.HasSpeaker(ctx.GetValueOrDefault("Heard any rumors?")));
+    }
+
+    /// <summary>
     /// A base game NPC who speaks a mod's lines is named by the game translation (the record's Korean name), with the
     /// English too when the plugin carries the NPC; an NPC named nowhere gets a label of its FormID.
     /// </summary>

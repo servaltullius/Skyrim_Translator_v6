@@ -458,6 +458,56 @@ public sealed partial class ProjectDb
     }
 
     /// <summary>The English name (NPC_:FULL) of each NPC record the plugin carries, its own or an override, by FormID.</summary>
+    public async Task<IReadOnlyDictionary<long, string>> GetTopicListenersAsync(CancellationToken cancellationToken)
+    {
+        var topics = new Dictionary<long, long>();
+        var speakersByTopic = new Dictionary<long, HashSet<long>>();
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            // One pass over the dialogue bindings; the pairing is done here, not as a self-join on JSON fields.
+            await using var cmd = _connection.CreateCommand();
+            cmd.CommandText =
+                """
+                SELECT StringId, json_extract(FieldJson, '$.RecordType'), json_extract(FieldJson, '$.SubrecordType'),
+                       json_extract(FieldJson, '$.FormId'), json_extract(FieldJson, '$.DialogueTopicFormId'),
+                       json_extract(FieldJson, '$.SpeakerFormId')
+                FROM PluginStringBinding
+                WHERE json_extract(FieldJson, '$.RecordType') IN ('DIAL', 'INFO');
+                """;
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                var type = reader.IsDBNull(1) ? null : reader.GetString(1);
+                if (type == "DIAL" && !reader.IsDBNull(2) && reader.GetString(2) == "FULL" && !reader.IsDBNull(3))
+                {
+                    topics[reader.GetInt64(0)] = reader.GetInt64(3);
+                }
+                else if (type == "INFO" && !reader.IsDBNull(4) && !reader.IsDBNull(5))
+                {
+                    var topic = reader.GetInt64(4);
+                    if (!speakersByTopic.TryGetValue(topic, out var set)) speakersByTopic[topic] = set = new HashSet<long>();
+                    set.Add(reader.GetInt64(5));
+                }
+            }
+        }
+        finally
+        {
+            _gate.Release();
+        }
+
+        var map = new Dictionary<long, string>();
+        foreach (var (stringId, topic) in topics)
+        {
+            if (speakersByTopic.TryGetValue(topic, out var set) && set.Count == 1)
+            {
+                map[stringId] = unchecked((uint)set.First()).ToString("X8", System.Globalization.CultureInfo.InvariantCulture);
+            }
+        }
+
+        return map;
+    }
+
     public async Task<IReadOnlyDictionary<uint, string>> GetPluginNpcNamesAsync(CancellationToken cancellationToken)
     {
         var map = new Dictionary<uint, string>();

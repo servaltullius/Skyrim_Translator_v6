@@ -17,11 +17,20 @@ namespace XTranslatorAi.Core.Translation;
 /// </summary>
 public static class DialogueSpeakerNames
 {
-    /// <summary>The speaker's label for each INFO row whose speaker is known, by row id.</summary>
+    /// <summary>
+    /// The speaker's label for each INFO row whose speaker is known, by row id; for a player's line (an INFO's RNAM, a
+    /// topic's text) it is the NPC the player speaks to, which the request names as "Player, to NAME".
+    /// </summary>
     public static async Task<IReadOnlyDictionary<long, string>> LoadAsync(
         IProjectDb db, GameStringDictionary? gameStrings, CancellationToken cancellationToken)
     {
-        var speakers = await db.GetStringSpeakersAsync(cancellationToken).ConfigureAwait(false);
+        var speakers = new Dictionary<long, string>(await db.GetStringSpeakersAsync(cancellationToken).ConfigureAwait(false));
+        // A topic's text is the player's line; the NPC who answers it is who the player speaks to.
+        foreach (var (id, npc) in await db.GetTopicListenersAsync(cancellationToken).ConfigureAwait(false))
+        {
+            speakers.TryAdd(id, npc);
+        }
+
         if (speakers.Count == 0)
         {
             return speakers;

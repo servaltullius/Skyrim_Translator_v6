@@ -90,6 +90,13 @@ public interface IProjectDb
     Task<IReadOnlyDictionary<long, string>> GetStringSpeakersAsync(CancellationToken cancellationToken)
         => Task.FromResult<IReadOnlyDictionary<long, string>>(new Dictionary<long, string>());
 
+    /// <summary>
+    /// The NPC each plugin topic (DIAL:FULL, the player's line) is said to, by row id: the one speaker of the topic's
+    /// INFOs whose conditions name one, "%08X"; no entry when they name none or several.
+    /// </summary>
+    Task<IReadOnlyDictionary<long, string>> GetTopicListenersAsync(CancellationToken cancellationToken)
+        => Task.FromResult<IReadOnlyDictionary<long, string>>(new Dictionary<long, string>());
+
     /// <summary>The English name (NPC_:FULL) of each NPC record in a plugin project's plugin, by FormID.</summary>
     Task<IReadOnlyDictionary<uint, string>> GetPluginNpcNamesAsync(CancellationToken cancellationToken)
         => Task.FromResult<IReadOnlyDictionary<uint, string>>(new Dictionary<uint, string>());
