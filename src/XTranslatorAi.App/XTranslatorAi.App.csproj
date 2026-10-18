@@ -17,6 +17,7 @@
     <AssemblyName>TulliusTranslator</AssemblyName>
     <Version>1.14.0</Version>
     <InformationalVersion>1.15-preview18</InformationalVersion>
+    <StartupObject>XTranslatorAi.App.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

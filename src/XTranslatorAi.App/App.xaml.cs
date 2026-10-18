@@ -19,7 +19,8 @@ public partial class App : Application
 
     // Two windows wrote over each other's project DBs and settings (one deleted the API keys the other saved) and paid
     // for the same rows twice, so a second start brings the running window forward instead.
-    private const string SingleInstanceName = @"Local\TulliusTranslator.SingleInstance";
+    // The agent mode's commands check it too (AgentCli.AppIsRunning), since they run as the same program.
+    internal const string SingleInstanceName = @"Local\TulliusTranslator.SingleInstance";
     private Mutex? _singleInstance;
 
     // Set once the main window is shown: after that an unexpected UI exception is reported and the app keeps running.
