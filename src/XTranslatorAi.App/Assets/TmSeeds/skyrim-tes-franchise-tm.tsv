@@ -643,7 +643,7 @@ Allure	매력
 Alor House	알로어의 집
 Alor House Key	열쇠 - 알로어의 집
 Alpha Wolf	우두머리 늑대
-Alright then. Where did you learn these secrets?	그렇다면, 어디에서 그 비법들을 배웠소?
+Alright then. Where did you learn these secrets?	그렇다면, 어디에서 그 비밀들을 배웠소?
 Altar	제단
 Altar of Dibella	디벨라의 제단
 Altar of Mehrunes Dagon	메이룬스 데이건의 제단
@@ -800,7 +800,7 @@ And Gallus?	갤러스는?
 And Garthek?	그리고 가섹은?
 And Honningbrew?	그리고 허닝브루?
 And if Harkon failed?	혹시 하콘이 실패한다면?
-And if Harkon were slain?	하콘이 이미 죽었다면?
+And if Harkon were slain?	하콘이 죽는다면?
 And if I don't pay you?	내가 지불하지 않겠다면?
 And if I refuse your gift?	만약에 그 선물을 거부한다면?
 And if I want to remain a werewolf?	만약에 내가 늑대인간으로 남고 싶다면?
@@ -8534,7 +8534,7 @@ Here's your Black-Briar Mead.	여기, 블랙-브라이어 벌꿀술이오.
 Here's your goat. Now can you help me retrace my steps?	자, 당신 염소요. 이제 내 길을 찾는 걸 도와 주겠소?
 Here's your gold. (10,000 gold)	자 지불하지. (10,000 골드)
 Here's your gold. (750 gold)	자, 네 돈이다. (750 골드)
-Here's your heartscale.	심장 비늘을 가져왔습니다.
+Here's your heartscale.	심장비늘을 가져왔습니다.
 Here's your mammoth tusk.	매머드 상아를 가져왔소.
 Here's your money. He'd better be safe. (Give <Global=BYOHHBA2Ransom> gold)	돈을 낼테니 그를 풀어줘라. (<Global=BYOHHBA2Ransom> 골드 주기)
 Here's your money. She'd better be safe. (Give <Global=BYOHHBA2Ransom> gold)	여기 돈이다. 그녀는 무사해야 할 거다. (<Global=BYOHHBA2Ransom> 골드 주기)
@@ -8588,7 +8588,7 @@ Hevnoraak's Staff	헤브노락의 지팡이
 Hewnon Black-Skeever	휴넌 블랙-스키버
 Hey, I'm not a Breton!	이봐, 난 브레튼이 아냐!
 Hey, I'm not your servant.	이봐, 난 당신 하인이 아니야.
-Hey, take it easy.	이봐, 진정하라구.
+Hey, take it easy.	이봐, 쉽게 좀 가자구.
 Hi. Svari asked me to talk to you.	안녕하시오. 스바리가 당신과 이야기 해보라던데.
 Hidden Panel	숨겨진 판자벽
 Hidden Pockets	숨김 주머니
@@ -9428,7 +9428,7 @@ I don't have time for that.	이런 일에 낭비할 시간은 없군.
 I don't have time for this nonsense.	당치도 않은 일에 쓸 시간은 없다.
 I don't have time for this!	이럴 여유는 없어!
 I don't have time for this.	이런 일에 낭비할 시간은 없군.
-I don't have time for this. Do you?	이렇게 낭비할 시간따위는 없어.
+I don't have time for this. Do you?	이렇게 낭비할 시간따위는 없어. 당신은 있나?
 I don't have time for this. I can get rough with you if I have to. (Brawl)	이렇게 낭비할 시간은 없어. 필요하다면 패주지. (싸움)
 I don't have time for this. I can get rough with you if I have to. (Intimidate)	이렇게 낭비할 시간은 없어. 필요하다면 패주지. (위협)
 I don't have time for this... I can get rough with you if I have to.	이럴 시간이 없는데... 거칠게 다룰 수도 있어.
@@ -10132,7 +10132,7 @@ I was hoping you might want to talk about it.	너도 그 이야기를 하고 싶
 I was in Helgen when the dragon attacked.	드래곤이 헬겐을 공격했을때 거기에 있었단다.
 I was just asking. I didn't really want to be involved.	그냥 물어봤을 뿐이오. 별로 관여하고 싶지 않습니다.
 I was just curious.	그저 궁금했을 뿐이오.
-I was just fulfilling my destiny as Dragonborn.	나는 드래곤본으로서 제 운명을 완수했을 뿐입니다.
+I was just fulfilling my destiny as Dragonborn.	저는 드래곤본으로서 제 운명을 완수했을 뿐입니다.
 I was just looking around. What is this place?	그냥 둘러보는 중이오. 여기는 뭐하는 곳인가?
 I was just seeing if you came to your senses.	네가 제정신을 차렸는지 확인해 본 것뿐이네.
 I was looking for a drink. Or some work.	술이나, 일거리를 찾고 있습니다.
@@ -10141,8 +10141,8 @@ I was looking to purchase a house in Markarth.	마르카스에 구입할 만한 
 I was right there. He almost killed me.	거기에 있었소. 그자가 나를 죽일 뻔 했지.
 I was sent by Louis Letrush.	루이 리트러쉬가 보내서 왔다.
 I was sent to retrieve something from this cave.	이 동굴에서 어떤 것을 찾아내기 위해서 왔소.
-I was set free. I could've gone anywhere. I came here to fight for the Empire.	나는 자유의 몸이 되었고 어디든 갈 수 있소. 난 제국을 위해 싸우려고 여기에 왔소.
-I was set free. I could've gone anywhere. I came here to fight the Empire.	나는 자유의 몸이 되었고 어디든 갈 수 있소. 난 제국과 싸우려고 여기에 온 거요.
+I was set free. I could've gone anywhere. I came here to fight for the Empire.	나는 자유의 몸이 되었고 어디든 갈 수 있었소. 난 제국을 위해 싸우려고 여기에 왔소.
+I was set free. I could've gone anywhere. I came here to fight the Empire.	나는 자유의 몸이 되었고 어디든 갈 수 있었소. 난 제국과 싸우려고 여기에 온 거요.
 I was there. I saw the dragon burn Helgen to the ground.	그곳에 있었습니다. 드래곤이 헬겐을 불태우는걸 직접 봤습니다.
 I was told someone at the College might be able to help me.	대학에 나를 도울 수 있는 사람이 있다고 들었는데.
 I was told to come see you.	당신을 만나라는 말을 들었습니다.
@@ -12815,7 +12815,7 @@ Look for Wulf's brother Torkild	울프의 형제인 토킬드를 찾기
 Look out - you're about to step in your own Shock Rune.	조심해! 당신이 설치한 벼락의 룬을 밟겠어.
 Look what it did to your family.	네 가족한테 어떤 짓을 했는지 보라고.
 Look, I'm willing to pay. (<BribeCost> gold)	돈은 내도록 하지. (<BribeCost> 골드)
-Look. I'll give you a fair price. (<BribeCost> gold)	자, 내가 보수를 후하게 쳐주지. (<BribeCost> 골드)
+Look. I'll give you a fair price. (<BribeCost> gold)	자, 내가 값을 후하게 쳐주지. (<BribeCost> 골드)
 Looked like those Nords were giving you trouble.	그 노드들이 당신을 괴롭히는 것처럼 보였는데.
 Looking for content.  Please wait.	컨텐츠를 찾고 있습니다. 잠깐 기다려주세요.
 Looking to join Imperials	제국군에 가입하기
@@ -13121,7 +13121,7 @@ Mauhulakh's Cellar	마훌락의 저장고
 Mauhulakh's Longhouse	마훌락의 공동주택
 Maul	마울
 Maurice Jondrelle	모리스 존드렐
-Maurice said that renewal is more important than maintenance.	모리스는 유지하는 것보다 개선이 더 중요하다고 했소.
+Maurice said that renewal is more important than maintenance.	모리스는 유지하는 것보다 재탄생이 더 중요하다고 했소.
 Maven	메이븐
 Maven Black-Briar	메이븐 블랙-브라이어
 Maven Black-Briar is the influential client?	메이븐 블랙-브라이어가 그 중요한 고객인가?
@@ -19754,7 +19754,7 @@ Tell me about the Thieves Guild.	도둑 길드에 관해 이야기해주시오.
 Tell me about the Unmelting Snow.	녹지 않는 눈에 대해 말해주시오.
 Tell me about this cookbook.	이 요리책에 대해 말해주시오.
 Tell me about this incense.	그 향에 대해 말해주시오.
-Tell me about this temple.	이 사원에 대해 말해주시오.
+Tell me about this temple.	이 신전에 대해 말해주시오.
 Tell me about this Thalmor assassin that's hunting you.	탈모어 암살자에 대해 말해주시오.
 Tell me about this tree.	이 나무에 대해 말해주시오.
 Tell me about your dream.	당신의 꿈에 관해서 말해주시오.
@@ -22264,7 +22264,7 @@ What's all this about the Forsworn?	포스원이라니 무슨 일이오?
 What's all this have to do with the Dawnguard?	이 모든 것들이 던가드와 도대체 무슨 상관이오?
 What's an Ancient Nordic Pickaxe?	고대 노드 곡괭이란게 뭐요?
 What's an East Empire Pendant?	동제국 회사 펜던트라는게 뭐요?
-What's at Fort Hraggstad?	흐라그스타드 요새에 무슨 일이 있었습니까?
+What's at Fort Hraggstad?	흐라그스타드 요새에는 뭐가 있습니까?
 What's at Serpentstone Island?	뱀의 선돌 섬은 어떤 곳입니까?
 What's been going on?	어떻게 돌아가고 있는데?
 What's been sending you to Darkwater Crossing?	왜 다크워터 갈림길로 뭘 보내는 거지?
@@ -23249,7 +23249,7 @@ Yes. Delphine seemed to think it was important.	델핀은 그게 중요하다고
 Yes. I am married.	그렇소 나는 기혼자요.
 Yes. I had a great view while the Imperials were trying to cut off my head.	네. 제국군이 제 목을 치려는 순간에 엄청난 광경을 보았습니다.
 Yes. I think your brother was a traitor.	당신의 동생은 배신자가 맞는 것 같군.
-Yes. I used Alduin's portal to travel to Sovngarde. He's dead.	알두인의 차원문을 사용하여 소븐가드에 갔고. 그는 죽었소.
+Yes. I used Alduin's portal to travel to Sovngarde. He's dead.	그렇소. 알두인의 차원문을 사용하여 소븐가드에 갔소. 그는 죽었소.
 Yes. I went to Sovngarde and killed Alduin there.	네. 소븐가드에 가서 알두인을 쓰러트렸습니다.
 Yes. I'd like to report a crime.	범죄를 신고하러 왔는데.
 Yes. I'll set you free if you promise to take me to Skuldafn.	좋아. 나를 스컬다픈까지 데려가 준다고 약속한다면 당신을 풀어주지.
@@ -23261,7 +23261,7 @@ Yes. She said she can sneak you up to her quarters right now.	그렇소. 지금 
 Yes. She wants you to leave her alone.	그래. 당신이 추근대지 않기를 바라더군.
 Yes. Tell me what to do.	그렇소. 내가 뭘 해야 하는지 말해주시오.
 Yes. Two people spending time together never blossoms into courtship.	맞소. 두 사람이 함께 시간을 보낸다. 그걸로 어떻게 연인이 되겠소?
-Yes. What's troubling you?	뭔가 곤란한 일이라도?
+Yes. What's troubling you?	그래. 뭔가 곤란한 일이라도?
 Yes. Yes I am.	그래. 있어.
 Yes. You may have noticed he's trying to return to Solstheim.	그렇소. 그가 솔스트하임으로 돌아오려고 한다는 것을 알게 되었을텐데.
 Yes?	응?
@@ -23668,7 +23668,7 @@ You think General Tullius knows where that dragon came from?	툴리우스 장군
 You think Gulum-Ei will give me trouble?	걸럼-아이가 문제가 된다고 생각하나?
 You think he'll try to kill us?	하콘이 우리를 죽일 거라고 생각하는 건가?
 You think he's mistaken?	그가 오해를 했다고 생각하나?
-You think she'll get over it?	당신 딸이 견딜 수 있을거라고 생각하시오?
+You think she'll get over it?	당신 딸이 그 마음을 접을 거라고 생각하시오?
 You think someone is out to get you?	누군가가 당신을 노리고 있다고 생각합니까?
 You think Ulfric knows where that dragon came from?	울프릭은 그 드래곤이 어디서 온 건지 안다고 생각해?
 You think you can take me on?	날 쓰러트릴 수 있다고 생각하나?

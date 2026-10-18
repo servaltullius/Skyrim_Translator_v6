@@ -59,12 +59,14 @@ Alchemy Laboratory, Doors	연금술 실험실, 문	연금술 실험실,문들
 All I know is that your people need you to return.	내가 아는 건 당신의 백성들이 당신이 돌아오길 바란다는 것뿐이오.	내가 아는 거라고는 당신이 돌아가야 한다는 것 뿐이오.
 All I've ever wanted to do is serve this Sanctuary.	이 성역을 위해서라면 무엇이든 하지.	이 성지를 위해서라면 무엇이든 하지.
 All right, you've swayed me. So what can I do?	좋소, 설득당했군. 내가 뭘 하면 되지?	좋소. 내가 뭘 하면 되지?
+Alright then. Where did you learn these secrets?	그렇다면, 어디에서 그 비밀들을 배웠소?	그렇다면, 어디에서 그 비법들을 배웠소?
 Altar of Thrond Cave	쓰론드 제단 동굴	쓰론드 동굴 제단
 Ambarys	엠바리스	앰바리스
 Amulet of Mara (Possessed)	아뮬렛 - 마라 (소유)	마라의 아뮬렛 (소유)
 Amulet of Supernatural Reflexes	아뮬렛 - 초자연적 반사신경	아뮬렛 - 초자연적인 반응
 An infestation of what?	침략이라니, 무엇한테?	침입이라니, 무엇이?
 Ancestor's Wrath	선조의 분노	선조의 영혼
+And if Harkon were slain?	하콘이 죽는다면?	하콘이 이미 죽었다면?
 And that won't work?	그걸로는 안 되는 거요?	제대로 작동하지 않은 게요?
 And the Skaal don't mind being studied?	스칼은 연구 대상이 되는 걸 꺼리지 않습니까?	스칼은 교육에는 전혀 관심이 없는 겁니까?
 And what about something for me, right now? (Persuade)	당장 나한테는 뭐 떨어지는 거 없나? (설득)	당장 나한테는 뭐 떨어지는 거 없나?(설득)
@@ -333,10 +335,12 @@ He convinced Solitude to attack Winterhold.	올라프가 솔리튜드에게 윈�
 He ordered the execution. It's on his head... not yours.	처형을 명령한 것은 의원이야. 책임은 그자에게 있지... 당신이 아니라.	처형을 명령한 것은 의원이야. 죽어도 그자가 죽지... 당신이 아니라.
 Here's your <Alias=QuestItem>.	여기 <Alias=QuestItem>(이)오.	여기 <Alias=QuestItem> 이오.
 Here's your gold. (10,000 gold)	자 지불하지. (10,000 골드)	자 지불하지. (10.000 골드)
+Here's your heartscale.	심장비늘을 가져왔습니다.	심장 비늘을 가져왔습니다.
 Here's your money. She'd better be safe. (Give <Global=BYOHHBA2Ransom> gold)	여기 돈이다. 그녀는 무사해야 할 거다. (<Global=BYOHHBA2Ransom> 골드 주기)	요구한 돈을 주겠다. 그녀는 안전한가? (<Global=BYOHHBA2Ransom> 골드 주기)
 Here, I've got a dwarven gyro. Take it.	자, 드웨머 회전바퀴를 가지고 있소. 받으시오.	드워프제 회전바퀴를 가지고 있는데. 받으시오.
 Here, take them. (Give fragments)	여기, 받으시오. (조각들을 건넨다)	여기, 받으시오. (파편들을 건넨다)
 Hewnon Black-Skeever	휴넌 블랙-스키버	휴논 블랙-스키버
+Hey, take it easy.	이봐, 쉽게 좀 가자구.	이봐, 진정하라구.
 Hilde	힐데	힐드
 His paranoia is gone.	펠라지우스의 피해망상이 사라졌소.	펠라지우스의 피해망상을 사라졌소.
 Honed Draugr War Axe	연마된 고대 노드 도끼	연마된 드로거 도끼
@@ -369,6 +373,7 @@ I discovered this note on one of the ash spawn.	화산재 스폰의 잔해들 �
 I do. My hand is yours.	그래. 내 손은 당신 거야.	그래. 나의 팔은 당신 거야.
 I don't care about the ring! Tell me what else I said! (Intimidate)	반지는 아무래도 좋다! 그냥 내가 뭐라고 말했는지 알려 줘! (위협)	반지는 아무래도 좋다! 그냥 내가 뭐라 말했느지 알려주시지! (위협)
 I don't have 10,000 gold.	10,000 골드씩이나 가지고 있진 않아.	10.000 골드씩이나 가지고 있진 않아.
+I don't have time for this. Do you?	이렇게 낭비할 시간따위는 없어. 당신은 있나?	이렇게 낭비할 시간따위는 없어.
 I don't know about you, but I'm going in there.	당신은 어떨지 모르겠지만, 난 저기 들어갈 건데.	당신이 누군지는 모르겠지만, 난 저기 들어 갈 건데.
 I don't know what happened to her. (Lie)	그녀에게 무슨 일이 있었는지 모르오. (거짓)	그녀에게 무슨 일이 있었느지 모르오. (거짓)
 I don't need your advice.	당신의 조언은 필요 없소.	당신의 조언이 필요한데.
@@ -419,7 +424,10 @@ I want to stop at Kynesgrove. (<Global=CarriageCost> gold)	카인즈그로브까
 I want to stop at Stonehills. (<Global=CarriageCost> gold)	스톤힐스까지. (<Global=CarriageCost> 골드)	돌 언덕까지.(<Global=CarriageCost> 골드)
 I was given strict instructions. For the Jarl's eyes only.	엄격한 지시를 받았소. 야를께서만 보셔야 하오.	나는 엄격한 지시를 받았소. 직접 야를의 눈으로 보시오.
 I was hired to kill you, and that's what I intend to do.	너를 죽이라고 고용됐고, 그럴 생각이다.	너를 죽이기 위해 고용되었다, 그리고 내가 할 일이지.
+I was just fulfilling my destiny as Dragonborn.	저는 드래곤본으로서 제 운명을 완수했을 뿐입니다.	나는 드래곤본으로서 제 운명을 완수했을 뿐입니다.
 I was just seeing if you came to your senses.	네가 제정신을 차렸는지 확인해 본 것뿐이네.	네가 제 정신인지 확인하고 있네.
+I was set free. I could've gone anywhere. I came here to fight for the Empire.	나는 자유의 몸이 되었고 어디든 갈 수 있었소. 난 제국을 위해 싸우려고 여기에 왔소.	나는 자유의 몸이 되었고 어디든 갈 수 있소. 난 제국을 위해 싸우려고 여기에 왔소.
+I was set free. I could've gone anywhere. I came here to fight the Empire.	나는 자유의 몸이 되었고 어디든 갈 수 있었소. 난 제국과 싸우려고 여기에 온 거요.	나는 자유의 몸이 되었고 어디든 갈 수 있소. 난 제국과 싸우려고 여기에 온 거요.
 I was unable to defeat them all, and they're coming for you. (Lie)	그자들을 막지 못했소, 당신을 잡기위해서 오는 중이오. (거짓)	그자들을 막지 못했소, 당신을 잡기위해서 오는 중이요. (거짓)
 I wasn't told where to take you.	당신을 어디로 데려가라는 말은 듣지 못했는데.	당신을 어디로 데려가겠다고 말한적은 없는데.
 I'd like you to forgive Octieve's debts.	옥티브의 빚을 탕감해 주길 바란다.	옥티브의 빚을 변제해 주길 바란다.
@@ -515,6 +523,7 @@ Locate Valdr's hunting party.	발더의 사냥 일행을 찾기	발더의 사냥
 Loft decorations (<Global=HDWhiterunLoft> gold)	다락 장식들. (<Global=HDWhiterunLoft> 골드)	다락 장식들.(<Global=HDWhiterunLoft> 골드)
 Log Pile	통나무 더미	나무 말뚝
 Look out - you're about to step in your own Shock Rune.	조심해! 당신이 설치한 벼락의 룬을 밟겠어.	조심해! 번개 룬을 밟을 뻔 했어.
+Look. I'll give you a fair price. (<BribeCost> gold)	자, 내가 값을 후하게 쳐주지. (<BribeCost> 골드)	자, 내가 보수를 후하게 쳐주지. (<BribeCost> 골드)
 Lots of gold to be had plundering ships.	배를 약탈하면 금화를 잔뜩 챙길 수 있겠군.	수많은 금화들을 쌓아두었겠지.
 Lowers the cost and increases the duration of Alteration spells for <dur> seconds.	<dur> 초 동안 변화마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 변화마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Lowers the cost and increases the potency of Restoration spells for <dur> seconds.	<dur> 초 동안 회복마법의 위력이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 회복마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
@@ -527,6 +536,7 @@ Malign Aversion to Shock	독 - 전격 약점 최상급	독 - 전격 최상급
 Malyn's Black Soul Gem	메일린의 검은 소울젬	멀린의 검은 소울젬
 Mara is the goddess of love and compassion. She has a temple in Riften.	마라는 사랑과 자비의 여신입니다. 그녀의 신전은 리프튼에 있습니다.	마라는 정열과 사랑의 여신입니다. 그녀의 신전은 리프튼 에 있습니다.
 Master Illusion Text	달인 환영마법 서적	달인 환상마법 서적
+Maurice said that renewal is more important than maintenance.	모리스는 유지하는 것보다 재탄생이 더 중요하다고 했소.	모리스는 유지하는 것보다 개선이 더 중요하다고 했소.
 May I ever return to Nightingale Hall?	나이팅게일 회랑에 돌아와도 되나?	나이팅게일의 회랑에 돌아 와도 되나?
 Meet Bujold at Hrothmund's Barrow	흐로스문드의 무덤에서 부졸드를 만나기	흐로스문드 무덤에서 부졸드를 만나기
 Meet Karliah at the standing stone	선돌 앞에서 칼라이아와 만나기	비석앞에서 칼라이아와 만나기
@@ -764,6 +774,7 @@ Tell <Alias.ShortName=Questgiver> what <Alias.ShortName=Target> said about the o
 Tell Bralsa Drel she's welcome at the Retching Netch	그녀가 레칭 네치 여관에 출입해도 된다는 것을 브랄사 드렐에게 전하기	그녀가 여관에 출입해도 된다는 것을 브랄사 드렐에게 전하기
 Tell me about the Briar Heart.	찔레 심장에 대해 말해주시오.	찔레심장에 대해 말해주시오.
 Tell me about the conduit inside the Sepulcher.	묘지 안의 통로에 대해서 말해봐.	무덤안의 통로에 대해서 말해봐.
+Tell me about this temple.	이 신전에 대해 말해주시오.	이 사원에 대해 말해주시오.
 Tell me again about your wife?	당신의 아내에 관해 다시 말해 주겠소?	당신의 아내에 관해 다시 말해보겠소?
 Tell me how I got here and I'll pay for the damages. (<BribeCost> gold)	내가 어떻게 여기에 온 건지 말해 주시오, 손해는 변상해 드리지. (<BribeCost> 골드)	내가 어떻게 여기에 온건지 말해주시오, 손해는 변상해 드리지. (<BribeCost> 골드 )
 Tell me your side of the story about Sibbi.	시비에 얽힌 당신 쪽 사연을 이야기해 보시오.	시비에 얽힌 사연을 이야기를 해 보시오.
@@ -896,6 +907,7 @@ What if I do?	만약 그렇다면?	만약 내가 한다면?
 What was left of him.	남은 건 그의 시신뿐이었소.	아직도 그에게 미련이 남아있나?
 What would you like?	뭘 갖고 싶니?	어떤 걸 좋아하니?
 What's an East Empire Pendant?	동제국 회사 펜던트라는게 뭐요?	동제국 펜던트라는게 뭐요?
+What's at Fort Hraggstad?	흐라그스타드 요새에는 뭐가 있습니까?	흐라그스타드 요새에 무슨 일이 있었습니까?
 What's expected of me here?	여기서 제게 기대하는 건 뭡니까?	여기서 제가 할 일은 뭡니까?
 What's in your head?	머릿속에 뭐가 있다는 거요?	뭔가 좋은 생각이라도?
 What's stopping you?	무엇이 가로막고 있지?	못 돌아 가는 건가?
@@ -941,7 +953,9 @@ Yes, he said to meet him at Fort Dawnguard.	그렇소, 던가드 요새에서 �
 Yes, I've got a house in Hjaalmarch.	그래, 나는 히얄마치에 집이 있단다.	히얄마치에 있는 집.
 Yes, I've got a house in Markarth.	그래, 나는 마르카스에 집이 있단다.	그래, 내는 마르카스에 집이 있단다.
 Yes, I've got a house in the Pale.	그래, 나는 페일에 집이 있단다.	페일 지역의 집.
+Yes. I used Alduin's portal to travel to Sovngarde. He's dead.	그렇소. 알두인의 차원문을 사용하여 소븐가드에 갔소. 그는 죽었소.	알두인의 차원문을 사용하여 소븐가드에 갔고. 그는 죽었소.
 Yes. It's painfully obvious you don't know what you're doing.	그래. 당신이 뭘 하는지도 모른다는 게 뻔히 보이는군.	아쉽지만 지금 당신이 뭘 하고 있는지조차도 모르겠군.
+Yes. What's troubling you?	그래. 뭔가 곤란한 일이라도?	뭔가 곤란한 일이라도?
 Yngol's Barrow	잉골 고분	잉골의 무덤
 You are <mag>% more effective with missile weapons.	활의 공격력이 <mag>% 증가합니다.	활의 공격력이 <mag> 증가합니다.
 You are a disgrace to our race! I spit on your fur!	넌 우리 종족의 수치다! 네 털에 침을 뱉어 주마!	넌 우리 종족의 수치다! 네 가죽을 벗겨 침을 뱉어 주마!
@@ -962,6 +976,7 @@ You seem friendly.	꽤 우호적인 것 같은데.	아주 친숙해 보이는데
 You sent for me?	날 불렀소?	나를 위해서 보냈다고?
 You sound paranoid.	편집증적인 거 같은데.	편집증 적인 거 같은데.
 You take half damage for <dur> seconds from all physical attacks and most magical attacks.	<dur> 초 동안 모든 물리 공격과 대부분의 마법 공격으로 입는 피해량이 50% 감소합니다.	<dur> 초 동안 입는 피해량이 50% 감소합니다.
+You think she'll get over it?	당신 딸이 그 마음을 접을 거라고 생각하시오?	당신 딸이 견딜 수 있을거라고 생각하시오?
 You think someone is out to get you?	누군가가 당신을 노리고 있다고 생각합니까?	누군가가 당신을 찾고 있다고 생각합니까?
 You want me to murder someone else? Who?	또 다른 사람을 죽이라는 말인가? 누구를?	사람을 죽이라는 말인가? 누구를?
 You want to be shipped off to Honorhall Orphanage?	명예전당 고아원으로 보내 버릴까?	널 고아원에 보내는 배에다 실어버릴까?

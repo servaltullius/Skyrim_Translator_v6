@@ -32,8 +32,10 @@ Agent of Dibella added	디벨라의 사도가 추가되었습니다	디벨라의
 Ahzidal's Gauntlets of Warding	아지달 장갑 - 방어막	아지달 장갑 - 보호
 Ahzidal's Helm of Vision	아지달 투구 - 시야	아지달 투구 - 시각
 Ahzidal's Ring of Arcana	아지달 반지 - 비전	아지달 반지 - 마력
+Alright then. Where did you learn these secrets?	그렇다면, 어디에서 그 비밀들을 배웠소?	그렇다면, 어디에서 그 비법들을 배웠소?
 Amulet of Supernatural Reflexes	아뮬렛 - 초자연적 반사신경	아뮬렛 - 초자연적인 반응
 An infestation of what?	침략이라니, 무엇한테?	침입이라니, 무엇이?
+And if Harkon were slain?	하콘이 죽는다면?	하콘이 이미 죽었다면?
 And that won't work?	그걸로는 안 되는 거요?	제대로 작동하지 않은 게요?
 Animals take <mag> points of extra damage.	동물을 상대로 <mag> 의 추가 피해를 입힙니다.	동물을 상대로 <mag>의 추가 피해를 입힙니다.
 Arcane Enchanter	마법부여대	마법 부여대
@@ -158,8 +160,10 @@ Have you heard from Thorald?	쏘럴드에게서 소식은 있었소?	쏘럴드�
 Having an outsider do your bidding might seem powerful...	외부인을 부하처럼 부리는 건 강해 보일 수도 있을 텐데...	외부인에게 부탁하는 게 강해 보일지는...
 He ordered the execution. It's on his head... not yours.	처형을 명령한 것은 의원이야. 책임은 그자에게 있지... 당신이 아니라.	처형을 명령한 것은 의원이야. 죽어도 그자가 죽지... 당신이 아니라.
 Here's your <Alias=QuestItem>.	여기 <Alias=QuestItem>(이)오.	여기 <Alias=QuestItem> 이오.
+Here's your heartscale.	심장비늘을 가져왔습니다.	심장 비늘을 가져왔습니다.
 Here, take them. (Give fragments)	여기, 받으시오. (조각들을 건넨다)	여기, 받으시오. (파편들을 건넨다)
 Hewnon Black-Skeever	휴넌 블랙-스키버	휴논 블랙-스키버
+Hey, take it easy.	이봐, 쉽게 좀 가자구.	이봐, 진정하라구.
 Honed Draugr War Axe	연마된 고대 노드 도끼	연마된 드로거 도끼
 Horker and Ash Yam Stew	호커와 화산 참마 스튜	호커와 화산참마 스튜
 How has Raven Rock needed your help?	레이븐 락에 당신들의 도움이 왜 필요했지?	레이븐 락이 어떤 도움을 필요로 하지?
@@ -172,6 +176,7 @@ I can break some of your bones if that's what it's going to take... (Brawl)	그�
 I convinced <Alias.ShortName=Target> to ease up a bit.	부담을 조금 줄여달라고 <Alias.ShortName=Target>을(를) 설득했다.	부담을 조금 줄여달라고 <Alias.ShortName=Target>를 설득했다.
 I discovered this note on one of the ash spawn.	화산재 스폰의 잔해들 중에서 이 쪽지를 발견했는데.	화산재 스폰의 잔해들 중에서 이 노트를 발견했는데.
 I do. My hand is yours.	그래. 내 손은 당신 거야.	그래. 나의 팔은 당신 거야.
+I don't have time for this. Do you?	이렇게 낭비할 시간따위는 없어. 당신은 있나?	이렇게 낭비할 시간따위는 없어.
 I don't really know. Paarthurnax told me it would work.	전혀 모르겠군. 파써낙스는 그게 통할 거라고 하던데.	전혀 모르겠군. 파써낙스는 그걸로 알 수 있을거라고 하던데.
 I found the same marking at Honningbrew Meadery.	허닝브루 양조장에서 같은 문양을 발견했지.	허닝브루 양조장에서 같은 상징을 발견했지.
 I got the fragment.	조각을 가져왔습니다.	조각들을 가져왔습니다.
@@ -187,6 +192,9 @@ I think they may have met after all.	결국 그 둘은 만났던 것 같군.	아
 I thought the Empire needed to be taken down a notch.	제국의 콧대를 좀 꺾어 놓을 필요가 있는 것 같더군.	제국은 좀 진정할 필요가 있는 것 같더군.
 I thought you needed to be taken down a notch.	댁의 콧대를 좀 꺾어 놓을 필요가 있는 것 같더군.	댁은 좀 진정할 필요가 있는 것 같더군.
 I understand you need help.	당신에게 도움이 필요하다고 들었소.	당신에게 도움이 필요하다는 점을 이해했소.
+I was just fulfilling my destiny as Dragonborn.	저는 드래곤본으로서 제 운명을 완수했을 뿐입니다.	나는 드래곤본으로서 제 운명을 완수했을 뿐입니다.
+I was set free. I could've gone anywhere. I came here to fight for the Empire.	나는 자유의 몸이 되었고 어디든 갈 수 있었소. 난 제국을 위해 싸우려고 여기에 왔소.	나는 자유의 몸이 되었고 어디든 갈 수 있소. 난 제국을 위해 싸우려고 여기에 왔소.
+I was set free. I could've gone anywhere. I came here to fight the Empire.	나는 자유의 몸이 되었고 어디든 갈 수 있었소. 난 제국과 싸우려고 여기에 온 거요.	나는 자유의 몸이 되었고 어디든 갈 수 있소. 난 제국과 싸우려고 여기에 온 거요.
 I'll pay for the hilt. (<BribeCost> gold)	그 칼자루 값을 치르지. (<BribeCost> 골드)	그 단검 손잡이 값을 치르지. (<BribeCost> 골드)
 I'm back from <Alias=Dungeon> with the <Alias=Item>.	<Alias=Dungeon>에서 <Alias=Item>을(를) 가지고 돌아왔소.	<Alias=Dungeon>에서 <Alias=Item>을 가지고 돌아왔소.
 I'm looking for a courier.	전령을 찾고 있소.	배달부를 찾고 있소.
@@ -220,6 +228,7 @@ Lightning Apparatus	번개 장치	빛나는 장치
 Listen to Mercer Frey	머서 프레이의 말을 듣기	머서 프레이와 대화하기
 Locate the East Empire Pendants for Fethis Alor in Raven Rock	페디스 알로어를 위해 레이븐 락에서 동제국 회사 펜던트를 찾기	레이븐 락에 있는 페디스 알로어를 위해 동제국 회사 펜던트를 찾기
 Locate Valdr's hunting party.	발더의 사냥 일행을 찾기	발더의 사냥 집단을 찾기
+Look. I'll give you a fair price. (<BribeCost> gold)	자, 내가 값을 후하게 쳐주지. (<BribeCost> 골드)	자, 내가 보수를 후하게 쳐주지. (<BribeCost> 골드)
 Lowers the cost and increases the duration of Alteration spells for <dur> seconds.	<dur> 초 동안 변화마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 변화마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Lowers the cost and increases the potency of Restoration spells for <dur> seconds.	<dur> 초 동안 회복마법의 위력이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 회복마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Lurker Vindicator	러커 응징자	러커 지원병
@@ -228,6 +237,7 @@ Malign Aversion to Frost	독 - 냉기 약점 최상급	독 - 냉기 최상급
 Malign Aversion to Magic	독 - 마법 약점 최상급	독 - 마법 저항 최상급
 Malign Aversion to Shock	독 - 전격 약점 최상급	독 - 전격 최상급
 Mara is the goddess of love and compassion. She has a temple in Riften.	마라는 사랑과 자비의 여신입니다. 그녀의 신전은 리프튼에 있습니다.	마라는 사랑과 자비의 여신입니다. 그녀의 신전은 리프튼 에 있습니다.
+Maurice said that renewal is more important than maintenance.	모리스는 유지하는 것보다 재탄생이 더 중요하다고 했소.	모리스는 유지하는 것보다 개선이 더 중요하다고 했소.
 Meet Bujold at Hrothmund's Barrow	흐로스문드의 무덤에서 부졸드를 만나기	흐로스문드 무덤에서 부졸드를 만나기
 Meet Karliah at the standing stone	선돌 앞에서 칼라이아와 만나기	비석앞에서 칼라이아와 만나기
 Meet with <Alias=General>	<Alias=General>와(과) 만나기	<Alias=General>와 만나기
@@ -350,6 +360,7 @@ Taron Dreth's Robes	타론 드레스의 로브	타론의 로브
 Tell <Alias.ShortName=Questgiver> that <Alias.ShortName=Target> is taken care of	<Alias.ShortName=Questgiver>에게 <Alias.ShortName=Target>을(를) 처리했다고 말하기	<Alias.ShortName=Questgiver>에게 <Alias.ShortName=Target>을 처리했다고 말하기
 Tell <Alias.ShortName=Questgiver> the vampire is dead	<Alias.ShortName=Questgiver>에게 흡혈귀가 죽었다고 말하기	<Alias.ShortName=Questgiver> 에게 흡혈귀가 죽었다고 말하기
 Tell <Alias.ShortName=Questgiver> what <Alias.ShortName=Target> said about the outfit.	<Alias.ShortName=Target>가 복장에 관해 한 말을 <Alias.ShortName=Questgiver>에게 전하기	<Alias.ShortName=Target> 이 복장에 관해 한 말을 <Alias.ShortName=Questgiver>에게 전하기
+Tell me about this temple.	이 신전에 대해 말해주시오.	이 사원에 대해 말해주시오.
 Temple Ancestral Tomb	신전 선조의 무덤	사원 선조의 무덤
 That was... a bit before my time.	그건... 내가 태어나기 한참 전의 일인데.	그것은... 몇시대 전에 일어났던 일인데.
 The <Alias=Beast> is dead.	<Alias=Beast>은(는) 죽었다.	<Alias=Beast>는 죽었다.
@@ -410,6 +421,7 @@ What do you mean "supposed"?	'이른바'라니, 무슨 뜻이지?	'그랬어야 
 What evil do you mean?	어떤 악마를 말하는 거지?	어떤 악을 말하는 거지?
 What happened during the Night of Green Fire?	녹색 화염의 밤에 무슨 일이 일어났습니까?	녹색 불의 밤에 무슨 일이 일어났습니까?
 What would you like?	뭘 갖고 싶니?	어떤 걸 좋아하니?
+What's at Fort Hraggstad?	흐라그스타드 요새에는 뭐가 있습니까?	흐라그스타드 요새에 무슨 일이 있었습니까?
 What's expected of me here?	여기서 제게 기대하는 건 뭡니까?	여기서 제가 할 일은 뭡니까?
 Who did this?	누구 짓이오?	누구 짓이요?
 Why did you work for him then?	그렇다면 어째서 그 사람 밑에서 일했지?	그렇다면 어째서 그를 위해서 일하는거지?
@@ -418,11 +430,14 @@ Word of Power	힘의 단어	힘의 언어
 Would you believe I was given a vision?	내가 계시를 받았다고 하면 믿겠소?	내가 예언을 받았다는 것을 믿소?
 Yes, I've got a house in Hjaalmarch.	그래, 나는 히얄마치에 집이 있단다.	히얄마치에 있는 집.
 Yes, I've got a house in the Pale.	그래, 나는 페일에 집이 있단다.	페일 지역의 집.
+Yes. I used Alduin's portal to travel to Sovngarde. He's dead.	그렇소. 알두인의 차원문을 사용하여 소븐가드에 갔소. 그는 죽었소.	알두인의 차원문을 사용하여 소븐가드에 갔고. 그는 죽었소.
+Yes. What's troubling you?	그래. 뭔가 곤란한 일이라도?	뭔가 곤란한 일이라도?
 Yngol's Barrow	잉골 고분	잉골의 무덤
 You are a disgrace to our race! I spit on your fur!	넌 우리 종족의 수치다! 네 털에 침을 뱉어 주마!	넌 우리 종족의 수치다! 네 가죽을 벗겨 침을 뱉어 주마!
 You became trapped.	결국 갇혀 버린 거군.	함정에 빠진거였군.
 You did try to trick me into letting you go.	풀려나려고 날 속이려 했잖아.	풀려나기 위해서 날 속이려는 거군.
 You mentioned trading caravans?	카짓 행상인들이라 했소?	캐러밴이라 했소?
+You think she'll get over it?	당신 딸이 그 마음을 접을 거라고 생각하시오?	당신 딸이 견딜 수 있을거라고 생각하시오?
 You wanted to thank me for killing <Alias=Victim>?	<Alias=Victim>을(를) 죽인 것에 대한 감사표시?	<Alias=Victim>을/를 죽인 것에 대한 감사표시?
 You will do my bidding.	내 명령을 따르라.	나의 부름에 응답하라.
 You're holding out on Arniel again.	또 아니얼한테 물건을 안 넘기고 버티는군.	또 아니얼을 속이고 있군.
