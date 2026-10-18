@@ -124,4 +124,33 @@ public class LqaSpeakerToneTests
         Assert.Equal("Info", player.Severity);
         Assert.DoesNotContain(issues, i => i.Code is "speaker_tone_inconsistent" or "speaker_tone_mixed");
     }
+    /// <summary>
+    /// The review of 77afece: a polite "네", nouns ending like 반말 (가게, 그런데, 노래) and a retold quotation were
+    /// judged the wrong level, and a speech-check choice, meant to differ, was compared with the player's others.
+    /// </summary>
+    [Fact]
+    public async Task YesNounsQuotesAndSpeechChecks_AreNotMisjudged()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "환영합니다. 저는 탈모어 대사입니다."),
+            Line(2, "그 이름은 익숙하리라 믿습니다."),
+            Line(3, "당신의 협조는 기억해 두겠습니다."),
+            Line(4, "참으로 흥미롭군요."),
+            Line(5, "음... 네."),
+            Line(6, "여긴 내 가게."),
+            Line(7, "그런데..."),
+            Line(8, "\"꺼져!\" 하고 소리치더군요."),
+            Line(9, "\"살려 주세요!\" 하고 울부짖더군.", speaker: "0A000009"),
+            Line(10, "다들 겁에 질렸어.", speaker: "0A000009"),
+            Line(11, "모두 도망쳤어.", speaker: "0A000009"),
+            Line(12, "당신이 주최자인가요?", speaker: "0A000002", rec: "DIAL:FULL"),
+            Line(13, "참가하러 왔어요.", speaker: "0A000002", rec: "DIAL:FULL"),
+            new(14, 14, null, "DIAL:FULL", StringEntryStatus.Done, "Hand it over. (Intimidate)", "내놔. (위협)", Speaker: "0A000002"),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        Assert.DoesNotContain(issues, i => i.Code is "speaker_tone_inconsistent" or "speaker_tone_mixed" or "player_tone_inconsistent");
+    }
 }

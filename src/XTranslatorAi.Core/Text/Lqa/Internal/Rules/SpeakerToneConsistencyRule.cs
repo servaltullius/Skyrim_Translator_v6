@@ -25,6 +25,10 @@ internal static class SpeakerToneConsistencyRule
 
     private const string PlayerKeyPrefix = "player>";
 
+    private static readonly System.Text.RegularExpressions.Regex SpeechCheck = new(
+        @"\((?:Persuade|Intimidate|Bribe|Lie|Brawl|Threaten)[^)]*\)",
+        System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
     public sealed record Levels(IReadOnlyDictionary<string, ToneKind> Majorities, IReadOnlyDictionary<string, (int Polite, int Casual)> Counts);
 
     public static Levels BuildSpeakerMajorities(IReadOnlyList<LqaScanEntry> entries)
@@ -132,7 +136,8 @@ internal static class SpeakerToneConsistencyRule
         return rec switch
         {
             "INFO:NAM1" => entry.Speaker,
-            "INFO:RNAM" or "DIAL:FULL" => PlayerKeyPrefix + entry.Speaker,
+            // A speech-check choice ((Intimidate), (Brawl) ...) takes its own attitude, apart from the player's others.
+            "INFO:RNAM" or "DIAL:FULL" when !SpeechCheck.IsMatch(entry.SourceText ?? "") => PlayerKeyPrefix + entry.Speaker,
             _ => null,
         };
     }
@@ -143,6 +148,12 @@ internal static class SpeakerToneConsistencyRule
     /// </summary>
     private static ToneKind Level(string? text)
     {
+        var unquoted = Quoted.Replace(text ?? "", " ").Trim();
+        if (unquoted.Any(char.IsLetter))
+        {
+            text = unquoted;
+        }
+
         var parts = (text ?? "").Split(new[] { '.', '!', '?', '…', ',' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         if (parts.Length > 1 && parts.Any(part => SentenceLevel(part) == ToneKind.Hamnida))
         {
@@ -167,12 +178,17 @@ internal static class SpeakerToneConsistencyRule
     }
 
     // The shared classifier knows 반말 only by 해/야/지/냐, so "훌륭했어!", "다시 와.", "덤벼 봐." and "물론이죠." had no
-    // level and a speaker's odd line passed. Dialogue lines only (item text is classified by the shared rules).
+    // level and a speaker's odd line passed. Dialogue lines only (item text is classified by the shared rules). Not 네
+    // (the polite "yes"), 게, 데 or 래, which end nouns as often as 반말 ("여긴 내 가게.", "그런데...", "노래.").
     private static readonly string[] CasualEndings =
     {
-        "어", "아", "봐", "줘", "와", "워", "돼", "네", "게", "걸", "래", "데", "구나", "렴",
-        "는군", "었군", "았군", "겠군", "했군", "하군", "이군", "로군", "다고", "라고", "냐고",
+        "어", "아", "봐", "줘", "와", "워", "돼", "걸", "구나", "렴",
+        "는군", "었군", "았군", "겠군", "했군", "하군", "이군", "로군", "더군", "다고", "라고", "냐고",
     };
+
+    // A quotation is someone else's words: "\"살려 주세요!\" 하고 울부짖더군." is said in 반말.
+    private static readonly System.Text.RegularExpressions.Regex Quoted = new(
+        "\"[^\"]*\"|“[^”]*”|‘[^’]*’|「[^」]*」|『[^』]*』", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 
     private static ToneKind SpokenLevel(string? text)
     {
