@@ -178,7 +178,8 @@ public sealed class TranslationRunnerService
         IReadOnlyList<GlossaryEntry>? GlobalGlossary,
         IReadOnlyDictionary<string, string>? GlobalTranslationMemory,
         IReadOnlyList<(string Source, string Target)>? ReferenceNameMemory,
-        IReadOnlyDictionary<long, XTranslatorAi.Core.Plugins.GameStringMatch>? GameStringMatches = null
+        IReadOnlyDictionary<long, XTranslatorAi.Core.Plugins.GameStringMatch>? GameStringMatches = null,
+        IReadOnlyDictionary<long, string>? SpeakerNamesById = null
     );
 
     private async Task<IReadOnlyList<TranslationRun>> BuildRunsAsync(Request request)
@@ -326,6 +327,8 @@ public sealed class TranslationRunnerService
         var gameStringMatches = request.GameStrings == null
             ? null
             : await request.GameStrings.MatchAsync(request.Db, ids, request.CancellationToken);
+        // With the game translation a base game NPC who speaks a mod's lines is named in Korean too.
+        var speakerNames = await DialogueSpeakerNames.LoadAsync(request.Db, request.GameStrings, request.CancellationToken);
 
         return new TranslationRun(
             Service: service,
@@ -341,7 +344,8 @@ public sealed class TranslationRunnerService
             GlobalGlossary: globalGlossary,
             GlobalTranslationMemory: globalTranslationMemory,
             ReferenceNameMemory: referenceNameMemory,
-            GameStringMatches: gameStringMatches
+            GameStringMatches: gameStringMatches,
+            SpeakerNamesById: speakerNames
         );
     }
 
@@ -433,6 +437,7 @@ public sealed class TranslationRunnerService
             GlobalTranslationMemory: run.GlobalTranslationMemory,
             ReferenceNameMemory: run.ReferenceNameMemory,
             GameStringMatches: run.GameStringMatches,
+            SpeakerNamesById: run.SpeakerNamesById,
             SemanticRepairMode: request.SemanticRepairMode,
             EnableTemplateFixer: request.EnableTemplateFixer,
             KeepSkyrimTagsRaw: request.KeepSkyrimTagsRaw,

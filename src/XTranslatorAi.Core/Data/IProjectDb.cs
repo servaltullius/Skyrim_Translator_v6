@@ -86,6 +86,14 @@ public interface IProjectDb
     Task<IReadOnlyDictionary<long, string>> GetPluginFieldKeysByStringIdAsync(CancellationToken cancellationToken)
         => Task.FromResult<IReadOnlyDictionary<long, string>>(new Dictionary<long, string>());
 
+    /// <summary>The speaker FormID ("%08X") of each plugin INFO row whose conditions name one, by row id.</summary>
+    Task<IReadOnlyDictionary<long, string>> GetStringSpeakersAsync(CancellationToken cancellationToken)
+        => Task.FromResult<IReadOnlyDictionary<long, string>>(new Dictionary<long, string>());
+
+    /// <summary>The English name (NPC_:FULL) of each NPC record in a plugin project's plugin, by FormID.</summary>
+    Task<IReadOnlyDictionary<uint, string>> GetPluginNpcNamesAsync(CancellationToken cancellationToken)
+        => Task.FromResult<IReadOnlyDictionary<uint, string>>(new Dictionary<uint, string>());
+
     /// <summary>The masters and file name of a plugin project's plugin; null for an XML project.</summary>
     Task<(IReadOnlyList<string> Masters, string PluginFileName)?> GetPluginMastersAsync(CancellationToken cancellationToken)
         => Task.FromResult<(IReadOnlyList<string>, string)?>(null);

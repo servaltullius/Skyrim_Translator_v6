@@ -110,6 +110,7 @@ public static partial class TranslationPrompt
         var languageRules = new StringBuilder();
         AppendMeaningAndTerminologyRules(languageRules);
         if (items.Any(i => NormalizeEditorIdReference(i.Edid) != null)) AppendEditorIdRule(languageRules);
+        if (items.Any(i => HasSpeaker(i.Ctx))) AppendSpeakerRule(languageRules);
         if (LanguageHelper.IsKoreanLanguage(targetLang))
         {
             AppendKoreanGrammarRules(languageRules);

@@ -51,5 +51,7 @@ public sealed record TranslateIdsRequest(
     // Names spelled once in a run are written the same way in later rows (see RunNameMemory).
     bool EnableRunNameMemory = true,
     // Rows the player's game translation already covers (see GameStringDictionary), by row id.
-    IReadOnlyDictionary<long, XTranslatorAi.Core.Plugins.GameStringMatch>? GameStringMatches = null
+    IReadOnlyDictionary<long, XTranslatorAi.Core.Plugins.GameStringMatch>? GameStringMatches = null,
+    // Who says each dialogue line (see DialogueSpeakerNames), by row id; read from the project when not given.
+    IReadOnlyDictionary<long, string>? SpeakerNamesById = null
 );

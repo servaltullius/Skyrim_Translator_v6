@@ -293,6 +293,12 @@ public sealed partial class TranslationService
 	            return styleHint;
 	        }
 
+	        // A single request has no rules list to explain a named speaker, so the context carries the rule itself.
+	        if (TranslationPrompt.HasSpeaker(ctx))
+	        {
+	            ctx = $"{ctx}\n\n{TranslationPrompt.SpeakerRule.TrimStart('-', ' ')}";
+	        }
+
 	        if (string.IsNullOrWhiteSpace(styleHint))
 	        {
 	            return $"Context (reference only):\n{ctx}";

@@ -184,6 +184,113 @@ public sealed class PluginDialogueScopeTests
         Assert.Equal(plugin, await File.ReadAllBytesAsync(output.PluginPath));
     }
 
+    /// <summary>
+    /// The request names who says a line: the line's own context starts with its speaker, and a neighbouring line says
+    /// whose it is. Elenwen's lines in IDE Thalmor were read as a common soldier's without it. A line nobody is named
+    /// for is sent as before.
+    /// </summary>
+    [Fact]
+    public async Task InfoSpeaker_IsNamedInTheSingleRowRequest()
+    {
+        await using var fixture = await Fixture.CreateAsync(SpeakerTopic());
+        await fixture.Service.TranslateIdsAsync(fixture.Request);
+
+        var first = fixture.Client.Requests.Single(request => request.Source == "Mind your tongue.").Prompt;
+        Assert.Contains(TranslationPrompt.SpeakerContextPrefix + "Ondolemar", first);
+        Assert.Contains("[Ondolemar] You may go.", first);
+        Assert.Contains("same speech level", first);
+        var second = fixture.Client.Requests.Single(request => request.Source == "You may go.").Prompt;
+        Assert.Contains(TranslationPrompt.SpeakerContextPrefix + "Ondolemar", second);
+        Assert.Contains("[Ondolemar] Mind your tongue.", second);
+        var nobody = fixture.Client.Requests.Single(request => request.Source == "Nobody in particular").Prompt;
+        Assert.DoesNotContain(TranslationPrompt.SpeakerContextPrefix, nobody);
+        Assert.DoesNotContain("same speech level", nobody);
+        Assert.Contains("[Ondolemar] You may go.", nobody);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task InfoSpeaker_IsNamedInTheBatchItems(bool contextWindow)
+    {
+        await using var fixture = await Fixture.CreateAsync(SpeakerTopic());
+        var client = new BatchEchoClient();
+        var ids = fixture.Ids.Skip(1).ToArray(); // the three lines, not the NPC's name
+        await new TranslationService(fixture.Db, client).TranslateIdsAsync(fixture.Request with
+        {
+            Ids = ids, BatchSize = 10, EnableDialogueContextWindow = contextWindow,
+        });
+
+        var prompt = Assert.Single(client.Prompts);
+        Assert.Single(System.Text.RegularExpressions.Regex.Matches(prompt, "same speech level"));
+        var ctx = client.Items.ToDictionary(item => item.Text, item => item.Ctx);
+        Assert.StartsWith(TranslationPrompt.SpeakerContextPrefix + "Ondolemar", ctx["Mind your tongue."]);
+        Assert.StartsWith(TranslationPrompt.SpeakerContextPrefix + "Ondolemar", ctx["You may go."]);
+        if (contextWindow)
+        {
+            Assert.Contains("[Ondolemar] You may go.", ctx["Mind your tongue."]);
+            Assert.DoesNotContain(TranslationPrompt.SpeakerContextPrefix, ctx["Nobody in particular"]);
+            Assert.Contains("[Ondolemar] Mind your tongue.", ctx["Nobody in particular"]);
+        }
+        else
+        {
+            Assert.Equal(TranslationPrompt.SpeakerContextPrefix + "Ondolemar", ctx["Mind your tongue."]);
+            Assert.Null(ctx["Nobody in particular"]);
+        }
+        Assert.All((await fixture.Db.GetStringsAsync(20, 0, CancellationToken.None)).Where(row => row.Rec == "INFO:NAM1"),
+            row => Assert.Equal(StringEntryStatus.Done, row.Status));
+    }
+
+    /// <summary>
+    /// A base game NPC who speaks a mod's lines is named by the game translation (the record's Korean name), with the
+    /// English too when the plugin carries the NPC; an NPC named nowhere gets a label of its FormID.
+    /// </summary>
+    [Fact]
+    public async Task SpeakerNames_UseThePluginNpc_TheGameTranslation_OrTheFormId()
+    {
+        var plugin = Header()
+            .Concat(Group(Record("NPC_", 0x00013269, Sub("FULL", Z("Elenwen"))), Record("NPC_", 0x01000800, Sub("FULL", Z("Ondolemar")))))
+            .Concat(DialogueGroup(TopicChildren(0x01001000,
+                Record("INFO", 0x01001001, Sub("CTDA", GetIsId(0x00013269)), Sub("NAM1", Z("Ambassador line"))),
+                Record("INFO", 0x01001002, Sub("CTDA", GetIsId(0x0001E7D7)), Sub("NAM1", Z("Ancano line"))),
+                Record("INFO", 0x01001003, Sub("CTDA", GetIsId(0x0001A66A)), Sub("NAM1", Z("Unknown line"))),
+                Record("INFO", 0x01001004, Sub("CTDA", GetIsId(0x01000800)), Sub("NAM1", Z("Own line")))))).ToArray();
+        await using var fixture = await Fixture.CreateAsync(plugin);
+        var gameStrings = GameStringDictionary.Build(new[]
+        {
+            new GameStringPlugin("Skyrim.esm", Array.Empty<string>(), new[]
+            {
+                new PluginField("NPC_/00013269/0/FULL/0", 0, "NPC_", "FULL", 0x00013269, null, 0, 0, "Elenwen", PluginStringTableKind.Strings, 1),
+                new PluginField("NPC_/0001E7D7/0/FULL/0", 1, "NPC_", "FULL", 0x0001E7D7, null, 0, 0, "Ancano", PluginStringTableKind.Strings, 2),
+            }, new Dictionary<(PluginStringTableKind, uint), string>
+            {
+                [(PluginStringTableKind.Strings, 1)] = "엘렌웬",
+                [(PluginStringTableKind.Strings, 2)] = "앙카노",
+            }),
+        });
+
+        var named = await DialogueSpeakerNames.LoadAsync(fixture.Db, gameStrings, CancellationToken.None);
+        var bySource = (await fixture.Db.GetStringTranslationContextsByIdsAsync(fixture.Ids, CancellationToken.None)).Values
+            .ToDictionary(row => row.SourceText, row => named.GetValueOrDefault(row.Id));
+        Assert.Equal("Elenwen (엘렌웬)", bySource["Ambassador line"]);
+        Assert.Equal("앙카노", bySource["Ancano line"]);
+        Assert.Equal("NPC 0001A66A", bySource["Unknown line"]);
+        Assert.Equal("Ondolemar", bySource["Own line"]);
+        Assert.Null(bySource["Elenwen"]);
+
+        var withoutGame = await DialogueSpeakerNames.LoadAsync(fixture.Db, null, CancellationToken.None);
+        Assert.Equal(new[] { "Elenwen", "NPC 0001A66A", "NPC 0001E7D7", "Ondolemar" }, withoutGame.Values.OrderBy(v => v, StringComparer.Ordinal));
+    }
+
+    // Ondolemar (the plugin's own NPC) says two lines of a topic; the third names nobody.
+    private static byte[] SpeakerTopic()
+        => Header()
+            .Concat(Group(Record("NPC_", 0x01000800, Sub("FULL", Z("Ondolemar")))))
+            .Concat(DialogueGroup(TopicChildren(0x01001000,
+                Record("INFO", 0x01001001, Sub("CTDA", GetIsId(0x01000800)), Sub("NAM1", Z("Mind your tongue."))),
+                Record("INFO", 0x01001002, Sub("CTDA", GetIsId(0x01000800)), Sub("NAM1", Z("You may go."))),
+                Record("INFO", 0x01001003, Sub("NAM1", Z("Nobody in particular")))))).ToArray();
+
     private static byte[] GetIsId(uint npc, bool or = false, float value = 1f)
     {
         var data = new byte[32];
@@ -275,6 +382,35 @@ public sealed class PluginDialogueScopeTests
             TestDbHelper.ReleaseProjectPoolAndDeleteDbFiles(DbPath);
             Directory.Delete(Root, recursive: true);
         }
+    }
+
+    // Answers a batch request with each item's text as its translation, and keeps the items as they were sent.
+    private sealed class BatchEchoClient : IGeminiClient
+    {
+        public List<string> Prompts { get; } = new();
+        public List<(string Text, string? Ctx)> Items { get; } = new();
+        public Task<string> GenerateContentAsync(string apiKey, string modelName, GeminiGenerateContentRequest request, CancellationToken cancellationToken)
+        {
+            var prompt = request.Contents[0].Parts[0].Text!;
+            Prompts.Add(prompt);
+            const string marker = "Input JSON:";
+            var json = prompt[(prompt.LastIndexOf(marker, StringComparison.Ordinal) + marker.Length)..];
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+            var translations = new List<object>();
+            foreach (var item in doc.RootElement.GetProperty("items").EnumerateArray())
+            {
+                var text = item.GetProperty("text").GetString()!;
+                Items.Add((text, item.TryGetProperty("ctx", out var ctx) ? ctx.GetString() : null));
+                translations.Add(new { id = item.GetProperty("id").GetInt64(), text });
+            }
+            return Task.FromResult(System.Text.Json.JsonSerializer.Serialize(new { translations }));
+        }
+        public async Task<IReadOnlyList<string>> GenerateContentCandidatesAsync(string apiKey, string modelName, GeminiGenerateContentRequest request, CancellationToken cancellationToken)
+            => new[] { await GenerateContentAsync(apiKey, modelName, request, cancellationToken) };
+        public Task<int> CountTokensAsync(string apiKey, string modelName, string text, CancellationToken cancellationToken) => Task.FromResult(Math.Max(1, text.Length / 4));
+        public Task<IReadOnlyList<GeminiModel>> ListModelsAsync(string apiKey, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public Task<string> CreateCachedContentAsync(string apiKey, string modelName, string systemInstructionText, TimeSpan ttl, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public Task DeleteCachedContentAsync(string apiKey, string cacheName, CancellationToken cancellationToken) => Task.CompletedTask;
     }
 
     private sealed class EchoClient : IGeminiClient

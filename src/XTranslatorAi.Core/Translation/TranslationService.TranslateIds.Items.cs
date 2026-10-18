@@ -32,6 +32,8 @@ public sealed partial class TranslationService
         var canonicalIdByMaskedText = new Dictionary<DuplicateKey, long>();
         var duplicateRowsByCanonicalId = new Dictionary<long, List<(long Id, string Source, MaskedText Mask)>>();
         var orderedRows = new List<DialogueContextRow>(capacity: request.Ids.Count);
+        var speakers = request.SpeakerNamesById
+                       ?? await DialogueSpeakerNames.LoadAsync(_db, gameStrings: null, request.CancellationToken);
 
         foreach (var id in request.Ids.Distinct())
         {
@@ -43,12 +45,13 @@ public sealed partial class TranslationService
             }
 
             Ctx.RowContextById[row.Id] = new RowContext(row.Rec, row.Edid);
-            orderedRows.Add(new DialogueContextRow(row.Id, row.Rec, row.Edid, row.SourceText, row.DialogueScope));
+            orderedRows.Add(new DialogueContextRow(row.Id, row.Rec, row.Edid, row.SourceText, row.DialogueScope,
+                speakers.TryGetValue(row.Id, out var speaker) ? speaker : null));
         }
 
-        Ctx.DialogueContextWindowById = Ctx.EnableDialogueContextWindow
-            ? BuildDialogueContextWindowMap(orderedRows)
-            : null;
+        // The speaker is named even with the neighbouring lines turned off: it is not context to weigh but who talks.
+        var dialogueContext = BuildDialogueContextWindowMap(orderedRows, Ctx.EnableDialogueContextWindow);
+        Ctx.DialogueContextWindowById = dialogueContext.Count == 0 ? null : dialogueContext;
         var ambiguousTmSources = FindAmbiguousTranslationMemorySources(orderedRows);
 
         foreach (var contextRow in orderedRows)
@@ -228,9 +231,11 @@ public sealed partial class TranslationService
         return sb.ToString();
     }
 
-    private sealed record DialogueContextRow(long Id, string? Rec, string? Edid, string SourceText, string? DialogueScope);
+    private sealed record DialogueContextRow(long Id, string? Rec, string? Edid, string SourceText, string? DialogueScope,
+        string? Speaker = null);
 
-    private IReadOnlyDictionary<long, string> BuildDialogueContextWindowMap(IReadOnlyList<DialogueContextRow> orderedRows)
+    private static IReadOnlyDictionary<long, string> BuildDialogueContextWindowMap(
+        IReadOnlyList<DialogueContextRow> orderedRows, bool includeNeighbours)
     {
         var map = new Dictionary<long, string>();
         if (orderedRows.Count == 0)
@@ -246,7 +251,11 @@ public sealed partial class TranslationService
                 continue;
             }
 
-            var window = BuildDialogueContextWindowForIndex(orderedRows, index);
+            var neighbours = includeNeighbours ? BuildDialogueContextWindowForIndex(orderedRows, index) : null;
+            var window = row.Speaker == null
+                ? neighbours
+                : TranslationPrompt.SpeakerContextPrefix + row.Speaker
+                  + (string.IsNullOrWhiteSpace(neighbours) ? "" : "\n\n" + neighbours);
             if (!string.IsNullOrWhiteSpace(window))
             {
                 map[row.Id] = window;
@@ -329,7 +338,7 @@ public sealed partial class TranslationService
         {
             var candidate = orderedRows[i];
             if (candidate.DialogueScope != scope || !IsDialogueRecBase(candidate.Rec)) continue;
-            var line = TrySanitizeDialogueContextLine(candidate.SourceText);
+            var line = TrySanitizeDialogueContextLine(candidate);
             if (line != null) prev.Add(line);
         }
         prev.Reverse();
@@ -337,7 +346,7 @@ public sealed partial class TranslationService
         {
             var candidate = orderedRows[i];
             if (candidate.DialogueScope != scope || !IsDialogueRecBase(candidate.Rec)) continue;
-            var line = TrySanitizeDialogueContextLine(candidate.SourceText);
+            var line = TrySanitizeDialogueContextLine(candidate);
             if (line != null) next.Add(line);
         }
     }
@@ -370,7 +379,7 @@ public sealed partial class TranslationService
                 continue;
             }
 
-            var line = TrySanitizeDialogueContextLine(candidate.SourceText);
+            var line = TrySanitizeDialogueContextLine(candidate);
             if (line != null)
             {
                 prev.Add(line);
@@ -397,7 +406,7 @@ public sealed partial class TranslationService
                 continue;
             }
 
-            var line = TrySanitizeDialogueContextLine(candidate.SourceText);
+            var line = TrySanitizeDialogueContextLine(candidate);
             if (line != null)
             {
                 next.Add(line);
@@ -425,7 +434,7 @@ public sealed partial class TranslationService
                 break;
             }
 
-            var line = TrySanitizeDialogueContextLine(candidate.SourceText);
+            var line = TrySanitizeDialogueContextLine(candidate);
             if (line != null)
             {
                 prev.Add(line);
@@ -446,12 +455,19 @@ public sealed partial class TranslationService
                 break;
             }
 
-            var line = TrySanitizeDialogueContextLine(candidate.SourceText);
+            var line = TrySanitizeDialogueContextLine(candidate);
             if (line != null)
             {
                 next.Add(line);
             }
         }
+    }
+
+    // A neighbouring line says who speaks it, so a reply in another voice is not taken for the same speaker.
+    private static string? TrySanitizeDialogueContextLine(DialogueContextRow row)
+    {
+        var line = TrySanitizeDialogueContextLine(row.SourceText);
+        return line == null || row.Speaker == null ? line : $"[{row.Speaker}] {line}";
     }
 
     private static string? TrySanitizeDialogueContextLine(string? sourceText)

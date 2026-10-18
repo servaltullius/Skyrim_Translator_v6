@@ -457,4 +457,34 @@ public sealed partial class ProjectDb
         }
     }
 
+    /// <summary>The English name (NPC_:FULL) of each NPC record the plugin carries, its own or an override, by FormID.</summary>
+    public async Task<IReadOnlyDictionary<uint, string>> GetPluginNpcNamesAsync(CancellationToken cancellationToken)
+    {
+        var map = new Dictionary<uint, string>();
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            await using var cmd = _connection.CreateCommand();
+            cmd.CommandText =
+                """
+                SELECT json_extract(b.FieldJson, '$.FormId'), s.SourceText
+                FROM PluginStringBinding b JOIN StringEntry s ON s.Id=b.StringId
+                WHERE json_extract(b.FieldJson, '$.RecordType')='NPC_' AND json_extract(b.FieldJson, '$.SubrecordType')='FULL';
+                """;
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                if (reader.IsDBNull(0) || reader.IsDBNull(1)) continue;
+                var name = reader.GetString(1).Trim();
+                if (name.Length > 0) map.TryAdd(unchecked((uint)reader.GetInt64(0)), name);
+            }
+
+            return map;
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
 }

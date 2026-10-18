@@ -64,6 +64,7 @@ public static partial class TranslationPrompt
         AppendJsonRules(sb);
         AppendMeaningAndTerminologyRules(sb);
         if (items.Any(i => NormalizeEditorIdReference(i.Edid) != null)) AppendEditorIdRule(sb);
+        if (items.Any(i => HasSpeaker(i.Ctx))) AppendSpeakerRule(sb);
 
         if (isKorean)
         {
@@ -93,6 +94,17 @@ public static partial class TranslationPrompt
 
         return sb.ToString();
     }
+
+    /// <summary>The first line of a dialogue line's context when its speaker is known: "Speaker: Elenwen (엘렌웬)".</summary>
+    public const string SpeakerContextPrefix = "Speaker: ";
+
+    internal static bool HasSpeaker(string? ctx) => ctx != null && ctx.StartsWith(SpeakerContextPrefix, StringComparison.Ordinal);
+
+    // The speaker is named in 'ctx', so the rule says what the name is for: one voice per character, across batches.
+    internal const string SpeakerRule =
+        "- A dialogue line's context ('ctx') may start with \"Speaker: NAME\", the character who says the item's 'text'; a neighbouring line may start with [NAME], the character who says it. Lines with the same speaker name are one character: give all of them the same speech level and tone (e.g., the same 존댓말/반말 and the same way of addressing the listener), here and in other requests. When a speaker is named, do not guess another one from the EditorID or the neighbouring lines, and do not add the name to the translation.";
+
+    private static void AppendSpeakerRule(StringBuilder sb) => sb.AppendLine(SpeakerRule);
 
     private static void AppendJsonHeader(StringBuilder sb, string sourceLang, string targetLang)
     {
