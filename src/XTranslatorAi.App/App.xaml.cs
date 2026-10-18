@@ -71,7 +71,8 @@ public partial class App : Application
             var projectGlossaryService = new ProjectGlossaryService(glossaryImportService);
             var globalGlossaryService = new GlobalGlossaryService(globalProjectDbService, projectGlossaryService);
             var franchiseTranslationMemoryService = new FranchiseTranslationMemoryService(globalProjectDbService);
-            var projectWorkspaceService = new ProjectWorkspaceService(globalProjectDbService);
+            var gameStringService = new GameStringService();
+            var projectWorkspaceService = new ProjectWorkspaceService(globalProjectDbService, gameStrings: gameStringService);
             var translationRunnerService = new TranslationRunnerService(globalProjectDbService);
             var compareTranslationService = new CompareTranslationService(projectGlossaryService);
             var services = new MainViewModelServices(
@@ -87,7 +88,7 @@ public partial class App : Application
                 ProjectWorkspaceService: projectWorkspaceService,
                 TranslationRunnerService: translationRunnerService,
                 CompareTranslationService: compareTranslationService,
-                GameStringService: new GameStringService()
+                GameStringService: gameStringService
             );
             var vm = new ViewModels.MainViewModel(httpClient, services);
             var window = new MainWindow(vm);

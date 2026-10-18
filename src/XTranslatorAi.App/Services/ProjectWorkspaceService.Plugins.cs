@@ -41,6 +41,7 @@ public sealed partial class ProjectWorkspaceService
         ArgumentException.ThrowIfNullOrWhiteSpace(request.TargetEncoding);
         // Parse and validate the complete input before opening or replacing any project DB.
         var document = await PluginReader.ReadAsync(request.InputPath, request.Options, cancellationToken);
+        var fields = await ResolveMasterSpeakersAsync(document, cancellationToken);
         var dbPath = ResolvePluginProjectDbPath(request, document);
         var isNewProject = !File.Exists(dbPath);
         ProjectDb? db = null;
@@ -69,7 +70,7 @@ public sealed partial class ProjectWorkspaceService
             var context = await db.TryGetProjectContextAsync(cancellationToken);
             // Import commit is the ownership-transfer point. No fallible/cancelable work may follow it:
             // the old visible workspace can share this database when reopening the same plugin.
-            var entries = await db.ReplaceImportedPluginStringsAsync(document.Info, document.Fields, project,
+            var entries = await db.ReplaceImportedPluginStringsAsync(document.Info, fields, project,
                 request.TargetEncoding, cancellationToken);
             var retired = db.LastPluginImportRetiredCount;
             return new LoadFromPluginResult(db, document, request.Options.SourceLanguage,
@@ -93,6 +94,23 @@ public sealed partial class ProjectWorkspaceService
 
             throw;
         }
+    }
+
+    /// <summary>
+    /// The plugin's fields with the speakers only the masters know (Serana by her voice type, by Dawnguard's alias)
+    /// named from the game dictionary's speaker index; as read when there is no dictionary or nothing to resolve.
+    /// </summary>
+    private async Task<IReadOnlyList<PluginField>> ResolveMasterSpeakersAsync(PluginDocument document, CancellationToken cancellationToken)
+    {
+        if (_gameStrings == null || !document.Fields.Any(field => field.SpeakerHint != null || field.ListenerHint != null))
+        {
+            return document.Fields;
+        }
+
+        var index = (await _gameStrings.TryLoadAsync(cancellationToken))?.Speakers;
+        return index == null
+            ? document.Fields
+            : index.Resolve(document.Fields, document.Info.Masters, Path.GetFileName(document.Info.InputPath));
     }
 
     private static void DeleteUnimportedProject(string dbPath)

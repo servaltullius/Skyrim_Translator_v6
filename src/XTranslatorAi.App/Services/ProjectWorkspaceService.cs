@@ -15,11 +15,15 @@ public sealed partial class ProjectWorkspaceService
 {
     private readonly GlobalProjectDbService _globalProjectDbService;
     private readonly string? _projectsRootOverride;
+    private readonly GameStringService? _gameStrings;
 
-    public ProjectWorkspaceService(GlobalProjectDbService globalProjectDbService, string? projectsRootOverride = null)
+    /// <param name="gameStrings">The game dictionary, whose master speaker index names speakers only the masters know.</param>
+    public ProjectWorkspaceService(GlobalProjectDbService globalProjectDbService, string? projectsRootOverride = null,
+        GameStringService? gameStrings = null)
     {
         _globalProjectDbService = globalProjectDbService;
         _projectsRootOverride = projectsRootOverride;
+        _gameStrings = gameStrings;
     }
 
     public sealed record LoadFromXmlRequest(

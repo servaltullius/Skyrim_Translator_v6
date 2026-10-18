@@ -26,7 +26,7 @@ internal static class SpeakerToneConsistencyRule
 
     private const string PlayerKeyPrefix = "player>";
 
-    // A scene line said to a character the plugin does not name (PluginSceneSpeakers.UnknownListener, as "%08X").
+    // A scene line said to a character the plugin does not name (PluginSpeakers.UnknownListener, as "%08X").
     private const string UnknownListener = "00000000";
 
     private static readonly System.Text.RegularExpressions.Regex SpeechCheck = new(

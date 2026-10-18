@@ -62,7 +62,7 @@ public sealed class AgentSession
     public async Task<(AgentProject Project, int Rows, int Pending)> OpenAsync(string pluginPath, PluginReadOptions readOptions,
         string targetLanguage, string targetEncoding, int batchSize, CancellationToken cancellationToken)
     {
-        var workspace = new ProjectWorkspaceService(_globalDb, _projectsRootOverride);
+        var workspace = new ProjectWorkspaceService(_globalDb, _projectsRootOverride, _gameStrings);
         var loaded = await workspace.LoadFromPluginAsync(new ProjectWorkspaceService.LoadFromPluginRequest(
             Path.GetFullPath(pluginPath), readOptions, targetLanguage, targetEncoding, AgentTranslationRun.DefaultModelProfile,
             _settings.CustomPromptText ?? "", _settings.UseCustomPrompt), cancellationToken);

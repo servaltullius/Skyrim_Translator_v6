@@ -25,13 +25,17 @@ public sealed record PluginReadOptions(
 }
 
 /// <summary>Identity points at the original record and repeated subrecord occurrence, never at source text alone.</summary>
-/// <param name="ListenerFormId">For a scene line (INFO:NAM1) said to another NPC, that NPC (PluginSceneSpeakers); 0 when
+/// <param name="ListenerFormId">For a scene line (INFO:NAM1) said to another NPC, that NPC (PluginSpeakers); 0 when
 /// the plugin does not say which NPC, only that it is not the player.</param>
+/// <param name="SpeakerHint">A speaker only the masters can name (SpeakerRef.Hint: a voice type, a master's placed
+/// actor or quest alias), which MasterSpeakerIndex resolves into SpeakerFormId on import.</param>
+/// <param name="ListenerHint">The same for a scene line's listener (ListenerFormId is 0 until resolved).</param>
 public sealed record PluginField(
     string Key, int OrderIndex, string RecordType, string SubrecordType,
     uint FormId, string? EditorId, int RecordIndex, int SubrecordIndex,
     string SourceText, PluginStringTableKind? TableKind = null, uint? StringId = null, bool RequiresNonEmpty = true,
-    uint? DialogueTopicFormId = null, uint? SpeakerFormId = null, uint? ListenerFormId = null)
+    uint? DialogueTopicFormId = null, uint? SpeakerFormId = null, uint? ListenerFormId = null,
+    string? SpeakerHint = null, string? ListenerHint = null)
 {
     public string Rec => RecordType + ":" + SubrecordType;
 }

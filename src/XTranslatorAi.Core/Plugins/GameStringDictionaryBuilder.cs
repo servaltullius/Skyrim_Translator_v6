@@ -34,6 +34,7 @@ public static class GameStringDictionaryBuilder
         var plugins = new List<GameStringPlugin>();
         var found = new List<string>();
         var skipped = new List<string>();
+        var speakers = new MasterSpeakerIndex.Builder();
         foreach (var name in BaseGamePlugins)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -47,6 +48,7 @@ public static class GameStringDictionaryBuilder
 
             var document = await PluginReader.ReadAsync(path, new PluginReadOptions(), cancellationToken).ConfigureAwait(false);
             plugins.Add(new GameStringPlugin(name, document.Info.Masters, document.Fields, tables));
+            speakers.Add(document);
             found.Add(name);
         }
 
@@ -55,7 +57,7 @@ public static class GameStringDictionaryBuilder
             throw new FileNotFoundException("한글패치 폴더에서 Skyrim_english.STRINGS를 찾지 못했습니다. 한글패치의 Strings 폴더를 고르세요.");
         }
 
-        var dictionary = GameStringDictionary.Build(plugins);
+        var dictionary = GameStringDictionary.Build(plugins).WithSpeakers(speakers.Build());
         return (dictionary, new GameStringBuildReport(found, skipped, dictionary.FieldCount, dictionary.TextCount));
     }
 

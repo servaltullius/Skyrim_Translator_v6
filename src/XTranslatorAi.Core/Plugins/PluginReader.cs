@@ -274,7 +274,7 @@ public static class PluginReader
         if (withTrailingBytes > 0)
             diagnostics.Add(new("compressed_trailing_bytes", $"압축 레코드 {withTrailingBytes}개의 끝에 쓰이지 않는 바이트가 붙어 있습니다. 원본 그대로 두고 읽었습니다(번역해 저장하는 레코드는 다시 압축되어 그 바이트가 빠집니다)."));
         var identities = new Dictionary<(string, uint), int>();
-        var sceneSpeakers = PluginSceneSpeakers.Build(records.Values);
+        var speakers = PluginSpeakers.Build(records.Values, masters.Length);
         foreach (var record in records.Values)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -286,7 +286,7 @@ public static class PluginReader
             identities[recordKey] = recordOccurrence + 1;
             var edidSub = record.Subrecords.FirstOrDefault(sub => sub.Type == "EDID");
             var edid = edidSub == null ? null : PluginBinary.ReadZString(edidSub.Data.Span, metadataEncoding, "EDID");
-            var (speaker, listener) = record.Type == "INFO" ? InfoSpeaker(record, sceneSpeakers) : (null, null);
+            var (speaker, listener) = record.Type == "INFO" ? speakers.ForInfo(record) : (null, null);
             var preceding = new List<PluginSubrecordDescriptor>();
             var subOccurrences = new Dictionary<string, int>(StringComparer.Ordinal);
             foreach (var sub in record.Subrecords)
@@ -315,9 +315,10 @@ public static class PluginReader
                     if (source.Length > 0)
                         fields.Add(new($"{record.Type}/{record.FormId:X8}/{recordOccurrence}/{sub.Type}/{ordinal}", fields.Count,
                             record.Type, sub.Type, record.FormId, edid, record.Index, sub.Index, source, kind, stringId, rule.RequiresNonEmpty,
-                            record.DialogueTopicFormId, speaker,
+                            record.DialogueTopicFormId, speaker?.Npc,
                             // The player's prompt (RNAM) is said by the player, not by the scene's speaker.
-                            sub.Type == "NAM1" ? listener : null));
+                            sub.Type == "NAM1" && listener is { } l ? l.Npc ?? PluginSpeakers.UnknownListener : null,
+                            speaker?.Hint, sub.Type == "NAM1" ? listener?.Hint : null));
                 }
                 // SNDR:FNAM (form version < 35) is a flags field (bit 4 = Loop), not a string ID, even
                 // though some readers model it as translated text. It is preserved without a warning.
@@ -341,52 +342,6 @@ public static class PluginReader
     /// Skyrim LE plugins keep HEDR 0.94 and the SE game loads them. Fallout 3 and New Vegas use 0.94 too, so it counts
     /// only with Skyrim.esm among the masters or a Skyrim form version (40-44; Fallout uses 15) on the header record.
     /// </summary>
-    /// <summary>
-    /// An INFO's speaker, by its conditions or else by the scene that says its topic, and for a scene line the NPC it
-    /// is said to. A scene's listener counts only when the scene's speaker is the INFO's.
-    /// </summary>
-    private static (uint? Speaker, uint? Listener) InfoSpeaker(PluginRecord record,
-        IReadOnlyDictionary<uint, PluginSceneSpeakers.SceneSpeaker> scenes)
-    {
-        var speaker = FindSpeaker(record);
-        if (record.DialogueTopicFormId is not { } topic || !scenes.TryGetValue(topic, out var scene)) return (speaker, null);
-        if (speaker != null && speaker != scene.Speaker) return (speaker, null);
-        return (scene.Speaker, scene.Listener);
-    }
-
-    /// <summary>
-    /// The NPC an INFO's conditions name as its speaker: a GetIsID == 1 run on the subject. None when no condition
-    /// names one, or when more than one NPC can say the line (a GetIsID ORed with another).
-    /// </summary>
-    internal static uint? FindSpeaker(PluginRecord record)
-    {
-        const ushort GetIsId = 72;
-        uint? speaker = null;
-        // A condition's OR flag joins it to the next one: "GetIsID Elenwen OR GetInFaction ThalmorFaction" is said by
-        // any Thalmor too, and naming Elenwen put a soldier's line in her voice.
-        var previousOr = false;
-        foreach (var sub in record.Subrecords)
-        {
-            if (sub.Type != "CTDA" || sub.Data.Length < 24) continue;
-            var data = sub.Data.Span;
-            var or = (data[0] & 0x01) != 0;
-            var joined = or || previousOr;
-            previousOr = or;
-            var op = data[0] >> 5;
-            var usesGlobal = (data[0] & 0x04) != 0;
-            var value = BitConverter.Int32BitsToSingle(unchecked((int)PluginBinary.U32(data, 4)));
-            var function = (ushort)(data[8] | (data[9] << 8));
-            var runOn = PluginBinary.U32(data, 20);
-            if (function != GetIsId || op != 0 || usesGlobal || value != 1f || runOn != 0) continue;
-            if (joined) return null;
-            var npc = PluginBinary.U32(data, 12);
-            if (speaker != null && speaker != npc) return null;
-            speaker = npc;
-        }
-
-        return speaker;
-    }
-
     private static bool IsSkyrimLeHeader(float version, IReadOnlyList<string> masters, ReadOnlySpan<byte> headerRecord)
     {
         if (!(Math.Abs(version - 0.94f) <= 0.0001f)) return false; // also false for NaN

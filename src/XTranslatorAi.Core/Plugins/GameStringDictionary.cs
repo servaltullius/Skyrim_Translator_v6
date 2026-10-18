@@ -37,11 +37,19 @@ public sealed class GameStringDictionary
     private readonly Dictionary<string, (string EnglishHash, string Korean, string Plugin)> _byField;
     private readonly Dictionary<string, string> _byText;
 
-    private GameStringDictionary(Dictionary<string, (string, string, string)> byField, Dictionary<string, string> byText)
+    private GameStringDictionary(Dictionary<string, (string, string, string)> byField, Dictionary<string, string> byText,
+        MasterSpeakerIndex? speakers = null)
     {
         _byField = byField;
         _byText = byText;
+        Speakers = speakers;
     }
+
+    /// <summary>Who speaks a mod's lines where only the masters can say (null in a dictionary built before it existed).</summary>
+    public MasterSpeakerIndex? Speakers { get; }
+
+    /// <summary>This dictionary with the masters' speaker index; the translations are shared, not copied.</summary>
+    public GameStringDictionary WithSpeakers(MasterSpeakerIndex? speakers) => new(_byField, _byText, speakers);
 
     public int FieldCount => _byField.Count;
 
@@ -217,6 +225,13 @@ public sealed class GameStringDictionary
             writer.Write(string.Join('\t', "T", key, Escape(korean)));
             writer.Write('\n');
         }
+
+        // Kinds an older app does not know are skipped by its reader, so the format keeps its version.
+        foreach (var line in Speakers?.Lines() ?? Enumerable.Empty<string>())
+        {
+            writer.Write(line);
+            writer.Write('\n');
+        }
     }
 
     public static GameStringDictionary Load(Stream stream)
@@ -230,6 +245,9 @@ public sealed class GameStringDictionary
 
         var byField = new Dictionary<string, (string, string, string)>(StringComparer.Ordinal);
         var byText = new Dictionary<string, string>(StringComparer.Ordinal);
+        var voices = new Dictionary<string, string>(StringComparer.Ordinal);
+        var refs = new Dictionary<string, string>(StringComparer.Ordinal);
+        var aliases = new Dictionary<string, string>(StringComparer.Ordinal);
         while (reader.ReadLine() is { } line)
         {
             var parts = line.Split('\t');
@@ -241,9 +259,13 @@ public sealed class GameStringDictionary
             {
                 byText[parts[1]] = Unescape(parts[2]);
             }
+            else
+            {
+                MasterSpeakerIndex.TryReadLine(parts, voices, refs, aliases);
+            }
         }
 
-        return new GameStringDictionary(byField, byText);
+        return new GameStringDictionary(byField, byText, MasterSpeakerIndex.FromMaps(voices, refs, aliases));
     }
 
     // 128 bits of SHA-256 over the normalized English: equal text gives an equal fingerprint, and no text can be read back.

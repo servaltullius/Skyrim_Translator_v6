@@ -11,9 +11,9 @@ namespace XTranslatorAi.Core.Translation;
 /// <summary>
 /// Who says each dialogue line, named for the translation request. Without it the model guessed the speaker from the
 /// EditorID and the lines around it, and one NPC's lines came out in two registers: Elenwen's six lines in IDE
-/// Thalmor were read as a common Thalmor soldier's and put in 반말. The speaker is the NPC an INFO's conditions name
-/// (PluginReader.FindSpeaker); its name is the plugin's own NPC_ FULL, and for a base game NPC the game translation's
-/// Korean name as well. An NPC named by neither still gets a label of its FormID, so its lines are seen as one voice.
+/// Thalmor were read as a common Thalmor soldier's and put in 반말. The speaker is the NPC an INFO's conditions, its
+/// quest's or its scene name (PluginSpeakers, MasterSpeakerIndex); its name is the plugin's own NPC_ FULL, and for a
+/// base game NPC the game translation's Korean name as well. An NPC named by neither still gets a label of its FormID, so its lines are seen as one voice.
 /// </summary>
 public static class DialogueSpeakerNames
 {
@@ -47,7 +47,7 @@ public static class DialogueSpeakerNames
             // A scene line said to another NPC: "Elenwen, to General Tullius", or to one the plugin does not name.
             if (separator >= 0 && TryFormId(value[(separator + 1)..], out var listener))
             {
-                label += ListenerLabelSeparator + (listener == PluginSceneSpeakers.UnknownListener ? UnknownListenerLabel : NpcLabel(listener));
+                label += ListenerLabelSeparator + (listener == PluginSpeakers.UnknownListener ? UnknownListenerLabel : NpcLabel(listener));
             }
 
             result[id] = label;
