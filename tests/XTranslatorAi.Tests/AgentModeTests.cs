@@ -43,6 +43,20 @@ public sealed class AgentModeTests : IAsyncLifetime
         try { Directory.Delete(_root, recursive: true); } catch (IOException) { }
     }
 
+    /// <summary>tullius.cmd hands the arguments to cmd, which splits an unquoted "A&amp;B"; a file of arguments keeps them whole.</summary>
+    [Fact]
+    public async Task ArgumentFile_StandsForTheArgumentsInIt()
+    {
+        var file = Path.Combine(_root, "args.txt");
+        await File.WriteAllLinesAsync(file, new[] { "open", @"G:\Mods\Fists & Fury ^1\Fists.esp", "", "  --batch-size  " });
+
+        var args = AgentCli.ExpandArgumentFiles(new[] { "@" + file, "20" });
+
+        Assert.Equal(new[] { "open", @"G:\Mods\Fists & Fury ^1\Fists.esp", "--batch-size", "20" }, args);
+        Assert.Equal(new[] { "check", "@" }, AgentCli.ExpandArgumentFiles(new[] { "check", "@" }));
+        Assert.Throws<AgentModeException>(() => AgentCli.ExpandArgumentFiles(new[] { "@" + file + ".missing" }));
+    }
+
     [Fact]
     public async Task Request_CoversTheRemainingRows_SoTheDialogueAroundALineIsInIt()
     {

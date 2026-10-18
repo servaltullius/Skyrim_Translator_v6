@@ -44,6 +44,16 @@ public static class AgentCli
 
     public static async Task<int> RunAsync(string[] args)
     {
+        try
+        {
+            args = ExpandArgumentFiles(args);
+        }
+        catch (AgentModeException ex)
+        {
+            Console.WriteLine("실패: " + ex.Message);
+            return 2;
+        }
+
         var ct = CancellationToken.None;
         var command = args.Length > 0 ? args[0].ToLowerInvariant() : "help";
         var rest = args.Skip(1).ToList();
@@ -409,7 +419,36 @@ public static class AgentCli
             <프로젝트>는 키, 플러그인 파일 이름(확장자 없이도), 플러그인 경로 중 하나. 번호는 요청·check·show의 id로 같다.
             작업 파일은 ./work(--work로 바꿈).
             프로젝트 DB는 GUI 번역기와 같은 곳(--projects로 바꿈).
+            인자에 & | ^ 가 들어가면 한 줄에 하나씩 파일에 쓰고 @파일로 넘긴다(tullius.cmd @인자.txt).
             """);
+    }
+
+    /// <summary>
+    /// "@인자.txt" stands for the arguments written in that file, one per line. tullius.cmd hands the arguments to cmd,
+    /// which splits an unquoted "A&amp;B" (PowerShell quotes only those with spaces) into two commands; a file keeps
+    /// such a path or word whole.
+    /// </summary>
+    public static string[] ExpandArgumentFiles(string[] args)
+    {
+        var expanded = new List<string>(args.Length);
+        foreach (var arg in args)
+        {
+            if (arg.Length < 2 || arg[0] != '@')
+            {
+                expanded.Add(arg);
+                continue;
+            }
+
+            var path = arg[1..];
+            if (!File.Exists(path))
+            {
+                throw new AgentModeException($"인자 파일이 없습니다: {path}");
+            }
+
+            expanded.AddRange(File.ReadAllLines(path).Select(line => line.Trim()).Where(line => line.Length > 0));
+        }
+
+        return expanded.ToArray();
     }
 
     private sealed record EditLine(long? Id, int? Order, string Text);

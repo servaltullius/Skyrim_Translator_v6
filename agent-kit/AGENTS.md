@@ -4,6 +4,8 @@
 
 `tullius.cmd`는 이 폴더 바로 위의 번역기(`TulliusTranslator.exe`)를 창 없이 명령으로 실행하고 끝날 때까지 기다린다. 번역기 EXE를 직접 부르지 말고 언제나 `tullius.cmd`로 부른다(PowerShell은 `.\tullius.cmd …`, bash는 `./tullius.cmd …`). `.\tullius.cmd version`으로 번역기 버전을 볼 수 있다.
 
+경로나 낱말에 `&`, `|`, `^`가 들어가면 cmd가 명령을 쪼개므로, 명령과 인자를 한 줄에 하나씩 `work\args.txt`에 쓰고 `.\tullius.cmd @work\args.txt`로 부른다. 예를 들어 첫 줄 `open`, 둘째 줄 `G:\Mods\Fists & Fury\Fists.esp`.
+
 ## 지킬 것
 
 - 프로젝트 DB, 플러그인, `work\` 안의 `pending.json`·`responses\`·`instructions.md`를 직접 고치지 않는다. 언제나 `tullius.cmd` 명령으로만 한다.
