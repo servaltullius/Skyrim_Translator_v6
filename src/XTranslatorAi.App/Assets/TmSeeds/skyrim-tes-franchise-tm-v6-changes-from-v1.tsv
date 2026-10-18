@@ -1,6 +1,6 @@
 Source	Target	Previous
 "As Talos is my witness, may this oath bind me to death and beyond..."	'탈로스께서 내 증인이시니, 이 맹세가 죽음과 그 너머까지 나를 묶을지어다...'	'탈로스께서 내 증인이시며, 죽음과 그 너머라도...'
-"Bent a few folks' arms the wrong way"?	'주민들의 팔을 좀 비틀었다'고?	'주민들의 무기가 엉뚱한 방향을 향했다'고?
+"Bent a few folks' arms the wrong way"?	'몇몇 사람들의 심기가 불편해졌다'고?	'주민들의 무기가 엉뚱한 방향을 향했다'고?
 %s discovered from %s	효과 : %s - %s에서 발견했습니다	효과 : %s - %s 에서 발견했습니다
 %s Increased to %i	%s 기술 증가 - 현재 %i	%s 기술 증가- 현재 %i
 (Optional) Discover leverage to sway Niranye	(선택) 니라녜의 마음을 바꾸기 위한 수단을 찾기	(선택) 니랴네의 마음을 바꾸기 위한 수단을 찾기
@@ -236,6 +236,7 @@ Do you trade your weapons with any of the cities?	다른 도시들과도 무기�
 Does <mag> damage over <dur> seconds. Additional opponents in melee range have a chance to be infected.	<dur> 초 동안 <mag> 의 피해를 입힙니다. 일정한 확률로 주변 적도 감염시킵니다.	<dur> 초 동안 <mag> 의 피해를 입힙니다. 일정한 확률로 주변 적에게 피해를 줍니다.
 Does <mag> points of Shock Damage.	<mag> 의 전격 피해를 입힙니다.	<mag> 의 전격 피해를 입힙니다..
 Does the Arch-Mage often ask for advice?	대마법사가 자주 조언을 구하러 옵니까?	대마법사가 가끔 조언을 구하러 옵니까?
+Does the war mean good business for you?	전쟁 덕분에 장사가 잘되나?	전쟁덕분에 장사가 잘 된다는 소린가?
 Does Ulfric have much need for magic?	울프릭은 마법을 많이 필요로 합니까?	울프릭은 마법이 많이 필요로 합니까?
 Don't be ridiculous. Dreams are harmless.	되지도 않는 소리 마시오. 꿈은 위험하지 않소.	되도 않는 소리 마시오. 꿈은 위험하지 않소.
 Don't know why I bothered. This place is a mess.	내가 왜 이런 귀찮은 짓을 하는지 모르겠군. 여기 완전 개판인데.	내가 왜 이런 귀찮은 짓을 하지 모르겠군. 여기 완전 개판인데.
@@ -420,6 +421,7 @@ How can we lure a dragon to Dragonsreach?	어떻게 하면 '드래곤스리치'�
 How did he end up in Skyrim?	그는 어쩌다 스카이림에 오게 되었습니까?	그는 스카이림에서 어떻게 되었습니까?
 How did it end up in Lake Honrich?	어쩌다 혼리크 호수에 빠지게 된 거야?	어쩌다 혼리크 호수로 보내버린 거야?
 How does the Ebonmere affect all of us?	에본미어가 어떻게 우리 모두에게 영향을 끼치는 거지?	에본미어가 어떻게 우리 모두에게 영향를 끼치는 거지?
+How has Raven Rock needed your help?	레이븐 락에 당신들의 도움이 왜 필요했지?	레이븐 락이 어떤 도움을 필요로 하지?
 How long have you been down here?	얼마나 오랫동안 이 아래에 있었소?	얼마나 오랬동안 이 아래에 있었소?
 How long have you been First Hunter?	얼마나 오랫동안 최고 사냥꾼이었소?	얼마나 오랫동안 1급 사냥꾼이었소?
 How's business?	장사는 잘 됩니까?	사업은 어떻지?
@@ -664,6 +666,7 @@ No. Dragons like mountains, right?	아니요. 드래곤이 산을 좋아해서 �
 No. No pets. Ever.	안 된다. 애완동물은 안 돼. 절대로.	난 동물이 싫다.
 No. We expected some kind of artifact.	아니오. 우리는 어떤 유물이 있을 거라 생각했소.	우리는 어떤 종류의 유물이라고 생각하고 있소.
 Noble Clothes	야를의 기품있는 의상	귀족의 의상
+Nobody hears from them much anymore.	더 이상 소식 들을 일은 없을 거야.	더이상 소식들을 일은 없을 거야.
 Nocturnal is the daedric mistress of stealth and shadow, and a patron to thieves.	녹터널은 잠행과 그림자의 데이드릭 프린스이며, 도둑들의 후원자입니다.	녹터널은 잠행과 그림자의 데이드라 프린스이며, 도둑들의 후원자입니다.
 North Skybound Watch	북부 스카이바운드 감시대	스카이바운드 감시대
 Nose Length	코 길이	코 높이
@@ -1025,6 +1028,7 @@ We could use your help in Tamriel.	탐리엘에서 당신의 도움이 필요하
 We didn't really get along. Best that I haven't seen them in a while.	잘 지내진 못했지. 안 보게 돼서 기쁘군.	잘 지내진 못했지. 안 보게 되서 기쁘군.
 We might have something, yes.	뭔가 있을지도 모르지, 그래.	확실히 뭔가 있기는 한데.
 We should keep moving.	계속 이동하지.	계속 가지.
+We're very close. I can't wait to see them again.	아주 친하지. 어서 다시 보고 싶군.	아주 가까웠지. 다시 보고 싶군.
 Weak Aversion to Fire	독 - 화염 약점 하급	독 - 화염 하급
 Weak Aversion to Frost	독 - 냉기 약점 하급	독 - 냉기 하급
 Weak Aversion to Magic	독 - 마법 약점 하급	독 - 마법 저항 하급
@@ -1048,6 +1052,7 @@ What did you do?	무슨 일을 한 겁니까?	무슨 일로?
 What did you need?	뭐 필요하시다고?	필요한 게 뭐라고 했지?
 What do we do with it now?	이제 이걸로 뭘 하지?	이게 이 걸로 뭘 하지?
 What do you have against the Blades?	블레이드를 꺼려하는 이유는 무엇입니까?	블레이드을 꺼려하는 이유는 무엇입니까?
+What do you have against the Greybeards?	그레이비어드한테 무슨 불만이라도 있나?	그레이비어드에게 무슨 문제라도 있나?
 What do you mean "saviors of Mer"?	'머의 구세주'라는 게 무슨 뜻이오?	'머의 구세주'라는 게 무슨 듯이오?
 What do you mean "supposed"?	'이른바'라니, 무슨 뜻이지?	'그랬어야 한다'는건 무슨 뜻이지?
 What do you mean, "return"? You've been there?	'돌아간다'라는 게 무슨 뜻이지? 거기 가 본 적이 있나?	'돌아간다'라는게 무슨 뜻이지? 거기 출신인가?
@@ -1071,8 +1076,10 @@ What of it?	그게 어쨌다는 겁니까?	그게 어쨋다는 겁니까?
 What was left of him.	남은 건 그의 시신뿐이었소.	아직도 그에게 미련이 남아있나?
 What will you do now?	이제 어떻게 할 생각이오?	이제 어쩔 거지?
 What would you ask of me?	나에게 어떠한 것을 부탁하러 온 겐가?	나에게 어떠 한 것을 부탁하러 온 겐가?
+What would you like?	뭘 갖고 싶니?	어떤 걸 좋아하니?
 What'll you give me for these?	이건 얼마에 쳐줄 텐가?	어떤 것을 팔고 있소?
 What's an East Empire Pendant?	동제국 회사 펜던트라는게 뭐요?	동제국 펜던트라는게 뭐요?
+What's expected of me here?	여기서 제게 기대하는 건 뭡니까?	여기서 제가 할 일은 뭡니까?
 What's going on?	무슨 일이지?	무슨 일이오?
 What's in it for me?	내가 협력하면 어떤 이득이 있지?	내가 도와주면 어떤 이득이 있지?
 What's in your head?	머릿속에 뭐가 있다는 거요?	뭔가 좋은 생각이라도?
@@ -1168,6 +1175,7 @@ You're holding out on Arniel again.	또 아니얼한테 물건을 안 넘기고 
 You're not going to kill her, are you?	설마 저 군단장을 죽이실 생각은 아니시겠죠?	저 군단장을 죽이실 생각이십니까?
 You're right. <Alias=ImperialMajorHoldCapital> is a fair trade for Riften.	당신 말이 맞소. <Alias=ImperialMajorHoldCapital>은(는) 리프튼에 대한 공정한 거래라오.	당신 말이 맞소. <Alias=ImperialMajorHoldCapital>은 리프튼을 위한 공정한 거래라오.
 You're right. <Alias=SonsMajorHoldCapital> is a fair trade for Markarth.	당신이 맞아요. <Alias=SonsMajorHoldCapital>은(는) 마르카스에 대한 공정한 거래입니다.	당신이 맞아요. <Alias=SonsMajorHoldCapital>은 마르카스에 대한 공정한 거래입니다.
+You're right. I shouldn't have brought it up.	당신의 말이 맞아. 그 이야기는 꺼내지 말았어야 했어.	당신의 말이 맞아. 그 이야기를 꺼내지 않도록 하지.
 You're talking about a book?	책에 관해서 이야기하고 있는 겁니까?	책에 관해서 이야가 하고 있는 겁니까?
 You've killed the High King. Why make war on your own people?	당신은 하이킹을 죽였군. 왜 당신 민족을 상대로 전쟁을 벌이는 거지?	당신은 하이킹을 죽였군. 왜 당신 민족을 전쟁에 끌어들인 거지?
 You... must not see many Orcs around here.	당신은... 이 근처에서 오크를 별로 못 봤나 보군.	당신은... 이 주변의 많은 오크들을 보지 않았군.
