@@ -131,8 +131,12 @@ internal static class DialogueToneConsistencyRule
 
     private const string PluginWideKey = "plugin-info";
 
+    // A line whose speaker is known is compared with that speaker's other lines (SpeakerToneConsistencyRule). Left in,
+    // the speakers who say most of a plugin set its level: Serana Dialogue Add-On's 반말 marked 105 lines, 93 of them
+    // Serana's own lines to her father or the Jarl and other NPCs' lines to her.
     private static bool IsPluginWideLine(LqaScanEntry entry)
-        => LqaScanner.GetRecBase(entry.Rec) == "INFO" && string.IsNullOrWhiteSpace(LqaScanner.NormalizeEdidStem(entry.Edid));
+        => LqaScanner.GetRecBase(entry.Rec) == "INFO" && string.IsNullOrWhiteSpace(LqaScanner.NormalizeEdidStem(entry.Edid))
+           && string.IsNullOrWhiteSpace(entry.Speaker);
 
     private static void ApplyPluginWide(LqaScanEntry entry, IReadOnlyDictionary<string, ToneKind> strongDialogueMajority, List<LqaIssue> issues)
     {

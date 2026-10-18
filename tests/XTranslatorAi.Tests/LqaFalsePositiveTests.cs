@@ -272,6 +272,38 @@ public class LqaFalsePositiveTests
         Assert.DoesNotContain(issues, i => i.Code == "tone_inconsistent");
     }
 
+    /// <summary>
+    /// Once Serana Dialogue Add-On's lines had speakers, her 반말 still set the plugin's level: her lines to her father
+    /// and a bard's lines to her were marked as unlike the plugin. A line with a known speaker is compared with that
+    /// speaker's others only, and the lines without one with each other.
+    /// </summary>
+    [Fact]
+    public async Task DialogueTone_LinesWithAKnownSpeaker_AreNotComparedWithThePluginsDialogue()
+    {
+        static LqaScanEntry Line(long id, string dest, string? speaker)
+            => new(id, (int)id, null, "INFO:NAM1", StringEntryStatus.Done, "x", dest, Speaker: speaker);
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "정말 그런 거야?", "02002B6C"),
+            Line(2, "좋아, 그렇게 해.", "02002B6C"),
+            Line(3, "넌 여기 있어야 해.", "02002B6C"),
+            Line(4, "정말 그런 거야?", "02002B6C"),
+            Line(5, "좋아, 그렇게 해.", "02002B6C"),
+            Line(6, "넌 여기 있어야 해.", "02002B6C"),
+            Line(7, "정말 그런 거야?", "02002B6C"),
+            Line(8, "좋아, 그렇게 해.", "02002B6C"),
+            Line(9, "넌 여기 있어야 해.", "02002B6C"),
+            Line(10, "정말 그런 거야?", "02002B6C"),
+            Line(11, "아버지, 저 왔어요.", "02002B6C>02003BA8"),
+            Line(12, "어서 오세요, 손님. 한 곡 들려드릴까요?", "0001A696"),
+            Line(13, "물론이죠! 좋은 곡이네요!", null),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        Assert.DoesNotContain(issues, i => i.Code == "tone_differs_from_plugin");
+    }
+
     [Fact]
     public async Task NameConsistency_FindsOneNameSpelledTwoWays_ButNotTitlesOrParticles()
     {
