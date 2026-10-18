@@ -303,7 +303,8 @@ public sealed class GlossaryApplier
     /// Add-On lines: "What in Oblivion is this place?" became "오블리비언의 여긴 어디야?", "How on Nirn"
     /// became "넌에서", and Harkon's "I trust you have the Scroll?" (the Elder Scroll) became "주문서".
     /// "Reach" is also a verb at the start of a sentence: "Reach level 10", "Reach of ...".
-    /// "Master Neloth" is a title (넬로스 스승, 넬로스 주인 in the official translation), not 달인.
+    /// "Master Neloth" is a title (넬로스 스승, 넬로스 주인 in the official translation), not 달인, and "a Master's
+    /// approval" a person (IDE Thalmor's Ancano came back with "달인의 인정"): the rank is never possessive.
     /// </summary>
     internal static bool IsBuiltInTermUsedOtherwise(string text, GlossaryEntry entry, int index, int length)
     {
@@ -323,6 +324,12 @@ public sealed class GlossaryApplier
 
         if (term == "Master")
         {
+            var after = index + length;
+            if (after + 1 < text.Length && text[after] is '\'' or '’' && text[after + 1] is 's' or 'S')
+            {
+                return true;
+            }
+
             return text[index] == 'M' && nextWord.Length > 1 && char.IsUpper(nextWord[0]) && !MasterLevelWords.Contains(nextWord);
         }
 

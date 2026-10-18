@@ -29,7 +29,7 @@ public sealed record PluginField(
     string Key, int OrderIndex, string RecordType, string SubrecordType,
     uint FormId, string? EditorId, int RecordIndex, int SubrecordIndex,
     string SourceText, PluginStringTableKind? TableKind = null, uint? StringId = null, bool RequiresNonEmpty = true,
-    uint? DialogueTopicFormId = null)
+    uint? DialogueTopicFormId = null, uint? SpeakerFormId = null)
 {
     public string Rec => RecordType + ":" + SubrecordType;
 }

@@ -160,6 +160,41 @@ public sealed class PluginDialogueScopeTests
         Assert.Contains("Second XML line", fixture.Client.Requests.Single(request => request.Source == "First XML line").Prompt);
     }
 
+    /// <summary>
+    /// The speaker an INFO's conditions name (GetIsID == 1 on the subject) is kept with its field and read back from
+    /// the project, so the quality check can compare one NPC's lines across topics. A line two NPCs can say, or one
+    /// with no such condition, has none.
+    /// </summary>
+    [Fact]
+    public async Task InfoSpeaker_FromGetIsIdCondition_ReachesTheProject()
+    {
+        var plugin = Header().Concat(DialogueGroup(TopicChildren(0x1000,
+            Record("INFO", 0x1001, Sub("CTDA", GetIsId(0x00013269)), Sub("NAM1", Z("Elenwen speaks"))),
+            Record("INFO", 0x1002, Sub("CTDA", GetIsId(0x00013269, or: true)), Sub("CTDA", GetIsId(0x0001E7D7)), Sub("NAM1", Z("Either speaks"))),
+            Record("INFO", 0x1003, Sub("CTDA", GetIsId(0x0001E7D7, value: 0f)), Sub("NAM1", Z("Anyone but Ancano"))),
+            Record("INFO", 0x1004, Sub("NAM1", Z("Nobody in particular")))))).ToArray();
+        await using var fixture = await Fixture.CreateAsync(plugin);
+
+        Assert.Equal(new uint?[] { 0x00013269, null, null, null }, fixture.Document.Fields.Select(field => field.SpeakerFormId));
+        var speakers = await fixture.Db.GetStringSpeakersAsync(CancellationToken.None);
+        Assert.Equal("00013269", Assert.Single(speakers).Value);
+        Assert.Equal(fixture.Ids[0], speakers.Single().Key);
+        var output = await PluginWriter.ExportAsync(fixture.Document, new Dictionary<string, string>(),
+            new PluginExportOptions(Path.Combine(fixture.Root, "unchanged")), CancellationToken.None);
+        Assert.Equal(plugin, await File.ReadAllBytesAsync(output.PluginPath));
+    }
+
+    private static byte[] GetIsId(uint npc, bool or = false, float value = 1f)
+    {
+        var data = new byte[32];
+        data[0] = (byte)(or ? 1 : 0);
+        BinaryPrimitives.WriteSingleLittleEndian(data.AsSpan(4), value);
+        BinaryPrimitives.WriteUInt16LittleEndian(data.AsSpan(8), 72);
+        BinaryPrimitives.WriteUInt32LittleEndian(data.AsSpan(12), npc);
+        BinaryPrimitives.WriteInt32LittleEndian(data.AsSpan(28), -1);
+        return data;
+    }
+
     private static byte[] TwoTopics(bool includeParentRecords)
     {
         var children = new List<byte[]>();

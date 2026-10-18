@@ -426,4 +426,35 @@ public sealed partial class ProjectDb
         }
     }
 
+    /// <summary>
+    /// The speaker of each plugin INFO row whose conditions name one (PluginField.SpeakerFormId, "%08X"). Projects
+    /// imported before the field existed have none until the plugin is imported again.
+    /// </summary>
+    public async Task<IReadOnlyDictionary<long, string>> GetStringSpeakersAsync(CancellationToken cancellationToken)
+    {
+        var map = new Dictionary<long, string>();
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            await using var cmd = _connection.CreateCommand();
+            cmd.CommandText =
+                """
+                SELECT StringId, printf('%08X', json_extract(FieldJson, '$.SpeakerFormId'))
+                FROM PluginStringBinding
+                WHERE json_extract(FieldJson, '$.SpeakerFormId') IS NOT NULL;
+                """;
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                map[reader.GetInt64(0)] = reader.GetString(1);
+            }
+
+            return map;
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
 }

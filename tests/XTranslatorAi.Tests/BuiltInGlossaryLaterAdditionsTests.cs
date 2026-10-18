@@ -144,6 +144,22 @@ public class BuiltInGlossaryLaterAdditionsTests : IAsyncLifetime
         Assert.Equal(expected, Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Molag Bal").TargetTerm);
     }
 
+    // IDE Thalmor: the Divine Prosecution is an institution; 검찰관 (a prosecutor) made "신성 검찰관의 장교".
+    [Theory]
+    [InlineData("신성 검찰관", "Built-in default glossary", "신성 검찰")]
+    [InlineData("신성 검찰관", null, "신성 검찰관")]
+    [InlineData("신성 검찰청", "Built-in default glossary", "신성 검찰청")]
+    public async Task DivineProsecution_IsCorrectedToTheInstitution_OnlyWhereTheUserKeptTheOldOne(string target, string? note, string expected)
+    {
+        await _db.BulkInsertGlossaryAsync(
+            new[] { ((string?)"진영 및 단체 (Factions/Groups)", "Divine Prosecution", target, true, 10, (int)GlossaryMatchMode.WordBoundary, (int)GlossaryForceMode.ForceToken, note) },
+            CancellationToken.None);
+
+        await AddAllBatchesAsync();
+
+        Assert.Equal(expected, Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Divine Prosecution").TargetTerm);
+    }
+
     // The official translation (built-in TM) has Fine 초급, matching Superior 중급 and Exquisite 상급.
     [Theory]
     [InlineData("하급", "Built-in default glossary", "초급")]

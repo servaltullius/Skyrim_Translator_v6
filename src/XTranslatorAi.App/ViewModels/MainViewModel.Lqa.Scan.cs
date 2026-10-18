@@ -13,6 +13,9 @@ public partial class MainViewModel
 {
     private async Task<List<LqaIssueViewModel>> BuildLqaIssuesAsync()
     {
+        var speakers = _projectState.Db == null
+            ? new Dictionary<long, string>()
+            : await _projectState.Db.GetStringSpeakersAsync(CancellationToken.None);
         var ordered = Entries
             .Select(
                 e =>
@@ -24,7 +27,8 @@ public partial class MainViewModel
                         Status: LqaStatus(e),
                         SourceText: e.SourceText ?? "",
                         DestText: e.DestText ?? "",
-                        PreviousText: e.PreviousTranslation
+                        PreviousText: e.PreviousTranslation,
+                        Speaker: speakers.GetValueOrDefault(e.Id)
                     )
         )
             .ToList();
@@ -93,6 +97,7 @@ public partial class MainViewModel
     private static readonly HashSet<string> ProjectWideLqaCodes = new(StringComparer.Ordinal)
     {
         "name_inconsistent", "tone_inconsistent", "tone_differs_from_plugin", "rec_tone", "same_source_variant", "prefixed_name_variant", "tm_fallback", "official_name_missing",
+        "speaker_tone_inconsistent",
     };
 
     // Rows saved while a scan runs; the scan read them before the save, so they are checked again when it ends.

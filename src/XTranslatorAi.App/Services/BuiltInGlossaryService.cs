@@ -55,6 +55,9 @@ public sealed class BuiltInGlossaryService
         new("2026-10-05.2", new[] { "Activate Button", "Sprint Button" }, Array.Empty<(string, string)>()),
         // Decided 2026-10-05 from the Feris review: the game (built-in TM) names the cave 부풀은 사내의 암굴.
         new("2026-10-05.3", Array.Empty<string>(), new[] { ("Bloated Man's Grotto", "부풀은 사내 암굴") }),
+        // Decided 2026-10-18 from the IDE Thalmor review: the Divine Prosecution is the Altmeri institution, and 검찰관
+        // (a prosecutor) turned Ondolemar's "an officer of the Divine Prosecution" into "신성 검찰관의 장교".
+        new("2026-10-18", Array.Empty<string>(), new[] { ("Divine Prosecution", "신성 검찰관") }),
     };
 
     /// <summary>

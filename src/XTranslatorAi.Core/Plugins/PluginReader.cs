@@ -313,7 +313,7 @@ public static class PluginReader
                     if (source.Length > 0)
                         fields.Add(new($"{record.Type}/{record.FormId:X8}/{recordOccurrence}/{sub.Type}/{ordinal}", fields.Count,
                             record.Type, sub.Type, record.FormId, edid, record.Index, sub.Index, source, kind, stringId, rule.RequiresNonEmpty,
-                            record.DialogueTopicFormId));
+                            record.DialogueTopicFormId, record.Type == "INFO" ? FindSpeaker(record) : null));
                 }
                 // SNDR:FNAM (form version < 35) is a flags field (bit 4 = Loop), not a string ID, even
                 // though some readers model it as translated text. It is preserved without a warning.
@@ -337,6 +337,32 @@ public static class PluginReader
     /// Skyrim LE plugins keep HEDR 0.94 and the SE game loads them. Fallout 3 and New Vegas use 0.94 too, so it counts
     /// only with Skyrim.esm among the masters or a Skyrim form version (40-44; Fallout uses 15) on the header record.
     /// </summary>
+    /// <summary>
+    /// The NPC an INFO's conditions name as its speaker: a GetIsID == 1 run on the subject. None when no condition
+    /// names one, or when more than one NPC can say the line (a GetIsID ORed with another).
+    /// </summary>
+    internal static uint? FindSpeaker(PluginRecord record)
+    {
+        const ushort GetIsId = 72;
+        uint? speaker = null;
+        foreach (var sub in record.Subrecords)
+        {
+            if (sub.Type != "CTDA" || sub.Data.Length < 24) continue;
+            var data = sub.Data.Span;
+            var op = data[0] >> 5;
+            var usesGlobal = (data[0] & 0x04) != 0;
+            var value = BitConverter.Int32BitsToSingle(unchecked((int)PluginBinary.U32(data, 4)));
+            var function = (ushort)(data[8] | (data[9] << 8));
+            var runOn = PluginBinary.U32(data, 20);
+            if (function != GetIsId || op != 0 || usesGlobal || value != 1f || runOn != 0) continue;
+            var npc = PluginBinary.U32(data, 12);
+            if (speaker != null && speaker != npc) return null;
+            speaker = npc;
+        }
+
+        return speaker;
+    }
+
     private static bool IsSkyrimLeHeader(float version, IReadOnlyList<string> masters, ReadOnlySpan<byte> headerRecord)
     {
         if (!(Math.Abs(version - 0.94f) <= 0.0001f)) return false; // also false for NaN

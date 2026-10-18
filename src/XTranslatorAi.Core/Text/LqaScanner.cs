@@ -19,7 +19,9 @@ public readonly record struct LqaScanEntry(
     string SourceText,
     string DestText,
     // The same field in the earlier translated release, when the project refers to one.
-    string? PreviousText = null
+    string? PreviousText = null,
+    // Who says the line (a plugin INFO's GetIsID condition), when the project knows it.
+    string? Speaker = null
 );
 
 public readonly record struct LqaIssue(
@@ -138,6 +140,7 @@ public static class LqaScanner
         var particleTerms = LqaHeuristics.BuildParticleCheckTerms(forceTokenGlossary);
         var glossaryLatinWords = BuildGlossaryLatinWords(forceTokenGlossary);
         var strongDialogueMajority = DialogueToneConsistencyRule.BuildDialogueGroupMajorities(entries);
+        var speakerLevels = SpeakerToneConsistencyRule.BuildSpeakerMajorities(entries);
         var nameFindings = NameConsistencyRule.Build(entries, isKorean);
         var loanwordIndex = isKorean ? GlossaryLoanwordRule.Build(forceTokenGlossary) : new Dictionary<string, GlossaryLoanwordRule.Term>();
         var fieldToneMajority = RecToneRule.BuildFieldMajorities(entries);
@@ -181,6 +184,7 @@ public static class LqaScanner
             TmFallbackRule.Apply(entry, source, dest, tmFallbackNotes, context.ReferenceNames, forceTokenGlossary, issues);
             OfficialNameRule.Apply(entry, source, dest, isKorean, context.ReferenceNames, glossarySources, issues);
             SameSourceVariantRule.Apply(entry, sameSourceVariants, issues);
+            SpeakerToneConsistencyRule.Apply(entry, speakerLevels, issues);
             PrefixedNameVariantRule.Apply(entry, prefixedNameVariants, issues);
         }
     }

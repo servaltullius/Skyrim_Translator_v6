@@ -293,6 +293,7 @@ public class GlossaryApplierTests
     [InlineData("Master", "달인", "Let's return it to Master Neloth.", false)]
     [InlineData("Master", "달인", "Bring the Four Master Illusion texts.", true)]
     [InlineData("Master", "달인", "You are a true Master.", true)]
+    [InlineData("Master", "달인", "I do not require a Master's approval to validate my existence.", false)]
     public void ForceToken_BuiltInTerm_SkipsSensesItDoesNotHave(string term, string target, string input, bool forced)
     {
         var applier = new GlossaryApplier(new[]
