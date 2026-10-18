@@ -157,33 +157,71 @@ internal static class SpeakerToneConsistencyRule
     /// </summary>
     private static ToneKind Level(string? text)
     {
-        var unquoted = Quoted.Replace(text ?? "", " ").Trim();
-        if (unquoted.Any(char.IsLetter))
+        // Quotations and stage directions are not the speaker's own words; a line that is nothing but those is judged
+        // as it is.
+        var original = text ?? "";
+        var spoken = Quoted.Replace(StageDirection.Replace(original, " "), " ").Trim();
+        var stripped = false;
+        if (spoken.Any(char.IsLetter))
         {
-            text = unquoted;
+            stripped = !string.Equals(spoken, original.Trim(), StringComparison.Ordinal);
+            text = spoken;
         }
 
         var parts = (text ?? "").Split(new[] { '.', '!', '?', '…', ',' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        if (parts.Length > 1 && parts.Any(part => SentenceLevel(part) == ToneKind.Hamnida))
+        var cries = Cries(parts);
+        if (parts.Length > 1 && parts.Any(part => !cries.Contains(part) && SentenceLevel(part, keepShort: false) == ToneKind.Hamnida))
         {
             return ToneKind.Hamnida;
         }
 
-        return SentenceLevel(text);
+        // A short reply left by a stage direction ("*한숨* 좋아.") is a reply, not a lone name.
+        return SentenceLevel(text, keepShort: stripped);
     }
 
-    /// <summary>존댓말 (Hamnida) or 반말 (Casual) by the last sentence's ending; a lone word in 다 is usually a name.</summary>
-    private static ToneKind SentenceLevel(string? text)
+    /// <summary>
+    /// The short words a line repeats as a cry: Serana's "포요! 포요!" (a creature's noise) made her 반말 line count as
+    /// 해요체. A short word said once ("뭐요? 그게 무슨 뜻이오?", "저요! 저!") is a real 해요체 reply, and so is one said
+    /// twice that has a 해요체 shape ("가요! 가요! 빨리!").
+    /// </summary>
+    private static HashSet<string> Cries(string[] parts)
+        => parts.Where(part => part.Length <= 2 && !part.Any(char.IsWhiteSpace) && !IsShortHaeyo(part))
+            .GroupBy(part => part, StringComparer.Ordinal)
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key)
+            .ToHashSet(StringComparer.Ordinal);
+
+    /// <summary>
+    /// A two-syllable word in 요 that 해요체 makes: a stem fused with 아/어 (가요, 봐요, 줘요, 돼요, 해요, 서요), a pronoun
+    /// (뭐요, 왜요, 저요, 나요) or a particle (또요, 고요, 도요). 포요 or 뿌요 is none of these.
+    /// </summary>
+    private static bool IsShortHaeyo(string word)
+    {
+        if (word.Length != 2 || word[1] != '요' || !KoreanSyllables.IsHangulSyllable(word[0]) || KoreanSyllables.HasFinalConsonant(word[0]))
+        {
+            return false;
+        }
+
+        // ㅏ ㅐ ㅓ ㅔ ㅕ ㅖ ㅘ ㅙ ㅚ ㅝ ㅞ, the vowels a 해요체 stem ends in.
+        var medial = (word[0] - '가') / 28 % 21;
+        return medial is 0 or 1 or 4 or 5 or 6 or 7 or 9 or 10 or 11 or 14 or 15 || word[0] is '또' or '고' or '도';
+    }
+
+    /// <summary>
+    /// 존댓말 (Hamnida) or 반말 (Casual) by the last sentence's ending; a lone word in 다 is usually a name, unless
+    /// keepShort says the line had more (a stage direction or a quotation) and the word is the reply.
+    /// </summary>
+    private static ToneKind SentenceLevel(string? text, bool keepShort)
     {
         var tone = LqaToneClassifier.Classify(text);
         var level = tone switch
         {
             ToneKind.Hamnida or ToneKind.Haeyo => ToneKind.Hamnida,
             ToneKind.Casual => ToneKind.Casual,
-            ToneKind.PlainDa => LqaScanner.StripUiTokens(text ?? "").Trim().Any(char.IsWhiteSpace) ? ToneKind.Casual : ToneKind.Unknown,
+            ToneKind.PlainDa => keepShort || LqaScanner.StripUiTokens(text ?? "").Trim().Any(char.IsWhiteSpace) ? ToneKind.Casual : ToneKind.Unknown,
             _ => ToneKind.Unknown,
         };
-        return level == ToneKind.Unknown ? SpokenLevel(text) : level;
+        return level == ToneKind.Unknown ? SpokenLevel(text, keepShort) : level;
     }
 
     // The shared classifier knows 반말 only by 해/야/지/냐, so "훌륭했어!", "다시 와.", "덤벼 봐." and "물론이죠." had no
@@ -195,11 +233,24 @@ internal static class SpeakerToneConsistencyRule
         "는군", "었군", "았군", "겠군", "했군", "하군", "이군", "로군", "더군", "다고", "라고", "냐고",
     };
 
-    // A quotation is someone else's words: "\"살려 주세요!\" 하고 울부짖더군." is said in 반말.
+    // A quotation is someone else's words: "\"살려 주세요!\" 하고 울부짖더군." is said in 반말, and Serana's "아, 속편이네.
+    // '내 창을 좀 닦아 주시겠어요, 내 사랑?'" reads a book's line. Single quotes mark a quotation only around a
+    // sentence (with its own . ! ? or …) and where no letter is before the first, so neither the apostrophe in a name
+    // (J'zargo, 지'자르고) nor an echoed word in the speaker's own sentence ("문학의 '학자가 아니다'?") is taken for one.
     private static readonly System.Text.RegularExpressions.Regex Quoted = new(
-        "\"[^\"]*\"|“[^”]*”|‘[^’]*’|「[^」]*」|『[^』]*』", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+        "\"[^\"]*\"|“[^”]*”|‘[^’]*’|「[^」]*」|『[^』]*』|(?<![\\p{L}\\p{N}])'[^'\\n]*[.!?…][^'\\n]*'",
+        System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 
-    private static ToneKind SpokenLevel(string? text)
+    // A bare cry ("와아...", "아!", "으아") is no reply: when a quotation or stage direction is taken away, it is still
+    // not 반말 for ending in 아 or 어.
+    private static readonly System.Text.RegularExpressions.Regex Interjection = new(
+        "^[아어오와우으에하허흐후휴음흠헉윽악앗엇]+$", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+    // A stage direction between asterisks ("*웃음*", "*그 모드에 나오는 버섯*") is narration, not speech.
+    private static readonly System.Text.RegularExpressions.Regex StageDirection = new(
+        "\\*[^*\\n]+\\*", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+    private static ToneKind SpokenLevel(string? text, bool keepShort)
     {
         var cleaned = LqaScanner.StripUiTokens(text ?? "").Trim().TrimEnd(' ', '.', ',', '!', '?', '…', '"', '\'', '”', '’', ')', '~', '-');
         // A closing vocative is no ending: "무슨 일로 오셨습니까, 친구여" is judged by "오셨습니까".
@@ -216,7 +267,7 @@ internal static class SpeakerToneConsistencyRule
             cleaned = clause.TrimEnd();
         }
 
-        if (cleaned.Length == 0 || !cleaned.Contains(' ') && cleaned.Length <= 2)
+        if (cleaned.Length == 0 || !cleaned.Contains(' ') && (Interjection.IsMatch(cleaned) || !keepShort && cleaned.Length <= 2))
         {
             return ToneKind.Unknown; // "Mercy!" as "자비를!" or a lone name says nothing about the level.
         }

@@ -186,4 +186,68 @@ public class LqaSpeakerToneTests
 
         Assert.DoesNotContain(issues, i => i.Code is "speaker_tone_inconsistent" or "speaker_tone_mixed" or "player_tone_inconsistent");
     }
+
+    /// <summary>
+    /// The review of Serana Dialogue Add-On: a book's line read out in single quotes, a creature's "포요! 포요!" between
+    /// her sentences and a stage direction between asterisks made 반말 lines count as 존댓말. An apostrophe in a name
+    /// opens no quotation, and a polite line with a stage direction is still polite.
+    /// </summary>
+    [Fact]
+    public async Task SingleQuotesCriesAndStageDirections_AreNotTheSpeakersLevel()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "응, 실은 그래."),
+            Line(2, "그 말을 들으니 기쁘네. 잘됐어."),
+            Line(3, "마음만 먹으면 여길 전부 무너뜨릴 수도 있어."),
+            Line(4, "빨리 필요한 거 챙겨 와."),
+            Line(9, "다음엔 더 세게 덤벼 봐."),
+            Line(10, "괜찮아."),
+            Line(5, "아, 속편이네. '내 창을 좀 닦아 주시겠어요, 내 사랑? 좀... 녹슬었거든요.'"),
+            Line(6, "*움브라* 이제는 어때? 들려? 난 이제 말하는 검이야, *그 모드에 나오는 버섯* 포요! 포요! *질척* 그리고 난 조그만 드래곤이야!"),
+            Line(7, "J'zargo가 그러는데, 그 녀석 마법은 대단하대요. 정말 놀라워요."),
+            Line(8, "*웃음* 그러게요."),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        Assert.Equal(new long[] { 7, 8 }, issues.Where(i => i.Code == "speaker_tone_inconsistent").Select(i => i.Id).OrderBy(id => id));
+    }
+
+    /// <summary>
+    /// The review of the fix above: a real short 해요체 reply said once, the 요 left after a quotation, a reply left
+    /// after a stage direction and the second of two names with apostrophes are still the speaker's level; only a
+    /// repeated cry and a quoted book line are not. Each line is judged among four lines of the other level.
+    /// </summary>
+    [Theory]
+    [InlineData("뭐요? 그게 무슨 뜻이오?", false, true)]
+    [InlineData("저요! 저!", false, true)]
+    [InlineData("네, 가요. 지금 당장.", false, true)]
+    [InlineData("'용의 피'요? 그건 좀...", false, true)]
+    [InlineData("J'zargo는 모르겠대요. 하지만 M'aiq가 그랬어.", false, true)]
+    [InlineData("지'자르고가 그래요. 지'자르고는 최고야.", false, true)]
+    [InlineData("*미소* 뭐죠?", false, true)]
+    [InlineData("*한숨* 좋아, 시작할게.", true, true)]
+    [InlineData("*고개를 끄덕인다* 됐어.", true, true)]
+    [InlineData("가요! 가요! 빨리!", false, true)]
+    [InlineData("봐요! 봐요! 진짜 드래곤이다!", false, true)]
+    [InlineData("웃기는 소리군. 읽을 줄 아는 사람은 문학의 '학자가 아니다'?", true, true)]
+    [InlineData("\"살려 줘!\" 어?", true, false)]
+    [InlineData("와아... *숨을 헐떡이며*", true, false)]
+    [InlineData("아, 주인님. *절하며*", true, false)]
+    [InlineData("포요! 포요! 난 조그만 드래곤이야!", false, false)]
+    [InlineData("*움브라* 난 이제 말하는 검이야, *그 모드에 나오는 버섯* 포요! 포요! *질척* 그리고 난 조그만 드래곤이고!", false, false)]
+    [InlineData("아, 속편이네. '내 창을 좀 닦아 주시겠어요, 내 사랑? 좀... 녹슬었거든요.'", false, false)]
+    public async Task OneLineAmongTheOtherLevel_IsJudgedByWhatTheSpeakerSays(string line, bool politeSpeaker, bool flagged)
+    {
+        var others = politeSpeaker
+            ? new[] { "환영합니다.", "익숙하리라 믿습니다.", "기억해 두겠습니다.", "이제 물러가십시오." }
+            : new[] { "그 말을 들으니 기쁘네. 잘됐어.", "마음만 먹으면 여길 전부 무너뜨릴 수도 있어.", "빨리 필요한 거 챙겨 와.", "다음엔 더 세게 덤벼 봐." };
+        var entries = others.Select((text, i) => Line(i + 1, text)).Append(Line(9, line)).ToList();
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        var warned = issues.Where(i => i.Code == "speaker_tone_inconsistent").Select(i => i.Id).ToList();
+        Assert.Equal(flagged ? new long[] { 9 } : Array.Empty<long>(), warned);
+    }
 }
