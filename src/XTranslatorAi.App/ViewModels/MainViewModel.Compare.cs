@@ -153,7 +153,8 @@ public partial class MainViewModel
             var franchiseTranslationMemory = CompareIncludeFranchiseTranslationMemory ? await TryLoadFranchiseTranslationMemoryAsync(cancellationToken) : null;
             var referenceNames = CompareIncludeFranchiseTranslationMemory ? await TryLoadReferenceNameMemoryAsync(cancellationToken) : null;
             cancellationToken.ThrowIfCancellationRequested();
-            var request = BuildCompareRequest(context, globalGlossary, franchiseTranslationMemory, referenceNames);
+            var speaker = await TryLoadCompareSpeakerAsync(context.Entry.Id, cancellationToken);
+            var request = BuildCompareRequest(context, globalGlossary, franchiseTranslationMemory, referenceNames) with { SpeakerName = speaker };
 
             var result = await _compareTranslationService.RunAsync(request, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
@@ -181,6 +182,22 @@ public partial class MainViewModel
         {
             SetCompareIsRunning(slot, false);
         }
+    }
+
+    /// <summary>
+    /// The compared line's speaker as a real run names it, with the game translation's Korean name ("Elenwen
+    /// (엘렌웬)"): the comparison sent none, so it previewed a different prompt from the run's.
+    /// </summary>
+    private async Task<string?> TryLoadCompareSpeakerAsync(long rowId, CancellationToken cancellationToken)
+    {
+        if (_projectState.Db is not { } db)
+        {
+            return null;
+        }
+
+        var gameStrings = _gameStringService == null ? null : await _gameStringService.TryLoadAsync(cancellationToken);
+        var names = await XTranslatorAi.Core.Translation.DialogueSpeakerNames.LoadAsync(db, gameStrings, cancellationToken);
+        return names.GetValueOrDefault(rowId);
     }
 
     private CompareTranslationService.Request BuildCompareRequest(

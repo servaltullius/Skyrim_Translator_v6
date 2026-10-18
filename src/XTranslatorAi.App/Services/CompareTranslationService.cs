@@ -54,7 +54,10 @@ public sealed class CompareTranslationService
         IReadOnlyDictionary<string, string>? GlobalTranslationMemory,
         bool IsDirectPluginSource = false,
         IReadOnlyList<(string Source, string Target)>? ReferenceNameMemory = null,
-        bool IncludeProjectTranslationMemory = false
+        bool IncludeProjectTranslationMemory = false,
+        // Who says the compared line, named as a real run names it (DialogueSpeakerNames); the comparison's
+        // scratch project has no plugin bindings to find it in.
+        string? SpeakerName = null
     );
 
     public sealed record Result(
@@ -217,6 +220,9 @@ public sealed class CompareTranslationService
             GlobalTranslationMemory: skipUnscopedDialogueTm ? null : request.GlobalTranslationMemory,
             // Official names from the series TM, as a real run uses them (TranslationRunnerService).
             ReferenceNameMemory: request.ReferenceNameMemory,
+            SpeakerNamesById: request.SpeakerName == null
+                ? new Dictionary<long, string>()
+                : new Dictionary<long, string> { [CompareRowId] = request.SpeakerName },
             SemanticRepairMode: request.SemanticRepairMode,
             EnableTemplateFixer: request.EnableTemplateFixer,
             KeepSkyrimTagsRaw: request.KeepSkyrimTagsRaw,

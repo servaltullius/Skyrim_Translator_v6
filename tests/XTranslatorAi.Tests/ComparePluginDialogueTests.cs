@@ -87,6 +87,20 @@ public sealed class ComparePluginDialogueTests
         Assert.DoesNotContain("Black-Briar Meadery", client.LastPrompt);
     }
 
+    /// <summary>A real run names a dialogue line's speaker; the comparison's scratch project could not, so it did not.</summary>
+    [Fact]
+    public async Task Compare_NamesTheSpeakerLikeARealRun()
+    {
+        var client = new FakeGeminiClient();
+
+        await NewService().RunAsync(Request(client, "Then we have an understanding.", "INFO:NAM1") with
+        {
+            SpeakerName = "Elenwen",
+        }, CancellationToken.None);
+
+        Assert.Contains(TranslationPrompt.SpeakerContextPrefix + "Elenwen", client.LastPrompt);
+    }
+
     private static CompareTranslationService NewService()
         => new(new ProjectGlossaryService(new GlossaryImportService(new GlossaryFileService())));
 
