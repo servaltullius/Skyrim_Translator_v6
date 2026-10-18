@@ -4,6 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace XTranslatorAi.App.Services.AgentMode;
 
@@ -11,8 +14,9 @@ namespace XTranslatorAi.App.Services.AgentMode;
 /// Writes a request for the model to read. The run's instructions (the system prompt, the rules at the head of the
 /// user prompt, the response schema) are the same request after request, so they go once into
 /// <c>instructions.md</c> as sections named by their content hash, and <c>request.md</c> names the sections it uses
-/// and holds only what changes: the lines to translate, their style, glossary and context. Only what the model reads
-/// is split; the request (its hash, what is replayed) is the run's prompt as it is.
+/// and holds only what changes: the lines to translate, their style, glossary and context. A style that several lines
+/// of a batch share (a 300-character hint on every effect description) is a section too, and the line names it. Only
+/// what the model reads is split; the request (its hash, what is replayed) is the run's prompt as it is.
 /// </summary>
 public static class AgentRequestRenderer
 {
@@ -51,8 +55,52 @@ public static class AgentRequestRenderer
             sections.Add(new Section(Id("R", rules), "요청 규칙", rules));
         }
 
-        return new Parts(sections, payload);
+        return new Parts(sections, NameSharedStyles(payload, sections));
     }
+
+    /// <summary>
+    /// In the batch's Input JSON, replaces a <c>style</c> that two or more items share with the name of a section
+    /// holding it (<c>[ST-…]</c>), so the hint is read once instead of once per line. A style only one line has stays
+    /// where it is: it is often that line's own note, and as a section it would only make the file longer.
+    /// </summary>
+    internal static string NameSharedStyles(string payload, List<Section> sections)
+    {
+        var lines = payload.Split('\n');
+        var at = Array.FindIndex(lines, line => line.TrimEnd() == "Input JSON:");
+        if (at < 0 || at + 1 >= lines.Length) return payload;
+
+        JsonNode? root;
+        try
+        {
+            root = JsonNode.Parse(lines[at + 1]);
+        }
+        catch (JsonException)
+        {
+            return payload;
+        }
+
+        if (root?["items"] is not JsonArray items) return payload;
+        var shared = items.OfType<JsonObject>()
+            .Select(item => (Item: item, Style: item["style"] is JsonValue value && value.TryGetValue(out string? style) ? style : null))
+            .Where(x => !string.IsNullOrWhiteSpace(x.Style))
+            .GroupBy(x => x.Style!, StringComparer.Ordinal)
+            .Where(group => group.Count() > 1)
+            .ToList();
+        if (shared.Count == 0) return payload;
+
+        foreach (var group in shared)
+        {
+            var section = new Section(Id("ST", group.Key), "줄 style", group.Key.Trim());
+            if (sections.All(s => s.Id != section.Id)) sections.Add(section);
+            foreach (var (item, _) in group) item["style"] = $"[{section.Id}]";
+        }
+
+        lines[at + 1] = root.ToJsonString(PayloadJson);
+        return string.Join("\n", lines);
+    }
+
+    // As the run writes the batch payload: Hangul, '<mag>' and apostrophes as they are, not as escape sequences.
+    private static readonly JsonSerializerOptions PayloadJson = new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
     internal static (string? Rules, string Payload) SplitUserPrompt(string user)
     {
@@ -88,6 +136,7 @@ public static class AgentRequestRenderer
             sb.AppendLine();
             sb.AppendLine("request.md는 아래 절을 이름(`[S-…]`, `[R-…]`, `[J-…]`)으로 가리킨다. 절은 번역기 API 번역의 지시와 규칙 그대로이고,");
             sb.AppendLine("요청마다 다시 보내지 않으려고 여기 한 번만 둔다. 지시를 잊었으면 이 파일을 다시 읽는다.");
+            sb.AppendLine("요청 줄의 `\"style\":\"[ST-…]\"`는 그 이름의 절 본문이 그 줄의 style이라는 뜻이다.");
         }
 
         foreach (var section in sections)
@@ -174,6 +223,12 @@ public static class AgentRequestRenderer
         {
             var state = newSections.Contains(section.Id) ? "새 절" : "앞 요청과 같음";
             sb.AppendLine($"- [{section.Id}] {section.Title} ({state})");
+        }
+
+        if (parts.Sections.Any(section => section.Id.StartsWith("ST-", StringComparison.Ordinal)))
+        {
+            sb.AppendLine();
+            sb.AppendLine("요청 줄의 `\"style\":\"[ST-…]\"`는 그 이름의 '줄 style' 절 본문이 그 줄의 style이라는 뜻이다.");
         }
 
         sb.AppendLine();

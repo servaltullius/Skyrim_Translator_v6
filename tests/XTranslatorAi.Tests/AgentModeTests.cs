@@ -217,6 +217,40 @@ public sealed class AgentModeTests : IAsyncLifetime
     }
 
     [Fact]
+    public void StyleSharedByLines_IsWrittenOnceAsASection_AndTheLinesNameIt()
+    {
+        const string described = "REC=*:DESC/DNAM (effect or item description shown in menus). Write every sentence in 합니다체.";
+        const string own = "REC=BOOK title. Translate as a book title.";
+        var items = new object[]
+        {
+            new { id = 1, text = "Deals <mag> damage.", rec = "MGEF:DNAM", style = described },
+            new { id = 2, text = "Fire Bite", rec = "MGEF:FULL" },
+            new { id = 3, text = "Heals <mag> points.", rec = "MGEF:DNAM", style = described },
+            new { id = 4, text = "The Lusty Argonian", rec = "BOOK:FULL", style = own },
+        };
+        var payload = JsonSerializer.Serialize(new { source_language = "english", items },
+            new JsonSerializerOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+        var user = new string('-', 400) + "\n\nInput JSON:\n" + payload;
+        var request = new AgentRequest("hash", 0, "agent-app", null, "system", new[] { new AgentMessage("user", user) },
+            "application/json", "{}");
+
+        var parts = AgentRequestRenderer.Split(request);
+        var style = Assert.Single(parts.Sections, section => section.Id.StartsWith("ST-", StringComparison.Ordinal));
+        Assert.Equal(described, style.Text);
+        Assert.DoesNotContain(described, parts.UserPayload);
+        Assert.Equal(2, parts.UserPayload.Split($"\"style\":\"[{style.Id}]\"").Length - 1);
+        Assert.Contains(own, parts.UserPayload);
+        Assert.Contains("합니다체", style.Text);
+
+        var project = new AgentProject("Key", "Mod.esp", "db", new PluginReadOptions(), "utf-8", "agent-app", 30, 15000);
+        var rendered = AgentRequestRenderer.Render(project, request, new HashSet<string> { style.Id }, Array.Empty<AgentRejection>());
+        Assert.Contains($"- [{style.Id}] 줄 style (새 절)", rendered);
+        Assert.DoesNotContain(described, rendered);
+        Assert.Contains("\"text\":\"Deals <mag> damage.\"", rendered);
+        Assert.Contains("수치 자리표시자", rendered);
+    }
+
+    [Fact]
     public async Task AnswerWhoseIdsFitNoLineOfTheRequest_IsRefused()
     {
         var request = await AnswerUntilAsync(await _session.NextAsync(_project, CancellationToken.None), IsJson);
