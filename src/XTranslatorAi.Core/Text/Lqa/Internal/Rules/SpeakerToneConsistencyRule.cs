@@ -294,7 +294,30 @@ internal static class SpeakerToneConsistencyRule
         }
 
         // A 요 that no 해요체 ending makes is a noun's: 열쇠요, 변화요, 전부요, 의무요, 다요 (not 좋아요, 그래요, 세요).
-        return word.Length >= 2 && word[^1] == '요' && word != "아니요" && !HaeyoEndings.Contains(word[^2..]);
+        return word.Length >= 2 && word[^1] == '요' && word != "아니요"
+               && (!HaeyoEndings.Contains(word[^2..]) || IsNounLookingLikeHaeyo(word));
+    }
+
+    /// <summary>
+    /// A noun with 요 whose last two syllables are also a 해요체 ending, as the Korean patch has them: "문서요" (서요 as in
+    /// 일어서요, 그래서요), "동반자요" and "장기숙박자요" (자요, sleep), and 하오체 "낼꺼요" (꺼요, turn off). The 해요체
+    /// forms need a stem fused with 아/어 before 서 (그래서요, 같아서요, 일어서요: no final consonant), 자다's few
+    /// compounds are short (자요, 잠자요), and 꺼요 after a final ㄹ is the 하오체 거요 ("~ㄹ 거요").
+    /// </summary>
+    private static bool IsNounLookingLikeHaeyo(string word)
+    {
+        if (word.Length < 3 || !KoreanSyllables.IsHangulSyllable(word[^3]))
+        {
+            return false;
+        }
+
+        return word[^2..] switch
+        {
+            "서요" => KoreanSyllables.HasFinalConsonant(word[^3]),
+            "자요" => word.Length >= 4,
+            "꺼요" => FinalConsonant(word[^3]) == 8,
+            _ => false,
+        };
     }
 
     // The last two syllables of 해요체 and its endings in 요: a stem fused with 아/어 (가요, 봐요, 줘요, 몰라요, 써요) and

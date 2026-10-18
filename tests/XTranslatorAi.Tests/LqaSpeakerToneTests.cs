@@ -304,6 +304,35 @@ public class LqaSpeakerToneTests
     }
 
     /// <summary>
+    /// A noun with 요 whose end is also a 해요체 ending: "문서요" (서요), "동반자요" (자요) and the 하오체 "낼꺼요" (꺼요)
+    /// counted as 존댓말 in the Korean patch's 하오체 voices. 해요체 forms that end the same way still are: "그래서요?",
+    /// "잘 자요.", "불 좀 꺼요."
+    /// </summary>
+    [Theory]
+    [InlineData("여기 그 문서요.", false)]
+    [InlineData("자넨 믿을 만한 동반자요.", false)]
+    [InlineData("내가 값을 낼꺼요.", false)]
+    [InlineData("그래서요?", true)]
+    [InlineData("오늘은 푹 잘 자요.", true)]
+    [InlineData("불 좀 꺼요.", true)]
+    public async Task HaoVoice_NounsShapedLikeHaeyo_AreWeak(string line, bool warned)
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "갈 준비 됐소?", speaker: "0A0000E1"),
+            Line(2, "난 그만한 값어치를 하오.", speaker: "0A0000E1"),
+            Line(3, "그들에게 떠나라고 말하시오.", speaker: "0A0000E1"),
+            Line(4, "때가 됐소.", speaker: "0A0000E1"),
+            Line(5, "이건 내 일이오.", speaker: "0A0000E1"),
+            Line(6, line, speaker: "0A0000E1"),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        Assert.Equal(warned, issues.Any(i => i.Id == 6 && i.Code == "speaker_tone_inconsistent"));
+    }
+
+    /// <summary>
     /// The review of the fix above: a real short 해요체 reply said once, the 요 left after a quotation, a reply left
     /// after a stage direction and the second of two names with apostrophes are still the speaker's level; only a
     /// repeated cry and a quoted book line are not. Each line is judged among four lines of the other level.
