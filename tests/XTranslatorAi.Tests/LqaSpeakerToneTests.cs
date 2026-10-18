@@ -74,6 +74,39 @@ public class LqaSpeakerToneTests
     }
 
     /// <summary>
+    /// IDE Thalmor's scenes: Elenwen is polite to General Tullius and curt with her agents. Her scene lines to one NPC
+    /// ("speaker>listener") are compared among themselves, apart from her lines to the player.
+    /// </summary>
+    [Fact]
+    public async Task SceneLinesToAnotherNpc_AreComparedByThePair()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "환영합니다."),
+            Line(2, "익숙하리라 믿습니다."),
+            Line(3, "기억해 두겠습니다."),
+            Line(4, "물러가십시오."),
+            // To an agent, curt as she is with all of them: not compared with her lines to the player.
+            Line(5, "그를 잘 지켜보고, 성과를 내게 해.", speaker: "00013269>01000801"),
+            Line(6, "툴리우스 장군, 언제 뵈어도 반갑습니다.", speaker: "00013269>0001327E"),
+            Line(7, "제가 듣기로 이단 신앙을 품고 있을지도 모른다더군요.", speaker: "00013269>0001327E"),
+            Line(8, "철저한 조사를 위해 군단의 협조를 요청합니다.", speaker: "00013269>0001327E"),
+            Line(9, "좀 더 협조적인 길도 있었다는 걸 생각해 보십시오.", speaker: "00013269>0001327E"),
+            Line(10, "네 대답이 마음에 드는군. 내가 기대한 답이다.", speaker: "00013269>0001327E"),
+            // To agents the plugin does not name (Actor1, Actor2): not the player either.
+            Line(11, "윈터홀드 상황은 어떻게 되어 가지?", speaker: "00013269>00000000"),
+            Line(12, "내일 새벽 윈터홀드로 가서 그의 우선순위를 바로잡아라.", speaker: "00013269>00000000"),
+            Line(13, "임페리얼은 그들끼리 모험을 즐기게 둬.", speaker: "00013269>00000000"),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        var issue = Assert.Single(issues, i => i.Code is "speaker_tone_inconsistent" or "speaker_tone_mixed");
+        Assert.Equal(("speaker_tone_inconsistent", 10L), (issue.Code, issue.Id));
+        Assert.Contains("같은 화자가 같은 상대에게 한 다른 대사와 말투가 다릅니다", issue.Message);
+    }
+
+    /// <summary>
     /// Fists of Fury: Reggr's one 존댓말 line among few 반말 ones had no clear majority to warn by and passed. A speaker
     /// with too few lines, or split down the middle, is listed for reference: the odd side, or every line in a tie.
     /// </summary>

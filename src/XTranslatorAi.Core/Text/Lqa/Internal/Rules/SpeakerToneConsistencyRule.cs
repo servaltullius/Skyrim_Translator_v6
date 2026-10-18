@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using XTranslatorAi.Core.Models;
+using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 
@@ -24,6 +25,9 @@ internal static class SpeakerToneConsistencyRule
     public const string PlayerCode = "player_tone_inconsistent";
 
     private const string PlayerKeyPrefix = "player>";
+
+    // A scene line said to a character the plugin does not name (PluginSceneSpeakers.UnknownListener, as "%08X").
+    private const string UnknownListener = "00000000";
 
     private static readonly System.Text.RegularExpressions.Regex SpeechCheck = new(
         @"\((?:Persuade|Intimidate|Bribe|Lie|Brawl|Threaten)[^)]*\)",
@@ -79,11 +83,14 @@ internal static class SpeakerToneConsistencyRule
         }
 
         var player = key.StartsWith(PlayerKeyPrefix, StringComparison.Ordinal);
+        var who = key.EndsWith(DialogueSpeakerNames.ListenerSeparator + UnknownListener, StringComparison.Ordinal) ? "같은 화자가 장면에서 다른 인물에게 한"
+            : key.Contains(DialogueSpeakerNames.ListenerSeparator) ? "같은 화자가 같은 상대에게 한"
+            : "같은 화자의";
         if (!player && levels.Majorities.TryGetValue(key, out var majority))
         {
             if (level != majority)
             {
-                issues.Add(Issue(entry, "Warn", Code, $"같은 화자의 다른 대사와 말투가 다릅니다: 대부분 {Display(majority)}, 이 대사 {Display(level)}"));
+                issues.Add(Issue(entry, "Warn", Code, $"{who} 다른 대사와 말투가 다릅니다: 대부분 {Display(majority)}, 이 대사 {Display(level)}"));
             }
 
             return;
@@ -106,7 +113,7 @@ internal static class SpeakerToneConsistencyRule
         var counted = $"존댓말 {polite}줄, 반말 {casual}줄, 이 줄 {Display(level)}";
         issues.Add(player
             ? Issue(entry, "Info", PlayerCode, $"같은 상대에게 하는 플레이어 선택지끼리 말투가 다릅니다({counted})")
-            : Issue(entry, "Info", MixedCode, $"같은 화자의 대사끼리 말투가 갈립니다({counted})"));
+            : Issue(entry, "Info", MixedCode, $"{who} 대사끼리 말투가 갈립니다({counted})"));
     }
 
     private static LqaIssue Issue(LqaScanEntry entry, string severity, string code, string message)
@@ -122,8 +129,10 @@ internal static class SpeakerToneConsistencyRule
             DestText: entry.DestText ?? "");
 
     /// <summary>
-    /// The group a line is compared in: an NPC's lines (INFO:NAM1) by speaker; the player's lines (INFO:RNAM, DIAL:FULL)
-    /// by the NPC they are said to. Null for a line with no known speaker or not translated yet.
+    /// The group a line is compared in: an NPC's lines (INFO:NAM1) by speaker, and a scene line said to another NPC by
+    /// the pair ("speaker>listener": Elenwen speaks up to General Tullius and down to her agents; a listener the plugin
+    /// does not name is "00000000", lines to someone other than the player); the player's lines
+    /// (INFO:RNAM, DIAL:FULL) by the NPC they are said to. Null for a line with no known speaker or not translated yet.
     /// </summary>
     private static string? Key(LqaScanEntry entry)
     {

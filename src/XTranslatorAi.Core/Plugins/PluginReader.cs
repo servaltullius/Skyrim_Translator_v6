@@ -274,6 +274,7 @@ public static class PluginReader
         if (withTrailingBytes > 0)
             diagnostics.Add(new("compressed_trailing_bytes", $"압축 레코드 {withTrailingBytes}개의 끝에 쓰이지 않는 바이트가 붙어 있습니다. 원본 그대로 두고 읽었습니다(번역해 저장하는 레코드는 다시 압축되어 그 바이트가 빠집니다)."));
         var identities = new Dictionary<(string, uint), int>();
+        var sceneSpeakers = PluginSceneSpeakers.Build(records.Values);
         foreach (var record in records.Values)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -285,6 +286,7 @@ public static class PluginReader
             identities[recordKey] = recordOccurrence + 1;
             var edidSub = record.Subrecords.FirstOrDefault(sub => sub.Type == "EDID");
             var edid = edidSub == null ? null : PluginBinary.ReadZString(edidSub.Data.Span, metadataEncoding, "EDID");
+            var (speaker, listener) = record.Type == "INFO" ? InfoSpeaker(record, sceneSpeakers) : (null, null);
             var preceding = new List<PluginSubrecordDescriptor>();
             var subOccurrences = new Dictionary<string, int>(StringComparer.Ordinal);
             foreach (var sub in record.Subrecords)
@@ -313,7 +315,9 @@ public static class PluginReader
                     if (source.Length > 0)
                         fields.Add(new($"{record.Type}/{record.FormId:X8}/{recordOccurrence}/{sub.Type}/{ordinal}", fields.Count,
                             record.Type, sub.Type, record.FormId, edid, record.Index, sub.Index, source, kind, stringId, rule.RequiresNonEmpty,
-                            record.DialogueTopicFormId, record.Type == "INFO" ? FindSpeaker(record) : null));
+                            record.DialogueTopicFormId, speaker,
+                            // The player's prompt (RNAM) is said by the player, not by the scene's speaker.
+                            sub.Type == "NAM1" ? listener : null));
                 }
                 // SNDR:FNAM (form version < 35) is a flags field (bit 4 = Loop), not a string ID, even
                 // though some readers model it as translated text. It is preserved without a warning.
@@ -337,6 +341,19 @@ public static class PluginReader
     /// Skyrim LE plugins keep HEDR 0.94 and the SE game loads them. Fallout 3 and New Vegas use 0.94 too, so it counts
     /// only with Skyrim.esm among the masters or a Skyrim form version (40-44; Fallout uses 15) on the header record.
     /// </summary>
+    /// <summary>
+    /// An INFO's speaker, by its conditions or else by the scene that says its topic, and for a scene line the NPC it
+    /// is said to. A scene's listener counts only when the scene's speaker is the INFO's.
+    /// </summary>
+    private static (uint? Speaker, uint? Listener) InfoSpeaker(PluginRecord record,
+        IReadOnlyDictionary<uint, PluginSceneSpeakers.SceneSpeaker> scenes)
+    {
+        var speaker = FindSpeaker(record);
+        if (record.DialogueTopicFormId is not { } topic || !scenes.TryGetValue(topic, out var scene)) return (speaker, null);
+        if (speaker != null && speaker != scene.Speaker) return (speaker, null);
+        return (scene.Speaker, scene.Listener);
+    }
+
     /// <summary>
     /// The NPC an INFO's conditions name as its speaker: a GetIsID == 1 run on the subject. None when no condition
     /// names one, or when more than one NPC can say the line (a GetIsID ORed with another).

@@ -427,8 +427,9 @@ public sealed partial class ProjectDb
     }
 
     /// <summary>
-    /// The speaker of each plugin INFO row whose conditions name one (PluginField.SpeakerFormId, "%08X"). Projects
-    /// imported before the field existed have none until the plugin is imported again.
+    /// The speaker of each plugin INFO row whose conditions or scene name one (PluginField.SpeakerFormId, "%08X"), and
+    /// for a scene line said to another NPC that NPC after a '>' ("00013269>0001327E"). Projects imported before the
+    /// fields existed have none until the plugin is imported again.
     /// </summary>
     public async Task<IReadOnlyDictionary<long, string>> GetStringSpeakersAsync(CancellationToken cancellationToken)
     {
@@ -440,6 +441,8 @@ public sealed partial class ProjectDb
             cmd.CommandText =
                 """
                 SELECT StringId, printf('%08X', json_extract(FieldJson, '$.SpeakerFormId'))
+                       || CASE WHEN json_extract(FieldJson, '$.ListenerFormId') IS NULL THEN ''
+                               ELSE '>' || printf('%08X', json_extract(FieldJson, '$.ListenerFormId')) END
                 FROM PluginStringBinding
                 WHERE json_extract(FieldJson, '$.SpeakerFormId') IS NOT NULL;
                 """;

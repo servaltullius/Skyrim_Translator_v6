@@ -25,11 +25,13 @@ public sealed record PluginReadOptions(
 }
 
 /// <summary>Identity points at the original record and repeated subrecord occurrence, never at source text alone.</summary>
+/// <param name="ListenerFormId">For a scene line (INFO:NAM1) said to another NPC, that NPC (PluginSceneSpeakers); 0 when
+/// the plugin does not say which NPC, only that it is not the player.</param>
 public sealed record PluginField(
     string Key, int OrderIndex, string RecordType, string SubrecordType,
     uint FormId, string? EditorId, int RecordIndex, int SubrecordIndex,
     string SourceText, PluginStringTableKind? TableKind = null, uint? StringId = null, bool RequiresNonEmpty = true,
-    uint? DialogueTopicFormId = null, uint? SpeakerFormId = null)
+    uint? DialogueTopicFormId = null, uint? SpeakerFormId = null, uint? ListenerFormId = null)
 {
     public string Rec => RecordType + ":" + SubrecordType;
 }

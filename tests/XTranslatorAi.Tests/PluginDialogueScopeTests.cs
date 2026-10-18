@@ -359,6 +359,94 @@ public sealed class PluginDialogueScopeTests
         Assert.Equal(new[] { "Elenwen", "NPC 0001A66A", "NPC 0001E7D7", "Ondolemar" }, withoutGame.Values.OrderBy(v => v, StringComparer.Ordinal));
     }
 
+    /// <summary>
+    /// A scene's lines carry no GetIsID: the scene's dialogue action names the alias that speaks and the one it looks
+    /// at, and the quest fills each alias. IDE Thalmor's 73 scene lines had no speaker, and Elenwen's lines to General
+    /// Tullius came out in 반말. A line to the player has no listener, an unfilled alias no speaker, and a package
+    /// action's PNAM is not the scene's quest.
+    /// </summary>
+    [Fact]
+    public async Task SceneLine_TakesItsSpeakerAndListener_FromTheSceneAliases()
+    {
+        const uint quest = 0x01000700, agentRef = 0x01000900, agent = 0x01000801, elenwen = 0x00013269;
+        var plugin = Header()
+            .Concat(Group(Record("NPC_", elenwen, Sub("FULL", Z("Elenwen"))), Record("NPC_", agent, Sub("FULL", Z("Justiciar Agent")))))
+            .Concat(Group(Record("QUST", quest, Sub("EDID", Z("SceneQuest")),
+                Sub("ALST", UInt(1)), Sub("ALID", Z("Elenwen")), Sub("ALUA", UInt(elenwen)), Sub("ALED", Array.Empty<byte>()),
+                Sub("ALST", UInt(2)), Sub("ALID", Z("Agent")), Sub("ALFR", UInt(agentRef)), Sub("ALED", Array.Empty<byte>()),
+                Sub("ALST", UInt(3)), Sub("ALID", Z("Player")), Sub("ALFR", UInt(0x14)), Sub("ALED", Array.Empty<byte>()),
+                Sub("ALST", UInt(4)), Sub("ALID", Z("Actor1")), Sub("ALED", Array.Empty<byte>()))))
+            .Concat(Group(Record("ACHR", agentRef, Sub("NAME", UInt(agent)))))
+            .Concat(Group(
+                Record("SCEN", 0x01000600, [
+                    Sub("EDID", Z("BriefingScene")),
+                    Sub("ALID", UInt(1)), Sub("ALID", UInt(2)),
+                    // Elenwen looks at the agent; the agent's reply names no one, so the scene's other actor hears it.
+                    .. SceneDialogue(alias: 1, topic: 0x01001000, target: 2),
+                    .. SceneDialogue(alias: 2, topic: 0x01002000, target: -1),
+                    Sub("ANAM", new byte[] { 1, 0 }), Sub("ALID", UInt(1)), Sub("PNAM", UInt(0x01000555)), Sub("ANAM", Array.Empty<byte>()),
+                    Sub("PNAM", UInt(quest))]),
+                Record("SCEN", 0x01000601, [
+                    Sub("EDID", Z("GreetingScene")),
+                    Sub("ALID", UInt(1)), Sub("ALID", UInt(3)),
+                    .. SceneDialogue(alias: 1, topic: 0x01003000, target: 3),
+                    .. SceneDialogue(alias: 4, topic: 0x01004000, target: 1),
+                    // Said to an alias the plugin leaves unfilled: someone in the scene, not the player.
+                    .. SceneDialogue(alias: 1, topic: 0x01005000, target: 4),
+                    Sub("PNAM", UInt(quest))])))
+            .Concat(DialogueGroup(
+                TopicChildren(0x01001000, Record("INFO", 0x01001001, Sub("NAM1", Z("Watch him closely.")))),
+                TopicChildren(0x01002000, Record("INFO", 0x01002001, Sub("NAM1", Z("By your orders.")))),
+                TopicChildren(0x01003000, Record("INFO", 0x01003001, Sub("NAM1", Z("Welcome to the embassy.")))),
+                TopicChildren(0x01004000, Record("INFO", 0x01004001, Sub("NAM1", Z("Who goes there?")))),
+                TopicChildren(0x01005000, Record("INFO", 0x01005001, Sub("NAM1", Z("Report, agent."))))))
+            .ToArray();
+        await using var fixture = await Fixture.CreateAsync(plugin);
+
+        var info = fixture.Document.Fields.Where(field => field.RecordType == "INFO")
+            .ToDictionary(field => field.SourceText, field => (field.SpeakerFormId, field.ListenerFormId));
+        Assert.Equal(((uint?)elenwen, (uint?)agent), info["Watch him closely."]);
+        Assert.Equal(((uint?)agent, (uint?)elenwen), info["By your orders."]);
+        Assert.Equal(((uint?)elenwen, (uint?)null), info["Welcome to the embassy."]);
+        Assert.Equal(((uint?)null, (uint?)null), info["Who goes there?"]);
+        Assert.Equal(((uint?)elenwen, (uint?)0), info["Report, agent."]);
+        var output = await PluginWriter.ExportAsync(fixture.Document, new Dictionary<string, string>(),
+            new PluginExportOptions(Path.Combine(fixture.Root, "unchanged")), CancellationToken.None);
+        Assert.Equal(plugin, await File.ReadAllBytesAsync(output.PluginPath));
+
+        var bySource = (await fixture.Db.GetStringTranslationContextsByIdsAsync(fixture.Ids, CancellationToken.None)).Values
+            .ToDictionary(row => row.SourceText, row => row.Id);
+        var formIds = await DialogueSpeakerNames.LoadFormIdsAsync(fixture.Db, CancellationToken.None);
+        Assert.Equal("00013269>01000801", formIds[bySource["Watch him closely."]]);
+        Assert.Equal("01000801>00013269", formIds[bySource["By your orders."]]);
+        Assert.Equal("00013269", formIds[bySource["Welcome to the embassy."]]);
+        Assert.False(formIds.ContainsKey(bySource["Who goes there?"]));
+        Assert.Equal("00013269>00000000", formIds[bySource["Report, agent."]]);
+
+        var client = new BatchEchoClient();
+        await new TranslationService(fixture.Db, client).TranslateIdsAsync(fixture.Request with
+        {
+            Ids = new[] { "Watch him closely.", "By your orders.", "Welcome to the embassy.", "Who goes there?", "Report, agent." }
+                .Select(s => bySource[s]).ToArray(),
+            BatchSize = 10,
+        });
+
+        Assert.Contains("\"NAME, to OTHER\" is NAME speaking to another character", Assert.Single(client.Prompts));
+        var ctx = client.Items.ToDictionary(item => item.Text, item => item.Ctx);
+        Assert.StartsWith(TranslationPrompt.SpeakerContextPrefix + "Elenwen, to Justiciar Agent", ctx["Watch him closely."]);
+        Assert.StartsWith(TranslationPrompt.SpeakerContextPrefix + "Justiciar Agent, to Elenwen", ctx["By your orders."]);
+        Assert.Equal(TranslationPrompt.SpeakerContextPrefix + "Elenwen", ctx["Welcome to the embassy."]!.Split('\n')[0]);
+        Assert.False(TranslationPrompt.HasSpeaker(ctx.GetValueOrDefault("Who goes there?")));
+        Assert.StartsWith(TranslationPrompt.SpeakerContextPrefix + "Elenwen, to another character", ctx["Report, agent."]);
+    }
+
+    private static byte[][] SceneDialogue(int alias, uint topic, int target) => new[]
+    {
+        Sub("ANAM", new byte[] { 0, 0 }), Sub("NAM0", new byte[] { 0 }), Sub("ALID", BitConverter.GetBytes(alias)),
+        Sub("INAM", UInt(1)), Sub("DATA", UInt(topic)), Sub("HTID", BitConverter.GetBytes(target)),
+        Sub("ANAM", Array.Empty<byte>()),
+    };
+
     // Ondolemar (the plugin's own NPC) says two lines of a topic; the third names nobody.
     private static byte[] SpeakerTopic()
         => Header()
