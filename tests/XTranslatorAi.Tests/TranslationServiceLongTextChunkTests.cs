@@ -18,22 +18,40 @@ public sealed class TranslationServiceLongTextChunkTests
     {
         var source = BuildBook("\n\n");
         await using var fixture = await TranslationRunFixture.CreateAsync((source, "BOOK:DESC"));
-        var lastChunkAnswered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        // The first chunk is held until every other chunk has been answered by the other parallel slot. The chunks
+        // enter the two slots in no set order, so waiting only for the last paragraph's chunk let a middle chunk
+        // answer after the first one now and then (on a busy machine, right after a build).
+        var othersAnswered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var answered = new ConcurrentQueue<string>();
+        string? firstChunk = null;
+        var gate = new object();
+        void ReleaseWhenOthersAnswered()
+        {
+            lock (gate)
+            {
+                if (firstChunk == null) return;
+                var others = Enumerable.Range(2, Paragraphs - 1).Select(Marker).Where(m => !firstChunk.Contains(m, StringComparison.Ordinal));
+                if (others.All(m => answered.Any(chunk => chunk.Contains(m, StringComparison.Ordinal))))
+                {
+                    othersAnswered.TrySetResult();
+                }
+            }
+        }
+
         fixture.Client.BeforeGenerate = async (_, request, ct) =>
         {
             var chunk = ChunkOf(request);
             if (chunk.Contains(Marker(1), StringComparison.Ordinal))
             {
-                // Hold the first chunk until the last one has been answered by the other parallel slot.
-                await lastChunkAnswered.Task.WaitAsync(TimeSpan.FromSeconds(30), ct);
+                lock (gate) firstChunk = chunk;
+                ReleaseWhenOthersAnswered();
+                await othersAnswered.Task.WaitAsync(TimeSpan.FromSeconds(30), ct);
+                answered.Enqueue(chunk);
+                return;
             }
 
             answered.Enqueue(chunk);
-            if (chunk.Contains(Marker(Paragraphs), StringComparison.Ordinal))
-            {
-                lastChunkAnswered.TrySetResult();
-            }
+            ReleaseWhenOthersAnswered();
         };
         fixture.Client.ResponseOverride = (_, request) => Translate(ChunkOf(request));
 
