@@ -180,10 +180,10 @@ internal sealed class RunNameMemory
         }
 
         var allowed = sound.Length >= 5 ? 1 : 0;
-        string? best = null;
+        var words = HangulWordRegex.Matches(dest).Select(m => m.Value).ToHashSet(StringComparer.Ordinal);
+        var closest = new List<string>();
         var bestDistance = int.MaxValue;
-        var tie = false;
-        foreach (var stem in HangulWordRegex.Matches(dest).Select(m => m.Value).SelectMany(Stems).Distinct(StringComparer.Ordinal))
+        foreach (var stem in words.SelectMany(Stems).Distinct(StringComparer.Ordinal))
         {
             var stemSound = stem.Length >= 2 ? GlossaryLoanwordRule.KoreanSound(stem) : null;
             // 으으 has no sound at all (no consonant, and ㅡ is not counted).
@@ -195,15 +195,59 @@ internal sealed class RunNameMemory
             var distance = Distance(stemSound, sound);
             if (distance < bestDistance)
             {
-                (best, bestDistance, tie) = (stem, distance, false);
+                (bestDistance, closest) = (distance, new List<string> { stem });
             }
-            else if (distance == bestDistance && !string.Equals(best, stem, StringComparison.Ordinal) && !IsParticleForm(best!, stem))
+            else if (distance == bestDistance)
             {
-                tie = true;
+                closest.Add(stem);
             }
         }
 
-        return best != null && bestDistance <= allowed && !tie ? best : null;
+        if (closest.Count == 0 || bestDistance > allowed)
+        {
+            return null;
+        }
+
+        if (closest.Count == 1)
+        {
+            return closest[0];
+        }
+
+        // A particle with no sound of its own (와, 야, 의, 이) ties the word with and without it: Meridia's Order
+        // learned 알라라와, 레미다이야 and 베그라의 and wrote "알라라와가". The ending of the name decides: Alara ends
+        // in a, so 알라라, and Lydia too, so 리디아 and not 리디 (리디아 less 아).
+        var shortest = closest.MinBy(s => s.Length)!;
+        if (closest.Any(s => !s.StartsWith(shortest, StringComparison.Ordinal)))
+        {
+            return null;
+        }
+
+        return closest.Where(s => EndsLike(name, s[^1])).MinBy(s => s.Length);
+    }
+
+    // Whether a Korean syllable can end a name written with this English ending.
+    private static bool EndsLike(string name, char syllable)
+    {
+        if (syllable is < '가' or > '힣')
+        {
+            return false;
+        }
+
+        var code = syllable - '가';
+        var (vowel, hasFinal) = (code / 28 % 21, code % 28 != 0);
+        var word = name.ToLowerInvariant().TrimEnd('h');
+        var last = word.Length > 0 ? word[^1] : '\0';
+        var consonant = hasFinal || vowel is 4 or 13 or 18 or 20; // a final consonant, or 어 (탈모어), 우, 으, 이
+        return last switch
+        {
+            'a' => !hasFinal && vowel is 0 or 2,                                 // ㅏ ㅑ
+            // Ysolde ends in a consonant sound but is written 이솔데.
+            'e' => (!hasFinal && vowel is 1 or 3 or 5 or 7 or 20) || consonant, // ㅐ ㅒ ㅔ ㅖ ㅣ
+            'i' or 'y' => !hasFinal && vowel == 20,                              // ㅣ
+            'o' => !hasFinal && vowel is 8 or 12,                                // ㅗ ㅛ
+            'u' => !hasFinal && vowel is 13 or 17,                               // ㅜ ㅠ
+            _ => consonant,
+        };
     }
 
     private void Add(string name, string spelling)
@@ -228,10 +272,6 @@ internal sealed class RunNameMemory
             }
         }
     }
-
-    // 드렐로레아 and 드렐로레아는 found in one row are one spelling.
-    private static bool IsParticleForm(string a, string b)
-        => (a.Length < b.Length ? (a, b) : (b, a)) is var (shorter, longer) && longer.StartsWith(shorter, StringComparison.Ordinal);
 
     // A name inside a sentence ("Ask Merovech about"), alone ("Drelorea."), or ending a short greeting ("Hey Drelorea!").
     private static bool IsNamedPosition(string text, MatchCollection words, int index)

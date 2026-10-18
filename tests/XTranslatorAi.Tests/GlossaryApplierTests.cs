@@ -294,6 +294,10 @@ public class GlossaryApplierTests
     [InlineData("Master", "달인", "Bring the Four Master Illusion texts.", true)]
     [InlineData("Master", "달인", "You are a true Master.", true)]
     [InlineData("Master", "달인", "I do not require a Master's approval to validate my existence.", false)]
+    // Meridia's Order: the Argonian Cleans-Many-Boots came back as 클린즈-매니-전투화.
+    [InlineData("Boots", "전투화", "Have you seen Cleans-Many-Boots?", false)]
+    [InlineData("Boots", "전투화", "Iron Boots - 50 gold.", true)]
+    [InlineData("Boots", "전투화", "Iron Boots and a helmet.", true)]
     public void ForceToken_BuiltInTerm_SkipsSensesItDoesNotHave(string term, string target, string input, bool forced)
     {
         var applier = new GlossaryApplier(new[]

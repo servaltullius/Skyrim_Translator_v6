@@ -66,6 +66,14 @@ public class RunNameMemoryTests
     // A word with no consonant sound at all (으으, 아아) failed the whole row with IndexOutOfRangeException (Feris AE).
     [InlineData("Drelorea", "으으, 추워... 드렐로레아는 어디 갔지?", "드렐로레아")]
     [InlineData("Byleth", "아아, 미안해.", null)]
+    // A particle with no sound (와, 야, 의, 이) stayed on the name in Meridia's Order: 알라라와가, 베그라의가.
+    [InlineData("Alara", "알라라와 라라신은 어디 있지?", "알라라")]
+    [InlineData("Remidai", "고마워, 레미다이야.", "레미다이")]
+    [InlineData("Remidai", "레미다이가 그랬어.", "레미다이")]
+    [InlineData("Vaegra", "베그라의 말이 맞아.", "베그라")]
+    [InlineData("Lydia", "리디아, 따라와.", "리디아")]
+    [InlineData("Freya", "프레야, 기다려.", "프레야")]
+    [InlineData("Garin", "가린의 검이야.", "가린")]
     public void FindsTheKoreanWordThatSoundsLikeTheName(string name, string dest, string? expected)
         => Assert.Equal(expected, RunNameMemory.FindSpelling(name, dest));
 

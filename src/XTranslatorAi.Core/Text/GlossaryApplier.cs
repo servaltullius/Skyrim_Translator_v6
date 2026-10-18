@@ -313,6 +313,12 @@ public sealed class GlossaryApplier
             return false;
         }
 
+        // A word of a hyphenated name: the Argonian Cleans-Many-Boots came back as 클린즈-매니-전투화 (Meridia's Order).
+        if (IsJoinedByHyphen(text, index, length))
+        {
+            return true;
+        }
+
         var term = entry.SourceTerm.Trim();
         var nextWord = ReadNextAsciiWord(text, index + length);
         if (string.Equals(term, "Reach", StringComparison.OrdinalIgnoreCase))
@@ -343,7 +349,11 @@ public sealed class GlossaryApplier
         return term == "Scroll" && TheBefore.IsMatch(before) && !string.Equals(nextWord, "of", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static readonly Regex LayoutTokenAtEnd = new(@"__XT_PH_[0-9]{4}__$", RegexOptions.CultureInvariant);
+    private static bool IsJoinedByHyphen(string text, int index, int length)
+        => (index >= 2 && text[index - 1] == '-' && char.IsLetter(text[index - 2]))
+           || (index + length + 1 < text.Length && text[index + length] == '-' && char.IsLetter(text[index + length + 1]));
+
+    private static readonly Regex LayoutTokenAtEnd =new(@"__XT_PH_[0-9]{4}__$", RegexOptions.CultureInvariant);
 
     // Built-in terms that are also ordinary English words. Names (Talos, Keening, Sanguine), skills and attributes
     // ("Shalidor's Insights: Illusion", "Health, Magicka, and Stamina") are forced wherever they stand.
