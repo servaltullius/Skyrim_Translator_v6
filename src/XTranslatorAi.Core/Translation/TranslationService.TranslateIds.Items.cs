@@ -46,7 +46,7 @@ public sealed partial class TranslationService
 
             Ctx.RowContextById[row.Id] = new RowContext(row.Rec, row.Edid);
             orderedRows.Add(new DialogueContextRow(row.Id, row.Rec, row.Edid, row.SourceText, row.DialogueScope,
-                speakers.TryGetValue(row.Id, out var speaker) ? speaker : null));
+                speakers.TryGetValue(row.Id, out var speaker) ? SpeakerOf(row.Rec, speaker) : null));
         }
 
         // The speaker is named even with the neighbouring lines turned off: it is not context to weigh but who talks.
@@ -464,6 +464,16 @@ public sealed partial class TranslationService
     }
 
     // A neighbouring line says who speaks it, so a reply in another voice is not taken for the same speaker.
+    /// <summary>
+    /// An INFO's RNAM is the player's prompt, the line the player picks, and the speaker its conditions name is the NPC
+    /// it is said to: Fists of Fury's "Can you train me…" came out as Gian the Fist's line, so a model following the
+    /// speaker rule would have put the player's choice in Gian's voice.
+    /// </summary>
+    private static string SpeakerOf(string? rec, string npc)
+        => string.Equals(rec?.Trim(), "INFO:RNAM", StringComparison.OrdinalIgnoreCase)
+            ? TranslationPrompt.PlayerSpeakerPrefix + npc
+            : npc;
+
     private static string? TrySanitizeDialogueContextLine(DialogueContextRow row)
     {
         var line = TrySanitizeDialogueContextLine(row.SourceText);

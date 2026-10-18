@@ -98,11 +98,14 @@ public static partial class TranslationPrompt
     /// <summary>The first line of a dialogue line's context when its speaker is known: "Speaker: Elenwen (엘렌웬)".</summary>
     public const string SpeakerContextPrefix = "Speaker: ";
 
+    /// <summary>The speaker of a player's prompt (INFO:RNAM): "Speaker: Player, to Gian the Fist".</summary>
+    public const string PlayerSpeakerPrefix = "Player, to ";
+
     internal static bool HasSpeaker(string? ctx) => ctx != null && ctx.StartsWith(SpeakerContextPrefix, StringComparison.Ordinal);
 
     // The speaker is named in 'ctx', so the rule says what the name is for: one voice per character, across batches.
     internal const string SpeakerRule =
-        "- A dialogue line's context ('ctx') may start with \"Speaker: NAME\", the character who says the item's 'text'; a neighbouring line may start with [NAME], the character who says it. Lines with the same speaker name are one character: give all of them the same speech level and tone (e.g., the same 존댓말/반말 and the same way of addressing the listener), here and in other requests. When a speaker is named, do not guess another one from the EditorID or the neighbouring lines, and do not add the name to the translation.";
+        "- A dialogue line's context ('ctx') may start with \"Speaker: NAME\", the character who says the item's 'text'; a neighbouring line may start with [NAME], the character who says it. Lines with the same speaker name are one character: give all of them the same speech level and tone (e.g., the same 존댓말/반말 and the same way of addressing the listener), here and in other requests. \"Player, to NAME\" is the player's own line, said to NAME: write it in the player's voice, never in NAME's, and keep every player line in one voice. When a speaker is named, do not guess another one from the EditorID or the neighbouring lines, and do not add the name to the translation.";
 
     private static void AppendSpeakerRule(StringBuilder sb) => sb.AppendLine(SpeakerRule);
 

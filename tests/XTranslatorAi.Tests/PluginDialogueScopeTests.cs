@@ -242,6 +242,36 @@ public sealed class PluginDialogueScopeTests
     }
 
     /// <summary>
+    /// An INFO's RNAM is the player's prompt, said to the NPC its conditions name: Fists of Fury's "Can you train me…"
+    /// was sent as Gian the Fist's line. It is the player's, to that NPC, in its own context and as a neighbour.
+    /// </summary>
+    [Fact]
+    public async Task PlayerPrompt_IsThePlayersLine_ToTheNpc()
+    {
+        var plugin = Header()
+            .Concat(Group(Record("NPC_", 0x01000800, Sub("FULL", Z("Ondolemar")))))
+            .Concat(DialogueGroup(TopicChildren(0x01001000,
+                Record("INFO", 0x01001001, Sub("CTDA", GetIsId(0x01000800)), Sub("NAM1", Z("Perhaps, if you prove worthy.")),
+                    Sub("RNAM", Z("Can you train me?"))),
+                Record("INFO", 0x01001002, Sub("CTDA", GetIsId(0x01000800)), Sub("NAM1", Z("Then begin."))))))
+            .ToArray();
+        await using var fixture = await Fixture.CreateAsync(plugin);
+        var client = new BatchEchoClient();
+        await new TranslationService(fixture.Db, client).TranslateIdsAsync(fixture.Request with
+        {
+            Ids = fixture.Ids.Skip(1).ToArray(), BatchSize = 10,
+        });
+
+        var prompt = Assert.Single(client.Prompts);
+        Assert.Contains("\"Player, to NAME\" is the player's own line", prompt);
+        var ctx = client.Items.ToDictionary(item => item.Text, item => item.Ctx);
+        Assert.StartsWith(TranslationPrompt.SpeakerContextPrefix + "Player, to Ondolemar", ctx["Can you train me?"]);
+        Assert.StartsWith(TranslationPrompt.SpeakerContextPrefix + "Ondolemar", ctx["Then begin."]);
+        Assert.DoesNotContain("[Ondolemar] Can you train me?", string.Join("\n", ctx.Values));
+        Assert.Contains("[Player, to Ondolemar] Can you train me?", string.Join("\n", ctx.Values));
+    }
+
+    /// <summary>
     /// A base game NPC who speaks a mod's lines is named by the game translation (the record's Korean name), with the
     /// English too when the plugin carries the NPC; an NPC named nowhere gets a label of its FormID.
     /// </summary>
