@@ -15,7 +15,7 @@ public partial class MainViewModel
     {
         var speakers = _projectState.Db == null
             ? new Dictionary<long, string>()
-            : await _projectState.Db.GetStringSpeakersAsync(CancellationToken.None);
+            : await XTranslatorAi.Core.Translation.DialogueSpeakerNames.LoadFormIdsAsync(_projectState.Db, CancellationToken.None);
         var ordered = Entries
             .Select(
                 e =>
@@ -97,7 +97,7 @@ public partial class MainViewModel
     private static readonly HashSet<string> ProjectWideLqaCodes = new(StringComparer.Ordinal)
     {
         "name_inconsistent", "tone_inconsistent", "tone_differs_from_plugin", "rec_tone", "same_source_variant", "prefixed_name_variant", "tm_fallback", "official_name_missing",
-        "speaker_tone_inconsistent",
+        "speaker_tone_inconsistent", "speaker_tone_mixed", "player_tone_inconsistent",
     };
 
     // Rows saved while a scan runs; the scan read them before the save, so they are checked again when it ends.

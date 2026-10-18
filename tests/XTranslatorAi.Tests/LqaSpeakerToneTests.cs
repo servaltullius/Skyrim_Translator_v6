@@ -72,4 +72,56 @@ public class LqaSpeakerToneTests
 
         Assert.Equal(new long[] { 5 }, issues.Where(i => i.Code == "speaker_tone_inconsistent").Select(i => i.Id));
     }
+
+    /// <summary>
+    /// Fists of Fury: Reggr's one 존댓말 line among few 반말 ones had no clear majority to warn by and passed. A speaker
+    /// with too few lines, or split down the middle, is listed for reference: the odd side, or every line in a tie.
+    /// </summary>
+    [Fact]
+    public async Task FewOrSplitLines_AreListedForReference()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "훌륭했어!", speaker: "0A000001"),
+            Line(2, "다음엔 더 세게 덤벼 봐.", speaker: "0A000001"),
+            Line(3, "여기 있어요, 당신 몫입니다.", speaker: "0A000001"),
+            Line(4, "어서 오세요.", speaker: "0A000002"),
+            Line(5, "행운을 빌어요.", speaker: "0A000002"),
+            Line(6, "나중에 다시 와.", speaker: "0A000002"),
+            Line(7, "돈만 있으면 돼.", speaker: "0A000002"),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        Assert.DoesNotContain(issues, i => i.Code == "speaker_tone_inconsistent");
+        var mixed = issues.Where(i => i.Code == "speaker_tone_mixed").ToList();
+        Assert.Equal(new long[] { 3, 4, 5, 6, 7 }, mixed.Select(i => i.Id).OrderBy(id => id));
+        Assert.All(mixed, i => Assert.Equal("Info", i.Severity));
+        Assert.Contains("존댓말 1줄, 반말 2줄, 이 줄 존댓말", mixed.Single(i => i.Id == 3).Message);
+    }
+
+    /// <summary>
+    /// The player's level follows who is spoken to: the choices to one NPC keep one level (the odd one is listed for
+    /// reference), and choices to another NPC may be in another level.
+    /// </summary>
+    [Fact]
+    public async Task PlayerLines_KeepOneLevelPerListener()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "당신이 주최자인가요?", speaker: "0A000002", rec: "DIAL:FULL"),
+            Line(2, "참가하러 왔어요.", speaker: "0A000002", rec: "DIAL:FULL"),
+            Line(3, "보상을 받고 싶어.", speaker: "0A000002", rec: "INFO:RNAM"),
+            Line(4, "가르쳐 줄 수 있어?", speaker: "0A000003", rec: "INFO:RNAM"),
+            Line(5, "싸운 지 얼마나 됐어?", speaker: "0A000003", rec: "DIAL:FULL"),
+            Line(6, "어서 오세요.", speaker: "0A000002"),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        var player = Assert.Single(issues, i => i.Code == "player_tone_inconsistent");
+        Assert.Equal(3, player.Id);
+        Assert.Equal("Info", player.Severity);
+        Assert.DoesNotContain(issues, i => i.Code is "speaker_tone_inconsistent" or "speaker_tone_mixed");
+    }
 }

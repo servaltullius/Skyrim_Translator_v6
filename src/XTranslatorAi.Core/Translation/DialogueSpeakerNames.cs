@@ -24,13 +24,7 @@ public static class DialogueSpeakerNames
     public static async Task<IReadOnlyDictionary<long, string>> LoadAsync(
         IProjectDb db, GameStringDictionary? gameStrings, CancellationToken cancellationToken)
     {
-        var speakers = new Dictionary<long, string>(await db.GetStringSpeakersAsync(cancellationToken).ConfigureAwait(false));
-        // A topic's text is the player's line; the NPC who answers it is who the player speaks to.
-        foreach (var (id, npc) in await db.GetTopicListenersAsync(cancellationToken).ConfigureAwait(false))
-        {
-            speakers.TryAdd(id, npc);
-        }
-
+        var speakers = await LoadFormIdsAsync(db, cancellationToken).ConfigureAwait(false);
         if (speakers.Count == 0)
         {
             return speakers;
@@ -60,6 +54,21 @@ public static class DialogueSpeakerNames
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// The speaker FormID ("%08X") of each INFO row, and for a topic's text (the player's line) the NPC who answers it,
+    /// by row id: what the request names and the quality check groups lines by.
+    /// </summary>
+    public static async Task<Dictionary<long, string>> LoadFormIdsAsync(IProjectDb db, CancellationToken cancellationToken)
+    {
+        var speakers = new Dictionary<long, string>(await db.GetStringSpeakersAsync(cancellationToken).ConfigureAwait(false));
+        foreach (var (id, npc) in await db.GetTopicListenersAsync(cancellationToken).ConfigureAwait(false))
+        {
+            speakers.TryAdd(id, npc);
+        }
+
+        return speakers;
     }
 
     internal static string Label(uint formId, string? english, string? korean)
