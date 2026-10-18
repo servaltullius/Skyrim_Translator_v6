@@ -292,7 +292,7 @@ internal static class TokenSanitizer
             if (IsTokenInTimeContext(outputText, number))
             {
                 return $"`{number}`(수치)가 시간으로 읽힙니다(뒤에 '{Following(outputText, number)}'). 수치 바로 앞뒤에 "
-                    + "시간 단위(초·분·시간·일·주·년·동안)나 그 글자로 시작하는 말('주고', '줍니다', '일격' 등)을 두지 말고, "
+                    + "시간 단위(초·분·시간·일·주·년·동안)를 두지 말고, "
                     + $"`{number}의 마법 피해를 줍니다`, `{number}포인트`, `{number}% 감소`처럼 수량 명사 앞에 두세요.";
             }
 
@@ -578,7 +578,7 @@ internal static class TokenSanitizer
             if (afterToken < text.Length)
             {
                 var remaining = text.AsSpan(afterToken).TrimStart();
-                if (StartsWithAny(remaining, "초간", "초", "분", "시간", "일", "주", "개월", "년", "동안", "간"))
+                if (StartsWithTimeUnit(remaining))
                 {
                     return true;
                 }
@@ -608,6 +608,43 @@ internal static class TokenSanitizer
 
         return false;
     }
+
+    private static readonly string[] TimeUnitsAfterToken = ["초간", "초", "분", "시간", "일", "주", "개월", "년", "동안", "간"];
+
+    // Syllables that can follow a one-syllable unit and keep it a unit: particles, the copula and time words
+    // ("초간", "초 동안" without the space, "초마다", "일째", "분의", "초입니다").
+    private const string TimeUnitFollowers = "간동마후뒤의가이을를에씩내까부도은는만째로보정와과당입였쯤짜";
+
+    /// <summary>
+    /// "피해를 &lt;mag&gt; 주고", "&lt;mag&gt; 일격", "&lt;mag&gt; 분노": a one-syllable unit that runs on into another
+    /// syllable is a word (주다, 일격, 분노), not a unit, unless that syllable is in <see cref="TimeUnitFollowers"/>.
+    /// 주는/주도록 are 주다 too; a week count is "주 동안" or "주간".
+    /// </summary>
+    private static bool StartsWithTimeUnit(ReadOnlySpan<char> text)
+    {
+        foreach (var unit in TimeUnitsAfterToken)
+        {
+            if (!text.StartsWith(unit.AsSpan(), StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            if (unit.Length > 1 || text.Length == unit.Length || !IsHangulSyllable(text[1]))
+            {
+                return true;
+            }
+
+            var next = text[1];
+            if (TimeUnitFollowers.Contains(next) && !(unit == "주" && next is '는' or '도'))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsHangulSyllable(char c) => c is >= '가' and <= '힣';
 
     private static bool IsTokenInAmountContext(string text, string token)
     {

@@ -524,6 +524,27 @@ public sealed class TranslationServiceIntegrityRegressionTests
         Assert.Equal("World %s", (await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None)).Single(row => row.Id == fixture.Ids[1]).DestText);
     }
 
+    /// <summary>A repair reply ending in a newline was saved with trailing spaces; the first answer's path trims them.</summary>
+    [Fact]
+    public async Task SemanticRepair_ReplyEndingInANewlineKeepsNoTrailingSpaces()
+    {
+        await using var fixture = await Fixture.CreateAsync(("Deals <mag> points of fire damage.", "MGEF:DNAM", null));
+        fixture.Client.ResponseOverride = (call, request) =>
+        {
+            var mag = System.Text.RegularExpressions.Regex.Match(request.Contents[0].Parts[0].Text!, "__XT_PH_MAG_\\d{4}__").Value;
+            if (call == 1)
+                return mag + "초 동안 화염 피해를 줍니다. __XT_PH_9999__";
+            Assert.Equal("repair-semantic", request.Purpose);
+            return "화염 피해를 " + mag + "포인트 줍니다.\r\n";
+        };
+
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { TargetLang = "korean", EnableRepairPass = true, KeepSkyrimTagsRaw = false });
+
+        Assert.Equal(2, fixture.Client.Calls);
+        var row = Assert.Single(await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None));
+        Assert.Equal("화염 피해를 <mag>포인트 줍니다.", row.DestText);
+    }
+
     [Theory]
     [InlineData(1)]
     [InlineData(2)]

@@ -184,12 +184,13 @@ public sealed partial class TranslationService
                 ctx.MaxOutputTokens, Ctx.EnableAdaptiveOutputBudget), SourceText = row.Masked };
             var repairedText = await TranslateUserPromptWithRetriesAsync(repairRequest, repairPrompt);
 
-            return TokenSanitizer.EnsureTokensPreservedOrRepair(
+            // Like the first answer: a reply ending in a newline came out with trailing spaces after sanitizing.
+            return RestoreSourceEdgeWhitespace(row.Masked, TokenSanitizer.EnsureTokensPreservedOrRepair(
                 row.Masked,
                 repairedText,
                 context: $"id={row.Id} semantic-repair",
                 glossaryTokenToReplacement: row.Glossary.TokenToReplacement
-            );
+            ));
         }
         catch (OperationCanceledException) when (ctx.CancellationToken.IsCancellationRequested)
         {

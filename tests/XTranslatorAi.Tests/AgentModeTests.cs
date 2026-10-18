@@ -144,7 +144,7 @@ public sealed class AgentModeTests : IAsyncLifetime
     }
 
     /// <summary>
-    /// "피해를 &lt;mag&gt; 주고" reads as a duration (주 = week) to the run's placeholder check: the line is asked again,
+    /// "&lt;mag&gt;초 동안 화염 피해를" reads as a duration to the run's placeholder check: the line is asked again,
     /// and submit and the next request.md say which line and why. A text answer's file-ending newline is not saved.
     /// </summary>
     [Fact]
@@ -156,12 +156,12 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.True(AgentAnswerCheck.IsJson(batch));
         var magId = AgentAnswerCheck.Lines(batch).Single(line => line.Text.Contains("<mag>", StringComparison.Ordinal)).Id!.Value;
 
-        report = await _session.SubmitAsync(project, JsonAnswer(batch, _ => "화염 피해를 <mag> 주고 적을 불태웁니다."), CancellationToken.None);
+        report = await _session.SubmitAsync(project, JsonAnswer(batch, _ => "<mag>초 동안 화염 피해를 주고 적을 불태웁니다."), CancellationToken.None);
 
         var rejected = Assert.Single(report.Rejected);
         Assert.Equal(magId, rejected.Id);
         Assert.Contains("시간으로 읽힙니다", rejected.Reason);
-        Assert.Contains("주고", rejected.Reason);
+        Assert.Contains("초 동안", rejected.Reason);
         Assert.NotNull(report.Next);
         Assert.Contains("앞 답이 걸린 이유", await File.ReadAllTextAsync(report.NextRequestPath!));
 
@@ -174,7 +174,7 @@ public sealed class AgentModeTests : IAsyncLifetime
             const string Fixed = "<mag>의 화염 피해를 주고 적을 불태웁니다.";
             var answer = AgentAnswerCheck.IsJson(request) ? JsonAnswer(request, _ => Fixed)
                 : AgentAnswerCheck.IsRepair(request) ? Fixed + "\r\n"
-                : "화염 피해를 <mag> 주고 적을 불태웁니다. __XT_PH_9999__";
+                : "<mag>초 동안 화염 피해를 주고 적을 불태웁니다. __XT_PH_9999__";
             if (!AgentAnswerCheck.IsJson(request) && AgentAnswerCheck.IsRepair(request))
             {
                 // The fix request says to rewrite CURRENT, with no end sentinel (the text request's own rule).
