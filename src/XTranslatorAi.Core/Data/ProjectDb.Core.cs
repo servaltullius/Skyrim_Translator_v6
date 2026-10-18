@@ -152,6 +152,9 @@ public sealed partial class ProjectDb : IAsyncDisposable, IProjectDb
 
     internal SqliteConnection Connection => _connection;
 
+    /// <summary>The file this project lives in.</summary>
+    public string DbPath => _connection.DataSource;
+
     /// @critical: Opens SQLite project DB and ensures schema.
     public static async Task<ProjectDb> OpenOrCreateAsync(string dbPath, CancellationToken cancellationToken)
     {

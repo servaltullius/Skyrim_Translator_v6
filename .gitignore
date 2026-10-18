@@ -36,3 +36,11 @@ publish-single/
 
 # USSEP is Arthmoor's plugin, not a translation: kept locally, not redistributed.
 Skyrim_Latest_Kor/03-USSEP/**/*.esp
+
+# agent kit: built tool and per-user work
+/agent-kit/*.exe
+/agent-kit/*.dll
+/agent-kit/*.pdb
+/agent-kit/work/
+/agent-kit/output/
+/agent-kit/Licenses/

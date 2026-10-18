@@ -194,3 +194,36 @@ TulliusAgentKit/
 4. **배포**: 에이전트 키트 zip, 사용법, README 안내
 
 1단계 결과(특히 500줄당 사용량)를 보고 2단계 이후 범위를 다시 정한다.
+
+## 시험판 구현 (2026-10-18)
+
+- **코드**
+  - `src/XTranslatorAi.App/Services/AgentMode/`
+    - `AgentRelayClient`: 녹화·재생 클라이언트
+    - `AgentTranslationRun`: GUI의 `TranslationRunnerService`를 고정 설정으로 돌린다.
+    - `AgentSession`: 작업 폴더, 요청·답 파일
+  - CLI: `tools/XTranslatorAi.Agent`(`tullius.exe`)
+  - 키트: `agent-kit/`(AGENTS.md, CLAUDE.md, GEMINI.md, 사용법.txt)
+- **명령**: `open`, `projects`, `status`, `next`, `submit`, `check`, `edit`, `export`
+  - `context`와 `lookup`은 아직 없다.
+  - 시험용으로 `--projects`(프로젝트 DB 위치)와 `--work`(작업 폴더)를 받는다.
+- **구현하며 바뀐 것**
+  - **새 실행으로 다시 녹화**: 한 실행 안에서 답을 쓴 뒤 만난 다음 요청은 방금 답한 줄이 아직 그 실행의 줄이던 때 만들어진 것이다. 다음 실행에서는 프롬프트가 달라진다. 그래서 답을 쓴 실행이 다음 요청에서 멈추면, 새 실행을 한 번 더 돌려 그 첫 요청을 대기 요청으로 둔다. 모델 호출이 없는 로컬 실행이라 비용은 들지 않는다.
+  - **글 요청**: 묶음에 한 줄만 남으면 파이프라인은 JSON이 아닌 글 요청(`<<<TEXT … TEXT>>>`, 끝 토큰 `__XT_PH_9999__`)을 보낸다. `request.md`가 형식마다 답하는 법을 따로 안내한다.
+  - **묶음 크기**: 기본 30(GUI 기본은 12). 요청마다 들어가는 지시(약 6~9천 자)를 줄이려고 늘렸다. 프로젝트를 열 때 정해지고(`--batch-size`), 녹화·재생에서 바뀌지 않는다.
+- **테스트**: `tests/XTranslatorAi.Tests/AgentModeTests.cs`, 6개
+  - 요청 범위(묶음 밖 다음 대사가 맥락에 들어감)
+  - 끝까지 한 요청씩 저장
+  - 녹화는 생성 호출 1번이고 "번역 중"으로 남는 줄이 없음
+  - 형식 오류 거부
+  - 오래된 요청의 답은 쓰지 않음
+  - 태그를 빠뜨린 답은 태그 없이 저장되지 않음
+- **직접 실행**: 8줄짜리 시험 플러그인으로 open → next → submit → check → edit → export를 키트 폴더에서 돌렸다.
+  - 요청 1개(9,593자)로 끝났다. 저장 8줄, 품질검사 0건.
+  - 조사 후처리("탈모어은" → "탈모어는")와 `<Alias=Player>` 복원은 API 번역과 같이 동작했다.
+  - 화자 정보(GetIsID)도 저장됐다.
+- **남은 것**
+  - Claude 앱에서 실제 모드(IDE Thalmor)로 시험해 사용량을 잰다.
+  - `context`·`lookup`
+  - 앱 샌드박스에서 프로젝트 DB 위치 확인
+  - 배포 묶음
