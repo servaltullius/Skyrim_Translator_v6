@@ -286,8 +286,78 @@ public sealed class AgentModeTests : IAsyncLifetime
         var rendered = AgentRequestRenderer.Render(project, request, new HashSet<string> { style.Id }, Array.Empty<AgentRejection>());
         Assert.Contains($"- [{style.Id}] 줄 style (새 절)", rendered);
         Assert.DoesNotContain(described, rendered);
-        Assert.Contains("\"text\":\"Deals <mag> damage.\"", rendered);
+        Assert.Contains($"1 MGEF:DNAM | Deals <mag> damage.\n    style: [{style.Id}]", rendered.Replace("\r\n", "\n"));
         Assert.Contains("수치 자리표시자", rendered);
+    }
+
+    [Fact]
+    public void BatchRequestMd_ListsOneLinePerItem_AndKeepsTheJsonAnswerFormat()
+    {
+        var items = new object[]
+        {
+            new { id = 7, text = "Bring me the Stalhrim.\nQuickly.", rec = "INFO:NAM1", edid = "DLC2Quest",
+                ctx = "Prev (reference only):\n- Who are you?\nNext (reference only):\n- Fine." },
+            new { id = 8, text = "Ratway", rec = "LCTN:FULL" },
+        };
+        var payload = JsonSerializer.Serialize(new
+            {
+                source_language = "english", target_language = "korean",
+                glossary = new[] { new { source = "Magicka", target = "매지카" }, new { source = "Thalmor", target = "탈모르" } },
+                items,
+            },
+            new JsonSerializerOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+        var user = new string('-', 400) + "\n\nReturn JSON schema:\n{\"translations\":[{\"id\":123,\"text\":\"...\"}]}\n\nInput JSON:\n" + payload;
+        var request = new AgentRequest("hash", 0, "agent-app", null, "system", new[] { new AgentMessage("user", user) },
+            "application/json", "{}");
+        var project = new AgentProject("Key", "Mod.esp", "db", new PluginReadOptions(), "utf-8", "agent-app", 30, 15000);
+
+        var rendered = AgentRequestRenderer.Render(project, request, new HashSet<string>(), Array.Empty<AgentRejection>()).Replace("\r\n", "\n");
+
+        Assert.Contains("7 INFO:NAM1 DLC2Quest | Bring me the Stalhrim.\\nQuickly.\n    ctx: Prev: / - Who are you? / Next: / - Fine.\n8 LCTN:FULL | Ratway", rendered);
+        Assert.Contains("용어집: Magicka → 매지카; Thalmor → 탈모르", rendered);
+        Assert.DoesNotContain("Input JSON:", rendered);
+        Assert.DoesNotContain("\"source_language\"", rendered);
+        Assert.Contains("{\"translations\":[{\"id\":<요청의 id>,\"text\":\"<번역>\"}, ...]}", rendered);
+        // Only what the model reads changes: the request (its hash, what a replay asks) keeps the run's JSON prompt.
+        Assert.Contains("Input JSON:\n{\"source_language\"", AgentRequestRenderer.Split(request).UserPayload);
+    }
+
+    [Fact]
+    public async Task RequestMdOfTheRun_ListsItsLines_WithoutTheInputJson()
+    {
+        var request = await AnswerUntilAsync(await _session.NextAsync(_project, CancellationToken.None), IsJson);
+        var requestMd = (await File.ReadAllTextAsync(_session.RequestPath(_project))).Replace("\r\n", "\n");
+
+        Assert.DoesNotContain("Input JSON:", requestMd);
+        foreach (var (id, text) in Items(request))
+        {
+            Assert.Contains($"\n{id} ", requestMd);
+            Assert.Contains($" | {text.Replace("\r", "\\r").Replace("\n", "\\n")}\n", requestMd);
+        }
+    }
+
+    [Fact]
+    public async Task Lookup_FindsTheTmSpellingOfAName_TheWordItselfFirst()
+    {
+        var global = (await _global.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None))!;
+        await global.BulkUpsertTranslationMemoryAsync("english", "korean", new[]
+        {
+            ("Stalhrim War Axe", "스탈림 전투 도끼"),
+            ("The Stalhrim must be worked with ancient Nord techniques.", "스탈림은 고대 노드의 기법으로 다뤄야 합니다."),
+            ("Stalhrim", "스탈림"),
+            ("Stalhrimite", "엉뚱한 낱말"),
+            ("Ratway", "쥐소굴"),
+        }, CancellationToken.None);
+        await using var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None);
+
+        var found = await AgentLookup.FindAsync(db, global, game: null, "stalhrim", 10, CancellationToken.None);
+
+        Assert.Equal(new[] { "Stalhrim", "Stalhrim War Axe", "The Stalhrim must be worked with ancient Nord techniques." },
+            found.Memory.Select(h => h.Source));
+        Assert.Equal("스탈림", found.Memory[0].Target);
+        Assert.Equal(3, found.MemoryTotal);
+        Assert.Single((await AgentLookup.FindAsync(db, global, null, "Stalhrim", 1, CancellationToken.None)).Memory);
+        Assert.Empty((await AgentLookup.FindAsync(db, global, null, "Concordat", 10, CancellationToken.None)).Memory);
     }
 
     [Fact]

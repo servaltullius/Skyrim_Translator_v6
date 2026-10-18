@@ -136,7 +136,7 @@ public static class AgentRequestRenderer
             sb.AppendLine();
             sb.AppendLine("request.md는 아래 절을 이름(`[S-…]`, `[R-…]`, `[J-…]`)으로 가리킨다. 절은 번역기 API 번역의 지시와 규칙 그대로이고,");
             sb.AppendLine("요청마다 다시 보내지 않으려고 여기 한 번만 둔다. 지시를 잊었으면 이 파일을 다시 읽는다.");
-            sb.AppendLine("요청 줄의 `\"style\":\"[ST-…]\"`는 그 이름의 절 본문이 그 줄의 style이라는 뜻이다.");
+            sb.AppendLine("요청 줄의 `style: [ST-…]`는 그 이름의 절 본문이 그 줄의 style이라는 뜻이다.");
         }
 
         foreach (var section in sections)
@@ -228,16 +228,74 @@ public static class AgentRequestRenderer
         if (parts.Sections.Any(section => section.Id.StartsWith("ST-", StringComparison.Ordinal)))
         {
             sb.AppendLine();
-            sb.AppendLine("요청 줄의 `\"style\":\"[ST-…]\"`는 그 이름의 '줄 style' 절 본문이 그 줄의 style이라는 뜻이다.");
+            sb.AppendLine("요청 줄의 `style: [ST-…]`는 그 이름의 '줄 style' 절 본문이 그 줄의 style이라는 뜻이다.");
         }
 
         sb.AppendLine();
         sb.AppendLine("## 요청");
         sb.AppendLine();
-        sb.AppendLine(parts.UserPayload);
+        sb.AppendLine(Listing(parts.UserPayload));
         var rendered = sb.ToString();
         return rendered.Replace(CharsMark, (rendered.Length - CharsMark.Length).ToString("N0"), StringComparison.Ordinal);
     }
+
+    /// <summary>
+    /// The batch's Input JSON as the model reads it best: one line per item (<c>id rec edid | text</c>) and its notes
+    /// (style, ctx, current) indented under it, the glossary on one line. Only the display: the request, its hash and
+    /// what is replayed stay the run's JSON prompt, and the answer is the same JSON.
+    /// </summary>
+    internal static string Listing(string payload)
+    {
+        var lines = payload.Split('\n');
+        var at = Array.FindIndex(lines, line => line.TrimEnd() == "Input JSON:");
+        if (at < 0 || at + 1 >= lines.Length) return payload;
+
+        JsonNode? root;
+        try
+        {
+            root = JsonNode.Parse(lines[at + 1]);
+        }
+        catch (JsonException)
+        {
+            return payload;
+        }
+
+        if (root?["items"] is not JsonArray items) return payload;
+        var sb = new StringBuilder();
+        var languages = Value(root["source_language"]) is { } from && Value(root["target_language"]) is { } to ? $" ({from} → {to})" : "";
+        sb.AppendLine($"줄 목록{languages}: 한 줄이 한 항목(`id rec edid | 원문`). 원문 안의 줄바꿈은 `\\n`으로 적었다.");
+        sb.AppendLine("그 아래 들여쓴 줄은 그 항목의 `style`, `ctx`(앞뒤 줄, 참고만 하고 번역하지 않는다, 줄바꿈은 ` / `), `current`(고칠 앞 번역)다.");
+        if (root["glossary"] is JsonArray glossary && glossary.Count > 0)
+        {
+            var pairs = glossary.OfType<JsonObject>().Select(g => $"{Value(g["source"])} → {Value(g["target"])}");
+            sb.AppendLine("용어집: " + string.Join("; ", pairs));
+        }
+
+        sb.AppendLine();
+        foreach (var item in items.OfType<JsonObject>())
+        {
+            var head = string.Join(" ", new[] { Value(item["id"]), Value(item["rec"]), Value(item["edid"]) }.Where(v => !string.IsNullOrEmpty(v)));
+            sb.AppendLine($"{head} | {Escaped(Value(item["text"]) ?? Value(item["source"]) ?? "")}");
+            foreach (var (name, node) in item)
+            {
+                if (name is "id" or "rec" or "edid" or "text" or "source" || Value(node) is not { Length: > 0 } value) continue;
+                sb.AppendLine($"    {name}: {(name == "current" ? Escaped(value) : Flattened(value))}");
+            }
+        }
+
+        var listed = lines[..at].Append(sb.ToString().TrimEnd()).Concat(lines[(at + 2)..]);
+        return string.Join("\n", listed).Trim();
+    }
+
+    private static string? Value(JsonNode? node)
+        => node is JsonValue value ? value.TryGetValue(out string? text) ? text : value.ToJsonString() : null;
+
+    // As the answer's JSON string has it, so the model writes a line break back as \n.
+    private static string Escaped(string text)
+        => text.Replace("\\", "\\\\").Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t");
+
+    private static string Flattened(string text)
+        => text.Replace(" (reference only):", ":").Replace("\r\n", " / ").Replace("\n", " / ");
 
     private const string CharsMark = "\u0001CHARS\u0001";
 

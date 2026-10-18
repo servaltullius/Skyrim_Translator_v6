@@ -50,6 +50,7 @@ try
         case "export": await ExportAsync(); break;
         case "edit": await EditAsync(); break;
         case "show": await ShowAsync(); break;
+        case "lookup": await LookupAsync(); break;
         default: Help(); break;
     }
 
@@ -239,6 +240,29 @@ async Task ShowAsync()
     }
 }
 
+// How the translator already writes an English name or term: lookup <프로젝트> <낱말> (read only, the app may run).
+async Task LookupAsync()
+{
+    var project = session.Find(Arg(0, "프로젝트"));
+    var word = string.Join(" ", rest.Skip(1)).Trim();
+    if (word.Length == 0) throw new AgentModeException("찾을 영어 낱말을 지정하세요. (tullius lookup <프로젝트> <낱말>)");
+    await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, ct);
+    var global = await globalDb.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, ct);
+    var game = await new GameStringService().TryLoadAsync(ct);
+    var found = await AgentLookup.FindAsync(db, global, game, word, 12, ct);
+    Console.WriteLine($"찾은 낱말: {word}");
+    if (found.Glossary.Count == 0 && found.Game == null && found.Memory.Count == 0)
+    {
+        Console.WriteLine("용어집·게임 사전·TM에 없습니다. 새 이름이면 앞뒤 요청과 같은 표기로 쓴다.");
+        return;
+    }
+
+    foreach (var hit in found.Glossary) Console.WriteLine($"[{hit.Where}] {hit.Source} → {hit.Target}");
+    if (found.Game != null) Console.WriteLine($"[게임 사전] {word} → {Flat(found.Game.Text)}");
+    foreach (var hit in found.Memory) Console.WriteLine($"[TM] {Short(hit.Source, 120)} → {Short(hit.Target, 120)}");
+    if (found.MemoryTotal > found.Memory.Count) Console.WriteLine($"(TM {found.MemoryTotal}건 중 짧은 {found.Memory.Count}건)");
+}
+
 static string StatusLabel(StringEntryStatus status) => status switch
 {
     StringEntryStatus.Pending => "대기",
@@ -339,6 +363,7 @@ static void Help() => Console.WriteLine("""
       tullius submit <프로젝트> <답 파일>                                    답 저장, 다음 요청 만들기
       tullius check <프로젝트> [--all]                                       품질검사(--all: 고칠 것 없는 참고까지)
       tullius show <프로젝트> [--find 글자] [--rec WEAP:FULL] [--id 12,40]   줄 보기(#id, 영어, 번역)
+      tullius lookup <프로젝트> <낱말>                                       이름·용어의 기존 표기(용어집·게임 사전·TM, 앱이 켜져 있어도 됨)
       tullius edit <프로젝트> <수정.json>                                    줄 고치기([{"id": 번호, "text": "새 번역"}])
       tullius export <프로젝트> [출력 폴더]                                  번역된 플러그인 저장(이미 있으면 output\<키>-2처럼 새 폴더)
 
