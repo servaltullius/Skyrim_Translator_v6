@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using XTranslatorAi.App.Services;
 using XTranslatorAi.App.Services.AgentMode;
+using XTranslatorAi.App.ViewModels;
 using XTranslatorAi.Core;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
@@ -30,6 +31,10 @@ var work = Option("--work") ?? Path.Combine(Environment.CurrentDirectory, "work"
 var settings = new AppSettingsStore().Load();
 var globalDb = new GlobalProjectDbService(new BuiltInGlossaryService());
 var projectsRoot = Option("--projects");
+var find = Option("--find");
+var rec = Option("--rec");
+var idsOption = Option("--id");
+var all = rest.Remove("--all");
 var session = new AgentSession(work, globalDb, new GameStringService(), settings, projectsRoot);
 
 try
@@ -44,6 +49,7 @@ try
         case "check": await CheckAsync(); break;
         case "export": await ExportAsync(); break;
         case "edit": await EditAsync(); break;
+        case "show": await ShowAsync(); break;
         default: Help(); break;
     }
 
@@ -169,18 +175,83 @@ async Task CheckAsync()
     var notes = memory.Count > 0 ? LqaScanner.DropTmFallbacksMatchingMemory(tmNotes, entries, memory) : tmNotes;
     var issues = await LqaScanner.ScanAsync(entries, "korean", glossary, tmFallbackNotes: notes,
         referenceNames: memory.Count > 0 ? ReferenceNameIndex.Build(memory) : null, sourceFixIds: sourceFix);
-    Console.WriteLine($"품질검사: {issues.Count}건");
-    foreach (var i in issues)
+    // 참고(Info) findings need no fix (a TM line translated anew, say); they are listed only on request.
+    var shown = all ? issues : issues.Where(i => i.Severity != "Info").ToList();
+    var hidden = issues.Count - shown.Count;
+    Console.WriteLine($"품질검사: {shown.Count}건" + (hidden > 0 ? $" (참고 {hidden}건은 고칠 것 없음, 보려면 check {project.Key} --all)" : ""));
+    foreach (var i in shown)
     {
-        Console.WriteLine($"- #{i.OrderIndex} [{i.Severity}] {i.Code}: {i.Message}");
+        Console.WriteLine($"- #{i.Id} [{LqaIssueLabels.Severity(i.Severity)}] {LqaIssueLabels.Code(i.Code)}: {IssueMessage(i)}");
         Console.WriteLine($"  영어: {Flat(i.SourceText)}");
         Console.WriteLine($"  번역: {Flat(i.DestText)}");
     }
 }
 
+// The TM fallback note is the run's own diagnostic (English, with the row's id): said in words, the detail kept.
+static string IssueMessage(LqaIssue issue)
+    => issue.Code == "tm_fallback"
+        ? "게임 번역(TM)과 태그·토큰이 맞지 않아 TM 대신 새로 번역한 줄입니다. 번역이 맞으면 고칠 것 없음. (원인: "
+          + System.Text.RegularExpressions.Regex.Replace(Flat(issue.Message).Replace("⏎", " "), @"\s+", " ").Trim() + ")"
+        : Flat(issue.Message);
+
 static string Flat(string text) => text.Replace("\r\n", "⏎").Replace("\n", "⏎");
 
-// Fixes after the quality check: [{"order": 12, "text": "..."}], saved as the GUI saves a hand edit (수정됨).
+static string Short(string text, int max = 60)
+{
+    var flat = Flat(text);
+    return flat.Length <= max ? flat : flat[..max] + "…";
+}
+
+async Task<List<StringEntry>> RowsAsync(ProjectDb db)
+{
+    var rows = new List<StringEntry>();
+    for (var offset = 0; ; offset += 1000)
+    {
+        var page = await db.GetStringsAsync(1000, offset, ct);
+        rows.AddRange(page);
+        if (page.Count < 1000) break;
+    }
+
+    return rows;
+}
+
+// Lines by id (the id requests and check use), filtered: show <프로젝트> [--find 글자] [--rec WEAP:FULL] [--id 12,40]
+async Task ShowAsync()
+{
+    var project = session.Find(Arg(0, "프로젝트"));
+    await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, ct);
+    var rows = await RowsAsync(db);
+    var ids = idsOption?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+        .Select(s => long.TryParse(s, out var v) ? v : throw new AgentModeException($"--id에 숫자가 아닌 값: {s}")).ToHashSet();
+    var picked = rows
+        .Where(r => rec == null || string.Equals(r.Rec, rec, StringComparison.OrdinalIgnoreCase))
+        .Where(r => ids == null || ids.Contains(r.Id))
+        .Where(r => find == null || (r.SourceText ?? "").Contains(find, StringComparison.OrdinalIgnoreCase)
+                                 || (r.DestText ?? "").Contains(find, StringComparison.OrdinalIgnoreCase))
+        .OrderBy(r => r.OrderIndex)
+        .ToList();
+    Console.WriteLine($"줄: {picked.Count}" + (picked.Count != rows.Count ? $" / {rows.Count}" : ""));
+    foreach (var r in picked)
+    {
+        Console.WriteLine($"#{r.Id} {r.Rec} [{StatusLabel(r.Status)}]");
+        Console.WriteLine($"  영어: {Flat(r.SourceText ?? "")}");
+        Console.WriteLine($"  번역: {Flat(r.DestText ?? "")}");
+    }
+}
+
+static string StatusLabel(StringEntryStatus status) => status switch
+{
+    StringEntryStatus.Pending => "대기",
+    StringEntryStatus.InProgress => "번역 중",
+    StringEntryStatus.Done => "완료",
+    StringEntryStatus.Edited => "수정됨",
+    StringEntryStatus.Error => "오류",
+    StringEntryStatus.Skipped => "건너뜀",
+    _ => status.ToString(),
+};
+
+// Fixes after the quality check: [{"id": 12, "text": "..."}] (the id of requests, check and show; "order" is the
+// row's 순번, as before), saved as the GUI saves a hand edit (수정됨).
 async Task EditAsync()
 {
     RefuseWhileAppRuns();
@@ -195,38 +266,67 @@ async Task EditAsync()
     }
     catch (System.Text.Json.JsonException ex)
     {
-        throw new AgentModeException("수정 파일 형식이 맞지 않습니다([{\"order\": 순번, \"text\": \"새 번역\"}]): " + ex.Message);
+        throw new AgentModeException("수정 파일 형식이 맞지 않습니다([{\"id\": 번호, \"text\": \"새 번역\"}]): " + ex.Message);
     }
 
     await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, ct);
-    var rows = new Dictionary<int, StringEntry>();
-    for (var offset = 0; ; offset += 1000)
+    var rows = await RowsAsync(db);
+    var byId = rows.ToDictionary(r => r.Id);
+    var byOrder = rows.ToDictionary(r => r.OrderIndex);
+    StringEntry? Row(EditLine e) => e.Id is { } id ? byId.GetValueOrDefault(id) : e.Order is { } order ? byOrder.GetValueOrDefault(order) : null;
+    var list = edits ?? new();
+    var missing = list.Where(e => Row(e) == null).Select(e => e.Id is { } id ? $"id {id}" : e.Order is { } o ? $"순번 {o}" : "번호 없음").ToList();
+    if (missing.Count > 0) throw new AgentModeException($"없는 줄: {string.Join(", ", missing)}. 아무것도 저장하지 않았습니다.");
+    foreach (var edit in list)
     {
-        var page = await db.GetStringsAsync(1000, offset, ct);
-        foreach (var row in page) rows[row.OrderIndex] = row;
-        if (page.Count < 1000) break;
+        var row = Row(edit)!;
+        await db.UpdateStringTranslationAsync(row.Id, edit.Text, StringEntryStatus.Edited, null, ct);
+        Console.WriteLine($"#{row.Id} {Short(row.SourceText ?? "")}: {Flat(row.DestText ?? "")} → {Flat(edit.Text)}");
     }
 
-    var missing = (edits ?? new()).Where(e => !rows.ContainsKey(e.Order)).Select(e => e.Order).ToList();
-    if (missing.Count > 0) throw new AgentModeException($"없는 순번: {string.Join(", ", missing)}. 아무것도 저장하지 않았습니다.");
-    foreach (var edit in edits!)
-    {
-        await db.UpdateStringTranslationAsync(rows[edit.Order].Id, edit.Text, StringEntryStatus.Edited, null, ct);
-    }
-
-    Console.WriteLine($"고친 줄: {edits.Count}. 다시 확인: tullius check {project.Key}");
+    Console.WriteLine($"고친 줄: {list.Count}. 다시 확인: tullius check {project.Key}");
 }
 
 async Task ExportAsync()
 {
     RefuseWhileAppRuns();
     var project = session.Find(Arg(0, "프로젝트"));
-    var output = rest.Count > 1 ? rest[1] : Path.Combine(Environment.CurrentDirectory, "output", project.Key);
+    string output;
+    if (rest.Count > 1)
+    {
+        output = Path.GetFullPath(rest[1]);
+        if (Directory.Exists(output) || File.Exists(output))
+        {
+            throw new AgentModeException($"출력 폴더가 이미 있습니다: {output}. 기존 파일을 덮어쓰지 않으니 없는 폴더를 지정하세요(지정하지 않으면 output\\{project.Key}-2처럼 새 폴더를 고릅니다).");
+        }
+    }
+    else
+    {
+        // An export again after edits goes next to the first one: the plugin writer never overwrites a folder.
+        var root = Path.Combine(Environment.CurrentDirectory, "output");
+        output = Path.Combine(root, project.Key);
+        for (var n = 2; Directory.Exists(output) || File.Exists(output); n++) output = Path.Combine(root, $"{project.Key}-{n}");
+    }
+
     await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, ct);
     var document = await PluginReader.ReadAsync(project.PluginPath, project.ReadOptions, ct);
-    var result = await new ProjectWorkspaceService(globalDb, projectsRoot).ExportPluginAsync(db, document, new PluginExportOptions(output, project.TargetEncoding), ct);
+    PluginExportResult result;
+    try
+    {
+        result = await new ProjectWorkspaceService(globalDb, projectsRoot).ExportPluginAsync(db, document, new PluginExportOptions(output, project.TargetEncoding), ct);
+    }
+    catch (IOException ex)
+    {
+        throw new AgentModeException($"저장하지 못했습니다({output}): {ex.Message}");
+    }
+
     Console.WriteLine($"저장: {result.PluginPath} (바뀐 필드 {result.ChangedFields})");
     foreach (var file in result.Files.Where(f => f != result.PluginPath)) Console.WriteLine($"  {file}");
+    var earlier = Path.Combine(Environment.CurrentDirectory, "output", project.Key);
+    if (rest.Count <= 1 && !string.Equals(output, earlier, StringComparison.OrdinalIgnoreCase))
+    {
+        Console.WriteLine($"알림: 앞서 저장한 {earlier}는 그대로 두었습니다. 게임에 넣을 것은 이번 폴더입니다.");
+    }
 }
 
 static void Help() => Console.WriteLine("""
@@ -237,12 +337,14 @@ static void Help() => Console.WriteLine("""
       tullius status <프로젝트>                                              진행 상황
       tullius next <프로젝트>                                                첫 요청 만들기(끊긴 뒤 다시 시작할 때도)
       tullius submit <프로젝트> <답 파일>                                    답 저장, 다음 요청 만들기
-      tullius check <프로젝트>                                               품질검사
-      tullius edit <프로젝트> <수정.json>                                    줄 고치기([{"order": 순번, "text": "새 번역"}])
-      tullius export <프로젝트> [출력 폴더]                                  번역된 플러그인 저장
+      tullius check <프로젝트> [--all]                                       품질검사(--all: 고칠 것 없는 참고까지)
+      tullius show <프로젝트> [--find 글자] [--rec WEAP:FULL] [--id 12,40]   줄 보기(#id, 영어, 번역)
+      tullius edit <프로젝트> <수정.json>                                    줄 고치기([{"id": 번호, "text": "새 번역"}])
+      tullius export <프로젝트> [출력 폴더]                                  번역된 플러그인 저장(이미 있으면 output\<키>-2처럼 새 폴더)
 
-    <프로젝트>는 키, 플러그인 파일 이름, 플러그인 경로 중 하나. 작업 파일은 ./work(--work로 바꿈).
+    <프로젝트>는 키, 플러그인 파일 이름(확장자 없이도), 플러그인 경로 중 하나. 번호는 요청·check·show의 id로 같다.
+    작업 파일은 ./work(--work로 바꿈).
     프로젝트 DB는 GUI 번역기와 같은 곳(--projects로 바꿈).
     """);
 
-sealed record EditLine(int Order, string Text);
+sealed record EditLine(long? Id, int? Order, string Text);

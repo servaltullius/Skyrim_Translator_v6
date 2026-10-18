@@ -95,6 +95,7 @@ public sealed class AgentSession
         var full = File.Exists(nameOrKeyOrPath) ? Path.GetFullPath(nameOrKeyOrPath) : null;
         var matches = all.Where(p => string.Equals(p.Key, nameOrKeyOrPath, StringComparison.OrdinalIgnoreCase)
                                      || string.Equals(Path.GetFileName(p.PluginPath), nameOrKeyOrPath, StringComparison.OrdinalIgnoreCase)
+                                     || string.Equals(Path.GetFileNameWithoutExtension(p.PluginPath), nameOrKeyOrPath, StringComparison.OrdinalIgnoreCase)
                                      || (full != null && string.Equals(p.PluginPath, full, StringComparison.OrdinalIgnoreCase)))
             .ToList();
         return matches.Count switch
