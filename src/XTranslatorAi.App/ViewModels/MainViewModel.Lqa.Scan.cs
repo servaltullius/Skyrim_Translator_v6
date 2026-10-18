@@ -15,7 +15,7 @@ public partial class MainViewModel
     {
         var speakers = _projectState.Db == null
             ? new Dictionary<long, string>()
-            : await XTranslatorAi.Core.Translation.DialogueSpeakerNames.LoadFormIdsAsync(_projectState.Db, CancellationToken.None);
+            : await XTranslatorAi.Core.Translation.DialogueSpeakerNames.LoadCheckGroupsAsync(_projectState.Db, CancellationToken.None);
         var ordered = Entries
             .Select(
                 e =>

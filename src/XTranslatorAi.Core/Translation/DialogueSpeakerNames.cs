@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Data;
@@ -96,6 +97,24 @@ public static class DialogueSpeakerNames
         }
 
         return speakers;
+    }
+
+    /// <summary>
+    /// The quality check's speaker group of each row: <see cref="LoadFormIdsAsync"/>, with an NPC's lines to a title
+    /// that is not the player (my Jarl, father) in groups of their own (<see cref="DialogueAddressees"/>). Requests do
+    /// not name such a listener: it is a guess from the English, made only to compare lines.
+    /// </summary>
+    public static async Task<Dictionary<long, string>> LoadCheckGroupsAsync(IProjectDb db, CancellationToken cancellationToken)
+    {
+        var speakers = await LoadFormIdsAsync(db, cancellationToken).ConfigureAwait(false);
+        if (speakers.Count == 0)
+        {
+            return speakers;
+        }
+
+        var rows = await db.GetStringTranslationContextsByIdsAsync(speakers.Keys.ToList(), cancellationToken).ConfigureAwait(false);
+        return DialogueAddressees.Apply(speakers,
+            rows.Values.Select(row => new DialogueAddressees.Line(row.Id, row.Rec, row.SourceText, row.DialogueScope)));
     }
 
     internal static string Label(uint formId, string? english, string? korean)

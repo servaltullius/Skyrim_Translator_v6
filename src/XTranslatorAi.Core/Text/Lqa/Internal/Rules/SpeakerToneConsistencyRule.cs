@@ -131,7 +131,8 @@ internal static class SpeakerToneConsistencyRule
     /// <summary>
     /// The group a line is compared in: an NPC's lines (INFO:NAM1) by speaker, and a scene line said to another NPC by
     /// the pair ("speaker>listener": Elenwen speaks up to General Tullius and down to her agents; a listener the plugin
-    /// does not name is "00000000", lines to someone other than the player); the player's lines
+    /// does not name is "00000000", lines to someone other than the player, and "@jarl" a title the line calls, see
+    /// DialogueAddressees); the player's lines
     /// (INFO:RNAM, DIAL:FULL) by the NPC they are said to. Null for a line with no known speaker or not translated yet.
     /// </summary>
     private static string? Key(LqaScanEntry entry)
@@ -176,7 +177,18 @@ internal static class SpeakerToneConsistencyRule
         }
 
         // A short reply left by a stage direction ("*한숨* 좋아.") is a reply, not a lone name.
-        return SentenceLevel(text, keepShort: stripped);
+        var level = SentenceLevel(text, keepShort: stripped);
+        if (level == ToneKind.Unknown && EndsInOpenClause(text))
+        {
+            // "누가 알겠어. 그 안에 뭔가 비싼 게 들어있을지.": the open clause trails a sentence that has the level, the
+            // nearest one before it that has one ("잘 있어, 엔써... 뭐라 감사의 말을 해야 할지...").
+            level = parts.Reverse().Skip(1)
+                .Where(part => !EndsInOpenClause(part) && !cries.Contains(part))
+                .Select(part => SentenceLevel(part, keepShort: false))
+                .FirstOrDefault(found => found != ToneKind.Unknown);
+        }
+
+        return level;
     }
 
     /// <summary>
@@ -214,6 +226,10 @@ internal static class SpeakerToneConsistencyRule
     private static ToneKind SentenceLevel(string? text, bool keepShort)
     {
         var tone = LqaToneClassifier.Classify(text);
+        if (tone == ToneKind.Casual && EndsInOpenClause(text))
+        {
+            tone = ToneKind.Unknown;
+        }
         var level = tone switch
         {
             ToneKind.Hamnida or ToneKind.Haeyo => ToneKind.Hamnida,
@@ -224,13 +240,26 @@ internal static class SpeakerToneConsistencyRule
         return level == ToneKind.Unknown ? SpokenLevel(text, keepShort) : level;
     }
 
+    // "야를님, 이걸 어떻게 말씀드려야 할지...", "어떻게 될지", "왜 그런지": this 지 asks "whether" in a clause left open,
+    // and is not 반말's 지. A polite line that trails off so was counted as 반말 among Serana's lines to the Jarl.
+    private static readonly string[] OpenClauseEndings =
+    {
+        "할지", "될지", "을지", "는지", "은지", "인지", "던지", "런지", "올지", "갈지", "볼지", "낼지", "릴지",
+    };
+
+    private static bool EndsInOpenClause(string? text)
+    {
+        var cleaned = LqaScanner.StripUiTokens(text ?? "").Trim().TrimEnd(' ', '.', ',', '!', '?', '…', '"', '\'', '”', '’', ')', '~', '-');
+        return OpenClauseEndings.Any(ending => cleaned.EndsWith(ending, StringComparison.Ordinal));
+    }
+
     // The shared classifier knows 반말 only by 해/야/지/냐, so "훌륭했어!", "다시 와.", "덤벼 봐." and "물론이죠." had no
     // level and a speaker's odd line passed. Dialogue lines only (item text is classified by the shared rules). Not 네
     // (the polite "yes"), 게, 데 or 래, which end nouns as often as 반말 ("여긴 내 가게.", "그런데...", "노래.").
     private static readonly string[] CasualEndings =
     {
         "어", "아", "봐", "줘", "와", "워", "돼", "걸", "구나", "렴",
-        "는군", "었군", "았군", "겠군", "했군", "하군", "이군", "로군", "더군", "다고", "라고", "냐고",
+        "는군", "었군", "았군", "겠군", "했군", "하군", "이군", "로군", "더군", "없군", "있군", "다고", "라고", "냐고",
     };
 
     // A quotation is someone else's words: "\"살려 주세요!\" 하고 울부짖더군." is said in 반말, and Serana's "아, 속편이네.

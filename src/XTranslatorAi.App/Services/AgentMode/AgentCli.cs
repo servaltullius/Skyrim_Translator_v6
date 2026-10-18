@@ -199,7 +199,7 @@ public static class AgentCli
                 if (page.Count < 1000) break;
             }
 
-            var speakers = await DialogueSpeakerNames.LoadFormIdsAsync(db, ct);
+            var speakers = await DialogueSpeakerNames.LoadCheckGroupsAsync(db, ct);
             static StringEntryStatus Status(StringEntry e)
                 => e.Status == StringEntryStatus.Skipped && !string.IsNullOrWhiteSpace(e.DestText)
                    && !string.Equals(e.DestText.Trim(), e.SourceText.Trim(), StringComparison.Ordinal) ? StringEntryStatus.Done : e.Status;
