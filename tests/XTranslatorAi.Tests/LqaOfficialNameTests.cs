@@ -8,7 +8,7 @@ using Xunit;
 
 namespace XTranslatorAi.Tests;
 
-/// <summary>Serana's review corrected 246 rows to the official name; the quality check reported none of them.</summary>
+/// <summary>Serana's review corrected 246 rows to the series TM's name; the quality check reported none of them.</summary>
 public class LqaOfficialNameTests
 {
     private static LqaScanEntry Row(long id, string rec, string source, string dest)

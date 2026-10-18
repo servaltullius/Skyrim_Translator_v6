@@ -38,7 +38,7 @@ public static class LqaIssueLabels
         ["foreign_script_residue"] = "한자·가나 남음",
         ["hidden_topic_translated"] = "숨은 토픽 번역됨",
         ["mixed_description_tone"] = "설명 말투 섞임",
-        ["official_name_missing"] = "공식 이름 아님",
+        ["official_name_missing"] = "TM 이름 표기 없음",
         ["same_source_variant"] = "같은 원문 다른 번역",
         ["prefixed_name_variant"] = "같은 이름 다른 번역",
         ["book_pagebreak_mismatch"] = "책 쪽 나눔 불일치",

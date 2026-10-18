@@ -24,7 +24,7 @@ public partial class MainViewModel
         var error = _globalProjectDbService.GetLastOpenError(SelectedFranchise) ?? "원인을 알 수 없습니다.";
         var proceed = _uiInteractionService.ShowMessage(
             $"전체 용어집·시리즈 TM DB를 열지 못했습니다.\n\n{error}\n\n"
-            + "계속하면 전체 용어집, 시리즈 TM, 공식 이름 색인 없이 번역합니다. 계속할까요?\n\n"
+            + "계속하면 전체 용어집, 시리즈 TM, TM 이름 색인 없이 번역합니다. 계속할까요?\n\n"
             + $"자세한 내용: {AppLog.PathForUser}",
             "전체 DB를 열 수 없음",
             UiMessageBoxButton.YesNo,

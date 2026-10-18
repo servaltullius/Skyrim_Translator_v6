@@ -84,7 +84,7 @@ public partial class MainViewModel
         }
         catch (Exception ex)
         {
-            XTranslatorAi.App.Services.AppLog.Write($"WARN 품질 검사용 공식 이름 색인을 읽지 못했습니다: {ex.Message}");
+            XTranslatorAi.App.Services.AppLog.Write($"WARN 품질 검사용 TM 이름 색인을 읽지 못했습니다: {ex.Message}");
             return null;
         }
     }

@@ -6,9 +6,10 @@ using XTranslatorAi.Core.Translation;
 namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 
 /// <summary>
-/// A vanilla name in the source (Jorrvaskr, Nightgate Inn, Erandur) whose official Korean spelling is missing from the
-/// translation. Translation now fixes these names, but rows translated before, taken from a TM or edited by hand do
-/// not get that; in Serana's review 246 rows were corrected to the official name and the check saw none of them.
+/// A vanilla name in the source (Jorrvaskr, Nightgate Inn, Erandur) whose Korean spelling in the series TM is missing
+/// from the translation (the bundled TM is the Korean patch's user translation, not an official one, so the finding
+/// says "TM"). Translation now fixes these names, but rows translated before, taken from a TM or edited by hand do
+/// not get that; in Serana's review 246 rows were corrected to the TM's name and the check saw none of them.
 /// Only dialogue and books are checked: a mod's own item and spell names may reuse a vanilla word on purpose, and a
 /// name the glossary sets is the user's choice.
 /// </summary>
@@ -41,7 +42,7 @@ internal static class OfficialNameRule
             }
 
             issues.Add(new LqaIssue(entry.Id, entry.OrderIndex, entry.Edid, entry.Rec, "Info", "official_name_missing",
-                $"공식 이름 표기가 없습니다: '{source}' → '{target}'", sourceText, destText));
+                $"시리즈 TM의 이름 표기가 없습니다: '{source}' → '{target}'", sourceText, destText));
             return;
         }
     }

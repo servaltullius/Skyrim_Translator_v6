@@ -407,7 +407,7 @@ public sealed class TranslationRunnerService
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            AppLog.Write($"WARN 공식 이름 색인을 읽지 못해 없이 번역합니다: {ex}");
+            AppLog.Write($"WARN TM 이름 색인을 읽지 못해 없이 번역합니다: {ex}");
             return null;
         }
     }

@@ -8,8 +8,8 @@ internal sealed class SpellingFixStep : IKoreanFixStep
 {
     private static readonly TimeSpan RegexTimeout = TimeSpan.FromMilliseconds(250);
 
-    // "되었/되어"는 맞춤법 오류가 아니라 고치지 않는다. 공식 번역은 "되었습니다"를 "됐습니다"보다 훨씬 많이 쓰고(42:3),
-    // 이 후처리는 TM 적용 행에도 돌아 공식 문장을 축약형으로 바꿨다(2026-10-05 결정 4).
+    // "되었/되어"는 맞춤법 오류가 아니라 고치지 않는다. 내장 TM(한글패치 유저 번역)은 "되었습니다"를 "됐습니다"보다 훨씬 많이 쓰고(42:3),
+    // 이 후처리는 TM 적용 행에도 돌아 TM 문장을 축약형으로 바꿨다(2026-10-05 결정 4).
 
     // 됬 → 됐 (잘못된 축약)
     private static readonly Regex DwaetWrongRegex = new(
