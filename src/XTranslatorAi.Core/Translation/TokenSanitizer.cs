@@ -271,7 +271,7 @@ internal static class TokenSanitizer
                 return $"`{dur}`(지속시간)가 번역문에 없습니다.";
             }
 
-            if (!IsTokenInTimeContext(outputText, dur))
+            if (!IsDurationInTimeContext(outputText, dur))
             {
                 return $"`{dur}`(지속시간) 바로 뒤에 시간 표현이 없습니다. `{dur}초 동안`처럼 쓰세요.";
             }
@@ -289,7 +289,7 @@ internal static class TokenSanitizer
                 return $"`{number}`(수치)가 번역문에 없습니다.";
             }
 
-            if (IsTokenInTimeContext(outputText, number))
+            if (IsNumberInTimeContext(outputText, number))
             {
                 return $"`{number}`(수치)가 시간으로 읽힙니다(뒤에 '{Following(outputText, number)}'). 수치 바로 앞뒤에 "
                     + "시간 단위(초·분·시간·일·주·년·동안)를 두지 말고, "
@@ -500,7 +500,7 @@ internal static class TokenSanitizer
                 return true;
             }
 
-            if (!IsTokenInTimeContext(outputText, dur))
+            if (!IsDurationInTimeContext(outputText, dur))
             {
                 return true;
             }
@@ -527,7 +527,7 @@ internal static class TokenSanitizer
                 return true;
             }
 
-            if (IsTokenInTimeContext(outputText, mag))
+            if (IsNumberInTimeContext(outputText, mag))
             {
                 return true;
             }
@@ -554,7 +554,7 @@ internal static class TokenSanitizer
                 return true;
             }
 
-            if (IsTokenInTimeContext(outputText, num))
+            if (IsNumberInTimeContext(outputText, num))
             {
                 return true;
             }
@@ -568,7 +568,23 @@ internal static class TokenSanitizer
         return false;
     }
 
-    private static bool IsTokenInTimeContext(string text, string token)
+    /// <summary>
+    /// Whether a duration token has its time expression: any unit right after it counts ("초인 경우", "초면", "주일
+    /// 동안"). Reading a unit strictly (<see cref="StartsWithTimeUnit"/>) is for numbers, which must not read as a
+    /// time; applied here it sent correct durations back for repair.
+    /// </summary>
+    private static bool IsDurationInTimeContext(string text, string token)
+        => IsTokenInTimeContext(text, token, strictUnit: false, amountAfterIsNoTime: false);
+
+    /// <summary>
+    /// Whether a number token reads as a time: a unit right after it, read strictly ("피해를 &lt;mag&gt; 주고" is no
+    /// week), or a time word right before it unless an amount follows: "&lt;dur&gt;초 동안 &lt;mag&gt;포인트의 피해", the
+    /// prompt's own example, and "매초 &lt;mag&gt;의 피해" are amounts after a time.
+    /// </summary>
+    private static bool IsNumberInTimeContext(string text, string token)
+        => IsTokenInTimeContext(text, token, strictUnit: true, amountAfterIsNoTime: IsTokenInAmountContext(text, token));
+
+    private static bool IsTokenInTimeContext(string text, string token, bool strictUnit, bool amountAfterIsNoTime)
     {
         // Check token followed by time units
         var idx = text.IndexOf(token, StringComparison.Ordinal);
@@ -578,12 +594,17 @@ internal static class TokenSanitizer
             if (afterToken < text.Length)
             {
                 var remaining = text.AsSpan(afterToken).TrimStart();
-                if (StartsWithTimeUnit(remaining))
+                if (strictUnit ? StartsWithTimeUnit(remaining) : StartsWithAny(remaining, TimeUnitsAfterToken) && !StartsWithAny(remaining, WordsLikeTimeUnits))
                 {
                     return true;
                 }
             }
             idx = text.IndexOf(token, afterToken, StringComparison.Ordinal);
+        }
+
+        if (amountAfterIsNoTime)
+        {
+            return false;
         }
 
         // Check time units followed by token
@@ -613,7 +634,16 @@ internal static class TokenSanitizer
 
     // Syllables that can follow a one-syllable unit and keep it a unit: particles, the copula and time words
     // ("초간", "초 동안" without the space, "초마다", "일째", "분의", "초입니다").
-    private const string TimeUnitFollowers = "간동마후뒤의가이을를에씩내까부도은는만째로보정와과당입였쯤짜";
+    // Words a duration's unit check took for a unit ("<dur> 주고" is 주다, not a week): a duration followed by one has
+    // no time expression. Any other unit start counts for a duration ("초인 경우", "초면", "주일 동안").
+    private static readonly string[] WordsLikeTimeUnits =
+    [
+        "주고", "주며", "주는", "주어", "주면", "주지", "주기", "주게", "주었", "주던", "주도", "주시", "주세",
+        "일격", "일으", "일어", "일부", "일정", "일반", "분노", "분명", "분량", "초래", "초과", "간격", "년도",
+    ];
+
+    // Not 과: "<mag> 초과" is exceeding.
+    private const string TimeUnitFollowers = "간동마후뒤의가이을를에씩내까부도은는만째로보정와당입였쯤짜";
 
     /// <summary>
     /// "피해를 &lt;mag&gt; 주고", "&lt;mag&gt; 일격", "&lt;mag&gt; 분노": a one-syllable unit that runs on into another
@@ -857,14 +887,14 @@ internal static class TokenSanitizer
 
     private static bool LooksLikeMagDurSwap(string text, string magToken, string durToken)
     {
-        var magInTime = IsTokenInTimeContext(text, magToken);
+        var magInTime = IsNumberInTimeContext(text, magToken);
         var durInAmount = IsTokenInAmountContext(text, durToken);
         if (!magInTime || !durInAmount)
         {
             return false;
         }
 
-        var durInTime = IsTokenInTimeContext(text, durToken);
+        var durInTime = IsDurationInTimeContext(text, durToken);
         var magInAmount = IsTokenInAmountContext(text, magToken);
         return !(durInTime && magInAmount);
     }

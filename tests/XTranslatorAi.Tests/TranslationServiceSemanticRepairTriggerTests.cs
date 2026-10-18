@@ -63,4 +63,28 @@ public sealed class TranslationServiceSemanticRepairTriggerTests
         Assert.True(TokenSanitizer.NeedsPlaceholderSemanticRepair(
             "Deals fire damage for __XT_PH_DUR_0000__ seconds.", output, "ko-KR", PlaceholderSemanticRepairMode.Strict));
     }
+    /// <summary>
+    /// The review of a46e84d: reading a unit strictly was meant for numbers, and applied to durations it sent correct
+    /// lines back for repair ("초인 경우", "초면", "주일"). The prompt's own example, a time word before an amount, was
+    /// read as a time for the number too.
+    /// </summary>
+    [Theory]
+    [InlineData("Lasts __XT_PH_DUR_0000__ seconds.", "지속 시간이 __XT_PH_DUR_0000__초인 경우입니다.")]
+    [InlineData("Lasts __XT_PH_DUR_0000__ seconds.", "__XT_PH_DUR_0000__초면 충분합니다.")]
+    [InlineData("Lasts __XT_PH_DUR_0000__ weeks.", "__XT_PH_DUR_0000__주일 동안 지속됩니다.")]
+    [InlineData("Deals __XT_PH_MAG_0000__ points of damage for __XT_PH_DUR_0001__ seconds.", "__XT_PH_DUR_0001__초 동안 __XT_PH_MAG_0000__포인트의 피해를 입습니다.")]
+    [InlineData("Deals __XT_PH_MAG_0000__ damage per second.", "매초 __XT_PH_MAG_0000__의 피해를 줍니다.")]
+    [InlineData("Above __XT_PH_MAG_0000__ points.", "__XT_PH_MAG_0000__ 초과일 때 발동합니다.")]
+    public void NeedsPlaceholderSemanticRepair_LeavesCorrectDurationsAndAmountsAfterATime(string input, string output)
+    {
+        Assert.False(TokenSanitizer.NeedsPlaceholderSemanticRepair(input, output, "ko-KR", PlaceholderSemanticRepairMode.Strict));
+    }
+
+    [Theory]
+    [InlineData("Deals __XT_PH_MAG_0000__ damage.", "__XT_PH_MAG_0000__초 동안 피해를 줍니다.")]
+    [InlineData("Deals __XT_PH_MAG_0000__ damage.", "피해를 동안 __XT_PH_MAG_0000__ 줍니다.")]
+    public void NeedsPlaceholderSemanticRepair_StillCatchesANumberReadAsATime(string input, string output)
+    {
+        Assert.True(TokenSanitizer.NeedsPlaceholderSemanticRepair(input, output, "ko-KR", PlaceholderSemanticRepairMode.Strict));
+    }
 }
