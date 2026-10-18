@@ -33,6 +33,7 @@ Ahzidal's Gauntlets of Warding	아지달 장갑 - 방어막	아지달 장갑 - �
 Ahzidal's Helm of Vision	아지달 투구 - 시야	아지달 투구 - 시각
 Ahzidal's Ring of Arcana	아지달 반지 - 비전	아지달 반지 - 마력
 Amulet of Supernatural Reflexes	아뮬렛 - 초자연적 반사신경	아뮬렛 - 초자연적인 반응
+An infestation of what?	침략이라니, 무엇한테?	침입이라니, 무엇이?
 And that won't work?	그걸로는 안 되는 거요?	제대로 작동하지 않은 게요?
 Animals take <mag> points of extra damage.	동물을 상대로 <mag> 의 추가 피해를 입힙니다.	동물을 상대로 <mag>의 추가 피해를 입힙니다.
 Arcane Enchanter	마법부여대	마법 부여대
@@ -170,11 +171,13 @@ I blackmailed <Alias=Steward> for the information.	정보를 얻기 위해 <Alia
 I can break some of your bones if that's what it's going to take... (Brawl)	그래야 한다면 네 뼈를 부러뜨려주마. (싸움)	만약 그럴 작정이라면 네 뼈를 부러뜨려주마. (싸움)
 I convinced <Alias.ShortName=Target> to ease up a bit.	부담을 조금 줄여달라고 <Alias.ShortName=Target>을(를) 설득했다.	부담을 조금 줄여달라고 <Alias.ShortName=Target>를 설득했다.
 I discovered this note on one of the ash spawn.	화산재 스폰의 잔해들 중에서 이 쪽지를 발견했는데.	화산재 스폰의 잔해들 중에서 이 노트를 발견했는데.
+I do. My hand is yours.	그래. 내 손은 당신 거야.	그래. 나의 팔은 당신 거야.
 I don't really know. Paarthurnax told me it would work.	전혀 모르겠군. 파써낙스는 그게 통할 거라고 하던데.	전혀 모르겠군. 파써낙스는 그걸로 알 수 있을거라고 하던데.
 I found the same marking at Honningbrew Meadery.	허닝브루 양조장에서 같은 문양을 발견했지.	허닝브루 양조장에서 같은 상징을 발견했지.
 I got the fragment.	조각을 가져왔습니다.	조각들을 가져왔습니다.
 I have Kodlak's fragment.	코들락이 가지고 있던 조각을 가져왔습니다.	코들락이 가지고 있던 조각들을 가져왔습니다.
 I have returned from <Alias=Dungeon> with the <Alias=Remains>.	<Alias=Dungeon>에 있던 <Alias=Remains>을(를) 가지고 돌아왔소.	<Alias=Dungeon>에 있던 <Alias=Remains>을 가지고 돌아왔소.
+I made a mistake. I want to go ahead with the ceremony.	제가 실수했습니다. 결혼식을 열고 싶습니다.	실수했군. 결혼식을 열고 싶습니다.
 I presume this <Alias=Loot> belongs to you?	이 <Alias=Loot>은(는) 당신 거라고 생각되는데?	이 <Alias=Loot>는 당신 거라고 생각되는데?
 I pursue Alduin, the World-Eater.	세상을 삼키는 자, 알두인을 쫓고 있습니다.	세계를 삼키는 자, 알두인을 쫓고 있습니다.
 I rescued <Alias=Victim>.	<Alias=Victim>을(를) 구출했소.	<Alias=Victim>를 구출했소.
@@ -188,6 +191,7 @@ I'll pay for the hilt. (<BribeCost> gold)	그 칼자루 값을 치르지. (<Brib
 I'm back from <Alias=Dungeon> with the <Alias=Item>.	<Alias=Dungeon>에서 <Alias=Item>을(를) 가지고 돌아왔소.	<Alias=Dungeon>에서 <Alias=Item>을 가지고 돌아왔소.
 I'm looking for a courier.	전령을 찾고 있소.	배달부를 찾고 있소.
 I'm not doing anything yet.	아직 아무것도 하겠다고 한 적 없는데.	나는 아직 아무것도 하지 않았는데.
+I'm not.	관심 없어.	아직은.
 I'm sorry boy, but I'm not who you think I am.	미안하다, 꼬마야. 하지만 난 네가 생각하는 그런 사람이 아니란다.	(떠나기)
 I'm sorry?	미안하지만...?	실례지만?
 I've brought you <Alias=QuestItem>.	<Alias=QuestItem>을(를) 가져 왔습니다.	<Alias=QuestItem>를 가져 왔습니다.
@@ -408,9 +412,12 @@ What happened during the Night of Green Fire?	녹색 화염의 밤에 무슨 일
 What would you like?	뭘 갖고 싶니?	어떤 걸 좋아하니?
 What's expected of me here?	여기서 제게 기대하는 건 뭡니까?	여기서 제가 할 일은 뭡니까?
 Who did this?	누구 짓이오?	누구 짓이요?
+Why did you work for him then?	그렇다면 어째서 그 사람 밑에서 일했지?	그렇다면 어째서 그를 위해서 일하는거지?
 Why not level the entire estate?	왜 농장 전체를 싹 갈아버리면 안 되는 거지?	왜 지구 전체를 싹 갈아버리면 안 되는 거지?
 Word of Power	힘의 단어	힘의 언어
 Would you believe I was given a vision?	내가 계시를 받았다고 하면 믿겠소?	내가 예언을 받았다는 것을 믿소?
+Yes, I've got a house in Hjaalmarch.	그래, 나는 히얄마치에 집이 있단다.	히얄마치에 있는 집.
+Yes, I've got a house in the Pale.	그래, 나는 페일에 집이 있단다.	페일 지역의 집.
 Yngol's Barrow	잉골 고분	잉골의 무덤
 You are a disgrace to our race! I spit on your fur!	넌 우리 종족의 수치다! 네 털에 침을 뱉어 주마!	넌 우리 종족의 수치다! 네 가죽을 벗겨 침을 뱉어 주마!
 You became trapped.	결국 갇혀 버린 거군.	함정에 빠진거였군.

@@ -71,6 +71,7 @@ ALTERATION	변화마법	변화
 Ambarys	엠바리스	앰바리스
 Amulet of Mara (Possessed)	아뮬렛 - 마라 (소유)	마라의 아뮬렛 (소유)
 Amulet of Supernatural Reflexes	아뮬렛 - 초자연적 반사신경	아뮬렛 - 초자연적인 반응
+An infestation of what?	침략이라니, 무엇한테?	침입이라니, 무엇이?
 Ancestor's Wrath	선조의 분노	선조의 영혼
 And that won't work?	그걸로는 안 되는 거요?	제대로 작동하지 않은 게요?
 And the Skaal don't mind being studied?	스칼은 연구 대상이 되는 걸 꺼리지 않습니까?	스칼은 교육에는 전혀 관심이 없는 겁니까?
@@ -442,6 +443,7 @@ I could find those frost salts for you.	내가 그 냉기 소금을 찾아 줄 �
 I could use a hand.	도와주면 좋겠소.	도와줄 수 있는데.
 I didn't agree to anything. Talk. (Intimidate)	나랑은 합의된 거 없는데. 말해. (위협)	나랑은 합의된 거 없는데. 말 해. (위협)
 I discovered this note on one of the ash spawn.	화산재 스폰의 잔해들 중에서 이 쪽지를 발견했는데.	화산재 스폰의 잔해들 중에서 이 노트를 발견했는데.
+I do. My hand is yours.	그래. 내 손은 당신 거야.	그래. 나의 팔은 당신 거야.
 I don't care about the ring! Tell me what else I said! (Intimidate)	반지는 아무래도 좋다! 그냥 내가 뭐라고 말했는지 알려 줘! (위협)	반지는 아무래도 좋다! 그냥 내가 뭐라 말했느지 알려주시지! (위협)
 I don't have 10,000 gold.	10,000 골드씩이나 가지고 있진 않아.	10.000 골드씩이나 가지고 있진 않아.
 I don't have time for this.	이런 일에 낭비할 시간은 없군.	그럴 시간이 없군요.
@@ -472,6 +474,7 @@ I have some netch jelly right here. (Give 5 netch jelly)	네치 젤리를 조금
 I have the three soaked taproots.	물에 적신 곧은뿌리 3개를 가져왔는데.	물에 적신 곧은 뿌리 3 개를 가져왔는데.
 I have to speak with Astrid! She's here, in the Sanctuary. Follow me.	아스트리드와 이야기를 해 봐야한다! 그녀는 지금 여기 성역에 있으니, 따라 와.	아스트리드와 이야기를 해 봐야한다! 그녀는 지금 여기 성지에 있으니, 따라 와.
 I know where the Blood Horkers are.	블러드 호커 해적단이 있는 장소를 알아냈다.	블러드 호커 해적단이 있는 잘소를 알아냈다.
+I made a mistake. I want to go ahead with the ceremony.	제가 실수했습니다. 결혼식을 열고 싶습니다.	실수했군. 결혼식을 열고 싶습니다.
 I need something enchanted.	마법부여가 필요한 물건이 있습니다.	마법부여를 하고 싶습니다.
 I need to talk to you.	당신에게 할 말이 있는데.	할 말이 있는데.
 I presume this <Alias=Loot> belongs to you?	이 <Alias=Loot>은(는) 당신 거라고 생각되는데?	이 <Alias=Loot>는 당신 거라고 생각되는데?
@@ -522,6 +525,7 @@ I'm Harbinger of the Companions.	난 컴패니언의 인도자다.	난 컴페니
 I'm here about Goldenglow Estate.	골든글로우 농장 일로 왔다.	골든글로우 지구 일로 왔다.
 I'm looking for a courier.	전령을 찾고 있소.	배달부를 찾고 있소.
 I'm not doing anything yet.	아직 아무것도 하겠다고 한 적 없는데.	나는 아직 아무것도 하지 않았는데.
+I'm not.	관심 없어.	아직은.
 I'm ready.	준비 되었소.	준비완료.
 I'm ready. Let's go get them.	준비되었소. 놈들을 치러 갑시다.	준비되었소. 그걸 구하러 갑시다.
 I'm ready. Let's go.	준비 됐어. 가자.	준비 되었습니다. 갑시다.
@@ -1108,6 +1112,7 @@ Why aren't you part of the coven anymore?	왜 이제 마법회의 일원이 아�
 Why build a shrine outside of town?	어째서 마을 바깥에 성소를 세운 거지?	어째서 마을 바깥에 성소를 세운 겁니까?
 Why did Karliah purchase Goldenglow Estate?	칼라이아가 골든글로우 농장을 구입한 이유가 뭐지?	칼라이아가 골든글로우 지구를 구입한 이유가 뭐지?
 Why did you join the Companions?	어쩌다 컴패니언에 가입하게 되었소?	어쩌다 컴패니언즈에 가입하게 되었소?
+Why did you work for him then?	그렇다면 어째서 그 사람 밑에서 일했지?	그렇다면 어째서 그를 위해서 일하는거지?
 Why do Dunmer leave ash yams in their tombs?	왜 던머가 무덤에 화산 참마를 두는 거요?	왜 던머가 무덤에 화산재 참마를 두는 거요?
 Why do I need this Word of Power to defeat Miraak?	미락을 물리치는 데 왜 이 힘의 단어가 필요하지?	미락을 물리치기 위해서는 이 힘의 단어가 필요하다고?
 Why do you hate the Blades?	왜 블레이드를 증오합니까?	왜 블레이드을 증오합니까?
@@ -1134,7 +1139,9 @@ Wulf Wild-Blood's House	울프 와일드-블러드의 집	울프 와일드-불�
 Yes, but they're far from Skyrim.	있지, 하지만 스카이림에서 멀리 떨어져 있어.	있지, 하지만 스카이림 멀리 떨어져 있어.
 Yes, Gallows Hall.	그래, 교수대 회관.	그래, 교수대 바위.
 Yes, he said to meet him at Fort Dawnguard.	그렇소, 던가드 요새에서 만나자고 하더군.	그렇소, 던가드 요새로 오면 되오.
+Yes, I've got a house in Hjaalmarch.	그래, 나는 히얄마치에 집이 있단다.	히얄마치에 있는 집.
 Yes, I've got a house in Markarth.	그래, 나는 마르카스에 집이 있단다.	그래, 내는 마르카스에 집이 있단다.
+Yes, I've got a house in the Pale.	그래, 나는 페일에 집이 있단다.	페일 지역의 집.
 Yes, sir.	알겠습니다.	알아들었소.
 Yes. It's painfully obvious you don't know what you're doing.	그래. 당신이 뭘 하는지도 모른다는 게 뻔히 보이는군.	아쉽지만 지금 당신이 뭘 하고 있는지조차도 모르겠군.
 Yngol's Barrow	잉골 고분	잉골의 무덤
