@@ -215,12 +215,102 @@ public class LqaSpeakerToneTests
     }
 
     /// <summary>
+    /// 하오체 and 하게체 are on 반말's side, as the Korean patch uses them: a 하오체 voice (Teldryn Sero) mixes "~소" and
+    /// "~시오" with "~군", a 하게체 voice (Tolfdir) "~네" and "~게" with "~지". What is warned is 해요체 or 합니다체 in
+    /// such a voice and 하오체 in a 존댓말 voice, by name. "~십시오" is still 존댓말, and nouns ending like these
+    /// (장소, 미소, 가게, 무게) and the polite "네." have no level.
+    /// </summary>
+    [Fact]
+    public async Task HaoAndHage_AreOnTheCasualSide_AndNamedInTheWarning()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "갈 준비 됐소?", speaker: "0A0000A1"),
+            Line(2, "이 기회를 날려버리지 마시오, 외지인. 난 그만한 값어치를 하오.", speaker: "0A0000A1"),
+            Line(3, "나와 함께 가고 싶다면, 그들에게 떠나라고 말하시오.", speaker: "0A0000A1"),
+            Line(4, "이미 동료가 있는 것 같군.", speaker: "0A0000A1"),
+            Line(5, "그건 내가 책임질 거요.", speaker: "0A0000A1"),
+            Line(6, "제가 도와드릴게요.", speaker: "0A0000A1"),
+            Line(11, "자네 왔나?", speaker: "0A0000B1"),
+            Line(12, "이걸 받게.", speaker: "0A0000B1"),
+            Line(13, "좋은 생각일세.", speaker: "0A0000B1"),
+            Line(14, "그건 사실이지.", speaker: "0A0000B1"),
+            Line(15, "마법은 그렇게 쉽게 배우는 게 아니라네.", speaker: "0A0000B1"),
+            Line(16, "정말 감사합니다.", speaker: "0A0000B1"),
+            Line(21, "환영합니다.", speaker: "0A0000C1"),
+            Line(22, "익숙하리라 믿습니다.", speaker: "0A0000C1"),
+            Line(23, "이제 물러가십시오.", speaker: "0A0000C1"),
+            Line(24, "기억해 두겠어요.", speaker: "0A0000C1"),
+            Line(25, "썩 물러가시오.", speaker: "0A0000C1"),
+            Line(26, "이곳이 바로 그 장소.", speaker: "0A0000C1"),
+            Line(27, "미소.", speaker: "0A0000C1"),
+            Line(28, "여긴 내 가게.", speaker: "0A0000C1"),
+            Line(29, "엄청난 무게.", speaker: "0A0000C1"),
+            Line(30, "네.", speaker: "0A0000C1"),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        var warned = issues.Where(i => i.Code == "speaker_tone_inconsistent").ToDictionary(i => i.Id, i => i.Message);
+        Assert.Equal(new long[] { 6, 16, 25 }, warned.Keys.OrderBy(id => id));
+        Assert.Contains("대부분 하오체, 이 대사 존댓말", warned[6]);
+        Assert.Contains("대부분 하게체, 이 대사 존댓말", warned[16]);
+        Assert.Contains("대부분 존댓말, 이 대사 하오체", warned[25]);
+        Assert.DoesNotContain(issues, i => i.Code == "speaker_tone_mixed");
+    }
+
+    /// <summary>
+    /// The review of the 하오체 change, on the Korean patch: a 하오체 voice's noun + 요 ("어디요?", "멋진 변화요."),
+    /// "~ㅂ시다" and "~ㄹ거요" written together were taken for 존댓말 and warned; a 해요체 slip still is. A 반말 voice's
+    /// one 하오체 line, warned before for the wrong reason, is listed for reference. The particle 까지 is not 반말.
+    /// </summary>
+    [Fact]
+    public async Task HaoVoice_KeepsItsWeakSigns_AndAStrayHaoLineIsListed()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "갈 준비 됐소?", speaker: "0A0000D1"),
+            Line(2, "난 그만한 값어치를 하오.", speaker: "0A0000D1"),
+            Line(3, "나와 함께 가고 싶다면, 그들에게 떠나라고 말하시오.", speaker: "0A0000D1"),
+            Line(4, "이미 동료가 있는 것 같군.", speaker: "0A0000D1"),
+            Line(5, "그건 내가 책임질 거요.", speaker: "0A0000D1"),
+            Line(6, "다음엔 어디요?", speaker: "0A0000D1"),
+            Line(7, "때가 됐소. 갑시다.", speaker: "0A0000D1"),
+            Line(8, "광산이 열린 뒤로 레이븐 락이 다시 살아나는 것 같소. 멋진 변화요.", speaker: "0A0000D1"),
+            Line(9, "감히 말하건대, 제일 중요한 일일거요.", speaker: "0A0000D1"),
+            Line(10, "그건 제가 해 드릴게요.", speaker: "0A0000D1"),
+            Line(21, "그 말을 들으니 기쁘네. 잘됐어.", speaker: "0A0000D2"),
+            Line(22, "마음만 먹으면 여길 전부 무너뜨릴 수도 있어.", speaker: "0A0000D2"),
+            Line(23, "빨리 필요한 거 챙겨 와.", speaker: "0A0000D2"),
+            Line(24, "다음엔 더 세게 덤벼 봐.", speaker: "0A0000D2"),
+            Line(25, "그건 내 알 바 아니야.", speaker: "0A0000D2"),
+            Line(26, "넌 정말 이상한 녀석이야.", speaker: "0A0000D2"),
+            Line(27, "매그너스의 지팡이가 정말 해결책이라고 생각하는 거요?", speaker: "0A0000D2"),
+            Line(31, "환영합니다.", speaker: "0A0000D3"),
+            Line(32, "익숙하리라 믿습니다.", speaker: "0A0000D3"),
+            Line(33, "기억해 두겠습니다.", speaker: "0A0000D3"),
+            Line(34, "이제 물러가십시오.", speaker: "0A0000D3"),
+            Line(35, "황량한 얼어붙은 땅의 구석구석까지, 그대가 마라 님의 온기를 전해주기를.", speaker: "0A0000D3"),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        var warned = issues.Where(i => i.Code == "speaker_tone_inconsistent").ToDictionary(i => i.Id, i => i.Message);
+        Assert.Equal(new long[] { 10 }, warned.Keys);
+        Assert.Contains("대부분 하오체, 이 대사 존댓말", warned[10]);
+        var stray = Assert.Single(issues, i => i.Code == "speaker_tone_mixed");
+        Assert.Equal(27, stray.Id);
+        Assert.Contains("반말 6줄, 하오체 1줄, 이 줄 하오체", stray.Message);
+    }
+
+    /// <summary>
     /// The review of the fix above: a real short 해요체 reply said once, the 요 left after a quotation, a reply left
     /// after a stage direction and the second of two names with apostrophes are still the speaker's level; only a
     /// repeated cry and a quoted book line are not. Each line is judged among four lines of the other level.
     /// </summary>
     [Theory]
-    [InlineData("뭐요? 그게 무슨 뜻이오?", false, true)]
+    [InlineData("뭐요? 그게 무슨 뜻이오?", true, true)]
+    [InlineData("뭐요? 그게 무슨 뜻이오?", false, false)]
     [InlineData("저요! 저!", false, true)]
     [InlineData("네, 가요. 지금 당장.", false, true)]
     [InlineData("'용의 피'요? 그건 좀...", false, true)]
