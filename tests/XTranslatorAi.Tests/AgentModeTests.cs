@@ -175,7 +175,15 @@ public sealed class AgentModeTests : IAsyncLifetime
             var answer = AgentAnswerCheck.IsJson(request) ? JsonAnswer(request, _ => Fixed)
                 : AgentAnswerCheck.IsRepair(request) ? Fixed + "\r\n"
                 : "화염 피해를 <mag> 주고 적을 불태웁니다. __XT_PH_9999__";
-            sawTextRepair |= !AgentAnswerCheck.IsJson(request) && AgentAnswerCheck.IsRepair(request);
+            if (!AgentAnswerCheck.IsJson(request) && AgentAnswerCheck.IsRepair(request))
+            {
+                // The fix request says to rewrite CURRENT, with no end sentinel (the text request's own rule).
+                var md = await File.ReadAllTextAsync(report.NextRequestPath!);
+                Assert.Contains("`<<<CURRENT`", md);
+                Assert.DoesNotContain("끝의 `__XT_PH_9999__` 포함", md);
+                Assert.Contains("한 줄 고쳐 쓰기", md);
+                sawTextRepair = true;
+            }
             report = await _session.SubmitAsync(project, answer, CancellationToken.None);
             textRejections.AddRange(report.Rejected.Where(r => r.Id == null));
         }
