@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using XTranslatorAi.Core.Text;
@@ -244,6 +245,72 @@ internal static class TokenSanitizer
         }
 
         return HasPlaceholderSemanticIssues(outputText, tokens, mode);
+    }
+
+    /// <summary>
+    /// What <see cref="NeedsPlaceholderSemanticRepair"/> found, in words for whoever wrote the translation (the agent
+    /// mode's model): the same checks in the same order, null when it finds nothing.
+    /// </summary>
+    internal static string? DescribePlaceholderSemanticIssue(
+        string inputText,
+        string outputText,
+        string targetLang,
+        PlaceholderSemanticRepairMode mode
+    )
+    {
+        if (!ShouldConsiderPlaceholderSemanticRepair(inputText, outputText, targetLang, mode))
+        {
+            return null;
+        }
+
+        var tokens = ExtractPlaceholderTokenSets(inputText);
+        foreach (var dur in tokens.DurTokens)
+        {
+            if (outputText.IndexOf(dur, StringComparison.Ordinal) < 0)
+            {
+                return $"`{dur}`(지속시간)가 번역문에 없습니다.";
+            }
+
+            if (!IsTokenInTimeContext(outputText, dur))
+            {
+                return $"`{dur}`(지속시간) 바로 뒤에 시간 표현이 없습니다. `{dur}초 동안`처럼 쓰세요.";
+            }
+
+            if (IsTokenInAmountContext(outputText, dur))
+            {
+                return $"`{dur}`(지속시간)가 수량처럼 쓰였습니다(뒤에 '{Following(outputText, dur)}'). `{dur}초 동안`처럼 쓰세요.";
+            }
+        }
+
+        foreach (var number in tokens.MagTokens.Concat(tokens.NumTokens))
+        {
+            if (outputText.IndexOf(number, StringComparison.Ordinal) < 0)
+            {
+                return $"`{number}`(수치)가 번역문에 없습니다.";
+            }
+
+            if (IsTokenInTimeContext(outputText, number))
+            {
+                return $"`{number}`(수치)가 시간으로 읽힙니다(뒤에 '{Following(outputText, number)}'). 수치 바로 앞뒤에 "
+                    + "시간 단위(초·분·시간·일·주·년·동안)나 그 글자로 시작하는 말('주고', '줍니다', '일격' 등)을 두지 말고, "
+                    + $"`{number}의 마법 피해를 줍니다`, `{number}포인트`, `{number}% 감소`처럼 수량 명사 앞에 두세요.";
+            }
+
+            if (mode == PlaceholderSemanticRepairMode.Strict && IsNumericTokenInBadParticleContext(outputText, number))
+            {
+                return $"`{number}`(수치) 바로 뒤에 조사가 붙었습니다(뒤에 '{Following(outputText, number)}'). "
+                    + $"`{number}를`, `{number}에게`, `{number}와 체력`처럼 수치에 조사를 붙이지 말고 `체력이 {number} 감소합니다`처럼 명사에 붙이세요.";
+            }
+        }
+
+        return null;
+    }
+
+    private static string Following(string text, string token)
+    {
+        var at = text.IndexOf(token, StringComparison.Ordinal) + token.Length;
+        var rest = text[at..].TrimStart();
+        return rest.Length <= 6 ? rest : rest[..6];
     }
 
     // ── Korean repair ──

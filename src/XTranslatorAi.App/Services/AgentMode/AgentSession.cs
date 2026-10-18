@@ -18,12 +18,18 @@ namespace XTranslatorAi.App.Services.AgentMode;
 public sealed record AgentProject(string Key, string PluginPath, string DbPath, PluginReadOptions ReadOptions,
     string TargetEncoding, string ModelProfile, int BatchSize, int MaxChars);
 
-/// <summary>What a step did: rows saved, the next request (null when the plugin is done), and why it stopped.</summary>
+/// <summary>
+/// What a step did: rows saved, the lines of the answered request it did not save and why, the next request (null
+/// when the plugin is done, with the size of its request.md) and why it stopped.
+/// </summary>
 public sealed record AgentStepReport(AgentProject Project, int PendingBefore, int PendingAfter, int ErrorRows,
     AgentRequest? Next, string? NextRequestPath, string? Problem)
 {
     public int Saved => Math.Max(0, PendingBefore - PendingAfter);
     public bool Finished => Next == null && Problem == null && PendingAfter == 0;
+    public IReadOnlyList<AgentRejection> Rejected { get; init; } = Array.Empty<AgentRejection>();
+    public int NextRequestChars { get; init; }
+    public IReadOnlySet<string> NewInstructionSections { get; init; } = new HashSet<string>();
 }
 
 public sealed class AgentModeException(string message) : Exception(message);
@@ -122,7 +128,8 @@ public sealed class AgentSession
             throw new AgentModeException($"대기 중인 요청이 있습니다({RequestPath(project)}). 먼저 그 결과를 submit하세요.");
         }
 
-        return (await StepAsync(project, cancellationToken)).Report;
+        var (report, _) = await StepAsync(project, cancellationToken);
+        return await WriteNextAsync(report, Array.Empty<AgentRejection>(), cancellationToken);
     }
 
     /// <summary>
@@ -133,7 +140,8 @@ public sealed class AgentSession
     public async Task<AgentStepReport> SubmitAsync(AgentProject project, string answer, CancellationToken cancellationToken)
     {
         var pending = Pending(project) ?? throw new AgentModeException("대기 중인 요청이 없습니다. next로 요청을 만드세요.");
-        if (string.Equals(pending.ResponseMimeType, "application/json", StringComparison.OrdinalIgnoreCase))
+        var json = AgentAnswerCheck.IsJson(pending);
+        if (json)
         {
             try
             {
@@ -147,7 +155,28 @@ public sealed class AgentSession
                 throw new AgentModeException($"결과 형식이 맞지 않아 저장하지 않았습니다: {ex.Message} " +
                                              "요청의 응답 형식({\"translations\":[{\"id\":..,\"text\":\"..\"}]}) 그대로 다시 쓰세요.");
             }
+
+            var asked = AgentAnswerCheck.Lines(pending).Select(line => line.Id).OfType<long>().ToHashSet();
+            if (asked.Count > 0 && AgentAnswerCheck.AnsweredIds(answer) is { } given && !given.Any(asked.Contains))
+            {
+                throw new AgentModeException("이 답의 id가 지금 요청의 id와 하나도 맞지 않아 저장하지 않았습니다(앞 요청의 답을 다시 낸 것 같습니다). " +
+                                             $"{RequestPath(project)}의 id로 답을 새로 쓰세요.");
+            }
         }
+        else
+        {
+            if (AgentAnswerCheck.AnsweredIds(answer) is { Count: > 1 })
+            {
+                throw new AgentModeException("이 요청은 한 줄 글 요청인데 답이 여러 줄 JSON이라 저장하지 않았습니다(앞 요청의 답을 다시 낸 것 같습니다). " +
+                                             $"{RequestPath(project)}의 글을 옮긴 번역문만 쓰세요.");
+            }
+
+            // A file ends with a newline; the run would keep it as spaces at the line's end (a repaired line is not trimmed).
+            answer = answer.TrimEnd('\r', '\n');
+        }
+
+        var (targetLang, mode) = await CheckSettingsAsync(project, cancellationToken);
+        var reasons = AgentAnswerCheck.Explain(pending, answer, targetLang, mode, out var textReason);
 
         var answerPath = AnswerPath(project, pending.Hash, pending.Attempt);
         Directory.CreateDirectory(Path.GetDirectoryName(answerPath)!);
@@ -157,14 +186,51 @@ public sealed class AgentSession
         if (!used.Contains((pending.Hash, pending.Attempt)))
         {
             File.Delete(answerPath);
-            return report with
+            return await WriteNextAsync(report with
             {
                 Problem = "번역기가 이 답이 맞는 요청을 다시 만들지 않아 답을 쓰지 않았습니다(요청을 만든 뒤 프로젝트가 바뀜). " +
                           "request.md에 새로 만든 요청에 답하세요.",
-            };
+            }, Array.Empty<AgentRejection>(), cancellationToken);
         }
 
-        return report;
+        var rejected = await RejectedAsync(project, pending, report, reasons, textReason, cancellationToken);
+        return await WriteNextAsync(report with { Rejected = rejected }, rejected, cancellationToken);
+    }
+
+    /// <summary>The lines of the answered request the run did not save: rows still 대기/오류, or a one-line request asked again.</summary>
+    private static async Task<IReadOnlyList<AgentRejection>> RejectedAsync(AgentProject project, AgentRequest answered,
+        AgentStepReport report, IReadOnlyDictionary<long, string> reasons, string? textReason, CancellationToken cancellationToken)
+    {
+        const string Unknown = "번역기 검증에 걸렸습니다(이유를 특정하지 못함). 토큰·태그·줄바꿈 수와 수치 자리표시자 위치를 확인하세요.";
+        var lines = AgentAnswerCheck.Lines(answered);
+        if (!AgentAnswerCheck.IsJson(answered))
+        {
+            var askedAgain = report.Next != null && (report.Next.Hash == answered.Hash || AgentAnswerCheck.IsRepair(report.Next));
+            return askedAgain && lines.Count == 1
+                ? new[] { new AgentRejection(null, Plain(lines[0].Text), textReason ?? Unknown) }
+                : Array.Empty<AgentRejection>();
+        }
+
+        var ids = lines.Select(line => line.Id).OfType<long>().ToList();
+        if (ids.Count == 0) return Array.Empty<AgentRejection>();
+        await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, cancellationToken);
+        var statuses = await db.GetStringStatusesByIdsAsync(ids, cancellationToken);
+        return lines
+            .Where(line => line.Id is { } id && statuses.TryGetValue(id, out var status) && status is StringEntryStatus.Pending or StringEntryStatus.Error)
+            .Select(line => new AgentRejection(line.Id, Plain(line.Text), reasons.GetValueOrDefault(line.Id!.Value) ?? Unknown))
+            .ToList();
+    }
+
+    private static string Plain(string requestText)
+        => System.Text.RegularExpressions.Regex.Replace(requestText.Replace(" __XT_PH_9999__", ""), "⟦XT_[^⟧]*⟧", "");
+
+    private async Task<(string TargetLang, PlaceholderSemanticRepairMode Mode)> CheckSettingsAsync(AgentProject project,
+        CancellationToken cancellationToken)
+    {
+        await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, cancellationToken);
+        var info = await db.TryGetProjectAsync(cancellationToken);
+        // The batch result check runs the placeholder check only with the repair pass on (as the run is set up).
+        return (info?.DestLang ?? "korean", _settings.EnableRepairPass ? _settings.SemanticRepairMode : PlaceholderSemanticRepairMode.Off);
     }
 
     private async Task<(AgentStepReport Report, IReadOnlySet<(string Hash, int Attempt)> Used)> StepAsync(AgentProject project,
@@ -188,76 +254,30 @@ public sealed class AgentSession
 
         outcome = outcome with { PendingBefore = pendingBefore, Used = used };
         string? problem = outcome.Error == null ? null : "오류: " + outcome.Error.Message;
-        string? requestPath = null;
-        if (outcome.Next != null)
+        if (outcome.Next is { Attempt: > 0 } again)
         {
-            await WritePendingAsync(project, outcome.Next, cancellationToken);
-            requestPath = RequestPath(project);
-            if (outcome.Next.Attempt > 0)
-            {
-                problem ??= $"같은 요청을 다시 받았습니다({outcome.Next.Attempt + 1}번째). 앞선 답을 번역기가 받아들이지 않았습니다(줄 누락, 태그·자리표시자 불일치 등). request.md의 규칙을 다시 확인하고 답하세요.";
-            }
+            problem ??= $"같은 요청을 다시 받았습니다({again.Attempt + 1}번째). 앞선 답을 번역기가 받아들이지 않았습니다. request.md의 '앞 답이 걸린 이유'를 보고 답하세요.";
         }
 
-        return (new AgentStepReport(project, outcome.PendingBefore, outcome.PendingAfter, outcome.ErrorRows, outcome.Next, requestPath, problem),
-            outcome.Used);
+        return (new AgentStepReport(project, outcome.PendingBefore, outcome.PendingAfter, outcome.ErrorRows, outcome.Next,
+            outcome.Next == null ? null : RequestPath(project), problem), outcome.Used);
     }
 
-    private async Task WritePendingAsync(AgentProject project, AgentRequest request, CancellationToken cancellationToken)
+    /// <summary>Writes the report's next request (pending.json, instructions.md, request.md), if it has one.</summary>
+    private async Task<AgentStepReport> WriteNextAsync(AgentStepReport report, IReadOnlyList<AgentRejection> rejected,
+        CancellationToken cancellationToken)
     {
-        Directory.CreateDirectory(ProjectDir(project));
-        await File.WriteAllTextAsync(PendingPath(project), JsonSerializer.Serialize(request, Json), cancellationToken);
-        await File.WriteAllTextAsync(RequestPath(project), RenderRequest(project, request), cancellationToken);
+        if (report.Next is not { } request) return report;
+        var dir = ProjectDir(report.Project);
+        Directory.CreateDirectory(dir);
+        await File.WriteAllTextAsync(PendingPath(report.Project), JsonSerializer.Serialize(request, Json), cancellationToken);
+        var added = AgentRequestRenderer.WriteInstructions(dir, AgentRequestRenderer.Split(request).Sections);
+        var text = AgentRequestRenderer.Render(report.Project, request, added, rejected);
+        await File.WriteAllTextAsync(RequestPath(report.Project), text, cancellationToken);
+        return report with { NextRequestChars = text.Length, NewInstructionSections = added };
     }
 
-    /// <summary>The request as the model reads it: how to answer, then the run's own instructions and messages.</summary>
-    public static string RenderRequest(AgentProject project, AgentRequest request)
-    {
-        var sb = new StringBuilder();
-        sb.AppendLine($"# 번역 요청 ({Path.GetFileName(project.PluginPath)})");
-        sb.AppendLine();
-        sb.AppendLine($"- 요청 ID: {request.Hash} (시도 {request.Attempt + 1})");
-        sb.AppendLine($"- 글자 수: {request.Chars:N0}");
-        sb.AppendLine();
-        sb.AppendLine("## 답하는 법");
-        sb.AppendLine();
-        sb.AppendLine("아래 '지시'와 '요청'을 번역기의 API 번역과 똑같이 따른다. 답은 요청이 정한 형식 그대로");
-        if (string.Equals(request.ResponseMimeType, "application/json", StringComparison.OrdinalIgnoreCase))
-        {
-            sb.AppendLine("JSON 하나만(`{\"translations\":[{\"id\":<요청의 id>,\"text\":\"<번역>\"}, ...]}`) 파일에 쓴다. 요청의 모든 id에 답하고,");
-            sb.AppendLine("`__XT_...__` 같은 보호 토큰과 태그·줄바꿈은 그대로 둔다. 설명이나 코드 블록을 덧붙이지 않는다.");
-        }
-        else
-        {
-            sb.AppendLine("번역문만 파일에 쓴다. `<<<TEXT`와 `TEXT>>>` 사이의 글을 옮기고, `__XT_...__` 보호 토큰(끝의 `__XT_PH_9999__` 포함)과");
-            sb.AppendLine("태그·줄바꿈은 그대로 둔다. 설명이나 따옴표를 덧붙이지 않는다.");
-        }
-
-        sb.AppendLine();
-        sb.AppendLine($"쓴 뒤: `tullius submit {project.Key} <답 파일>`");
-        if (!string.IsNullOrWhiteSpace(request.ResponseSchema))
-        {
-            sb.AppendLine();
-            sb.AppendLine("응답 스키마:");
-            sb.AppendLine("```json");
-            sb.AppendLine(request.ResponseSchema);
-            sb.AppendLine("```");
-        }
-
-        sb.AppendLine();
-        sb.AppendLine("## 지시");
-        sb.AppendLine();
-        sb.AppendLine(request.SystemInstruction);
-        foreach (var message in request.Messages)
-        {
-            sb.AppendLine();
-            sb.AppendLine(message.Role == "user" ? "## 요청" : $"## {message.Role}");
-            sb.AppendLine();
-            sb.AppendLine(message.Text);
-        }
-
-        return sb.ToString();
-    }
+    public string InstructionsPath(AgentProject project) => Path.Combine(ProjectDir(project), AgentRequestRenderer.InstructionsFileName);
 
     private AgentProject? TryRead(string key)
     {

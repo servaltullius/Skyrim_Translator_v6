@@ -113,11 +113,24 @@ async Task SubmitAsync()
 
 void Print(AgentStepReport report)
 {
-    Console.WriteLine($"저장한 줄: {report.Saved}, 남은 줄: {report.PendingAfter}" + (report.ErrorRows > 0 ? $" (오류 {report.ErrorRows})" : ""));
+    Console.WriteLine($"저장한 줄: {report.Saved}, 남은 줄: {report.PendingAfter}" + (report.ErrorRows > 0 ? $" (오류 {report.ErrorRows})" : "")
+                      + (report.Rejected.Count > 0 ? $", 다시 물을 줄: {report.Rejected.Count}" : ""));
+    foreach (var r in report.Rejected)
+    {
+        var source = Flat(r.Source);
+        if (source.Length > 50) source = source[..50] + "…";
+        Console.WriteLine($"  - {(r.Id is { } id ? $"id {id}" : "이 줄")} ({source}): {r.Reason}");
+    }
+
     if (report.Problem != null) Console.WriteLine("알림: " + report.Problem);
     if (report.Next != null)
     {
-        Console.WriteLine($"다음 요청: {report.NextRequestPath} ({report.Next.Chars:N0}자, 추정 {report.Next.Chars / 3:N0}토큰)");
+        var chars = report.NextRequestChars > 0 ? report.NextRequestChars : report.Next.Chars;
+        Console.WriteLine($"다음 요청: {report.NextRequestPath} ({chars:N0}자, 추정 {chars / 3:N0}토큰)");
+        if (report.NewInstructionSections.Count > 0)
+        {
+            Console.WriteLine($"새 지시 절: {string.Join(", ", report.NewInstructionSections)} → {session.InstructionsPath(report.Project)}에서 읽기");
+        }
         Console.WriteLine($"답을 파일에 쓴 뒤: tullius submit {report.Project.Key} <답 파일>");
     }
     else if (report.PendingAfter == 0)

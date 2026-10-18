@@ -39,6 +39,7 @@ public sealed class AgentModeTests : IAsyncLifetime
     {
         await _global.DisposeAsync();
         TestDbHelper.ReleaseProjectPoolAndDeleteDbFiles(_project.DbPath);
+        foreach (var db in _extraDbs) TestDbHelper.ReleaseProjectPoolAndDeleteDbFiles(db);
         try { Directory.Delete(_root, recursive: true); } catch (IOException) { }
     }
 
@@ -141,6 +142,109 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.True(tagged.Status != StringEntryStatus.Done || tagged.DestText.Contains("<Alias=Player>", StringComparison.Ordinal),
             $"saved without the tag: {tagged.DestText}");
     }
+
+    /// <summary>
+    /// "피해를 &lt;mag&gt; 주고" reads as a duration (주 = week) to the run's placeholder check: the line is asked again,
+    /// and submit and the next request.md say which line and why. A text answer's file-ending newline is not saved.
+    /// </summary>
+    [Fact]
+    public async Task LineTheRunAsksAgain_IsReportedWithItsReason_AndTheFixIsSavedClean()
+    {
+        var project = await OpenAsync("Magic.esp", MagicPlugin());
+        var report = await _session.NextAsync(project, CancellationToken.None);
+        var batch = report.Next!;
+        Assert.True(AgentAnswerCheck.IsJson(batch));
+        var magId = AgentAnswerCheck.Lines(batch).Single(line => line.Text.Contains("<mag>", StringComparison.Ordinal)).Id!.Value;
+
+        report = await _session.SubmitAsync(project, JsonAnswer(batch, _ => "화염 피해를 <mag> 주고 적을 불태웁니다."), CancellationToken.None);
+
+        var rejected = Assert.Single(report.Rejected);
+        Assert.Equal(magId, rejected.Id);
+        Assert.Contains("시간으로 읽힙니다", rejected.Reason);
+        Assert.Contains("주고", rejected.Reason);
+        Assert.NotNull(report.Next);
+        Assert.Contains("앞 답이 걸린 이유", await File.ReadAllTextAsync(report.NextRequestPath!));
+
+        // The rest of the batch is saved, so a fresh run asks for the line alone; the same mistake there brings the
+        // one-line fix request, answered right in a file that ends with a newline.
+        var textRejections = new List<AgentRejection>();
+        var sawTextRepair = false;
+        for (var i = 0; i < 10 && report.Next is { } request; i++)
+        {
+            const string Fixed = "<mag>의 화염 피해를 주고 적을 불태웁니다.";
+            var answer = AgentAnswerCheck.IsJson(request) ? JsonAnswer(request, _ => Fixed)
+                : AgentAnswerCheck.IsRepair(request) ? Fixed + "\r\n"
+                : "화염 피해를 <mag> 주고 적을 불태웁니다. __XT_PH_9999__";
+            sawTextRepair |= !AgentAnswerCheck.IsJson(request) && AgentAnswerCheck.IsRepair(request);
+            report = await _session.SubmitAsync(project, answer, CancellationToken.None);
+            textRejections.AddRange(report.Rejected.Where(r => r.Id == null));
+        }
+
+        Assert.True(sawTextRepair, "no one-line fix request");
+        Assert.Contains(textRejections, r => r.Reason.Contains("시간으로 읽힙니다", StringComparison.Ordinal));
+        Assert.True(report.Finished);
+        await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, CancellationToken.None);
+        var row = (await db.GetStringsAsync(50, 0, CancellationToken.None)).Single(r => r.Id == magId);
+        Assert.Equal("<mag>의 화염 피해를 주고 적을 불태웁니다.", row.DestText);
+    }
+
+    [Fact]
+    public async Task Instructions_AreWrittenOnce_AndRequestMdNamesThem()
+    {
+        var report = await _session.NextAsync(_project, CancellationToken.None);
+        var first = report.Next!;
+        var instructions = await File.ReadAllTextAsync(_session.InstructionsPath(_project));
+        var requestMd = await File.ReadAllTextAsync(report.NextRequestPath!);
+
+        Assert.Contains(first.SystemInstruction.Trim(), instructions);
+        Assert.DoesNotContain(first.SystemInstruction.Trim(), requestMd);
+        Assert.Contains("새 절", requestMd);
+        Assert.True(requestMd.Length < first.Chars, $"request.md {requestMd.Length} chars, request {first.Chars}");
+        Assert.NotEmpty(report.NewInstructionSections);
+
+        report = await _session.SubmitAsync(_project, Answer(first), CancellationToken.None);
+        Assert.NotNull(report.Next);
+        Assert.Empty(report.NewInstructionSections.Where(id => id.StartsWith("S-", StringComparison.Ordinal)));
+        Assert.Contains("앞 요청과 같음", await File.ReadAllTextAsync(report.NextRequestPath!));
+    }
+
+    [Fact]
+    public async Task AnswerWhoseIdsFitNoLineOfTheRequest_IsRefused()
+    {
+        var request = await AnswerUntilAsync(await _session.NextAsync(_project, CancellationToken.None), IsJson);
+
+        var error = await Assert.ThrowsAsync<AgentModeException>(() => _session.SubmitAsync(_project,
+            "{\"translations\":[{\"id\":987654,\"text\":\"앞 요청의 답\"}]}", CancellationToken.None));
+
+        Assert.Contains("하나도 맞지 않아", error.Message);
+        Assert.Equal(request.Hash, _session.Pending(_project)?.Hash);
+    }
+
+    private async Task<AgentProject> OpenAsync(string name, byte[] plugin)
+    {
+        var path = Path.Combine(_root, "Mod", name);
+        await File.WriteAllBytesAsync(path, plugin);
+        var (project, _, _) = await _session.OpenAsync(path, new PluginReadOptions(), "korean", "utf-8", batchSize: 5, CancellationToken.None);
+        _extraDbs.Add(project.DbPath);
+        return project;
+    }
+
+    private readonly List<string> _extraDbs = new();
+
+    private static string JsonAnswer(AgentRequest request, Func<string, string> translate)
+        => JsonSerializer.Serialize(new
+        {
+            translations = AgentAnswerCheck.Lines(request).Select(line => new
+            {
+                id = line.Id,
+                text = line.Text.Contains("<mag>", StringComparison.Ordinal) ? translate(line.Text) : "번역: " + line.Text,
+            }),
+        });
+
+    private static byte[] MagicPlugin()
+        => Header().Concat(Group(Record("MGEF", 0x3001, Sub("EDID", Z("aaFireBite")), Sub("FULL", Z("Fire Bite")),
+                Sub("DNAM", Z("Deals <mag> fire damage and burns the target.")))))
+            .ToArray();
 
     private async Task<IReadOnlyList<long>> RowsWithStatusAsync(StringEntryStatus status)
     {
