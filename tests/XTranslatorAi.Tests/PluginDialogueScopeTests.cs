@@ -172,10 +172,13 @@ public sealed class PluginDialogueScopeTests
             Record("INFO", 0x1001, Sub("CTDA", GetIsId(0x00013269)), Sub("NAM1", Z("Elenwen speaks"))),
             Record("INFO", 0x1002, Sub("CTDA", GetIsId(0x00013269, or: true)), Sub("CTDA", GetIsId(0x0001E7D7)), Sub("NAM1", Z("Either speaks"))),
             Record("INFO", 0x1003, Sub("CTDA", GetIsId(0x0001E7D7, value: 0f)), Sub("NAM1", Z("Anyone but Ancano"))),
-            Record("INFO", 0x1004, Sub("NAM1", Z("Nobody in particular")))))).ToArray();
+            Record("INFO", 0x1004, Sub("NAM1", Z("Nobody in particular"))),
+            // GetIsID Elenwen OR GetInFaction ThalmorFaction: any Thalmor may say it.
+            Record("INFO", 0x1005, Sub("CTDA", GetIsId(0x00013269, or: true)), Sub("CTDA", Condition(71, 0x00039F26)), Sub("NAM1", Z("Elenwen or a soldier"))),
+            Record("INFO", 0x1006, Sub("CTDA", Condition(71, 0x00039F26, or: true)), Sub("CTDA", GetIsId(0x00013269)), Sub("NAM1", Z("A soldier or Elenwen")))))).ToArray();
         await using var fixture = await Fixture.CreateAsync(plugin);
 
-        Assert.Equal(new uint?[] { 0x00013269, null, null, null }, fixture.Document.Fields.Select(field => field.SpeakerFormId));
+        Assert.Equal(new uint?[] { 0x00013269, null, null, null, null, null }, fixture.Document.Fields.Select(field => field.SpeakerFormId));
         var speakers = await fixture.Db.GetStringSpeakersAsync(CancellationToken.None);
         Assert.Equal("00013269", Assert.Single(speakers).Value);
         Assert.Equal(fixture.Ids[0], speakers.Single().Key);
@@ -287,7 +290,16 @@ public sealed class PluginDialogueScopeTests
                 Record("DIAL", 0x01002000, Sub("EDID", Z("TopicRumor")), Sub("FULL", Z("Heard any rumors?"))),
                 TopicChildren(0x01002000,
                     Record("INFO", 0x01002001, Sub("CTDA", GetIsId(0x01000800)), Sub("NAM1", Z("None worth telling."))),
-                    Record("INFO", 0x01002002, Sub("CTDA", GetIsId(0x00013269)), Sub("NAM1", Z("Only the usual."))))))
+                    Record("INFO", 0x01002002, Sub("CTDA", GetIsId(0x00013269)), Sub("NAM1", Z("Only the usual.")))),
+                // Ondolemar answers, and so does anyone (no speaker condition): no one listener.
+                Record("DIAL", 0x01003000, Sub("EDID", Z("TopicWork")), Sub("FULL", Z("Any work for me?"))),
+                TopicChildren(0x01003000,
+                    Record("INFO", 0x01003001, Sub("CTDA", GetIsId(0x01000800)), Sub("NAM1", Z("Not for you."))),
+                    Record("INFO", 0x01003002, Sub("NAM1", Z("Ask around.")))),
+                // A base game topic the mod overrides to add Ondolemar's line: its text is said to everyone who answers it.
+                Record("DIAL", 0x00004000, Sub("EDID", Z("VanillaTopic")), Sub("FULL", Z("What's new?"))),
+                TopicChildren(0x00004000,
+                    Record("INFO", 0x01004001, Sub("CTDA", GetIsId(0x01000800)), Sub("NAM1", Z("Nothing you need know."))))))
             .ToArray();
         await using var fixture = await Fixture.CreateAsync(plugin);
         var client = new BatchEchoClient();
@@ -302,6 +314,8 @@ public sealed class PluginDialogueScopeTests
         Assert.StartsWith(TranslationPrompt.SpeakerContextPrefix + "Player, to Ondolemar", ctx["Can I ask you something?"]);
         Assert.StartsWith(TranslationPrompt.SpeakerContextPrefix + "Ondolemar", ctx["Ask, then."]);
         Assert.False(TranslationPrompt.HasSpeaker(ctx.GetValueOrDefault("Heard any rumors?")));
+        Assert.False(TranslationPrompt.HasSpeaker(ctx.GetValueOrDefault("Any work for me?")));
+        Assert.False(TranslationPrompt.HasSpeaker(ctx.GetValueOrDefault("What's new?")));
     }
 
     /// <summary>
@@ -353,6 +367,13 @@ public sealed class PluginDialogueScopeTests
                 Record("INFO", 0x01001001, Sub("CTDA", GetIsId(0x01000800)), Sub("NAM1", Z("Mind your tongue."))),
                 Record("INFO", 0x01001002, Sub("CTDA", GetIsId(0x01000800)), Sub("NAM1", Z("You may go."))),
                 Record("INFO", 0x01001003, Sub("NAM1", Z("Nobody in particular")))))).ToArray();
+
+    private static byte[] Condition(ushort function, uint parameter, bool or = false)
+    {
+        var data = GetIsId(parameter, or);
+        BinaryPrimitives.WriteUInt16LittleEndian(data.AsSpan(8), function);
+        return data;
+    }
 
     private static byte[] GetIsId(uint npc, bool or = false, float value = 1f)
     {

@@ -457,11 +457,17 @@ public sealed partial class ProjectDb
         }
     }
 
-    /// <summary>The English name (NPC_:FULL) of each NPC record the plugin carries, its own or an override, by FormID.</summary>
+    /// <summary>
+    /// The NPC a topic's text is said to: the one speaker of every INFO of the topic. A topic one of whose INFOs names
+    /// no speaker (a guard by faction beside Gian) or another one has no listener, and neither has a master's topic a
+    /// mod overrides to add a line: its text is the base game's, said to whoever answers it there.
+    /// </summary>
     public async Task<IReadOnlyDictionary<long, string>> GetTopicListenersAsync(CancellationToken cancellationToken)
     {
+        var masters = (await GetPluginMastersAsync(cancellationToken))?.Masters.Count ?? 0;
         var topics = new Dictionary<long, long>();
         var speakersByTopic = new Dictionary<long, HashSet<long>>();
+        var topicsWithAnyone = new HashSet<long>();
         await _gate.WaitAsync(cancellationToken);
         try
         {
@@ -483,9 +489,15 @@ public sealed partial class ProjectDb
                 {
                     topics[reader.GetInt64(0)] = reader.GetInt64(3);
                 }
-                else if (type == "INFO" && !reader.IsDBNull(4) && !reader.IsDBNull(5))
+                else if (type == "INFO" && !reader.IsDBNull(4))
                 {
                     var topic = reader.GetInt64(4);
+                    if (reader.IsDBNull(5))
+                    {
+                        topicsWithAnyone.Add(topic);
+                        continue;
+                    }
+
                     if (!speakersByTopic.TryGetValue(topic, out var set)) speakersByTopic[topic] = set = new HashSet<long>();
                     set.Add(reader.GetInt64(5));
                 }
@@ -499,7 +511,8 @@ public sealed partial class ProjectDb
         var map = new Dictionary<long, string>();
         foreach (var (stringId, topic) in topics)
         {
-            if (speakersByTopic.TryGetValue(topic, out var set) && set.Count == 1)
+            var ownTopic = (unchecked((uint)topic) >> 24) >= masters;
+            if (ownTopic && !topicsWithAnyone.Contains(topic) && speakersByTopic.TryGetValue(topic, out var set) && set.Count == 1)
             {
                 map[stringId] = unchecked((uint)set.First()).ToString("X8", System.Globalization.CultureInfo.InvariantCulture);
             }
@@ -508,6 +521,7 @@ public sealed partial class ProjectDb
         return map;
     }
 
+    /// <summary>The English name (NPC_:FULL) of each NPC record the plugin carries, its own or an override, by FormID.</summary>
     public async Task<IReadOnlyDictionary<uint, string>> GetPluginNpcNamesAsync(CancellationToken cancellationToken)
     {
         var map = new Dictionary<uint, string>();

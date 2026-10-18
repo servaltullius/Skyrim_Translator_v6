@@ -345,16 +345,23 @@ public static class PluginReader
     {
         const ushort GetIsId = 72;
         uint? speaker = null;
+        // A condition's OR flag joins it to the next one: "GetIsID Elenwen OR GetInFaction ThalmorFaction" is said by
+        // any Thalmor too, and naming Elenwen put a soldier's line in her voice.
+        var previousOr = false;
         foreach (var sub in record.Subrecords)
         {
             if (sub.Type != "CTDA" || sub.Data.Length < 24) continue;
             var data = sub.Data.Span;
+            var or = (data[0] & 0x01) != 0;
+            var joined = or || previousOr;
+            previousOr = or;
             var op = data[0] >> 5;
             var usesGlobal = (data[0] & 0x04) != 0;
             var value = BitConverter.Int32BitsToSingle(unchecked((int)PluginBinary.U32(data, 4)));
             var function = (ushort)(data[8] | (data[9] << 8));
             var runOn = PluginBinary.U32(data, 20);
             if (function != GetIsId || op != 0 || usesGlobal || value != 1f || runOn != 0) continue;
+            if (joined) return null;
             var npc = PluginBinary.U32(data, 12);
             if (speaker != null && speaker != npc) return null;
             speaker = npc;
