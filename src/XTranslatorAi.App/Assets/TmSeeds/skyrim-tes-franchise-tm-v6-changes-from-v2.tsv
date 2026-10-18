@@ -41,6 +41,7 @@ A... mudcrab?	뭐...? 진흙게?	뭐...? 진흙 게?
 About that amulet...	아뮬렛 말인데...	아뮬렛에 말인데...
 Absolutely not. No pets. Ever.	절대 안 된다. 애완동물은 안 돼. 절대로.	난 동물이 싫다.
 Accept Jarl <Alias=Jarl>'s surrender	<Alias=Jarl>의 항복을 받기	<Alias=Jarl> 의 항복을 받기
+Actually, now that you mention it...(Attack)	사실, 말이 나와서 말인데... (공격)	흠, 그걸 언급한 이상은... (공격)
 Add a greenhouse with customizable planters.	마음대로 여러 가지 식물을 재배할 수 있는 온실을 추가합니다.	마음대로 여러가지 식물을 재배할 수 있는 온실을 추가합니다.
 Add a kitchen that can be fitted out with cooking stations, food containers and the like.	여러 가지 주방용품들과 음식 저장 용기 등이 구비된 부엌을 추가합니다.	여러가지 주방용품들과 음식 저장용기등이 구비된 부엌을 추가합니다.
 Add a residential wing with master bedroom and childrens' bedroom. Includes an exterior porch.	주 침실과 어린이용 침실들로 구성된 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.	주 침실과 어린이용 침실들로 구성된 공간을 추가합니다. 외부로 통하는 문도 포함되어 있습니다.
@@ -379,6 +380,7 @@ He convinced Solitude to attack Winterhold.	올라프가 솔리튜드에게 윈�
 He ordered the execution. It's on his head... not yours.	처형을 명령한 것은 의원이야. 책임은 그자에게 있지... 당신이 아니라.	처형을 명령한 것은 의원이야. 죽어도 그자가 죽지... 당신이 아니라.
 He still needs to pay for his crimes.	그래도 죗값을 치러야 합니다.	그래도 죗값을 치르어야 합니다.
 He wants the "secrets of the Skaal" in exchange for teaching me the third Word.	세번째 힘의 단어를 가르쳐주는 대가로 '스칼의 비밀'을 원하고 있습니다.	세번째 힘의 단어를 가르쳐주는 댓가로 '스칼의 비밀'을 원하고 있습니다.
+Here are the notes you wanted.	당신이 원하던 메모요.	당신이 원하던 쪽지들이오.
 Here's your <Alias=QuestItem>.	여기 <Alias=QuestItem>(이)오.	여기 <Alias=QuestItem> 이오.
 Here's your gold. (10,000 gold)	자 지불하지. (10,000 골드)	자 지불하지. (10.000 골드)
 Here's your heartscale.	심장비늘을 가져왔습니다.	심장 비늘을 가져왔습니다.
@@ -452,6 +454,7 @@ I have some Frost Salts for you, from Farengar.	파렌가씨의 부탁으로 냉
 I have some netch jelly right here. (Give 5 netch jelly)	네치 젤리를 조금 가지고 있소. (네치 젤리 5개 주기)	네치 젤리를 조금 가지고 있소. ( 네치 젤리 5개 주기)
 I have the three soaked taproots.	물에 적신 곧은뿌리 3개를 가져왔는데.	물에 적신 곧은 뿌리 3 개를 가져왔는데.
 I have to speak with Astrid! She's here, in the Sanctuary. Follow me.	아스트리드와 이야기를 해 봐야한다! 그녀는 지금 여기 성역에 있으니, 따라 와.	아스트리드와 이야기를 해 봐야한다! 그녀는 지금 여기 성지에 있으니, 따라 와.
+I have your amulet.	아뮬렛을 가져왔소.	목걸이를 가져왔소.
 I know where the Blood Horkers are.	블러드 호커 해적단이 있는 장소를 알아냈다.	블러드 호커 해적단이 있는 잘소를 알아냈다.
 I made a mistake. I want to go ahead with the ceremony.	제가 실수했습니다. 결혼식을 열고 싶습니다.	실수했군. 결혼식을 열고 싶습니다.
 I need something enchanted.	마법부여가 필요한 물건이 있습니다.	마법부여를 하고 싶습니다.
@@ -510,7 +513,6 @@ I'm the Jarl's Thane. I demand you let me go at once.	나는 야를의 쎄인이
 I've been better. And you?	썩 좋지는 않네. 자네는?	좀 나아진 것 같군. 자네는?
 I've been sent to resolve a dispute. (Brawl)	분쟁을 해결하라고 해서 왔다. (싸움)	자네를 적당히 손 좀 봐주라더군. (싸움)
 I've been traveling all over. Even been to Helgen...	나는 모든 지역을 여행해 보았소. 헬겐까지도...	나는 모든 지역을 여행해 보았소.헬겐까지도...
-I've brought you <Alias=QuestItem>.	<Alias=QuestItem>을(를) 가져 왔습니다.	<Alias=QuestItem>를 가져 왔습니다.
 I've collected all the Rings of Blood Magic.	피의 마법 반지를 모두 모았소.	피의 마법 반지을 모두 모았소.
 I've destroyed the <Alias=Vampire> at <Alias=Dungeon>.	<Alias=Dungeon>에서 <Alias=Vampire>을(를) 죽였소.	<Alias=Dungeon>에서 <Alias=Vampire>을 죽였소.
 I've found the fire salts for your forge.	당신의 대장간에 쓸 화염 소금 몇 개를 가져왔소.	당신의 대장간에 쓸 화염소금 몇 개를 가져왔소.
@@ -633,7 +635,7 @@ Nchardak Great Chamber	느챠닥 대석실	느챠닥 대매장묘실
 Nearby creatures, including undead, machines and daedra, can be seen through walls for <dur> seconds.	<dur> 초 동안 주변의 언데드, 기계, 데이드라를 포함한 생물체를 벽 너머로 볼 수 있습니다.	<dur> 초 동안 주변의 언데드, 기계, 데이드라를 제외한 생물체를 벽 너머로 볼 수 있습니다.
 Neloth's <mag> point health boost.	체력이 <mag> 증가합니다.	체력이 <mag> 증가합니다
 Never mind that... it worked!	신경 쓰지마... 제대로 되었어!	신경 쓰지마... 재대로 되었어!
-Nirya wanted me to steal your notes.	니리야가 당신의 쪽지를 훔쳐달라더군.	니리야가 당신의 쪽지를 훔져달라더군.
+Nirya wanted me to steal your notes.	니리야가 당신의 메모를 훔쳐달라더군.	니리야가 당신의 쪽지를 훔져달라더군.
 No bolts equipped.	장비 중인 볼트가 없습니다.	장비중인 볼트가 없습니다.
 No more self loathing for Pelagius.	펠라지우스는 더 이상 자신을 혐오하지 않을 것이오.	펠라지우스는 더 이상의 자신을 혐오하지 않을 것이오.
 No. Dragons like mountains, right?	아니요. 드래곤이 산을 좋아해서 그런 겁니까?	그게. 드래곤이 산을 좋아해서 그런 겁니까?
@@ -765,6 +767,7 @@ Severin Family Safe	세브린 가문 금고	스베린 가문 금고
 Shadow Warrior Invisibility	그림자 전사 투명화	어둠의 전사 투명화
 Shards of Mehrunes' Razor	메이룬스의 면도칼 칼날 파편	메이룬스의 면도칼 칼날파편
 She wanted to go home, so I took her to her castle.	집으로 돌아가길 원하길래, 그녀의 성으로 데려다 주었소.	집으로 돌아가길 원하길래, 데려다 주었소.
+She wants you to return to Temple.	당신이 신전에 다시 나오길 원하더군.	당신이 사원에 다시 나오길 원하더군.
 She'll help us?	그 여자가 우리를 도와준다는 말이오?	우리를 도와 주겠소?
 She's not exactly young anymore.	모웬도 이제 젊은 나이가 아니잖소.	모웬은 더 이상 어린 애가 아닌데.
 Shock Cloaked Spider	천둥 망토 거미	전격 거미
@@ -797,6 +800,8 @@ Some coin, to soothe your guilt? (<BribeCost> gold)	죄책감을 좀 덜어 줄 
 Someone has to be in charge, though.	그래도 누군가는 이끌어야 할 텐데.	그래도 누군가가 책임을 져야할텐데.
 Something for bad dreams?	악몽에 듣는 약이라니?	나쁜 꿈을 꾸기라도 했소?
 Something tells me that it is.	왠지 그럴 것 같아.	무언가가 내게 그렇다고 말하고 있어.
+Sorry, I'm afraid you'll make me look silly.	미안하지만, 그 옷을 입으면 내가 우스워 보일 것 같은데.	미안하지만, 나를 바보로 만드는 것 같은데.
+Sorry. You'll have to find some other way to stroke your ego.	미안하지만. 자존심을 세우고 싶다면 다른 방법을 찾아보시오.	미안하지만. 아첨을 원한다면 다른 방법을 찾아보시오.
 Soul trap me. I won't feel right as a vampire.	소울 트랩을 걸어 줘. 흡혈귀가 돼서는 안 될 것 같아.	소울 트랩을 걸어 줘. 흡혈귀가 되서는 안 될 것 같아.
 Sounds good, I'll follow you.	좋소, 따라가지.	좋소., 따라가지.
 Sounds like more then just "bad blood."	단순한 '원한' 이상인 것처럼 들리는데.	단순한 '악연' 이상인 것처럼 들리는데.
@@ -922,6 +927,7 @@ The poor in Markarth live in the Warrens, and are almost exclusively natives of 
 The Stormcloaks gained control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 점령했습니다.	스톰클록군이 <Alias=Hold> 를 점령했습니다.
 The Stormcloaks kept control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 지켜냈습니다.	스톰클록군이 <Alias=Hold>를 지켜냈습니다.
 The Stormcloaks lost control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 잃었습니다.	스톰클록군이 <Alias=Hold> 를 잃었습니다.
+The Temple's tomb has been cleansed.	신전의 무덤은 정화되었소.	사원의 무덤은 정화되었소.
 The Thief Stone ability lets you learn stealth skills more quickly.	'도적의 선돌'은 도적 계열 기술을 더 빠르게 배울 수 있도록 해줍니다.	'도적의 선돌'은 은신 기술을 더 빠르게 배울 수 있도록 해줍니다.
 The wooden mask hums with an unfamiliar energy.	나무 가면에서 이상한 기운이 흘러넘치고 있습니다.	나무 가면에서 이상한 기운이 흘러 넘치고 있습니다.
 The Woodsman's Friend	나무꾼의 친구	나무꾼의 전투 도끼
@@ -1033,6 +1039,7 @@ What would you ask of me?	나에게 어떠한 것을 부탁하러 온 겐가?	�
 What would you like?	뭘 갖고 싶니?	어떤 걸 좋아하니?
 What's an East Empire Pendant?	동제국 회사 펜던트라는게 뭐요?	동제국 펜던트라는게 뭐요?
 What's at Fort Hraggstad?	흐라그스타드 요새에는 뭐가 있습니까?	흐라그스타드 요새에 무슨 일이 있었습니까?
+What's been sending you to Darkwater Crossing?	무슨 일로 다크워터 갈림길에 다니는 거지?	왜 다크워터 갈림길로 뭘 보내는 거지?
 What's expected of me here?	여기서 제게 기대하는 건 뭡니까?	여기서 제가 할 일은 뭡니까?
 What's in your head?	머릿속에 뭐가 있다는 거요?	뭔가 좋은 생각이라도?
 What's stopping you?	무엇이 가로막고 있지?	못 돌아 가는 건가?
@@ -1102,9 +1109,11 @@ You dare question my skill?	감히 내 실력을 의심하는 겁니까?	감히 
 You did try to trick me into letting you go.	풀려나려고 날 속이려 했잖아.	풀려나기 위해서 날 속이려는 거군.
 You do realize this is treason...	이건 명백한 반역 행위인데...	이건 명백한 배신 행위인데...
 You don't seem very grateful.	그다지 고마워하는 것 같지 않군.	그다지 환영받지 못하는 것 같군.
+You have.... But I don't care.	잘 알아들었어... 하지만 상관없어.	당신은 그렇겠지... 하지만 상관없어.
 You mentioned trading caravans?	카짓 행상인들이라 했소?	캐러밴이라 했소?
 You ready to listen to reason now?	이제 말이 좀 통하겠나?	이제 이유를 들을 준비가 되었나?
 You rebels are doing a fine job destroying yourselves. Soldiers running errands?	너희 반란군은 자멸하고 있군. 병사가 심부름도 하나?	너희 반란군은 자멸하고 있군. 병사이 심부름도 하나?
+You said something about a bad deal?	손해 본 거래에 대해 뭔가 말했지?	부당거래에 대해 뭔가 말했지?
 You said you're in hiding? From who?	숨다니? 누구한테서?	숨다니? 누구한테서??
 You seem friendly.	꽤 우호적인 것 같은데.	아주 친숙해 보이는데.
 You sent for me?	날 불렀소?	나를 위해서 보냈다고?

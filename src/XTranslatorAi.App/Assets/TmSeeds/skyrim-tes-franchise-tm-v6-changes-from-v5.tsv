@@ -21,6 +21,7 @@ A dragon destroyed Helgen. <Alias=RiverwoodFriend> is afraid Riverwood is next.	
 A Grand Soul gem filled with a Grand Soul is required to build the Arcane Enchanter.	마법부여대를 제작하기 위해서는 특급 소울젬(특급)이 필요합니다.	마법 부여대를 제작하기 위해서는 특급 소울젬(특급)이 필요합니다.
 A tidy, one-room house.	깔끔한 방 하나짜리 집.	자그마한, 방 하나짜리 집.
 Accept Jarl <Alias=Jarl>'s surrender	<Alias=Jarl>의 항복을 받기	<Alias=Jarl> 의 항복을 받기
+Actually, now that you mention it...(Attack)	사실, 말이 나와서 말인데... (공격)	흠, 그걸 언급한 이상은... (공격)
 Add a greenhouse with customizable planters.	마음대로 여러 가지 식물을 재배할 수 있는 온실을 추가합니다.	마음대로 여러가지 식물을 재배할 수 있는 온실을 추가합니다.
 Add a kitchen that can be fitted out with cooking stations, food containers and the like.	여러 가지 주방용품들과 음식 저장 용기 등이 구비된 부엌을 추가합니다.	여러가지 주방용품들과 음식 저장용기등이 구비된 부엌을 추가합니다.
 Add a room that can be equipped with smithing stations and weapon storage. Includes an exterior porch.	제련용 시설 외에 무기들을 저장할 수 있는 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.	제련용 시설외에 무기들을 저장할 수 있는 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.
@@ -162,6 +163,7 @@ Hallowed Dead	신성한 시신	신성한 사체
 Have you heard from Thorald?	쏘럴드에게서 소식은 있었소?	쏘럴드에게 이야기를 들었소?
 Having an outsider do your bidding might seem powerful...	외부인을 부하처럼 부리는 건 강해 보일 수도 있을 텐데...	외부인에게 부탁하는 게 강해 보일지는...
 He ordered the execution. It's on his head... not yours.	처형을 명령한 것은 의원이야. 책임은 그자에게 있지... 당신이 아니라.	처형을 명령한 것은 의원이야. 죽어도 그자가 죽지... 당신이 아니라.
+Here are the notes you wanted.	당신이 원하던 메모요.	당신이 원하던 쪽지들이오.
 Here's your <Alias=QuestItem>.	여기 <Alias=QuestItem>(이)오.	여기 <Alias=QuestItem> 이오.
 Here's your heartscale.	심장비늘을 가져왔습니다.	심장 비늘을 가져왔습니다.
 Here, take them. (Give fragments)	여기, 받으시오. (조각들을 건넨다)	여기, 받으시오. (파편들을 건넨다)
@@ -185,6 +187,7 @@ I found the same marking at Honningbrew Meadery.	허닝브루 양조장에서 �
 I got the fragment.	조각을 가져왔습니다.	조각들을 가져왔습니다.
 I have Kodlak's fragment.	코들락이 가지고 있던 조각을 가져왔습니다.	코들락이 가지고 있던 조각들을 가져왔습니다.
 I have returned from <Alias=Dungeon> with the <Alias=Remains>.	<Alias=Dungeon>에 있던 <Alias=Remains>을(를) 가지고 돌아왔소.	<Alias=Dungeon>에 있던 <Alias=Remains>을 가지고 돌아왔소.
+I have your amulet.	아뮬렛을 가져왔소.	목걸이를 가져왔소.
 I made a mistake. I want to go ahead with the ceremony.	제가 실수했습니다. 결혼식을 열고 싶습니다.	실수했군. 결혼식을 열고 싶습니다.
 I presume this <Alias=Loot> belongs to you?	이 <Alias=Loot>은(는) 당신 거라고 생각되는데?	이 <Alias=Loot>는 당신 거라고 생각되는데?
 I pursue Alduin, the World-Eater.	세상을 삼키는 자, 알두인을 쫓고 있습니다.	세계를 삼키는 자, 알두인을 쫓고 있습니다.
@@ -205,7 +208,6 @@ I'm not doing anything yet.	아직 아무것도 하겠다고 한 적 없는데.	
 I'm not.	관심 없어.	아직은.
 I'm sorry boy, but I'm not who you think I am.	미안하다, 꼬마야. 하지만 난 네가 생각하는 그런 사람이 아니란다.	(떠나기)
 I'm sorry?	미안하지만...?	실례지만?
-I've brought you <Alias=QuestItem>.	<Alias=QuestItem>을(를) 가져 왔습니다.	<Alias=QuestItem>를 가져 왔습니다.
 I've destroyed the <Alias=Vampire> at <Alias=Dungeon>.	<Alias=Dungeon>에서 <Alias=Vampire>을(를) 죽였소.	<Alias=Dungeon>에서 <Alias=Vampire>을 죽였소.
 I've killed the vampire masquerading as a <Alias=Target>.	<Alias=Target>(으)로 변장한 흡혈귀를 죽였소.	<Alias=Target> (으)로 변장한 흡혈귀를 죽였소.
 I've made my peace. I'm ready.	마음의 정리는 끝났어. 준비 되었어.	나는 아주 평온한 상태야. 준비 되었어.
@@ -252,6 +254,7 @@ Mounted Elk Antlers	큰뿔사슴 뿔 박제	큰 뿔 박제
 Mounted Elk Head	큰뿔사슴 머리 박제	큰 뿔 사슴 머리 박제
 Mystic Dagger	신비한 단검	신비한 마법 단검
 Nchardak Great Chamber	느챠닥 대석실	느챠닥 대매장묘실
+Nirya wanted me to steal your notes.	니리야가 당신의 메모를 훔쳐달라더군.	니리야가 당신의 쪽지를 훔쳐달라더군.
 Nobody hears from them much anymore.	더 이상 소식 들을 일은 없을 거야.	더이상 소식들을 일은 없을 거야.
 Nocturnal is the daedric mistress of stealth and shadow, and a patron to thieves.	녹터널은 잠행과 그림자의 데이드릭 프린스이며, 도둑들의 후원자입니다.	녹터널은 잠행과 그림자의 데이드라 프린스이며, 도둑들의 후원자입니다.
 Note to the Authorities	당국에 보내는 메모	당국의 메모
@@ -318,6 +321,7 @@ Self Doubt	자기 의심	자아 의문
 Shadow Warrior Invisibility	그림자 전사 투명화	어둠의 전사 투명화
 Shards of Mehrunes' Razor	메이룬스의 면도칼 칼날 파편	메이룬스의 면도칼 칼날파편
 She wanted to go home, so I took her to her castle.	집으로 돌아가길 원하길래, 그녀의 성으로 데려다 주었소.	집으로 돌아가길 원하길래, 데려다 주었소.
+She wants you to return to Temple.	당신이 신전에 다시 나오길 원하더군.	당신이 사원에 다시 나오길 원하더군.
 Shriekwind Bastion	쉬리크윈드 보루요새	쉬리크윈드 전망대
 Shrine Base	성소 받침대	신전
 Shrouded Cowl Maskless	암살자의 가면 없는 두건	암살자의 가면없는 두건
@@ -327,6 +331,8 @@ Solitude Military Camp	솔리튜드 군영지	솔리튜드 군용 주둔지
 Solstheim Mudcrab	솔스트하임 진흙게	솔스트하임 진흙 게
 Something for bad dreams?	악몽에 듣는 약이라니?	나쁜 꿈을 꾸기라도 했소?
 Something tells me that it is.	왠지 그럴 것 같아.	무언가가 내게 그렇다고 말하고 있어.
+Sorry, I'm afraid you'll make me look silly.	미안하지만, 그 옷을 입으면 내가 우스워 보일 것 같은데.	미안하지만, 나를 바보로 만드는 것 같은데.
+Sorry. You'll have to find some other way to stroke your ego.	미안하지만. 자존심을 세우고 싶다면 다른 방법을 찾아보시오.	미안하지만. 아첨을 원한다면 다른 방법을 찾아보시오.
 Sounds like more then just "bad blood."	단순한 '원한' 이상인 것처럼 들리는데.	단순한 '악연' 이상인 것처럼 들리는데.
 Speak to <Alias.ShortName=Target> about going to the Temple of Divines.	디바인 신전에 가는 것에 관해 <Alias.ShortName=Target>와 대화하기	디바인 신전에 가는 것에 관해 <Alias.ShortName=Target>과 대화하기
 Speak to Brynjolf about being Guild Master	길드 지도자의 역할에 관해서 브린욜프와 대화하기	브린욜프에게 길드 지도자로 살아가는 것에 관해서 대화하기
@@ -385,6 +391,7 @@ The Nords first conquered Markarth from the native people of the Reach thousands
 The Stormcloaks gained control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 점령했습니다.	스톰클록군이 <Alias=Hold> 를 점령했습니다.
 The Stormcloaks kept control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 지켜냈습니다.	스톰클록군이 <Alias=Hold>를 지켜냈습니다.
 The Stormcloaks lost control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 잃었습니다.	스톰클록군이 <Alias=Hold> 를 잃었습니다.
+The Temple's tomb has been cleansed.	신전의 무덤은 정화되었소.	사원의 무덤은 정화되었소.
 The wooden mask hums with an unfamiliar energy.	나무 가면에서 이상한 기운이 흘러넘치고 있습니다.	나무 가면에서 이상한 기운이 흘러 넘치고 있습니다.
 The Woodsman's Friend	나무꾼의 친구	나무꾼의 전투 도끼
 The World-Eater's Eyrie	세상을 삼키는 자의 둥지	세계를 삼키는 자의 둥지
@@ -428,6 +435,7 @@ What evil do you mean?	어떤 악마를 말하는 거지?	어떤 악을 말하�
 What happened during the Night of Green Fire?	녹색 화염의 밤에 무슨 일이 일어났습니까?	녹색 불의 밤에 무슨 일이 일어났습니까?
 What would you like?	뭘 갖고 싶니?	어떤 걸 좋아하니?
 What's at Fort Hraggstad?	흐라그스타드 요새에는 뭐가 있습니까?	흐라그스타드 요새에 무슨 일이 있었습니까?
+What's been sending you to Darkwater Crossing?	무슨 일로 다크워터 갈림길에 다니는 거지?	왜 다크워터 갈림길로 뭘 보내는 거지?
 What's expected of me here?	여기서 제게 기대하는 건 뭡니까?	여기서 제가 할 일은 뭡니까?
 Who did this?	누구 짓이오?	누구 짓이요?
 Why did you work for him then?	그렇다면 어째서 그 사람 밑에서 일했지?	그렇다면 어째서 그를 위해서 일하는거지?
@@ -442,7 +450,9 @@ Yngol's Barrow	잉골 고분	잉골의 무덤
 You are a disgrace to our race! I spit on your fur!	넌 우리 종족의 수치다! 네 털에 침을 뱉어 주마!	넌 우리 종족의 수치다! 네 가죽을 벗겨 침을 뱉어 주마!
 You became trapped.	결국 갇혀 버린 거군.	함정에 빠진거였군.
 You did try to trick me into letting you go.	풀려나려고 날 속이려 했잖아.	풀려나기 위해서 날 속이려는 거군.
+You have.... But I don't care.	잘 알아들었어... 하지만 상관없어.	당신은 그렇겠지... 하지만 상관없어.
 You mentioned trading caravans?	카짓 행상인들이라 했소?	캐러밴이라 했소?
+You said something about a bad deal?	손해 본 거래에 대해 뭔가 말했지?	부당거래에 대해 뭔가 말했지?
 You think she'll get over it?	당신 딸이 그 마음을 접을 거라고 생각하시오?	당신 딸이 견딜 수 있을거라고 생각하시오?
 You wanted to thank me for killing <Alias=Victim>?	<Alias=Victim>을(를) 죽인 것에 대한 감사표시?	<Alias=Victim>을/를 죽인 것에 대한 감사표시?
 You will do my bidding.	내 명령을 따르라.	나의 부름에 응답하라.
