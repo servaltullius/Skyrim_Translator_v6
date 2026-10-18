@@ -336,7 +336,20 @@ public sealed class GlossaryApplier
                 return true;
             }
 
-            return text[index] == 'M' && nextWord.Length > 1 && char.IsUpper(nextWord[0]) && !MasterLevelWords.Contains(nextWord);
+            if (MasterLevelWords.Contains(nextWord))
+            {
+                return false;
+            }
+
+            // "your Master" and "the Dark Master" are a person too (Meridia's Order: "네 달인", "어둠의 달인").
+            var (previousWord, startsSentence) = ReadPreviousAsciiWord(text, index);
+            if (PossessiveDeterminers.Contains(previousWord)
+                || (text[index] == 'M' && previousWord.Length > 1 && char.IsUpper(previousWord[0]) && !startsSentence))
+            {
+                return true;
+            }
+
+            return text[index] == 'M' && nextWord.Length > 1 && char.IsUpper(nextWord[0]);
         }
 
         var start = Math.Max(0, index - 40);
@@ -347,6 +360,35 @@ public sealed class GlossaryApplier
         }
 
         return term == "Scroll" && TheBefore.IsMatch(before) && !string.Equals(nextWord, "of", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static readonly HashSet<string> PossessiveDeterminers = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "my", "your", "his", "her", "our", "their", "thy",
+    };
+
+    // The word just before index (only spaces between), and whether it starts its sentence.
+    private static (string Word, bool StartsSentence) ReadPreviousAsciiWord(string text, int index)
+    {
+        var end = index;
+        while (end > 0 && text[end - 1] == ' ')
+        {
+            end--;
+        }
+
+        var start = end;
+        while (start > 0 && char.IsAsciiLetter(text[start - 1]))
+        {
+            start--;
+        }
+
+        if (start == end || end == index)
+        {
+            return ("", false);
+        }
+
+        var before = text.AsSpan(0, start).TrimEnd().TrimEnd("\"'“‘(".AsSpan()).TrimEnd();
+        return (text[start..end], before.IsEmpty || before[^1] is '.' or '!' or '?' or '…' or ':');
     }
 
     private static bool IsJoinedByHyphen(string text, int index, int length)

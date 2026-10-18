@@ -294,6 +294,12 @@ public class GlossaryApplierTests
     [InlineData("Master", "달인", "Bring the Four Master Illusion texts.", true)]
     [InlineData("Master", "달인", "You are a true Master.", true)]
     [InlineData("Master", "달인", "I do not require a Master's approval to validate my existence.", false)]
+    // Meridia's Order: "네 달인", "어둠의 달인".
+    [InlineData("Master", "달인", "Your work is foul, like your Master.", false)]
+    [InlineData("Master", "달인", "Only a fool would face the Dark Master!", false)]
+    [InlineData("Master", "달인", "Please, the Dark Master wishes to speak with you.", false)]
+    [InlineData("Master", "달인", "Reach your Master Destruction rank.", true)]
+    [InlineData("Master", "달인", "Speak to the College Master Trainer.", true)]
     // Meridia's Order: the Argonian Cleans-Many-Boots came back as 클린즈-매니-전투화.
     [InlineData("Boots", "전투화", "Have you seen Cleans-Many-Boots?", false)]
     [InlineData("Boots", "전투화", "Iron Boots - 50 gold.", true)]
