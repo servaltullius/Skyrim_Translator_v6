@@ -306,6 +306,12 @@ internal static class SpeakerToneConsistencyRule
                 .Where(part => !EndsInOpenClause(part) && !cries.Contains(part))
                 .Select(part => SentenceLevel(part, keepShort: false))
                 .FirstOrDefault(found => found != Register.Unknown);
+            // A line that only trails off, with no sentence before it to go by: "분명 더 쓸모 있는 일을 할 수 있을
+            // 텐데, 챔피언.", "이건 믿음이 안 가." (Laracin in Meridia's Order). 존댓말 would end in 요 (텐데요).
+            if (level == Register.Unknown && EndsInCasualClause(text))
+            {
+                level = Register.Casual;
+            }
         }
 
         return (level, weak);
@@ -558,6 +564,27 @@ internal static class SpeakerToneConsistencyRule
         // "황량한 땅의 구석구석까지, 그대가 ... 전해주기를.": the particle 까지, not 반말's 지.
         "까지",
     };
+
+    private static readonly string[] CasualClauseEndings = { "텐데", "테니", "테니까", "는데", "은데", "던데", "건데", "니까", "안 가", "못 가" };
+
+    private static bool EndsInCasualClause(string? text)
+    {
+        var cleaned = Clean(text);
+        var comma = cleaned.LastIndexOf(',');
+        if (comma > 0 && !cleaned[(comma + 1)..].Trim().Contains(' '))
+        {
+            cleaned = cleaned[..comma].TrimEnd(); // a closing vocative: "…텐데, 챔피언"
+        }
+
+        if (!cleaned.Contains(' ') || !CasualClauseEndings.Any(e => cleaned.EndsWith(e, StringComparison.Ordinal)))
+        {
+            return false;
+        }
+
+        // ~ㅂ니까 and ~습니까 ask in 합니다체.
+        return !(cleaned.EndsWith("니까", StringComparison.Ordinal) && cleaned.Length >= 3
+                 && (FinalConsonant(cleaned[^3]) == 17 || cleaned[^3] == '습'));
+    }
 
     private static bool EndsInOpenClause(string? text)
     {

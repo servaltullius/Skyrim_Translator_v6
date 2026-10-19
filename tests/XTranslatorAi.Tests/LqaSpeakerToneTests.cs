@@ -409,6 +409,12 @@ public class LqaSpeakerToneTests
     [InlineData("우리 물건을 훔친 그 멍청이? 몰라.", true, true)]
     [InlineData("우리 둘이 한번 결투라도 해 볼까.", true, true)]
     [InlineData("그럼 질문이 있는 건가?", true, true)]
+    // A line that only trails off: 텐데, 테니, 안 가 (존댓말 would be 텐데요); 합니까 is 존댓말.
+    [InlineData("분명 더 쓸모 있는 일을 할 수 있을 텐데, 챔피언.", true, true)]
+    [InlineData("두려워 마. 우릴 얕보는 자는 누구든 후회하게 될 테니.", true, true)]
+    [InlineData("이건 믿음이 안 가.", true, true)]
+    [InlineData("이제 어디로 갑니까?", false, true)]
+    [InlineData("오래 걸리진 않을 테니.", false, false)]
     // Nouns and names with those endings are not 반말.
     [InlineData("그가 우리 교단의 지도자.", true, false)]
     [InlineData("여기가 바로 그들의 나라.", true, false)]
