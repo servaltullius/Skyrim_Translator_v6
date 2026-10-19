@@ -135,7 +135,7 @@ public sealed partial class TranslationService
 
         if (request.EnableRunNameMemory)
         {
-            await InitializeRunNameMemoryAsync(items, request.CancellationToken);
+            await InitializeRunNameMemoryAsync(items, request.NameMemoryRows, request.CancellationToken);
         }
 
         var schema = TranslationPrompt.BuildResponseSchema();

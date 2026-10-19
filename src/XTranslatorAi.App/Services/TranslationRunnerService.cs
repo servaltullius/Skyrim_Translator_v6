@@ -60,7 +60,9 @@ public sealed class TranslationRunnerService
         bool EnableBookContext = false,
         IReadOnlyDictionary<string, string>? BookTitlesByEdid = null,
         // The player's game translation; rows it covers are finished without a request (see GameStringDictionary).
-        XTranslatorAi.Core.Plugins.GameStringDictionary? GameStrings = null
+        XTranslatorAi.Core.Plugins.GameStringDictionary? GameStrings = null,
+        // The rows whose translations the name memory reads (an agent lane's); null for all.
+        IReadOnlySet<long>? NameMemoryRows = null
     );
 
     public sealed record Result(bool Canceled, Exception? Error);
@@ -452,7 +454,8 @@ public sealed class TranslationRunnerService
             MaxTotalGenerations: request.MaxTotalGenerations,
             EnableAdaptiveOutputBudget: request.EnableAdaptiveOutputBudget,
             EnableBookContext: request.EnableBookContext,
-            BookTitlesByEdid: request.BookTitlesByEdid
+            BookTitlesByEdid: request.BookTitlesByEdid,
+            NameMemoryRows: request.NameMemoryRows
         );
     }
 

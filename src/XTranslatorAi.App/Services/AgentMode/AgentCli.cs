@@ -78,6 +78,16 @@ public static class AgentCli
         var toOption = Option("--to");
         var noteOption = Option("--note");
         var clearStyle = rest.Remove("--clear");
+        AgentLane? lane;
+        try
+        {
+            lane = AgentLane.Parse(Option("--lane"));
+        }
+        catch (AgentModeException ex)
+        {
+            Console.WriteLine("실패: " + ex.Message);
+            return 2;
+        }
         var session = new AgentSession(work, globalDb, new GameStringService(), settings, projectsRoot);
 
         try
@@ -87,7 +97,7 @@ public static class AgentCli
                 case "open": await OpenAsync(); break;
                 case "projects": Projects(); break;
                 case "status": await StatusAsync(); break;
-                case "next": RefuseWhileAppRuns(); Print(await session.NextAsync(session.Find(Arg(0, "프로젝트")), ct)); break;
+                case "next": RefuseWhileAppRuns(); Print(await session.NextAsync(session.Find(Arg(0, "프로젝트")) with { Lane = lane }, ct)); break;
                 case "submit": await SubmitAsync(); break;
                 case "check": await CheckAsync(); break;
                 case "review": await ReviewAsync(); break;
@@ -148,9 +158,9 @@ public static class AgentCli
 
         async Task StatusAsync()
         {
-            var project = session.Find(Arg(0, "프로젝트"));
+            var project = session.Find(Arg(0, "프로젝트")) with { Lane = lane };
             var (rows, pending, errors, edited) = await session.StatusAsync(project, ct);
-            Console.WriteLine($"프로젝트: {project.Key} ({Path.GetFileName(project.PluginPath)})");
+            Console.WriteLine($"프로젝트: {project.Key} ({Path.GetFileName(project.PluginPath)})" + (lane != null ? $", 갈래 {lane}" : ""));
             Console.WriteLine($"줄: {rows}, 남은 줄: {pending} (오류 {errors}), 직접 수정: {edited}");
             var request = session.Pending(project);
             Console.WriteLine(request == null ? "대기 중인 요청: 없음" : $"대기 중인 요청: {session.RequestPath(project)} ({request.Chars:N0}자)");
@@ -159,7 +169,7 @@ public static class AgentCli
         async Task SubmitAsync()
         {
             RefuseWhileAppRuns();
-            var project = session.Find(Arg(0, "프로젝트"));
+            var project = session.Find(Arg(0, "프로젝트")) with { Lane = lane };
             var file = Arg(1, "답 파일");
             if (!File.Exists(file)) throw new AgentModeException($"답 파일이 없습니다: {file}");
             Print(await session.SubmitAsync(project, await File.ReadAllTextAsync(file, ct), ct));
@@ -185,7 +195,8 @@ public static class AgentCli
                 {
                     Console.WriteLine($"새 지시 절: {string.Join(", ", report.NewInstructionSections)} → {session.InstructionsPath(report.Project)}에서 읽기");
                 }
-                Console.WriteLine($"답을 파일에 쓴 뒤: tullius.cmd submit {report.Project.Key} <답 파일>");
+                Console.WriteLine($"답을 파일에 쓴 뒤: tullius.cmd submit {report.Project.Key} <답 파일>"
+                                  + (report.Project.Lane is { } own ? $" --lane {own}" : ""));
             }
             else if (report.PendingAfter == 0)
             {
@@ -637,6 +648,7 @@ public static class AgentCli
             작업 파일은 ./work(--work로 바꿈).
             프로젝트 DB는 GUI 번역기와 같은 곳(--projects로 바꿈).
             인자에 & | ^ 가 들어가면 한 줄에 하나씩 파일에 쓰고 @파일로 넘긴다(tullius.cmd @인자.txt).
+            next·submit·status에 --lane 번호/갈래(예: 2/3)를 붙이면 줄을 갈래로 나눠 그 몫만 번역한다(하위 에이전트가 동시에, 대화는 한 갈래에).
             """);
     }
 

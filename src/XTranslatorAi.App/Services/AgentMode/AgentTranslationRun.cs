@@ -23,7 +23,11 @@ public static class AgentTranslationRun
     /// <summary>The model name the runs use: it picks batch and output budgets, and is part of each request's hash.</summary>
     public const string DefaultModelProfile = "agent-app";
 
-    public sealed record Options(string ModelProfile, int BatchSize, int MaxChars, int MaxOutputTokens = 65536);
+    public sealed record Options(string ModelProfile, int BatchSize, int MaxChars, int MaxOutputTokens = 65536)
+    {
+        /// <summary>The rows of the lane the run translates (AgentLane), or null for all.</summary>
+        public IReadOnlySet<long>? Lane { get; init; }
+    }
 
     public sealed record Outcome(AgentRequest? Next, IReadOnlySet<(string Hash, int Attempt)> Used, int PendingBefore,
         int PendingAfter, int ErrorRows, int GenerationCalls, Exception? Error);
@@ -34,6 +38,11 @@ public static class AgentTranslationRun
     {
         await db.ResetInProgressToPendingAsync(cancellationToken);
         var pending = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending, StringEntryStatus.Error }, cancellationToken);
+        if (options.Lane is { } lane)
+        {
+            pending = pending.Where(lane.Contains).ToList();
+        }
+
         if (pending.Count == 0)
         {
             return new Outcome(null, new HashSet<(string, int)>(), 0, 0, 0, 0, null);
@@ -93,13 +102,20 @@ public static class AgentTranslationRun
             MaxTotalGenerations: settings.MaxTotalGenerations,
             EnableAdaptiveOutputBudget: settings.EnableAdaptiveOutputBudget,
             EnableBookContext: settings.EnableBookContext,
-            GameStrings: gameStrings);
+            GameStrings: gameStrings,
+            NameMemoryRows: options.Lane);
 
         var result = await new TranslationRunnerService(globalDb).RunAsync(request);
         // A recording stops the run mid-batch; its rows are 대기 again, as after the GUI's stop button.
         await db.ResetInProgressToPendingAsync(cancellationToken);
         var after = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending, StringEntryStatus.Error }, cancellationToken);
         var errors = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Error }, cancellationToken);
+        if (options.Lane is { } own)
+        {
+            after = after.Where(own.Contains).ToList();
+            errors = errors.Where(own.Contains).ToList();
+        }
+
         return new Outcome(client.Recorded, client.Used, pending.Count, after.Count, errors.Count, client.GenerationCalls,
             result.Error ?? host.Error);
     }

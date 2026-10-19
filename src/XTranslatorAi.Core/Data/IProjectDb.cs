@@ -113,6 +113,10 @@ public interface IProjectDb
     Task<IReadOnlyList<(string SourceText, string DestText)>> GetTranslatedPairsAsync(CancellationToken cancellationToken)
         => Task.FromResult<IReadOnlyList<(string SourceText, string DestText)>>(new List<(string, string)>());
 
+    /// <summary>The same, of the given rows only (all rows when null).</summary>
+    Task<IReadOnlyList<(string SourceText, string DestText)>> GetTranslatedPairsAsync(IReadOnlySet<long>? onlyIds, CancellationToken cancellationToken)
+        => GetTranslatedPairsAsync(cancellationToken);
+
     Task<IReadOnlyList<(long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)>>
         GetStringSourceContextsByStatusAsync(
             IReadOnlyList<StringEntryStatus> statuses,

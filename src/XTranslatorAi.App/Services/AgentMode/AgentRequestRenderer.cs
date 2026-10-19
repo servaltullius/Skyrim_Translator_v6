@@ -201,7 +201,8 @@ public static class AgentRequestRenderer
         }
 
         sb.AppendLine();
-        sb.AppendLine($"쓴 뒤: `tullius submit {project.Key} <답 파일>` (답 파일은 매번 통째로 새로 쓴다)");
+        var lane = project.Lane is { } l ? $" --lane {l}" : "";
+        sb.AppendLine($"쓴 뒤: `tullius submit {project.Key} <답 파일>{lane}` (답 파일은 매번 통째로 새로 쓴다)");
 
         if (rejections.Count > 0)
         {
@@ -217,7 +218,7 @@ public static class AgentRequestRenderer
         sb.AppendLine();
         sb.AppendLine("## 지시");
         sb.AppendLine();
-        sb.AppendLine($"이 요청의 지시는 `{Path.Combine("work", project.Key, InstructionsFileName)}`의 아래 절이다. " +
+        sb.AppendLine($"이 요청의 지시는 `{Path.Combine("work", project.WorkFolder, InstructionsFileName)}`의 아래 절이다. " +
                       "이 대화에서 아직 읽지 않은 절(새 절, 또는 대화를 새로 시작했으면 전부)은 먼저 읽고 답한다.");
         foreach (var section in parts.Sections)
         {

@@ -11,7 +11,10 @@ public sealed partial class ProjectDb
 {
     private const int MaxIdChunkSize = 900;
 
-    public async Task<IReadOnlyList<(string SourceText, string DestText)>> GetTranslatedPairsAsync(CancellationToken cancellationToken)
+    public Task<IReadOnlyList<(string SourceText, string DestText)>> GetTranslatedPairsAsync(CancellationToken cancellationToken)
+        => GetTranslatedPairsAsync(null, cancellationToken);
+
+    public async Task<IReadOnlyList<(string SourceText, string DestText)>> GetTranslatedPairsAsync(IReadOnlySet<long>? onlyIds, CancellationToken cancellationToken)
     {
         await _gate.WaitAsync(cancellationToken);
         try
@@ -20,7 +23,7 @@ public sealed partial class ProjectDb
             await using var cmd = _connection.CreateCommand();
             cmd.CommandText =
                 """
-                SELECT SourceText, DestText
+                SELECT SourceText, DestText, Id
                 FROM StringEntry
                 WHERE Status IN ($Done, $Edited) AND DestText <> ''
                 ORDER BY OrderIndex;
@@ -31,7 +34,10 @@ public sealed partial class ProjectDb
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             while (await reader.ReadAsync(cancellationToken))
             {
-                list.Add((reader.GetString(0), reader.GetString(1)));
+                if (onlyIds == null || onlyIds.Contains(reader.GetInt64(2)))
+                {
+                    list.Add((reader.GetString(0), reader.GetString(1)));
+                }
             }
 
             return list;

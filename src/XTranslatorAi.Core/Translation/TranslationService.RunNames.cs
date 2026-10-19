@@ -15,10 +15,11 @@ public sealed partial class TranslationService
     /// </summary>
     private async Task InitializeRunNameMemoryAsync(
         IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> items,
+        IReadOnlySet<long>? onlyRows,
         CancellationToken cancellationToken
     )
     {
-        var translated = await _db.GetTranslatedPairsAsync(cancellationToken);
+        var translated = await _db.GetTranslatedPairsAsync(onlyRows, cancellationToken);
         var names = RunNameMemory.Build(items.Select(i => i.Source).Concat(translated.Select(r => r.SourceText)), Ctx.Glossary is { } glossary ? glossary.HasTerm : null);
         names.Preload(translated);
         Ctx.RunNames = names.NameCount > 0 ? names : null;

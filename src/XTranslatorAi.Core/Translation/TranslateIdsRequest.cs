@@ -53,5 +53,8 @@ public sealed record TranslateIdsRequest(
     // Rows the player's game translation already covers (see GameStringDictionary), by row id.
     IReadOnlyDictionary<long, XTranslatorAi.Core.Plugins.GameStringMatch>? GameStringMatches = null,
     // Who says each dialogue line (see DialogueSpeakerNames), by row id; read from the project when not given.
-    IReadOnlyDictionary<long, string>? SpeakerNamesById = null
+    IReadOnlyDictionary<long, string>? SpeakerNamesById = null,
+    // The rows whose translations the run's name memory reads; null for all. An agent lane reads only its own, so
+    // another lane saving a row with a name in it does not change this lane's request under its pending answer.
+    IReadOnlySet<long>? NameMemoryRows = null
 );

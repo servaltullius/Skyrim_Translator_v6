@@ -16,7 +16,42 @@ namespace XTranslatorAi.App.Services.AgentMode;
 
 /// <summary>An agent-mode project: the plugin, its project DB (the GUI's), and the fixed run settings.</summary>
 public sealed record AgentProject(string Key, string PluginPath, string DbPath, PluginReadOptions ReadOptions,
-    string TargetEncoding, string ModelProfile, int BatchSize, int MaxChars);
+    string TargetEncoding, string ModelProfile, int BatchSize, int MaxChars)
+{
+    /// <summary>The lane a command works in (<c>--lane 2/3</c>); null for the whole project. Not saved.</summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public AgentLane? Lane { get; init; }
+
+    /// <summary>The project's work folder under the work root, or its lane's ("Key/lane-2-of-3").</summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string WorkFolder => Lane == null ? Key : Path.Combine(Key, Lane.Folder);
+}
+
+/// <summary>
+/// One of several lanes a project is translated in at once, each by its own agent: lane <see cref="Index"/> of
+/// <see cref="Count"/>. An agent app answers one request at a time and the requests of a project come one after
+/// another, so a project took as long as all its requests (Meridia's Order, 4,062 lines: 89 minutes); the time is the
+/// model writing, not the translator.
+/// </summary>
+public sealed record AgentLane(int Index, int Count)
+{
+    public string Folder => $"lane-{Index}-of-{Count}";
+
+    public override string ToString() => $"{Index}/{Count}";
+
+    public static AgentLane? Parse(string? value)
+    {
+        if (value == null) return null;
+        var parts = value.Split('/');
+        if (parts.Length != 2 || !int.TryParse(parts[0], out var index) || !int.TryParse(parts[1], out var count)
+            || count is < 2 or > 8 || index < 1 || index > count)
+        {
+            throw new AgentModeException("--lane은 '번호/갈래 수'로 쓰세요(예: 2/3, 갈래는 2~8개).");
+        }
+
+        return new AgentLane(index, count);
+    }
+}
 
 /// <summary>
 /// What a step did: rows saved, the lines of the answered request it did not save and why, the next request (null
@@ -72,10 +107,15 @@ public sealed class AgentSession
         var project = new AgentProject(key, loaded.Document.Info.InputPath, db.DbPath, loaded.Document.Info.Options, targetEncoding,
             AgentTranslationRun.DefaultModelProfile, Math.Clamp(batchSize, 1, 100), Math.Clamp(_settings.MaxCharsPerBatch, 1000, 50000));
         var existing = TryRead(key);
-        if (existing != null && File.Exists(PendingPath(existing)))
+        if (existing != null)
         {
-            // The plugin was opened again with a request still out: its rows may have changed under it.
+            // The plugin was opened again with requests still out: their rows may have changed under them.
             ClearPending(existing);
+            foreach (var lane in Directory.Exists(ProjectDir(existing)) ? Directory.GetDirectories(ProjectDir(existing), "lane-*") : Array.Empty<string>())
+            {
+                File.Delete(Path.Combine(lane, "pending.json"));
+                File.Delete(Path.Combine(lane, "request.md"));
+            }
         }
 
         Directory.CreateDirectory(ProjectDir(project));
@@ -109,7 +149,7 @@ public sealed class AgentSession
     public AgentRequest? Pending(AgentProject project)
         => File.Exists(PendingPath(project)) ? JsonSerializer.Deserialize<AgentRequest>(File.ReadAllText(PendingPath(project))) : null;
 
-    public string RequestPath(AgentProject project) => Path.Combine(ProjectDir(project), "request.md");
+    public string RequestPath(AgentProject project) => Path.Combine(LaneDir(project), "request.md");
 
     public async Task<(int Rows, int Pending, int Errors, int Edited)> StatusAsync(AgentProject project, CancellationToken cancellationToken)
     {
@@ -118,6 +158,11 @@ public sealed class AgentSession
         var pending = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending, StringEntryStatus.Error, StringEntryStatus.InProgress }, cancellationToken);
         var errors = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Error }, cancellationToken);
         var edited = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Edited }, cancellationToken);
+        if (await LaneIdsAsync(db, project, cancellationToken) is { } lane)
+        {
+            return (all.Count(lane.Contains), pending.Count(lane.Contains), errors.Count(lane.Contains), edited.Count(lane.Contains));
+        }
+
         return (all.Count, pending.Count, errors.Count, edited.Count);
     }
 
@@ -239,7 +284,10 @@ public sealed class AgentSession
     {
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, cancellationToken);
         var gameStrings = _gameStrings == null ? null : await _gameStrings.TryLoadAsync(cancellationToken);
-        var options = new AgentTranslationRun.Options(project.ModelProfile, project.BatchSize, project.MaxChars);
+        var options = new AgentTranslationRun.Options(project.ModelProfile, project.BatchSize, project.MaxChars)
+        {
+            Lane = await LaneIdsAsync(db, project, cancellationToken),
+        };
         string? Answer(string hash, int attempt) => File.Exists(AnswerPath(project, hash, attempt)) ? File.ReadAllText(AnswerPath(project, hash, attempt)) : null;
         var outcome = await AgentTranslationRun.RunAsync(db, _settings, options, Answer, _globalDb, gameStrings, cancellationToken);
         var pendingBefore = outcome.PendingBefore;
@@ -271,9 +319,9 @@ public sealed class AgentSession
     private async Task<AgentStepReport> WriteNextAsync(AgentStepReport report, IReadOnlyList<AgentRejection> rejected,
         CancellationToken cancellationToken)
     {
-        var carried = CarryRejections(ProjectDir(report.Project), rejected, report.Next);
+        var carried = CarryRejections(LaneDir(report.Project), rejected, report.Next);
         if (report.Next is not { } request) return report;
-        var dir = ProjectDir(report.Project);
+        var dir = LaneDir(report.Project);
         Directory.CreateDirectory(dir);
         await File.WriteAllTextAsync(PendingPath(report.Project), JsonSerializer.Serialize(request, Json), cancellationToken);
         var added = AgentRequestRenderer.WriteInstructions(dir, AgentRequestRenderer.Split(request).Sections);
@@ -324,7 +372,74 @@ public sealed class AgentSession
         return shown.Concat(rejected.Where(r => r.Id == null)).ToList();
     }
 
-    public string InstructionsPath(AgentProject project) => Path.Combine(ProjectDir(project), AgentRequestRenderer.InstructionsFileName);
+    public string InstructionsPath(AgentProject project) => Path.Combine(LaneDir(project), AgentRequestRenderer.InstructionsFileName);
+
+    /// <summary>
+    /// The rows of the project's lane, or null without one. Rows go to lanes a dialogue at a time (a topic's lines,
+    /// or a record's), by the whole project so that every run divides it alike, each dialogue to the lane with the
+    /// least English so far. The count is kept: lanes of another count would share rows.
+    /// </summary>
+    private async Task<IReadOnlySet<long>?> LaneIdsAsync(ProjectDb db, AgentProject project, CancellationToken cancellationToken)
+    {
+        if (project.Lane is not { } lane) return null;
+        var countPath = Path.Combine(ProjectDir(project), "lanes.json");
+        if (File.Exists(countPath) && int.TryParse(File.ReadAllText(countPath).Trim(), out var kept) && kept != lane.Count
+            && Directory.GetDirectories(ProjectDir(project), "lane-*").Any(d => File.Exists(Path.Combine(d, "pending.json"))))
+        {
+            throw new AgentModeException($"이 프로젝트는 {kept}갈래로 나눠 번역 중입니다(대기 중인 요청이 있음). --lane ?/{kept}로 이어 하세요.");
+        }
+
+        Directory.CreateDirectory(ProjectDir(project));
+        await File.WriteAllTextAsync(countPath, lane.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), cancellationToken);
+        var rows = new List<StringEntry>();
+        for (var offset = 0; ; offset += 1000)
+        {
+            var page = await db.GetStringsAsync(1000, offset, cancellationToken);
+            rows.AddRange(page);
+            if (page.Count < 1000) break;
+        }
+
+        var scopes = await db.GetStringTranslationContextsByIdsAsync(rows.Select(r => r.Id).ToList(), cancellationToken);
+        // A dialogue, and every other row with the same English: a saved row (edited, so in the project TM) fills
+        // the rows with its English, which in another lane would change that lane's request under its pending answer.
+        // Dialogue lines are not filled from the TM, and "Yes." would join half the dialogues into one lane.
+        var parent = new Dictionary<string, string>(StringComparer.Ordinal);
+        string RootOf(string x)
+        {
+            while (parent.TryGetValue(x, out var up) && up != x) x = parent[x] = parent.GetValueOrDefault(up, up);
+            return x;
+        }
+
+        void Join(string a, string b)
+        {
+            parent.TryAdd(a, a);
+            parent.TryAdd(b, b);
+            var (ra, rb) = (RootOf(a), RootOf(b));
+            if (ra != rb) parent[rb] = ra;
+        }
+
+        string ScopeOf(StringEntry r) => scopes.TryGetValue(r.Id, out var c) && c.DialogueScope is { Length: > 0 } scope ? scope : "row:" + r.Id;
+        foreach (var r in rows)
+        {
+            var scope = ScopeOf(r);
+            if (scope.StartsWith("row:", StringComparison.Ordinal)) Join(scope, "text:" + XTranslatorAi.Core.Text.TranslationMemoryKey.NormalizeSource(r.SourceText ?? ""));
+            else parent.TryAdd(scope, scope);
+        }
+
+        var groups = rows.GroupBy(r => RootOf(ScopeOf(r)))
+            .OrderBy(g => g.Min(r => r.OrderIndex))
+            .ToList();
+        var sizes = new long[lane.Count];
+        var mine = new HashSet<long>();
+        foreach (var group in groups)
+        {
+            var target = Array.IndexOf(sizes, sizes.Min());
+            sizes[target] += group.Sum(r => (long)(r.SourceText?.Length ?? 0)) + 1;
+            if (target == lane.Index - 1) mine.UnionWith(group.Select(r => r.Id));
+        }
+
+        return mine;
+    }
 
     private AgentProject? TryRead(string key)
     {
@@ -339,7 +454,8 @@ public sealed class AgentSession
     }
 
     private string ProjectDir(AgentProject project) => Path.Combine(_workRoot, project.Key);
-    private string PendingPath(AgentProject project) => Path.Combine(ProjectDir(project), "pending.json");
+    private string LaneDir(AgentProject project) => Path.Combine(_workRoot, project.WorkFolder);
+    private string PendingPath(AgentProject project) => Path.Combine(LaneDir(project), "pending.json");
     private string AnswerPath(AgentProject project, string hash, int attempt) => Path.Combine(ProjectDir(project), "responses", $"{hash}.{attempt}.txt");
 
     private static string ProjectKey(string pluginPath, string dbPath)

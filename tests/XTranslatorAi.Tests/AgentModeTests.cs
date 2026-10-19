@@ -112,6 +112,51 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.True(report.Saved > 0);
     }
 
+    /// <summary>
+    /// Lanes: each sub-agent runs its own share of the rows (a dialogue kept whole) with its own request, and an
+    /// answer stays good while other lanes save theirs, even when a saved row names something its lines mention.
+    /// </summary>
+    [Fact]
+    public async Task Lanes_SplitTheRows_AndAnAnswerSurvivesTheOtherLanesSaves()
+    {
+        var plugin = Path.Combine(_root, "Mod", "Echo.esp");
+        await File.WriteAllBytesAsync(plugin, Header().Concat(DialogueGroup(
+                TopicChildren(0x1000,
+                    Record("INFO", 0x1001, Sub("NAM1", Z("I told Drelorea that the road is clear."))),
+                    Record("INFO", 0x1002, Sub("NAM1", Z("We will find Drelorea at the inn.")))),
+                TopicChildren(0x1100,
+                    Record("INFO", 0x1101, Sub("NAM1", Z("You should ask Drelorea about the old road."))))))
+            .ToArray());
+        var (project, _, _) = await _session.OpenAsync(plugin, new PluginReadOptions(), "korean", "utf-8", batchSize: 5, CancellationToken.None);
+        _extraDbs.Add(project.DbPath);
+        var one = project with { Lane = AgentLane.Parse("1/2") };
+        var two = project with { Lane = AgentLane.Parse("2/2") };
+
+        var first = await _session.NextAsync(one, CancellationToken.None);
+        var second = await _session.NextAsync(two, CancellationToken.None);
+
+        var ids1 = Ids(first.Next!);
+        var ids2 = Ids(second.Next!);
+        Assert.Equal(2, ids1.Count);
+        Assert.Single(ids2);
+        Assert.Empty(ids1.Intersect(ids2));
+        Assert.NotEqual(_session.RequestPath(one), _session.RequestPath(two));
+        Assert.Throws<AgentModeException>(() => AgentLane.Parse("3/2"));
+        await Assert.ThrowsAsync<AgentModeException>(() => _session.StatusAsync(project with { Lane = AgentLane.Parse("1/3") }, CancellationToken.None));
+
+        // Lane 2 saves its spelling of the name first; lane 1's answer, written before, is still the one its run asks for.
+        var done2 = await _session.SubmitAsync(two, JsonSerializer.Serialize(new { translations = new[] { new { id = ids2[0], text = "드렐로레아에게 옛길에 대해 물어봐." } } }), CancellationToken.None);
+        Assert.Null(done2.Problem);
+        Assert.Null(done2.Next);
+        var done1 = await _session.SubmitAsync(one, Answer(first.Next!), CancellationToken.None);
+        Assert.Null(done1.Problem);
+        Assert.Equal(2, done1.Saved);
+        Assert.Null(done1.Next);
+
+        // A different number of lanes is refused while a lane has a request waiting, and fine once none has.
+        await _session.StatusAsync(project with { Lane = AgentLane.Parse("1/3") }, CancellationToken.None);
+    }
+
     [Fact]
     public async Task Answers_AreSavedOneRequestAtATime_UntilThePluginIsDone()
     {
