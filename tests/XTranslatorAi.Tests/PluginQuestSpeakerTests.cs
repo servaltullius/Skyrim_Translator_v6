@@ -131,6 +131,7 @@ public sealed class PluginQuestSpeakerTests : IDisposable
                 Record("NPC_", 0x01003000, Sub("ACBS", Acbs(unique: false)), Sub("FULL", Z("Guard")), Sub("VTCK", UInt(0x01003001))),
                 Record("NPC_", 0x01003002, Sub("ACBS", Acbs(unique: false)), Sub("FULL", Z("Soldier")), Sub("VTCK", UInt(0x01003001)))))
             .Concat(Group(Record("QUST", 0x01004BBF, Sub("EDID", Z("DLC1Quest")), Sub("NEXT", Array.Empty<byte>()))))
+            .Concat(Group(Record("VTYP", 0x01003001, Sub("EDID", Z("MaleGuard")))))
             .Concat(DialogueGroup(Topic(0x01005000, 0x01004BBF,
                 Record("INFO", 0x01005001, Sub("CTDA", Condition(GetIsId, 0x01002B6C)), Sub("NAM1", Z("By my name."))),
                 Record("INFO", 0x01005002, Sub("CTDA", Condition(GetIsVoiceType, 0x01002B6F)), Sub("NAM1", Z("By my voice."))),
@@ -152,6 +153,12 @@ public sealed class PluginQuestSpeakerTests : IDisposable
         var loaded = GameStringDictionary.Load(new MemoryStream(bytes.ToArray())).Speakers!;
         Assert.Equal(index.LinesOf(serana.Npc), loaded.LinesOf(serana.Npc));
         Assert.Equal(serana, Assert.Single(loaded.FindNpcs("Serana")));
+
+        // A voice two NPCs share names no speaker, but its type is named for the request ("NPC with voice MaleGuard").
+        var modMasters = new[] { "Skyrim.esm", "Dawnguard.esm" };
+        Assert.Equal("MaleGuard", loaded.VoiceName("V:01003001", modMasters, "Mod.esp"));
+        Assert.Null(loaded.VoiceName("V:01002B6F", modMasters, "Mod.esp"));
+        Assert.Null(loaded.VoiceName("R:01002B74", modMasters, "Mod.esp"));
     }
 
     // Dawnguard's part: Serana, her voice type, her placed actor, a quest alias she fills, and a voice two guards share.

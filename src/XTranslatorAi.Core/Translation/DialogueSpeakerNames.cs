@@ -27,9 +27,10 @@ public static class DialogueSpeakerNames
         IProjectDb db, GameStringDictionary? gameStrings, CancellationToken cancellationToken)
     {
         var speakers = await LoadFormIdsAsync(db, cancellationToken).ConfigureAwait(false);
+        var voices = await LoadVoiceLabelsAsync(db, gameStrings, cancellationToken).ConfigureAwait(false);
         if (speakers.Count == 0)
         {
-            return speakers;
+            return voices;
         }
 
         var names = await db.GetPluginNpcNamesAsync(cancellationToken).ConfigureAwait(false);
@@ -60,6 +61,11 @@ public static class DialogueSpeakerNames
             }
 
             result[id] = label + DecidedStyle(id, value);
+        }
+
+        foreach (var (id, label) in voices)
+        {
+            result.TryAdd(id, label);
         }
 
         return result;
@@ -128,6 +134,32 @@ public static class DialogueSpeakerNames
     /// by row id: what the request names and the quality check groups lines by. A scene line said to another NPC adds
     /// that NPC ("00013269>0001327E"), so Elenwen's lines to Tullius are compared apart from her lines to the player.
     /// </summary>
+    /// <summary>
+    /// "NPC with voice MaleNord" for a line whose speaker only its voice type names, a voice many NPCs share (the
+    /// unnamed townsfolk a follower mod has greet him): the voice says a man or a woman, the race, an old or a young
+    /// voice. Such lines are in no speaker's group in the quality check; the label is for the request only.
+    /// </summary>
+    private static async Task<Dictionary<long, string>> LoadVoiceLabelsAsync(IProjectDb db, GameStringDictionary? gameStrings,
+        CancellationToken cancellationToken)
+    {
+        var labels = new Dictionary<long, string>();
+        if (gameStrings?.Speakers is not { } index) return labels;
+        var hints = await db.GetStringVoiceHintsAsync(cancellationToken).ConfigureAwait(false);
+        if (hints.Count == 0 || await db.GetPluginMastersAsync(cancellationToken).ConfigureAwait(false) is not { } plugin) return labels;
+        foreach (var (id, hint) in hints)
+        {
+            if (index.VoiceName(hint, plugin.Masters, plugin.PluginFileName) is { } voice)
+            {
+                labels[id] = VoiceLabelPrefix + voice;
+            }
+        }
+
+        return labels;
+    }
+
+    /// <summary>The label of a line its voice type alone names: "NPC with voice MaleNord".</summary>
+    public const string VoiceLabelPrefix = "NPC with voice ";
+
     public static async Task<Dictionary<long, string>> LoadFormIdsAsync(IProjectDb db, CancellationToken cancellationToken)
     {
         var speakers = new Dictionary<long, string>(await db.GetStringSpeakersAsync(cancellationToken).ConfigureAwait(false));

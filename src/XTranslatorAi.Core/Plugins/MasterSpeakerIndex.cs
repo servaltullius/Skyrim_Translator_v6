@@ -23,10 +23,12 @@ public sealed class MasterSpeakerIndex
     private readonly Dictionary<string, string> _aliases;
     private readonly Dictionary<string, string> _names;
     private readonly Dictionary<string, List<string>> _lines;
+    private readonly Dictionary<string, string> _voiceNames;
 
     private MasterSpeakerIndex(Dictionary<string, string> voices, Dictionary<string, string> refs, Dictionary<string, string> aliases,
-        Dictionary<string, string>? names = null, Dictionary<string, List<string>>? lines = null)
+        Dictionary<string, string>? names = null, Dictionary<string, List<string>>? lines = null, Dictionary<string, string>? voiceNames = null)
     {
+        _voiceNames = voiceNames ?? new Dictionary<string, string>(StringComparer.Ordinal);
         _voices = voices;
         _refs = refs;
         _aliases = aliases;
@@ -58,6 +60,22 @@ public sealed class MasterSpeakerIndex
 
     /// <summary>The dialogue lines (field identities, as <see cref="GameStringDictionary.FieldIdentity"/>) an NPC says.</summary>
     public IReadOnlyList<string> LinesOf(string npc) => _lines.TryGetValue(npc, out var lines) ? lines : Array.Empty<string>();
+
+    /// <summary>
+    /// The EditorID of the voice type a speaker hint names ("V:00013AF2" → MaleNord), for a line the voice names no one
+    /// NPC by: in the Codex trial 111 of Teldryn's lines were said by unnamed Windhelm NPCs, and the voice type at least
+    /// says a man or a woman, a Nord, an old or a young voice.
+    /// </summary>
+    public string? VoiceName(string? hint, IReadOnlyList<string> masters, string pluginFileName)
+    {
+        if (hint == null || hint.Length < 10 || !hint.StartsWith("V:", StringComparison.Ordinal)
+            || !uint.TryParse(hint.AsSpan(2, 8), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var formId))
+        {
+            return null;
+        }
+
+        return _voiceNames.GetValueOrDefault(Identity(formId, masters, pluginFileName));
+    }
 
     /// <summary>The NPCs that have lines, with their English names.</summary>
     public IReadOnlyDictionary<string, string> Names => _names;
@@ -145,6 +163,7 @@ public sealed class MasterSpeakerIndex
         // An NPC's English name and its lines; a reader that does not know these lines skips them.
         foreach (var (npc, name) in _names) yield return $"SN\t{npc}\t{name.Replace('\t', ' ')}";
         foreach (var (npc, lines) in _lines) yield return $"SL\t{npc}\t{string.Join(",", lines)}";
+        foreach (var (voice, name) in _voiceNames) yield return $"VN\t{voice}\t{name}";
     }
 
     /// <summary>The maps a dictionary's speaker lines fill.</summary>
@@ -155,6 +174,7 @@ public sealed class MasterSpeakerIndex
         public Dictionary<string, string> Aliases { get; } = new(StringComparer.Ordinal);
         public Dictionary<string, string> Names { get; } = new(StringComparer.Ordinal);
         public Dictionary<string, List<string>> Lines { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, string> VoiceNames { get; } = new(StringComparer.Ordinal);
     }
 
     /// <summary>Reads a line Lines() wrote; false for any other line.</summary>
@@ -169,6 +189,9 @@ public sealed class MasterSpeakerIndex
             case "SL":
                 maps.Lines[parts[1]] = parts[2].Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
                 return true;
+            case "VN":
+                maps.VoiceNames[parts[1]] = parts[2];
+                return true;
         }
 
         var map = parts[0] switch { "SV" => maps.Voices, "SR" => maps.Refs, "SA" => maps.Aliases, _ => null };
@@ -180,7 +203,7 @@ public sealed class MasterSpeakerIndex
     internal static MasterSpeakerIndex? FromMaps(Maps maps)
         => maps.Voices.Count + maps.Refs.Count + maps.Aliases.Count + maps.Lines.Count == 0
             ? null
-            : new MasterSpeakerIndex(maps.Voices, maps.Refs, maps.Aliases, maps.Names, maps.Lines);
+            : new MasterSpeakerIndex(maps.Voices, maps.Refs, maps.Aliases, maps.Names, maps.Lines, maps.VoiceNames);
 
     /// <summary>Gathers the masters in load order (a later master's override replaces the earlier record).</summary>
     public sealed class Builder
@@ -194,6 +217,7 @@ public sealed class MasterSpeakerIndex
         private readonly Dictionary<string, string> _aliases = new(StringComparer.Ordinal);
         // Each master dialogue line's field identity and its speaker: an NPC record, or a hint ("V:", "R:", "A:") Build resolves.
         private readonly Dictionary<string, string> _lineSpeakers = new(StringComparer.Ordinal);
+        private readonly Dictionary<string, string> _voiceNames = new(StringComparer.Ordinal);
 
         public void Add(PluginDocument master)
         {
@@ -231,6 +255,9 @@ public sealed class MasterSpeakerIndex
                         break;
                     case "QUST":
                         ReadAliases(record, Id);
+                        break;
+                    case "VTYP" when EditorId(record) is { Length: > 0 } name:
+                        _voiceNames[Id(record.FormId)] = name;
                         break;
                 }
             }
@@ -277,7 +304,7 @@ public sealed class MasterSpeakerIndex
             }
 
             var lineNames = lines.Keys.Where(_npcNames.ContainsKey).ToDictionary(npc => npc, npc => _npcNames[npc], StringComparer.Ordinal);
-            return new MasterSpeakerIndex(voices, refs, aliases, lineNames, lines);
+            return new MasterSpeakerIndex(voices, refs, aliases, lineNames, lines, new Dictionary<string, string>(_voiceNames, StringComparer.Ordinal));
         }
 
         // A hint as the index's own keys: "V:dragonborn.esm:02b6c0", "R:...", "A:skyrim.esm:0aa123:3".
@@ -348,6 +375,16 @@ public sealed class MasterSpeakerIndex
                         break;
                 }
             }
+        }
+
+        private static string? EditorId(PluginRecord record)
+        {
+            foreach (var sub in record.Subrecords)
+            {
+                if (sub.Type == "EDID") return System.Text.Encoding.ASCII.GetString(sub.Data.Span).TrimEnd('\0').Trim();
+            }
+
+            return null;
         }
 
         private static uint? U32(PluginRecord record, string type)
