@@ -63,7 +63,7 @@ public static partial class AgentCli
         var project = c.Session.Find(c.Arg(0, "프로젝트")) with { Lane = c.Lane };
         var file = c.Arg(1, "답 파일");
         if (!File.Exists(file)) throw new AgentModeException($"답 파일이 없습니다: {file}");
-        Print(c, await c.Session.SubmitAsync(project, await File.ReadAllTextAsync(file, c.Ct), c.Ct));
+        Print(c, await c.Session.SubmitAsync(project, await ReadAgentFileAsync(file, c.Ct), c.Ct));
     }
 
     private static void Print(AgentCommand c, AgentStepReport report)

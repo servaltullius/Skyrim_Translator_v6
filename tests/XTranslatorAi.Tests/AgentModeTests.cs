@@ -57,6 +57,36 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Throws<AgentModeException>(() => AgentCli.ExpandArgumentFiles(new[] { "@" + file + ".missing" }));
     }
 
+    /// <summary>
+    /// An answer as each PowerShell writes it: 7 in UTF-8, 5.1 in UTF-16 (Out-File, &gt;) or CP949 (Set-Content on Korean
+    /// Windows). Each reads back as written; text already broken is refused rather than saved.
+    /// </summary>
+    [Fact]
+    public async Task AnswerFiles_AreReadInTheEncodingTheAppWroteThem()
+    {
+        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+        const string answer = "{\"translations\":[{\"id\":1,\"text\":\"파린스, 같이 가자 & 끝.\"}]}";
+        var encodings = new (string Name, System.Text.Encoding Encoding)[]
+        {
+            ("utf8", new System.Text.UTF8Encoding(false)), ("utf8bom", new System.Text.UTF8Encoding(true)),
+            ("utf16", System.Text.Encoding.Unicode), ("cp949", System.Text.Encoding.GetEncoding(949)),
+        };
+        foreach (var (name, encoding) in encodings)
+        {
+            var path = Path.Combine(_root, $"answer-{name}.txt");
+            await File.WriteAllTextAsync(path, answer, encoding);
+            Assert.Equal(answer, await AgentCli.ReadAgentFileAsync(path, CancellationToken.None));
+        }
+
+        var args = Path.Combine(_root, "args-cp949.txt");
+        await File.WriteAllTextAsync(args, "lookup\r\nMeridia\r\n검은 & 손\r\n", System.Text.Encoding.GetEncoding(949));
+        Assert.Equal(new[] { "lookup", "Meridia", "검은 & 손" }, AgentCli.ExpandArgumentFiles(new[] { "@" + args }));
+
+        var broken = Path.Combine(_root, "answer-broken.txt");
+        await File.WriteAllTextAsync(broken, "\uFFFD\uFFFD 깨진 답", new System.Text.UTF8Encoding(false));
+        await Assert.ThrowsAsync<AgentModeException>(() => AgentCli.ReadAgentFileAsync(broken, CancellationToken.None));
+    }
+
     [Fact]
     public async Task Request_CoversTheRemainingRows_SoTheDialogueAroundALineIsInIt()
     {

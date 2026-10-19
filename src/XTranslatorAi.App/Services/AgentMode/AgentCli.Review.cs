@@ -132,7 +132,7 @@ public static partial class AgentCli
         List<EditLine>? edits;
         try
         {
-            edits = System.Text.Json.JsonSerializer.Deserialize<List<EditLine>>(await File.ReadAllTextAsync(file, c.Ct),
+            edits = System.Text.Json.JsonSerializer.Deserialize<List<EditLine>>(await ReadAgentFileAsync(file, c.Ct),
                 new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
         catch (System.Text.Json.JsonException ex)

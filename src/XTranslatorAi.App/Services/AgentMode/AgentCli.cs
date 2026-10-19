@@ -174,10 +174,33 @@ public static partial class AgentCli
                 throw new AgentModeException($"인자 파일이 없습니다: {path}");
             }
 
-            expanded.AddRange(File.ReadAllLines(path).Select(line => line.Trim()).Where(line => line.Length > 0));
+            expanded.AddRange(Decode(File.ReadAllBytes(path), path).ReplaceLineEndings("\n").Split('\n')
+                .Select(line => line.Trim()).Where(line => line.Length > 0));
         }
 
         return expanded.ToArray();
+    }
+
+    /// <summary>
+    /// An answer, edit or argument file as the agent app wrote it. Windows PowerShell 5.1 writes UTF-16 (Out-File, &gt;)
+    /// or the ANSI code page, CP949 on Korean Windows (Set-Content), where PowerShell 7 writes UTF-8: read as UTF-8, a
+    /// CP949 answer's Korean became replacement characters and was saved so. The bytes are decoded as GUI imports are
+    /// (ImportTextFileReader: a byte-order mark, else UTF-8, else CP949), and broken text is refused.
+    /// </summary>
+    internal static async Task<string> ReadAgentFileAsync(string path, System.Threading.CancellationToken cancellationToken)
+        => Decode(await File.ReadAllBytesAsync(path, cancellationToken), path);
+
+    private static string Decode(byte[] bytes, string path)
+    {
+        try
+        {
+            return ImportTextFileReader.Decode(bytes, Path.GetFileName(path));
+        }
+        catch (ImportFileEncodingException ex)
+        {
+            throw new AgentModeException($"{Path.GetFileName(path)}의 글자를 읽지 못해 저장하지 않았습니다({ex.Message}). 파일을 UTF-8로 다시 쓰세요"
+                                         + " (PowerShell: [IO.File]::WriteAllText(경로, 내용, [Text.UTF8Encoding]::new($false))).");
+        }
     }
 
     private sealed record EditLine(long? Id, int? Order, string Text);
