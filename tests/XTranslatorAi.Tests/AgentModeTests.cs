@@ -486,6 +486,13 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Equal(3, found.MemoryTotal);
         Assert.Single((await AgentLookup.FindAsync(db, global, null, "Stalhrim", 1, CancellationToken.None)).Memory);
         Assert.Empty((await AgentLookup.FindAsync(db, global, null, "Concordat", 10, CancellationToken.None)).Memory);
+
+        // The mod's own translated rows: what another lane already called a name.
+        var echo = (await db.GetStringsAsync(50, 0, CancellationToken.None)).Single(r => r.SourceText == "Aetherial Echo");
+        await db.UpdateStringTranslationAsync(echo.Id, "에테르의 메아리", StringEntryStatus.Done, null, CancellationToken.None);
+        var mod = await AgentLookup.FindAsync(db, global, null, "Aetherial", 10, CancellationToken.None);
+        Assert.Equal("에테르의 메아리", Assert.Single(mod.Mod!).Target);
+        Assert.Equal(1, mod.ModTotal);
     }
 
     [Fact]

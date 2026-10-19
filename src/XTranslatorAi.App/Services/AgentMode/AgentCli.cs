@@ -482,10 +482,27 @@ public static class AgentCli
                     Console.WriteLine($"- {NameOf(style.Speaker)} → {NameOf(style.Listener)}: {style.Level}" + (style.Note is { Length: > 0 } note ? $" ({note})" : ""));
                 }
 
-                var undecided = npcs.Where(n => styles.All(s => s.Speaker != n.Key)).OrderByDescending(n => n.Value.Lines).Take(12).ToList();
+                // Every speaker with a few lines, and the NPCs the player speaks to: lanes translate at the same time and do
+                // not see each other's choices (in Meridia's Order three lanes gave Findar 하게체 and 반말, and the player
+                // 해요체 and 반말 to Velteth), so the parent decides them before the lanes start.
+                var undecided = npcs.Where(n => styles.All(s => s.Speaker != n.Key) && n.Value.Lines >= 5)
+                    .OrderByDescending(n => n.Value.Lines).Take(30).ToList();
                 if (undecided.Count > 0)
                 {
                     Console.WriteLine("말투를 정하지 않은 화자: " + string.Join(", ", undecided.Select(n => $"{n.Value.Name}({n.Key}, {n.Value.Lines}줄)")));
+                }
+
+                var playerRows = (await RowsAsync(db))
+                    .Where(r => string.Equals(r.Rec, "INFO:RNAM", StringComparison.OrdinalIgnoreCase) || string.Equals(r.Rec, "DIAL:FULL", StringComparison.OrdinalIgnoreCase))
+                    .Select(r => values.TryGetValue(r.Id, out var v) ? v.Split(DialogueSpeakerNames.ListenerSeparator)[0] : null)
+                    .OfType<string>()
+                    .GroupBy(npc => npc)
+                    .Where(g => npcs.ContainsKey(g.Key) && styles.All(s => s.Speaker != SpeakerStyles.PlayerSpeaker || s.Listener != g.Key))
+                    .OrderByDescending(g => g.Count()).Take(20).ToList();
+                if (playerRows.Count > 0)
+                {
+                    Console.WriteLine("플레이어 말투를 정하지 않은 상대: " + string.Join(", ", playerRows.Select(g => $"{npcs[g.Key].Name}({g.Key}, {g.Count()}줄)"))
+                                      + $" → style {project.Key} player <말투> --to <상대>");
                 }
 
                 return;
@@ -569,9 +586,9 @@ public static class AgentCli
             var game = await new GameStringService().TryLoadAsync(ct);
             var found = await AgentLookup.FindAsync(db, global, game, word, 12, ct);
             Console.WriteLine($"찾은 낱말: {word}");
-            if (found.Glossary.Count == 0 && found.Game == null && found.Memory.Count == 0)
+            if (found.Glossary.Count == 0 && found.Game == null && found.Memory.Count == 0 && found.ModTotal == 0)
             {
-                Console.WriteLine("용어집·게임 사전·TM에 없습니다. 새 이름이면 앞뒤 요청과 같은 표기로 쓴다.");
+                Console.WriteLine("용어집·게임 사전·TM·이 모드의 번역에 없습니다. 새 이름이면 네가 정하고 앞뒤 요청과 같은 표기로 쓴다.");
                 return;
             }
 
@@ -579,6 +596,8 @@ public static class AgentCli
             if (found.Game != null) Console.WriteLine($"[게임 사전] {word} → {Flat(found.Game.Text)}");
             foreach (var hit in found.Memory) Console.WriteLine($"[TM] {Short(hit.Source, 120)} → {Short(hit.Target, 120)}");
             if (found.MemoryTotal > found.Memory.Count) Console.WriteLine($"(TM {found.MemoryTotal}건 중 짧은 {found.Memory.Count}건)");
+            foreach (var hit in found.Mod ?? Array.Empty<AgentLookupHit>()) Console.WriteLine($"[이 모드에서 번역함] {Short(hit.Source, 120)} → {Short(hit.Target, 120)}");
+            if (found.ModTotal > (found.Mod?.Count ?? 0)) Console.WriteLine($"(이 모드 {found.ModTotal}줄 중 짧은 {found.Mod!.Count}줄)");
         }
 
         static string StatusLabel(StringEntryStatus status) => status switch
