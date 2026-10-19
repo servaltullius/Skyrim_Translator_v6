@@ -193,6 +193,13 @@ internal sealed class RunNameMemory
             }
 
             var distance = Distance(stemSound, sound);
+            // One sound off may be one changed (벨레스 for Byleth) or dropped inside (콜비욘 for Kolbjorn), but not the
+            // last one: Meridia's Order learned the verb 보게 for Beacon and wrote "보게의 지도자".
+            if (distance == 1 && string.Equals(stemSound, sound[..^1], StringComparison.Ordinal))
+            {
+                continue;
+            }
+
             if (distance < bestDistance)
             {
                 (bestDistance, closest) = (distance, new List<string> { stem });

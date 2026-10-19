@@ -74,6 +74,7 @@ public class RunNameMemoryTests
     [InlineData("Lydia", "리디아, 따라와.", "리디아")]
     [InlineData("Freya", "프레야, 기다려.", "프레야")]
     [InlineData("Garin", "가린의 검이야.", "가린")]
+    [InlineData("Beacon", "저 언덕 위를 보게.", null)]
     public void FindsTheKoreanWordThatSoundsLikeTheName(string name, string dest, string? expected)
         => Assert.Equal(expected, RunNameMemory.FindSpelling(name, dest));
 

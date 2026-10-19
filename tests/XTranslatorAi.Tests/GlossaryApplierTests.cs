@@ -306,6 +306,7 @@ public class GlossaryApplierTests
     [InlineData("Master", "달인", "Cast Master level Destruction spells for half magicka.", true)]
     [InlineData("Master", "달인", "I have found the Master Illusion Texts.", true)]
     [InlineData("Master", "달인", "I am Reeshi, Master of this Sanctuary.", false)]
+    [InlineData("Master", "달인", "My dear Master, the plans are ready.", false)]
     [InlineData("Master", "달인", "I am Master of the College.", false)]
     [InlineData("Master", "달인", "In my youth, I was already a Master of Conjuration.", true)]
     // Meridia's Order: the Argonian Cleans-Many-Boots came back as 클린즈-매니-전투화.

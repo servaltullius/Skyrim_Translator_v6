@@ -373,7 +373,7 @@ public sealed class GlossaryApplier
 
     private static readonly HashSet<string> PersonDeterminers = new(StringComparer.OrdinalIgnoreCase)
     {
-        "my", "your", "his", "her", "our", "their", "thy", "the",
+        "my", "your", "his", "her", "our", "their", "thy", "the", "dear",
     };
 
     private static readonly HashSet<string> OfDeterminers = new(StringComparer.OrdinalIgnoreCase)
