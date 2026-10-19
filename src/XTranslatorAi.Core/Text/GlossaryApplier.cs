@@ -350,6 +350,14 @@ public sealed class GlossaryApplier
                 return true;
             }
 
+            // "Reeshi, Master of this Sanctuary", "Master of the College" (총장) head something; "a Master of
+            // Conjuration" is the skill.
+            if (string.Equals(nextWord, "of", StringComparison.Ordinal)
+                && OfDeterminers.Contains(ReadNextAsciiWord(text, text.IndexOf("of", index + length, StringComparison.Ordinal) + 2)))
+            {
+                return true;
+            }
+
             return text[index] == 'M' && nextWord.Length > 1 && char.IsUpper(nextWord[0]);
         }
 
@@ -366,6 +374,11 @@ public sealed class GlossaryApplier
     private static readonly HashSet<string> PersonDeterminers = new(StringComparer.OrdinalIgnoreCase)
     {
         "my", "your", "his", "her", "our", "their", "thy", "the",
+    };
+
+    private static readonly HashSet<string> OfDeterminers = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "the", "this", "that", "these", "those", "my", "your", "his", "her", "our", "their",
     };
 
     // The word just before index, with only spaces between.
