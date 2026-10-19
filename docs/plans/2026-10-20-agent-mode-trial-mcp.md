@@ -32,7 +32,7 @@
 | Claude Code | `claude mcp add --scope project` | 같은 `.mcp.json` 형식 |
 | Gemini CLI 0.3.0-preview.1 | 시험 폴더 `.gemini\settings.json` | MCP와 상관없이 시작부터 실패(`wmic` 없음) |
 
-- Claude Code로 실제 번역은 하지 못했다. CLI 로그인(OAuth)이 만료돼서다. 연결 상태 확인까지만 했다.
+- Claude Code는 처음에 CLI 로그인(OAuth)이 만료돼 연결 확인만 했다. 다시 로그인한 뒤 번역까지 시험했다(아래 "Claude 시험").
 - 안티그라비티·Gemini CLI는 폴더별 설정이 없어 전체 경로가 필요하다. `tullius.cmd mcp-config`가 이 번역기의 경로를 넣은 설정을 보여 준다.
 
 ## Codex 시험
@@ -53,9 +53,28 @@
      - 부른 도구: guide 1, open 1, style 1, next 1, instructions 1, lookup 5, submit 5, show 3, check 1, export 1.
      - 남은 경고 4건(#34·36·38·40)은 Codex가 오탐으로 판단했다. 확인해 보니 맞다. 동사 Summon을 이름으로 보고 '소환한/소환해'의 어미 차이를 표기 불일치로 짚었다. 품질검사 쪽 문제로 따로 고칠 거리다.
 
+## Claude 시험
+
+Codex의 두 번째 시험과 같은 플러그인(EldenWarAshPack1, 150줄)을 썼다. "○○.esp 번역해 줘"만 주었다.
+- 실행: Claude Code 2.1.220, `claude -p`, 시험용 agent-kit 사본에서 그 폴더의 `.mcp.json`으로 연결.
+- 허용 도구: tullius 도구와 Read·Glob·Grep. 셸과 파일 쓰기는 막았다.
+
+| | Codex | Claude |
+|---|---|---|
+| 걸린 시간 | 2분 10초 | 5분 49초 |
+| 제출 | 5회 | 6회(#81 Dragon's Maw가 토큰 오류로 한 번 되돌아옴) |
+| 남은 품질검사 | 4건(Summon 오탐, 91b7025로 고침) | 0건 |
+| 토큰 | 74,577 | 출력 23,470, 캐시 읽기 1,273,531 |
+| 안내 읽기 | 셸 실패 뒤 `guide` 도구 | 처음부터 `guide` 도구(Read를 허용했는데도) |
+
+- Claude Code는 MCP 도구를 미뤄 두었다가 `ToolSearch`로 불러온다(2번). 그 밖의 오류는 없었다.
+- Claude가 새로 정한 이름 가운데 "Starscourge of Arrows → 별 바수는 화살"은 어색하다. 번역 품질 문제이고 도구와는 상관없다.
+- 출력: `artifacts/mcp-trial-20261020/mcp-claude/`(stream-json 기록과 내보낸 플러그인).
+
 ## 남은 것
 
 - 배포할 때 agent-kit zip에 `.mcp.json`과 `.codex\` 폴더를 넣는다. 점으로 시작해 탐색기 복사에서 빠지기 쉽다.
-- Claude(Code 탭)로 실제 번역하는 시험. CLI 로그인을 새로 하면 할 수 있다.
+- ~~Claude로 실제 번역하는 시험.~~ 했다(위). Code 탭에서 `.mcp.json`을 허용하는 첫 확인 창은 따로 보지 못했다.
+- 다음 키트 zip: `artifacts/release-1.16-20261020/kit-next/`(점 파일 2개 포함, git의 agent-kit 10개와 같음). 지금 루트 EXE 1.16.3에는 `agent mcp`가 없다. 그래서 이 키트는 MCP가 든 다음 릴리스 EXE와 함께 내야 한다.
 - 갈래 번역을 MCP로 하는 시험. 하위 에이전트마다 서버가 따로 뜨는지, 같은 서버를 나눠 쓰는지 앱마다 다르다.
 - ~~이름 표기 불일치 검사가 문장 첫머리의 동사(Summon)를 이름으로 보는 오탐.~~ 고침: 문장 중간이나 한 낱말 줄에서 대문자로 나온 낱말만 이름으로 본다. 실제 프로젝트 사본 7개는 품질검사 건수가 그대로였다.
