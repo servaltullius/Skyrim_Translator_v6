@@ -87,6 +87,34 @@ public sealed class AgentModeTests : IAsyncLifetime
         await Assert.ThrowsAsync<AgentModeException>(() => AgentCli.ReadAgentFileAsync(broken, CancellationToken.None));
     }
 
+    /// <summary>
+    /// The Codex trial: a level decided with a request waiting dropped that request's answer. The request is made again
+    /// at once, and request.md names the instructions file by its full path (--work moved it from the relative work).
+    /// </summary>
+    [Fact]
+    public async Task WaitingRequest_IsMadeAgain_AndNamesItsInstructionsByFullPath()
+    {
+        Assert.Null((await _session.RemakePendingAsync(_project, CancellationToken.None)).Report);
+        await _session.NextAsync(_project, CancellationToken.None);
+
+        var (remade, lanes) = await _session.RemakePendingAsync(_project, CancellationToken.None);
+
+        Assert.NotNull(remade?.Next);
+        Assert.Equal(0, lanes);
+        Assert.NotNull(_session.Pending(_project));
+        Assert.Contains(_session.InstructionsPath(_project), await File.ReadAllTextAsync(_session.RequestPath(_project)));
+    }
+
+    /// <summary>A PowerShell function passes "--id 1008,383" as separate arguments; the list is gathered whole.</summary>
+    [Fact]
+    public void IdList_SplitIntoArguments_IsGatheredWhole()
+    {
+        var command = AgentCommand.Parse(new List<string> { "proj", "--id", "1008", "383,275", "--work", Path.Combine(_root, "w"), "extra" });
+
+        Assert.Equal("1008,383,275", command.Ids);
+        Assert.Equal(new[] { "proj", "extra" }, command.Rest);
+    }
+
     [Fact]
     public async Task Request_CoversTheRemainingRows_SoTheDialogueAroundALineIsInIt()
     {

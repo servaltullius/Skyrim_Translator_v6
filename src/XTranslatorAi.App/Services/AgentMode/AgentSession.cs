@@ -182,6 +182,21 @@ public sealed class AgentSession
         return new AgentKoreanLink(match, fill.Count, earlier.Count - fill.Count, open.Count - fill.Count, different);
     }
 
+    /// <summary>
+    /// Makes the waiting request again after a change to what requests show (a decided speech level): its answer,
+    /// written for the old request, would be dropped. In the Codex trial a level decided with a request waiting cost
+    /// that request's 30 answers. Null when no request waits; a lane's waiting requests are left (count returned).
+    /// </summary>
+    public async Task<(AgentStepReport? Report, int LanesWaiting)> RemakePendingAsync(AgentProject project, CancellationToken cancellationToken)
+    {
+        var lanes = Directory.Exists(ProjectDir(project))
+            ? Directory.GetDirectories(ProjectDir(project), "lane-*").Count(d => File.Exists(Path.Combine(d, "pending.json")))
+            : 0;
+        if (Pending(project) == null) return (null, lanes);
+        ClearPending(project);
+        return (await NextAsync(project, cancellationToken), lanes);
+    }
+
     public IReadOnlyList<AgentProject> Projects()
         => !Directory.Exists(_workRoot)
             ? Array.Empty<AgentProject>()
@@ -384,7 +399,7 @@ public sealed class AgentSession
         Directory.CreateDirectory(dir);
         await File.WriteAllTextAsync(PendingPath(report.Project), JsonSerializer.Serialize(request, Json), cancellationToken);
         var added = AgentRequestRenderer.WriteInstructions(dir, AgentRequestRenderer.Split(request).Sections);
-        var text = AgentRequestRenderer.Render(report.Project, request, added, carried);
+        var text = AgentRequestRenderer.Render(report.Project, request, added, carried, InstructionsPath(report.Project));
         await File.WriteAllTextAsync(RequestPath(report.Project), text, cancellationToken);
         return report with { NextRequestChars = text.Length, NewInstructionSections = added };
     }

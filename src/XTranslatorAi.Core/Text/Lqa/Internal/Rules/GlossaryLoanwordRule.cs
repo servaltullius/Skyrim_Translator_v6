@@ -24,11 +24,12 @@ internal static class GlossaryLoanwordRule
     private static readonly Regex EnglishWordRegex = new(@"[A-Za-z]+", RegexOptions.CultureInvariant);
     private static readonly Regex HangulWordRegex = new(@"[가-힣]+", RegexOptions.CultureInvariant);
 
-    // Particles stripped (twice at most: 수업이라도 → 수업이라 → 수업) to reach the word itself.
+    // Particles stripped (twice at most: 수업이라도 → 수업이라 → 수업) to reach the word itself. 선 is 에선 shortened
+    // after a vowel (여기선, 아래선): Teldryn's "여기 아래선 조심하는 게 좋겠소" read as Illusion (일루션) for 환영마법.
     private static readonly string[] Suffixes =
     {
         "에게서", "한테서", "에서는", "이라는", "께서", "에게", "한테", "에서", "에선", "에는", "이랑", "이라", "이란", "라는", "처럼", "보다", "까지", "부터", "으로",
-        "이나", "은", "는", "이", "가", "을", "를", "의", "와", "과", "도", "만", "에", "엔", "로", "랑", "나",
+        "이나", "은", "는", "이", "가", "을", "를", "의", "와", "과", "도", "만", "에", "엔", "선", "로", "랑", "나",
     };
 
     // ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ; ㅇ at the start of a syllable is silent.

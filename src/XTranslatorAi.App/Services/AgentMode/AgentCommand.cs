@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Data;
@@ -48,7 +49,7 @@ internal sealed class AgentCommand
         var projectsRoot = c.Option("--projects");
         var find = c.Option("--find");
         var rec = c.Option("--rec");
-        var ids = c.Option("--id");
+        var ids = c.ListOption("--id");
         var after = c.Option("--after");
         var count = c.Option("--count");
         var all = rest.Remove("--all");
@@ -73,6 +74,23 @@ internal sealed class AgentCommand
         var value = Rest[i + 1];
         Rest.RemoveRange(i, 2);
         return value;
+    }
+
+    /// <summary>
+    /// An option whose value is a list of numbers ("--id 12,40"), with the list's pieces gathered when a shell passed them
+    /// as separate arguments (a PowerShell function's 1008,383 arrives as 1008 and 383).
+    /// </summary>
+    public string? ListOption(string name)
+    {
+        var i = Rest.IndexOf(name);
+        if (i < 0 || i + 1 >= Rest.Count) return null;
+        var end = i + 1;
+        while (end + 1 < Rest.Count && IsNumberList(Rest[end + 1])) end++;
+        var value = string.Join(",", Rest.GetRange(i + 1, end - i).Select(part => part.Trim(',', ' ')));
+        Rest.RemoveRange(i, end - i + 1);
+        return value;
+
+        static bool IsNumberList(string text) => text.Length > 0 && text.All(ch => char.IsAsciiDigit(ch) || ch is ',' or ' ');
     }
 
     public string Arg(int index, string what)

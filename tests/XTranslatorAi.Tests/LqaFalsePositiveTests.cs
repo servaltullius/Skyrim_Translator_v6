@@ -463,7 +463,7 @@ public class LqaFalsePositiveTests
     [Fact]
     public async Task GlossaryVariant_IgnoresNamesWithTh_VerbsWithBoda_AndWholeLoanwordPhrases()
     {
-        var glossary = new List<GlossaryEntry> { Term("Flesh", "피부"), Term("Fortify", "강화"), Term("Master", "달인") };
+        var glossary = new List<GlossaryEntry> { Term("Flesh", "피부"), Term("Fortify", "강화"), Term("Master", "달인"), Term("Illusion", "환영마법") };
         var entries = new List<LqaScanEntry>
         {
             Dialogue(1, "I overheard Braith trying to talk to her parents.", "브레이스가 부모님이랑 얘기하려는 걸 우연히 들었어."),
@@ -471,6 +471,8 @@ public class LqaFalsePositiveTests
             Dialogue(3, "Should be a master key somewhere around here.", "이 근처 어딘가에 마스터 키가 있을 거야."),
             // A plural next word: "files" is written 파일.
             Dialogue(4, "Load order: sort the master files first.", "로드 순서: 마스터 파일을 먼저 정렬하세요."),
+            // 선 is 에선 shortened: 아래선 is not Illusion (Teldryn in the Codex trial).
+            Dialogue(5, "You may want to be careful down here.", "여기 아래선 조심하는 게 좋겠소."),
         };
 
         var issues = await LqaScanner.ScanAsync(entries, "ko", glossary);

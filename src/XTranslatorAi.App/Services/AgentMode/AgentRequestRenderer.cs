@@ -159,8 +159,10 @@ public static class AgentRequestRenderer
     }
 
     /// <summary>The request as the model reads it: how to answer, the sections it uses, then its own text.</summary>
+    /// <param name="instructionsPath">The instructions file as the session keeps it (its full path); the Codex trial,
+    /// run with --work, read the relative work\&lt;key&gt; this used to name as a folder under its own.</param>
     public static string Render(AgentProject project, AgentRequest request, IReadOnlySet<string> newSections,
-        IReadOnlyList<AgentRejection> rejections)
+        IReadOnlyList<AgentRejection> rejections, string? instructionsPath = null)
     {
         var parts = Split(request);
         var json = AgentAnswerCheck.IsJson(request);
@@ -218,7 +220,7 @@ public static class AgentRequestRenderer
         sb.AppendLine();
         sb.AppendLine("## 지시");
         sb.AppendLine();
-        sb.AppendLine($"이 요청의 지시는 `{Path.Combine("work", project.WorkFolder, InstructionsFileName)}`의 아래 절이다. " +
+        sb.AppendLine($"이 요청의 지시는 `{instructionsPath ?? Path.Combine("work", project.WorkFolder, InstructionsFileName)}`의 아래 절이다. " +
                       "이 대화에서 아직 읽지 않은 절(새 절, 또는 대화를 새로 시작했으면 전부)은 먼저 읽고 답한다.");
         foreach (var section in parts.Sections)
         {

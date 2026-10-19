@@ -137,5 +137,16 @@ public static partial class AgentCli
         Console.WriteLine(c.Clear
             ? $"지움: {NameOf(speaker)} → {NameOf(listenerKey)}"
             : $"정함: {NameOf(speaker)} → {NameOf(listenerKey)}: {level}");
+        // A waiting request shows the old level: it is made again, so its answer is written for the new one.
+        var (remade, lanesWaiting) = await c.Session.RemakePendingAsync(project, c.Ct);
+        if (remade?.Next != null)
+        {
+            Console.WriteLine($"대기 중이던 요청을 정한 말투로 다시 만들었습니다: {remade.NextRequestPath}. 이 요청을 읽고 답하세요(앞 요청에 쓴 답은 내지 마세요).");
+        }
+
+        if (lanesWaiting > 0)
+        {
+            Console.WriteLine($"알림: 갈래 {lanesWaiting}개에 대기 중인 요청이 있습니다. 그 요청들은 옛 말투로 만들어졌으니 open으로 다시 열어 대기 요청을 지운 뒤 갈래를 이어 가세요.");
+        }
     }
 }
