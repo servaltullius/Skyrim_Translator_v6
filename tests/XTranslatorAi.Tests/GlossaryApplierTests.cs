@@ -300,6 +300,11 @@ public class GlossaryApplierTests
     [InlineData("Master", "달인", "Please, the Dark Master wishes to speak with you.", false)]
     [InlineData("Master", "달인", "Reach your Master Destruction rank.", true)]
     [InlineData("Master", "달인", "Speak to the College Master Trainer.", true)]
+    [InlineData("Master", "달인", "The Master awaits you.", false)]
+    [InlineData("Master", "달인", "Dark Master of the Malevolent", false)]
+    [InlineData("Master", "달인", "Another offering for the Master.", false)]
+    [InlineData("Master", "달인", "Cast Master level Destruction spells for half magicka.", true)]
+    [InlineData("Master", "달인", "I have found the Master Illusion Texts.", true)]
     // Meridia's Order: the Argonian Cleans-Many-Boots came back as 클린즈-매니-전투화.
     [InlineData("Boots", "전투화", "Have you seen Cleans-Many-Boots?", false)]
     [InlineData("Boots", "전투화", "Iron Boots - 50 gold.", true)]

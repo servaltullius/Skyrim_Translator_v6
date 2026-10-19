@@ -295,7 +295,7 @@ public sealed class GlossaryApplier
     private static readonly HashSet<string> MasterLevelWords = new(StringComparer.OrdinalIgnoreCase)
     {
         "Alteration", "Conjuration", "Destruction", "Illusion", "Restoration", "Alchemy", "Enchanting", "Smithing", "Archery",
-        "Block", "Sneak", "Lockpicking", "Pickpocket", "Speech", "Trainer", "Level",
+        "Block", "Sneak", "Lockpicking", "Pickpocket", "Speech", "Trainer", "Level", "Rank",
     };
 
     /// <summary>
@@ -341,10 +341,11 @@ public sealed class GlossaryApplier
                 return false;
             }
 
-            // "your Master" and "the Dark Master" are a person too (Meridia's Order: "네 달인", "어둠의 달인").
-            var (previousWord, startsSentence) = ReadPreviousAsciiWord(text, index);
-            if (PossessiveDeterminers.Contains(previousWord)
-                || (text[index] == 'M' && previousWord.Length > 1 && char.IsUpper(previousWord[0]) && !startsSentence))
+            // "your Master", "the Master" and "the Dark Master" are a person (Meridia's Order: "네 달인", "어둠의 달인").
+            // In the game too a Master after "the" or a capitalized word is a person or a title: the Master's power
+            // 주인님의 힘, Harsh Master 무자비한 주인, Ritual Master 제사장; the rank has a level word after it.
+            var previousWord = ReadPreviousAsciiWord(text, index);
+            if (PersonDeterminers.Contains(previousWord) || (text[index] == 'M' && previousWord.Length > 1 && char.IsUpper(previousWord[0])))
             {
                 return true;
             }
@@ -362,13 +363,13 @@ public sealed class GlossaryApplier
         return term == "Scroll" && TheBefore.IsMatch(before) && !string.Equals(nextWord, "of", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static readonly HashSet<string> PossessiveDeterminers = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly HashSet<string> PersonDeterminers = new(StringComparer.OrdinalIgnoreCase)
     {
-        "my", "your", "his", "her", "our", "their", "thy",
+        "my", "your", "his", "her", "our", "their", "thy", "the",
     };
 
-    // The word just before index (only spaces between), and whether it starts its sentence.
-    private static (string Word, bool StartsSentence) ReadPreviousAsciiWord(string text, int index)
+    // The word just before index, with only spaces between.
+    private static string ReadPreviousAsciiWord(string text, int index)
     {
         var end = index;
         while (end > 0 && text[end - 1] == ' ')
@@ -382,13 +383,7 @@ public sealed class GlossaryApplier
             start--;
         }
 
-        if (start == end || end == index)
-        {
-            return ("", false);
-        }
-
-        var before = text.AsSpan(0, start).TrimEnd().TrimEnd("\"'“‘(".AsSpan()).TrimEnd();
-        return (text[start..end], before.IsEmpty || before[^1] is '.' or '!' or '?' or '…' or ':');
+        return end == index ? "" : text[start..end];
     }
 
     private static bool IsJoinedByHyphen(string text, int index, int length)
