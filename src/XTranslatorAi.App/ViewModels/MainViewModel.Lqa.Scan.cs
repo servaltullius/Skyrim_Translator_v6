@@ -39,6 +39,7 @@ public partial class MainViewModel
             ? new Dictionary<long, string>()
             : await db.GetStringNotesByKindAsync("tm_fallback", CancellationToken.None);
         var sourceFixIds = Entries.Where(e => e.IsSourceFix).Select(e => e.Id).ToHashSet();
+        var speakerStyles = db == null ? null : await db.GetSpeakerStylesAsync(CancellationToken.None);
 
         // The rules read only this snapshot, so they run on a worker thread. On the UI thread the
         // project-wide rules (name consistency, tone majorities) ran before the first progress report
@@ -57,7 +58,8 @@ public partial class MainViewModel
             onProgress: progress.Report,
             tmFallbackNotes: notes,
             referenceNames: referenceMemory is { Count: > 0 } ? XTranslatorAi.Core.Translation.ReferenceNameIndex.Build(referenceMemory) : null,
-            sourceFixIds: sourceFixIds
+            sourceFixIds: sourceFixIds,
+            speakerStyles: speakerStyles
         ));
 
         return issues.Select(ToIssueViewModel).ToList();

@@ -47,11 +47,16 @@ internal static class SpeakerToneConsistencyRule
     /// sign (noun + 요, "~ㅂ시다") is read as 하오체: Teldryn Sero's "다음엔 어디요?" and "그럼 출발합시다!".</param>
     /// <param name="StrayHao">Groups in a plain 반말 voice with a 하오체 line or two, by their 반말 and 하오체 counts:
     /// Brelyna Maryon's one "...생각하는 거요?" among 67 반말 lines.</param>
+    /// <param name="Declared">The speech levels decided per speaker and listener (SpeakerStyles): a group with one is
+    /// compared with it, not with its own majority. Meridia's Order's Laracin was decided to speak 합쇼체 to the
+    /// Champion, and with most of his lines written in 반말 the majority flagged his right lines.</param>
     public sealed record Levels(IReadOnlyDictionary<string, ToneKind> Majorities, IReadOnlyDictionary<string, (int Polite, int Casual)> Counts,
         IReadOnlyDictionary<string, string> CasualNames, IReadOnlySet<string> HaoGroups,
-        IReadOnlyDictionary<string, (int Casual, int Hao)> StrayHao);
+        IReadOnlyDictionary<string, (int Casual, int Hao)> StrayHao,
+        IReadOnlyDictionary<(string Speaker, string Listener), string>? Declared = null);
 
-    public static Levels BuildSpeakerMajorities(IReadOnlyList<LqaScanEntry> entries)
+    public static Levels BuildSpeakerMajorities(IReadOnlyList<LqaScanEntry> entries,
+        IReadOnlyList<XTranslatorAi.Core.Data.SpeakerStyle>? styles = null)
     {
         var levels = new Dictionary<string, List<(Register Register, bool Weak)>>(StringComparer.Ordinal);
         foreach (var entry in entries)
@@ -103,7 +108,8 @@ internal static class SpeakerToneConsistencyRule
             }
         }
 
-        return new Levels(majorities, counts, casualNames, haoGroups, strayHao);
+        return new Levels(majorities, counts, casualNames, haoGroups, strayHao,
+            styles is { Count: > 0 } ? SpeakerStyles.ByPair(styles) : null);
     }
 
     private static ToneKind Side(Register register) => register switch
@@ -133,7 +139,9 @@ internal static class SpeakerToneConsistencyRule
         var haoKey = IsGuessed(key) ? key[..^1] : key;
         var separator = haoKey.IndexOf(DialogueSpeakerNames.ListenerSeparator);
         var haoSpeaker = separator < 0 ? haoKey : haoKey[..separator];
-        if (weak && register == Register.Polite && (levels.HaoGroups.Contains(haoKey) || IsGuessed(key) && levels.HaoGroups.Contains(haoSpeaker)))
+        var declared = levels.Declared is { } decided ? SpeakerStyles.For(decided, key) : null;
+        if (weak && register == Register.Polite && (levels.HaoGroups.Contains(haoKey) || IsGuessed(key) && levels.HaoGroups.Contains(haoSpeaker)
+                                                    || declared is "하오체" or "하게체"))
         {
             register = Register.Hao;
         }
@@ -147,6 +155,18 @@ internal static class SpeakerToneConsistencyRule
         if (IsGuessed(key))
         {
             ApplyGuessed(entry, key, register, level, levels, issues);
+            return;
+        }
+
+        if (declared != null)
+        {
+            if ((level == ToneKind.Hamnida) != SpeakerStyles.IsPolite(declared))
+            {
+                var whom = key.Contains(DialogueSpeakerNames.ListenerSeparator) ? "이 상대에게" : "플레이어에게";
+                issues.Add(Issue(entry, "Warn", key.StartsWith(PlayerKeyPrefix, StringComparison.Ordinal) ? PlayerCode : Code,
+                    $"{whom} 정한 말투와 다릅니다: 정한 말투 {declared}, 이 대사 {Display(register)}"));
+            }
+
             return;
         }
 
@@ -214,9 +234,15 @@ internal static class SpeakerToneConsistencyRule
         issues.Add(Issue(entry, "Warn", Code,
             $"장면에서 상대를 짐작한 대사인데, 그 상대에게 한 대사와도 플레이어에게 한 대사와도 말투가 다릅니다: 대부분 {most}, 이 대사 {Display(register)}"));
 
-        // The side most of a group is on (a group all on one side has no majority entry, the guessed line not being in it).
+        // The side most of a group is on (a group all on one side has no majority entry, the guessed line not being in it),
+        // or the decided level's.
         ToneKind? Dominant(string group)
         {
+            if (levels.Declared is { } decided && SpeakerStyles.For(decided, group) is { } style)
+            {
+                return SpeakerStyles.IsPolite(style) ? ToneKind.Hamnida : ToneKind.Casual;
+            }
+
             if (!levels.Counts.TryGetValue(group, out var count) || count.Polite + count.Casual < 4) return null;
             var (side, n) = count.Polite >= count.Casual ? (ToneKind.Hamnida, count.Polite) : (ToneKind.Casual, count.Casual);
             return n * 4 >= (count.Polite + count.Casual) * 3 ? side : null;

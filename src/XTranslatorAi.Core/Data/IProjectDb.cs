@@ -86,6 +86,10 @@ public interface IProjectDb
     Task<IReadOnlyDictionary<long, string>> GetPluginFieldKeysByStringIdAsync(CancellationToken cancellationToken)
         => Task.FromResult<IReadOnlyDictionary<long, string>>(new Dictionary<long, string>());
 
+    /// <summary>The speech levels decided per speaker and listener (<see cref="SpeakerStyle"/>).</summary>
+    Task<IReadOnlyList<SpeakerStyle>> GetSpeakerStylesAsync(CancellationToken cancellationToken)
+        => Task.FromResult<IReadOnlyList<SpeakerStyle>>(Array.Empty<SpeakerStyle>());
+
     /// <summary>The speaker FormID ("%08X") of each plugin INFO row whose conditions name one, by row id.</summary>
     Task<IReadOnlyDictionary<long, string>> GetStringSpeakersAsync(CancellationToken cancellationToken)
         => Task.FromResult<IReadOnlyDictionary<long, string>>(new Dictionary<long, string>());

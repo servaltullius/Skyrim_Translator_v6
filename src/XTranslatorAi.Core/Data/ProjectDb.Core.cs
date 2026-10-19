@@ -83,6 +83,15 @@ public sealed partial class ProjectDb : IAsyncDisposable, IProjectDb
           UpdatedAt TEXT NOT NULL
         );
 
+        CREATE TABLE IF NOT EXISTS SpeakerStyle (
+          Speaker TEXT NOT NULL,
+          Listener TEXT NOT NULL,
+          Level TEXT NOT NULL,
+          Note TEXT,
+          UpdatedAt TEXT NOT NULL,
+          PRIMARY KEY (Speaker, Listener)
+        );
+
         CREATE TABLE IF NOT EXISTS StringNote (
           StringId INTEGER NOT NULL,
           Kind TEXT NOT NULL,

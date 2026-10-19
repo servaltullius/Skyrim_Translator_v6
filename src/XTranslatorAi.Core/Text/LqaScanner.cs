@@ -67,14 +67,15 @@ public static class LqaScanner
         Action<int>? onProgress = null,
         IReadOnlyDictionary<long, string>? tmFallbackNotes = null,
         XTranslatorAi.Core.Translation.ReferenceNameIndex? referenceNames = null,
-        IReadOnlySet<long>? sourceFixIds = null
+        IReadOnlySet<long>? sourceFixIds = null,
+        IReadOnlyList<XTranslatorAi.Core.Data.SpeakerStyle>? speakerStyles = null
     )
     {
         var issues = new List<LqaIssue>();
         // A row marked "원문 오류 수정" was translated against its English on purpose (the modder pasted another record's
         // text), so it is neither compared with its English nor counted as other rows' wording; its tags are still checked.
         var scanned = sourceFixIds is { Count: > 0 } ? entries.Where(e => !sourceFixIds.Contains(e.Id)).ToList() : entries;
-        var context = new LqaScanContext(scanned, targetLang, forceTokenGlossary, onProgress, tmFallbackNotes, referenceNames);
+        var context = new LqaScanContext(scanned, targetLang, forceTokenGlossary, onProgress, tmFallbackNotes, referenceNames, speakerStyles);
         await ApplyExtractedRulePipelineAsync(context, issues);
         foreach (var entry in entries.Where(e => sourceFixIds?.Contains(e.Id) == true
                      && e.Status is StringEntryStatus.Done or StringEntryStatus.Edited))
@@ -140,7 +141,7 @@ public static class LqaScanner
         var particleTerms = LqaHeuristics.BuildParticleCheckTerms(forceTokenGlossary);
         var glossaryLatinWords = BuildGlossaryLatinWords(forceTokenGlossary);
         var strongDialogueMajority = DialogueToneConsistencyRule.BuildDialogueGroupMajorities(entries);
-        var speakerLevels = SpeakerToneConsistencyRule.BuildSpeakerMajorities(entries);
+        var speakerLevels = SpeakerToneConsistencyRule.BuildSpeakerMajorities(entries, context.SpeakerStyles);
         var nameFindings = NameConsistencyRule.Build(entries, isKorean);
         var loanwordIndex = isKorean ? GlossaryLoanwordRule.Build(forceTokenGlossary) : new Dictionary<string, GlossaryLoanwordRule.Term>();
         var fieldToneMajority = RecToneRule.BuildFieldMajorities(entries);

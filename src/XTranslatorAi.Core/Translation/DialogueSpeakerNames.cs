@@ -33,6 +33,10 @@ public static class DialogueSpeakerNames
         }
 
         var names = await db.GetPluginNpcNamesAsync(cancellationToken).ConfigureAwait(false);
+        var styles = SpeakerStyles.ByPair(await db.GetSpeakerStylesAsync(cancellationToken).ConfigureAwait(false));
+        var fieldKeys = styles.Count == 0
+            ? new Dictionary<long, string>()
+            : await db.GetPluginFieldKeysByStringIdAsync(cancellationToken).ConfigureAwait(false);
         var plugin = gameStrings == null ? null : await db.GetPluginMastersAsync(cancellationToken).ConfigureAwait(false);
         var labels = new Dictionary<uint, string>();
         var result = new Dictionary<long, string>(speakers.Count);
@@ -55,10 +59,36 @@ public static class DialogueSpeakerNames
                          + (listener == PluginSpeakers.UnknownListener ? UnknownListenerLabel : NpcLabel(listener));
             }
 
-            result[id] = label;
+            result[id] = label + DecidedStyle(id, value);
         }
 
         return result;
+
+        // The level decided for the line's speaker and listener (SpeakerStyles); for the player's line (an INFO's RNAM, a
+        // topic's text), the player's level to the NPC. A guessed listener's line names both it may be said to.
+        string DecidedStyle(long id, string value)
+        {
+            if (styles.Count == 0)
+            {
+                return "";
+            }
+
+            var key = fieldKeys.GetValueOrDefault(id) ?? "";
+            if (key.StartsWith("DIAL/", StringComparison.Ordinal) || key.Contains("/RNAM/", StringComparison.Ordinal))
+            {
+                return SpeakerStyles.For(styles, SpeakerStyles.PlayerSpeaker + ListenerSeparator + value) is { } player ? $" (정한 말투: {player})" : "";
+            }
+
+            if (value.EndsWith(GuessedListenerMark))
+            {
+                var toListener = SpeakerStyles.For(styles, value);
+                var toPlayer = SpeakerStyles.For(styles, value[..value.IndexOf(ListenerSeparator)]);
+                return toListener == null && toPlayer == null ? ""
+                    : $" (정한 말투: 상대에게 {toListener ?? "정하지 않음"}, 플레이어에게 {toPlayer ?? "정하지 않음"})";
+            }
+
+            return SpeakerStyles.For(styles, value) is { } level ? $" (정한 말투: {level})" : "";
+        }
 
         string NpcLabel(uint formId)
         {

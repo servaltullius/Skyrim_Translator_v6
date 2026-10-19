@@ -1,5 +1,7 @@
+using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text;
+using XTranslatorAi.Core.Translation;
 using Xunit;
 
 namespace XTranslatorAi.Tests;
@@ -146,6 +148,36 @@ public class LqaSpeakerToneTests
         var issue = Assert.Single(await LqaScanner.ScanAsync(polite, "ko", new List<GlossaryEntry>()), i => i.Code == "speaker_tone_inconsistent");
         Assert.Equal(9L, issue.Id);
         Assert.Contains("상대를 짐작한 대사", issue.Message);
+    }
+
+    /// <summary>
+    /// Meridia's Order's Laracin was decided to speak 합쇼체 to the Champion, and the translators wrote most of his lines
+    /// in 반말: the majority flagged his right lines. A decided level (SpeakerStyles) is what a group is compared with,
+    /// for the player's lines to an NPC too.
+    /// </summary>
+    [Fact]
+    public async Task DecidedStyle_IsComparedInsteadOfTheMajority()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "뜻대로 부려라."), Line(2, "이건 믿음이 안 가."), Line(3, "섬멸하자."), Line(4, "얘기하자."),
+            Line(5, "명령만 내리십시오."),
+            Line(6, "어디로 가지?", speaker: "00013269", rec: "INFO:RNAM"), Line(7, "알겠습니다.", speaker: "00013269", rec: "INFO:RNAM"),
+        };
+        var styles = new[]
+        {
+            new SpeakerStyle("00013269", SpeakerStyles.Player, "합쇼체"),
+            new SpeakerStyle(SpeakerStyles.PlayerSpeaker, "00013269", "반말"),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>(), speakerStyles: styles);
+
+        var flagged = issues.Where(i => i.Code is "speaker_tone_inconsistent" or "player_tone_inconsistent").Select(i => i.Id).OrderBy(i => i);
+        Assert.Equal(new long[] { 1, 2, 3, 4, 7 }, flagged);
+        Assert.Contains("정한 말투 합쇼체", Assert.Single(issues, i => i.Id == 1).Message);
+
+        var without = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+        Assert.Contains(without, i => i.Id == 5);
     }
 
     [Fact]

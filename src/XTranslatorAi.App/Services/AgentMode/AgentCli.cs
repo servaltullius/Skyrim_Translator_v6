@@ -75,6 +75,9 @@ public static class AgentCli
         var idsOption = Option("--id");
         var all = rest.Remove("--all");
         var undo = rest.Remove("--undo");
+        var toOption = Option("--to");
+        var noteOption = Option("--note");
+        var clearStyle = rest.Remove("--clear");
         var session = new AgentSession(work, globalDb, new GameStringService(), settings, projectsRoot);
 
         try
@@ -93,6 +96,7 @@ public static class AgentCli
                 case "show": await ShowAsync(); break;
                 case "lookup": await LookupAsync(); break;
                 case "voice": await VoiceAsync(); break;
+                case "style": await StyleAsync(); break;
                 case "version": Console.WriteLine(Version()); break;
                 default: Help(); break;
             }
@@ -217,7 +221,8 @@ public static class AgentCli
             var sourceFix = (await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, ct)).Keys.ToHashSet();
             var notes = memory.Count > 0 ? LqaScanner.DropTmFallbacksMatchingMemory(tmNotes, entries, memory) : tmNotes;
             var issues = await LqaScanner.ScanAsync(entries, "korean", glossary, tmFallbackNotes: notes,
-                referenceNames: memory.Count > 0 ? ReferenceNameIndex.Build(memory) : null, sourceFixIds: sourceFix);
+                referenceNames: memory.Count > 0 ? ReferenceNameIndex.Build(memory) : null, sourceFixIds: sourceFix,
+                speakerStyles: await db.GetSpeakerStylesAsync(ct));
             return (issues, rows.ToDictionary(row => row.Id, row => row.DestText ?? ""));
         }
 
@@ -346,6 +351,98 @@ public static class AgentCli
                 Console.WriteLine($"  영어: {Flat(r.SourceText ?? "")}");
                 Console.WriteLine($"  번역: {Flat(r.DestText ?? "")}");
             }
+        }
+
+        // The speech levels decided for the project: style <프로젝트> lists them and the speakers still undecided;
+        // style <프로젝트> <화자> <말투> [--to <상대>] [--note <메모>] decides one, --clear takes it back. Requests name a
+        // decided level next to the speaker, and check compares lines with it instead of with the speaker's other lines.
+        async Task StyleAsync()
+        {
+            var project = session.Find(Arg(0, "프로젝트"));
+            await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, ct);
+            var values = await DialogueSpeakerNames.LoadFormIdsAsync(db, ct);
+            var game = await new GameStringService().TryLoadAsync(ct);
+            var labels = await DialogueSpeakerNames.LoadAsync(db, game, ct);
+            var masters = await db.GetPluginMastersAsync(ct);
+            static string Bare(string label)
+            {
+                foreach (var cut in new[] { DialogueSpeakerNames.GuessedListenerLabelSeparator, DialogueSpeakerNames.ListenerLabelSeparator, " (정한 말투" })
+                {
+                    var at = label.IndexOf(cut, StringComparison.Ordinal);
+                    if (at >= 0) label = label[..at];
+                }
+
+                return label;
+            }
+
+            // Each NPC speaker of the project by FormID, with its name and line count.
+            var npcs = values.Where(v => labels.ContainsKey(v.Key))
+                .GroupBy(v => v.Value.Split(DialogueSpeakerNames.ListenerSeparator)[0])
+                .ToDictionary(g => g.Key, g => (Name: Bare(labels[g.First().Key]), Lines: g.Count()), StringComparer.Ordinal);
+            string NameOf(string who) => who == SpeakerStyles.PlayerSpeaker ? "플레이어"
+                : who == SpeakerStyles.Player ? "플레이어"
+                : who == SpeakerStyles.Other ? "다른 인물"
+                : who == SpeakerStyles.Anyone ? "누구에게나"
+                : npcs.TryGetValue(who, out var npc) ? $"{npc.Name} ({who})" : who;
+            string Resolve(string query, bool listener)
+            {
+                var q = query.Trim();
+                if (q is "player" or "플레이어") return listener ? SpeakerStyles.Player : SpeakerStyles.PlayerSpeaker;
+                if (listener && q is "other" or "다른 인물" or "다른인물") return SpeakerStyles.Other;
+                if (listener && q is "*" or "anyone" or "누구에게나" or "모두") return SpeakerStyles.Anyone;
+                if (q.Length == 8 && q.All(Uri.IsHexDigit)) return q.ToUpperInvariant();
+                var found = npcs.Where(n => n.Value.Name.Contains(q, StringComparison.OrdinalIgnoreCase)).ToList();
+                // A base game NPC's label is its Korean name: its English name is in the dictionary's speaker index.
+                if (found.Count == 0 && game?.Speakers is { } index && masters is { } m)
+                {
+                    var known = index.FindNpcs(q).Select(n =>
+                    {
+                        var owner = n.Npc[..n.Npc.LastIndexOf(':')];
+                        var at = m.Masters.ToList().FindIndex(x => string.Equals(x, owner, StringComparison.OrdinalIgnoreCase));
+                        return at < 0 ? null : $"{at:X2}{n.Npc[(n.Npc.LastIndexOf(':') + 1)..].ToUpperInvariant()}";
+                    }).OfType<string>().ToHashSet(StringComparer.Ordinal);
+                    found = npcs.Where(n => known.Contains(n.Key)).ToList();
+                }
+                return found.Count switch
+                {
+                    1 => found[0].Key,
+                    0 => throw new AgentModeException($"'{q}'인 화자가 이 프로젝트에 없습니다. FormID로 지정하세요."),
+                    _ => throw new AgentModeException($"'{q}'에 맞는 화자가 여럿입니다: {string.Join(", ", found.Take(6).Select(f => $"{f.Value.Name}({f.Key})"))}. FormID로 지정하세요."),
+                };
+            }
+
+            if (rest.Count <= 1)
+            {
+                var styles = await db.GetSpeakerStylesAsync(ct);
+                Console.WriteLine(styles.Count == 0 ? "정한 말투: 없음" : $"정한 말투: {styles.Count}");
+                foreach (var style in styles)
+                {
+                    Console.WriteLine($"- {NameOf(style.Speaker)} → {NameOf(style.Listener)}: {style.Level}" + (style.Note is { Length: > 0 } note ? $" ({note})" : ""));
+                }
+
+                var undecided = npcs.Where(n => styles.All(s => s.Speaker != n.Key)).OrderByDescending(n => n.Value.Lines).Take(12).ToList();
+                if (undecided.Count > 0)
+                {
+                    Console.WriteLine("말투를 정하지 않은 화자: " + string.Join(", ", undecided.Select(n => $"{n.Value.Name}({n.Key}, {n.Value.Lines}줄)")));
+                }
+
+                return;
+            }
+
+            RefuseWhileAppRuns();
+            var speaker = Resolve(Arg(1, "화자"), listener: false);
+            var listenerKey = toOption == null ? SpeakerStyles.Player : Resolve(toOption, listener: true);
+            var level = "";
+            if (!clearStyle)
+            {
+                level = SpeakerStyles.Normalize(Arg(2, "말투")) ?? throw new AgentModeException(
+                    $"말투는 {string.Join(", ", SpeakerStyles.Levels)} 중 하나로 쓰세요.");
+            }
+
+            await db.SetSpeakerStyleAsync(new SpeakerStyle(speaker, listenerKey, level, noteOption), ct);
+            Console.WriteLine(clearStyle
+                ? $"지움: {NameOf(speaker)} → {NameOf(listenerKey)}"
+                : $"정함: {NameOf(speaker)} → {NameOf(listenerKey)}: {level}");
         }
 
         // How a base game NPC speaks in the Korean patch: voice <프로젝트> <영어 이름|한국어 이름|FormID> (read only). The
@@ -531,6 +628,7 @@ public static class AgentCli
               tullius.cmd show <프로젝트> [--find 글자] [--rec WEAP:FULL] [--id 12,40]   줄 보기(#id, 영어, 번역)
               tullius.cmd lookup <프로젝트> <낱말>                                       이름·용어의 기존 표기(용어집·게임 사전·TM, 앱이 켜져 있어도 됨)
               tullius.cmd voice <프로젝트> <이름|FormID>                                 바닐라 인물이 한글패치에서 하는 말(말투 참고, 앱이 켜져 있어도 됨)
+              tullius.cmd style <프로젝트> [<화자> <말투> [--to <상대>] [--note <메모>] [--clear]]  화자별로 정한 말투 보기·정하기(요청과 품질검사가 따름)
               tullius.cmd edit <프로젝트> <수정.json>                                    줄 고치기([{"id": 번호, "text": "새 번역"}])
               tullius.cmd export <프로젝트> [출력 폴더]                                  번역된 플러그인 저장(이미 있으면 output\<키>-2처럼 새 폴더)
               tullius.cmd version                                                        번역기 버전
