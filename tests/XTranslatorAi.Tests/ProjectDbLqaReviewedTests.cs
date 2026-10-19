@@ -31,6 +31,11 @@ public sealed class ProjectDbLqaReviewedTests
         Assert.False(LqaReviewedMarks.Holds(marks, line, "speaker_tone_inconsistent", "안녕, 소린."));
         Assert.False(LqaReviewedMarks.Holds(marks, sword, "english_residue", "철 검"));
         Assert.False(LqaReviewedMarks.Holds(marks, sword, "token_mismatch", "Iron 검"));
+        // A speech-level mark holds when an update moves the line to another speech-level check; not for another concern.
+        Assert.True(LqaReviewedMarks.Holds(marks, line, "speaker_tone_mixed", " 안녕, 소린. "));
+        Assert.True(LqaReviewedMarks.Holds(marks, line, "player_tone_inconsistent", " 안녕, 소린. "));
+        Assert.False(LqaReviewedMarks.Holds(marks, line, "speaker_tone_mixed", "안녕, 소린."));
+        Assert.False(LqaReviewedMarks.Holds(marks, line, "glossary_missing", " 안녕, 소린. "));
 
         await fixture.Db.SetLqaReviewedAsync(new[] { (line, "english_residue", "") }, false, CancellationToken.None);
 
