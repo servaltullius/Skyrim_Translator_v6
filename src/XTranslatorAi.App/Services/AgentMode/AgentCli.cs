@@ -92,6 +92,7 @@ public static class AgentCli
                 case "edit": await EditAsync(); break;
                 case "show": await ShowAsync(); break;
                 case "lookup": await LookupAsync(); break;
+                case "voice": await VoiceAsync(); break;
                 case "version": Console.WriteLine(Version()); break;
                 default: Help(); break;
             }
@@ -347,6 +348,57 @@ public static class AgentCli
             }
         }
 
+        // How a base game NPC speaks in the Korean patch: voice <프로젝트> <영어 이름|한국어 이름|FormID> (read only). The
+        // Teldryn trial's agent found Teldryn's 하오체 only by reading the lines the dictionary had filled.
+        async Task VoiceAsync()
+        {
+            var project = session.Find(Arg(0, "프로젝트"));
+            var query = string.Join(" ", rest.Skip(1)).Trim();
+            if (query.Length == 0) throw new AgentModeException("찾을 인물을 지정하세요. (tullius.cmd voice <프로젝트> <이름 또는 FormID>)");
+            var game = await new GameStringService().TryLoadAsync(ct);
+            if (game?.Speakers is not { } index) throw new AgentModeException("게임 번역 사전에 화자 색인이 없습니다.");
+            string FieldOf(string npc) => "NPC_/" + npc[..(npc.LastIndexOf(':') + 1)] + npc[(npc.LastIndexOf(':') + 1)..].ToUpperInvariant() + "/0/FULL/0";
+            string? Korean(string npc) => game.FindRecord(FieldOf(npc), "")?.Korean;
+
+            // A FormID as the request names it ("NPC 04038560") is in this plugin's master order.
+            var found = index.FindNpcs(query).ToList();
+            if (query.Length == 8 && query.All(Uri.IsHexDigit))
+            {
+                await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, ct);
+                var plugin = await db.GetPluginMastersAsync(ct);
+                var formId = uint.Parse(query, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
+                if (plugin is { } p && formId >> 24 < p.Masters.Count)
+                {
+                    var npc = $"{p.Masters[(int)(formId >> 24)].ToLowerInvariant()}:{formId & 0xFFFFFF:x6}";
+                    found = index.FindNpcs(npc).ToList();
+                }
+            }
+
+            if (found.Count == 0)
+            {
+                found = index.Names.Keys.Where(npc => Korean(npc) is { } k && k.Contains(query, StringComparison.Ordinal))
+                    .Select(npc => (npc, index.Names[npc], index.LinesOf(npc).Count)).OrderByDescending(x => x.Item3).ToList();
+            }
+
+            if (found.Count == 0)
+            {
+                Console.WriteLine($"'{query}'인 바닐라 인물을 찾지 못했습니다(대사가 있는 NPC만 있습니다).");
+                return;
+            }
+
+            if (found.Count > 1)
+            {
+                Console.WriteLine("찾은 인물: " + string.Join(", ", found.Take(6).Select(f => $"{f.Name}({Korean(f.Npc)}, {f.Npc}, {f.Lines}줄)")));
+            }
+
+            var (who, name, count) = found[0];
+            var lines = index.LinesOf(who).Select(id => game.FindRecord(id, "")?.Korean).OfType<string>()
+                .Select(Flat).Where(t => t.Length is >= 8 and <= 120).Distinct(StringComparer.Ordinal).ToList();
+            Console.WriteLine($"{name} ({Korean(who) ?? "한국어 이름 없음"}, {who}): 한글패치 대사 {count}줄");
+            var step = Math.Max(1, lines.Count / 15);
+            foreach (var line in lines.Where((_, i) => i % step == 0).Take(15)) Console.WriteLine("- " + line);
+        }
+
         // How the translator already writes an English name or term: lookup <프로젝트> <낱말> (read only, the app may run).
         async Task LookupAsync()
         {
@@ -478,6 +530,7 @@ public static class AgentCli
               tullius.cmd review <프로젝트> --id 12,40 [--undo]                          그대로 둘 줄의 품질검사 결과를 확인함으로 표시(번역문이 바뀌면 다시 나옴)
               tullius.cmd show <프로젝트> [--find 글자] [--rec WEAP:FULL] [--id 12,40]   줄 보기(#id, 영어, 번역)
               tullius.cmd lookup <프로젝트> <낱말>                                       이름·용어의 기존 표기(용어집·게임 사전·TM, 앱이 켜져 있어도 됨)
+              tullius.cmd voice <프로젝트> <이름|FormID>                                 바닐라 인물이 한글패치에서 하는 말(말투 참고, 앱이 켜져 있어도 됨)
               tullius.cmd edit <프로젝트> <수정.json>                                    줄 고치기([{"id": 번호, "text": "새 번역"}])
               tullius.cmd export <프로젝트> [출력 폴더]                                  번역된 플러그인 저장(이미 있으면 output\<키>-2처럼 새 폴더)
               tullius.cmd version                                                        번역기 버전

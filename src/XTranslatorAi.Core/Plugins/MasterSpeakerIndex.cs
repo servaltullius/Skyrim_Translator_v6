@@ -21,15 +21,46 @@ public sealed class MasterSpeakerIndex
     private readonly Dictionary<string, string> _voices;
     private readonly Dictionary<string, string> _refs;
     private readonly Dictionary<string, string> _aliases;
+    private readonly Dictionary<string, string> _names;
+    private readonly Dictionary<string, List<string>> _lines;
 
-    private MasterSpeakerIndex(Dictionary<string, string> voices, Dictionary<string, string> refs, Dictionary<string, string> aliases)
+    private MasterSpeakerIndex(Dictionary<string, string> voices, Dictionary<string, string> refs, Dictionary<string, string> aliases,
+        Dictionary<string, string>? names = null, Dictionary<string, List<string>>? lines = null)
     {
         _voices = voices;
         _refs = refs;
         _aliases = aliases;
+        _names = names ?? new Dictionary<string, string>(StringComparer.Ordinal);
+        _lines = lines ?? new Dictionary<string, List<string>>(StringComparer.Ordinal);
     }
 
     public int Count => _voices.Count + _refs.Count + _aliases.Count;
+
+    /// <summary>
+    /// The base game NPCs whose lines the masters name, by English name (part of it, any case) or record
+    /// ("dragonborn.esm:038560", or the FormID's last six digits): what <c>voice</c> shows an agent, so a mod's lines for
+    /// Teldryn Sero keep the 하오체 the Korean patch gives him. In the Teldryn trial the agent found his voice only by
+    /// reading the lines the dictionary had filled.
+    /// </summary>
+    public IReadOnlyList<(string Npc, string Name, int Lines)> FindNpcs(string query)
+    {
+        var q = query.Trim();
+        if (q.Length == 0) return Array.Empty<(string, string, int)>();
+        var hex = q.Length <= 8 && q.All(Uri.IsHexDigit) ? q.ToLowerInvariant().PadLeft(8, '0')[^6..] : null;
+        return _lines.Keys
+            .Where(npc => string.Equals(npc, q, StringComparison.OrdinalIgnoreCase)
+                          || hex != null && npc.EndsWith(":" + hex, StringComparison.Ordinal)
+                          || _names.TryGetValue(npc, out var name) && name.Contains(q, StringComparison.OrdinalIgnoreCase))
+            .Select(npc => (npc, _names.GetValueOrDefault(npc) ?? npc, _lines[npc].Count))
+            .OrderByDescending(found => found.Item3)
+            .ToList();
+    }
+
+    /// <summary>The dialogue lines (field identities, as <see cref="GameStringDictionary.FieldIdentity"/>) an NPC says.</summary>
+    public IReadOnlyList<string> LinesOf(string npc) => _lines.TryGetValue(npc, out var lines) ? lines : Array.Empty<string>();
+
+    /// <summary>The NPCs that have lines, with their English names.</summary>
+    public IReadOnlyDictionary<string, string> Names => _names;
 
     /// <summary>
     /// The fields with the speakers and listeners their hints name filled in; a hint the masters cannot resolve leaves
@@ -111,22 +142,45 @@ public sealed class MasterSpeakerIndex
         foreach (var (voice, npc) in _voices) yield return $"SV\t{voice}\t{npc}";
         foreach (var (reference, npc) in _refs) yield return $"SR\t{reference}\t{npc}";
         foreach (var (alias, npc) in _aliases) yield return $"SA\t{alias}\t{npc}";
+        // An NPC's English name and its lines; a reader that does not know these lines skips them.
+        foreach (var (npc, name) in _names) yield return $"SN\t{npc}\t{name.Replace('\t', ' ')}";
+        foreach (var (npc, lines) in _lines) yield return $"SL\t{npc}\t{string.Join(",", lines)}";
+    }
+
+    /// <summary>The maps a dictionary's speaker lines fill.</summary>
+    internal sealed class Maps
+    {
+        public Dictionary<string, string> Voices { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, string> Refs { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, string> Aliases { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, string> Names { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, List<string>> Lines { get; } = new(StringComparer.Ordinal);
     }
 
     /// <summary>Reads a line Lines() wrote; false for any other line.</summary>
-    internal static bool TryReadLine(string[] parts, Dictionary<string, string> voices, Dictionary<string, string> refs,
-        Dictionary<string, string> aliases)
+    internal static bool TryReadLine(string[] parts, Maps maps)
     {
         if (parts.Length != 3) return false;
-        var map = parts[0] switch { "SV" => voices, "SR" => refs, "SA" => aliases, _ => null };
+        switch (parts[0])
+        {
+            case "SN":
+                maps.Names[parts[1]] = parts[2];
+                return true;
+            case "SL":
+                maps.Lines[parts[1]] = parts[2].Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+                return true;
+        }
+
+        var map = parts[0] switch { "SV" => maps.Voices, "SR" => maps.Refs, "SA" => maps.Aliases, _ => null };
         if (map == null) return false;
         map[parts[1]] = parts[2];
         return true;
     }
 
-    internal static MasterSpeakerIndex? FromMaps(Dictionary<string, string> voices, Dictionary<string, string> refs,
-        Dictionary<string, string> aliases)
-        => voices.Count + refs.Count + aliases.Count == 0 ? null : new MasterSpeakerIndex(voices, refs, aliases);
+    internal static MasterSpeakerIndex? FromMaps(Maps maps)
+        => maps.Voices.Count + maps.Refs.Count + maps.Aliases.Count + maps.Lines.Count == 0
+            ? null
+            : new MasterSpeakerIndex(maps.Voices, maps.Refs, maps.Aliases, maps.Names, maps.Lines);
 
     /// <summary>Gathers the masters in load order (a later master's override replaces the earlier record).</summary>
     public sealed class Builder
@@ -138,6 +192,8 @@ public sealed class MasterSpeakerIndex
         private readonly HashSet<string> _uniqueNpcs = new(StringComparer.Ordinal);
         private readonly Dictionary<string, string> _refs = new(StringComparer.Ordinal);
         private readonly Dictionary<string, string> _aliases = new(StringComparer.Ordinal);
+        // Each master dialogue line's field identity and its speaker: an NPC record, or a hint ("V:", "R:", "A:") Build resolves.
+        private readonly Dictionary<string, string> _lineSpeakers = new(StringComparer.Ordinal);
 
         public void Add(PluginDocument master)
         {
@@ -149,6 +205,13 @@ public sealed class MasterSpeakerIndex
                 if (field is { RecordType: "NPC_", SubrecordType: "FULL" } && field.SourceText.Trim().Length > 0)
                 {
                     _npcNames[Id(field.FormId)] = field.SourceText.Trim();
+                }
+
+                if (field is { RecordType: "INFO", SubrecordType: "NAM1" }
+                    && GameStringDictionary.FieldIdentity(field.Key, masters, fileName) is { } line
+                    && (field.SpeakerFormId is { } npc ? Id(npc) : HintKey(field.SpeakerHint, Id)) is { } speaker)
+                {
+                    _lineSpeakers[line] = speaker;
                 }
             }
 
@@ -196,7 +259,42 @@ public sealed class MasterSpeakerIndex
                 if (Follow(alias, refs, 0) is { } held) aliases[alias] = held;
             }
 
-            return new MasterSpeakerIndex(voices, refs, aliases);
+            var lines = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+            foreach (var (line, speaker) in _lineSpeakers)
+            {
+                var npc = speaker.Length > 2 && speaker[1] == ':'
+                    ? speaker[0] switch
+                    {
+                        'V' => voices.GetValueOrDefault(speaker[2..]),
+                        'R' => refs.GetValueOrDefault(speaker[2..]),
+                        'A' => aliases.GetValueOrDefault(speaker[2..]),
+                        _ => null,
+                    }
+                    : speaker;
+                if (npc == null || npc == PlayerValue) continue;
+                if (!lines.TryGetValue(npc, out var list)) lines[npc] = list = new List<string>();
+                list.Add(line);
+            }
+
+            var lineNames = lines.Keys.Where(_npcNames.ContainsKey).ToDictionary(npc => npc, npc => _npcNames[npc], StringComparer.Ordinal);
+            return new MasterSpeakerIndex(voices, refs, aliases, lineNames, lines);
+        }
+
+        // A hint as the index's own keys: "V:dragonborn.esm:02b6c0", "R:...", "A:skyrim.esm:0aa123:3".
+        private static string? HintKey(string? hint, Func<uint, string> id)
+        {
+            if (hint == null || hint.Length < 10 || hint[1] != ':'
+                || !uint.TryParse(hint.AsSpan(2, 8), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var formId))
+            {
+                return null;
+            }
+
+            return hint[0] switch
+            {
+                'V' or 'R' => hint[..2] + id(formId),
+                'A' when hint.Length > 11 && hint[10] == ':' => "A:" + id(formId) + hint[10..],
+                _ => null,
+            };
         }
 
         // What an alias holds: an NPC, the player, a placed actor's NPC, or what another quest's alias holds.

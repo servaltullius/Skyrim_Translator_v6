@@ -245,9 +245,7 @@ public sealed class GameStringDictionary
 
         var byField = new Dictionary<string, (string, string, string)>(StringComparer.Ordinal);
         var byText = new Dictionary<string, string>(StringComparer.Ordinal);
-        var voices = new Dictionary<string, string>(StringComparer.Ordinal);
-        var refs = new Dictionary<string, string>(StringComparer.Ordinal);
-        var aliases = new Dictionary<string, string>(StringComparer.Ordinal);
+        var speakers = new MasterSpeakerIndex.Maps();
         while (reader.ReadLine() is { } line)
         {
             var parts = line.Split('\t');
@@ -261,11 +259,11 @@ public sealed class GameStringDictionary
             }
             else
             {
-                MasterSpeakerIndex.TryReadLine(parts, voices, refs, aliases);
+                MasterSpeakerIndex.TryReadLine(parts, speakers);
             }
         }
 
-        return new GameStringDictionary(byField, byText, MasterSpeakerIndex.FromMaps(voices, refs, aliases));
+        return new GameStringDictionary(byField, byText, MasterSpeakerIndex.FromMaps(speakers));
     }
 
     // 128 bits of SHA-256 over the normalized English: equal text gives an equal fingerprint, and no text can be read back.

@@ -117,6 +117,43 @@ public sealed class PluginQuestSpeakerTests : IDisposable
         Assert.Null(bySource["A guard's voice."]);
     }
 
+    /// <summary>
+    /// The index also lists each master NPC's own lines, for the agent mode's <c>voice</c>: Teldryn's 하오체 was found
+    /// only by reading the lines the dictionary had filled. A line by GetIsID and one by the NPC's own voice type are hers;
+    /// a voice two NPCs share is no one's. The lines travel in the dictionary.
+    /// </summary>
+    [Fact]
+    public async Task MasterNpcLines_AreFoundByNameOrRecord_AndSavedWithTheDictionary()
+    {
+        var master = Header(masterBytes: Z("Skyrim.esm"))
+            .Concat(Group(
+                Record("NPC_", 0x01002B6C, Sub("ACBS", Acbs(unique: true)), Sub("FULL", Z("Serana")), Sub("VTCK", UInt(0x01002B6F))),
+                Record("NPC_", 0x01003000, Sub("ACBS", Acbs(unique: false)), Sub("FULL", Z("Guard")), Sub("VTCK", UInt(0x01003001))),
+                Record("NPC_", 0x01003002, Sub("ACBS", Acbs(unique: false)), Sub("FULL", Z("Soldier")), Sub("VTCK", UInt(0x01003001)))))
+            .Concat(Group(Record("QUST", 0x01004BBF, Sub("EDID", Z("DLC1Quest")), Sub("NEXT", Array.Empty<byte>()))))
+            .Concat(DialogueGroup(Topic(0x01005000, 0x01004BBF,
+                Record("INFO", 0x01005001, Sub("CTDA", Condition(GetIsId, 0x01002B6C)), Sub("NAM1", Z("By my name."))),
+                Record("INFO", 0x01005002, Sub("CTDA", Condition(GetIsVoiceType, 0x01002B6F)), Sub("NAM1", Z("By my voice."))),
+                Record("INFO", 0x01005003, Sub("CTDA", Condition(GetIsVoiceType, 0x01003001)), Sub("NAM1", Z("A guard's voice."))))))
+            .ToArray();
+        var builder = new MasterSpeakerIndex.Builder();
+        builder.Add(await Read("Dawnguard.esm", master));
+        var index = builder.Build();
+
+        var serana = Assert.Single(index.FindNpcs("serana"));
+        Assert.Equal(("dawnguard.esm:002b6c", "Serana", 2), serana);
+        Assert.Equal(serana, Assert.Single(index.FindNpcs("02002B6C")));
+        Assert.Equal(new[] { "INFO/dawnguard.esm:005001/0/NAM1/0", "INFO/dawnguard.esm:005002/0/NAM1/0" },
+            index.LinesOf(serana.Npc).OrderBy(l => l, StringComparer.Ordinal));
+        Assert.Empty(index.FindNpcs("Guard"));
+
+        var bytes = new MemoryStream();
+        GameStringDictionary.Build(Array.Empty<GameStringPlugin>()).WithSpeakers(index).Save(bytes);
+        var loaded = GameStringDictionary.Load(new MemoryStream(bytes.ToArray())).Speakers!;
+        Assert.Equal(index.LinesOf(serana.Npc), loaded.LinesOf(serana.Npc));
+        Assert.Equal(serana, Assert.Single(loaded.FindNpcs("Serana")));
+    }
+
     // Dawnguard's part: Serana, her voice type, her placed actor, a quest alias she fills, and a voice two guards share.
     private async Task<MasterSpeakerIndex> MasterIndexAsync()
     {
