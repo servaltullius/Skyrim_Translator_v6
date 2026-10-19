@@ -93,11 +93,20 @@ public static class DialogueAddressees
     public static Dictionary<long, string> Apply(IReadOnlyDictionary<long, string> keys, IEnumerable<Line> lines)
     {
         var result = new Dictionary<long, string>(keys);
+        // A line to the player, or to a listener the scene only suggests (Speaker>Listener?): a title the line calls
+        // says more than the guess. Serana's "There you are, father!" is in a scene whose other actor is not Harkon, and
+        // compared with her lines to that actor and to the player, both 반말, her 존댓말 to her father was flagged.
+        static string? SpeakerOf(string key)
+        {
+            var separator = key.IndexOf(DialogueSpeakerNames.ListenerSeparator);
+            return separator < 0 ? key : key.EndsWith(DialogueSpeakerNames.GuessedListenerMark) ? key[..separator] : null;
+        }
+
         var npcLines = lines
             .Where(line => string.Equals(line.Rec?.Trim(), "INFO:NAM1", StringComparison.OrdinalIgnoreCase)
-                           && keys.TryGetValue(line.Id, out var key) && !key.Contains(DialogueSpeakerNames.ListenerSeparator))
+                           && keys.TryGetValue(line.Id, out var key) && SpeakerOf(key) != null)
             .ToList();
-        foreach (var group in npcLines.GroupBy(line => (line.Topic, Speaker: keys[line.Id])))
+        foreach (var group in npcLines.GroupBy(line => (line.Topic, Speaker: SpeakerOf(keys[line.Id])!)))
         {
             var titles = group.Select(line => (line, title: Find(line.Source))).ToList();
             var called = titles.Where(t => t.title != null).Select(t => t.title!).Distinct(StringComparer.Ordinal).ToList();

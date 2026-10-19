@@ -56,6 +56,8 @@ public sealed class DialogueAddresseesTests
             [20] = Serana, [21] = Serana, [22] = Serana,
             [30] = Serana + ">0001326A",
             [40] = Serana,
+            // A scene line whose listener the plugin only suggests (1.16): the title it calls still decides.
+            [50] = Serana + ">0001326B?", [51] = Serana + ">0001326B?", [52] = Serana + ">0001326B?",
         };
         var lines = new[]
         {
@@ -72,6 +74,9 @@ public sealed class DialogueAddresseesTests
             Line(22, "Shall we go?", "named"),
             Line(30, "Thank you, my Jarl.", "scene"),
             new DialogueAddressees.Line(40, "INFO:RNAM", "My Jarl.", "prompt"),
+            Line(50, "There you are, father!", "scene2"),
+            Line(51, "You can't hide from us!", "scene2"),
+            Line(52, "There they are!", "scene2"),
         };
 
         var groups = DialogueAddressees.Apply(keys, lines);
@@ -83,6 +88,8 @@ public sealed class DialogueAddresseesTests
         Assert.All(new long[] { 21, 22 }, id => Assert.Equal(Serana, groups[id]));
         Assert.Equal(Serana + ">0001326A", groups[30]);
         Assert.Equal(Serana, groups[40]);
+        Assert.Equal(Serana + ">@father", groups[50]);
+        Assert.All(new long[] { 51, 52 }, id => Assert.Equal(Serana + ">0001326B?", groups[id]));
     }
 
     /// <summary>
