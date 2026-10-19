@@ -115,6 +115,44 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Equal(new[] { "proj", "extra" }, command.Rest);
     }
 
+    /// <summary>
+    /// The MCP server: one JSON-RPC reply per request line and none for a notification, a version the client asked for
+    /// when it is known, and errors as replies rather than a stopped server. The request tool reads the waiting request.
+    /// </summary>
+    [Fact]
+    public async Task McpServer_AnswersEachRequest_AndItsRequestToolReadsTheWaitingRequest()
+    {
+        await _session.NextAsync(_project, CancellationToken.None);
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") });
+        var lines = new[]
+        {
+            """{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{}}}""",
+            """{"jsonrpc":"2.0","method":"notifications/initialized"}""",
+            """{"jsonrpc":"2.0","id":2,"method":"tools/list"}""",
+            "{not json",
+            """{"jsonrpc":"2.0","id":3,"method":"prompts/list"}""",
+            """{"jsonrpc":"2.0","id":"r4","method":"tools/call","params":{"name":"nosuch","arguments":{}}}""",
+            """{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"request","arguments":{"project":"Thalmor"}}}""",
+        };
+        var output = new StringWriter();
+
+        Assert.Equal(0, await AgentMcpServer.ServeAsync(server, new StringReader(string.Join("\n", lines)), output));
+
+        var replies = output.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(r => JsonDocument.Parse(r).RootElement).ToList();
+        Assert.Equal(6, replies.Count);
+        Assert.Equal("2025-03-26", replies[0].GetProperty("result").GetProperty("protocolVersion").GetString());
+        var tools = replies[1].GetProperty("result").GetProperty("tools").EnumerateArray().ToDictionary(t => t.GetProperty("name").GetString()!);
+        Assert.Contains("submit", tools.Keys);
+        Assert.Equal(new[] { "project", "answer" }, tools["submit"].GetProperty("inputSchema").GetProperty("required").EnumerateArray().Select(r => r.GetString()));
+        Assert.Equal(-32700, replies[2].GetProperty("error").GetProperty("code").GetInt32());
+        Assert.Equal(-32601, replies[3].GetProperty("error").GetProperty("code").GetInt32());
+        Assert.Equal("r4", replies[4].GetProperty("id").GetString());
+        Assert.True(replies[4].GetProperty("result").GetProperty("isError").GetBoolean());
+        var request = replies[5].GetProperty("result");
+        Assert.False(request.GetProperty("isError").GetBoolean());
+        Assert.Equal(await File.ReadAllTextAsync(_session.RequestPath(_project)), request.GetProperty("content")[0].GetProperty("text").GetString());
+    }
+
     [Fact]
     public async Task Request_CoversTheRemainingRows_SoTheDialogueAroundALineIsInIt()
     {

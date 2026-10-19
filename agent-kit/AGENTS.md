@@ -10,6 +10,15 @@
 | "이 한국어판으로 검수해 줘", "다듬어 줘" (그 모드의 한국어판이 따로 있음) | `guide-review.md` (절차의 많은 부분이 `guide-translate.md`를 가리킨다) |
 | "나눠서", "하위 에이전트로", 줄이 아주 많은 모드를 빨리 | `guide-lanes.md` (번역은 `guide-translate.md`대로) |
 
+## tullius 도구(MCP)
+
+- 앱에 `tullius` 도구(`open`, `next`, `submit`, `lookup` …)가 있으면 `tullius.cmd` 대신 그것을 쓴다. 이 폴더의 `.mcp.json`(Claude)과 `.codex\config.toml`(Codex)이 등록한다. 도구 이름과 인자는 아래 안내의 `tullius.cmd` 명령과 같고 결과도 같다.
+- 답은 파일을 쓰지 않고 `submit`의 `answer`에 요청의 응답 형식 그대로 넣는다. 수정은 `edit`의 `edits`에 `[{"id": 12, "text": "…"}]`로 넣는다. 인코딩·`&` 걱정이 없다.
+- `next`·`submit` 결과 끝의 `----- 다음 요청 -----` 아래가 다음 request.md 내용이다. 파일을 따로 읽지 않는다. 지시는 `instructions` 도구로 읽는다(첫 요청과 새 지시 절이 있을 때만).
+- 셸로 파일을 읽을 수 없으면 안내 파일은 `guide` 도구(`translate`, `review`, `lanes`)로 읽는다.
+- `lookup`은 `words`에 낱말 여러 개를 한 번에 넣는다. 갈래는 `next`·`submit`·`status`의 `lane`에 `2/3`처럼 준다.
+- 도구가 없으면 아래처럼 `tullius.cmd`를 부른다.
+
 ## tullius.cmd 부르기
 
 - `tullius.cmd`는 이 폴더 바로 위의 번역기(`TulliusTranslator.exe`)를 창 없이 명령으로 실행하고 끝날 때까지 기다린다. 번역기 EXE를 직접 부르지 말고 언제나 `tullius.cmd`로 부른다(PowerShell은 `.\tullius.cmd …`, bash는 `./tullius.cmd …`). `.\tullius.cmd version`이 번역기 버전을, `.\tullius.cmd help`가 명령 목록을 보여 준다.

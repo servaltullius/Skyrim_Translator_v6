@@ -22,6 +22,9 @@ internal sealed class AgentCommand
     public CancellationToken Ct => CancellationToken.None;
     public bool Help { get; private init; }
     public string Work { get; private init; } = "";
+
+    /// <summary>Whether --work was given (else the work folder is the current folder's).</summary>
+    public bool WorkGiven { get; private init; }
     public AppSettings Settings { get; private init; } = null!;
     public GlobalProjectDbService GlobalDb { get; private init; } = null!;
     public string? ProjectsRoot { get; private init; }
@@ -43,7 +46,8 @@ internal sealed class AgentCommand
     {
         var c = new AgentCommand(rest);
         var help = rest.Contains("--help") || rest.Contains("-h") || rest.Contains("/?");
-        var work = c.Option("--work") ?? Path.Combine(Environment.CurrentDirectory, "work");
+        var givenWork = c.Option("--work");
+        var work = givenWork ?? Path.Combine(Environment.CurrentDirectory, "work");
         var settings = new AppSettingsStore().Load();
         var globalDb = new GlobalProjectDbService(new BuiltInGlossaryService());
         var projectsRoot = c.Option("--projects");
@@ -60,7 +64,7 @@ internal sealed class AgentCommand
         var lane = AgentLane.Parse(c.Option("--lane"));
         return new AgentCommand(rest)
         {
-            Help = help, Work = work, Settings = settings, GlobalDb = globalDb, ProjectsRoot = projectsRoot, Find = find, Rec = rec,
+            Help = help, Work = work, WorkGiven = givenWork != null, Settings = settings, GlobalDb = globalDb, ProjectsRoot = projectsRoot, Find = find, Rec = rec,
             Ids = ids, After = after, Count = count, All = all, Undo = undo, To = to, Note = note, Clear = clear, Lane = lane,
             Session = new AgentSession(work, globalDb, new GameStringService(), settings, projectsRoot),
         };

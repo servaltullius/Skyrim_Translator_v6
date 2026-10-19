@@ -89,6 +89,8 @@ public static partial class AgentCli
                 case "style": await StyleAsync(c); break;
                 case "korean": await KoreanAsync(c); break;
                 case "version": Console.WriteLine(Version()); break;
+                case "mcp": await AgentMcpServer.RunAsync(c); break;
+                case "mcp-config": Console.WriteLine(AgentMcpServer.SetupText()); break;
                 default: Help(); break;
             }
 
@@ -121,6 +123,8 @@ public static partial class AgentCli
     };
 
     // The build the kit runs, as the window's title shows it ("1.15-preview19+<commit>").
+    internal static string VersionText() => Version();
+
     private static string Version()
         => "툴리우스 번역기 " + (typeof(AgentCli).Assembly
             .GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false)
@@ -144,6 +148,7 @@ public static partial class AgentCli
           tullius.cmd edit <프로젝트> <수정.json>                                    줄 고치기([{"id": 번호, "text": "새 번역"}])
           tullius.cmd export <프로젝트> [출력 폴더]                                  번역된 플러그인 저장(이미 있으면 output\<키>-2처럼 새 폴더)
           tullius.cmd version                                                        번역기 버전
+          tullius.cmd mcp-config                                                     이 명령들을 MCP 도구로 쓰는 앱 설정(안티그라비티·Gemini CLI 등)
 
         <프로젝트>는 키, 플러그인 파일 이름(확장자 없이도), 플러그인 경로 중 하나. 번호는 요청·check·show의 id로 같다.
         작업 파일은 ./work(--work로 바꿈).
