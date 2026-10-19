@@ -110,6 +110,44 @@ public class LqaSpeakerToneTests
     /// Fists of Fury: Reggr's one 존댓말 line among few 반말 ones had no clear majority to warn by and passed. A speaker
     /// with too few lines, or split down the middle, is listed for reference: the odd side, or every line in a tie.
     /// </summary>
+    /// <summary>
+    /// A scene line whose listener is a guess (the two-actor scene looks at no one) may be said to the player: Meridia's
+    /// Order's Alara said "Champion, meet us at Fort Justice." in a scene with Marith. It is left out of both groups'
+    /// counts and flagged only when it fits neither her lines to Marith nor her lines to the player.
+    /// </summary>
+    [Fact]
+    public async Task GuessedListener_IsFlaggedOnlyWhenItFitsNeitherGroup()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "환영합니다."), Line(2, "익숙하리라 믿습니다."), Line(3, "기억해 두겠습니다."), Line(4, "물러가십시오."),
+            Line(5, "그를 잘 지켜봐.", speaker: "00013269>01000801"), Line(6, "서둘러, 시간이 없어.", speaker: "00013269>01000801"),
+            Line(7, "넌 여기 남아.", speaker: "00013269>01000801"), Line(8, "내 말 잘 들어.", speaker: "00013269>01000801"),
+            // Either level fits one of the groups.
+            Line(9, "챔피언, 저스티스 요새에서 만나요.", speaker: "00013269>01000801?"),
+            Line(10, "따라와, 마리스.", speaker: "00013269>01000801?"),
+            Line(11, "정말 고맙습니다.", speaker: "00013269>01000801?"),
+            // The guessed lines do not tip the pair's group: four 존댓말 here would have made it split.
+            Line(12, "부디 조심하십시오.", speaker: "00013269>01000801?"),
+            Line(13, "모두 감사합니다.", speaker: "00013269>01000801?"),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+        Assert.DoesNotContain(issues, i => i.Code is "speaker_tone_inconsistent" or "speaker_tone_mixed");
+
+        // To a listener she is polite with as well, a 반말 guess fits neither.
+        var polite = new List<LqaScanEntry>
+        {
+            Line(1, "환영합니다."), Line(2, "익숙하리라 믿습니다."), Line(3, "기억해 두겠습니다."), Line(4, "물러가십시오."),
+            Line(5, "장군, 반갑습니다.", speaker: "00013269>0001327E"), Line(6, "협조를 요청합니다.", speaker: "00013269>0001327E"),
+            Line(7, "생각해 보십시오.", speaker: "00013269>0001327E"), Line(8, "그렇게 하겠습니다.", speaker: "00013269>0001327E"),
+            Line(9, "빨리 따라와.", speaker: "00013269>0001327E?"),
+        };
+        var issue = Assert.Single(await LqaScanner.ScanAsync(polite, "ko", new List<GlossaryEntry>()), i => i.Code == "speaker_tone_inconsistent");
+        Assert.Equal(9L, issue.Id);
+        Assert.Contains("상대를 짐작한 대사", issue.Message);
+    }
+
     [Fact]
     public async Task FewOrSplitLines_AreListedForReference()
     {
@@ -364,6 +402,17 @@ public class LqaSpeakerToneTests
     [InlineData("포요! 포요! 난 조그만 드래곤이야!", false, false)]
     [InlineData("*움브라* 난 이제 말하는 검이야, *그 모드에 나오는 버섯* 포요! 포요! *질척* 그리고 난 조그만 드래곤이고!", false, false)]
     [InlineData("아, 속편이네. '내 창을 좀 닦아 주시겠어요, 내 사랑? 좀... 녹슬었거든요.'", false, false)]
+    // Meridia's Order: Laracin's 반말 lets, orders and questions had no level (-자, -라, -ㄹ까, 건가).
+    [InlineData("이 위기를 해결하고 나서 얘기하자.", true, true)]
+    [InlineData("뜻대로 부려라, 챔피언.", true, true)]
+    [InlineData("지금 날 놀리는 건 아니길 바라.", true, true)]
+    [InlineData("우리 물건을 훔친 그 멍청이? 몰라.", true, true)]
+    [InlineData("우리 둘이 한번 결투라도 해 볼까.", true, true)]
+    [InlineData("그럼 질문이 있는 건가?", true, true)]
+    // Nouns and names with those endings are not 반말.
+    [InlineData("그가 우리 교단의 지도자.", true, false)]
+    [InlineData("여기가 바로 그들의 나라.", true, false)]
+    [InlineData("제 이름은 알라라.", true, false)]
     public async Task OneLineAmongTheOtherLevel_IsJudgedByWhatTheSpeakerSays(string line, bool politeSpeaker, bool flagged)
     {
         var others = politeSpeaker

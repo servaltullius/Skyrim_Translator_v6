@@ -61,7 +61,8 @@ internal sealed class PluginSpeakers
     private readonly Dictionary<uint, uint?> _voiceNpcs = new();
     private readonly Dictionary<uint, Dictionary<int, SpeakerRef?>> _aliases = new();
     private readonly Dictionary<uint, SpeakerRef?> _questSpeakers = new();
-    private readonly Dictionary<uint, (SpeakerRef Speaker, SpeakerRef? Listener)> _scenes = new();
+    private readonly Dictionary<uint, (SpeakerRef Speaker, SpeakerRef? Listener, bool Guessed)> _scenes = new();
+    private readonly Dictionary<uint, byte> _topicCategories = new();
 
     private PluginSpeakers(int masterCount) => _masterCount = masterCount;
 
@@ -76,7 +77,10 @@ internal sealed class PluginSpeakers
             {
                 case "SCEN": scenes.Add(record); break;
                 case "QUST": speakers._quests[record.FormId] = record; break;
-                case "DIAL" when U32(record, "QNAM") is { } quest: speakers._topicQuests[record.FormId] = quest; break;
+                case "DIAL":
+                    if (U32(record, "QNAM") is { } quest) speakers._topicQuests[record.FormId] = quest;
+                    if (record.Subrecords.FirstOrDefault(sub => sub.Type == "DATA") is { Data.Length: 4 } data) speakers._topicCategories[record.FormId] = data.Data.Span[1];
+                    break;
                 case "ACHR" when U32(record, "NAME") is { } baseNpc: speakers._placedActors[record.FormId] = baseNpc; break;
                 case "NPC_" when U32(record, "VTCK") is { } voice:
                     // A voice type two of the plugin's NPCs use names neither.
@@ -89,8 +93,11 @@ internal sealed class PluginSpeakers
         return speakers;
     }
 
-    /// <summary>An INFO's speaker, and for a scene line the character it is said to (null: the player, or no one known).</summary>
-    internal (SpeakerRef? Speaker, SpeakerRef? Listener) ForInfo(PluginRecord info)
+    /// <summary>
+    /// An INFO's speaker, and for a scene line the character it is said to (null: the player, or no one known);
+    /// ListenerGuessed when the scene does not say whom the speaker looks at and the listener is the scene's other actor.
+    /// </summary>
+    internal (SpeakerRef? Speaker, SpeakerRef? Listener, bool ListenerGuessed) ForInfo(PluginRecord info)
     {
         var topic = info.DialogueTopicFormId;
         uint? quest = topic is { } t && _topicQuests.TryGetValue(t, out var q) ? q : null;
@@ -98,12 +105,24 @@ internal sealed class PluginSpeakers
         if (topic is { } sceneTopic && _scenes.TryGetValue(sceneTopic, out var scene))
         {
             // A scene's listener counts only when the scene's speaker is the line's.
-            if (own == null || own == scene.Speaker) return (scene.Speaker, scene.Listener);
-            return (own, null);
+            if (own == null || own == scene.Speaker) return (scene.Speaker, scene.Listener, scene.Guessed);
+            return (own, null, false);
         }
 
-        return (own ?? (quest is { } owner ? QuestSpeaker(owner) : null), null);
+        var speaker = own ?? (quest is { } owner ? QuestSpeaker(owner) : null);
+        // A combat or detection line (a taunt, a death cry, "Who's there?") is said to an enemy or no one, not the
+        // player: Meridia's Order's Alara and Velteth taunt the Malevolent in 반말 and speak 존댓말 to the Champion.
+        if (speaker != null && topic is { } topicId && _topicCategories.TryGetValue(topicId, out var category) && category is CombatCategory or DetectionCategory)
+        {
+            return (speaker, SpeakerRef.Of(UnknownListener), false);
+        }
+
+        return (speaker, null, false);
     }
+
+    // DIAL DATA's category byte: 3 Combat (Attack, Hit, Taunt, Death ...), 5 Detection (Notice Corpse, Lost Idle ...).
+    private const byte CombatCategory = 3;
+    private const byte DetectionCategory = 5;
 
     private SpeakerRef? QuestSpeaker(uint quest)
     {
@@ -220,15 +239,19 @@ internal sealed class PluginSpeakers
                 // The alias the speaker looks at; without one, the other actor of a two-actor scene. An alias the
                 // plugin leaves unfilled is still someone in the scene, not the player: Elenwen's curt lines to her
                 // agents were compared with her polite lines to the player.
-                var listenerAlias = target is { } t && t >= 0 && t != alias ? t
+                // That other actor is a guess: Meridia's Order's two-actor scenes look at no one (HTID -1) for lines the
+                // speaker says to the Champion ("Champion, meet us at Fort Justice.") as well as to the other actor.
+                var looksAt = target is { } t && t >= 0 && t != alias;
+                var listenerAlias = looksAt ? target
                     : actors.Count == 2 && actors.Contains(alias) ? (actors[0] == alias ? actors[1] : actors[0]) : (int?)null;
                 SpeakerRef? listener = listenerAlias is not { } la ? null
                     : ResolveAlias(questId, la, 0) is not { } heard ? SpeakerRef.Of(UnknownListener)
                     : heard.IsPlayer || heard == speaker ? null
                     : heard;
+                var guessed = !looksAt && listener != null;
                 if (!_scenes.TryGetValue(topic, out var seen))
                 {
-                    _scenes[topic] = (speaker, listener);
+                    _scenes[topic] = (speaker, listener, guessed);
                 }
                 else if (seen.Speaker != speaker)
                 {
@@ -237,7 +260,11 @@ internal sealed class PluginSpeakers
                 }
                 else if (seen.Listener != listener)
                 {
-                    _scenes[topic] = (speaker, null);
+                    _scenes[topic] = (speaker, null, false);
+                }
+                else if (seen.Guessed && !guessed)
+                {
+                    _scenes[topic] = seen with { Guessed = false };
                 }
             }
         }

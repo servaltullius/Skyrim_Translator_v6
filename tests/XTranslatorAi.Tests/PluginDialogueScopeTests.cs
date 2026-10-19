@@ -381,7 +381,8 @@ public sealed class PluginDialogueScopeTests
                 Record("SCEN", 0x01000600, [
                     Sub("EDID", Z("BriefingScene")),
                     Sub("ALID", UInt(1)), Sub("ALID", UInt(2)),
-                    // Elenwen looks at the agent; the agent's reply names no one, so the scene's other actor hears it.
+                    // Elenwen looks at the agent; the agent's reply looks at no one, so the scene's other actor may hear it (a guess:
+                    // it may be said to the player).
                     .. SceneDialogue(alias: 1, topic: 0x01001000, target: 2),
                     .. SceneDialogue(alias: 2, topic: 0x01002000, target: -1),
                     Sub("ANAM", new byte[] { 1, 0 }), Sub("ALID", UInt(1)), Sub("PNAM", UInt(0x01000555)), Sub("ANAM", Array.Empty<byte>()),
@@ -418,7 +419,7 @@ public sealed class PluginDialogueScopeTests
             .ToDictionary(row => row.SourceText, row => row.Id);
         var formIds = await DialogueSpeakerNames.LoadFormIdsAsync(fixture.Db, CancellationToken.None);
         Assert.Equal("00013269>01000801", formIds[bySource["Watch him closely."]]);
-        Assert.Equal("01000801>00013269", formIds[bySource["By your orders."]]);
+        Assert.Equal("01000801>00013269?", formIds[bySource["By your orders."]]);
         Assert.Equal("00013269", formIds[bySource["Welcome to the embassy."]]);
         Assert.False(formIds.ContainsKey(bySource["Who goes there?"]));
         Assert.Equal("00013269>00000000", formIds[bySource["Report, agent."]]);
@@ -434,10 +435,38 @@ public sealed class PluginDialogueScopeTests
         Assert.Contains("\"NAME, to OTHER\" is NAME speaking to another character", Assert.Single(client.Prompts));
         var ctx = client.Items.ToDictionary(item => item.Text, item => item.Ctx);
         Assert.StartsWith(TranslationPrompt.SpeakerContextPrefix + "Elenwen, to Justiciar Agent", ctx["Watch him closely."]);
-        Assert.StartsWith(TranslationPrompt.SpeakerContextPrefix + "Justiciar Agent, to Elenwen", ctx["By your orders."]);
+        Assert.StartsWith(TranslationPrompt.SpeakerContextPrefix + "Justiciar Agent, probably to Elenwen", ctx["By your orders."]);
         Assert.Equal(TranslationPrompt.SpeakerContextPrefix + "Elenwen", ctx["Welcome to the embassy."]!.Split('\n')[0]);
         Assert.False(TranslationPrompt.HasSpeaker(ctx.GetValueOrDefault("Who goes there?")));
         Assert.StartsWith(TranslationPrompt.SpeakerContextPrefix + "Elenwen, to another character", ctx["Report, agent."]);
+    }
+
+    /// <summary>
+    /// A combat or detection topic's line is said to an enemy or no one, not the player: Meridia's Order's Alara taunts the
+    /// Malevolent in 반말 (Combat, Taunt) and speaks 존댓말 to the Champion, and the check counted her taunts among her
+    /// lines to the player. Such a line is "to another character"; a topic of another category keeps the player.
+    /// </summary>
+    [Fact]
+    public async Task CombatAndDetectionLines_AreSaidToAnotherCharacter()
+    {
+        const uint alara = 0x00013269;
+        var plugin = Header()
+            .Concat(Group(Record("NPC_", alara, Sub("FULL", Z("Alara")))))
+            .Concat(DialogueGroup(
+                Record("DIAL", 0x01001000, Sub("DATA", new byte[] { 0, 3, 36, 0 })),
+                TopicChildren(0x01001000, Record("INFO", 0x01001001, Sub("CTDA", GetIsId(alara)), Sub("NAM1", Z("Die, fiend!")))),
+                Record("DIAL", 0x01002000, Sub("DATA", new byte[] { 0, 5, 59, 0 })),
+                TopicChildren(0x01002000, Record("INFO", 0x01002001, Sub("CTDA", GetIsId(alara)), Sub("NAM1", Z("Who's there?")))),
+                Record("DIAL", 0x01003000, Sub("DATA", new byte[] { 0, 7, 79, 0 })),
+                TopicChildren(0x01003000, Record("INFO", 0x01003001, Sub("CTDA", GetIsId(alara)), Sub("NAM1", Z("Welcome, Champion."))))))
+            .ToArray();
+        await using var fixture = await Fixture.CreateAsync(plugin);
+
+        var info = fixture.Document.Fields.Where(field => field.RecordType == "INFO")
+            .ToDictionary(field => field.SourceText, field => (field.SpeakerFormId, field.ListenerFormId));
+        Assert.Equal(((uint?)alara, (uint?)0), info["Die, fiend!"]);
+        Assert.Equal(((uint?)alara, (uint?)0), info["Who's there?"]);
+        Assert.Equal(((uint?)alara, (uint?)null), info["Welcome, Champion."]);
     }
 
     private static byte[][] SceneDialogue(int alias, uint topic, int target) => new[]

@@ -45,10 +45,14 @@ public static class DialogueSpeakerNames
             }
 
             var label = NpcLabel(formId);
-            // A scene line said to another NPC: "Elenwen, to General Tullius", or to one the plugin does not name.
-            if (separator >= 0 && TryFormId(value[(separator + 1)..], out var listener))
+            // A scene line said to another NPC: "Elenwen, to General Tullius", or to one the plugin does not name. A
+            // listener the scene only suggests (its other actor) may be the player: "Alara, probably to Marith".
+            var heard = separator < 0 ? "" : value[(separator + 1)..];
+            var guessed = heard.EndsWith(GuessedListenerMark);
+            if (separator >= 0 && TryFormId(guessed ? heard[..^1] : heard, out var listener))
             {
-                label += ListenerLabelSeparator + (listener == PluginSpeakers.UnknownListener ? UnknownListenerLabel : NpcLabel(listener));
+                label += (guessed ? GuessedListenerLabelSeparator : ListenerLabelSeparator)
+                         + (listener == PluginSpeakers.UnknownListener ? UnknownListenerLabel : NpcLabel(listener));
             }
 
             result[id] = label;
@@ -76,6 +80,12 @@ public static class DialogueSpeakerNames
 
     /// <summary>Between a scene line's speaker and its listener in the request: "Speaker: Elenwen, to General Tullius".</summary>
     public const string ListenerLabelSeparator = ", to ";
+
+    /// <summary>After a listener the scene only suggests, in the FormID value ("00013269>0001327E?").</summary>
+    public const char GuessedListenerMark = '?';
+
+    /// <summary>Between a scene line's speaker and a listener the scene only suggests: "Speaker: Alara, probably to Marith".</summary>
+    public const string GuessedListenerLabelSeparator = ", probably to ";
 
     /// <summary>The listener of a scene line said to a character the plugin does not name (not the player).</summary>
     public const string UnknownListenerLabel = "another character";

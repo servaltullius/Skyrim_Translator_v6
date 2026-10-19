@@ -30,12 +30,14 @@ public sealed record PluginReadOptions(
 /// <param name="SpeakerHint">A speaker only the masters can name (SpeakerRef.Hint: a voice type, a master's placed
 /// actor or quest alias), which MasterSpeakerIndex resolves into SpeakerFormId on import.</param>
 /// <param name="ListenerHint">The same for a scene line's listener (ListenerFormId is 0 until resolved).</param>
+/// <param name="ListenerGuessed">The listener is the other actor of a two-actor scene that does not say whom the line is
+/// said to: it may be said to the player instead.</param>
 public sealed record PluginField(
     string Key, int OrderIndex, string RecordType, string SubrecordType,
     uint FormId, string? EditorId, int RecordIndex, int SubrecordIndex,
     string SourceText, PluginStringTableKind? TableKind = null, uint? StringId = null, bool RequiresNonEmpty = true,
     uint? DialogueTopicFormId = null, uint? SpeakerFormId = null, uint? ListenerFormId = null,
-    string? SpeakerHint = null, string? ListenerHint = null)
+    string? SpeakerHint = null, string? ListenerHint = null, bool ListenerGuessed = false)
 {
     public string Rec => RecordType + ":" + SubrecordType;
 }

@@ -329,9 +329,19 @@ public static class AgentCli
                 .OrderBy(r => r.OrderIndex)
                 .ToList();
             Console.WriteLine($"줄: {picked.Count}" + (picked.Count != rows.Count ? $" / {rows.Count}" : ""));
+            // Who says each line, as the requests name it: the review needs it to judge a speech level, and had to read
+            // the project DB for it in Meridia's Order.
+            var speakers = picked.Count == 0 ? new Dictionary<long, string>()
+                : await DialogueSpeakerNames.LoadAsync(db, await new GameStringService().TryLoadAsync(ct), ct);
             foreach (var r in picked)
             {
                 Console.WriteLine($"#{r.Id} {r.Rec} [{StatusLabel(r.Status)}]");
+                if (speakers.TryGetValue(r.Id, out var speaker))
+                {
+                    var playerLine = string.Equals(r.Rec, "INFO:RNAM", StringComparison.OrdinalIgnoreCase) || string.Equals(r.Rec, "DIAL:FULL", StringComparison.OrdinalIgnoreCase);
+                    Console.WriteLine($"  화자: {(playerLine ? TranslationPrompt.PlayerSpeakerPrefix : "")}{speaker}");
+                }
+
                 Console.WriteLine($"  영어: {Flat(r.SourceText ?? "")}");
                 Console.WriteLine($"  번역: {Flat(r.DestText ?? "")}");
             }

@@ -56,7 +56,9 @@ internal static class SpeakerToneConsistencyRule
         var levels = new Dictionary<string, List<(Register Register, bool Weak)>>(StringComparer.Ordinal);
         foreach (var entry in entries)
         {
-            if (Key(entry) is not { } key)
+            // A line whose listener is only the scene's other actor may be said to the player: it is no evidence of
+            // either group's level.
+            if (Key(entry) is not { } key || IsGuessed(key))
             {
                 continue;
             }
@@ -138,10 +140,16 @@ internal static class SpeakerToneConsistencyRule
             return;
         }
 
+        if (IsGuessed(key))
+        {
+            ApplyGuessed(entry, key, register, level, levels, issues);
+            return;
+        }
+
         var casualName = levels.CasualNames[key];
 
         var player = key.StartsWith(PlayerKeyPrefix, StringComparison.Ordinal);
-        var who = key.EndsWith(DialogueSpeakerNames.ListenerSeparator + UnknownListener, StringComparison.Ordinal) ? "같은 화자가 장면에서 다른 인물에게 한"
+        var who = key.EndsWith(DialogueSpeakerNames.ListenerSeparator + UnknownListener, StringComparison.Ordinal) ? "같은 화자가 다른 인물(장면 상대, 전투 중의 적)에게 한"
             : key.Contains(DialogueSpeakerNames.ListenerSeparator) ? "같은 화자가 같은 상대에게 한"
             : "같은 화자의";
         if (!player && register == Register.Hao && levels.StrayHao.TryGetValue(key, out var stray)
@@ -180,6 +188,35 @@ internal static class SpeakerToneConsistencyRule
         issues.Add(player
             ? Issue(entry, "Info", PlayerCode, $"같은 상대에게 하는 플레이어 선택지끼리 말투가 다릅니다({counted})")
             : Issue(entry, "Info", MixedCode, $"{who} 대사끼리 말투가 갈립니다({counted})"));
+    }
+
+    private static bool IsGuessed(string key) => key.EndsWith(DialogueSpeakerNames.GuessedListenerMark);
+
+    /// <summary>
+    /// A scene line whose listener is a guess (the scene's other actor; it may be said to the player) is flagged only
+    /// when it differs from both: the speaker's lines to that actor and the speaker's lines to the player. In Meridia's
+    /// Order, Alara's "Champion, meet us at Fort Justice." was counted among her lines to Marith.
+    /// </summary>
+    private static void ApplyGuessed(LqaScanEntry entry, string key, Register register, ToneKind level, Levels levels, List<LqaIssue> issues)
+    {
+        var listenerKey = key[..^1];
+        var speakerKey = listenerKey[..listenerKey.IndexOf(DialogueSpeakerNames.ListenerSeparator)];
+        if (Dominant(listenerKey) is not { } toListener || Dominant(speakerKey) is not { } toPlayer || toListener == level || toPlayer == level)
+        {
+            return;
+        }
+
+        var most = toListener == ToneKind.Hamnida ? "존댓말" : levels.CasualNames[listenerKey];
+        issues.Add(Issue(entry, "Warn", Code,
+            $"장면에서 상대를 짐작한 대사인데, 그 상대에게 한 대사와도 플레이어에게 한 대사와도 말투가 다릅니다: 대부분 {most}, 이 대사 {Display(register)}"));
+
+        // The side most of a group is on (a group all on one side has no majority entry, the guessed line not being in it).
+        ToneKind? Dominant(string group)
+        {
+            if (!levels.Counts.TryGetValue(group, out var count) || count.Polite + count.Casual < 4) return null;
+            var (side, n) = count.Polite >= count.Casual ? (ToneKind.Hamnida, count.Polite) : (ToneKind.Casual, count.Casual);
+            return n * 4 >= (count.Polite + count.Casual) * 3 ? side : null;
+        }
     }
 
     private static LqaIssue Issue(LqaScanEntry entry, string severity, string code, string message)
@@ -486,7 +523,9 @@ internal static class SpeakerToneConsistencyRule
         if (word.EndsWith("게나", StringComparison.Ordinal) || word.EndsWith("구먼", StringComparison.Ordinal)
             || word.EndsWith("는가", StringComparison.Ordinal) || word.EndsWith("인가", StringComparison.Ordinal)
             || word.EndsWith("던가", StringComparison.Ordinal) || word.EndsWith("은가", StringComparison.Ordinal)
-            || word.EndsWith("런가", StringComparison.Ordinal))
+            || word.EndsWith("런가", StringComparison.Ordinal) || word.EndsWith("텐가", StringComparison.Ordinal)
+            || word.EndsWith("겐가", StringComparison.Ordinal) || word.EndsWith("떤가", StringComparison.Ordinal)
+            || word.EndsWith("닌가", StringComparison.Ordinal))
         {
             return true;
         }
@@ -579,8 +618,27 @@ internal static class SpeakerToneConsistencyRule
             return Register.Polite;
         }
 
-        return CasualEndings.Any(e => cleaned.EndsWith(e, StringComparison.Ordinal)) ? Register.Casual : Register.Unknown;
+        return CasualEndings.Any(e => cleaned.EndsWith(e, StringComparison.Ordinal)) || IsCasualVerbEnding(LastWord(cleaned))
+            ? Register.Casual
+            : Register.Unknown;
     }
+
+    // 반말's let's (가자, 하자), orders and plain endings in 라 (해라, 가라, 몰라, 바라), questions in ㄹ까 (볼까, 할까) and
+    // 건가: thirteen of Laracin's 반말 lines in Meridia's Order had no level, so the review found them by hand. Only the
+    // forms the Korean patch's dialogue ends verbs with; not the nouns 여자, 신자, 지도자 or 나라, nor names (알라라, 세라).
+    private static readonly HashSet<string> CasualVerbEndings = new(StringComparer.Ordinal)
+    {
+        "가자", "보자", "하자", "나자", "내자", "주자", "치자", "두자", "살자", "말자", "우자", "붙자", "짓자", "있자", "놓자", "오자",
+        "어라", "아라", "여라", "해라", "하라", "가라", "마라", "거라", "려라", "봐라", "와라", "켜라", "서라", "워라", "춰라", "내라",
+        "쳐라", "러라", "줘라", "져라", "벼라", "둬라", "으라", "몰라", "달라", "말라", "바라", "보라", "오라", "더라", "노라", "니라",
+        "리라", "건가", "나가",
+    };
+
+    private static bool IsCasualVerbEnding(string word)
+        => word.Length >= 2
+           && (CasualVerbEndings.Contains(word[^2..])
+               || word is "버리자" or "내리자"
+               || word[^1] == '까' && FinalConsonant(word[^2]) == 8);
 
     private static string Display(Register register) => register switch
     {
