@@ -271,14 +271,57 @@ public sealed class AgentSession
     private async Task<AgentStepReport> WriteNextAsync(AgentStepReport report, IReadOnlyList<AgentRejection> rejected,
         CancellationToken cancellationToken)
     {
+        var carried = CarryRejections(ProjectDir(report.Project), rejected, report.Next);
         if (report.Next is not { } request) return report;
         var dir = ProjectDir(report.Project);
         Directory.CreateDirectory(dir);
         await File.WriteAllTextAsync(PendingPath(report.Project), JsonSerializer.Serialize(request, Json), cancellationToken);
         var added = AgentRequestRenderer.WriteInstructions(dir, AgentRequestRenderer.Split(request).Sections);
-        var text = AgentRequestRenderer.Render(report.Project, request, added, rejected);
+        var text = AgentRequestRenderer.Render(report.Project, request, added, carried);
         await File.WriteAllTextAsync(RequestPath(report.Project), text, cancellationToken);
         return report with { NextRequestChars = text.Length, NewInstructionSections = added };
+    }
+
+    /// <summary>
+    /// The reasons to show with the next request: those of its own lines. A line the run asks again later, after
+    /// another request (a book's one-line request came between in Meridia's Order), had its reason shown with that
+    /// other request and none with its own; such a reason is kept in rejections.json until its line is asked.
+    /// </summary>
+    internal static IReadOnlyList<AgentRejection> CarryRejections(string projectDir, IReadOnlyList<AgentRejection> rejected, AgentRequest? next)
+    {
+        var path = Path.Combine(projectDir, "rejections.json");
+        var kept = File.Exists(path) ? JsonSerializer.Deserialize<List<AgentRejection>>(File.ReadAllText(path)) ?? new() : new List<AgentRejection>();
+        foreach (var rejection in rejected.Where(r => r.Id != null))
+        {
+            kept.RemoveAll(r => r.Id == rejection.Id);
+            kept.Add(rejection);
+        }
+
+        if (next == null)
+        {
+            if (File.Exists(path)) File.Delete(path);
+            return Array.Empty<AgentRejection>();
+        }
+
+        // A one-line text request names no id: its line is known by its text.
+        var lines = AgentAnswerCheck.Lines(next);
+        var asked = lines.Select(line => line.Id).OfType<long>().ToHashSet();
+        var texts = lines.Where(line => line.Id == null).Select(line => Plain(line.Text)).ToHashSet(StringComparer.Ordinal);
+        bool Asked(AgentRejection r) => asked.Contains(r.Id!.Value) || texts.Contains(r.Source);
+        var shown = kept.Where(Asked).ToList();
+        kept.RemoveAll(Asked);
+        if (kept.Count > 0)
+        {
+            Directory.CreateDirectory(projectDir);
+            File.WriteAllText(path, JsonSerializer.Serialize(kept, Json));
+        }
+        else if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+
+        // A one-line text request's rejection has no id: it is that request asked again.
+        return shown.Concat(rejected.Where(r => r.Id == null)).ToList();
     }
 
     public string InstructionsPath(AgentProject project) => Path.Combine(ProjectDir(project), AgentRequestRenderer.InstructionsFileName);

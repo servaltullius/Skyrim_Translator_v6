@@ -250,6 +250,38 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Equal("<mag>의 화염 피해를 주고 적을 불태웁니다.", row.DestText);
     }
 
+    /// <summary>
+    /// Meridia's Order: line 3184 was asked again only after a book's one-line request, and its reason came with the
+    /// book's request instead of its own. A reason now waits for the request that asks its line.
+    /// </summary>
+    [Fact]
+    public void RejectionReason_WaitsForTheRequestThatAsksItsLineAgain()
+    {
+        static AgentRequest Batch(params long[] ids)
+        {
+            var payload = JsonSerializer.Serialize(new { source_language = "english", items = ids.Select(id => new { id, text = $"Line {id}." }) });
+            return new AgentRequest("h" + ids[0], 0, "agent-app", null, "system", new[] { new AgentMessage("user", "Input JSON:\n" + payload) },
+                "application/json", "{}");
+        }
+
+        var book = new AgentRequest("book", 0, "agent-app", null, "system", new[] { new AgentMessage("user", "A book's text.") }, null, null);
+        var dir = Path.Combine(Path.GetTempPath(), "xt-carry-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            var reason = new AgentRejection(3184, "Line 3184.", "토큰이 빠졌습니다");
+
+            Assert.Empty(AgentSession.CarryRejections(dir, new[] { reason }, book));
+            Assert.Empty(AgentSession.CarryRejections(dir, Array.Empty<AgentRejection>(), Batch(10, 11)));
+            Assert.Equal(new[] { reason }, AgentSession.CarryRejections(dir, Array.Empty<AgentRejection>(), Batch(3184, 3185)));
+            Assert.Empty(AgentSession.CarryRejections(dir, Array.Empty<AgentRejection>(), Batch(3184)));
+            Assert.False(File.Exists(Path.Combine(dir, "rejections.json")));
+        }
+        finally
+        {
+            if (Directory.Exists(dir)) Directory.Delete(dir, recursive: true);
+        }
+    }
+
     [Fact]
     public async Task Instructions_AreWrittenOnce_AndRequestMdNamesThem()
     {
