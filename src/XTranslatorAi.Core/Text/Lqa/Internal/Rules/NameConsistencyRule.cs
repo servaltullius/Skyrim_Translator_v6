@@ -57,6 +57,7 @@ internal static class NameConsistencyRule
             .ToList();
         var lowercaseWords = new HashSet<string>(StringComparer.Ordinal);
         var rowsByName = new Dictionary<string, List<int>>(StringComparer.Ordinal);
+        var namedInSentence = new HashSet<string>(StringComparer.Ordinal);
         var titleRowsByName = new Dictionary<string, List<int>>(StringComparer.Ordinal);
         for (var i = 0; i < rows.Count; i++)
         {
@@ -75,6 +76,11 @@ internal static class NameConsistencyRule
                 }
                 else if (word.Length >= 3 && word.Skip(1).All(char.IsLower) && !Interjections.Contains(word) && (!titleRow || IsGreetedName(matches, m)))
                 {
+                    if (matches.Count == 1 || !StartsSentence(source, matches, m))
+                    {
+                        namedInSentence.Add(word);
+                    }
+
                     var byName = titleRow ? titleRowsByName : rowsByName;
                     if (!byName.TryGetValue(word, out var list))
                     {
@@ -113,7 +119,9 @@ internal static class NameConsistencyRule
         var seen = new List<int>();
         foreach (var (name, nameRows) in rowsByName)
         {
-            if (nameRows.Count < MinRows || lowercaseWords.Contains(name.ToLowerInvariant()))
+            // A capital that only starts sentences says nothing: EldenWarAshPack1 began four descriptions with "Summon
+            // the bow, then ..." (소환한 뒤) and others with "Summon a daedric warhammer" (소환해).
+            if (nameRows.Count < MinRows || lowercaseWords.Contains(name.ToLowerInvariant()) || !namedInSentence.Contains(name))
             {
                 continue;
             }
@@ -323,6 +331,21 @@ internal static class NameConsistencyRule
         public int Find(string word) => _ids.TryGetValue(word, out var id) ? id : -1;
 
         public bool RowContains(int row, int core) => Array.BinarySearch(_sortedRowCores[row], core) >= 0;
+    }
+
+    // Between two words, any of these starts a sentence (or a quoted one) at the second.
+    private const string SentenceBreaks = ".!?;:\n\"“…";
+
+    private static bool StartsSentence(string source, MatchCollection words, int index)
+    {
+        if (index == 0)
+        {
+            return true;
+        }
+
+        var previous = words[index - 1];
+        var start = previous.Index + previous.Length;
+        return source.AsSpan(start, words[index].Index - start).IndexOfAny(SentenceBreaks) >= 0;
     }
 
     private static bool IsGreetedName(MatchCollection words, int index) => words.Count <= 3 && index == words.Count - 1 && index > 0;

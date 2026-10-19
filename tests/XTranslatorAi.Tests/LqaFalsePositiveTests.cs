@@ -376,6 +376,32 @@ public class LqaFalsePositiveTests
     }
 
     [Fact]
+    public async Task NameConsistency_IgnoresAWordCapitalizedOnlyAtTheStartOfSentences()
+    {
+        // EldenWarAshPack1 began its skill descriptions with "Summon": 소환해 in most, 소환한 뒤 in the bow ones.
+        // The capital of a sentence's first word is no sign of a name; Merovech, also only at sentence starts but
+        // once in the middle of one, still is.
+        var entries = new List<LqaScanEntry>
+        {
+            Dialogue(1, "Summon a daedric warhammer, strike your enemy.", "데이드라제 전투 망치를 소환해 적을 가격합니다."),
+            Dialogue(2, "Summon a greatsword and slash.", "대검을 소환해 벱니다."),
+            Dialogue(3, "Summon a spear. Thrust it forward.", "창을 소환해 앞으로 찌릅니다."),
+            Dialogue(4, "A skill of old. Summon a blade and spin.", "옛 기술입니다. 칼날을 소환해 회전합니다."),
+            Dialogue(5, "Summon the greatbow, then twist the bowstring.", "대궁을 소환한 뒤 활시위를 비틉니다."),
+            Dialogue(6, "Summon the bow, then fire an arrow high up.", "활을 소환한 뒤 화살을 높이 쏩니다."),
+            Dialogue(11, "Merovech, how do you plan to find him?", "메로베흐, 그를 어떻게 찾을 생각이야?"),
+            Dialogue(12, "Merovech said the road is safe.", "메로베흐가 길은 안전하다고 했어."),
+            Dialogue(13, "Merovech is waiting.", "메로베흐는 기다리고 있어."),
+            Dialogue(14, "Ask Merovech about the ship.", "메로벡에게 배에 대해 물어봐."),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        var issue = Assert.Single(issues, i => i.Code == "name_inconsistent");
+        Assert.Equal(14, issue.Id);
+    }
+
+    [Fact]
     public async Task NameConsistency_CountsTitleCaseRowsForWordsUsedAsNames()
     {
         // Serana Dialogue Add-On greets each player name ("Hey Drelorea!") and spelled it 드렐로레아 there but
