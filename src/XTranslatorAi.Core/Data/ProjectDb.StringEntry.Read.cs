@@ -438,6 +438,34 @@ public sealed partial class ProjectDb
     /// say so and the NPC is its other actor ("00013269>0001327E?"). Projects imported before the
     /// fields existed have none until the plugin is imported again.
     /// </summary>
+    public async Task<IReadOnlyDictionary<uint, bool>> GetPluginNpcSexesAsync(CancellationToken cancellationToken)
+    {
+        var map = new Dictionary<uint, bool>();
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            await using var cmd = _connection.CreateCommand();
+            cmd.CommandText =
+                """
+                SELECT json_extract(FieldJson, '$.FormId'), json_extract(FieldJson, '$.Female')
+                FROM PluginStringBinding
+                WHERE json_extract(FieldJson, '$.RecordType')='NPC_' AND json_extract(FieldJson, '$.SubrecordType')='FULL'
+                  AND json_extract(FieldJson, '$.Female') IS NOT NULL;
+                """;
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                map.TryAdd(unchecked((uint)reader.GetInt64(0)), reader.GetInt64(1) != 0);
+            }
+
+            return map;
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
     public async Task<IReadOnlyDictionary<long, string>> GetStringVoiceHintsAsync(CancellationToken cancellationToken)
     {
         var map = new Dictionary<long, string>();

@@ -127,7 +127,8 @@ public sealed class PluginQuestSpeakerTests : IDisposable
     {
         var master = Header(masterBytes: Z("Skyrim.esm"))
             .Concat(Group(
-                Record("NPC_", 0x01002B6C, Sub("ACBS", Acbs(unique: true)), Sub("FULL", Z("Serana")), Sub("VTCK", UInt(0x01002B6F))),
+                Record("NPC_", 0x01002B6C, Sub("ACBS", Acbs(unique: true, female: true)), Sub("FULL", Z("Serana")), Sub("VTCK", UInt(0x01002B6F))),
+                Record("NPC_", 0x01003010, Sub("ACBS", Acbs(unique: false, female: true, useTraits: true)), Sub("TPLT", UInt(0x01003011)), Sub("FULL", Z("Bandit"))),
                 Record("NPC_", 0x01003000, Sub("ACBS", Acbs(unique: false)), Sub("FULL", Z("Guard")), Sub("VTCK", UInt(0x01003001))),
                 Record("NPC_", 0x01003002, Sub("ACBS", Acbs(unique: false)), Sub("FULL", Z("Soldier")), Sub("VTCK", UInt(0x01003001)))))
             .Concat(Group(Record("QUST", 0x01004BBF, Sub("EDID", Z("DLC1Quest")), Sub("NEXT", Array.Empty<byte>()))))
@@ -159,6 +160,27 @@ public sealed class PluginQuestSpeakerTests : IDisposable
         Assert.Equal("MaleGuard", loaded.VoiceName("V:01003001", modMasters, "Mod.esp"));
         Assert.Null(loaded.VoiceName("V:01002B6F", modMasters, "Mod.esp"));
         Assert.Null(loaded.VoiceName("R:01002B74", modMasters, "Mod.esp"));
+
+        // An NPC's sex, for the speaker label (형 or 오빠); unknown for one whose traits a template gives.
+        Assert.True(loaded.IsFemale(0x01002B6C, modMasters, "Mod.esp"));
+        Assert.False(loaded.IsFemale(0x01003000, modMasters, "Mod.esp"));
+        Assert.Null(loaded.IsFemale(0x01003010, modMasters, "Mod.esp"));
+    }
+
+    /// <summary>A plugin's own NPC carries its sex on its name field, which the project keeps for the labels.</summary>
+    [Fact]
+    public async Task PluginNpcName_CarriesTheNpcsSex()
+    {
+        var plugin = Header()
+            .Concat(Group(
+                Record("NPC_", 0x01000801, Sub("ACBS", Acbs(unique: true, female: true)), Sub("FULL", Z("Kariss"))),
+                Record("NPC_", 0x01000802, Sub("ACBS", Acbs(unique: true)), Sub("FULL", Z("Faryl")))))
+            .ToArray();
+
+        var fields = (await Read("Mod.esp", plugin)).Fields;
+
+        Assert.True(Assert.Single(fields, f => f.SourceText == "Kariss").Female);
+        Assert.False(Assert.Single(fields, f => f.SourceText == "Faryl").Female);
     }
 
     // Dawnguard's part: Serana, her voice type, her placed actor, a quest alias she fills, and a voice two guards share.
@@ -208,10 +230,11 @@ public sealed class PluginQuestSpeakerTests : IDisposable
         return await PluginReader.ReadAsync(path, new PluginReadOptions(), CancellationToken.None);
     }
 
-    private static byte[] Acbs(bool unique)
+    private static byte[] Acbs(bool unique, bool female = false, bool useTraits = false)
     {
         var data = new byte[24];
-        BinaryPrimitives.WriteUInt32LittleEndian(data, unique ? 0x20u : 0u);
+        BinaryPrimitives.WriteUInt32LittleEndian(data, (unique ? 0x20u : 0u) | (female ? 0x1u : 0u));
+        BinaryPrimitives.WriteUInt16LittleEndian(data.AsSpan(18), useTraits ? (ushort)1 : (ushort)0);
         return data;
     }
 

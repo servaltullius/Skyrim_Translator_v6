@@ -45,6 +45,24 @@ internal sealed class PluginSpeakers
     /// <summary>The listener of a line said to a character the plugin does not name: someone other than the player.</summary>
     public const uint UnknownListener = 0;
 
+    /// <summary>
+    /// An NPC record's sex from its ACBS flags (Female, 0x1); null when it takes its traits from a template (ACBS
+    /// template flags, Use Traits), as leveled NPCs do, or has no ACBS.
+    /// </summary>
+    public static bool? IsFemale(PluginRecord record)
+    {
+        foreach (var sub in record.Subrecords)
+        {
+            if (sub.Type != "ACBS" || sub.Data.Length < 4) continue;
+            var span = sub.Data.Span;
+            var useTraits = span.Length >= 20 && (BitConverter.ToUInt16(span.Slice(18, 2)) & 0x1) != 0
+                            && record.Subrecords.Any(other => other.Type == "TPLT");
+            return useTraits ? null : (PluginBinary.U32(span, 0) & 0x1) != 0;
+        }
+
+        return null;
+    }
+
     private const ushort GetIsId = 72;
     private const ushort GetIsVoiceType = 426;
     private const ushort GetIsAliasRef = 566;

@@ -34,11 +34,12 @@ public static class DialogueSpeakerNames
         }
 
         var names = await db.GetPluginNpcNamesAsync(cancellationToken).ConfigureAwait(false);
+        var sexes = await db.GetPluginNpcSexesAsync(cancellationToken).ConfigureAwait(false);
         var styles = SpeakerStyles.ByPair(await db.GetSpeakerStylesAsync(cancellationToken).ConfigureAwait(false));
         var fieldKeys = styles.Count == 0
             ? new Dictionary<long, string>()
             : await db.GetPluginFieldKeysByStringIdAsync(cancellationToken).ConfigureAwait(false);
-        var plugin = gameStrings == null ? null : await db.GetPluginMastersAsync(cancellationToken).ConfigureAwait(false);
+        var plugin = await db.GetPluginMastersAsync(cancellationToken).ConfigureAwait(false);
         var labels = new Dictionary<uint, string>();
         var result = new Dictionary<long, string>(speakers.Count);
         foreach (var (id, value) in speakers)
@@ -104,12 +105,22 @@ public static class DialogueSpeakerNames
                     ? gameStrings.FindRecord(GameStringDictionary.FieldIdentity($"NPC_/{formId:X8}/0/FULL/0", p.Masters, p.PluginFileName), "")?.Korean
                     : null;
                 label = Label(formId, names.TryGetValue(formId, out var english) ? english : null, korean);
+                // The plugin's own NPC by its record, a master's by the dictionary: words such as 형/오빠 or 그/그녀 follow it.
+                var female = plugin is { } own && formId >> 24 >= own.Masters.Count
+                    ? sexes.TryGetValue(formId, out var sex) ? sex : null
+                    : plugin is { } m && gameStrings?.Speakers is { } index ? index.IsFemale(formId, m.Masters, m.PluginFileName) : null;
+                if (female is { } isFemale) label += isFemale ? FemaleLabel : MaleLabel;
                 labels[formId] = label;
             }
 
             return label;
         }
     }
+
+    /// <summary>After a speaker's name, its sex: "Faryl Atheron (페릴 아세론) (male)".</summary>
+    public const string MaleLabel = " (male)";
+
+    public const string FemaleLabel = " (female)";
 
     /// <summary>Between a scene line's speaker and the NPC it is said to, in the FormID value ("00013269>0001327E").</summary>
     public const char ListenerSeparator = '>';

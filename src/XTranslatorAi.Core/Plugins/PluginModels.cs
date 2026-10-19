@@ -37,7 +37,7 @@ public sealed record PluginField(
     uint FormId, string? EditorId, int RecordIndex, int SubrecordIndex,
     string SourceText, PluginStringTableKind? TableKind = null, uint? StringId = null, bool RequiresNonEmpty = true,
     uint? DialogueTopicFormId = null, uint? SpeakerFormId = null, uint? ListenerFormId = null,
-    string? SpeakerHint = null, string? ListenerHint = null, bool ListenerGuessed = false)
+    string? SpeakerHint = null, string? ListenerHint = null, bool ListenerGuessed = false, bool? Female = null)
 {
     public string Rec => RecordType + ":" + SubrecordType;
 }

@@ -24,10 +24,13 @@ public sealed class MasterSpeakerIndex
     private readonly Dictionary<string, string> _names;
     private readonly Dictionary<string, List<string>> _lines;
     private readonly Dictionary<string, string> _voiceNames;
+    private readonly Dictionary<string, bool> _female;
 
     private MasterSpeakerIndex(Dictionary<string, string> voices, Dictionary<string, string> refs, Dictionary<string, string> aliases,
-        Dictionary<string, string>? names = null, Dictionary<string, List<string>>? lines = null, Dictionary<string, string>? voiceNames = null)
+        Dictionary<string, string>? names = null, Dictionary<string, List<string>>? lines = null, Dictionary<string, string>? voiceNames = null,
+        Dictionary<string, bool>? female = null)
     {
+        _female = female ?? new Dictionary<string, bool>(StringComparer.Ordinal);
         _voiceNames = voiceNames ?? new Dictionary<string, string>(StringComparer.Ordinal);
         _voices = voices;
         _refs = refs;
@@ -76,6 +79,13 @@ public sealed class MasterSpeakerIndex
 
         return _voiceNames.GetValueOrDefault(Identity(formId, masters, pluginFileName));
     }
+
+    /// <summary>
+    /// Whether a base game NPC is a woman (its ACBS flags); null for one the masters do not have or whose traits a
+    /// template gives. The speaker label carries it: Faryl Atheron's "my brother" was 오빠 in the Teldryn modpack release.
+    /// </summary>
+    public bool? IsFemale(uint formId, IReadOnlyList<string> masters, string pluginFileName)
+        => _female.TryGetValue(Identity(formId, masters, pluginFileName), out var female) ? female : null;
 
     /// <summary>The NPCs that have lines, with their English names.</summary>
     public IReadOnlyDictionary<string, string> Names => _names;
@@ -164,6 +174,7 @@ public sealed class MasterSpeakerIndex
         foreach (var (npc, name) in _names) yield return $"SN\t{npc}\t{name.Replace('\t', ' ')}";
         foreach (var (npc, lines) in _lines) yield return $"SL\t{npc}\t{string.Join(",", lines)}";
         foreach (var (voice, name) in _voiceNames) yield return $"VN\t{voice}\t{name}";
+        foreach (var (npc, female) in _female) yield return $"SX\t{npc}\t{(female ? "F" : "M")}";
     }
 
     /// <summary>The maps a dictionary's speaker lines fill.</summary>
@@ -175,6 +186,7 @@ public sealed class MasterSpeakerIndex
         public Dictionary<string, string> Names { get; } = new(StringComparer.Ordinal);
         public Dictionary<string, List<string>> Lines { get; } = new(StringComparer.Ordinal);
         public Dictionary<string, string> VoiceNames { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, bool> Female { get; } = new(StringComparer.Ordinal);
     }
 
     /// <summary>Reads a line Lines() wrote; false for any other line.</summary>
@@ -192,6 +204,9 @@ public sealed class MasterSpeakerIndex
             case "VN":
                 maps.VoiceNames[parts[1]] = parts[2];
                 return true;
+            case "SX":
+                maps.Female[parts[1]] = parts[2] == "F";
+                return true;
         }
 
         var map = parts[0] switch { "SV" => maps.Voices, "SR" => maps.Refs, "SA" => maps.Aliases, _ => null };
@@ -203,7 +218,7 @@ public sealed class MasterSpeakerIndex
     internal static MasterSpeakerIndex? FromMaps(Maps maps)
         => maps.Voices.Count + maps.Refs.Count + maps.Aliases.Count + maps.Lines.Count == 0
             ? null
-            : new MasterSpeakerIndex(maps.Voices, maps.Refs, maps.Aliases, maps.Names, maps.Lines, maps.VoiceNames);
+            : new MasterSpeakerIndex(maps.Voices, maps.Refs, maps.Aliases, maps.Names, maps.Lines, maps.VoiceNames, maps.Female);
 
     /// <summary>Gathers the masters in load order (a later master's override replaces the earlier record).</summary>
     public sealed class Builder
@@ -218,6 +233,7 @@ public sealed class MasterSpeakerIndex
         // Each master dialogue line's field identity and its speaker: an NPC record, or a hint ("V:", "R:", "A:") Build resolves.
         private readonly Dictionary<string, string> _lineSpeakers = new(StringComparer.Ordinal);
         private readonly Dictionary<string, string> _voiceNames = new(StringComparer.Ordinal);
+        private readonly Dictionary<string, bool> _female = new(StringComparer.Ordinal);
 
         public void Add(PluginDocument master)
         {
@@ -249,6 +265,8 @@ public sealed class MasterSpeakerIndex
                         if (U32(record, "VTCK") is { } voice) _npcVoices[npc] = Id(voice);
                         if (U32(record, "ACBS") is { } flags && (flags & UniqueFlag) != 0) _uniqueNpcs.Add(npc);
                         else _uniqueNpcs.Remove(npc);
+                        if (PluginSpeakers.IsFemale(record) is { } female) _female[npc] = female;
+                        else _female.Remove(npc);
                         break;
                     case "ACHR" when U32(record, "NAME") is { } baseNpc:
                         _refs[Id(record.FormId)] = Id(baseNpc);
@@ -304,7 +322,9 @@ public sealed class MasterSpeakerIndex
             }
 
             var lineNames = lines.Keys.Where(_npcNames.ContainsKey).ToDictionary(npc => npc, npc => _npcNames[npc], StringComparer.Ordinal);
-            return new MasterSpeakerIndex(voices, refs, aliases, lineNames, lines, new Dictionary<string, string>(_voiceNames, StringComparer.Ordinal));
+            // The sex of the NPCs with a name: the ones a label names.
+            var female = _female.Where(pair => _npcNames.ContainsKey(pair.Key)).ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+            return new MasterSpeakerIndex(voices, refs, aliases, lineNames, lines, new Dictionary<string, string>(_voiceNames, StringComparer.Ordinal), female);
         }
 
         // A hint as the index's own keys: "V:dragonborn.esm:02b6c0", "R:...", "A:skyrim.esm:0aa123:3".

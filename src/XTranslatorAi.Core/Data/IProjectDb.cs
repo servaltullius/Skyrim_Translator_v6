@@ -91,6 +91,10 @@ public interface IProjectDb
         => Task.FromResult<IReadOnlyList<SpeakerStyle>>(Array.Empty<SpeakerStyle>());
 
     /// <summary>The speaker FormID ("%08X") of each plugin INFO row whose conditions name one, by row id.</summary>
+    /// <summary>Whether each of the plugin's own NPCs is a woman, by FormID, for those whose record says.</summary>
+    Task<IReadOnlyDictionary<uint, bool>> GetPluginNpcSexesAsync(CancellationToken cancellationToken)
+        => Task.FromResult<IReadOnlyDictionary<uint, bool>>(new Dictionary<uint, bool>());
+
     /// <summary>The voice-type hint ("V:00013AF2") of each INFO line whose speaker no hint resolved, by row id.</summary>
     Task<IReadOnlyDictionary<long, string>> GetStringVoiceHintsAsync(CancellationToken cancellationToken)
         => Task.FromResult<IReadOnlyDictionary<long, string>>(new Dictionary<long, string>());

@@ -287,6 +287,8 @@ public static class PluginReader
             var edidSub = record.Subrecords.FirstOrDefault(sub => sub.Type == "EDID");
             var edid = edidSub == null ? null : PluginBinary.ReadZString(edidSub.Data.Span, metadataEncoding, "EDID");
             var (speaker, listener, listenerGuessed) = record.Type == "INFO" ? speakers.ForInfo(record) : (null, null, false);
+            // An NPC's name carries its sex, for the speaker labels of the requests (형 or 오빠, 그 or 그녀).
+            var female = record.Type == "NPC_" ? PluginSpeakers.IsFemale(record) : null;
             var preceding = new List<PluginSubrecordDescriptor>();
             var subOccurrences = new Dictionary<string, int>(StringComparer.Ordinal);
             foreach (var sub in record.Subrecords)
@@ -319,7 +321,8 @@ public static class PluginReader
                             // The player's prompt (RNAM) is said by the player, not by the scene's speaker.
                             sub.Type == "NAM1" && listener is { } l ? l.Npc ?? PluginSpeakers.UnknownListener : null,
                             speaker?.Hint, sub.Type == "NAM1" ? listener?.Hint : null,
-                            ListenerGuessed: sub.Type == "NAM1" && listener != null && listenerGuessed));
+                            ListenerGuessed: sub.Type == "NAM1" && listener != null && listenerGuessed,
+                            Female: sub.Type == "FULL" ? female : null));
                 }
                 // SNDR:FNAM (form version < 35) is a flags field (bit 4 = Loop), not a string ID, even
                 // though some readers model it as translated text. It is preserved without a warning.
