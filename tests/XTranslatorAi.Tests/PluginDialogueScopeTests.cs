@@ -442,31 +442,36 @@ public sealed class PluginDialogueScopeTests
     }
 
     /// <summary>
-    /// A combat or detection topic's line is said to an enemy or no one, not the player: Meridia's Order's Alara taunts the
-    /// Malevolent in 반말 (Combat, Taunt) and speaks 존댓말 to the Champion, and the check counted her taunts among her
-    /// lines to the player. Such a line is "to another character"; a topic of another category keeps the player.
+    /// A combat line, or one that starts a fight, is said to an enemy as often as to the player's side: Meridia's Order's
+    /// Alara taunts the Malevolent in 반말 and speaks 존댓말 to the Champion, while Teldryn's taunts include warnings to
+    /// the player. Its listener is another character, as a guess. A line after a fight is said to the player.
     /// </summary>
     [Fact]
-    public async Task CombatAndDetectionLines_AreSaidToAnotherCharacter()
+    public async Task CombatLines_AreProbablySaidToAnotherCharacter_AfterAFightToThePlayer()
     {
         const uint alara = 0x00013269;
+        static byte[] Topic(uint formId, byte category, string subtype)
+            => Record("DIAL", formId, Sub("SNAM", Encoding.ASCII.GetBytes(subtype)), Sub("DATA", new byte[] { 0, category, 0, 0 }));
         var plugin = Header()
             .Concat(Group(Record("NPC_", alara, Sub("FULL", Z("Alara")))))
             .Concat(DialogueGroup(
-                Record("DIAL", 0x01001000, Sub("DATA", new byte[] { 0, 3, 36, 0 })),
+                Topic(0x01001000, 3, "TAUT"),
                 TopicChildren(0x01001000, Record("INFO", 0x01001001, Sub("CTDA", GetIsId(alara)), Sub("NAM1", Z("Die, fiend!")))),
-                Record("DIAL", 0x01002000, Sub("DATA", new byte[] { 0, 5, 59, 0 })),
-                TopicChildren(0x01002000, Record("INFO", 0x01002001, Sub("CTDA", GetIsId(alara)), Sub("NAM1", Z("Who's there?")))),
-                Record("DIAL", 0x01003000, Sub("DATA", new byte[] { 0, 7, 79, 0 })),
+                Topic(0x01002000, 5, "NOTC"),
+                TopicChildren(0x01002000, Record("INFO", 0x01002001, Sub("CTDA", GetIsId(alara)), Sub("NAM1", Z("Stay alert!")))),
+                Topic(0x01004000, 5, "COTN"),
+                TopicChildren(0x01004000, Record("INFO", 0x01004001, Sub("CTDA", GetIsId(alara)), Sub("NAM1", Z("Good thing you have me, eh?")))),
+                Topic(0x01003000, 7, "HELO"),
                 TopicChildren(0x01003000, Record("INFO", 0x01003001, Sub("CTDA", GetIsId(alara)), Sub("NAM1", Z("Welcome, Champion."))))))
             .ToArray();
         await using var fixture = await Fixture.CreateAsync(plugin);
 
         var info = fixture.Document.Fields.Where(field => field.RecordType == "INFO")
-            .ToDictionary(field => field.SourceText, field => (field.SpeakerFormId, field.ListenerFormId));
-        Assert.Equal(((uint?)alara, (uint?)0), info["Die, fiend!"]);
-        Assert.Equal(((uint?)alara, (uint?)0), info["Who's there?"]);
-        Assert.Equal(((uint?)alara, (uint?)null), info["Welcome, Champion."]);
+            .ToDictionary(field => field.SourceText, field => (field.SpeakerFormId, field.ListenerFormId, field.ListenerGuessed));
+        Assert.Equal(((uint?)alara, (uint?)0, true), info["Die, fiend!"]);
+        Assert.Equal(((uint?)alara, (uint?)0, true), info["Stay alert!"]);
+        Assert.Equal(((uint?)alara, (uint?)null, false), info["Good thing you have me, eh?"]);
+        Assert.Equal(((uint?)alara, (uint?)null, false), info["Welcome, Champion."]);
     }
 
     private static byte[][] SceneDialogue(int alias, uint topic, int target) => new[]

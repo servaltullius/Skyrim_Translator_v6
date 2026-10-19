@@ -62,7 +62,7 @@ internal sealed class PluginSpeakers
     private readonly Dictionary<uint, Dictionary<int, SpeakerRef?>> _aliases = new();
     private readonly Dictionary<uint, SpeakerRef?> _questSpeakers = new();
     private readonly Dictionary<uint, (SpeakerRef Speaker, SpeakerRef? Listener, bool Guessed)> _scenes = new();
-    private readonly Dictionary<uint, byte> _topicCategories = new();
+    private readonly Dictionary<uint, (byte Category, string? Subtype)> _topics = new();
 
     private PluginSpeakers(int masterCount) => _masterCount = masterCount;
 
@@ -79,7 +79,12 @@ internal sealed class PluginSpeakers
                 case "QUST": speakers._quests[record.FormId] = record; break;
                 case "DIAL":
                     if (U32(record, "QNAM") is { } quest) speakers._topicQuests[record.FormId] = quest;
-                    if (record.Subrecords.FirstOrDefault(sub => sub.Type == "DATA") is { Data.Length: 4 } data) speakers._topicCategories[record.FormId] = data.Data.Span[1];
+                    if (record.Subrecords.FirstOrDefault(sub => sub.Type == "DATA") is { Data.Length: 4 } data)
+                    {
+                        var subtype = record.Subrecords.FirstOrDefault(sub => sub.Type == "SNAM") is { Data.Length: >= 4 } snam
+                            ? System.Text.Encoding.ASCII.GetString(snam.Data.Span[..4]) : null;
+                        speakers._topics[record.FormId] = (data.Data.Span[1], subtype);
+                    }
                     break;
                 case "ACHR" when U32(record, "NAME") is { } baseNpc: speakers._placedActors[record.FormId] = baseNpc; break;
                 case "NPC_" when U32(record, "VTCK") is { } voice:
@@ -110,17 +115,22 @@ internal sealed class PluginSpeakers
         }
 
         var speaker = own ?? (quest is { } owner ? QuestSpeaker(owner) : null);
-        // A combat or detection line (a taunt, a death cry, "Who's there?") is said to an enemy or no one, not the
-        // player: Meridia's Order's Alara and Velteth taunt the Malevolent in 반말 and speak 존댓말 to the Champion.
-        if (speaker != null && topic is { } topicId && _topicCategories.TryGetValue(topicId, out var category) && category is CombatCategory or DetectionCategory)
+        // A combat line (a taunt, a hit, a death cry) or one that starts a fight is said to an enemy as often as to
+        // the player's side: Meridia's Order's Alara taunts the Malevolent in 반말 and speaks 존댓말 to the Champion,
+        // while Teldryn's taunts include "Get the one with the crossbow before he gets you!" and his "Stay alert!"
+        // starts a fight. So the listener is another character, as a guess. A line after a fight ("Good thing you
+        // have me with you, eh?") is said to the player.
+        if (speaker != null && topic is { } topicId && _topics.TryGetValue(topicId, out var kind)
+            && (kind.Category == CombatCategory || kind.Category == DetectionCategory && kind.Subtype is "NOTC" or "ALTC" or "LOTC"))
         {
-            return (speaker, SpeakerRef.Of(UnknownListener), false);
+            return (speaker, SpeakerRef.Of(UnknownListener), true);
         }
 
         return (speaker, null, false);
     }
 
-    // DIAL DATA's category byte: 3 Combat (Attack, Hit, Taunt, Death ...), 5 Detection (Notice Corpse, Lost Idle ...).
+    // DIAL DATA's category byte: 3 Combat (Attack, Hit, Taunt, Death ...), 5 Detection, whose SNAM subtypes NOTC, ALTC
+    // and LOTC (normal, alert or lost to combat) start a fight.
     private const byte CombatCategory = 3;
     private const byte DetectionCategory = 5;
 
