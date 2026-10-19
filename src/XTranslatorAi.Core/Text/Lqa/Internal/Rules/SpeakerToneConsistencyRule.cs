@@ -131,6 +131,7 @@ internal static class SpeakerToneConsistencyRule
     {
         if (Key(entry) is not { } key)
         {
+            ApplyDecidedToSpeechCheck(entry, levels, issues);
             return;
         }
 
@@ -155,6 +156,16 @@ internal static class SpeakerToneConsistencyRule
         if (IsGuessed(key))
         {
             ApplyGuessed(entry, key, register, level, levels, issues);
+            // Decided levels to both it may be said to, on the same side as the line but another level: Alzacar, decided
+            // 반말 to the player and the Jester, said "챔피언, 그대의 뜻을 돕겠소."
+            if (levels.Declared is { } both && SpeakerStyles.For(both, haoKey) is { } toListener && SpeakerStyles.For(both, haoSpeaker) is { } toPlayer
+                && (level == ToneKind.Hamnida) == SpeakerStyles.IsPolite(toListener) && (level == ToneKind.Hamnida) == SpeakerStyles.IsPolite(toPlayer)
+                && StrayFromDeclared(entry.DestText, toListener) is { } shown && StrayFromDeclared(entry.DestText, toPlayer) != null)
+            {
+                issues.Add(Issue(entry, "Info", MixedCode,
+                    $"정한 말투(상대에게 {toListener}, 플레이어에게 {toPlayer})와 다를 수 있습니다: 이 대사 {shown}"));
+            }
+
             return;
         }
 
@@ -252,6 +263,44 @@ internal static class SpeakerToneConsistencyRule
             if (!levels.Counts.TryGetValue(group, out var count) || count.Polite + count.Casual < 4) return null;
             var (side, n) = count.Polite >= count.Casual ? (ToneKind.Hamnida, count.Polite) : (ToneKind.Casual, count.Casual);
             return n * 4 >= (count.Polite + count.Casual) * 3 ? side : null;
+        }
+    }
+
+    // A threat takes its own attitude; a persuasion, a bribe or a lie keeps the player's level to the NPC.
+    private static readonly System.Text.RegularExpressions.Regex Threat = new(
+        @"\((?:Intimidate|Brawl|Threaten)[^)]*\)",
+        System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+    /// <summary>
+    /// A speech-check choice is in no group, but a level decided for the player to that NPC still holds for a persuasion,
+    /// a bribe or a lie: in Meridia's Order the player, decided 해요체 to Alzacar, persuaded him in 반말 ("그녀가 널 어떻게
+    /// 대하는지 봐. 뻔하잖아. (설득)").
+    /// </summary>
+    private static void ApplyDecidedToSpeechCheck(LqaScanEntry entry, Levels levels, List<LqaIssue> issues)
+    {
+        var rec = entry.Rec?.Trim().ToUpperInvariant();
+        if (levels.Declared is not { } decided || rec is not ("INFO:RNAM" or "DIAL:FULL") || string.IsNullOrWhiteSpace(entry.Speaker)
+            || entry.Status is not (StringEntryStatus.Done or StringEntryStatus.Edited)
+            || !SpeechCheck.IsMatch(entry.SourceText ?? "") || Threat.IsMatch(entry.SourceText ?? "")
+            || SpeakerStyles.For(decided, PlayerKeyPrefix + entry.Speaker) is not { } declared)
+        {
+            return;
+        }
+
+        var (register, _) = Level(entry.DestText);
+        var level = Side(register);
+        if (level == ToneKind.Unknown)
+        {
+            return;
+        }
+
+        if ((level == ToneKind.Hamnida) != SpeakerStyles.IsPolite(declared))
+        {
+            issues.Add(Issue(entry, "Warn", PlayerCode, $"이 상대에게 정한 말투와 다릅니다: 정한 말투 {declared}, 이 대사 {Display(register)}"));
+        }
+        else if (StrayFromDeclared(entry.DestText, declared) is { } shown)
+        {
+            issues.Add(Issue(entry, "Info", PlayerCode, $"이 상대에게 정한 말투와 다를 수 있습니다: 정한 말투 {declared}, 이 대사 {shown}"));
         }
     }
 
@@ -375,6 +424,12 @@ internal static class SpeakerToneConsistencyRule
         }
 
         if (word is "게요" or "뭐요" or "어디요" or "누구요" or "언제요")
+        {
+            return true;
+        }
+
+        // The noun 자 (person) after a modifier, in 하오체: "리프튼 하수도에서 지내던 시절에 알던 자요", "믿을 만한 자요".
+        if (word == "자요" && cleaned.Length > 3 && cleaned[^3] == ' ' && FinalConsonant(cleaned[^4]) == 4)
         {
             return true;
         }
@@ -637,7 +692,7 @@ internal static class SpeakerToneConsistencyRule
     /// </summary>
     internal static string? StrayFromDeclared(string? text, string declared)
     {
-        if (declared is not ("하오체" or "하게체" or "반말"))
+        if (declared is not ("하오체" or "하게체" or "반말" or "합쇼체"))
         {
             return null;
         }
@@ -649,12 +704,20 @@ internal static class SpeakerToneConsistencyRule
         var hao = pieces.Any(piece => piece.Register == Register.Hao);
         var hage = HagePronoun.IsMatch(spoken) || pieces.Any(piece => piece.Register == Register.Hage && IsAddressedHage(piece.Part));
         var plain = PlainPronoun.IsMatch(spoken) || pieces.Any(piece => piece.Register == Register.Casual && PlainEnding.IsMatch(piece.Part));
+        // 합쇼체 against 해요체: Vaegra, decided 합쇼체 to Alara, said "…사람일 뿐이에요. …못 써요." A 해요체 piece that is
+        // also a 하오체 noun with 요 ("열쇠요") does not count, nor ~지요 and ~군요, which formal speech uses too ("아시겠지요",
+        // "모르겠군요" among Velteth's 합쇼체).
+        var polite = pieces.Where(piece => piece.Register == Register.Polite && !IsWeakPolite(piece.Part)
+                                           && !piece.Part.EndsWith("지요", StringComparison.Ordinal) && !piece.Part.EndsWith("군요", StringComparison.Ordinal))
+            .Select(piece => LqaToneClassifier.Classify(piece.Part)).ToList();
         return declared switch
         {
             "하오체" when !hao && hage => "하게체",
             "하오체" when !hao && plain => "반말",
             "하게체" when hao && !hage => "하오체",
             "반말" when hao => "하오체",
+            "반말" when HagePronoun.IsMatch(spoken) => "하게체",
+            "합쇼체" when polite.Contains(ToneKind.Haeyo) && !polite.Contains(ToneKind.Hamnida) => "해요체",
             _ => null,
         };
     }

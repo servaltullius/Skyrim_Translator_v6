@@ -213,6 +213,45 @@ public class LqaSpeakerToneTests
         Assert.DoesNotContain(issues, i => i.Code == "speaker_tone_inconsistent");
     }
 
+    /// <summary>
+    /// What the Meridia lane trial's review found the check missing (and one it flagged wrongly) with levels decided.
+    /// </summary>
+    [Fact]
+    public async Task DecidedLevels_InTheMeridiaReview()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            // The player's persuasion choice in 반말 to Alzacar, decided 해요체.
+            Line(1, "그녀가 널 어떻게 대하는지 봐. 뻔하잖아. (설득)", speaker: "03019A80", rec: "DIAL:FULL") with { SourceText = "Look at how she treats you. It's obvious. (Persuade)" },
+            Line(6, "닥쳐. 안 그러면 혀를 뽑아 주지. (위협)", speaker: "03019A80", rec: "DIAL:FULL") with { SourceText = "Shut it, or I'll cut out your tongue. (Intimidate)" },
+            // Alzacar, decided 반말 to the player and to the Jester, in 하오체 on a line whose listener is guessed.
+            Line(2, "챔피언, 그대의 뜻을 돕겠소.", speaker: "03019A80>03019A95?"),
+            // Alzacar, decided 반말, with 하게체's 자네.
+            Line(3, "그분이 왜 자네가 있는 걸 참아 주시는지 모르겠군."),
+            // Vaegra, decided 합쇼체 to Alara, in 해요체.
+            Line(4, "전 연합에서 뒤처리나 하는 사람일 뿐이에요. 간단한 치유 주문조차 못 써요.", speaker: "0300DDBD>03000D6F"),
+            // Kariss, decided 하오체: "알던 자요" is a noun with 요.
+            Line(5, "아, 기억났소! 리프튼 하수도에서 지내던 시절에 알던 자요.", speaker: "03000D62"),
+        };
+        var styles = new[]
+        {
+            new SpeakerStyle(SpeakerStyles.PlayerSpeaker, "03019A80", "해요체"),
+            new SpeakerStyle("03019A80", SpeakerStyles.Player, "반말"),
+            new SpeakerStyle("03019A80", "03019A95", "반말"),
+            new SpeakerStyle("00013269", SpeakerStyles.Player, "반말"),
+            new SpeakerStyle("0300DDBD", "03000D6F", "합쇼체"),
+            new SpeakerStyle("03000D62", SpeakerStyles.Player, "하오체"),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>(), speakerStyles: styles);
+
+        var named = issues.Where(i => i.Code.Contains("tone")).GroupBy(i => i.Id).ToDictionary(g => g.Key, g => g.First().Message);
+        Assert.Equal(new long[] { 1, 2, 3, 4 }, named.Keys.OrderBy(id => id));
+        Assert.Contains("이 대사 하오체", named[2]);
+        Assert.Contains("이 대사 하게체", named[3]);
+        Assert.Contains("이 대사 해요체", named[4]);
+    }
+
     [Fact]
     public async Task FewOrSplitLines_AreListedForReference()
     {
