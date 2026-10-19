@@ -129,7 +129,11 @@ internal static class SpeakerToneConsistencyRule
         }
 
         var (register, weak) = Level(entry.DestText);
-        if (weak && register == Register.Polite && levels.HaoGroups.Contains(key))
+        // A guessed line is in no group of its own: it goes by the groups it may belong to.
+        var haoKey = IsGuessed(key) ? key[..^1] : key;
+        var separator = haoKey.IndexOf(DialogueSpeakerNames.ListenerSeparator);
+        var haoSpeaker = separator < 0 ? haoKey : haoKey[..separator];
+        if (weak && register == Register.Polite && (levels.HaoGroups.Contains(haoKey) || IsGuessed(key) && levels.HaoGroups.Contains(haoSpeaker)))
         {
             register = Register.Hao;
         }
@@ -302,10 +306,17 @@ internal static class SpeakerToneConsistencyRule
         {
             // "누가 알겠어. 그 안에 뭔가 비싼 게 들어있을지.", "여기서 나가시오, 화를 내기 전에.": a last clause with no
             // level trails a sentence that has one, the nearest before it ("잘 있어, 엔써... 뭐라 감사의 말을 해야 할지...").
-            level = parts.Reverse().Skip(1)
+            var before = parts.Reverse().Skip(1)
                 .Where(part => !EndsInOpenClause(part) && !cries.Contains(part))
-                .Select(part => SentenceLevel(part, keepShort: false))
-                .FirstOrDefault(found => found != Register.Unknown);
+                .Select(part => (Part: part, Register: SentenceLevel(part, keepShort: false)))
+                .FirstOrDefault(found => found.Register != Register.Unknown);
+            level = before.Register;
+            // "좋은 생각이오, 조용히 갑시다. 드로거는 귀가 밝으니까.": the nearest piece is a weak sign of 존댓말, and the
+            // line's 하오체 piece decides, as it does for a last sentence (Teldryn in Extended Hireling Dialogue).
+            if (level == Register.Polite && IsWeakPolite(before.Part))
+            {
+                (level, weak) = styled != Register.Unknown ? (styled, false) : (level, true);
+            }
             // A line that only trails off, with no sentence before it to go by: "분명 더 쓸모 있는 일을 할 수 있을
             // 텐데, 챔피언.", "이건 믿음이 안 가." (Laracin in Meridia's Order). 존댓말 would end in 요 (텐데요).
             if (level == Register.Unknown && EndsInCasualClause(text))
@@ -338,7 +349,7 @@ internal static class SpeakerToneConsistencyRule
 
         // A 요 that no 해요체 ending makes is a noun's: 열쇠요, 변화요, 전부요, 의무요, 다요 (not 좋아요, 그래요, 세요).
         return word.Length >= 2 && word[^1] == '요' && word != "아니요"
-               && (!HaeyoEndings.Contains(word[^2..]) || IsNounLookingLikeHaeyo(word));
+               && (!HaeyoEndings.Contains(word[^2..]) || IsNounLookingLikeHaeyo(word) || IsNounWithHaeyoShape(word));
     }
 
     /// <summary>
@@ -359,6 +370,34 @@ internal static class SpeakerToneConsistencyRule
             "서요" => KoreanSyllables.HasFinalConsonant(word[^3]),
             "자요" => word.Length >= 4,
             "꺼요" => FinalConsonant(word[^3]) == 8,
+            _ => false,
+        };
+    }
+
+    /// <summary>
+    /// A noun with 요 whose last two syllables 해요체 also ends in, the 하오체 "N이오" of a vowel-final noun as Teldryn's
+    /// lines have it: 짐승 같은 사내요, 딱한 친구요, 이상한 여자요, 나도 마찬가지요, 공정한 거래요. The 해요체 forms
+    /// these endings are also made of stay strong: 지내요, 보내요, 그래요, 듣지요, 리스너라구요, 있나요, 하나요.
+    /// </summary>
+    private static bool IsNounWithHaeyoShape(string word)
+    {
+        if (word.Length < 3 || !KoreanSyllables.IsHangulSyllable(word[^3]))
+        {
+            return false;
+        }
+
+        return word[^2..] switch
+        {
+            "내요" => word[^3] is not ('지' or '보' or '꺼' or '드' or '해' or '러' or '뎌' or '려'),
+            "자요" => true,
+            // Not 다구요, 라구요, 말구요, 하구요 (Cicero's "선생이 리스너라구요!").
+            "구요" => word[^3] is not ('다' or '라' or '말' or '하' or '고' or '서'),
+            // Not the questions 있나요, 하나요, 되나요, 가나요.
+            "나요" => FinalConsonant(word[^3]) != 20 && word[^3] is not ('하' or '되' or '가' or '오' or '보' or '주' or '시' or '는' or '었' or '았'),
+            // Not 할래요, 갈래요 (a final ㄹ), nor 그래요, 했대요.
+            "래요" => word is not ("그래요" or "이래요" or "저래요") && word[^3] is not ('대' or '했' or '겠') && FinalConsonant(word[^3]) != 8,
+            // 지요 is 해요체's own ending after any stem (듣지요, 화신이시지요); only the noun 마찬가지.
+            "지요" => word == "마찬가지요",
             _ => false,
         };
     }

@@ -353,6 +353,16 @@ public class LqaSpeakerToneTests
     [InlineData("그래서요?", true)]
     [InlineData("오늘은 푹 잘 자요.", true)]
     [InlineData("불 좀 꺼요.", true)]
+    // Teldryn (Extended Hireling Dialogue): the 하오체 "N이오" of a vowel-final noun. Cicero's 해요체 stays one.
+    [InlineData("하릭은 짐승 같은 사내요.", false)]
+    [InlineData("그냥 이상한 여자요.", false)]
+    [InlineData("저 카젠지는 늘 우울해 보이는군. 딱한 친구요.", false)]
+    [InlineData("아니, 나도 마찬가지요.", false)]
+    [InlineData("좋은 생각이오, 조용히 갑시다. 드로거는 귀가 밝으니까.", false)]
+    [InlineData("선생이 리스너라구요!", true)]
+    [InlineData("리스너는, 그저... 듣지요!", true)]
+    [InlineData("내일 산책 할래요?", true)]
+    [InlineData("그럼 뭘 하나요?", true)]
     public async Task HaoVoice_NounsShapedLikeHaeyo_AreWeak(string line, bool warned)
     {
         var entries = new List<LqaScanEntry>
