@@ -465,22 +465,24 @@ public class BundledFranchiseTmSeedServiceTests
     }
 
     // v1 kept a minority spelling where the Korean patch translates one source several ways ("Ice Storm" is 얼음 폭풍
-    // in 27 strings and 얼음의 형상 in 2); v3 to v6 fix patch errors reviews found ("머서 프레이와와 대화하기", "화살 -
-    // 강철 화살", "빛나는 끌개", "강철 문"). Users who already imported an earlier seed get only the rows changed since
-    // their version, so other rows they edited in the global memory stay; a new install imports the whole seed.
+    // in 27 strings and 얼음의 형상 in 2); v3 to v7 fix patch errors reviews found ("머서 프레이와와 대화하기", "화살 -
+    // 강철 화살", "빛나는 끌개", "강철 문", "도둑길드"). Users who already imported an earlier seed get only the rows
+    // changed since their version, so other rows they edited in the global memory stay; a new install imports the whole
+    // seed. The v6 stamp is 1.15's.
     [Theory]
-    [InlineData("v5|1528360|1aa05d8bb8f743812f7870aea4a5b444028fc07647b2cdb71ecedbde3371477d|0", false, false, false, false)]
-    [InlineData("v4|1527387|20d5bd50e2d722876bc0066bb627d446bc6abda67a88760f03ec6a91e490f426|0", true, false, false, false)]
-    [InlineData("v3|1527327|e66600f3aff94bd6a9f7bf2f006279580d8b52aa74734640b3bec9b4a809d2eb|0", true, true, false, false)]
-    [InlineData("v2|1527256|3a72a1830ab346b43fa3fb97251738d00480224ba014c3ff59005c47b5efb0fd|0", true, true, true, false)]
-    [InlineData("v1|1527384|8fd8931be7c1e7da90d99cbaaeac001ec4809c170fd18feb4274ceac83e69a44|0", true, true, true, true)]
-    public async Task ElderScrollsSeed_V6_ImportsOnlyTheChangesSinceTheImportedVersion(string stamp, bool beforeV5, bool beforeV4, bool beforeV3, bool fromV1)
+    [InlineData("v6|1528761|ed933491d5eafaf99142407ca1a159f92fdeee2ea7d2af625e13ccadd7d8bccc|0", false, false, false, false, false)]
+    [InlineData("v5|1528360|1aa05d8bb8f743812f7870aea4a5b444028fc07647b2cdb71ecedbde3371477d|0", true, false, false, false, false)]
+    [InlineData("v4|1527387|20d5bd50e2d722876bc0066bb627d446bc6abda67a88760f03ec6a91e490f426|0", true, true, false, false, false)]
+    [InlineData("v3|1527327|e66600f3aff94bd6a9f7bf2f006279580d8b52aa74734640b3bec9b4a809d2eb|0", true, true, true, false, false)]
+    [InlineData("v2|1527256|3a72a1830ab346b43fa3fb97251738d00480224ba014c3ff59005c47b5efb0fd|0", true, true, true, true, false)]
+    [InlineData("v1|1527384|8fd8931be7c1e7da90d99cbaaeac001ec4809c170fd18feb4274ceac83e69a44|0", true, true, true, true, true)]
+    public async Task ElderScrollsSeed_V7_ImportsOnlyTheChangesSinceTheImportedVersion(string stamp, bool beforeV6, bool beforeV5, bool beforeV4, bool beforeV3, bool fromV1)
     {
         var root = CreateTempRoot();
         try
         {
             var metadata = BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.ElderScrolls)!;
-            Assert.Equal("v6", metadata.Version);
+            Assert.Equal("v7", metadata.Version);
             var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.ElderScrolls, root);
             Directory.CreateDirectory(importDir);
             var previousStamp = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, stamp[..2], root);
@@ -499,11 +501,14 @@ public class BundledFranchiseTmSeedServiceTests
             var changesPath = Path.Combine(importDir, metadata.ChangesFileName!);
             var changes = await File.ReadAllTextAsync(changesPath, CancellationToken.None);
             Assert.StartsWith("Source\tTarget\tPrevious\n", changes, StringComparison.Ordinal);
-            // The second review, of names and descriptions, is in every upgrade: Iron is 철, not the 강철 of Steel;
-            // a weakness poison takes the effect's 약점; Vignar is 비그나 as his lines say.
-            Assert.Contains("\nIron Door\t철문\t강철 문\n", changes, StringComparison.Ordinal);
-            Assert.Contains("\nWeak Aversion to Magic\t독 - 마법 약점 하급\t독 - 마법 저항 하급\n", changes, StringComparison.Ordinal);
-            Assert.Contains("\nVignar\t비그나\t비그너\n", changes, StringComparison.Ordinal);
+            // The gallery's reports the first match missed are in every upgrade: 도둑 길드, as most of the patch spells it.
+            Assert.Contains("\nThieves Guild Fence Chest\t도둑 길드의 장물 보관함\t", changes, StringComparison.Ordinal);
+            Assert.Contains("\nMudcrab Boss (Old Salty)\t거대 진흙게 (올드 살티)\t", changes, StringComparison.Ordinal);
+            // The second review, of names and descriptions (1.15's v6), reaches those who imported a seed older than it:
+            // Iron is 철, not the 강철 of Steel; a weakness poison takes the effect's 약점; Vignar is 비그나 as his lines say.
+            Assert.Equal(beforeV6, changes.Contains("\nIron Door\t철문\t강철 문\n", StringComparison.Ordinal));
+            Assert.Equal(beforeV6, changes.Contains("\nWeak Aversion to Magic\t독 - 마법 약점 하급\t독 - 마법 저항 하급\n", StringComparison.Ordinal));
+            Assert.Equal(beforeV6, changes.Contains("\nVignar\t비그나\t비그너\n", StringComparison.Ordinal));
             // The rounds before it reach only those who imported a seed older than v5.
             Assert.Equal(beforeV5, changes.Contains("\nLightning Attractor\t번개 유도장치\t빛나는 끌개\n", StringComparison.Ordinal));
             // Decisions after the review: Jumping spiders were named 폭발형 like the exploding ones.

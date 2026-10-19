@@ -15,8 +15,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <AssemblyName>TulliusTranslator</AssemblyName>
-    <Version>1.15.0</Version>
-    <InformationalVersion>1.16-preview5</InformationalVersion>
+    <Version>1.16.0</Version>
+    <InformationalVersion>1.16</InformationalVersion>
     <StartupObject>XTranslatorAi.App.Program</StartupObject>
   </PropertyGroup>
 
@@ -36,11 +36,12 @@
     <EmbeddedResource Include="Assets\기본용어집_스타필드.md" />
     <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm.tsv" />
     <EmbeddedResource Include="Assets\GameStrings\game-strings-skyrim.gz" />
-    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v6-changes-from-v5.tsv" />
-    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v6-changes-from-v4.tsv" />
-    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v6-changes-from-v3.tsv" />
-    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v6-changes-from-v2.tsv" />
-    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v6-changes-from-v1.tsv" />
+    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v7-changes-from-v6.tsv" />
+    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v7-changes-from-v5.tsv" />
+    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v7-changes-from-v4.tsv" />
+    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v7-changes-from-v3.tsv" />
+    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v7-changes-from-v2.tsv" />
+    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v7-changes-from-v1.tsv" />
     <EmbeddedResource Include="Assets\TmSeeds\fallout4-franchise-tm.tsv" />
     <EmbeddedResource Include="Assets\TmSeeds\starfield-franchise-tm.tsv" />
   </ItemGroup>

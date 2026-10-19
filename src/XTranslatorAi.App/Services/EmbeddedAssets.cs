@@ -46,11 +46,12 @@ public static class EmbeddedAssets
     public static string? LoadBundledFranchiseTmSeedChanges(BethesdaFranchise franchise, string fromVersion)
         => (franchise, fromVersion) switch
         {
-            (BethesdaFranchise.ElderScrolls, "v5") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v6-changes-from-v5.tsv"),
-            (BethesdaFranchise.ElderScrolls, "v4") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v6-changes-from-v4.tsv"),
-            (BethesdaFranchise.ElderScrolls, "v3") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v6-changes-from-v3.tsv"),
-            (BethesdaFranchise.ElderScrolls, "v2") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v6-changes-from-v2.tsv"),
-            (BethesdaFranchise.ElderScrolls, "v1") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v6-changes-from-v1.tsv"),
+            (BethesdaFranchise.ElderScrolls, "v6") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v7-changes-from-v6.tsv"),
+            (BethesdaFranchise.ElderScrolls, "v5") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v7-changes-from-v5.tsv"),
+            (BethesdaFranchise.ElderScrolls, "v4") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v7-changes-from-v4.tsv"),
+            (BethesdaFranchise.ElderScrolls, "v3") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v7-changes-from-v3.tsv"),
+            (BethesdaFranchise.ElderScrolls, "v2") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v7-changes-from-v2.tsv"),
+            (BethesdaFranchise.ElderScrolls, "v1") => LoadTextResource("XTranslatorAi.App.Assets.TmSeeds.skyrim-tes-franchise-tm-v7-changes-from-v1.tsv"),
             _ => null,
         };
 
