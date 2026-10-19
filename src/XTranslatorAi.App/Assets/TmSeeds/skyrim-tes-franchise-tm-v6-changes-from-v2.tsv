@@ -61,6 +61,7 @@ Ahzidal's Gauntlets of Warding	아지달 장갑 - 방어막	아지달 장갑 - �
 Ahzidal's Helm of Vision	아지달 투구 - 시야	아지달 투구 - 시각
 Ahzidal's Ring of Arcana	아지달 반지 - 비전	아지달 반지 - 마력
 Alchemy Laboratory, Doors	연금술 실험실, 문	연금술 실험실,문들
+ALL	모두 보기	모두보기
 All I know is that your people need you to return.	내가 아는 건 당신의 백성들이 당신이 돌아오길 바란다는 것뿐이오.	내가 아는 거라고는 당신이 돌아가야 한다는 것 뿐이오.
 All I've ever wanted to do is serve this Sanctuary.	이 성역을 위해서라면 무엇이든 하지.	이 성지를 위해서라면 무엇이든 하지.
 All right, you've swayed me. So what can I do?	좋소, 설득당했군. 내가 뭘 하면 되지?	좋소. 내가 뭘 하면 되지?
@@ -163,6 +164,7 @@ Buy the Book off Lod	로드에게서 그 책을 구입하기	로드에게 그 �
 Cage	우리	벽장
 Call of the Wild	야생의 외침	아생의 외침
 Can you repair and refit the Dawnstar Sanctuary?	던스타 성역을 보수하고 개선할 수 있겠소?	던스타의 성지를 보수하고 개선할 수 있겠소?
+Can you share anything about the Thieves Guild?	도둑 길드에 대한 정보를 알려주시오.	도둑길드에 대한 정보를 알려주시오.
 Can you tell me more about the Augur of Dunlain?	던레인의 예언자에 관해 더 알려주시오.	'던레인의 예언'에 관해 더 알려주시오.
 Cast on a nearby surface, it explodes for and freezes the target in place for <dur> seconds.	주변 표면에 정지의 룬을 설치합니다. 폭발하면 목표를 <dur> 초 동안 그 자리에 얼어붙게 합니다.	주변 표면에 정지의 룬을 설치합니다. 적이 접근 시 폭발하여 <mag> 의 냉기 피해를 입힙니다.
 Castle Fletcher	화살 공방	화살깃털 상점
@@ -405,6 +407,7 @@ How are you enjoying the party?	연회는 즐겁습니까?	연회를 즐겁습�
 How can I avoid trouble with the law?	어떻게 법적 문제를 피할 수 있습니까?	어떻게 법적문제를 피할 수 있습니까?
 How did he end up in Skyrim?	그는 어쩌다 스카이림에 오게 되었습니까?	그는 스카이림에서 어떻게 되었습니까?
 How did it end up in Lake Honrich?	어쩌다 혼리크 호수에 빠지게 된 거야?	어쩌다 혼리크 호수로 보내버린 거야?
+How did you become allied with the Thieves Guild?	어떻게 도둑 길드와 동맹을 맺게 된 거지?	어떻게 도둑길드와 동맹을 맺게 된 거지?
 How does the Ebonmere affect all of us?	에본미어가 어떻게 우리 모두에게 영향을 끼치는 거지?	에본미어가 어떻게 우리 모두에게 영향를 끼치는 거지?
 How has Raven Rock needed your help?	레이븐 락에 당신들의 도움이 왜 필요했지?	레이븐 락이 어떤 도움을 필요로 하지?
 How long have you been down here?	얼마나 오랫동안 이 아래에 있었소?	얼마나 오랬동안 이 아래에 있었소?
@@ -415,6 +418,7 @@ I agree. This will set the tone for the whole negotiation. Elenwen should go.	�
 I agree. Ulfric should turn over <Alias=SonsMinorHold2>.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을(를) 넘겨야하오.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을/를 넘겨야하오.
 I assure you it wasn't anyone from the Guild.	장담하는데 우리 길드원 소행은 아니야.	우리 길드원 소행은 확실히 아니군.
 I blackmailed <Alias=Steward> for the information.	정보를 얻기 위해 <Alias=Steward>을(를) 협박했지.	정보를 얻기 위해 <Alias=Steward>를 협박했지.
+I bring an offer from the Thieves Guild.	도둑 길드의 제안을 가져왔다.	도둑길드의 제안을 가져왔다.
 I can break some of your bones if that's what it's going to take...	그래야 한다면 네 뼈 몇 개쯤 부러뜨려 줄 수도 있지...	만약 그럴 작정이라면 네 뼈를 부러뜨려주마.
 I can break some of your bones if that's what it's going to take... (Brawl)	그래야 한다면 네 뼈를 부러뜨려주마. (싸움)	만약 그럴 작정이라면 네 뼈를 부러뜨려주마. (싸움)
 I can see this is going nowhere. Good luck with all that.	이 얘기는 아무 소득이 없겠군. 행운을 빌지.	도대체 뭔지 전혀 모르겠군. 행운을 빌지.
@@ -540,6 +544,7 @@ Increase the duration and decrease the cost of Illusion spells for <dur> seconds
 Investigate Shroud Hearth Barrow	장막덮인 난로 무덤을 조사하기	장막덮힌 난로 무덤을 조사하기
 Iron Door	철문	강철 문
 Is life better under Imperial rule?	제국의 통치하에서 삶이 좀 나아졌나?	제국이 통치 하에서 삶이 좀 나아졌나?
+Is there anything I should be aware of?	미리 알아두면 좋은 게 있습니까?	미리 알아두면 좋은게 있습니까?
 Is this the tomb?	이게 무덤인가?	이 무덤인가?
 It has? What do you mean?	때가 왔다? 그게 무슨 뜻이오?	그러했다? 그게 무슨 뜻이오?
 It is done. <Alias=Spouse> has been welcomed into the family.	끝났습니다. <Alias=Spouse>이(가) 우리의 가족이 되었습니다.	끝났습니다. <Alias=Spouse>가 우리의 가족이 되었습니다.
@@ -571,10 +576,13 @@ Kill the Emperor!	황제를 죽이기	황제를 죽여라!
 Kitchen furnishings. (<Global=HDWindhelmKitchen> gold)	주방 가구. (<Global=HDWindhelmKitchen> 골드)	주방가구. (<Global=HDWindhelmKitchen> 골드)
 Kitchen, Doors	부엌, 문	부엌,문들
 Know anything about Goldenglow Estate?	골든글로우 농장에 대해서 뭔가 아는 게 있나?	골든글로우 지구에 대해서 뭔가 아는 게 있나?
+Know anything about the Thieves Guild?	도둑 길드에 대해 조금이라도 아는게 있소?	도둑길드에 대해 조금이라도 아는게 있소?
 Krag's Journal	크라그의 일기	크래그의 일기
 Kust	쿠스트	커스트
 Kvenel the Tongue	혀 크베넬	언어의 크베넬
 Lay off the old man. Now. (Intimidate)	그 노인을 내버려 둬. 당장. (위협)	그 노인를 내버려 둬. 당장. (위협)
+Learn more about the Thieves Guild from Delvin	델빈에게 도둑 길드에 관하여 좀 더 알아보기	델빈에게 도둑길드에 관하여 좀 더 알아보기
+Learn more about the Thieves Guild from Vex	벡스에게 도둑 길드에 관해서 더 알아보기	벡스에게 도둑길드에 관해서 더 알아보기
 Leave her alone, or else. (Brawl)	카를로타를 내버려 둬, 그러지 않으면. (싸움)	카를로타를 내버려 둬, 그러지 않으면. (위협)
 Leave this island now, or your life is forfeit. (Intimidate)	당장 이 섬을 떠나, 아니면 네 목숨은 없다. (위협)	당장 이 섬을 떠나, 아니면 네 목숨을 없다. (위협)
 Lesser Magic Resistance	하급 마법 저항력	하급 마법 저항
@@ -629,6 +637,7 @@ Mora's Grasp	모라의 손아귀	모라의 이해
 Most of Winterhold was lost to the sea in the Great Collapse of 4E 122, but the College was left mysteriously unharmed.	윈터홀드의 대부분은 제 4시대 122년의 대붕괴 때 바닷속으로 가라앉아 버렸지만, 불가사의하게도 대학만은 무사했습니다.	윈터홀드의 대부분은 4시대 122년의 대붕괴 때 바닷속으로 가라앉아 버렸지만, 불가사의하게도 대학만은 무사했습니다.
 Mounted Elk Antlers	큰뿔사슴 뿔 박제	큰 뿔 박제
 Mounted Elk Head	큰뿔사슴 머리 박제	큰 뿔 사슴 박제
+Mudcrab Boss (Old Salty)	거대 진흙게 (올드 살티)	거대 진흙 게 (올드 살티)
 Mystic Dagger	신비한 단검	신비한 마법 단검
 Nasty bit of business, Roggvir's execution.	로그비어의 처형이라, 볼썽사나운 일이더군.	로그비어의 처형이라, 볼성사나운 일이더군.
 Nchardak Great Chamber	느챠닥 대석실	느챠닥 대매장묘실
@@ -871,6 +880,7 @@ Talk to <Alias.ShortName=Questgiver>	<Alias.ShortName=Questgiver>와(과) 대화
 Talk to <Alias=Questgiver>	<Alias=Questgiver>와(과) 대화하기	<Alias=Questgiver>와 대화하기
 Talk to <Alias=RiverwoodFriend> in Riverwood	리버우드에서 <Alias=RiverwoodFriend>와(과) 대화하기	리버우드에서 <Alias=RiverwoodFriend>와 대화하기
 Talk to Amaund Motierre	아먼드 모티에르와 대화하기	아먼드 모티에르와 대화하라
+Talk to Brynjolf about joining the Thieves Guild	도둑 길드에 가입하는 것에 관하여 브린욜프와 대화하기	도둑길드에 가입하는 것에 관하여 브린욜프와 대화하기
 Talk to Legate Rikke	리카 군단장과 대화하기	리카 군단장와 대화하기
 Talk to Lucan about the robbery	도난 사건에 관해서 루칸과 이야기하기	도둑에 관해서 루칸과 이야기하기
 Talk with <Alias=FactionLeader>.	<Alias=FactionLeader>와(과) 대화하기	<Alias=FactionLeader> 와 대화하기
@@ -929,6 +939,7 @@ The Stormcloaks kept control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을
 The Stormcloaks lost control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 잃었습니다.	스톰클록군이 <Alias=Hold> 를 잃었습니다.
 The Temple's tomb has been cleansed.	신전의 무덤은 정화되었소.	사원의 무덤은 정화되었소.
 The Thief Stone ability lets you learn stealth skills more quickly.	'도적의 선돌'은 도적 계열 기술을 더 빠르게 배울 수 있도록 해줍니다.	'도적의 선돌'은 은신 기술을 더 빠르게 배울 수 있도록 해줍니다.
+The Thieves Guild has a problem out here?	도둑 길드는 이 지역에서 뭔가 문제라도 있소?	도둑길드는 이 지역에서 뭔가 문제라도 있소?
 The wooden mask hums with an unfamiliar energy.	나무 가면에서 이상한 기운이 흘러넘치고 있습니다.	나무 가면에서 이상한 기운이 흘러 넘치고 있습니다.
 The Woodsman's Friend	나무꾼의 친구	나무꾼의 전투 도끼
 The World-Eater's Eyrie	세상을 삼키는 자의 둥지	세계를 삼키는 자의 둥지
@@ -940,6 +951,7 @@ They were trying to free a woman trapped in a crypt.	그들은 묘지 안에 갇
 They won't stop until you do. (Persuade)	당신이 팔 때까지 그들은 포기하지 않을 거야. (설득)	그들은 결코 포기하지 않을 거야. (설득)
 They're at Cragslane Cavern.	그들은 크래그슬레인 대동굴에 있습니다.	그들은 크래그슬레인 동굴에 있습니다.
 They're bound to bring me fortune and glory.	스크롤이 나에게 부와 명예를 안겨 줄 것이오.	스크롤이 나를 부와 명예를 안내할 것이오.
+Thieves Guild Fence Chest	도둑 길드의 장물 보관함	도둑길드의 장물 보관함
 Third Letter from EEC	동제국 회사의 세 번째 편지	동제국 회사의 세번째 편지
 Thirsk, A Revised History	터스크, 역사의 재조명	터스크, 역사의 재 조명
 This heart stone is the source of the attacks.	이 하트스톤이 공격의 근원이던데.	이 하트 스톤이 공격의 근원이던데.
@@ -1055,6 +1067,7 @@ Who are the Silver Hand?	실버 핸드는 어떤 사람들이지?	실버핸드�
 Who are the spectral Prelates you mentioned?	아까 말한 유령 고위 성직자는 누구요?	아까 말한 유령 고위사제는 누구요?
 Who are you to expect anything?	뭘 기대하다니, 당신은 대체 누구요?	당신은 도대체 누구요?
 Who buys all your fish?	생선은 전부 누가 사 가지?	생선을 전부 구입한 사람이 누구지?
+Who cares, we're the Thieves Guild.	알게 뭐야, 우리는 도둑 길드인데.	알게 뭐야, 우리는 도둑길드인데.
 Who did this?	누구 짓이오?	누구 짓이요?
 Who's neck is that?	누구 목 말이오?	누구 목 말이요?
 Who's to say what happened at <Alias=ImperialTownRaided>?	<Alias=ImperialTownRaided>에서 무슨 일이 있었는지 누가 알겠습니까?	<Alias=ImperialTownRaided>에서 무슨 일이 일어났 건 알게 뭡니까?
@@ -1065,6 +1078,7 @@ Why are you so concerned about this?	왜 이 일에 그렇게 신경 쓰는 겁�
 Why aren't you part of the coven anymore?	왜 이제 마법회의 일원이 아닌 거지?	이제 더 이상 마법회의 일원이 아닌 건가?
 Why did Karliah purchase Goldenglow Estate?	칼라이아가 골든글로우 농장을 구입한 이유가 뭐지?	칼라이아가 골든글로우 지구를 구입한 이유가 뭐지?
 Why did you join the Companions?	어쩌다 컴패니언에 가입하게 되었소?	어쩌다 컴패니언즈에 가입하게 되었소?
+Why did you join the Guild and not the Brotherhood?	왜 다크 브라더후드가 아니라 도둑 길드에 가입한거지?	왜 다크 브라더후드가 아니라 도둑길드에 가입한거지?
 Why did you work for him then?	그렇다면 어째서 그 사람 밑에서 일했지?	그렇다면 어째서 그를 위해서 일하는거지?
 Why do Dunmer leave ash yams in their tombs?	왜 던머가 무덤에 화산 참마를 두는 거요?	왜 던머가 무덤에 화산재 참마를 두는 거요?
 Why do I need this Word of Power to defeat Miraak?	미락을 물리치는 데 왜 이 힘의 단어가 필요하지?	미락을 물리치기 위해서는 이 힘의 단어가 필요하다고?
@@ -1110,6 +1124,7 @@ You dare question my skill?	감히 내 실력을 의심하는 겁니까?	감히 
 You did try to trick me into letting you go.	풀려나려고 날 속이려 했잖아.	풀려나기 위해서 날 속이려는 거군.
 You do realize this is treason...	이건 명백한 반역 행위인데...	이건 명백한 배신 행위인데...
 You don't seem very grateful.	그다지 고마워하는 것 같지 않군.	그다지 환영받지 못하는 것 같군.
+You have no faith in the Guild?	도둑 길드를 믿지 않나 보지?	도둑길드를 믿지 않나 보지?
 You have.... But I don't care.	잘 알아들었어... 하지만 상관없어.	당신은 그렇겠지... 하지만 상관없어.
 You mentioned trading caravans?	카짓 행상인들이라 했소?	캐러밴이라 했소?
 You ready to listen to reason now?	이제 말이 좀 통하겠나?	이제 이유를 들을 준비가 되었나?
