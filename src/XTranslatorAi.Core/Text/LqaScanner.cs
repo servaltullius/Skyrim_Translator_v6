@@ -179,6 +179,7 @@ public static class LqaScanner
                 fieldToneMajority,
                 nameFindings,
                 loanwordIndex,
+                context.ReferenceNames,
                 issues
             );
             TmFallbackRule.Apply(entry, source, dest, tmFallbackNotes, context.ReferenceNames, forceTokenGlossary, issues);
@@ -202,6 +203,7 @@ public static class LqaScanner
         IReadOnlyDictionary<string, ToneKind> fieldToneMajority,
         IReadOnlyDictionary<long, string> nameFindings,
         IReadOnlyDictionary<string, GlossaryLoanwordRule.Term> loanwordIndex,
+        XTranslatorAi.Core.Translation.ReferenceNameIndex? referenceNames,
         List<LqaIssue> issues
     )
     {
@@ -214,7 +216,7 @@ public static class LqaScanner
             return;
         }
 
-        GlossaryMissingRule.Apply(entry, sourceText, destText, isKorean, forceTokenGlossary, issues);
+        GlossaryMissingRule.Apply(entry, sourceText, destText, isKorean, forceTokenGlossary, referenceNames, issues);
 
         GlossaryLoanwordRule.Apply(entry, sourceText, destText, isKorean, loanwordIndex, issues);
 

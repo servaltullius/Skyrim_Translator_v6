@@ -41,4 +41,31 @@ public class LqaOfficialNameTests
         var withGlossary = await LqaScanner.ScanAsync(new[] { entries[3] }, "ko", glossary, referenceNames: names);
         Assert.DoesNotContain(withGlossary, i => i.Code == "official_name_missing");
     }
+
+    /// <summary>
+    /// Meridia's Order's "Jester's Boots" was written as the game names it, 광대의 신발, and the check flagged the
+    /// built-in Boots => 전투화 as missing. A term inside a name the TM spells otherwise is the name's; outside one it
+    /// is still flagged.
+    /// </summary>
+    [Fact]
+    public async Task GlossaryTermInsideATmName_SpelledAsTheTmHasIt_IsNotMissing()
+    {
+        var names = ReferenceNameIndex.Build(new[] { ("Jester's Boots", "광대의 신발"), ("Jester's Gloves", "광대의 장갑"), ("Boots", "신발") });
+        var glossary = new List<GlossaryEntry>
+        {
+            new(1, null, "Boots", "전투화", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, "Built-in default glossary"),
+        };
+        var entries = new List<LqaScanEntry>
+        {
+            Row(1, "ARMO:FULL", "Jester's Boots", "광대의 신발"),
+            Row(2, "ARMO:FULL", "Iron Boots", "철 신발"),
+            Row(3, "BOOK:DESC", "He wore Jester's Boots and Iron Boots.", "그는 광대의 신발과 철 신발을 신었다."),
+            // A TM name that is the term itself does not overrule the glossary.
+            Row(4, "INFO:NAM1", "Nice Boots.", "멋진 신발이네."),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", glossary, referenceNames: names);
+
+        Assert.Equal(new long[] { 2, 3, 4 }, issues.Where(i => i.Code == "glossary_missing").Select(i => i.Id).OrderBy(i => i));
+    }
 }
