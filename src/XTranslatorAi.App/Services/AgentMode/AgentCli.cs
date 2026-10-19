@@ -499,6 +499,21 @@ public static class AgentCli
                     .GroupBy(npc => npc)
                     .Where(g => npcs.ContainsKey(g.Key) && styles.All(s => s.Speaker != SpeakerStyles.PlayerSpeaker || s.Listener != g.Key))
                     .OrderByDescending(g => g.Count()).Take(20).ToList();
+                // An NPC's lines to another NPC (a scene's listener): the lanes gave Alara 반말 and 해요체 to Vaegra.
+                var npcPairs = values.Values
+                    .Where(v => v.Contains(DialogueSpeakerNames.ListenerSeparator) && !v.EndsWith(DialogueSpeakerNames.GuessedListenerMark))
+                    .Select(v => v.Split(DialogueSpeakerNames.ListenerSeparator))
+                    .Where(p => p.Length == 2 && p[1] != SpeakerStyles.Other && npcs.ContainsKey(p[0]) && npcs.ContainsKey(p[1]))
+                    .GroupBy(p => (Speaker: p[0], Listener: p[1]))
+                    .Where(g => g.Count() >= 3 && styles.All(s => s.Speaker != g.Key.Speaker || s.Listener != g.Key.Listener && s.Listener != SpeakerStyles.Anyone))
+                    .OrderByDescending(g => g.Count()).Take(20).ToList();
+                if (npcPairs.Count > 0)
+                {
+                    Console.WriteLine("다른 인물에게 하는 말투를 정하지 않은 쌍: " + string.Join(", ", npcPairs.Select(g =>
+                                          $"{npcs[g.Key.Speaker].Name} → {npcs[g.Key.Listener].Name}({g.Key.Speaker}>{g.Key.Listener}, {g.Count()}줄)"))
+                                      + $" → style {project.Key} <화자> <말투> --to <상대>");
+                }
+
                 if (playerRows.Count > 0)
                 {
                     Console.WriteLine("플레이어 말투를 정하지 않은 상대: " + string.Join(", ", playerRows.Select(g => $"{npcs[g.Key].Name}({g.Key}, {g.Count()}줄)"))
