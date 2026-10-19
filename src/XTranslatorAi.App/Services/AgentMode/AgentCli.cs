@@ -57,6 +57,7 @@ public static class AgentCli
         var ct = CancellationToken.None;
         var command = args.Length > 0 ? args[0].ToLowerInvariant() : "help";
         var rest = args.Skip(1).ToList();
+        if (rest.Contains("--help") || rest.Contains("-h") || rest.Contains("/?")) command = "help";
         string? Option(string name)
         {
             var i = rest.IndexOf(name);
@@ -401,11 +402,16 @@ public static class AgentCli
             var m = link.Match;
             Console.WriteLine($"한국어판 연결: {m.TextByFieldKey.Count}줄 (빠짐: 한국어판에 없음 {m.NotInPreviousRelease}, 레코드 구성이 바뀜 {m.ChangedRecord}, "
                               + $"영어 그대로 {m.SameAsSource}, 한글 없음 {m.NotTranslated})");
-            Console.WriteLine($"한국어판으로 채운 줄: {link.Filled}" + (link.KeptTranslated > 0 ? $", 이미 번역돼 그대로 둔 줄: {link.KeptTranslated}" : "")
-                              + (link.LeftForGame > 0 ? $", 게임 사전 표기로 채울 줄: {link.LeftForGame}" : ""));
-            Console.WriteLine(link.Untranslated + link.LeftForGame > 0
-                ? $"남은 줄: {link.Untranslated + link.LeftForGame}(한국어판에 없음 {link.Untranslated}) → tullius.cmd next {project.Key}"
-                : "남은 줄: 0");
+            Console.WriteLine($"한국어판으로 채운 줄: {link.Filled}" + (link.KeptTranslated > 0 ? $", 이미 번역돼 그대로 둔 줄: {link.KeptTranslated}" : ""));
+            if (link.DifferentFromGame.Count > 0)
+            {
+                Console.WriteLine($"바닐라 대사·이름인데 한글패치와 다르게 옮긴 줄: {link.DifferentFromGame.Count} → "
+                                  + $"tullius.cmd show {project.Key} --id {string.Join(",", link.DifferentFromGame.Take(40))}" + (link.DifferentFromGame.Count > 40 ? " …" : ""));
+            }
+
+            Console.WriteLine(link.Untranslated > 0
+                ? $"번역할 줄(한국어판에 없음): {link.Untranslated} → tullius.cmd next {project.Key}"
+                : "번역할 줄: 0");
             Console.WriteLine($"검수: tullius.cmd check {project.Key}, 이어서 tullius.cmd show {project.Key} --count 40 으로 차례로 읽기");
         }
 
@@ -613,14 +619,21 @@ public static class AgentCli
             var list = edits ?? new();
             var missing = list.Where(e => Row(e) == null).Select(e => e.Id is { } id ? $"id {id}" : e.Order is { } o ? $"순번 {o}" : "번호 없음").ToList();
             if (missing.Count > 0) throw new AgentModeException($"없는 줄: {string.Join(", ", missing)}. 아무것도 저장하지 않았습니다.");
+            var same = 0;
             foreach (var edit in list)
             {
                 var row = Row(edit)!;
+                if (string.Equals(row.DestText, edit.Text, StringComparison.Ordinal))
+                {
+                    same++;
+                    continue;
+                }
+
                 await db.UpdateStringTranslationAsync(row.Id, edit.Text, StringEntryStatus.Edited, null, ct);
                 Console.WriteLine($"#{row.Id} {Short(row.SourceText ?? "")}: {Flat(row.DestText ?? "")} → {Flat(edit.Text)}");
             }
 
-            Console.WriteLine($"고친 줄: {list.Count}. 다시 확인: tullius.cmd check {project.Key}");
+            Console.WriteLine($"고친 줄: {list.Count - same}" + (same > 0 ? $" (이미 같은 줄 {same}은 그대로)" : "") + $". 다시 확인: tullius.cmd check {project.Key}");
         }
 
         async Task ExportAsync()
@@ -639,7 +652,8 @@ public static class AgentCli
             else
             {
                 // An export again after edits goes next to the first one: the plugin writer never overwrites a folder.
-                var root = Path.Combine(Environment.CurrentDirectory, "output");
+                // Next to the work folder: a trial's --work keeps its output with it.
+                var root = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(work)) ?? Environment.CurrentDirectory, "output");
                 output = Path.Combine(root, project.Key);
                 for (var n = 2; Directory.Exists(output) || File.Exists(output); n++) output = Path.Combine(root, $"{project.Key}-{n}");
             }
@@ -658,7 +672,7 @@ public static class AgentCli
 
             Console.WriteLine($"저장: {result.PluginPath} (바뀐 필드 {result.ChangedFields})");
             foreach (var file in result.Files.Where(f => f != result.PluginPath)) Console.WriteLine($"  {file}");
-            var earlier = Path.Combine(Environment.CurrentDirectory, "output", project.Key);
+            var earlier = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(work)) ?? Environment.CurrentDirectory, "output", project.Key);
             if (rest.Count <= 1 && !string.Equals(output, earlier, StringComparison.OrdinalIgnoreCase))
             {
                 Console.WriteLine($"알림: 앞서 저장한 {earlier}는 그대로 두었습니다. 게임에 넣을 것은 이번 폴더입니다.");

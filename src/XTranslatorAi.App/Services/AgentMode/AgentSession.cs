@@ -57,9 +57,10 @@ public sealed record AgentLane(int Index, int Count)
 /// What a step did: rows saved, the lines of the answered request it did not save and why, the next request (null
 /// when the plugin is done, with the size of its request.md) and why it stopped.
 /// </summary>
-/// <summary>What linking a Korean release did: rows it filled, rows already translated it left as they are, rows the
-/// game dictionary will fill, and rows it has no translation for (still 대기).</summary>
-public sealed record AgentKoreanLink(PreviousTranslationMatcher.Result Match, int Filled, int KeptTranslated, int LeftForGame, int Untranslated);
+/// <summary>What linking a Korean release did: rows it filled, rows already translated it left as they are, rows it
+/// has no translation for (still 대기), and the filled rows whose game text (the Korean patch's) is different.</summary>
+public sealed record AgentKoreanLink(PreviousTranslationMatcher.Result Match, int Filled, int KeptTranslated, int Untranslated,
+    IReadOnlyList<long> DifferentFromGame);
 
 public sealed record AgentStepReport(AgentProject Project, int PendingBefore, int PendingAfter, int ErrorRows,
     AgentRequest? Next, string? NextRequestPath, string? Problem)
@@ -160,12 +161,13 @@ public sealed class AgentSession
         await db.ReplacePreviousTranslationsAsync(Path.GetFileName(path), match.TextByFieldKey, cancellationToken);
         var earlier = await db.GetPreviousTranslationsByStringIdAsync(cancellationToken);
         var open = (await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending, StringEntryStatus.Error }, cancellationToken)).ToHashSet();
-        // The game's own text (a base game cell or NPC name) stays for the run to fill from the game dictionary, as the
-        // GUI's run does before an earlier translation: the Teldryn release named the Retching Netch 레칭 네치.
+        // The release fills the base game's lines too: the Teldryn release has him speak 반말 where the Korean patch has
+        // 하오체, and the game's text for his 44 vanilla lines left him switching between the two. Those that differ from
+        // the game's text are listed, for the review to judge (a name the patch spells otherwise, or a speech level).
         var game = _gameStrings == null ? null : await _gameStrings.TryLoadAsync(cancellationToken);
         var gameRows = game == null ? new Dictionary<long, GameStringMatch>()
             : await game.MatchAsync(db, open.ToList(), cancellationToken);
-        var fill = earlier.Where(kv => open.Contains(kv.Key) && !gameRows.ContainsKey(kv.Key))
+        var fill = earlier.Where(kv => open.Contains(kv.Key))
             .Select(kv => (Id: kv.Key, DestText: kv.Value, Status: StringEntryStatus.Done, ErrorMessage: (string?)null))
             .ToList();
         await db.UpdateStringTranslationsAsync(fill, cancellationToken);
@@ -175,8 +177,9 @@ public sealed class AgentSession
             await db.UpsertStringNoteAsync(row.Id, XTranslatorAi.Core.TranslationConstants.PreviousReleaseNoteKind, note, cancellationToken);
         }
 
-        var forGame = earlier.Keys.Count(id => open.Contains(id) && gameRows.ContainsKey(id));
-        return new AgentKoreanLink(match, fill.Count, earlier.Count - fill.Count - forGame, forGame, open.Count - fill.Count - forGame);
+        var different = fill.Where(row => gameRows.TryGetValue(row.Id, out var g) && g.Text.Trim() != row.DestText.Trim())
+            .Select(row => row.Id).OrderBy(id => id).ToList();
+        return new AgentKoreanLink(match, fill.Count, earlier.Count - fill.Count, open.Count - fill.Count, different);
     }
 
     public IReadOnlyList<AgentProject> Projects()

@@ -177,7 +177,7 @@ public sealed class AgentModeTests : IAsyncLifetime
 
         Assert.Equal(2, link.Filled);
         Assert.Equal(2, link.Untranslated);
-        Assert.Equal(0, link.LeftForGame);
+        Assert.Empty(link.DifferentFromGame);
         Assert.Equal(2, link.Match.NotTranslated + link.Match.SameAsSource);
         await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
         {
