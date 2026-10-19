@@ -196,10 +196,11 @@ public static partial class AgentCli
         {
             return ImportTextFileReader.Decode(bytes, Path.GetFileName(path));
         }
-        catch (ImportFileEncodingException ex)
+        catch (ImportFileEncodingException)
         {
-            throw new AgentModeException($"{Path.GetFileName(path)}의 글자를 읽지 못해 저장하지 않았습니다({ex.Message}). 파일을 UTF-8로 다시 쓰세요"
-                                         + " (PowerShell: [IO.File]::WriteAllText(경로, 내용, [Text.UTF8Encoding]::new($false))).");
+            // The import reader's own message speaks of importing; the agent wrote the file and only has to write it again.
+            throw new AgentModeException($"{Path.GetFileName(path)}의 글자를 읽지 못해 저장하지 않았습니다(이미 깨진 글자 �가 있거나 UTF-8·UTF-16·CP949가 아님). "
+                                         + "파일을 UTF-8로 다시 쓰세요 (PowerShell: [IO.File]::WriteAllText(경로, 내용, [Text.UTF8Encoding]::new($false))).");
         }
     }
 
