@@ -157,6 +157,43 @@ public sealed class AgentModeTests : IAsyncLifetime
         await _session.StatusAsync(project with { Lane = AgentLane.Parse("1/3") }, CancellationToken.None);
     }
 
+    /// <summary>
+    /// Review mode: an existing Korean release fills the rows it translates, which the agent then reviews; a row it lacks
+    /// stays 대기 and is the only one the next request asks for.
+    /// </summary>
+    [Fact]
+    public async Task KoreanRelease_FillsItsRows_AndOnlyTheRestAreAsked()
+    {
+        var korean = Path.Combine(_root, "Korean", "Thalmor.esp");
+        Directory.CreateDirectory(Path.GetDirectoryName(korean)!);
+        await File.WriteAllBytesAsync(korean, Header().Concat(DialogueGroup(TopicChildren(0x1000,
+                Record("INFO", 0x1001, Sub("NAM1", Z("자치령에 대한 네 충성은 기록해 두었다."))),
+                Record("INFO", 0x1002, Sub("NAM1", Z("그럼 서로 이해한 걸로 하지."))),
+                Record("INFO", 0x1003, Sub("NAM1", Z("Speak with care, <Alias=Player>."))))))
+            .Concat(Group(Record("MISC", 0x2001, Sub("EDID", Z("aaEcho")), Sub("FULL", Z("Aetherial Echo")))))
+            .ToArray());
+
+        var link = await _session.LinkKoreanAsync(_project, korean, null, CancellationToken.None);
+
+        Assert.Equal(2, link.Filled);
+        Assert.Equal(2, link.Untranslated);
+        Assert.Equal(0, link.LeftForGame);
+        Assert.Equal(2, link.Match.NotTranslated + link.Match.SameAsSource);
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            var rows = await db.GetStringsAsync(50, 0, CancellationToken.None);
+            Assert.Contains(rows, r => r.Status == StringEntryStatus.Done && r.DestText == "그럼 서로 이해한 걸로 하지.");
+        }
+
+        var report = await _session.NextAsync(_project, CancellationToken.None);
+        var asked = Items(report.Next!).Select(item => item.Text).ToList();
+        Assert.Equal(2, report.PendingBefore);
+        Assert.DoesNotContain(asked, text => text.StartsWith("Then we have", StringComparison.Ordinal));
+
+        // With a request waiting, the rows it covers are not filled under it.
+        await Assert.ThrowsAsync<AgentModeException>(() => _session.LinkKoreanAsync(_project, korean, null, CancellationToken.None));
+    }
+
     [Fact]
     public async Task Answers_AreSavedOneRequestAtATime_UntilThePluginIsDone()
     {

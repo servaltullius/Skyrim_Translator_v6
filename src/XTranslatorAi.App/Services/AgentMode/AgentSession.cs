@@ -57,6 +57,10 @@ public sealed record AgentLane(int Index, int Count)
 /// What a step did: rows saved, the lines of the answered request it did not save and why, the next request (null
 /// when the plugin is done, with the size of its request.md) and why it stopped.
 /// </summary>
+/// <summary>What linking a Korean release did: rows it filled, rows already translated it left as they are, rows the
+/// game dictionary will fill, and rows it has no translation for (still 대기).</summary>
+public sealed record AgentKoreanLink(PreviousTranslationMatcher.Result Match, int Filled, int KeptTranslated, int LeftForGame, int Untranslated);
+
 public sealed record AgentStepReport(AgentProject Project, int PendingBefore, int PendingAfter, int ErrorRows,
     AgentRequest? Next, string? NextRequestPath, string? Problem)
 {
@@ -121,6 +125,58 @@ public sealed class AgentSession
         Directory.CreateDirectory(ProjectDir(project));
         await File.WriteAllTextAsync(Path.Combine(ProjectDir(project), "project.json"), JsonSerializer.Serialize(project, Json), cancellationToken);
         return (project, loaded.Entries.Count, pending.Count);
+    }
+
+    /// <summary>
+    /// Review mode: links an existing Korean release of the plugin (the GUI's 이전 번역 불러오기) and fills the rows not
+    /// yet translated with it, so the agent reviews what a person translated instead of writing every line again, and
+    /// keeps that person's names and choices. Rows the release has no translation for stay 대기 for next, whose requests
+    /// show an earlier translation as reference where the release has one.
+    /// </summary>
+    public async Task<AgentKoreanLink> LinkKoreanAsync(AgentProject project, string koreanPath, string? stringsDirectory,
+        CancellationToken cancellationToken)
+    {
+        if (Pending(project) != null || Directory.Exists(ProjectDir(project))
+            && Directory.GetDirectories(ProjectDir(project), "lane-*").Any(d => File.Exists(Path.Combine(d, "pending.json"))))
+        {
+            throw new AgentModeException("대기 중인 요청이 있습니다. 그 요청에 답해 끝낸 뒤(또는 open으로 다시 연 뒤) 한국어판을 연결하세요.");
+        }
+
+        var path = Path.GetFullPath(koreanPath);
+        if (!File.Exists(path)) throw new AgentModeException($"한국어판 플러그인이 없습니다: {koreanPath}");
+        var current = await PluginReader.ReadAsync(project.PluginPath, project.ReadOptions, cancellationToken);
+        // A translated release is written in the target encoding, with its Strings or BSA next to it.
+        var options = project.ReadOptions.ForOtherRelease() with { SourceEncoding = project.TargetEncoding, StringsDirectory = stringsDirectory };
+        var korean = await PluginReader.ReadAsync(path, options, cancellationToken);
+        await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, cancellationToken);
+        var info = await db.TryGetProjectAsync(cancellationToken);
+        var match = PreviousTranslationMatcher.Match(current.Fields, current.Info.Masters, korean.Fields, korean.Info.Masters,
+            XTranslatorAi.Core.LanguageHelper.IsKoreanLanguage(info?.DestLang ?? "korean"));
+        if (match.TextByFieldKey.Count == 0)
+        {
+            throw new AgentModeException($"{Path.GetFileName(path)}에서 같은 레코드의 번역문을 찾지 못했습니다. 같은 모드의 한국어판인지 확인하세요.");
+        }
+
+        await db.ReplacePreviousTranslationsAsync(Path.GetFileName(path), match.TextByFieldKey, cancellationToken);
+        var earlier = await db.GetPreviousTranslationsByStringIdAsync(cancellationToken);
+        var open = (await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending, StringEntryStatus.Error }, cancellationToken)).ToHashSet();
+        // The game's own text (a base game cell or NPC name) stays for the run to fill from the game dictionary, as the
+        // GUI's run does before an earlier translation: the Teldryn release named the Retching Netch 레칭 네치.
+        var game = _gameStrings == null ? null : await _gameStrings.TryLoadAsync(cancellationToken);
+        var gameRows = game == null ? new Dictionary<long, GameStringMatch>()
+            : await game.MatchAsync(db, open.ToList(), cancellationToken);
+        var fill = earlier.Where(kv => open.Contains(kv.Key) && !gameRows.ContainsKey(kv.Key))
+            .Select(kv => (Id: kv.Key, DestText: kv.Value, Status: StringEntryStatus.Done, ErrorMessage: (string?)null))
+            .ToList();
+        await db.UpdateStringTranslationsAsync(fill, cancellationToken);
+        var note = $"기존 한국어판({Path.GetFileName(path)}) 그대로, 검수 전";
+        foreach (var row in fill)
+        {
+            await db.UpsertStringNoteAsync(row.Id, XTranslatorAi.Core.TranslationConstants.PreviousReleaseNoteKind, note, cancellationToken);
+        }
+
+        var forGame = earlier.Keys.Count(id => open.Contains(id) && gameRows.ContainsKey(id));
+        return new AgentKoreanLink(match, fill.Count, earlier.Count - fill.Count - forGame, forGame, open.Count - fill.Count - forGame);
     }
 
     public IReadOnlyList<AgentProject> Projects()

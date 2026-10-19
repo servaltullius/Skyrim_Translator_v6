@@ -73,6 +73,8 @@ public static class AgentCli
         var find = Option("--find");
         var rec = Option("--rec");
         var idsOption = Option("--id");
+        var afterOption = Option("--after");
+        var countOption = Option("--count");
         var all = rest.Remove("--all");
         var undo = rest.Remove("--undo");
         var toOption = Option("--to");
@@ -107,6 +109,7 @@ public static class AgentCli
                 case "lookup": await LookupAsync(); break;
                 case "voice": await VoiceAsync(); break;
                 case "style": await StyleAsync(); break;
+                case "korean": await KoreanAsync(); break;
                 case "version": Console.WriteLine(Version()); break;
                 default: Help(); break;
             }
@@ -345,7 +348,25 @@ public static class AgentCli
                                          || (r.DestText ?? "").Contains(find, StringComparison.OrdinalIgnoreCase))
                 .OrderBy(r => r.OrderIndex)
                 .ToList();
-            Console.WriteLine($"줄: {picked.Count}" + (picked.Count != rows.Count ? $" / {rows.Count}" : ""));
+            // A page: the rows after a row (--after <id>), --count of them, for reading a whole plugin in turn.
+            var total = picked.Count;
+            if (afterOption != null)
+            {
+                var after = long.TryParse(afterOption, out var a) ? a : throw new AgentModeException($"--after에 숫자가 아닌 값: {afterOption}");
+                var from = rows.FirstOrDefault(r => r.Id == after) ?? throw new AgentModeException($"없는 줄: id {after}");
+                picked = picked.Where(r => r.OrderIndex > from.OrderIndex).ToList();
+            }
+
+            var left = picked.Count;
+            if (countOption != null)
+            {
+                var count = int.TryParse(countOption, out var c) && c > 0 ? c : throw new AgentModeException($"--count는 1 이상의 숫자로 쓰세요: {countOption}");
+                picked = picked.Take(count).ToList();
+            }
+
+            Console.WriteLine($"줄: {picked.Count}" + (picked.Count != rows.Count ? $" / {rows.Count}" : "")
+                              + (picked.Count < left ? $" (뒤에 {left - picked.Count}줄 더)" : "")
+                              + (total != rows.Count && picked.Count != total ? $", 찾은 줄 {total}" : ""));
             // Who says each line, as the requests name it: the review needs it to judge a speech level, and had to read
             // the project DB for it in Meridia's Order.
             var speakers = picked.Count == 0 ? new Dictionary<long, string>()
@@ -362,6 +383,30 @@ public static class AgentCli
                 Console.WriteLine($"  영어: {Flat(r.SourceText ?? "")}");
                 Console.WriteLine($"  번역: {Flat(r.DestText ?? "")}");
             }
+
+            if (picked.Count < left)
+            {
+                Console.WriteLine($"다음 쪽: --after {picked[^1].Id} --count {picked.Count}");
+            }
+        }
+
+        // Review mode: korean <프로젝트> <한국어판 경로> [--strings <폴더>] links an existing Korean release and fills the
+        // rows not yet translated with it; the agent then reviews them a page at a time (show --after --count) and fixes
+        // only the wrong lines (edit), and translates the rows the release lacks with next.
+        async Task KoreanAsync()
+        {
+            RefuseWhileAppRuns();
+            var project = session.Find(Arg(0, "프로젝트"));
+            var link = await session.LinkKoreanAsync(project, Arg(1, "한국어판 경로"), Option("--strings"), ct);
+            var m = link.Match;
+            Console.WriteLine($"한국어판 연결: {m.TextByFieldKey.Count}줄 (빠짐: 한국어판에 없음 {m.NotInPreviousRelease}, 레코드 구성이 바뀜 {m.ChangedRecord}, "
+                              + $"영어 그대로 {m.SameAsSource}, 한글 없음 {m.NotTranslated})");
+            Console.WriteLine($"한국어판으로 채운 줄: {link.Filled}" + (link.KeptTranslated > 0 ? $", 이미 번역돼 그대로 둔 줄: {link.KeptTranslated}" : "")
+                              + (link.LeftForGame > 0 ? $", 게임 사전 표기로 채울 줄: {link.LeftForGame}" : ""));
+            Console.WriteLine(link.Untranslated + link.LeftForGame > 0
+                ? $"남은 줄: {link.Untranslated + link.LeftForGame}(한국어판에 없음 {link.Untranslated}) → tullius.cmd next {project.Key}"
+                : "남은 줄: 0");
+            Console.WriteLine($"검수: tullius.cmd check {project.Key}, 이어서 tullius.cmd show {project.Key} --count 40 으로 차례로 읽기");
         }
 
         // The speech levels decided for the project: style <프로젝트> lists them and the speakers still undecided;
@@ -636,7 +681,8 @@ public static class AgentCli
               tullius.cmd submit <프로젝트> <답 파일>                                    답 저장, 다음 요청 만들기
               tullius.cmd check <프로젝트> [--all]                                       품질검사(--all: 고칠 것 없는 참고·확인함까지)
               tullius.cmd review <프로젝트> --id 12,40 [--undo]                          그대로 둘 줄의 품질검사 결과를 확인함으로 표시(번역문이 바뀌면 다시 나옴)
-              tullius.cmd show <프로젝트> [--find 글자] [--rec WEAP:FULL] [--id 12,40]   줄 보기(#id, 영어, 번역)
+              tullius.cmd show <프로젝트> [--find 글자] [--rec WEAP:FULL] [--id 12,40] [--after <id>] [--count 40]  줄 보기(#id, 영어, 번역; --after·--count로 쪽 나눠 읽기)
+              tullius.cmd korean <프로젝트> <한국어판 경로> [--strings <폴더>]          기존 한국어판을 연결하고 아직 번역 안 된 줄을 채움(검수 모드)
               tullius.cmd lookup <프로젝트> <낱말>                                       이름·용어의 기존 표기(용어집·게임 사전·TM, 앱이 켜져 있어도 됨)
               tullius.cmd voice <프로젝트> <이름|FormID>                                 바닐라 인물이 한글패치에서 하는 말(말투 참고, 앱이 켜져 있어도 됨)
               tullius.cmd style <프로젝트> [<화자> <말투> [--to <상대>] [--note <메모>] [--clear]]  화자별로 정한 말투 보기·정하기(요청과 품질검사가 따름)
