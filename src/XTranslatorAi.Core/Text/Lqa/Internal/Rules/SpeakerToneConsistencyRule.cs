@@ -160,11 +160,17 @@ internal static class SpeakerToneConsistencyRule
 
         if (declared != null)
         {
+            var whom = key.Contains(DialogueSpeakerNames.ListenerSeparator) ? "이 상대에게" : "플레이어에게";
+            var playerLine = key.StartsWith(PlayerKeyPrefix, StringComparison.Ordinal);
             if ((level == ToneKind.Hamnida) != SpeakerStyles.IsPolite(declared))
             {
-                var whom = key.Contains(DialogueSpeakerNames.ListenerSeparator) ? "이 상대에게" : "플레이어에게";
-                issues.Add(Issue(entry, "Warn", key.StartsWith(PlayerKeyPrefix, StringComparison.Ordinal) ? PlayerCode : Code,
+                issues.Add(Issue(entry, "Warn", playerLine ? PlayerCode : Code,
                     $"{whom} 정한 말투와 다릅니다: 정한 말투 {declared}, 이 대사 {Display(register)}"));
+            }
+            else if (StrayFromDeclared(entry.DestText, declared) is { } shown)
+            {
+                issues.Add(Issue(entry, "Info", playerLine ? PlayerCode : MixedCode,
+                    $"{whom} 정한 말투와 다를 수 있습니다: 정한 말투 {declared}, 이 대사 {shown}"));
             }
 
             return;
@@ -424,6 +430,10 @@ internal static class SpeakerToneConsistencyRule
             "래요" => word is not ("그래요" or "이래요" or "저래요") && word[^3] is not ('대' or '했' or '겠') && FinalConsonant(word[^3]) != 8,
             // 지요 is 해요체's own ending after any stem (듣지요, 화신이시지요); only the noun 마찬가지.
             "지요" => word == "마찬가지요",
+            // Teldryn's 하오체 "소문은 진짜요", "허위 광고요": the nouns 진짜, 가짜, 광고, 최고, 경고, 창고, not 짜요 (짜다)
+            // nor ~고요 after a verb's stem (하고요, 있고요, 먹었고요, 학생이고요).
+            "짜요" => word is "진짜요" or "가짜요",
+            "고요" => word[^3] is '광' or '최' or '경' or '창' or '금' or '원' or '재' or '참' or '선',
             _ => false,
         };
     }
@@ -609,6 +619,65 @@ internal static class SpeakerToneConsistencyRule
             '세' => FinalConsonant(before) == 8 || before is '하' or '보',
             '나' => FinalConsonant(before) is 18 or 20,
             _ => false,
+        };
+    }
+
+    // 반말 a 하오체 speaker does not use: ~야, ~어/~아, ~해, ~잖아, ~냐, ~니, ~자, ~줘, ~봐, ~돼, ~래, ~거든, ~라고.
+    // ~군, ~지, ~네, ~는데, ~니까 are not among them: the Korean patch's 하오체 speakers mix those in (Teldryn's
+    // "기꺼이 도와드리지", "오랜만이군").
+    private static readonly System.Text.RegularExpressions.Regex PlainEnding = new(@"(?:야|어|아|해|잖아|냐|니|자|줘|봐|돼|래|거든|라고)$", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+    private static readonly System.Text.RegularExpressions.Regex PlainPronoun = new(@"(?<![가-힣])(?:너(?:는|를|도|한테|에게|랑|가|의|만)?|네가|니가|널)(?![가-힣])", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+    private static readonly System.Text.RegularExpressions.Regex HagePronoun = new(@"자네", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+    /// <summary>
+    /// The level a line shows against a decided 하오체, 하게체 or 반말 that only another of the three uses; null when it
+    /// fits or shows none. 존댓말 against the rest is the side check's; these three are one side, so Teldryn in Extended
+    /// Hireling Dialogue, decided 하오체 to the player, kept lines in 반말 ("정신 바짝 차려야 해") and 하게체 ("자네")
+    /// that no check named. A line with a 하오체 sentence fits 하오체 whatever else it has.
+    /// </summary>
+    internal static string? StrayFromDeclared(string? text, string declared)
+    {
+        if (declared is not ("하오체" or "하게체" or "반말"))
+        {
+            return null;
+        }
+
+        var spoken = Quoted.Replace(StageDirection.Replace(text ?? "", " "), " ");
+        var parts = spoken.Split(new[] { '.', '!', '?', '…', ',' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var cries = Cries(parts);
+        var pieces = parts.Where(part => !cries.Contains(part)).Select(part => (Part: Clean(part), Register: SentenceLevel(part, keepShort: false))).ToList();
+        var hao = pieces.Any(piece => piece.Register == Register.Hao);
+        var hage = HagePronoun.IsMatch(spoken) || pieces.Any(piece => piece.Register == Register.Hage && IsAddressedHage(piece.Part));
+        var plain = PlainPronoun.IsMatch(spoken) || pieces.Any(piece => piece.Register == Register.Casual && PlainEnding.IsMatch(piece.Part));
+        return declared switch
+        {
+            "하오체" when !hao && hage => "하게체",
+            "하오체" when !hao && plain => "반말",
+            "하게체" when hao && !hage => "하오체",
+            "반말" when hao => "하오체",
+            _ => null,
+        };
+    }
+
+    /// <summary>
+    /// A 하게체 ending only a 하게체 speaker uses to the one spoken to. ~네 and ~나? are 반말's too, and ~가? asks oneself
+    /// ("내가 이곳이 싫다고 말했던가?", "또 노드 유적인가"), as the Korean patch's 하오체 Teldryn does ("또 파괴를
+    /// 불러내러 오셨나?"); a lone 그게 or 이게 is a pronoun ("그게, 전에 그를 한번 만난 적이 있다오").
+    /// </summary>
+    private static bool IsAddressedHage(string cleaned)
+    {
+        var word = LastWord(cleaned);
+        if (word == cleaned && word.Length <= 2)
+        {
+            return false;
+        }
+
+        return word[^1] switch
+        {
+            '네' => false,
+            '나' => word.EndsWith("게나", StringComparison.Ordinal),
+            '가' => word.EndsWith("텐가", StringComparison.Ordinal) || word.EndsWith("겐가", StringComparison.Ordinal),
+            _ => true,
         };
     }
 

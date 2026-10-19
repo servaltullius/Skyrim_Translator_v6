@@ -180,6 +180,39 @@ public class LqaSpeakerToneTests
         Assert.Contains(without, i => i.Id == 5);
     }
 
+    /// <summary>
+    /// A decided 하오체, 하게체 or 반말 is also told apart from the other two, which the side check counts as one:
+    /// Teldryn, decided 하오체, kept 반말 and 하게체 lines; ~군, ~지 and ~나? are a 하오체 speaker's too.
+    /// </summary>
+    [Fact]
+    public async Task DecidedHao_NamesLinesInPlainSpeechOrHage()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "여기선 정신 바짝 차려야 해. 그림자 속에 뭐가 숨어 있을지 모르니까."),
+            Line(2, "자네 꽤 아파 보이는군."),
+            Line(3, "꽤 아파 보이는군. 성소라도 들러 보는 게 어떻소?"),
+            Line(4, "오랜만이군, 외지인. 탐리엘에 또 파괴를 불러내러 오셨나?"),
+            Line(5, "돈을 낸다면 기꺼이 도와드리지."),
+            Line(6, "너 같은 녀석은 처음이야."),
+            Line(7, "좋은 생각이오, 조용히 가자."),
+            Line(8, "내가 이곳이 싫다고 말했던가?"),
+            Line(9, "성자 지웁은 어떻게 되었는지 궁금하군. 그게, 전에 그를 한번 만난 적이 있다오."),
+            Line(10, "이제 그만 가 보게나."),
+            Line(11, "내 경험에 비추어 말하건대, 농부의 아내들에 대한 소문은 진짜요. 아... 그 달콤했던 여름날."),
+            Line(12, "화이트런이라는 이름이면 눈이 더 많아야 하는 거 아니겠소? 허위 광고요, 허위 광고."),
+        };
+        var styles = new[] { new SpeakerStyle("00013269", SpeakerStyles.Player, "하오체") };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>(), speakerStyles: styles);
+
+        var named = issues.Where(i => i.Code == "speaker_tone_mixed").ToDictionary(i => i.Id, i => i.Message);
+        Assert.Equal(new long[] { 1, 2, 6, 10 }, named.Keys.OrderBy(id => id));
+        Assert.Contains("이 대사 반말", named[1]);
+        Assert.Contains("이 대사 하게체", named[2]);
+        Assert.DoesNotContain(issues, i => i.Code == "speaker_tone_inconsistent");
+    }
+
     [Fact]
     public async Task FewOrSplitLines_AreListedForReference()
     {
