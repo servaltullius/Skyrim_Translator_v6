@@ -105,7 +105,11 @@ internal static class AgentMcpServer
         ("review", "guide-review.md", "기존 한국어판 검수 절차"), ("lanes", "guide-lanes.md", "갈래(하위 에이전트) 번역 절차"),
     };
 
-    private static string GuidePath(string file) => Path.Combine(AppContext.BaseDirectory, "agent-kit", file);
+    // The folder of the translator itself: a single-file build runs from an extraction folder (AppContext.BaseDirectory),
+    // and the 1.16.4 build found no agent-kit there.
+    private static string ExeFolder => Path.GetDirectoryName(Environment.ProcessPath) ?? AppContext.BaseDirectory;
+
+    private static string GuidePath(string file) => Path.Combine(ExeFolder, "agent-kit", file);
 
     private static string GuideUri(string name) => "tullius://guide/" + name;
 
@@ -116,7 +120,7 @@ internal static class AgentMcpServer
     /// </summary>
     public static string SetupText()
     {
-        var exe = Environment.ProcessPath ?? Path.Combine(AppContext.BaseDirectory, "TulliusTranslator.exe");
+        var exe = Environment.ProcessPath ?? Path.Combine(ExeFolder, "TulliusTranslator.exe");
         var json = new JsonObject
         {
             ["mcpServers"] = new JsonObject
@@ -144,7 +148,7 @@ internal static class AgentMcpServer
     {
         // An app starts the server from a folder of its own: without --work, the work folder is agent-kit's beside the
         // translator, where tullius.cmd keeps it.
-        var kit = Path.Combine(AppContext.BaseDirectory, "agent-kit");
+        var kit = Path.Combine(ExeFolder, "agent-kit");
         var server = given.WorkGiven || !Directory.Exists(kit)
             ? given
             : AgentCommand.Parse(new List<string> { "--work", Path.Combine(kit, "work") }
