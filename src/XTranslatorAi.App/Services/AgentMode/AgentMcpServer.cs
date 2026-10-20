@@ -137,7 +137,10 @@ internal static class AgentMcpServer
             Claude(Code 탭·Claude Code)와 Codex는 agent-kit 폴더를 열면 그 폴더의 .mcp.json, .codex\config.toml로 바로 씁니다
             (처음 한 번 서버 사용을 허용하거나 폴더를 신뢰한다고 답합니다).
 
-            안티그라비티(MCP 서버 관리 → raw config 보기)와 Gemini CLI(settings.json)는 아래 설정을 넣습니다
+            안티그라비티는 agent-kit의 "안티그라비티 연결.cmd"를 더블클릭하면(또는 tullius.cmd mcp-config --install antigravity)
+            아래 설정이 자동으로 들어갑니다. 그 뒤 안티그라비티를 다시 시작합니다.
+
+            직접 넣으려면: 안티그라비티(MCP 서버 관리 → raw config 보기)와 Gemini CLI(settings.json)에 아래 설정을 넣습니다
             (이미 mcpServers가 있으면 그 안에 tullius 항목만 더합니다). 안티그라비티는 설정 파일이
             %USERPROFILE%\.gemini\config\mcp_config.json이고, 넣은 뒤 앱을 다시 시작해야 도구가 보입니다.
 
@@ -146,6 +149,79 @@ internal static class AgentMcpServer
             Codex를 다른 폴더에서도 쓰려면: codex mcp add tullius -- "{exe}" agent mcp
             Claude Code를 다른 폴더에서도 쓰려면: claude mcp add --scope user tullius -- "{exe}" agent mcp
             """;
+    }
+
+    /// <summary>안티그라비티가 읽는 단 하나의 MCP 설정 파일(폴더별 설정이 없다).</summary>
+    public static string AntigravityConfigPath
+        => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini", "config", "mcp_config.json");
+
+    public sealed record InstallResult(bool Changed, string? Backup);
+
+    /// <summary>
+    /// Puts the tullius server into an app's MCP config (Antigravity has no per-folder config, so pasting the
+    /// mcp-config text into its global file was the one manual step of its setup). Other servers are kept, a file with
+    /// content is copied aside first, and a file that is not JSON is left alone.
+    /// </summary>
+    internal static InstallResult InstallInto(string configPath, string exe)
+    {
+        var text = File.Exists(configPath) ? File.ReadAllText(configPath) : "";
+        JsonObject root;
+        try
+        {
+            root = string.IsNullOrWhiteSpace(text) ? new JsonObject()
+                : JsonNode.Parse(text) as JsonObject ?? throw new JsonException("not an object");
+        }
+        catch (JsonException)
+        {
+            throw new AgentModeException($"설정 파일이 JSON 형식이 아니어서 바꾸지 않았습니다: {configPath}. 내용을 고치거나 비운 뒤 다시 실행하세요.");
+        }
+
+        if (root["mcpServers"] is { } node && node is not JsonObject)
+        {
+            throw new AgentModeException($"설정 파일의 mcpServers가 목록 형식이 아니어서 바꾸지 않았습니다: {configPath}");
+        }
+
+        var servers = root["mcpServers"] as JsonObject ?? new JsonObject();
+        root["mcpServers"] = servers;
+        var entry = new JsonObject { ["command"] = exe, ["args"] = new JsonArray("agent", "mcp") };
+        if (servers["tullius"] is { } existing && JsonNode.DeepEquals(existing, entry))
+        {
+            return new InstallResult(false, null);
+        }
+
+        string? backup = null;
+        if (!string.IsNullOrWhiteSpace(text))
+        {
+            backup = configPath + ".bak-" + DateTime.Now.ToString("yyyyMMdd-HHmmss", System.Globalization.CultureInfo.InvariantCulture);
+            File.Copy(configPath, backup, overwrite: true);
+        }
+
+        servers["tullius"] = entry;
+        Directory.CreateDirectory(Path.GetDirectoryName(configPath)!);
+        var temp = configPath + ".tmp";
+        File.WriteAllText(temp, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping }),
+            new UTF8Encoding(false));
+        File.Move(temp, configPath, overwrite: true);
+        return new InstallResult(true, backup);
+    }
+
+    /// <summary>mcp-config --install antigravity: the setup in one command (the kit's 안티그라비티 연결.cmd runs it).</summary>
+    public static string Install(string app)
+    {
+        if (!string.Equals(app, "antigravity", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new AgentModeException($"자동 연결은 안티그라비티만 됩니다(--install antigravity). Claude와 Codex는 agent-kit 폴더를 열면 바로 됩니다: {app}");
+        }
+
+        var exe = Environment.ProcessPath ?? Path.Combine(ExeFolder, "TulliusTranslator.exe");
+        var result = InstallInto(AntigravityConfigPath, exe);
+        return (result.Changed ? "안티그라비티에 번역기 도구(tullius)를 연결했습니다." : "안티그라비티에 이미 연결돼 있습니다.")
+               + $"\n설정 파일: {AntigravityConfigPath}"
+               + (result.Backup != null ? $"\n원래 설정은 {Path.GetFileName(result.Backup)}에 남겨 두었습니다." : "")
+               + "\n\n다음:\n1. 안티그라비티를 껐다가 다시 켭니다(켜져 있는 동안 바꾼 설정은 읽지 않습니다)."
+               + "\n2. 이 agent-kit 폴더를 프로젝트로 엽니다."
+               + "\n3. \"G:\\모드\\○○\\○○.esp 번역해 줘\"처럼 말합니다."
+               + "\n\n번역기 폴더를 옮기면 이 연결을 한 번 더 실행하세요.";
     }
 
     public static async Task<int> RunAsync(AgentCommand given)

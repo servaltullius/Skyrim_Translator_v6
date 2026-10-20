@@ -91,7 +91,9 @@ public static partial class AgentCli
                 case "korean": await KoreanAsync(c); break;
                 case "version": Console.WriteLine(Version()); break;
                 case "mcp": await AgentMcpServer.RunAsync(c); break;
-                case "mcp-config": Console.WriteLine(AgentMcpServer.SetupText()); break;
+                case "mcp-config":
+                    Console.WriteLine(c.Option("--install") is { } app ? AgentMcpServer.Install(app) : AgentMcpServer.SetupText());
+                    break;
                 default: Help(); break;
             }
 
@@ -157,6 +159,7 @@ public static partial class AgentCli
           tullius.cmd export <프로젝트> [출력 폴더]                                  번역된 플러그인 저장(이미 있으면 output\<키>-2처럼 새 폴더)
           tullius.cmd version                                                        번역기 버전
           tullius.cmd mcp-config                                                     이 명령들을 MCP 도구로 쓰는 앱 설정(안티그라비티·Gemini CLI 등)
+          tullius.cmd mcp-config --install antigravity                                안티그라비티에 바로 연결(안티그라비티 연결.cmd와 같음)
 
         <프로젝트>는 키, 플러그인 파일 이름(확장자 없이도), 플러그인 경로 중 하나. 번호는 요청·check·show의 id로 같다.
         작업 파일은 ./work(--work로 바꿈).

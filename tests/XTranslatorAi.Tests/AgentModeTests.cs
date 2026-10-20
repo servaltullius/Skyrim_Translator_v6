@@ -171,6 +171,34 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Empty(Directory.GetFiles(Path.Combine(_root, "work", ".mcp")));
     }
 
+    // Antigravity reads one global MCP config; pasting the mcp-config text into it was its one manual setup step.
+    // The install keeps the other servers, copies a file with content aside, and leaves a file that is not JSON alone.
+    [Fact]
+    public void AntigravityInstall_AddsTulliusBesideTheOtherServers()
+    {
+        var config = Path.Combine(_root, "gemini", "config", "mcp_config.json");
+        var first = AgentMcpServer.InstallInto(config, @"C:\Tullius\TulliusTranslator.exe");
+        Assert.True(first.Changed);
+        Assert.Null(first.Backup);
+        var written = JsonDocument.Parse(File.ReadAllText(config)).RootElement.GetProperty("mcpServers").GetProperty("tullius");
+        Assert.Equal(@"C:\Tullius\TulliusTranslator.exe", written.GetProperty("command").GetString());
+        Assert.Equal(new[] { "agent", "mcp" }, written.GetProperty("args").EnumerateArray().Select(a => a.GetString()));
+        Assert.False(AgentMcpServer.InstallInto(config, @"C:\Tullius\TulliusTranslator.exe").Changed);
+
+        File.WriteAllText(config, """{"mcpServers":{"other":{"command":"x.exe"}},"theme":"dark"}""");
+        var moved = AgentMcpServer.InstallInto(config, @"D:\Moved\TulliusTranslator.exe");
+        Assert.True(moved.Changed);
+        Assert.True(File.Exists(moved.Backup));
+        var root = JsonDocument.Parse(File.ReadAllText(config)).RootElement;
+        Assert.Equal("x.exe", root.GetProperty("mcpServers").GetProperty("other").GetProperty("command").GetString());
+        Assert.Equal("dark", root.GetProperty("theme").GetString());
+        Assert.Equal(@"D:\Moved\TulliusTranslator.exe", root.GetProperty("mcpServers").GetProperty("tullius").GetProperty("command").GetString());
+
+        File.WriteAllText(config, "{ broken");
+        Assert.Throws<AgentModeException>(() => AgentMcpServer.InstallInto(config, @"C:\Tullius\TulliusTranslator.exe"));
+        Assert.Equal("{ broken", File.ReadAllText(config));
+    }
+
     [Fact]
     public async Task Request_CoversTheRemainingRows_SoTheDialogueAroundALineIsInIt()
     {
