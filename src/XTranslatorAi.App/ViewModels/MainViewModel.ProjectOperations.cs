@@ -78,8 +78,7 @@ public partial class MainViewModel
             .Where(task => task != null && !task.IsCompleted)
             .Cast<Task>()
             .ToArray();
-        try { await Task.WhenAll(tasks); }
-        catch (OperationCanceledException) { }
+        await ProjectOperationTracker.WaitIgnoringFailuresAsync(tasks);
     }
 
     public async Task<bool> TryCloseWorkspaceAsync()

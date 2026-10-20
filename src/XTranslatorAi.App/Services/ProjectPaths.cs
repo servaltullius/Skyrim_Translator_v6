@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using XTranslatorAi.Core.Models;
@@ -188,11 +190,37 @@ public static class ProjectPaths
     public static string GetBundledFranchiseTmSeedStampPath(BethesdaFranchise franchise, string version)
         => GetBundledFranchiseTmSeedStampPath(franchise, version, globalRootOverride: null);
 
+    /// <summary>
+    /// Marks that the bundled TM seed of <paramref name="version"/> was handed to this series' global memory. It sits
+    /// next to the global DB, not in tm-import: clearing tm-import (it fills with imported/ copies) took the stamps with
+    /// it, and the whole seed was imported again over the bundled rows the user had edited.
+    /// </summary>
     public static string GetBundledFranchiseTmSeedStampPath(BethesdaFranchise franchise, string version, string? globalRootOverride)
         => Path.Combine(
-            GetGlobalTranslationMemoryImportDir(franchise, globalRootOverride),
-            $".bundled-seed.{franchise.ToString().ToLowerInvariant()}.{version}.stamp"
+            Path.GetDirectoryName(Path.GetFullPath(GetGlobalGlossaryDbPath(franchise, globalRootOverride))) ?? GetProjectsBaseDir(),
+            BundledFranchiseTmSeedStampName(franchise, version)
         );
+
+    /// <summary>Where the stamp was kept before (tm-import), read once and moved.</summary>
+    public static string GetLegacyBundledFranchiseTmSeedStampPath(BethesdaFranchise franchise, string version, string? globalRootOverride)
+        => Path.Combine(GetGlobalTranslationMemoryImportDir(franchise, globalRootOverride), BundledFranchiseTmSeedStampName(franchise, version));
+
+    private static string BundledFranchiseTmSeedStampName(BethesdaFranchise franchise, string version)
+        => $".bundled-seed.{franchise.ToString().ToLowerInvariant()}.{version}.stamp";
+
+    /// <summary>
+    /// The stamps of what was given to the global DB at <paramref name="globalGlossaryDbPath"/> (the built-in glossary,
+    /// its later additions, the bundled TM seed), at either place a TM stamp has been kept.
+    /// </summary>
+    public static IReadOnlyList<string> GetGlobalDbStampPaths(string globalGlossaryDbPath, BethesdaFranchise franchise, string? globalRootOverride)
+    {
+        var dir = Path.GetDirectoryName(Path.GetFullPath(globalGlossaryDbPath)) ?? GetProjectsBaseDir();
+        var seed = $".bundled-seed.{franchise.ToString().ToLowerInvariant()}.*.stamp";
+        return Directory.EnumerateFiles(dir, ".builtin-glossary-*.stamp")
+            .Concat(Directory.EnumerateFiles(dir, seed))
+            .Concat(Directory.EnumerateFiles(GetGlobalTranslationMemoryImportDir(franchise, globalRootOverride), seed))
+            .ToList();
+    }
 
     private static string GetProjectsBaseDir()
         => Path.Combine(

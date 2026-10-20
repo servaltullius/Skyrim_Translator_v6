@@ -276,6 +276,38 @@ public class BundledFranchiseTmSeedServiceTests
         }
     }
 
+    // The stamp sat in tm-import, which fills with imported/ copies: clearing it took the stamp, and the whole seed was
+    // imported again over the rows the user had edited. It is moved next to the global DB.
+    [Fact]
+    public async Task StampInTmImport_MovesNextToTheGlobalDb_AndSurvivesClearingTmImport()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var legacy = ProjectPaths.GetLegacyBundledFranchiseTmSeedStampPath(BethesdaFranchise.Fallout, "v1", root);
+            var service = new BundledFranchiseTmSeedService(root);
+            await service.EnsureBundledSeedAsync(BethesdaFranchise.Fallout, CancellationToken.None);
+            var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.Fallout, "v1", root);
+            var stamp = await File.ReadAllTextAsync(stampPath);
+            File.Move(stampPath, legacy);
+
+            await service.EnsureBundledSeedAsync(BethesdaFranchise.Fallout, CancellationToken.None);
+
+            Assert.False(File.Exists(legacy));
+            Assert.Equal(stamp, await File.ReadAllTextAsync(stampPath));
+            Assert.NotEqual(Path.GetDirectoryName(legacy), Path.GetDirectoryName(stampPath));
+
+            // The seed was imported (moved away) and tm-import cleared: nothing is written again.
+            Directory.Delete(ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.Fallout, root), recursive: true);
+            await service.EnsureBundledSeedAsync(BethesdaFranchise.Fallout, CancellationToken.None);
+            Assert.Empty(Directory.GetFiles(ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.Fallout, root), "*.tsv"));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch (IOException) { }
+        }
+    }
+
     [Fact]
     public async Task EnsureBundledSeedAsync_WritesSeedOnceForFallout()
     {

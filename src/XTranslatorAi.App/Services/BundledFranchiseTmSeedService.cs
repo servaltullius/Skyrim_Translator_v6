@@ -32,6 +32,7 @@ public sealed class BundledFranchiseTmSeedService
                 return;
             }
 
+            MoveLegacyStamps(metadata);
             var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(franchise, _globalRootOverride);
             var seedPath = Path.Combine(importDir, metadata.FileName);
             var stampPath = ProjectPaths.GetBundledFranchiseTmSeedStampPath(franchise, metadata.Version, _globalRootOverride);
@@ -168,6 +169,20 @@ public sealed class BundledFranchiseTmSeedService
         await File.WriteAllTextAsync(Path.Combine(importDir, changesFileName), changes, cancellationToken);
         await WriteStampAsync(stampPath, seedPath, metadata, cancellationToken);
         return true;
+    }
+
+    // The stamps were kept in tm-import before; they move next to the global DB (see ProjectPaths).
+    private void MoveLegacyStamps(BundledSeedMetadata metadata)
+    {
+        foreach (var version in new[] { metadata.Version }.Concat(metadata.PreviousVersions ?? Array.Empty<string>()))
+        {
+            var legacy = ProjectPaths.GetLegacyBundledFranchiseTmSeedStampPath(metadata.Franchise, version, _globalRootOverride);
+            var current = ProjectPaths.GetBundledFranchiseTmSeedStampPath(metadata.Franchise, version, _globalRootOverride);
+            if (File.Exists(legacy) && !File.Exists(current))
+            {
+                File.Move(legacy, current);
+            }
+        }
     }
 
     private async Task RewriteSeedAsync(string seedPath, string stampPath, BundledSeedMetadata metadata, CancellationToken cancellationToken)

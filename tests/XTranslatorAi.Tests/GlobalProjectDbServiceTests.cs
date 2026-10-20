@@ -98,6 +98,24 @@ public sealed class GlobalProjectDbServiceTests : IAsyncLifetime
         Assert.NotNull(service.GetLastOpenError(BethesdaFranchise.ElderScrolls));
     }
 
+    // Deleting a damaged global DB is the natural fix when the app cannot open it. The stamps beside it said the new,
+    // empty DB was already seeded, so it stayed without the built-in glossary and the series TM for good.
+    [Fact]
+    public async Task NewDbInPlaceOfADeletedOne_IsSeededAgain()
+    {
+        var first = new GlobalProjectDbService(new BuiltInGlossaryService(), GlobalRoot);
+        Assert.NotEmpty(await (await first.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None))!.GetGlossaryAsync(CancellationToken.None));
+        await first.DisposeAsync();
+        var tmStamp = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, "v7", GlobalRoot);
+        await File.WriteAllTextAsync(tmStamp, "v7");
+        TestDbHelper.ReleaseProjectPoolAndDeleteDbFiles(GlobalDbPath);
+
+        var db = await NewService().GetOrCreateAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None);
+
+        Assert.Contains(await db!.GetGlossaryAsync(CancellationToken.None), e => e.SourceTerm == "Whiterun");
+        Assert.False(File.Exists(tmStamp));
+    }
+
     private GlobalProjectDbService NewService()
     {
         var service = new GlobalProjectDbService(new BuiltInGlossaryService(), GlobalRoot);

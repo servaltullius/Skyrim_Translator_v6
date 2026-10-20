@@ -11,6 +11,24 @@ public class ProjectOperationTrackerTests
 {
     private static readonly TimeSpan Patience = TimeSpan.FromSeconds(30);
 
+    // A tool that fails while being stopped (a network error) made the stop throw: opening another XML then reported
+    // the error as its own and closed the open project without opening the new one.
+    [Fact]
+    public Task Suspend_WaitsForAToolThatFails_WithoutThrowing() => Task.Run(async () =>
+    {
+        var tracker = new ProjectOperationTracker();
+        var failing = tracker.RunAsync(async token =>
+        {
+            try { await Task.Delay(Timeout.Infinite, token); }
+            catch (OperationCanceledException) { throw new HttpRequestException("network down"); }
+        });
+
+        await tracker.SuspendAndStopAsync().WaitAsync(Patience);
+
+        await Assert.ThrowsAsync<HttpRequestException>(() => failing);
+        Assert.False(tracker.IsRunning);
+    });
+
     [Fact]
     public Task Suspend_CancelsEveryConcurrentToolAndWaitsForCleanup() => Task.Run(async () =>
     {

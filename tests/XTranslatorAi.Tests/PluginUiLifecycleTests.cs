@@ -342,6 +342,7 @@ public sealed partial class PluginUiLifecycleTests
         public AppSettingsStore Settings { get; }
         private readonly HttpClient _client;
         private readonly GlobalProjectDbService _globalDbService;
+        public GlobalProjectDbService GlobalDb => _globalDbService;
         private ProjectDb? _globalDb;
         public ProjectState State => (ProjectState)typeof(MainViewModel).GetField("_projectState", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(Vm)!;
         public Fixture(HttpMessageHandler? handler = null, AppSettings? initialSettings = null)

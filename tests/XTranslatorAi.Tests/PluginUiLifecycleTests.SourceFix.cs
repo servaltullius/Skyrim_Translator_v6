@@ -44,6 +44,49 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Empty(await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None));
         });
 
+    // Retranslating deletes the row's mark in the DB; the row kept it on screen, the next checks still skipped the
+    // row, and marking it again took two clicks (the first one "unmarked" it).
+    [Fact]
+    public Task Retranslating_ClearsTheSourceFixMarkOnScreenToo()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            var rows = await LoadXmlWorkspaceAsync(fixture, "Hand Strap Attack", "Iron Sword");
+            var db = fixture.State.Db!;
+            await db.UpdateStringTranslationAsync(rows[0].Id, "Hand Strap 공격", StringEntryStatus.Done, null, CancellationToken.None);
+            (rows[0].DestText, rows[0].Status) = ("Hand Strap 공격", StringEntryStatus.Done);
+            fixture.Vm.SelectedEntry = rows[0];
+            await fixture.Vm.ToggleSourceFixCommand.ExecuteAsync(null);
+            Assert.True(rows[0].IsSourceFix);
+
+            fixture.Ui.Responses.Enqueue(XTranslatorAi.App.Services.UiMessageBoxResult.Yes);
+            await fixture.Vm.RetranslateSelectedCommand.ExecuteAsync(new List<object> { rows[0] }).WaitAsync(TimeSpan.FromSeconds(10));
+
+            Assert.Equal(StringEntryStatus.Pending, rows[0].Status);
+            Assert.False(rows[0].IsSourceFix);
+            await fixture.Vm.ToggleSourceFixCommand.ExecuteAsync(null);
+            Assert.True(rows[0].IsSourceFix);
+            Assert.True((await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None)).ContainsKey(rows[0].Id));
+        });
+
+    // A 번역용어집 신규.md beside the input was imported without a dialog, into the global glossary too, and no other
+    // file could be picked while it was there.
+    [Fact]
+    public Task GlossaryImport_AlwaysAsksForTheFile()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            await LoadXmlWorkspaceAsync(fixture, "Iron Sword");
+            await File.WriteAllTextAsync(Path.Combine(fixture.Root, "번역용어집 신규.md"), "| Zzyzx Blade | 지직스 검 |\n");
+            fixture.Ui.OpenPath = null;
+
+            await fixture.Vm.ImportGlobalGlossaryCommand.ExecuteAsync(null);
+
+            Assert.True(fixture.Ui.NetworkOrDialogUsed);
+            var global = await fixture.GlobalDb.GetOrCreateAsync(CancellationToken.None);
+            Assert.DoesNotContain(await global!.GetGlossaryAsync(CancellationToken.None), e => e.SourceTerm == "Zzyzx Blade");
+        });
+
     [Fact]
     public Task TheSourceFixButton_IsOffWithoutAProject()
         => RunOnSta(async () =>

@@ -36,7 +36,7 @@ public static class AgentTranslationRun
         Func<string, int, string?> answer, GlobalProjectDbService globalDb, GameStringDictionary? gameStrings,
         CancellationToken cancellationToken)
     {
-        await db.ResetInProgressToPendingAsync(cancellationToken);
+        await ResetInProgressAsync(db, options.Lane, cancellationToken);
         var pending = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending, StringEntryStatus.Error }, cancellationToken);
         if (options.Lane is { } lane)
         {
@@ -107,7 +107,7 @@ public static class AgentTranslationRun
 
         var result = await new TranslationRunnerService(globalDb).RunAsync(request);
         // A recording stops the run mid-batch; its rows are 대기 again, as after the GUI's stop button.
-        await db.ResetInProgressToPendingAsync(cancellationToken);
+        await ResetInProgressAsync(db, options.Lane, cancellationToken);
         var after = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending, StringEntryStatus.Error }, cancellationToken);
         var errors = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Error }, cancellationToken);
         if (options.Lane is { } own)
@@ -118,6 +118,27 @@ public static class AgentTranslationRun
 
         return new Outcome(client.Recorded, client.Used, pending.Count, after.Count, errors.Count, client.GenerationCalls,
             result.Error ?? host.Error);
+    }
+
+    /// <summary>
+    /// Puts the run's 번역 중 rows back to 대기. Another lane's run works on its own rows at the same time, in its own
+    /// process: resetting every row put that lane's batch back to 대기 mid-run, its split dropped them, and its
+    /// answer no longer fit the request the run made again. A lane resets only its own rows.
+    /// </summary>
+    private static async Task ResetInProgressAsync(ProjectDb db, IReadOnlySet<long>? lane, CancellationToken cancellationToken)
+    {
+        if (lane == null)
+        {
+            await db.ResetInProgressToPendingAsync(cancellationToken);
+            return;
+        }
+
+        var statuses = await db.GetStringStatusesByIdsAsync(lane.ToList(), cancellationToken);
+        var stuck = statuses.Where(s => s.Value == StringEntryStatus.InProgress).Select(s => s.Key).ToList();
+        if (stuck.Count > 0)
+        {
+            await db.UpdateStringStatusesAsync(stuck, StringEntryStatus.Pending, null, cancellationToken);
+        }
     }
 
     private sealed class QuietHost : ITranslationRunnerStatusPort, ITranslationRunnerFlowControlPort, ITranslationRunnerFailoverPort

@@ -65,6 +65,11 @@ public sealed class GlobalProjectDbService : IAsyncDisposable
                 dbPath = ProjectPaths.GetGlobalGlossaryDbPath(franchise, _globalRootOverride);
                 var migrationStampPath = ProjectPaths.GetBuiltInGlossaryAdditionsStampPath(dbPath, BuiltInGlossaryService.MigrationStampVersion);
                 var seedStampPath = ProjectPaths.GetBuiltInGlossarySeedStampPath(dbPath);
+                if (!File.Exists(dbPath))
+                {
+                    ForgetStamps(dbPath, franchise);
+                }
+
                 db = await ProjectDb.OpenOrCreateAsync(dbPath, cancellationToken);
                 // Seeding used to depend on the file not existing before this open, so a first open that failed or
                 // was canceled after creating the file left an empty global glossary for good. A glossary is seeded
@@ -120,6 +125,26 @@ public sealed class GlobalProjectDbService : IAsyncDisposable
             {
                 await db.DisposeAsync();
             }
+        }
+    }
+
+    /// <summary>
+    /// The stamps say what was given to a DB, but they are files beside it: a user who deleted a damaged global DB, the
+    /// natural fix when the app says it cannot open it, got a new empty DB that the stamps said was seeded, so it stayed
+    /// without the built-in glossary and the series TM for good. A DB about to be created takes nothing from them.
+    /// </summary>
+    private void ForgetStamps(string dbPath, BethesdaFranchise franchise)
+    {
+        try
+        {
+            foreach (var stamp in ProjectPaths.GetGlobalDbStampPaths(dbPath, franchise, _globalRootOverride))
+            {
+                File.Delete(stamp);
+            }
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            AppLog.Write($"WARN 새 전체 용어집 DB의 지난 기록을 지우지 못했습니다: {ex.Message}");
         }
     }
 

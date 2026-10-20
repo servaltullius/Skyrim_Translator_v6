@@ -72,12 +72,21 @@ public partial class MainViewModel
                 return;
             }
 
+            // The reset deleted the rows' "원문 오류 수정" and "확인함" marks too; kept here, the next quality checks
+            // still skipped the row and the toggle took two clicks to mark it again.
+            var resetIds = targets.Select(row => row.Id).ToHashSet();
+            foreach (var key in _lqaReviewedMarks.Keys.Where(key => resetIds.Contains(key.StringId)).ToList())
+            {
+                _lqaReviewedMarks.Remove(key);
+            }
+
             foreach (var row in targets)
             {
                 row.DestText = "";
                 row.Status = StringEntryStatus.Pending;
                 row.ErrorMessage = null;
                 row.IsTranslationMemoryApplied = false;
+                row.IsSourceFix = false;
             }
 
             RecountProgress();

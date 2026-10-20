@@ -89,23 +89,10 @@ public partial class MainViewModel
         return $" 이미 다른 번역어로 있는 원문 {sources.Count}개는 가져오지 않았습니다({sample}). 바꾸려면 표에서 직접 고치세요.";
     }
 
+    // The dialog always opens, with 번역용어집 신규.md beside the input as its file name: when that file existed it was
+    // imported without asking, the global glossary's import too, and no other file could be picked.
     private string? ResolveGlossaryImportPath(string dialogTitle)
     {
-        var defaultPath = "";
-        if (!string.IsNullOrWhiteSpace(_projectState.InputPath))
-        {
-            var dir = Path.GetDirectoryName(_projectState.InputPath);
-            if (!string.IsNullOrWhiteSpace(dir))
-            {
-                defaultPath = Path.Combine(dir, "번역용어집 신규.md");
-            }
-        }
-
-        if (!string.IsNullOrWhiteSpace(defaultPath) && File.Exists(defaultPath))
-        {
-            return defaultPath;
-        }
-
         var initialDirectory = (string?)null;
         if (!string.IsNullOrWhiteSpace(_projectState.InputPath))
         {

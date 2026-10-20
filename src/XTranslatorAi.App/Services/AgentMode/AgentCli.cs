@@ -211,5 +211,5 @@ public static partial class AgentCli
         }
     }
 
-    private sealed record EditLine(long? Id, int? Order, string Text);
+    internal sealed record EditLine(long? Id, int? Order, string? Text);
 }

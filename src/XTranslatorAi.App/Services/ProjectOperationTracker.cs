@@ -42,7 +42,21 @@ public sealed class ProjectOperationTracker
             pending = _pending.ToArray();
         }
         cancellation.Cancel();
-        try { await Task.WhenAll(pending); }
+        await WaitIgnoringFailuresAsync(pending);
+    }
+
+    /// <summary>
+    /// Waits for the tasks to end however they end. Each operation reported its own failure; one that failed while
+    /// being stopped (a network error in a model refresh or Compare) made the stop throw, and opening another XML then
+    /// reported "XML 로드" after closing the open project, without opening the new one.
+    /// </summary>
+    public static async Task WaitIgnoringFailuresAsync(IReadOnlyCollection<Task> tasks)
+    {
+        try { await Task.WhenAll(tasks); }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            AppLog.Write($"WARN 멈추는 동안 끝난 작업의 오류: {ex.Message}");
+        }
         catch (OperationCanceledException) { }
     }
 

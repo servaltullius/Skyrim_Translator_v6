@@ -151,6 +151,18 @@ public sealed class AgentModeTests : IAsyncLifetime
         var request = replies[5].GetProperty("result");
         Assert.False(request.GetProperty("isError").GetBoolean());
         Assert.Equal(await File.ReadAllTextAsync(_session.RequestPath(_project)), request.GetProperty("content")[0].GetProperty("text").GetString());
+
+        // The answer goes through a file of its own, gone after the call: lanes' servers share the work folder, and a
+        // fixed answer.txt let one lane's answer be saved into another lane's request.
+        var submit = JsonSerializer.Serialize(new
+        {
+            jsonrpc = "2.0", id = 6, method = "tools/call",
+            @params = new { name = "submit", arguments = new { project = "Thalmor", answer = Answer(_session.Pending(_project)!) } },
+        });
+        var submitted = new StringWriter();
+        Assert.Equal(0, await AgentMcpServer.ServeAsync(server, new StringReader(submit), submitted));
+        Assert.False(JsonDocument.Parse(submitted.ToString()).RootElement.GetProperty("result").GetProperty("isError").GetBoolean());
+        Assert.Empty(Directory.GetFiles(Path.Combine(_root, "work", ".mcp")));
     }
 
     [Fact]
@@ -326,6 +338,34 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Empty(await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.InProgress }, CancellationToken.None));
     }
 
+    // Lanes run at the same time in their own processes: a lane's run used to put the other lane's 번역 중 batch back
+    // to 대기, so that lane's split dropped the rows and its answer no longer fit.
+    [Fact]
+    public async Task LaneRun_LeavesTheOtherLanesRowsInProgress()
+    {
+        await using var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None);
+        var ids = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending }, CancellationToken.None);
+        var otherLane = ids[^1];
+        await db.UpdateStringStatusesAsync(new[] { otherLane }, StringEntryStatus.InProgress, null, CancellationToken.None);
+
+        var options = new AgentTranslationRun.Options(AgentTranslationRun.DefaultModelProfile, 1, 15000) { Lane = ids.Take(ids.Count - 1).ToHashSet() };
+        var outcome = await AgentTranslationRun.RunAsync(db, new AppSettings(), options, (_, _) => null, _global, null, CancellationToken.None);
+
+        Assert.NotNull(outcome.Next);
+        Assert.Equal(new[] { otherLane }, await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.InProgress }, CancellationToken.None));
+    }
+
+    // A misnamed key ({"id": 12, "translation": ".."}) read as no text, and the row was saved empty as 수정됨.
+    [Fact]
+    public void EditWithoutText_IsRefused()
+    {
+        var edits = System.Text.Json.JsonSerializer.Deserialize<List<AgentCli.EditLine>>(
+            """[{"id": 12, "translation": "새 이름"}, {"order": 3, "text": " "}, {"id": 14, "text": "고친 번역"}]""",
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+
+        Assert.Equal(new[] { "id 12", "순번 3" }, AgentCli.WithoutText(edits));
+    }
+
     [Fact]
     public async Task AnswerNotInTheRequestedFormat_IsRefused_AndTheRequestStays()
     {
@@ -373,6 +413,38 @@ public sealed class AgentModeTests : IAsyncLifetime
         var tagged = (await db.GetStringsAsync(50, 0, CancellationToken.None)).Single(row => row.SourceText.Contains("<Alias=Player>"));
         Assert.True(tagged.Status != StringEntryStatus.Done || tagged.DestText.Contains("<Alias=Player>", StringComparison.Ordinal),
             $"saved without the tag: {tagged.DestText}");
+    }
+
+    /// <summary>
+    /// A line the run gave up on (오류) is asked with the same request next time. Its stored answers were replayed and
+    /// refused again, so `next` said "남은 줄 1 (오류 1)" with no request, however often it was called. Once nothing is
+    /// left to ask, the answers the run used are dropped and `next` asks the line afresh.
+    /// </summary>
+    [Fact]
+    public async Task LineLeftInError_IsAskedAfresh_ByTheNextNext()
+    {
+        // The model keeps dropping the magnitude the check asks for, until the run gives the line up.
+        const string Wrong = "화염 피해를 주고 적을 불태웁니다.";
+        var project = await OpenAsync("Magic.esp", MagicPlugin());
+        var report = await _session.NextAsync(project, CancellationToken.None);
+        for (var i = 0; i < 30 && report.Next is { } request; i++)
+        {
+            var answer = AgentAnswerCheck.IsJson(request) ? JsonAnswer(request, _ => Wrong)
+                : AgentAnswerCheck.IsRepair(request) ? Wrong
+                : Wrong + " __XT_PH_9999__";
+            report = await _session.SubmitAsync(project, answer, CancellationToken.None);
+        }
+
+        Assert.Null(report.Next);
+        await using (var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, CancellationToken.None))
+        {
+            Assert.NotEmpty(await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Error }, CancellationToken.None));
+        }
+
+        var again = await _session.NextAsync(project, CancellationToken.None);
+
+        Assert.NotNull(again.Next);
+        Assert.Equal(0, again.Next!.Attempt);
     }
 
     /// <summary>

@@ -270,6 +270,7 @@ internal static class AgentMcpServer
 
         string output;
         bool failed;
+        string? temp = null;
         switch (name)
         {
             case "request":
@@ -298,14 +299,14 @@ internal static class AgentMcpServer
             }
             case "submit":
             {
-                var file = TempFile(server, "answer.txt");
+                var file = temp = TempFile(server, "answer.txt");
                 await File.WriteAllTextAsync(file, Text("answer") ?? "", new UTF8Encoding(false));
                 args.AddRange(new[] { "submit", project ?? "", file });
                 break;
             }
             case "edit":
             {
-                var file = TempFile(server, "edit.json");
+                var file = temp = TempFile(server, "edit.json");
                 await File.WriteAllTextAsync(file, (arguments["edits"] ?? new JsonArray()).ToJsonString(), new UTF8Encoding(false));
                 args.AddRange(new[] { "edit", project ?? "", file });
                 break;
@@ -373,7 +374,16 @@ internal static class AgentMcpServer
         }
 
         Option("--lane", name is "status" or "next" or "submit" ? lane : null);
-        (output, var exit) = await RunAsync(server, args);
+        int exit;
+        try
+        {
+            (output, exit) = await RunAsync(server, args);
+        }
+        finally
+        {
+            if (temp != null) File.Delete(temp);
+        }
+
         failed = exit != 0;
 
         // next and submit end with the next request: its text comes with the result, so no file needs reading.
@@ -414,11 +424,14 @@ internal static class AgentMcpServer
         return options;
     }
 
+    // Each call has its own file: servers of several lanes (or app sessions) share the work folder, and a fixed
+    // answer.txt let one lane's submit overwrite another's between its write and its read, saving lane B's Korean
+    // into lane A's one-line request.
     private static string TempFile(AgentCommand server, string name)
     {
         var dir = Path.Combine(server.Work, ".mcp");
         Directory.CreateDirectory(dir);
-        return Path.Combine(dir, name);
+        return Path.Combine(dir, $"{Path.GetFileNameWithoutExtension(name)}-{Guid.NewGuid():N}{Path.GetExtension(name)}");
     }
 
     private static JsonObject Content(string text, bool isError = false)

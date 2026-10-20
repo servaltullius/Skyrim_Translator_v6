@@ -411,6 +411,17 @@ public sealed class AgentSession
             used.UnionWith(outcome.Used);
         }
 
+        // A line the run gave up on (오류) is asked with the same request the next time, so its stored answers were
+        // replayed and refused again, and `next` never asked anything new. With nothing left to ask, the answers this
+        // run used are dropped: the next run asks the 오류 lines afresh (lines already saved are not asked again).
+        if (outcome.Next == null && outcome.ErrorRows > 0 && outcome.Error == null)
+        {
+            foreach (var (hash, attempt) in used)
+            {
+                File.Delete(AnswerPath(project, hash, attempt));
+            }
+        }
+
         outcome = outcome with { PendingBefore = pendingBefore, Used = used };
         string? problem = outcome.Error == null ? null : "오류: " + outcome.Error.Message;
         if (outcome.Next is { Attempt: > 0 } again)

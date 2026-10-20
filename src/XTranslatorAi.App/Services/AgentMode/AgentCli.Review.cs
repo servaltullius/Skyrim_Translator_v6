@@ -121,6 +121,14 @@ public static partial class AgentCli
               + System.Text.RegularExpressions.Regex.Replace(Flat(issue.Message).Replace("⏎", " "), @"\s+", " ").Trim() + ")"
             : Flat(issue.Message);
 
+    /// <summary>
+    /// Items with no new translation: a missing or misnamed key ({"id": 12, "translation": ".."}) read as no text, and
+    /// the row was saved empty as 수정됨, which the export writes, blanking the name in game.
+    /// </summary>
+    internal static IReadOnlyList<string> WithoutText(IEnumerable<EditLine> edits)
+        => edits.Where(e => string.IsNullOrWhiteSpace(e.Text))
+            .Select(e => e.Id is { } id ? $"id {id}" : e.Order is { } o ? $"순번 {o}" : "번호 없음").ToList();
+
     // Fixes after the quality check: [{"id": 12, "text": "..."}] (the id of requests, check and show; "order" is the
     // row's 순번, as before), saved as the GUI saves a hand edit (수정됨).
     private static async Task EditAsync(AgentCommand c)
@@ -148,6 +156,12 @@ public static partial class AgentCli
         var list = edits ?? new();
         var missing = list.Where(e => Row(e) == null).Select(e => e.Id is { } id ? $"id {id}" : e.Order is { } o ? $"순번 {o}" : "번호 없음").ToList();
         if (missing.Count > 0) throw new AgentModeException($"없는 줄: {string.Join(", ", missing)}. 아무것도 저장하지 않았습니다.");
+        if (WithoutText(list) is { Count: > 0 } blank)
+        {
+            throw new AgentModeException($"새 번역(text)이 없는 항목: {string.Join(", ", blank)}. 아무것도 저장하지 않았습니다. "
+                                         + "[{\"id\": 번호, \"text\": \"새 번역\"}]처럼 text를 쓰세요.");
+        }
+
         var same = 0;
         foreach (var edit in list)
         {
@@ -158,8 +172,8 @@ public static partial class AgentCli
                 continue;
             }
 
-            await db.UpdateStringTranslationAsync(row.Id, edit.Text, StringEntryStatus.Edited, null, c.Ct);
-            Console.WriteLine($"#{row.Id} {Short(row.SourceText ?? "")}: {Flat(row.DestText ?? "")} → {Flat(edit.Text)}");
+            await db.UpdateStringTranslationAsync(row.Id, edit.Text!, StringEntryStatus.Edited, null, c.Ct);
+            Console.WriteLine($"#{row.Id} {Short(row.SourceText ?? "")}: {Flat(row.DestText ?? "")} → {Flat(edit.Text!)}");
         }
 
         Console.WriteLine($"고친 줄: {list.Count - same}" + (same > 0 ? $" (이미 같은 줄 {same}은 그대로)" : "") + $". 다시 확인: tullius.cmd check {project.Key}");
