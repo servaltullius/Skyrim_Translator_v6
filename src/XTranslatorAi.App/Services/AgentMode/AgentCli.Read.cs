@@ -97,6 +97,22 @@ public static partial class AgentCli
         if (found.ModTotal > (found.Mod?.Count ?? 0)) Console.WriteLine($"(이 모드 {found.ModTotal}줄 중 짧은 {found.Mod!.Count}줄)");
     }
 
+    // The names the run decided itself, for the closing report: names <프로젝트> (read only).
+    private static async Task NamesAsync(AgentCommand c)
+    {
+        var project = c.Session.Find(c.Arg(0, "프로젝트"));
+        await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, c.Ct);
+        var names = await AgentSession.NewNamesAsync(db, await c.RowsAsync(db), c.Ct);
+        if (names.Count == 0)
+        {
+            Console.WriteLine("새로 정한 이름이 없습니다. 이름 줄은 모두 용어집·TM·게임 사전·한국어판에서 왔습니다.");
+            return;
+        }
+
+        Console.WriteLine($"새로 정한 이름: {names.Count}개 (용어집·TM·게임 사전·한국어판에 없어 번역하며 정한 이름 줄, 앞말만 다른 같은 이름은 한 번)");
+        foreach (var r in names) Console.WriteLine($"#{r.Id} {r.Rec}  {Flat(r.SourceText)} → {Flat(r.DestText)}");
+    }
+
     // How a base game NPC speaks in the Korean patch: voice <프로젝트> <영어 이름|한국어 이름|FormID> (read only). The
     // Teldryn trial's agent found Teldryn's 하오체 only by reading the lines the dictionary had filled.
     private static async Task VoiceAsync(AgentCommand c)

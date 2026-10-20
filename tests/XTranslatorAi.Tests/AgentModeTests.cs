@@ -32,7 +32,7 @@ public sealed class AgentModeTests : IAsyncLifetime
         _global = new GlobalProjectDbService(new BuiltInGlossaryService(), Path.Combine(_root, "global"));
         _session = new AgentSession(Path.Combine(_root, "work"), _global, gameStrings: null, new AppSettings(),
             projectsRootOverride: Path.Combine(_root, "projects"));
-        (_project, _, _) = await _session.OpenAsync(plugin, new PluginReadOptions(), "korean", "utf-8", batchSize: 2, CancellationToken.None);
+        (_project, _, _, _) = await _session.OpenAsync(plugin, new PluginReadOptions(), "korean", "utf-8", batchSize: 2, CancellationToken.None);
     }
 
     public async Task DisposeAsync()
@@ -196,7 +196,7 @@ public sealed class AgentModeTests : IAsyncLifetime
             Record("INFO", 0x1001, Sub("NAM1", Z("Your loyalty to the Dominion has been noted."))),
             Record("INFO", 0x1002, Sub("NAM1", Z("Then we have an understanding."))),
             Record("INFO", 0x1003, Sub("NAM1", Z("Speak with care, <Alias=Player>.")))))).ToArray());
-        var (project, _, _) = await session.OpenAsync(plugin, new PluginReadOptions(), "korean", "utf-8", batchSize: 2, CancellationToken.None);
+        var (project, _, _, _) = await session.OpenAsync(plugin, new PluginReadOptions(), "korean", "utf-8", batchSize: 2, CancellationToken.None);
         _extraDbs.Add(project.DbPath);
 
         var report = await session.NextAsync(project, CancellationToken.None);
@@ -223,7 +223,7 @@ public sealed class AgentModeTests : IAsyncLifetime
                 TopicChildren(0x1100,
                     Record("INFO", 0x1101, Sub("NAM1", Z("You should ask Drelorea about the old road."))))))
             .ToArray());
-        var (project, _, _) = await _session.OpenAsync(plugin, new PluginReadOptions(), "korean", "utf-8", batchSize: 5, CancellationToken.None);
+        var (project, _, _, _) = await _session.OpenAsync(plugin, new PluginReadOptions(), "korean", "utf-8", batchSize: 5, CancellationToken.None);
         _extraDbs.Add(project.DbPath);
         var one = project with { Lane = AgentLane.Parse("1/2") };
         var two = project with { Lane = AgentLane.Parse("2/2") };
@@ -603,11 +603,75 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Equal(request.Hash, _session.Pending(_project)?.Hash);
     }
 
+    /// <summary>
+    /// The closing report's new names: translated name fields that no glossary term, TM, game text or Korean release
+    /// gave, once per English (EldenWarAshPack1 names each skill in its effect and its scroll). Not yet translated
+    /// names and other fields stay out.
+    /// </summary>
+    [Fact]
+    public async Task NewNames_AreTheTranslatedNamesNothingGave_OncePerEnglish()
+    {
+        var project = await OpenAsync("Names.esp", Header()
+            .Concat(Group(
+                Record("MISC", 0x4001, Sub("EDID", Z("aaEcho1")), Sub("FULL", Z("Aetherial Echo"))),
+                Record("MISC", 0x4002, Sub("EDID", Z("aaEcho2")), Sub("FULL", Z("Aetherial Echo"))),
+                Record("MISC", 0x4003, Sub("EDID", Z("aaIron")), Sub("FULL", Z("Iron Ingot"))),
+                Record("MISC", 0x4004, Sub("EDID", Z("aaAsh")), Sub("FULL", Z("Ash of War"))),
+                Record("MISC", 0x4005, Sub("EDID", Z("aaStorm")), Sub("FULL", Z("Storm Fist"))),
+                Record("MISC", 0x4006, Sub("EDID", Z("aaFloat")), Sub("FULL", Z("Learning - Floating Passage"))),
+                Record("MISC", 0x4007, Sub("EDID", Z("aaFloat2")), Sub("FULL", Z("Rim Scroll - Floating Passage")))))
+            .ToArray());
+        await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, CancellationToken.None);
+        var rows = new List<StringEntry>();
+        for (var offset = 0; ; offset += 1000)
+        {
+            var page = await db.GetStringsAsync(1000, offset, CancellationToken.None);
+            rows.AddRange(page);
+            if (page.Count < 1000) break;
+        }
+
+        long Id(string source) => rows.First(r => r.SourceText == source).Id;
+        var done = new[]
+        {
+            ("Aetherial Echo", "에테르의 메아리"), ("Iron Ingot", "주괴 - 강철"), ("Ash of War", "전회"),
+            ("Learning - Floating Passage", "배우기 - 쪽배 건너기"), ("Rim Scroll - Floating Passage", "림 주문서 - 쪽배 건너기"),
+        };
+        await db.UpdateStringTranslationsAsync(rows.Where(r => done.Any(d => d.Item1 == r.SourceText))
+            .Select(r => (r.Id, done.First(d => d.Item1 == r.SourceText).Item2, StringEntryStatus.Done, (string?)null)).ToList(), CancellationToken.None);
+        await db.UpsertStringNoteAsync(Id("Iron Ingot"), XTranslatorAi.Core.TranslationConstants.TmHitNoteKind, "TM", CancellationToken.None);
+        await db.BulkInsertGlossaryAsync(new[] { ((string?)null, "Ash of War", "전회", true, 10, 0, 0, (string?)null) }, CancellationToken.None);
+        rows.Clear();
+        rows.AddRange(await db.GetStringsAsync(1000, 0, CancellationToken.None));
+
+        var names = await AgentSession.NewNamesAsync(db, rows, CancellationToken.None);
+
+        Assert.Equal(new[] { "Aetherial Echo", "Learning - Floating Passage" }, names.Select(n => n.SourceText));
+    }
+
+    /// <summary>A new plugin of the same mod takes the glossary of the mod's other projects, and open says how many.</summary>
+    [Fact]
+    public async Task Open_SaysHowManyGlossaryTermsANewProjectTookFromTheSameMod()
+    {
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            await db.BulkInsertGlossaryAsync(new[] { ((string?)null, "Thalmor Justiciar", "탈모어 집행관", true, 10, 0, 0, (string?)null) }, CancellationToken.None);
+        }
+
+        var path = Path.Combine(_root, "Mod", "Thalmor Addon.esp");
+        await File.WriteAllBytesAsync(path, Plugin());
+        var (project, _, _, glossary) = await _session.OpenAsync(path, new PluginReadOptions(), "korean", "utf-8", batchSize: 5, CancellationToken.None);
+        _extraDbs.Add(project.DbPath);
+
+        Assert.Equal(1, glossary.Count);
+        Assert.Equal(1, glossary.Inherited);
+        Assert.Equal(new[] { "Thalmor.esp" }, glossary.From);
+    }
+
     private async Task<AgentProject> OpenAsync(string name, byte[] plugin)
     {
         var path = Path.Combine(_root, "Mod", name);
         await File.WriteAllBytesAsync(path, plugin);
-        var (project, _, _) = await _session.OpenAsync(path, new PluginReadOptions(), "korean", "utf-8", batchSize: 5, CancellationToken.None);
+        var (project, _, _, _) = await _session.OpenAsync(path, new PluginReadOptions(), "korean", "utf-8", batchSize: 5, CancellationToken.None);
         _extraDbs.Add(project.DbPath);
         return project;
     }

@@ -62,6 +62,12 @@ public sealed record AgentLane(int Index, int Count)
 public sealed record AgentKoreanLink(PreviousTranslationMatcher.Result Match, int Filled, int KeptTranslated, int Untranslated,
     IReadOnlyList<long> DifferentFromGame);
 
+/// <summary>
+/// The project's glossary terms in use, and those a new project took from the same mod's other projects (the GUI says so
+/// when it opens one): the agent learns its names come from them rather than finding out line by line.
+/// </summary>
+public sealed record AgentGlossary(int Count, int Inherited, IReadOnlyList<string> From);
+
 public sealed record AgentStepReport(AgentProject Project, int PendingBefore, int PendingAfter, int ErrorRows,
     AgentRequest? Next, string? NextRequestPath, string? Problem)
 {
@@ -99,7 +105,7 @@ public sealed class AgentSession
         _projectsRootOverride = projectsRootOverride;
     }
 
-    public async Task<(AgentProject Project, int Rows, int Pending)> OpenAsync(string pluginPath, PluginReadOptions readOptions,
+    public async Task<(AgentProject Project, int Rows, int Pending, AgentGlossary Glossary)> OpenAsync(string pluginPath, PluginReadOptions readOptions,
         string targetLanguage, string targetEncoding, int batchSize, CancellationToken cancellationToken)
     {
         var workspace = new ProjectWorkspaceService(_globalDb, _projectsRootOverride, _gameStrings);
@@ -108,6 +114,8 @@ public sealed class AgentSession
             _settings.CustomPromptText ?? "", _settings.UseCustomPrompt), cancellationToken);
         await using var db = loaded.Db;
         var pending = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending, StringEntryStatus.Error }, cancellationToken);
+        var glossary = new AgentGlossary((await db.GetGlossaryAsync(cancellationToken)).Count(g => g.Enabled),
+            loaded.InheritedGlossary.Count, loaded.InheritedGlossary.FromPlugins ?? Array.Empty<string>());
         var key = ProjectKey(loaded.Document.Info.InputPath, db.DbPath);
         var project = new AgentProject(key, loaded.Document.Info.InputPath, db.DbPath, loaded.Document.Info.Options, targetEncoding,
             AgentTranslationRun.DefaultModelProfile, Math.Clamp(batchSize, 1, 100), Math.Clamp(_settings.MaxCharsPerBatch, 1000, 50000));
@@ -125,7 +133,7 @@ public sealed class AgentSession
 
         Directory.CreateDirectory(ProjectDir(project));
         await File.WriteAllTextAsync(Path.Combine(ProjectDir(project), "project.json"), JsonSerializer.Serialize(project, Json), cancellationToken);
-        return (project, loaded.Entries.Count, pending.Count);
+        return (project, loaded.Entries.Count, pending.Count, glossary);
     }
 
     /// <summary>
@@ -238,6 +246,31 @@ public sealed class AgentSession
         }
 
         return (all.Count, pending.Count, errors.Count, edited.Count);
+    }
+
+    /// <summary>
+    /// The names the run decided itself: translated name fields (FULL, SHRT) that no glossary term, TM, game text, Korean
+    /// release or TM fallback gave, once per English. The MCP trial's three models agreed on 20 of 50 new skill names, so
+    /// these are the lines a person should look over and fix in the glossary.
+    /// </summary>
+    public static async Task<IReadOnlyList<StringEntry>> NewNamesAsync(ProjectDb db, IReadOnlyList<StringEntry> rows, CancellationToken cancellationToken)
+    {
+        var given = new HashSet<long>();
+        foreach (var kind in XTranslatorAi.Core.TranslationConstants.KnownTranslationNoteKinds.Append(XTranslatorAi.Core.TranslationConstants.TmFallbackNoteKind))
+        {
+            given.UnionWith((await db.GetStringNotesByKindAsync(kind, cancellationToken)).Keys);
+        }
+
+        var terms = (await db.GetGlossaryAsync(cancellationToken)).Where(g => g.Enabled)
+            .Select(g => g.SourceTerm.Trim()).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        // A name under two prefixes is one name: "Learning - Kaiten" and "Rim Scroll - Kaiten" both end 회천.
+        static string Tail(string text) => text.IndexOf('-') is var dash and > 0 ? text[(dash + 1)..].Trim() : text.Trim();
+        var seen = new HashSet<(string, string)>();
+        return rows
+            .Where(r => r.Status is StringEntryStatus.Done or StringEntryStatus.Edited && !string.IsNullOrWhiteSpace(r.DestText))
+            .Where(r => r.Rec is { } rec && (rec.EndsWith(":FULL", StringComparison.OrdinalIgnoreCase) || rec.EndsWith(":SHRT", StringComparison.OrdinalIgnoreCase)))
+            .Where(r => !given.Contains(r.Id) && !terms.Contains(r.SourceText.Trim()) && seen.Add((Tail(r.SourceText), Tail(r.DestText))))
+            .ToList();
     }
 
     /// <summary>Starts (or, after a break, restarts) the run and writes its first request.</summary>

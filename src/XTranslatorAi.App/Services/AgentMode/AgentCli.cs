@@ -85,6 +85,7 @@ public static partial class AgentCli
                 case "edit": await EditAsync(c); break;
                 case "show": await ShowAsync(c); break;
                 case "lookup": await LookupAsync(c); break;
+                case "names": await NamesAsync(c); break;
                 case "voice": await VoiceAsync(c); break;
                 case "style": await StyleAsync(c); break;
                 case "korean": await KoreanAsync(c); break;
@@ -143,6 +144,7 @@ public static partial class AgentCli
           tullius.cmd show <프로젝트> [--find 글자] [--rec WEAP:FULL] [--id 12,40] [--after <id>] [--count 40]  줄 보기(#id, 영어, 번역; --after·--count로 쪽 나눠 읽기)
           tullius.cmd korean <프로젝트> <한국어판 경로> [--strings <폴더>]          기존 한국어판을 연결하고 아직 번역 안 된 줄을 채움(검수 모드)
           tullius.cmd lookup <프로젝트> <낱말>                                       이름·용어의 기존 표기(용어집·게임 사전·TM, 앱이 켜져 있어도 됨)
+          tullius.cmd names <프로젝트>                                               새로 정한 이름(용어집·TM·게임 사전·한국어판에 없던 이름 줄, 끝 보고용)
           tullius.cmd voice <프로젝트> <이름|FormID>                                 바닐라 인물이 한글패치에서 하는 말(말투 참고, 앱이 켜져 있어도 됨)
           tullius.cmd style <프로젝트> [<화자> <말투> [--to <상대>] [--note <메모>] [--clear]]  화자별로 정한 말투 보기·정하기(요청과 품질검사가 따름)
           tullius.cmd edit <프로젝트> <수정.json>                                    줄 고치기([{"id": 번호, "text": "새 번역"}])

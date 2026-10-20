@@ -25,11 +25,14 @@ public static partial class AgentCli
         await new BundledFranchiseTmSeedService().EnsureBundledSeedAsync(BethesdaFranchise.ElderScrolls, c.Ct);
         var options = new PluginReadOptions(PluginGame.SkyrimSpecialEdition, c.Settings.PluginSourceLanguage.Trim(), c.Settings.PluginSourceEncoding,
             strings, MetadataEncoding: c.Settings.PluginMetadataEncoding);
-        var (project, rows, pending) = await c.Session.OpenAsync(plugin, options, c.Settings.PluginTargetLanguage.Trim(), c.Settings.PluginTargetEncoding, batch, c.Ct);
+        var (project, rows, pending, glossary) = await c.Session.OpenAsync(plugin, options, c.Settings.PluginTargetLanguage.Trim(), c.Settings.PluginTargetEncoding, batch, c.Ct);
         Console.WriteLine($"프로젝트: {project.Key}");
         Console.WriteLine($"플러그인: {project.PluginPath}");
         Console.WriteLine($"DB: {project.DbPath}");
         Console.WriteLine($"줄: {rows}, 번역할 줄: {pending}, 묶음 크기: {project.BatchSize}");
+        Console.WriteLine($"용어집: 이 프로젝트 {glossary.Count}개"
+                          + (glossary.Inherited > 0 ? $" (같은 모드의 다른 프로젝트 {string.Join(", ", glossary.From.Take(3))}에서 {glossary.Inherited}개를 가져옴)" : "")
+                          + (glossary.Count > 0 ? ". 요청이 이 용어를 따르고, lookup으로 찾을 수 있다." : ""));
         Console.WriteLine($"다음: tullius.cmd next {project.Key}");
     }
 
