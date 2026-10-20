@@ -437,11 +437,26 @@ public sealed partial class PluginUiLifecycleTests
     {
         public ConcurrentQueue<(string Path, string Body)> Requests { get; } = new();
         public string GeneratedText { get; set; } = "{}";
+
+        // Generation requests answered as cut off by the output limit before the others (finishReason MAX_TOKENS).
+        public int TruncatedGenerations { get; set; }
+
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var path = request.RequestUri!.AbsolutePath;
             var body = await request.Content!.ReadAsStringAsync(cancellationToken);
             Requests.Enqueue((path, body));
+            if (path.EndsWith(":generateContent", StringComparison.Ordinal) && TruncatedGenerations > 0)
+            {
+                TruncatedGenerations--;
+                var truncated = JsonSerializer.Serialize(new
+                {
+                    candidates = new[] { new { finishReason = "MAX_TOKENS", content = new { parts = new[] { new { text = "{\"context\":\"잘" } } } } },
+                    usageMetadata = new { promptTokenCount = 120, candidatesTokenCount = 4096, totalTokenCount = 4216 },
+                });
+                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(truncated, Encoding.UTF8, "application/json") };
+            }
+
             var response = path.EndsWith(":countTokens", StringComparison.Ordinal)
                 ? "{\"totalTokens\":120}"
                 : path.EndsWith(":generateContent", StringComparison.Ordinal)

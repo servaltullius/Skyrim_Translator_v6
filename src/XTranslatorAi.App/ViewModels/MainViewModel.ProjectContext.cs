@@ -38,8 +38,18 @@ public partial class MainViewModel
             var userPrompt = BuildProjectContextUserPrompt(report, translationPrompt);
             var request = BuildProjectContextGenerationRequest(userPrompt, isRetry: false);
 
-            var raw = await _geminiClient.GenerateContentAsync(apiKey, SelectedModel.Trim(), request, cancellationToken);
-            if (!ProjectContextResponseParser.TryParseContext(raw, out var ctx) || string.IsNullOrWhiteSpace(ctx))
+            string? raw;
+            try
+            {
+                raw = await _geminiClient.GenerateContentAsync(apiKey, SelectedModel.Trim(), request, cancellationToken);
+            }
+            catch (GeminiException ex) when (ex.Message.Contains("MAX_TOKENS", StringComparison.Ordinal))
+            {
+                // Cut off: asked again below, with the retry's larger output limit.
+                raw = null;
+            }
+
+            if (raw == null || !ProjectContextResponseParser.TryParseContext(raw, out var ctx) || string.IsNullOrWhiteSpace(ctx))
             {
                 StatusMessage = "프로젝트 문맥 응답 형식이 올바르지 않아 다시 요청하는 중...";
                 var retryRequest = BuildProjectContextGenerationRequest(userPrompt, isRetry: true);
@@ -99,12 +109,15 @@ public partial class MainViewModel
             },
             CachedContent: null,
             SystemInstruction: new GeminiContent(Role: null, Parts: new List<GeminiPart> { new(systemPrompt) }),
+            // The model's default thinking counts toward the output limit: on Legacy of the Dragonborn gemini-3.8-flash
+            // thought 2,756 tokens for a 505-token answer, and a run that thought longer hit 4,096 (E310 MAX_TOKENS).
+            // Translation's thinking level leaves the limit to the answer; a retry gets twice the room.
             GenerationConfig: new GeminiGenerationConfig(
                 Temperature: isRetry ? 0.0 : 0.2,
-                MaxOutputTokens: 4096,
+                MaxOutputTokens: isRetry ? 16384 : 8192,
                 ResponseMimeType: "application/json",
                 ResponseSchema: BuildProjectContextResponseSchema(),
-                ThinkingConfig: null
+                ThinkingConfig: GeminiTranslationPolicy.GetThinkingConfigForTranslation(SelectedModel.Trim())
             ),
             SafetySettings: new List<GeminiSafetySetting>
             {
