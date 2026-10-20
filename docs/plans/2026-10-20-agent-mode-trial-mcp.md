@@ -246,6 +246,30 @@ Codex의 두 번째 시험과 같은 플러그인(EldenWarAshPack1, 150줄)을 �
   - 한국어 규칙에 "비꼼은 과장된 말과 '~한테나' 같은 끝으로 한국어에서도 비꼼으로 들리게"를 넣었다.
   - GUI 프롬프트로 확인했다(`blind/sarcasm-check/`): "Impressive, in a grim, overcompensating sort of way." → "음침하고 과시욕에 찌든 식이라 치면, 제법 인상적이긴 하군."
 
+## LotD 책 블라인드 테스트 (2026-10-20, 투표 중)
+
+짧은 대사는 셋 차이가 작아서, 긴 글로 다시 비교한다(`artifacts/mcp-trial-20261020/lotd/`).
+
+- 책: Legacy of the Dragonborn 6.10의 책 7편. 바닐라 스카이림에 없는 책(DBM_·BCSLL_)만 골랐다. 영어 300~740단어, 모두 3,700단어.
+  - 우화 The Barber, 편지 Auryen Morellus' Letter, 모험가 일지 Micmou's Journal, 운문 Manifesto Cyrodiil Vampyrum, 연구 노트 Notes of Shalidor, 유머 Jokes, 학술서 The Falmer: A Study
+- 시험 프로젝트: 쪽마다 플러그인 사본을 `agent open`으로 열고, 책 7줄을 뺀 17,364줄을 건너뜀(3)으로 바꿨다(`lotd_setup.py`). 실제 프로젝트는 건드리지 않았다.
+  - GUI는 이름을 바꾼 사본(LotDBlindGUI.esm)을 같은 방법으로 미리 만들어, GUI가 그 프로젝트를 이어 열고 대기 7줄만 번역했다.
+- 1.16.9로 넷이 번역했다. 넷 다 품질검사 0건, 문단 수는 원문과 모두 같았다.
+
+| | 걸린 시간 | 비고 |
+|---|---|---|
+| Codex (codex exec) | 5분 | 2편 표현·행 배치를 고침 |
+| Gemini 4 Argon (안티그라비티, Medium) | 12분 | 도구 승인 창이 두 번 떴다(show, check) |
+| Claude (claude -p) | 18분 | check 경고 1건(일지 끝 반말)을 고침 |
+| GUI (gemini-3.8-flash API) | 1분 30초 | |
+
+- 블라인드 페이지: https://claude.ai/artifact/SLnYv6zw2aavqjuJk8ekbN (책마다 A~D 순서를 섞음, 탭·문단별 비교, 댓글용 복사 "1A 2C 5=")
+  - 정답은 `sample.json`, 집계는 `tally.py`(댓글을 `comments.json`에 넣는다).
+- 미리 본 것
+  - Argon이 넷 중 가장 길다(편마다 5~15% 더 김). 텔드린 때처럼 살을 붙이는 경향이다.
+  - 농담 "She's in bed with laryngitis"는 사람 이름처럼 들리는 말장난이다. Claude와 Argon은 "라린지티스"로 소리를 살렸고, Codex와 GUI는 "후두염"으로 옮겨 농담이 사라졌다.
+- 고칠 것 후보: `names`는 이름 레코드(FULL·SHRT)만 세서, 책 본문에서 새로 정한 이름은 보고되지 않는다. Claude는 따로 적어 보고했다.
+
 ## 남은 것
 
 - ~~GUI 번역에서 대괄호 조작 키("[질주 버튼]") 뒤 조사를 틀리는 원인 찾기(위 10건).~~ 고쳤다.
