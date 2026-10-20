@@ -47,10 +47,15 @@ public sealed partial class TranslationService
         return Ctx.DialogueContextWindowById.TryGetValue(id, out var ctx) ? ctx : null;
     }
 
-    /// <summary>Adds the reference material for a row: its book title and its earlier translation.</summary>
+    /// <summary>Adds the reference material for a row: its book title, the base game's Korean of the text it copied, and its earlier translation.</summary>
     private string? AppendReferences(long id, string? hint)
     {
         hint = AppendBookTitleReference(id, hint);
+        if (Ctx.GameReferenceById?.TryGetValue(id, out var game) == true && TranslationGameReference.Build(game.Text) is { } reference)
+        {
+            hint = string.IsNullOrWhiteSpace(hint) ? reference : hint + "\n\n" + reference;
+        }
+
         var previous = Ctx.PreviousTranslationById?.TryGetValue(id, out var text) == true
             ? TranslationPreviousReference.Build(text)
             : null;

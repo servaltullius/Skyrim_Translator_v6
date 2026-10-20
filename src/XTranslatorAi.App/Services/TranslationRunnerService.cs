@@ -181,7 +181,8 @@ public sealed class TranslationRunnerService
         IReadOnlyDictionary<string, string>? GlobalTranslationMemory,
         IReadOnlyList<(string Source, string Target)>? ReferenceNameMemory,
         IReadOnlyDictionary<long, XTranslatorAi.Core.Plugins.GameStringMatch>? GameStringMatches = null,
-        IReadOnlyDictionary<long, string>? SpeakerNamesById = null
+        IReadOnlyDictionary<long, string>? SpeakerNamesById = null,
+        IReadOnlyDictionary<long, XTranslatorAi.Core.Plugins.GameStringMatch>? GameStringReferences = null
     );
 
     private async Task<IReadOnlyList<TranslationRun>> BuildRunsAsync(Request request)
@@ -329,6 +330,10 @@ public sealed class TranslationRunnerService
         var gameStringMatches = request.GameStrings == null
             ? null
             : await request.GameStrings.MatchAsync(request.Db, ids, request.CancellationToken);
+        // A base game book the mod copied with small changes: its Korean patch text goes with the row as a reference.
+        var gameStringReferences = request.GameStrings == null
+            ? null
+            : await request.GameStrings.SimilarAsync(request.Db, ids, request.CancellationToken);
         // With the game translation a base game NPC who speaks a mod's lines is named in Korean too.
         var speakerNames = await DialogueSpeakerNames.LoadAsync(request.Db, request.GameStrings, request.CancellationToken);
 
@@ -347,7 +352,8 @@ public sealed class TranslationRunnerService
             GlobalTranslationMemory: globalTranslationMemory,
             ReferenceNameMemory: referenceNameMemory,
             GameStringMatches: gameStringMatches,
-            SpeakerNamesById: speakerNames
+            SpeakerNamesById: speakerNames,
+            GameStringReferences: gameStringReferences
         );
     }
 
@@ -439,6 +445,7 @@ public sealed class TranslationRunnerService
             GlobalTranslationMemory: run.GlobalTranslationMemory,
             ReferenceNameMemory: run.ReferenceNameMemory,
             GameStringMatches: run.GameStringMatches,
+            GameStringReferences: run.GameStringReferences,
             SpeakerNamesById: run.SpeakerNamesById,
             SemanticRepairMode: request.SemanticRepairMode,
             EnableTemplateFixer: request.EnableTemplateFixer,

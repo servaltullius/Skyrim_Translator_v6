@@ -36,20 +36,126 @@ public sealed class GameStringDictionary
 
     private readonly Dictionary<string, (string EnglishHash, string Korean, string Plugin)> _byField;
     private readonly Dictionary<string, string> _byText;
+    private readonly Dictionary<string, string[]> _paragraphs;
+    private readonly Dictionary<string, List<string>> _byParagraph;
 
     private GameStringDictionary(Dictionary<string, (string, string, string)> byField, Dictionary<string, string> byText,
-        MasterSpeakerIndex? speakers = null)
+        MasterSpeakerIndex? speakers = null, Dictionary<string, string[]>? paragraphs = null)
     {
         _byField = byField;
         _byText = byText;
         Speakers = speakers;
+        _paragraphs = paragraphs ?? new Dictionary<string, string[]>(StringComparer.Ordinal);
+        _byParagraph = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+        foreach (var (identity, keys) in _paragraphs)
+        {
+            foreach (var key in keys.Distinct(StringComparer.Ordinal))
+            {
+                if (!_byParagraph.TryGetValue(key, out var owners)) _byParagraph[key] = owners = new List<string>();
+                owners.Add(identity);
+            }
+        }
     }
 
     /// <summary>Who speaks a mod's lines where only the masters can say (null in a dictionary built before it existed).</summary>
     public MasterSpeakerIndex? Speakers { get; }
 
     /// <summary>This dictionary with the masters' speaker index; the translations are shared, not copied.</summary>
-    public GameStringDictionary WithSpeakers(MasterSpeakerIndex? speakers) => new(_byField, _byText, speakers);
+    public GameStringDictionary WithSpeakers(MasterSpeakerIndex? speakers) => new(_byField, _byText, speakers, _paragraphs);
+
+    /// <summary>The long texts whose paragraphs are kept, for finding a mod's edited copy (see <see cref="FindSimilar"/>).</summary>
+    public int ParagraphTextCount => _paragraphs.Count;
+
+    /// <summary>
+    /// This dictionary with the paragraph fingerprints of the base game's long texts (books, notes), each kept only
+    /// where the record's English is the one its Korean translates. The translations are shared, not copied.
+    /// </summary>
+    public GameStringDictionary WithParagraphs(IEnumerable<(string Identity, string? Rec, string English)> fields)
+    {
+        var paragraphs = new Dictionary<string, string[]>(_paragraphs, StringComparer.Ordinal);
+        foreach (var (identity, rec, english) in fields)
+        {
+            if (IsDialogue(rec) || !_byField.TryGetValue(identity, out var field)) continue;
+            var normalized = TranslationMemoryKey.NormalizeSource(english);
+            if (string.IsNullOrWhiteSpace(normalized) || !string.Equals(field.EnglishHash, Fingerprint(normalized), StringComparison.Ordinal)) continue;
+            var keys = ParagraphKeys(english);
+            if (keys.Count >= MinSharedParagraphs) paragraphs[identity] = keys.ToArray();
+        }
+
+        return new GameStringDictionary(_byField, _byText, Speakers, paragraphs);
+    }
+
+    // A long text counts as the base game's when this many of its paragraphs, and this share of both texts', are the same.
+    private const int MinSharedParagraphs = 3;
+    private const double MinSharedShare = 0.6;
+    private const int MinParagraphChars = 40;
+    private static readonly Regex ParagraphMarkup = new(@"<[^>]*>", RegexOptions.CultureInvariant);
+    private static readonly Regex PageBreak = new(@"\[page ?break\]", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+    private static readonly Regex Spaces = new(@"\s+", RegexOptions.CultureInvariant);
+
+    /// <summary>
+    /// Fingerprints of a text's paragraphs, without markup, case or spacing: LotD's copy of The Falmer: A Study drops
+    /// the base game's trailing spaces and fixes a typo ("the overthrew"), so its whole text never matches, but all but
+    /// one paragraph do.
+    /// </summary>
+    internal static IReadOnlyList<string> ParagraphKeys(string english)
+    {
+        var text = PageBreak.Replace(english.Replace("\r\n", "\n").Replace('\r', '\n'), "\n\n");
+        text = ParagraphMarkup.Replace(text, "");
+        var keys = new List<string>();
+        foreach (var paragraph in Regex.Split(text, @"\n\s*\n"))
+        {
+            var plain = Spaces.Replace(paragraph, " ").Trim().ToLowerInvariant();
+            if (plain.Length >= MinParagraphChars) keys.Add(Fingerprint(plain)[..16]);
+        }
+
+        return keys;
+    }
+
+    /// <summary>
+    /// The base game's Korean for a long text the mod copied with changes (whitespace, a fixed typo, an added line):
+    /// most of its paragraphs are a base game text's. It is a reference for translating the row, not its translation,
+    /// since the English differs. Dialogue is left out, as for <see cref="Find"/>.
+    /// </summary>
+    public GameStringMatch? FindSimilar(string? rec, string sourceText)
+    {
+        if (_byParagraph.Count == 0 || IsDialogue(rec)) return null;
+        var keys = ParagraphKeys(sourceText).Distinct(StringComparer.Ordinal).ToList();
+        if (keys.Count < MinSharedParagraphs) return null;
+        var shared = new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (var key in keys)
+        {
+            if (!_byParagraph.TryGetValue(key, out var owners)) continue;
+            foreach (var owner in owners) shared[owner] = shared.GetValueOrDefault(owner) + 1;
+        }
+
+        var best = shared
+            .Where(s => s.Value >= MinSharedParagraphs && s.Value >= keys.Count * MinSharedShare
+                        && s.Value >= _paragraphs[s.Key].Distinct(StringComparer.Ordinal).Count() * MinSharedShare)
+            .OrderByDescending(s => s.Value).ThenBy(s => s.Key, StringComparer.Ordinal)
+            .Select(s => s.Key).FirstOrDefault();
+        return best != null && _byField.TryGetValue(best, out var field)
+            ? new GameStringMatch(field.Korean, $"{field.Plugin} 비슷한 글 {shared[best]}/{keys.Count}문단")
+            : null;
+    }
+
+    /// <summary>For each given row with no game translation of its own, the base game's Korean of the text it copied with changes.</summary>
+    public async System.Threading.Tasks.Task<IReadOnlyDictionary<long, GameStringMatch>> SimilarAsync(
+        XTranslatorAi.Core.Data.IProjectDb db,
+        IReadOnlyList<long> ids,
+        System.Threading.CancellationToken cancellationToken)
+    {
+        var found = new Dictionary<long, GameStringMatch>();
+        if (_byParagraph.Count == 0 || ids.Count == 0) return found;
+        var exact = await MatchAsync(db, ids, cancellationToken).ConfigureAwait(false);
+        var rows = await db.GetStringTranslationContextsByIdsAsync(ids.Where(id => !exact.ContainsKey(id)).ToList(), cancellationToken).ConfigureAwait(false);
+        foreach (var (id, row) in rows)
+        {
+            if (FindSimilar(row.Rec, row.SourceText) is { } match) found[id] = match;
+        }
+
+        return found;
+    }
 
     public int FieldCount => _byField.Count;
 
@@ -83,6 +189,7 @@ public sealed class GameStringDictionary
         // text, which no longer counts. Update.esm's 제련 for the Smithing skill was outvoted by the 뼈다귀 제련 it
         // replaces. An override that changes the English leaves the earlier pair a translation of its own English.
         var shownText = new Dictionary<(string Identity, string Key), string>();
+        var english = new List<(string Identity, string? Rec, string English)>();
         foreach (var plugin in plugins)
         {
             foreach (var field in plugin.Fields)
@@ -102,6 +209,7 @@ public sealed class GameStringDictionary
 
                 var key = Fingerprint(normalized);
                 byField[identity] = (key, korean, plugin.FileName);
+                english.Add((identity, field.Rec, field.SourceText));
                 // Game 1.6 renamed some 1.5.97 strings "Creation Club Cell" for its hidden Creation Club cells, and the
                 // patch translates such a string for what the 1.5.97 game shows (a Dragonborn effect still points at
                 // one): the record keeps it, but the placeholder text translates no other record's name.
@@ -138,7 +246,7 @@ public sealed class GameStringDictionary
             }
         }
 
-        return new GameStringDictionary(byField, byText);
+        return new GameStringDictionary(byField, byText).WithParagraphs(english);
     }
 
     /// <summary>
@@ -227,6 +335,12 @@ public sealed class GameStringDictionary
         }
 
         // Kinds an older app does not know are skipped by its reader, so the format keeps its version.
+        foreach (var (identity, keys) in _paragraphs)
+        {
+            writer.Write(string.Join('\t', "P", identity, string.Join(',', keys)));
+            writer.Write('\n');
+        }
+
         foreach (var line in Speakers?.Lines() ?? Enumerable.Empty<string>())
         {
             writer.Write(line);
@@ -245,6 +359,7 @@ public sealed class GameStringDictionary
 
         var byField = new Dictionary<string, (string, string, string)>(StringComparer.Ordinal);
         var byText = new Dictionary<string, string>(StringComparer.Ordinal);
+        var paragraphs = new Dictionary<string, string[]>(StringComparer.Ordinal);
         var speakers = new MasterSpeakerIndex.Maps();
         while (reader.ReadLine() is { } line)
         {
@@ -257,13 +372,17 @@ public sealed class GameStringDictionary
             {
                 byText[parts[1]] = Unescape(parts[2]);
             }
+            else if (parts.Length == 3 && parts[0] == "P")
+            {
+                paragraphs[parts[1]] = parts[2].Split(',', StringSplitOptions.RemoveEmptyEntries);
+            }
             else
             {
                 MasterSpeakerIndex.TryReadLine(parts, speakers);
             }
         }
 
-        return new GameStringDictionary(byField, byText, MasterSpeakerIndex.FromMaps(speakers));
+        return new GameStringDictionary(byField, byText, MasterSpeakerIndex.FromMaps(speakers), paragraphs);
     }
 
     // 128 bits of SHA-256 over the normalized English: equal text gives an equal fingerprint, and no text can be read back.

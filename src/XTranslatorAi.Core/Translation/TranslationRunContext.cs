@@ -40,6 +40,7 @@ internal sealed class TranslationRunContext : IDisposable
     public IReadOnlyDictionary<long, IReadOnlyList<(long Id, string Source, MaskedText Mask)>>? DuplicateRowsByCanonicalId { get; set; }
     public IReadOnlyDictionary<long, string>? DialogueContextWindowById { get; set; }
     public IReadOnlyDictionary<long, string>? PreviousTranslationById { get; set; }
+    public IReadOnlyDictionary<long, XTranslatorAi.Core.Plugins.GameStringMatch>? GameReferenceById { get; set; }
 
     public ReferenceNameIndex? ReferenceNames { get; set; }
     public EnchantmentNameIndex? EnchantmentNames { get; set; }

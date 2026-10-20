@@ -24,6 +24,7 @@ public sealed partial class TranslationService
             : null);
         var previousTranslations = await _db.GetPreviousTranslationsByStringIdAsync(request.CancellationToken);
         Ctx.PreviousTranslationById = previousTranslations.Count == 0 ? null : previousTranslations;
+        Ctx.GameReferenceById = request.GameStringReferences is { Count: > 0 } references ? references : null;
         var reusablePrevious = previousTranslations.Count == 0
             ? new Dictionary<long, string>()
             : await _db.GetReusablePreviousTranslationsByStringIdAsync(request.CancellationToken);

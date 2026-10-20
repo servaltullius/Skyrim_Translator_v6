@@ -251,7 +251,13 @@ Codex의 두 번째 시험과 같은 플러그인(EldenWarAshPack1, 150줄)을 �
 짧은 대사는 셋 차이가 작아서, 긴 글로 다시 비교한다(`artifacts/mcp-trial-20261020/lotd/`).
 
 - 책: Legacy of the Dragonborn 6.10의 책 7편(DBM_·BCSLL_). 영어 300~740단어, 모두 3,700단어.
-  - 6편은 바닐라에 없다. The Falmer: A Study(DBM_MAASE_CWBook05)는 바닐라 Skyrim.esm 0E0D68과 같은 글이지만, LotD판은 꾸밈(첫 글자 그림 등)이 달라 게임 번역 사전에 맞지 않아 넷 다 처음부터 번역했다. 한글패치는 "War of the Crag"를 크래그 전쟁으로 옮겼는데, 넷 다 몰랐다(바위산 전쟁·협곡 전쟁·바위 전쟁).
+  - 6편은 바닐라에 없다. The Falmer: A Study(DBM_MAASE_CWBook05)는 바닐라 Skyrim.esm 0E0D68과 같은 책이다. 그러나 LotD판은 문장 끝 공백을 지우고 오타 하나("The overthrew" → "They overthrew")를 고쳐, 게임 번역 사전에 맞지 않았다. 그래서 넷 다 처음부터 번역했다. 한글패치는 "War of the Crag"를 크래그 전쟁으로 옮겼는데, 넷 다 몰랐다(바위산 전쟁·협곡 전쟁·바위 전쟁).
+  - 고침: 게임 번역 사전에 바닐라 긴 글 584편의 문단 지문(꾸밈·대소문자·공백을 뺀 문단마다 64비트)을 더했다(`P` 줄, KoreanPatchReview `paragraphs` 명령, 번역 줄은 그대로).
+    - 행 전체가 맞지 않아도 문단이 3개 이상, 양쪽 모두 60% 이상 같으면 바닐라 책을 고친 사본으로 본다.
+    - 이때 한글패치 번역 전체를 그 행의 요청에 참고로 넣는다(`TranslationGameReference`, 최대 12,000자). 영어가 다르므로 그대로 채우지는 않는다.
+    - GUI와 에이전트 모드 모두 해당한다.
+  - LotD 6.10 책 본문 1,410개 가운데 383개는 사전에 그대로 맞는다. 바닐라 책을 고친 사본 327개(문단이 모두 같은 것 74개)는 지금까지 처음부터 번역됐다.
+  - 에이전트 모드 요청으로 확인: 팔머 연구 행의 ctx에 한글패치 번역("크래그 전쟁(War of the Crag)" 포함)이 붙었다.
   - 우화 The Barber, 편지 Auryen Morellus' Letter, 모험가 일지 Micmou's Journal, 운문 Manifesto Cyrodiil Vampyrum, 연구 노트 Notes of Shalidor, 유머 Jokes, 학술서 The Falmer: A Study
 - 시험 프로젝트: 쪽마다 플러그인 사본을 `agent open`으로 열고, 책 7줄을 뺀 17,364줄을 건너뜀(3)으로 바꿨다(`lotd_setup.py`). 실제 프로젝트는 건드리지 않았다.
   - GUI는 이름을 바꾼 사본(LotDBlindGUI.esm)을 같은 방법으로 미리 만들어, GUI가 그 프로젝트를 이어 열고 대기 7줄만 번역했다.

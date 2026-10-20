@@ -203,4 +203,68 @@ public sealed class GameStringDictionaryTests
         Assert.Equal("뭐가 필요합니까?", loaded.Find(Identity("INFO/00012346/0/NAM1/0"), "INFO:NAM1", "What do you want?")!.Text);
         Assert.Equal("긴 책.", loaded.Find(null, "BOOK:DESC", "A long book.")!.Text);
     }
+
+    private const string FalmerEnglish =
+        "[pagebreak]\r\n<p align=\"center\">The Falmer: A Study\r\n\r\nby\r\nUrsa Uthrax</p>\r\n\r\n[pagebreak]\r\n<p align=\"left\">"
+        + "<img src='img://Textures/Interface/Books/Illuminated_Letters/I_letter.png'> have studied, and traveled, and my hypothesis has finally been confirmed. \r\n\r\n"
+        + "No one really knows when the story of the Snow Elves began, but the ancient work tells of its ending.\r\n\r\n"
+        + "But as is always the story with slaves and their masters, the Falmer rose up. The overthrew the dwarves, and fled.\r\n\r\n"
+        + "For decade upon decade, the two sides waged a bitter conflict, the War of the Crag, deep below Skyrim.\r\n";
+
+    private static GameStringDictionary BuildWithBook()
+        => GameStringDictionary.Build(new[]
+        {
+            new GameStringPlugin("Skyrim.esm", new string[0], new[]
+            {
+                Field("BOOK/000E0D68/0/DESC/0", FalmerEnglish, PluginStringTableKind.DlStrings, 1),
+                Field("INFO/00012345/0/NAM1/0", FalmerEnglish, PluginStringTableKind.IlStrings, 2),
+            }, new Dictionary<(PluginStringTableKind, uint), string>
+            {
+                [(PluginStringTableKind.DlStrings, 1)] = "팔머: 연구 … 크래그 전쟁 …",
+                [(PluginStringTableKind.IlStrings, 2)] = "대사",
+            }),
+        });
+
+    /// <summary>
+    /// LotD's copy of a base game book drops trailing spaces and fixes a typo ("The overthrew"), so the whole text never
+    /// matches; most of its paragraphs do, and the Korean patch's text is offered as a reference. A different book, a
+    /// short text and dialogue are not.
+    /// </summary>
+    [Fact]
+    public void EditedCopyOfABaseGameBook_FindsItsKoreanAsAReference()
+    {
+        var game = BuildWithBook();
+        var lotd = FalmerEnglish.Replace(". \r\n", ".\r\n").Replace("The overthrew", "They overthrew").TrimEnd();
+
+        Assert.Null(game.Find("BOOK/skyrim.esm:0E0D68/0/DESC/0", "BOOK:DESC", lotd));
+        var similar = game.FindSimilar("BOOK:DESC", lotd);
+        Assert.Equal("팔머: 연구 … 크래그 전쟁 …", similar!.Text);
+        Assert.Contains("비슷한 글 3/4문단", similar.Origin);
+
+        Assert.Null(game.FindSimilar("BOOK:DESC", "A different book about something else entirely, and long enough to count.\n\nIts second paragraph is also nothing like the base game's text.\n\nNor is its third paragraph, which closes the book."));
+        Assert.Null(game.FindSimilar("BOOK:DESC", "No one really knows when the story of the Snow Elves began, but the ancient work tells of its ending."));
+        Assert.Null(game.FindSimilar("INFO:NAM1", lotd));
+        Assert.Equal(1, game.ParagraphTextCount);
+    }
+
+    [Fact]
+    public void ParagraphFingerprints_SurviveSaveAndLoad_AndCanBeAddedToAnOlderDictionary()
+    {
+        using var stream = new MemoryStream();
+        BuildWithBook().Save(stream);
+        stream.Position = 0;
+        var loaded = GameStringDictionary.Load(stream);
+        Assert.Equal(1, loaded.ParagraphTextCount);
+        Assert.NotNull(loaded.FindSimilar("BOOK:DESC", FalmerEnglish.Replace("The overthrew", "They overthrew")));
+
+        // The shipped dictionary gains them from the game's English; a record whose English is not the one its Korean
+        // translates is skipped.
+        var older = Build();
+        Assert.Equal(0, older.ParagraphTextCount);
+        var added = older.WithParagraphs(new (string, string?, string)[]
+        {
+            ("BOOK/skyrim.esm:001000/0/DESC/0", "BOOK:DESC", FalmerEnglish),
+        });
+        Assert.Equal(0, added.ParagraphTextCount);
+    }
 }

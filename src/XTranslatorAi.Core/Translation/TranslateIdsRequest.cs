@@ -52,6 +52,8 @@ public sealed record TranslateIdsRequest(
     bool EnableRunNameMemory = true,
     // Rows the player's game translation already covers (see GameStringDictionary), by row id.
     IReadOnlyDictionary<long, XTranslatorAi.Core.Plugins.GameStringMatch>? GameStringMatches = null,
+    // Base game long texts the mod copied with changes (see GameStringDictionary.FindSimilar), sent as references by row id.
+    IReadOnlyDictionary<long, XTranslatorAi.Core.Plugins.GameStringMatch>? GameStringReferences = null,
     // Who says each dialogue line (see DialogueSpeakerNames), by row id; read from the project when not given.
     IReadOnlyDictionary<long, string>? SpeakerNamesById = null,
     // The rows whose translations the run's name memory reads; null for all. An agent lane reads only its own, so

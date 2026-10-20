@@ -9,6 +9,8 @@ using XTranslatorAi.Core.Text;
 //   dictionary <game Data> <patch folder> <output .gz>
 //   speakers   <game Data> <dictionary .gz> <output .gz>
 //              (the dictionary with the masters' speaker index added, its translations unchanged)
+//   paragraphs <game Data> <dictionary .gz> <output .gz>
+//              (the dictionary with the paragraph fingerprints of the base game's long texts added, its translations unchanged)
 // A patch shipped as a translated plugin (USSEP) instead of string tables:
 //   plugin-pair  <english plugin> <translated plugin of an earlier release> <new output folder> [--older-english <its English>]
 //                [--dictionary <game strings .gz>] [--game-data <game Data>] [--chunk N]
@@ -71,6 +73,40 @@ switch (command)
         }
 
         Console.WriteLine($"{target}: 레코드 {dictionary.FieldCount:N0}, 문장 {dictionary.TextCount:N0}, 화자 색인 {index.Count:N0}");
+        return 0;
+    }
+    case "paragraphs":
+    {
+        GameStringDictionary dictionary;
+        await using (var input = File.OpenRead(patch))
+        {
+            dictionary = GameStringDictionary.Load(input);
+        }
+
+        var fields = new List<(string, string?, string)>();
+        foreach (var plugin in GameStringDictionaryBuilder.BaseGamePlugins)
+        {
+            var path = Path.Combine(data, plugin);
+            if (!File.Exists(path)) continue;
+            var document = await PluginReader.ReadAsync(path, new PluginReadOptions(), CancellationToken.None);
+            foreach (var field in document.Fields)
+            {
+                if (GameStringDictionary.FieldIdentity(field.Key, document.Info.Masters, plugin) is { } identity)
+                {
+                    fields.Add((identity, field.Rec, field.SourceText));
+                }
+            }
+
+            Console.WriteLine("읽음: " + plugin);
+        }
+
+        dictionary = dictionary.WithParagraphs(fields);
+        await using (var stream = File.Create(target))
+        {
+            dictionary.Save(stream);
+        }
+
+        Console.WriteLine($"{target}: 레코드 {dictionary.FieldCount:N0}, 문장 {dictionary.TextCount:N0}, 문단을 기억한 긴 글 {dictionary.ParagraphTextCount:N0}");
         return 0;
     }
     case "plugin-pair":
