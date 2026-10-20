@@ -11,8 +11,10 @@ public static partial class MagDurPlaceholderFixer
         RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
+    // <mag> read as a time: a time unit right after it ("<mag>초 동안"). A time word before it is the common, correct
+    // Korean order ("<dur>초 동안 <mag>포인트의 피해"), which matched too and had the two tags swapped.
     private static readonly Regex MagLooksTimeRegex = new(
-        @"([+-]?<\s*mag\s*>\s*%?\s*(초간|초|분|시간|일|주|개월|년|동안|간))|((초간|초|분|시간|일|주|개월|년|동안|간)\s*[+-]?<\s*mag\s*>\s*%?)",
+        @"[+-]?<\s*mag\s*>\s*%?\s*(초간|초|분|시간|일|주|개월|년|동안|간)",
         RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 

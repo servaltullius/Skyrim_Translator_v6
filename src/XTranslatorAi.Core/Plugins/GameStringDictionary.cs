@@ -12,10 +12,11 @@ namespace XTranslatorAi.Core.Plugins;
 
 /// <summary>
 /// A game translation found for a row, and where it came from (shown in the row's note). For a base game text the mod
-/// copied with changes, the row's paragraphs the base game does not have (see GameStringDictionary.FindSimilar).
+/// copied with changes, the row's paragraphs the base game does not have (see GameStringDictionary.FindSimilar), and
+/// the base game's English blocks as fingerprints, for pairing the patch's blocks with the row's (see SpliceUnchanged).
 /// </summary>
 public sealed record GameStringMatch(string Text, string Origin, IReadOnlyList<string>? ChangedParagraphs = null,
-    IReadOnlyList<string>? BaseParagraphOrder = null);
+    IReadOnlyList<string>? BaseBlocks = null);
 
 /// <summary>One base game plugin read with its English tables, and the Korean patch's tables for it.</summary>
 public sealed record GameStringPlugin(
@@ -42,16 +43,19 @@ public sealed class GameStringDictionary
     private readonly Dictionary<string, string> _byText;
     private readonly Dictionary<string, string[]> _paragraphs;
     private readonly Dictionary<string, string[]> _shortParagraphs;
+    private readonly Dictionary<string, string[]> _blocks;
     private readonly Dictionary<string, List<string>> _byParagraph;
 
     private GameStringDictionary(Dictionary<string, (string, string, string)> byField, Dictionary<string, string> byText,
-        MasterSpeakerIndex? speakers = null, Dictionary<string, string[]>? paragraphs = null, Dictionary<string, string[]>? shortParagraphs = null)
+        MasterSpeakerIndex? speakers = null, Dictionary<string, string[]>? paragraphs = null, Dictionary<string, string[]>? shortParagraphs = null,
+        Dictionary<string, string[]>? blocks = null)
     {
         _byField = byField;
         _byText = byText;
         Speakers = speakers;
         _paragraphs = paragraphs ?? new Dictionary<string, string[]>(StringComparer.Ordinal);
         _shortParagraphs = shortParagraphs ?? new Dictionary<string, string[]>(StringComparer.Ordinal);
+        _blocks = blocks ?? new Dictionary<string, string[]>(StringComparer.Ordinal);
         _byParagraph = new Dictionary<string, List<string>>(StringComparer.Ordinal);
         foreach (var (identity, keys) in _paragraphs)
         {
@@ -67,7 +71,7 @@ public sealed class GameStringDictionary
     public MasterSpeakerIndex? Speakers { get; }
 
     /// <summary>This dictionary with the masters' speaker index; the translations are shared, not copied.</summary>
-    public GameStringDictionary WithSpeakers(MasterSpeakerIndex? speakers) => new(_byField, _byText, speakers, _paragraphs, _shortParagraphs);
+    public GameStringDictionary WithSpeakers(MasterSpeakerIndex? speakers) => new(_byField, _byText, speakers, _paragraphs, _shortParagraphs, _blocks);
 
     /// <summary>The long texts whose paragraphs are kept, for finding a mod's edited copy (see <see cref="FindSimilar"/>).</summary>
     public int ParagraphTextCount => _paragraphs.Count;
@@ -80,6 +84,7 @@ public sealed class GameStringDictionary
     {
         var paragraphs = new Dictionary<string, string[]>(_paragraphs, StringComparer.Ordinal);
         var shortParagraphs = new Dictionary<string, string[]>(_shortParagraphs, StringComparer.Ordinal);
+        var blocks = new Dictionary<string, string[]>(_blocks, StringComparer.Ordinal);
         foreach (var (identity, rec, english) in fields)
         {
             if (IsDialogue(rec) || !_byField.TryGetValue(identity, out var field)) continue;
@@ -89,9 +94,10 @@ public sealed class GameStringDictionary
             if (keys.Count < MinSharedParagraphs) continue;
             paragraphs[identity] = keys.ToArray();
             shortParagraphs[identity] = ShortParagraphKeys(english).ToArray();
+            blocks[identity] = BlockKeys(english).ToArray();
         }
 
-        return new GameStringDictionary(_byField, _byText, Speakers, paragraphs, shortParagraphs);
+        return new GameStringDictionary(_byField, _byText, Speakers, paragraphs, shortParagraphs, blocks);
     }
 
     // A long text counts as the base game's when this many of its paragraphs, and this share of both texts', are the same.
@@ -123,6 +129,21 @@ public sealed class GameStringDictionary
     internal static IReadOnlyList<string> ShortParagraphKeys(string english)
         => PlainParagraphs(english).Where(plain => plain.Length is > 0 and < MinParagraphChars)
             .Select(plain => Fingerprint(plain.ToLowerInvariant())[..16]).ToList();
+
+    /// <summary>
+    /// Each blank-line block of a text, as the fingerprints of all its paragraphs, short lines included, joined by
+    /// commas: the blocks the patch's text pairs with by position (see <see cref="SpliceUnchanged"/>).
+    /// </summary>
+    internal static IReadOnlyList<string> BlockKeys(string english)
+    {
+        var blocks = BlankLines.Split(english.Trim());
+        var keys = new List<string>();
+        for (var i = 0; i < blocks.Length; i += 2) keys.Add(BlockKey(blocks[i]));
+        return keys;
+    }
+
+    private static string BlockKey(string block)
+        => string.Join(',', PlainParagraphs(block).Where(plain => plain.Length > 0).Select(plain => Fingerprint(plain.ToLowerInvariant())[..16]));
 
     private static IEnumerable<string> PlainParagraphs(string english)
     {
@@ -163,7 +184,7 @@ public sealed class GameStringDictionary
         var dropped = shared[best] < baseKeys.Count;
         return (new GameStringMatch(field.Korean, $"{field.Plugin} 비슷한 글 {shared[best]}/{keys.Count}문단",
             changed.Count == 0 && dropped ? new[] { "(the base game's text has paragraphs this source does not)" } : changed,
-            _paragraphs[best]), best);
+            _blocks.GetValueOrDefault(best)), best);
     }
 
     /// <summary>
@@ -232,31 +253,25 @@ public sealed class GameStringDictionary
     /// The model's translation of a base game text the mod copied with changes, with each block the mod left as the base
     /// game wrote it replaced by the Korean patch's block: told to copy the patch, gemini-3.8-flash still retranslated
     /// LotD's Falmer: A Study (암벽 전쟁 for the patch's 크래그 전쟁). Blocks pair up by position between blank lines; a
-    /// block whose markup differs from the source's keeps the model's text. Null when nothing pairs up.
+    /// block whose markup differs from the source's keeps the model's text. Null when nothing pairs up, and for a
+    /// dictionary built before it kept the base game's blocks.
     /// </summary>
     public static string? SpliceUnchanged(string source, string translated, GameStringMatch match)
     {
-        if (match.BaseParagraphOrder is not { } baseOrder) return null;
+        if (match.BaseBlocks is not { } baseBlocks) return null;
         var s = BlankLines.Split(source);
         var t = BlankLines.Split(translated);
         var k = BlankLines.Split(match.Text.Trim());
-        if (s.Length != t.Length || s.Length != k.Length) return null;
+        if (s.Length != t.Length || s.Length != k.Length || baseBlocks.Count != (s.Length + 1) / 2) return null;
 
-        // The patch's blocks pair with the source's by position, so a block is the base game's only where its
-        // paragraphs stand where the base game has them. A copy that drops one paragraph and adds another keeps the
-        // block count, and a set check put the patch's next paragraph into the wrong block; with paragraphs added or
-        // dropped nothing pairs up.
-        var blockKeys = new List<List<string>>();
-        for (var i = 0; i < s.Length; i += 2) blockKeys.Add(Paragraphs(s[i]).Select(p => p.Key).ToList());
-        if (blockKeys.Sum(keys => keys.Count) != baseOrder.Count) return null;
+        // The patch's blocks pair with the source's by position, so a block is the base game's only where the base
+        // game has the same block, short lines included, at the same place. Comparing the long paragraphs alone, a copy
+        // that moved a short heading ("Part Two") up one block put the patch's heading in place of a paragraph.
         var spliced = false;
-        var position = 0;
         for (var i = 0; i < s.Length; i += 2)
         {
-            var keys = blockKeys[i / 2];
-            var at = position;
-            position += keys.Count;
-            if (keys.Count == 0 || keys.Where((key, j) => !string.Equals(key, baseOrder[at + j], StringComparison.Ordinal)).Any()) continue;
+            var key = BlockKey(s[i]);
+            if (key.Length == 0 || !string.Equals(key, baseBlocks[i / 2], StringComparison.Ordinal)) continue;
             // The patch's block laid out as the source's, with the spacing the model kept around it.
             if (Relayout(s[i].Trim(), k[i].Trim()) is not { } block) continue;
             var lead = t[i][..(t[i].Length - t[i].TrimStart().Length)];
@@ -484,6 +499,12 @@ public sealed class GameStringDictionary
             writer.Write('\n');
         }
 
+        foreach (var (identity, blocks) in _blocks)
+        {
+            writer.Write(string.Join('\t', "PB", identity, string.Join(';', blocks)));
+            writer.Write('\n');
+        }
+
         foreach (var line in Speakers?.Lines() ?? Enumerable.Empty<string>())
         {
             writer.Write(line);
@@ -504,6 +525,7 @@ public sealed class GameStringDictionary
         var byText = new Dictionary<string, string>(StringComparer.Ordinal);
         var paragraphs = new Dictionary<string, string[]>(StringComparer.Ordinal);
         var shortParagraphs = new Dictionary<string, string[]>(StringComparer.Ordinal);
+        var blocks = new Dictionary<string, string[]>(StringComparer.Ordinal);
         var speakers = new MasterSpeakerIndex.Maps();
         while (reader.ReadLine() is { } line)
         {
@@ -524,13 +546,18 @@ public sealed class GameStringDictionary
             {
                 shortParagraphs[parts[1]] = parts[2].Split(',', StringSplitOptions.RemoveEmptyEntries);
             }
+            else if (parts.Length == 3 && parts[0] == "PB")
+            {
+                // Empty entries are blocks without words (markup only), kept so the rest stay in place.
+                blocks[parts[1]] = parts[2].Split(';');
+            }
             else
             {
                 MasterSpeakerIndex.TryReadLine(parts, speakers);
             }
         }
 
-        return new GameStringDictionary(byField, byText, MasterSpeakerIndex.FromMaps(speakers), paragraphs, shortParagraphs);
+        return new GameStringDictionary(byField, byText, MasterSpeakerIndex.FromMaps(speakers), paragraphs, shortParagraphs, blocks);
     }
 
     // 128 bits of SHA-256 over the normalized English: equal text gives an equal fingerprint, and no text can be read back.

@@ -14,7 +14,7 @@ namespace XTranslatorAi.Core.Text.KoreanFix.Internal.Steps;
 internal sealed class AcronymParticleStep : IKoreanFixStep
 {
     private static readonly Regex AcronymParticleRegex = new(
-        pattern: @"\b(?<word>[A-Za-z][A-Za-z0-9'’\-]*)(?<particle>을|를|은|는|이|가|과|와)(?=$|[\s\p{P}])",
+        pattern: @"\b(?<word>[A-Za-z][A-Za-z0-9'’\-]*)(?<particle>을|를|은|는|이|가|과|와)(?<pair>\((?:을|를|은|는|이|가|과|와)\)|/(?:을|를|은|는|이|가|과|와))?(?=$|[\s\p{P}])",
         options: RegexOptions.CultureInvariant,
         matchTimeout: TimeSpan.FromMilliseconds(250)
     );
@@ -37,6 +37,13 @@ internal sealed class AcronymParticleStep : IKoreanFixStep
             }
 
             var particle = m.Groups["particle"].Value;
+            // "HP이(가)" or "HP이/가" became "HP가(가)": the pair is resolved with the particle, not left after it.
+            var pair = m.Groups["pair"].Value.Trim('(', ')', '/');
+            if (pair.Length > 0 && (pair == particle || Group(pair) != Group(particle)))
+            {
+                return m.Value;
+            }
+
             var expected = (particle, hasFinal) switch
             {
                 ("을" or "를", true) => "을",
@@ -51,6 +58,14 @@ internal sealed class AcronymParticleStep : IKoreanFixStep
             return word + expected;
         });
     }
+
+    private static int Group(string particle) => particle switch
+    {
+        "을" or "를" => 0,
+        "은" or "는" => 1,
+        "이" or "가" => 2,
+        _ => 3,
+    };
 
     private static bool IsSurelySpelledOut(string word)
     {

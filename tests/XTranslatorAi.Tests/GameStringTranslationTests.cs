@@ -73,4 +73,44 @@ public class GameStringTranslationTests
         Assert.Contains("그들은 드워프를 무너뜨렸다.", sent);
         Assert.DoesNotContain("<p>그들은", sent);
     }
+
+    /// <summary>
+    /// The same base game book in two records (LotD keeps several): the second is saved from the first one's answer,
+    /// and it takes the Korean patch's blocks too instead of the model's text alone.
+    /// </summary>
+    [Fact]
+    public async Task DuplicateOfAnEditedBaseGameBook_IsSplicedLikeTheFirst()
+    {
+        const string english = "The first paragraph of the base game book, long enough to be counted.\r\n\r\n"
+                               + "The second paragraph of the base game book, also long enough to count.\r\n\r\n"
+                               + "The third paragraph of the base game book, which the mod left alone too.\r\n\r\n"
+                               + "The fourth paragraph of the base game book, which the mod rewrote a little.";
+        var game = GameStringDictionary.Build(new[]
+        {
+            new GameStringPlugin("Skyrim.esm", new string[0], new[]
+            {
+                new PluginField("BOOK/00001000/0/DESC/0", 0, "BOOK", "DESC", 0x1000, null, 0, 0, english, PluginStringTableKind.DlStrings, 1),
+            }, new Dictionary<(PluginStringTableKind, uint), string>
+            {
+                [(PluginStringTableKind.DlStrings, 1)] = "바닐라 책의 첫 문단.\r\n\r\n바닐라 책의 둘째 문단.\r\n\r\n바닐라 책의 셋째 문단.\r\n\r\n바닐라 책의 넷째 문단.",
+            }),
+        });
+        var copy = english.Replace("rewrote a little.", "rewrote a little more.");
+        await using var fixture = await TranslationRunFixture.CreateAsync((copy, "BOOK:DESC"), (copy, "BOOK:DESC"));
+        var match = game.FindSimilar("BOOK:DESC", copy);
+        Assert.NotNull(match);
+
+        await fixture.Service.TranslateIdsAsync(fixture.Request with
+        {
+            GameStringReferences = fixture.Ids.ToDictionary(id => id, _ => match),
+        });
+
+        var rows = await fixture.RowsAsync();
+        Assert.All(rows.Values, row =>
+        {
+            Assert.Contains("바닐라 책의 첫 문단.", row.DestText);
+            Assert.Contains("바닐라 책의 셋째 문단.", row.DestText);
+            Assert.DoesNotContain("바닐라 책의 넷째 문단.", row.DestText);
+        });
+    }
 }

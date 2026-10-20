@@ -405,9 +405,12 @@ public sealed class TranslationServiceApiKeyFailoverTests
 
     // "The model is overloaded." (503) on every call marked all 12 rows Error within seconds; an overload lasting minutes
     // turned a large project into thousands of Error rows. It stops like a lost connection, rows left Pending, and no
-    // other key is tried for it.
-    [Fact]
-    public async Task TranslateIdsAsync_StopsAfterThreeServerOverloads()
+    // other key is tried for it. With failover on, the first 503 used to end the run and hand it to the next saved key
+    // (or, with one key, just stop), as a lost connection did before.
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task TranslateIdsAsync_StopsAfterThreeServerOverloads(bool enableApiKeyFailover)
     {
         var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
         try
@@ -420,7 +423,7 @@ public sealed class TranslationServiceApiKeyFailoverTests
             var service = new TranslationService(db, new GeminiClient(new HttpClient(handler)));
 
             var ex = await Assert.ThrowsAsync<TranslationRateLimitAbortException>(
-                () => service.TranslateIdsAsync(CreateRequest(ids, enableApiKeyFailover: false) with { BatchSize = 4 }));
+                () => service.TranslateIdsAsync(CreateRequest(ids, enableApiKeyFailover: enableApiKeyFailover) with { BatchSize = 4 }));
 
             var statuses = await db.GetStringStatusesByIdsAsync(ids, CancellationToken.None);
             Assert.True(statuses.Values.Count(status => status == StringEntryStatus.Pending) >= 4);

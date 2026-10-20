@@ -134,6 +134,8 @@ public sealed partial class TranslationService
                 dupFinal = KoreanProtectFromFixer.Fix(targetLang, dup.Source, dupFinal);
                 dupFinal = KoreanSourceAwareFixes.Apply(targetLang, dup.Source, dupFinal);
                 dupFinal = KoreanTranslationFixer.Fix(targetLang, dupFinal);
+                // The same base game book in two records: the copy takes the Korean patch's blocks as the first does.
+                dupFinal = SpliceGamePatch(dup.Id, dup.Source, dupFinal);
                 TokenValidator.ValidateFinalTextIntegrity(dup.Source, dupFinal, context: $"id={dup.Id} post-edits");
                 doneUpdates.Add((dup.Id, dupFinal, StringEntryStatus.Done, null));
             }

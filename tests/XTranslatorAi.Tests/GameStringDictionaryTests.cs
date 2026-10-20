@@ -347,6 +347,35 @@ public sealed class GameStringDictionaryTests
         Assert.Null(GameStringDictionary.SpliceUnchanged(longer, model, game.FindSimilar("BOOK:DESC", longer)!));
     }
 
+    /// <summary>
+    /// A copy that moved a short heading up one block keeps every long paragraph in the base game's order and the same
+    /// block count. Pairing by the long paragraphs alone put the patch's heading (2부) in place of the paragraph that
+    /// moved down; blocks now pair only where the whole block, short lines included, is the base game's.
+    /// </summary>
+    [Fact]
+    public void BlockShiftedByAMovedHeading_KeepsTheModelsText()
+    {
+        const string first = "The first paragraph of the base game book, long enough to be counted.";
+        const string second = "The second paragraph of the base game book, also long enough to count.";
+        const string third = "The third paragraph of the base game book, long enough to be counted too.";
+        const string fourth = "The fourth paragraph of the base game book, long enough to be counted again.";
+        var english = string.Join("\r\n\r\n", "A Book", first, second, "Part Two", third, fourth);
+        var game = GameStringDictionary.Build(new[]
+        {
+            new GameStringPlugin("Skyrim.esm", new string[0], new[] { Field("BOOK/000E0D68/0/DESC/0", english, PluginStringTableKind.DlStrings, 1) },
+                new Dictionary<(PluginStringTableKind, uint), string>
+                {
+                    [(PluginStringTableKind.DlStrings, 1)] = string.Join("\r\n\r\n", "어떤 책", "첫 문단.", "둘째 문단.", "2부", "셋째 문단.", "넷째 문단."),
+                }),
+        });
+        var moved = string.Join("\r\n\r\n", "A Book", first, "Interlude", second, third, fourth);
+        var model = string.Join("\r\n\r\n", "모델의 제목", "모델의 첫 문단.", "막간", "모델의 둘째 문단.", "모델의 셋째 문단.", "모델의 넷째 문단.");
+
+        var spliced = GameStringDictionary.SpliceUnchanged(moved, model, game.FindSimilar("BOOK:DESC", moved)!);
+
+        Assert.Equal(string.Join("\r\n\r\n", "어떤 책", "첫 문단.", "막간", "모델의 둘째 문단.", "셋째 문단.", "넷째 문단."), spliced);
+    }
+
     /// <summary>A copy with one blank line more than the base game's still takes the patch's text, laid out as the source is.</summary>
     [Fact]
     public void SameParagraphsWithOtherBlankLines_TakeThePatchLaidOutAsTheSource()
@@ -397,6 +426,10 @@ public sealed class GameStringDictionaryTests
         var loaded = GameStringDictionary.Load(stream);
         Assert.Equal(1, loaded.ParagraphTextCount);
         Assert.NotNull(loaded.FindSimilar("BOOK:DESC", FalmerEnglish.Replace("The overthrew", "They overthrew")));
+        // The base game's blocks come back too, so the patch's blocks are still spliced in.
+        Assert.Equal(BuildWithBook().FindSimilar("BOOK:DESC", FalmerEnglish)!.BaseBlocks,
+            loaded.FindSimilar("BOOK:DESC", FalmerEnglish)!.BaseBlocks);
+        Assert.Equal(6, loaded.FindSimilar("BOOK:DESC", FalmerEnglish)!.BaseBlocks!.Count);
         // The short lines' fingerprints come back too: the same text with other spacing is still filled.
         Assert.NotNull(loaded.FindSameParagraphs("BOOK:DESC", FalmerEnglish.Replace(". \r\n", ".\r\n")));
         Assert.Null(loaded.FindSameParagraphs("BOOK:DESC", FalmerEnglish.Replace("Ursa Uthrax", "Ursa")));

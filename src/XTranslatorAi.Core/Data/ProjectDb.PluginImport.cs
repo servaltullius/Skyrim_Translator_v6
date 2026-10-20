@@ -78,6 +78,7 @@ public sealed partial class ProjectDb
             // A FormID's first byte is its master's position: an update that adds or reorders masters renumbers the
             // records (01000800 → 02000800), so the saved keys are moved to the new master list first. Otherwise every
             // translation of the plugin's own records was set aside as a changed row.
+            var unmapped = new Dictionary<string, (string Source, string Dest, StringEntryStatus Status)>(StringComparer.Ordinal);
             if (oldSource != null && !oldSource.Info.Masters.SequenceEqual(source.Masters, StringComparer.OrdinalIgnoreCase))
             {
                 var remapped = new Dictionary<string, (string Source, string Dest, StringEntryStatus Status)>(StringComparer.Ordinal);
@@ -87,9 +88,15 @@ public sealed partial class ProjectDb
                     {
                         remapped.TryAdd(mapped, value);
                     }
+                    else
+                    {
+                        // A record of a master the update dropped: set aside under its old key instead of lost.
+                        unmapped[key] = value;
+                    }
                 }
 
                 saved = remapped;
+                await RemapPluginFieldKeysAsync(tx, oldSource.Info.Masters, source.Masters, cancellationToken);
             }
 
             var sourceByKey = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -124,7 +131,8 @@ public sealed partial class ProjectDb
                 await clear.ExecuteNonQueryAsync(cancellationToken);
             }
 
-            var retiredCount = await RetireChangedPluginTranslationsAsync(tx, saved, sourceByKey, cancellationToken);
+            var retiredCount = await RetireChangedPluginTranslationsAsync(tx, saved, sourceByKey, cancellationToken)
+                + await RetireChangedPluginTranslationsAsync(tx, unmapped, new Dictionary<string, string>(), cancellationToken);
             await using var insert = CreateBulkInsertStringsCommand(_connection, tx, out var parameters);
             await using var binding = _connection.CreateCommand();
             binding.Transaction = tx;
@@ -302,6 +310,61 @@ public sealed partial class ProjectDb
         }
 
         return count;
+    }
+
+    /// <summary>
+    /// The translations set aside and the linked earlier release's translation and English are stored by field key too:
+    /// after an update that changed the master list they named other records, so the import restored none of them and
+    /// the earlier translation was no longer shown. They are renumbered with the rows; a key whose master left the list
+    /// keeps its old key.
+    /// </summary>
+    private async Task RemapPluginFieldKeysAsync(
+        SqliteTransaction tx, IReadOnlyList<string> fromMasters, IReadOnlyList<string> toMasters, CancellationToken ct)
+    {
+        const string Moving = "\u0001remap\u0001";
+        foreach (var table in new[] { "PluginRetiredTranslation", "PreviousTranslation", "PreviousSource" })
+        {
+            var moves = new List<(string From, string To)>();
+            await using (var query = _connection.CreateCommand())
+            {
+                query.Transaction = tx;
+                query.CommandText = $"SELECT DISTINCT FieldKey FROM {table};";
+                await using var reader = await query.ExecuteReaderAsync(ct);
+                while (await reader.ReadAsync(ct))
+                {
+                    var key = reader.GetString(0);
+                    if (PreviousTranslationMatcher.TryMapKey(key, fromMasters, toMasters, out var mapped) && !string.Equals(mapped, key, StringComparison.Ordinal))
+                    {
+                        moves.Add((key, mapped));
+                    }
+                }
+            }
+
+            if (moves.Count == 0) continue;
+
+            // Two steps, so a key moving onto one that moves on too (02 → 03 while 03 → 04) does not collide; a key
+            // left in place under the new key's name is replaced by the one that now means that record.
+            await using (var move = _connection.CreateCommand())
+            {
+                move.Transaction = tx;
+                move.CommandText = $"UPDATE {table} SET FieldKey=$to WHERE FieldKey=$from;";
+                var from = move.Parameters.Add("$from", SqliteType.Text);
+                var to = move.Parameters.Add("$to", SqliteType.Text);
+                foreach (var (oldKey, newKey) in moves)
+                {
+                    (from.Value, to.Value) = (oldKey, Moving + newKey);
+                    await move.ExecuteNonQueryAsync(ct);
+                }
+            }
+
+            await using var settle = _connection.CreateCommand();
+            settle.Transaction = tx;
+            settle.CommandText = $"UPDATE OR REPLACE {table} SET FieldKey=substr(FieldKey, $start) WHERE substr(FieldKey, 1, $length)=$moving;";
+            settle.Parameters.AddWithValue("$start", Moving.Length + 1);
+            settle.Parameters.AddWithValue("$length", Moving.Length);
+            settle.Parameters.AddWithValue("$moving", Moving);
+            await settle.ExecuteNonQueryAsync(ct);
+        }
     }
 
     private async Task<Dictionary<(string Key, string Source), (string Dest, StringEntryStatus Status)>> ReadRetiredPluginTranslationsAsync(

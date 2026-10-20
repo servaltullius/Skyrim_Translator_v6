@@ -278,6 +278,46 @@ public sealed class PluginProjectIntegrationTests
         Assert.Equal(0, await fixture.Db.GetRetiredPluginTranslationCountAsync(CancellationToken.None));
     }
 
+    // The translations set aside and the linked earlier release are stored by field key too. After an update that
+    // changed the master list they named other records: a source that came back was not restored, the earlier
+    // translation was no longer shown, and a record of a dropped master lost its translation.
+    [Fact]
+    public async Task UpdateThatChangesTheMasters_RenumbersTheTranslationsSetAsideAndTheEarlierRelease()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        static PluginField Keyed(uint formId, int order, string source) => new($"WEAP/{formId:X8}/0/FULL/1", order, "WEAP", "FULL", formId, "TestSword", 1, 1, source);
+        var v1 = fixture.Source with { Masters = new[] { "Skyrim.esm", "Dawnguard.esm" } };
+        await fixture.Db.ReplaceImportedPluginStringsAsync(v1,
+            new[] { Keyed(0x02000800, 0, "Steel Sword"), Keyed(0x02000801, 1, "Iron Dagger"), Keyed(0x01001234, 2, "Crossbow") },
+            fixture.Project, "utf-8", CancellationToken.None);
+        var rows = await fixture.Db.GetStringsAsync(20, 0, CancellationToken.None);
+        await fixture.Db.UpdateStringTranslationAsync(rows[0].Id, "강철 검", StringEntryStatus.Edited, null, CancellationToken.None);
+        await fixture.Db.UpdateStringTranslationAsync(rows[1].Id, "쇠 단검", StringEntryStatus.Done, null, CancellationToken.None);
+        await fixture.Db.UpdateStringTranslationAsync(rows[2].Id, "석궁", StringEntryStatus.Done, null, CancellationToken.None);
+        await fixture.Db.ReplacePreviousTranslationsAsync("old.esp", new Dictionary<string, string> { ["WEAP/02000800/0/FULL/1"] = "옛 강철 검" }, CancellationToken.None);
+        await fixture.Db.ReplacePreviousSourcesAsync("old-en.esp", new Dictionary<string, string> { ["WEAP/02000800/0/FULL/1"] = "Steel Sword" }, CancellationToken.None);
+
+        // The dagger's source changes: its translation is set aside.
+        await fixture.Db.ReplaceImportedPluginStringsAsync(v1 with { Sha256 = "v2" },
+            new[] { Keyed(0x02000800, 0, "Steel Sword"), Keyed(0x02000801, 1, "Iron Dagger II"), Keyed(0x01001234, 2, "Crossbow") },
+            fixture.Project, "utf-8", CancellationToken.None);
+
+        // Dawnguard leaves the masters and two come in: the plugin's own records move from 02 to 03.
+        var v3 = fixture.Source with { Sha256 = "v3", Masters = new[] { "Skyrim.esm", "Update.esm", "HearthFires.esm" } };
+        var reopened = await fixture.Db.ReplaceImportedPluginStringsAsync(v3,
+            new[] { Keyed(0x03000800, 0, "Steel Sword"), Keyed(0x03000801, 1, "Iron Dagger") }, fixture.Project, "utf-8", CancellationToken.None);
+
+        Assert.Equal(new[] { "강철 검", "쇠 단검" }, reopened.Select(row => row.DestText));
+        var previous = await fixture.Db.GetPreviousTranslationsByStringIdAsync(CancellationToken.None);
+        Assert.Equal("옛 강철 검", previous[reopened[0].Id]);
+        Assert.Equal("옛 강철 검", (await fixture.Db.GetReusablePreviousTranslationsByStringIdAsync(CancellationToken.None))[reopened[0].Id]);
+        // The crossbow of the dropped master is set aside under its old key, and comes back with that master.
+        Assert.Equal(1, await fixture.Db.GetRetiredPluginTranslationCountAsync(CancellationToken.None));
+        var back = await fixture.Db.ReplaceImportedPluginStringsAsync(v1 with { Sha256 = "v4" },
+            new[] { Keyed(0x02000800, 0, "Steel Sword"), Keyed(0x01001234, 2, "Crossbow") }, fixture.Project, "utf-8", CancellationToken.None);
+        Assert.Equal(new[] { "강철 검", "석궁" }, back.Select(row => row.DestText));
+    }
+
     // A mod update that changes one source string used to delete that row's translation, reviewed ones included,
     // and reopening the earlier file did not bring it back.
     [Fact]

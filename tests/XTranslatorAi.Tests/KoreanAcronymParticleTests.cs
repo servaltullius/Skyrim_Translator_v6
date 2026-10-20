@@ -22,6 +22,17 @@ public class KoreanAcronymParticleTests
     public void Fix_ChoosesTheParticleByTheAcronymReading(string text, string expected)
         => Assert.Equal(expected, KoreanTranslationFixer.Fix("korean", text));
 
+    // Both particles written out became "HP가(가)": the pair is resolved into one.
+    [Theory]
+    [InlineData("HP이(가) 부족합니다.", "HP가 부족합니다.")]
+    [InlineData("HP가(이) 부족합니다.", "HP가 부족합니다.")]
+    [InlineData("NPC이/가 말합니다.", "NPC가 말합니다.")]
+    [InlineData("MCM과(와) 함께 엽니다.", "MCM과 함께 엽니다.")]
+    [InlineData("HP을(를) 회복합니다.", "HP를 회복합니다.")]
+    [InlineData("NPC은/는 공격하지 않습니다.", "NPC는 공격하지 않습니다.")]
+    public void Fix_ResolvesBothParticlesAfterAnAcronym(string text, string expected)
+        => Assert.Equal(expected, KoreanTranslationFixer.Fix("korean", text));
+
     [Theory]
     [InlineData("Rune Stone을 사용합니다.")]
     [InlineData("Nexus를 확인하세요.")]
