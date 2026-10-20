@@ -250,7 +250,8 @@ Codex의 두 번째 시험과 같은 플러그인(EldenWarAshPack1, 150줄)을 �
 
 짧은 대사는 셋 차이가 작아서, 긴 글로 다시 비교한다(`artifacts/mcp-trial-20261020/lotd/`).
 
-- 책: Legacy of the Dragonborn 6.10의 책 7편. 바닐라 스카이림에 없는 책(DBM_·BCSLL_)만 골랐다. 영어 300~740단어, 모두 3,700단어.
+- 책: Legacy of the Dragonborn 6.10의 책 7편(DBM_·BCSLL_). 영어 300~740단어, 모두 3,700단어.
+  - 6편은 바닐라에 없다. The Falmer: A Study(DBM_MAASE_CWBook05)는 바닐라 Skyrim.esm 0E0D68과 같은 글이지만, LotD판은 꾸밈(첫 글자 그림 등)이 달라 게임 번역 사전에 맞지 않아 넷 다 처음부터 번역했다. 한글패치는 "War of the Crag"를 크래그 전쟁으로 옮겼는데, 넷 다 몰랐다(바위산 전쟁·협곡 전쟁·바위 전쟁).
   - 우화 The Barber, 편지 Auryen Morellus' Letter, 모험가 일지 Micmou's Journal, 운문 Manifesto Cyrodiil Vampyrum, 연구 노트 Notes of Shalidor, 유머 Jokes, 학술서 The Falmer: A Study
 - 시험 프로젝트: 쪽마다 플러그인 사본을 `agent open`으로 열고, 책 7줄을 뺀 17,364줄을 건너뜀(3)으로 바꿨다(`lotd_setup.py`). 실제 프로젝트는 건드리지 않았다.
   - GUI는 이름을 바꾼 사본(LotDBlindGUI.esm)을 같은 방법으로 미리 만들어, GUI가 그 프로젝트를 이어 열고 대기 7줄만 번역했다.
