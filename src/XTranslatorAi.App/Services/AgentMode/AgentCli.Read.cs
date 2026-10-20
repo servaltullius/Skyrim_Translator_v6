@@ -102,15 +102,30 @@ public static partial class AgentCli
     {
         var project = c.Session.Find(c.Arg(0, "프로젝트"));
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, c.Ct);
-        var names = await AgentSession.NewNamesAsync(db, await c.RowsAsync(db), c.Ct);
+        var rows = await c.RowsAsync(db);
+        var names = await AgentSession.NewNamesAsync(db, rows, c.Ct);
         if (names.Count == 0)
         {
-            Console.WriteLine("새로 정한 이름이 없습니다. 이름 줄은 모두 용어집·TM·게임 사전·한국어판에서 왔습니다.");
-            return;
+            Console.WriteLine("새로 정한 이름 줄이 없습니다. 이름 줄은 모두 용어집·TM·게임 사전·한국어판에서 왔습니다.");
+        }
+        else
+        {
+            Console.WriteLine($"새로 정한 이름: {names.Count}개 (용어집·TM·게임 사전·한국어판에 없어 번역하며 정한 이름 줄, 앞말만 다른 같은 이름은 한 번)");
+            foreach (var r in names) Console.WriteLine($"#{r.Id} {r.Rec}  {Flat(r.SourceText)} → {Flat(r.DestText)}");
         }
 
-        Console.WriteLine($"새로 정한 이름: {names.Count}개 (용어집·TM·게임 사전·한국어판에 없어 번역하며 정한 이름 줄, 앞말만 다른 같은 이름은 한 번)");
-        foreach (var r in names) Console.WriteLine($"#{r.Id} {r.Rec}  {Flat(r.SourceText)} → {Flat(r.DestText)}");
+        // Names inside books and dialogue, which have no row of their own: the agent says how it wrote each.
+        var global = await c.GlobalDb.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, c.Ct);
+        var inText = await AgentTextNames.FindAsync(db, global, await new GameStringService().TryLoadAsync(c.Ct), rows, c.Ct);
+        if (inText.Count == 0) return;
+        const int max = 80;
+        Console.WriteLine($"본문 속 새 이름 후보: {inText.Count}개 (책·대사 같은 줄에 나온 영어 이름 가운데 용어집·TM·게임 사전·이 모드의 이름 줄에 없는 것. 각각 어떻게 옮겼는지 함께 보고한다)");
+        foreach (var n in inText.Take(max))
+        {
+            Console.WriteLine($"- {n.Name}  " + string.Join(", ", n.Ids.Take(3).Select(id => "#" + id)) + (n.Ids.Count > 3 ? $" 외 {n.Ids.Count - 3}줄" : ""));
+        }
+
+        if (inText.Count > max) Console.WriteLine($"(그 밖에 {inText.Count - max}개)");
     }
 
     // How a base game NPC speaks in the Korean patch: voice <프로젝트> <영어 이름|한국어 이름|FormID> (read only). The

@@ -54,7 +54,7 @@ internal static class AgentMcpServer
             new[] { "project", "answer" }),
         new("lookup", "이름·용어의 기존 표기(용어집·게임 사전·한글패치 TM·이 모드에서 번역한 줄). 여러 낱말을 한 번에 찾는다.",
             new JsonObject { ["project"] = Project(), ["words"] = StrArray("찾을 영어 낱말들") }, new[] { "project", "words" }),
-        new("names", "새로 정한 이름 목록(용어집·TM·게임 사전·한국어판에 없어 번역하며 정한 이름 줄). 끝 보고에 넣는다.",
+        new("names", "새로 정한 이름 목록(용어집·TM·게임 사전·한국어판에 없어 번역하며 정한 이름 줄, 책·대사 본문에 나온 새 영어 이름 후보). 끝 보고에 넣는다.",
             new JsonObject { ["project"] = Project() }, new[] { "project" }),
         new("voice", "바닐라 인물이 한글패치에서 하는 말(말투 참고).",
             new JsonObject { ["project"] = Project(), ["who"] = Str("영어 이름, 한국어 이름 또는 FormID") }, new[] { "project", "who" }),

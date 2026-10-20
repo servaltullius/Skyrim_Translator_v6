@@ -268,7 +268,11 @@ Codex의 두 번째 시험과 같은 플러그인(EldenWarAshPack1, 150줄)을 �
 - 미리 본 것
   - Argon이 넷 중 가장 길다(편마다 5~15% 더 김). 텔드린 때처럼 살을 붙이는 경향이다.
   - 농담 "She's in bed with laryngitis"는 사람 이름처럼 들리는 말장난이다. Claude와 Argon은 "라린지티스"로 소리를 살렸고, Codex와 GUI는 "후두염"으로 옮겨 농담이 사라졌다.
-- 고칠 것 후보: `names`는 이름 레코드(FULL·SHRT)만 세서, 책 본문에서 새로 정한 이름은 보고되지 않는다. Claude는 따로 적어 보고했다.
+- `names`는 이름 레코드(FULL·SHRT)만 세서, 책 본문에서 새로 정한 이름은 보고되지 않았다. Claude만 따로 적어 보고했다.
+  - 고침: `names` 끝에 "본문 속 새 이름 후보"를 더했다. 번역한 본문 줄의 대문자 낱말 묶음("War of Betony", "Auryen Morellus") 가운데 용어집·TM·게임 사전·번역한 이름 줄에 없는 것이다. 한국어는 붙지 않아, 에이전트가 본문에서 어떻게 옮겼는지 함께 적는다(guide-translate.md).
+  - 거르는 것: 문장 첫 낱말("During the …", "But the Dwemer"), 앞의 The·My, 소유격 's, 문장 첫머리에만 나오는 한 낱말, 본문에 소문자로도 나오는 한 낱말(Order), 복수형(Dragon Priests는 Dragon Priest로 앎).
+  - LotD Claude 사본: 37개. Claude가 손으로 적은 이름(오리엔 모렐루스, 베토니 전쟁, 드래곤본 갤러리, 코르토르 등)이 다 들었다. 이름 아닌 것은 Lordship, Mad God, Dual Patrons 정도였다.
+  - 텔드린 대사 사본: 30개, 대부분 다른 모드 NPC 이름이고 이름 아닌 것은 Cassock, Shame Skyrim 정도였다.
 
 ## 남은 것
 

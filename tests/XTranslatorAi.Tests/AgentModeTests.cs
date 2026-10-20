@@ -648,6 +648,49 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Equal(new[] { "Aetherial Echo", "Learning - Floating Passage" }, names.Select(n => n.SourceText));
     }
 
+    /// <summary>
+    /// Names inside a text, as the LotD book test's bodies had them: runs of capitalized words joined by "of the",
+    /// without the sentence's first word ("During the War of Betony"), a possessive or a lone word that only starts a
+    /// sentence (Greetings, The Barber).
+    /// </summary>
+    [Theory]
+    [InlineData("During the War of Betony, the Bretons in the Isle of Craghold were under siege.", "War of Betony|Bretons|Isle of Craghold")]
+    [InlineData("Greetings, my friend. Auryen Morellus writes from the Dragonborn Gallery to Shalidor's heirs.", "Auryen Morellus|Dragonborn Gallery|Shalidor")]
+    [InlineData("<p align=\"center\">The Barber\n\n[pagebreak]In the market district of Cyrodiil, there once was a barber. I am sure.", "Cyrodiil")]
+    [InlineData("What is the thinnest book? Redguard Heroes of the War of Betony.", "Redguard Heroes of the War of Betony")]
+    public void TextNames_AreTheCapitalizedRunsThatReadAsNames(string text, string expected)
+    {
+        Assert.Equal(expected.Split('|'), AgentTextNames.Candidates(text));
+    }
+
+    /// <summary>
+    /// names reports the names inside translated bodies that nothing knows: a glossary term (Shalidor) and a word the
+    /// texts also write in lowercase (Order) stay out, and rows not yet translated are not read.
+    /// </summary>
+    [Fact]
+    public async Task TextNames_AreTheBodyNamesNothingKnows()
+    {
+        var project = await OpenAsync("Books.esp", Header()
+            .Concat(Group(
+                Record("BOOK", 0x4011, Sub("EDID", Z("aaNote")), Sub("FULL", Z("A Letter")),
+                    Sub("DESC", Z("Greetings, my friend. Auryen Morellus writes from the Dragonborn Gallery about Shalidor and the Order. Our order is old."))),
+                Record("BOOK", 0x4012, Sub("EDID", Z("aaLater")), Sub("FULL", Z("Later")),
+                    Sub("DESC", Z("Nobody has read what Brelyna Maryon wrote here yet, so it is not reported.")))))
+            .ToArray());
+        await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, CancellationToken.None);
+        var rows = (await db.GetStringsAsync(1000, 0, CancellationToken.None)).ToList();
+        var letter = rows.First(r => r.SourceText.StartsWith("Greetings", StringComparison.Ordinal));
+        await db.UpdateStringTranslationsAsync(new[] { (letter.Id, "안녕하신가. 오리엔 모렐루스가 드래곤본 갤러리에서 샬리도어와 교단에 대해 쓰네.", StringEntryStatus.Done, (string?)null) },
+            CancellationToken.None);
+        await db.BulkInsertGlossaryAsync(new[] { ((string?)null, "Shalidor", "샬리도어", true, 10, 0, 0, (string?)null) }, CancellationToken.None);
+        rows = (await db.GetStringsAsync(1000, 0, CancellationToken.None)).ToList();
+
+        var names = await AgentTextNames.FindAsync(db, null, null, rows, CancellationToken.None);
+
+        Assert.Equal(new[] { "Auryen Morellus", "Dragonborn Gallery" }, names.Select(n => n.Name));
+        Assert.Equal(new[] { letter.Id }, names[0].Ids);
+    }
+
     /// <summary>A new plugin of the same mod takes the glossary of the mod's other projects, and open says how many.</summary>
     [Fact]
     public async Task Open_SaysHowManyGlossaryTermsANewProjectTookFromTheSameMod()
