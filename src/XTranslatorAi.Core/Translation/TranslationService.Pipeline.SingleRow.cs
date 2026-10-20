@@ -64,6 +64,7 @@ public sealed partial class TranslationService
         final = KoreanProtectFromFixer.Fix(ctx.TargetLang, row.Source, final);
         final = KoreanSourceAwareFixes.Apply(ctx.TargetLang, row.Source, final);
         final = KoreanTranslationFixer.Fix(ctx.TargetLang, final);
+        final = SpliceGamePatch(row.Id, row.Source, final);
         TokenValidator.ValidateFinalTextIntegrity(row.Source, final, context: $"id={row.Id} post-edits");
 
         (raw, final) = await MaybeApplyQualityEscalationAsync(ctx, row, styleHint, raw, final);

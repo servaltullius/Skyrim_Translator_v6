@@ -10,8 +10,12 @@ using XTranslatorAi.Core.Text;
 
 namespace XTranslatorAi.Core.Plugins;
 
-/// <summary>A game translation found for a row, and where it came from (shown in the row's note).</summary>
-public sealed record GameStringMatch(string Text, string Origin);
+/// <summary>
+/// A game translation found for a row, and where it came from (shown in the row's note). For a base game text the mod
+/// copied with changes, the row's paragraphs the base game does not have (see GameStringDictionary.FindSimilar).
+/// </summary>
+public sealed record GameStringMatch(string Text, string Origin, IReadOnlyList<string>? ChangedParagraphs = null,
+    IReadOnlySet<string>? BaseParagraphKeys = null);
 
 /// <summary>One base game plugin read with its English tables, and the Korean patch's tables for it.</summary>
 public sealed record GameStringPlugin(
@@ -98,29 +102,33 @@ public sealed class GameStringDictionary
     /// the base game's trailing spaces and fixes a typo ("the overthrew"), so its whole text never matches, but all but
     /// one paragraph do.
     /// </summary>
-    internal static IReadOnlyList<string> ParagraphKeys(string english)
+    internal static IReadOnlyList<string> ParagraphKeys(string english) => Paragraphs(english).Select(p => p.Key).ToList();
+
+    // Each paragraph long enough to tell texts apart: its fingerprint, and its text with the spacing collapsed.
+    private static List<(string Key, string Text)> Paragraphs(string english)
     {
         var text = PageBreak.Replace(english.Replace("\r\n", "\n").Replace('\r', '\n'), "\n\n");
         text = ParagraphMarkup.Replace(text, "");
-        var keys = new List<string>();
+        var paragraphs = new List<(string, string)>();
         foreach (var paragraph in Regex.Split(text, @"\n\s*\n"))
         {
-            var plain = Spaces.Replace(paragraph, " ").Trim().ToLowerInvariant();
-            if (plain.Length >= MinParagraphChars) keys.Add(Fingerprint(plain)[..16]);
+            var plain = Spaces.Replace(paragraph, " ").Trim();
+            if (plain.Length >= MinParagraphChars) paragraphs.Add((Fingerprint(plain.ToLowerInvariant())[..16], plain));
         }
 
-        return keys;
+        return paragraphs;
     }
 
     /// <summary>
     /// The base game's Korean for a long text the mod copied with changes (whitespace, a fixed typo, an added line):
-    /// most of its paragraphs are a base game text's. It is a reference for translating the row, not its translation,
-    /// since the English differs. Dialogue is left out, as for <see cref="Find"/>.
+    /// most of its paragraphs are a base game text's. The match lists the row's paragraphs the base game text lacks;
+    /// none means only spacing or markup differs. Dialogue is left out, as for <see cref="Find"/>.
     /// </summary>
     public GameStringMatch? FindSimilar(string? rec, string sourceText)
     {
         if (_byParagraph.Count == 0 || IsDialogue(rec)) return null;
-        var keys = ParagraphKeys(sourceText).Distinct(StringComparer.Ordinal).ToList();
+        var paragraphs = Paragraphs(sourceText);
+        var keys = paragraphs.Select(p => p.Key).Distinct(StringComparer.Ordinal).ToList();
         if (keys.Count < MinSharedParagraphs) return null;
         var shared = new Dictionary<string, int>(StringComparer.Ordinal);
         foreach (var key in keys)
@@ -134,12 +142,99 @@ public sealed class GameStringDictionary
                         && s.Value >= _paragraphs[s.Key].Distinct(StringComparer.Ordinal).Count() * MinSharedShare)
             .OrderByDescending(s => s.Value).ThenBy(s => s.Key, StringComparer.Ordinal)
             .Select(s => s.Key).FirstOrDefault();
-        return best != null && _byField.TryGetValue(best, out var field)
-            ? new GameStringMatch(field.Korean, $"{field.Plugin} 비슷한 글 {shared[best]}/{keys.Count}문단")
-            : null;
+        if (best == null || !_byField.TryGetValue(best, out var field)) return null;
+        var baseKeys = _paragraphs[best].ToHashSet(StringComparer.Ordinal);
+        var changed = paragraphs.Where(p => !baseKeys.Contains(p.Key)).Select(p => p.Text).Distinct(StringComparer.Ordinal).ToList();
+        // A copy that dropped some of the base game's paragraphs is not the same text either.
+        var dropped = shared[best] < baseKeys.Count;
+        return new GameStringMatch(field.Korean, $"{field.Plugin} 비슷한 글 {shared[best]}/{keys.Count}문단",
+            changed.Count == 0 && dropped ? new[] { "(the base game's text has paragraphs this source does not)" } : changed,
+            baseKeys);
     }
 
-    /// <summary>For each given row with no game translation of its own, the base game's Korean of the text it copied with changes.</summary>
+    /// <summary>
+    /// The base game's Korean for a long text the mod copied changing only spacing or markup: every paragraph is the
+    /// same. Applied as the game's own text is, laid out with the source's blank lines, when its tags fit the row.
+    /// LotD's Japhet's Journal has one blank line more than the base game's, and was translated anew for it.
+    /// </summary>
+    public GameStringMatch? FindSameParagraphs(string? rec, string sourceText)
+        => FindSimilar(rec, sourceText) is { ChangedParagraphs.Count: 0 } match
+            ? new GameStringMatch(Relayout(sourceText, match.Text) ?? match.Text, match.Origin.Split(' ')[0] + " 같은 글(공백·꾸밈만 다름)")
+            : null;
+
+    // Blank-line runs, kept by Regex.Split as the odd entries.
+    private static readonly Regex BlankLines = new(@"(\r?\n[ \t]*\r?\n(?:[ \t]*\r?\n)*)", RegexOptions.CultureInvariant);
+
+    // Tags and page breaks, kept by Regex.Split as the odd entries.
+    private static readonly Regex TagPieces = new(@"(<[^>]*>|\[page ?break\])", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+
+    /// <summary>
+    /// The Korean laid out as the source is: the same tags in the same order, the Korean's words between them, and the
+    /// source's spacing and line breaks around them (between blank-line blocks too, when the blocks pair up). The
+    /// patch's Japhet's Journal breaks the line after its font tag where the English does not. Null when the tags differ.
+    /// </summary>
+    private static string? Relayout(string source, string korean)
+    {
+        var s = TagPieces.Split(source);
+        var k = TagPieces.Split(korean);
+        if (s.Length != k.Length) return null;
+        var sb = new StringBuilder();
+        for (var i = 0; i < s.Length; i++)
+        {
+            if (i % 2 == 1)
+            {
+                if (!string.Equals(s[i], k[i], StringComparison.OrdinalIgnoreCase)) return null;
+                sb.Append(s[i]);
+                continue;
+            }
+
+            var core = k[i].Trim();
+            if (core.Length == 0 != (s[i].Trim().Length == 0)) return null;
+            var lead = s[i][..(s[i].Length - s[i].TrimStart().Length)];
+            var trail = s[i].Length == lead.Length ? "" : s[i][s[i].TrimEnd().Length..];
+            var sourceBlocks = BlankLines.Split(s[i].Trim());
+            var koreanBlocks = BlankLines.Split(core);
+            if (sourceBlocks.Length == koreanBlocks.Length)
+            {
+                core = string.Concat(koreanBlocks.Select((block, j) => j % 2 == 0 ? block.Trim() : sourceBlocks[j]));
+            }
+
+            sb.Append(lead).Append(core).Append(trail);
+        }
+
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// The model's translation of a base game text the mod copied with changes, with each block the mod left as the base
+    /// game wrote it replaced by the Korean patch's block: told to copy the patch, gemini-3.8-flash still retranslated
+    /// LotD's Falmer: A Study (암벽 전쟁 for the patch's 크래그 전쟁). Blocks pair up by position between blank lines; a
+    /// block whose markup differs from the source's keeps the model's text. Null when nothing pairs up.
+    /// </summary>
+    public static string? SpliceUnchanged(string source, string translated, GameStringMatch match)
+    {
+        if (match.BaseParagraphKeys is not { } baseKeys) return null;
+        var s = BlankLines.Split(source);
+        var t = BlankLines.Split(translated);
+        var k = BlankLines.Split(match.Text.Trim());
+        if (s.Length != t.Length || s.Length != k.Length) return null;
+        var spliced = false;
+        for (var i = 0; i < s.Length; i += 2)
+        {
+            var keys = Paragraphs(s[i]).Select(p => p.Key).ToList();
+            if (keys.Count == 0 || !keys.All(baseKeys.Contains)) continue;
+            // The patch's block laid out as the source's, with the spacing the model kept around it.
+            if (Relayout(s[i].Trim(), k[i].Trim()) is not { } block) continue;
+            var lead = t[i][..(t[i].Length - t[i].TrimStart().Length)];
+            var trail = t[i].Length == lead.Length ? "" : t[i][t[i].TrimEnd().Length..];
+            t[i] = lead + block + trail;
+            spliced = true;
+        }
+
+        return spliced ? string.Concat(t) : null;
+    }
+
+    /// <summary>For each given row that is a base game text or a copy of one with changes, that text's Korean, as a reference.</summary>
     public async System.Threading.Tasks.Task<IReadOnlyDictionary<long, GameStringMatch>> SimilarAsync(
         XTranslatorAi.Core.Data.IProjectDb db,
         IReadOnlyList<long> ids,
@@ -147,8 +242,10 @@ public sealed class GameStringDictionary
     {
         var found = new Dictionary<long, GameStringMatch>();
         if (_byParagraph.Count == 0 || ids.Count == 0) return found;
-        var exact = await MatchAsync(db, ids, cancellationToken).ConfigureAwait(false);
-        var rows = await db.GetStringTranslationContextsByIdsAsync(ids.Where(id => !exact.ContainsKey(id)).ToList(), cancellationToken).ConfigureAwait(false);
+        // Rows the game's text matches are included: when the patch's own line breaks or tags keep it from being applied
+        // (211 of LotD's 1,410 books), the model translates the row with the reference, and the patch's blocks are
+        // spliced in where they pair up.
+        var rows = await db.GetStringTranslationContextsByIdsAsync(ids, cancellationToken).ConfigureAwait(false);
         foreach (var (id, row) in rows)
         {
             if (FindSimilar(row.Rec, row.SourceText) is { } match) found[id] = match;
@@ -301,9 +398,15 @@ public sealed class GameStringDictionary
         foreach (var (id, row) in rows)
         {
             var identity = plugin is { } p && keys.TryGetValue(id, out var key) ? FieldIdentity(key, p.Masters, p.PluginFileName) : null;
-            if (Find(identity, row.Rec, row.SourceText) is { } match)
+            if (Find(identity, row.Rec, row.SourceText) is { } exact)
             {
-                matches[id] = match;
+                // Laid out as the row is: the patch's Japhet's Journal breaks the line after its font tag where the
+                // English, the game's and the mod's alike, does not, so the game's own text never fit the row.
+                matches[id] = Relayout(row.SourceText, exact.Text) is { } laidOut ? exact with { Text = laidOut } : exact;
+            }
+            else if (_byParagraph.Count > 0 && FindSameParagraphs(row.Rec, row.SourceText) is { } same)
+            {
+                matches[id] = same;
             }
         }
 

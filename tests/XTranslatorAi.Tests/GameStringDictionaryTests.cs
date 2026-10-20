@@ -240,11 +240,112 @@ public sealed class GameStringDictionaryTests
         var similar = game.FindSimilar("BOOK:DESC", lotd);
         Assert.Equal("팔머: 연구 … 크래그 전쟁 …", similar!.Text);
         Assert.Contains("비슷한 글 3/4문단", similar.Origin);
+        // The changed paragraph is named, for the request to translate only it.
+        Assert.Equal(new[] { "But as is always the story with slaves and their masters, the Falmer rose up. They overthrew the dwarves, and fled." },
+            similar.ChangedParagraphs);
+        Assert.Null(game.FindSameParagraphs("BOOK:DESC", lotd));
 
         Assert.Null(game.FindSimilar("BOOK:DESC", "A different book about something else entirely, and long enough to count.\n\nIts second paragraph is also nothing like the base game's text.\n\nNor is its third paragraph, which closes the book."));
         Assert.Null(game.FindSimilar("BOOK:DESC", "No one really knows when the story of the Snow Elves began, but the ancient work tells of its ending."));
         Assert.Null(game.FindSimilar("INFO:NAM1", lotd));
         Assert.Equal(1, game.ParagraphTextCount);
+    }
+
+    /// <summary>
+    /// A copy that changes only spacing and markup (74 of LotD's books) is the base game's text: its Korean is applied.
+    /// One that also dropped a paragraph is not.
+    /// </summary>
+    [Fact]
+    public void CopyChangingOnlySpacingAndMarkup_TakesTheKoreanAsTheGamesText()
+    {
+        var game = BuildWithBook();
+        var spaced = FalmerEnglish.Replace(". \r\n", ".\r\n").Replace("<p align=\"left\">", "<p align=\"justify\">").TrimEnd();
+
+        var same = game.FindSameParagraphs("BOOK:DESC", spaced);
+        Assert.Equal("팔머: 연구 … 크래그 전쟁 …", same!.Text);
+        Assert.Equal("Skyrim.esm 같은 글(공백·꾸밈만 다름)", same.Origin);
+        Assert.Null(same.ChangedParagraphs);
+
+        var shorter = spaced.Replace("For decade upon decade, the two sides waged a bitter conflict, the War of the Crag, deep below Skyrim.", "");
+        Assert.Null(game.FindSameParagraphs("BOOK:DESC", shorter));
+        Assert.NotEmpty(game.FindSimilar("BOOK:DESC", shorter)!.ChangedParagraphs!);
+    }
+
+    private const string PatchKorean =
+        "[pagebreak]\r\n<p align=\"center\">팔머: 연구\r\n\r\n저자\r\n우르사 우스락스</p>\r\n\r\n[pagebreak]\r\n<p align=\"left\">"
+        + "<img src='img://Textures/Interface/Books/Illuminated_Letters/I_letter.png'>연구, 여행을 거쳐 드디어 나의 가설이 뒷받침되었다. \r\n\r\n"
+        + "스노우 엘프의 이야기가 언제 시작되었는지 아는 사람은 없다.\r\n\r\n"
+        + "팔머도 반역을 일으켰다. 드워프를 타도하며 도망쳤다.\r\n\r\n"
+        + "몇 십년이나 양쪽 모두 격렬하게 싸웠다. '크래그 전쟁'이 스카이림의 아래에서 일어났다.\r\n";
+
+    /// <summary>
+    /// The model's translation of an edited copy keeps only the changed block: the blocks the mod left as the base
+    /// game wrote them are the Korean patch's, with the source's spacing. A model that retranslated 크래그 전쟁 is
+    /// overruled where the English is the base game's.
+    /// </summary>
+    [Fact]
+    public void ModelTranslationOfAnEditedCopy_TakesThePatchsBlocksWhereTheEnglishIsTheBaseGames()
+    {
+        var game = GameStringDictionary.Build(new[]
+        {
+            new GameStringPlugin("Skyrim.esm", new string[0], new[] { Field("BOOK/000E0D68/0/DESC/0", FalmerEnglish, PluginStringTableKind.DlStrings, 1) },
+                new Dictionary<(PluginStringTableKind, uint), string> { [(PluginStringTableKind.DlStrings, 1)] = PatchKorean }),
+        });
+        var lotd = FalmerEnglish.Replace(". \r\n", ".\r\n").Replace("The overthrew", "They overthrew").TrimEnd();
+        var model = "[pagebreak]\r\n<p align=\"center\">팔머: 연구\r\n\r\n저자\r\n우르사 우스락스</p>\r\n\r\n[pagebreak]\r\n<p align=\"left\">"
+                    + "<img src='img://Textures/Interface/Books/Illuminated_Letters/I_letter.png'>나는 연구했다.\r\n\r\n"
+                    + "아무도 모른다.\r\n\r\n"
+                    + "팔머는 봉기했다. 그들은 드워프를 쓰러뜨리고 달아났다.\r\n\r\n"
+                    + "수십 년 동안 '암벽 전쟁'이 벌어졌다.";
+
+        var spliced = GameStringDictionary.SpliceUnchanged(lotd, model, game.FindSimilar("BOOK:DESC", lotd)!);
+
+        Assert.Contains("연구, 여행을 거쳐 드디어 나의 가설이 뒷받침되었다.\r\n\r\n", spliced);
+        Assert.Contains("'크래그 전쟁'", spliced);
+        Assert.DoesNotContain("암벽 전쟁", spliced);
+        Assert.Contains("팔머는 봉기했다. 그들은 드워프를 쓰러뜨리고 달아났다.", spliced);
+        Assert.False(spliced!.EndsWith("\n", StringComparison.Ordinal));
+    }
+
+    /// <summary>A copy with one blank line more than the base game's still takes the patch's text, laid out as the source is.</summary>
+    [Fact]
+    public void SameParagraphsWithOtherBlankLines_TakeThePatchLaidOutAsTheSource()
+    {
+        var game = GameStringDictionary.Build(new[]
+        {
+            new GameStringPlugin("Skyrim.esm", new string[0], new[] { Field("BOOK/000E0D68/0/DESC/0", FalmerEnglish, PluginStringTableKind.DlStrings, 1) },
+                new Dictionary<(PluginStringTableKind, uint), string> { [(PluginStringTableKind.DlStrings, 1)] = PatchKorean }),
+        });
+        var lotd = FalmerEnglish.Replace("began, but", "began, but").Replace("its ending.\r\n\r\n", "its ending.\r\n\r\n\r\n").TrimEnd();
+
+        var same = game.FindSameParagraphs("BOOK:DESC", lotd)!;
+
+        Assert.Contains("아는 사람은 없다.\r\n\r\n\r\n팔머도", same.Text);
+        Assert.False(same.Text.EndsWith("\n", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// The patch's Japhet's Journal breaks the line after its font tag where the English does not, so even the game's own
+    /// text failed the line check: the Korean is laid out with the source's line breaks around the same tags.
+    /// </summary>
+    [Fact]
+    public void PatchTextWithItsOwnLineBreaksAroundTags_IsLaidOutAsTheSource()
+    {
+        const string english = "<font face=\"$HandwrittenFont\">A smaller band than was expected joined with me departing Dawnstar today. \r\n[pagebreak]\r\n"
+                               + "This first winter was difficult, with the abandonment of many men and women.\r\n[pagebreak]\r\n"
+                               + "The stories of ghosts inhabiting this place are just stories, nothing more.\r\n</font>";
+        const string korean = "<font face=\"$HandwrittenFont\">\r\n던스타를 출발할 때 예상보다 작은 무리가 합류했다.\r\n[pagebreak]\r\n"
+                              + "최초의 겨울은 힘들었다.\r\n[pagebreak]\r\n이곳에 악령이 산다는 이야기는 그저 이야기일 뿐이다.\r\n</font>";
+        var game = GameStringDictionary.Build(new[]
+        {
+            new GameStringPlugin("Skyrim.esm", new string[0], new[] { Field("BOOK/000F6844/0/DESC/0", english, PluginStringTableKind.DlStrings, 1) },
+                new Dictionary<(PluginStringTableKind, uint), string> { [(PluginStringTableKind.DlStrings, 1)] = korean }),
+        });
+
+        var same = game.FindSameParagraphs("BOOK:DESC", english)!;
+
+        Assert.StartsWith("<font face=\"$HandwrittenFont\">던스타를", same.Text);
+        Assert.Equal(english.Count(c => c == '\n'), same.Text.Count(c => c == '\n'));
     }
 
     [Fact]

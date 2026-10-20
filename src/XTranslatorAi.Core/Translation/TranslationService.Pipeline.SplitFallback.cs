@@ -234,6 +234,7 @@ public sealed partial class TranslationService
 	            final = KoreanProtectFromFixer.Fix(ctx.TargetLang, batchItem.Source, final);
 	            final = KoreanSourceAwareFixes.Apply(ctx.TargetLang, batchItem.Source, final);
 	            final = KoreanTranslationFixer.Fix(ctx.TargetLang, final);
+	            final = SpliceGamePatch(id, batchItem.Source, final);
 	            TokenValidator.ValidateFinalTextIntegrity(batchItem.Source, final, context: $"id={id} post-edits");
 
 	            string? styleHint = null;

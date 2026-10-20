@@ -59,11 +59,17 @@ public class GameStringTranslationTests
 
         await fixture.Service.TranslateIdsAsync(fixture.Request with
         {
-            GameStringReferences = new Dictionary<long, GameStringMatch> { [row.Id] = new("<p>그들은 드워프를 무너뜨렸다.</p>\r\n\r\n크래그 전쟁", "Skyrim.esm 비슷한 글 3/4문단") },
+            GameStringReferences = new Dictionary<long, GameStringMatch>
+            {
+                [row.Id] = new("<p>그들은 드워프를 무너뜨렸다.</p>\r\n\r\n크래그 전쟁", "Skyrim.esm 비슷한 글 3/4문단",
+                    new[] { "They overthrew the dwarves, and fled." }),
+            },
         });
 
         var sent = string.Join(" | ", fixture.Client.Requests.Select(r => r.Contents[0].Parts[0].Text));
         Assert.Contains("Korean patch text:", sent);
+        Assert.Contains("Copy the Korean patch text paragraph by paragraph", sent);
+        Assert.Contains("- They overthrew the dwarves, and fled.", sent);
         Assert.Contains("그들은 드워프를 무너뜨렸다.", sent);
         Assert.DoesNotContain("<p>그들은", sent);
     }

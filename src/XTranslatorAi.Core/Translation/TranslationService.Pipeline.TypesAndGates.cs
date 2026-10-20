@@ -51,7 +51,7 @@ public sealed partial class TranslationService
     private string? AppendReferences(long id, string? hint)
     {
         hint = AppendBookTitleReference(id, hint);
-        if (Ctx.GameReferenceById?.TryGetValue(id, out var game) == true && TranslationGameReference.Build(game.Text) is { } reference)
+        if (Ctx.GameReferenceById?.TryGetValue(id, out var game) == true && TranslationGameReference.Build(game.Text, game.ChangedParagraphs) is { } reference)
         {
             hint = string.IsNullOrWhiteSpace(hint) ? reference : hint + "\n\n" + reference;
         }
@@ -60,6 +60,29 @@ public sealed partial class TranslationService
             ? TranslationPreviousReference.Build(text)
             : null;
         return previous == null ? hint : string.IsNullOrWhiteSpace(hint) ? previous : hint + "\n\n" + previous;
+    }
+
+    /// <summary>
+    /// A row copied from a base game text with changes, with the blocks the mod left as the base game wrote them taken
+    /// from the Korean patch (see GameStringDictionary.SpliceUnchanged); the model's text when they do not fit.
+    /// </summary>
+    private string SpliceGamePatch(long id, string source, string final)
+    {
+        if (Ctx.GameReferenceById?.TryGetValue(id, out var game) != true
+            || XTranslatorAi.Core.Plugins.GameStringDictionary.SpliceUnchanged(source, final, game!) is not { } spliced)
+        {
+            return final;
+        }
+
+        try
+        {
+            TokenValidator.ValidateFinalTextIntegrity(source, spliced, context: $"id={id} game splice");
+            return spliced;
+        }
+        catch (Exception)
+        {
+            return final;
+        }
     }
 
     private string? AppendBookTitleReference(long id, string? hint)
