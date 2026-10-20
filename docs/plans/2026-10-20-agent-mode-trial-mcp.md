@@ -258,6 +258,10 @@ Codex의 두 번째 시험과 같은 플러그인(EldenWarAshPack1, 150줄)을 �
     - GUI와 에이전트 모드 모두 해당한다.
   - LotD 6.10 책 본문 1,410개 가운데 383개는 사전에 그대로 맞는다. 바닐라 책을 고친 사본 327개(문단이 모두 같은 것 74개)는 지금까지 처음부터 번역됐다.
   - 에이전트 모드 요청으로 확인: 팔머 연구 행의 ctx에 한글패치 번역("크래그 전쟁(War of the Crag)" 포함)이 붙었다.
+  - 효과 확인(1.16.10 GUI 대 1.16.11 GUI, gemini-3.8-flash, 바닐라 책을 고친 LotD 사본 6편, `artifacts/mcp-trial-20261020/lotd/ref/`, `ref_compare.py`):
+    - 한글패치와 닮은 정도(태그 뺀 글자 일치율 / 한국어 낱말 겹침)는 평균 53%/34%에서 56%/37%로 조금 올랐다.
+    - 팔머 연구의 "War of the Crag"는 참고에 "크래그 전쟁"이 있었는데도 "암벽 전쟁"으로 옮겼다. 모델이 참고를 따르지 않고 새로 번역한다.
+    - 1.16.10 실행에서 Blades가 추가 생성 상한(8)에 걸려 한 번 실패했고, 다시 번역하니 됐다(이번 변경과 무관).
   - 우화 The Barber, 편지 Auryen Morellus' Letter, 모험가 일지 Micmou's Journal, 운문 Manifesto Cyrodiil Vampyrum, 연구 노트 Notes of Shalidor, 유머 Jokes, 학술서 The Falmer: A Study
 - 시험 프로젝트: 쪽마다 플러그인 사본을 `agent open`으로 열고, 책 7줄을 뺀 17,364줄을 건너뜀(3)으로 바꿨다(`lotd_setup.py`). 실제 프로젝트는 건드리지 않았다.
   - GUI는 이름을 바꾼 사본(LotDBlindGUI.esm)을 같은 방법으로 미리 만들어, GUI가 그 프로젝트를 이어 열고 대기 7줄만 번역했다.
