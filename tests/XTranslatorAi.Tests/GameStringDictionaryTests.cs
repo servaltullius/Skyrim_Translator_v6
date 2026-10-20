@@ -269,6 +269,12 @@ public sealed class GameStringDictionaryTests
         var shorter = spaced.Replace("For decade upon decade, the two sides waged a bitter conflict, the War of the Crag, deep below Skyrim.", "");
         Assert.Null(game.FindSameParagraphs("BOOK:DESC", shorter));
         Assert.NotEmpty(game.FindSimilar("BOOK:DESC", shorter)!.ChangedParagraphs!);
+
+        // A copy that changed only a short line (the author) keeps every long paragraph, but the patch's old author
+        // line would not fit it: it is translated with the reference instead of filled.
+        var newAuthor = spaced.Replace("Ursa Uthrax", "Ursa Uthrax the Elder");
+        Assert.Null(game.FindSameParagraphs("BOOK:DESC", newAuthor));
+        Assert.Empty(game.FindSimilar("BOOK:DESC", newAuthor)!.ChangedParagraphs!);
     }
 
     private const string PatchKorean =
@@ -391,6 +397,9 @@ public sealed class GameStringDictionaryTests
         var loaded = GameStringDictionary.Load(stream);
         Assert.Equal(1, loaded.ParagraphTextCount);
         Assert.NotNull(loaded.FindSimilar("BOOK:DESC", FalmerEnglish.Replace("The overthrew", "They overthrew")));
+        // The short lines' fingerprints come back too: the same text with other spacing is still filled.
+        Assert.NotNull(loaded.FindSameParagraphs("BOOK:DESC", FalmerEnglish.Replace(". \r\n", ".\r\n")));
+        Assert.Null(loaded.FindSameParagraphs("BOOK:DESC", FalmerEnglish.Replace("Ursa Uthrax", "Ursa")));
 
         // The shipped dictionary gains them from the game's English; a record whose English is not the one its Korean
         // translates is skipped.

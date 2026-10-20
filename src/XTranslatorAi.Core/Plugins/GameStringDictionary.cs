@@ -41,15 +41,17 @@ public sealed class GameStringDictionary
     private readonly Dictionary<string, (string EnglishHash, string Korean, string Plugin)> _byField;
     private readonly Dictionary<string, string> _byText;
     private readonly Dictionary<string, string[]> _paragraphs;
+    private readonly Dictionary<string, string[]> _shortParagraphs;
     private readonly Dictionary<string, List<string>> _byParagraph;
 
     private GameStringDictionary(Dictionary<string, (string, string, string)> byField, Dictionary<string, string> byText,
-        MasterSpeakerIndex? speakers = null, Dictionary<string, string[]>? paragraphs = null)
+        MasterSpeakerIndex? speakers = null, Dictionary<string, string[]>? paragraphs = null, Dictionary<string, string[]>? shortParagraphs = null)
     {
         _byField = byField;
         _byText = byText;
         Speakers = speakers;
         _paragraphs = paragraphs ?? new Dictionary<string, string[]>(StringComparer.Ordinal);
+        _shortParagraphs = shortParagraphs ?? new Dictionary<string, string[]>(StringComparer.Ordinal);
         _byParagraph = new Dictionary<string, List<string>>(StringComparer.Ordinal);
         foreach (var (identity, keys) in _paragraphs)
         {
@@ -65,7 +67,7 @@ public sealed class GameStringDictionary
     public MasterSpeakerIndex? Speakers { get; }
 
     /// <summary>This dictionary with the masters' speaker index; the translations are shared, not copied.</summary>
-    public GameStringDictionary WithSpeakers(MasterSpeakerIndex? speakers) => new(_byField, _byText, speakers, _paragraphs);
+    public GameStringDictionary WithSpeakers(MasterSpeakerIndex? speakers) => new(_byField, _byText, speakers, _paragraphs, _shortParagraphs);
 
     /// <summary>The long texts whose paragraphs are kept, for finding a mod's edited copy (see <see cref="FindSimilar"/>).</summary>
     public int ParagraphTextCount => _paragraphs.Count;
@@ -77,16 +79,19 @@ public sealed class GameStringDictionary
     public GameStringDictionary WithParagraphs(IEnumerable<(string Identity, string? Rec, string English)> fields)
     {
         var paragraphs = new Dictionary<string, string[]>(_paragraphs, StringComparer.Ordinal);
+        var shortParagraphs = new Dictionary<string, string[]>(_shortParagraphs, StringComparer.Ordinal);
         foreach (var (identity, rec, english) in fields)
         {
             if (IsDialogue(rec) || !_byField.TryGetValue(identity, out var field)) continue;
             var normalized = TranslationMemoryKey.NormalizeSource(english);
             if (string.IsNullOrWhiteSpace(normalized) || !string.Equals(field.EnglishHash, Fingerprint(normalized), StringComparison.Ordinal)) continue;
             var keys = ParagraphKeys(english);
-            if (keys.Count >= MinSharedParagraphs) paragraphs[identity] = keys.ToArray();
+            if (keys.Count < MinSharedParagraphs) continue;
+            paragraphs[identity] = keys.ToArray();
+            shortParagraphs[identity] = ShortParagraphKeys(english).ToArray();
         }
 
-        return new GameStringDictionary(_byField, _byText, Speakers, paragraphs);
+        return new GameStringDictionary(_byField, _byText, Speakers, paragraphs, shortParagraphs);
     }
 
     // A long text counts as the base game's when this many of its paragraphs, and this share of both texts', are the same.
@@ -106,17 +111,24 @@ public sealed class GameStringDictionary
 
     // Each paragraph long enough to tell texts apart: its fingerprint, and its text with the spacing collapsed.
     private static List<(string Key, string Text)> Paragraphs(string english)
+        => PlainParagraphs(english).Where(plain => plain.Length >= MinParagraphChars)
+            .Select(plain => (Fingerprint(plain.ToLowerInvariant())[..16], plain)).ToList();
+
+    /// <summary>
+    /// Fingerprints of the short lines (titles, "by", an author) in order. They tell nothing about which text a row
+    /// copied, but a copy is the base game's text only if they are the same too: LotD's copy of The Alduin/Akatosh
+    /// Dichotomy adds "Book Seven of 2920" and other title lines, and a copy that only changed its author would have
+    /// taken the patch's old author line.
+    /// </summary>
+    internal static IReadOnlyList<string> ShortParagraphKeys(string english)
+        => PlainParagraphs(english).Where(plain => plain.Length is > 0 and < MinParagraphChars)
+            .Select(plain => Fingerprint(plain.ToLowerInvariant())[..16]).ToList();
+
+    private static IEnumerable<string> PlainParagraphs(string english)
     {
         var text = PageBreak.Replace(english.Replace("\r\n", "\n").Replace('\r', '\n'), "\n\n");
         text = ParagraphMarkup.Replace(text, "");
-        var paragraphs = new List<(string, string)>();
-        foreach (var paragraph in Regex.Split(text, @"\n\s*\n"))
-        {
-            var plain = Spaces.Replace(paragraph, " ").Trim();
-            if (plain.Length >= MinParagraphChars) paragraphs.Add((Fingerprint(plain.ToLowerInvariant())[..16], plain));
-        }
-
-        return paragraphs;
+        return Regex.Split(text, @"\n\s*\n").Select(paragraph => Spaces.Replace(paragraph, " ").Trim());
     }
 
     /// <summary>
@@ -124,12 +136,14 @@ public sealed class GameStringDictionary
     /// most of its paragraphs are a base game text's. The match lists the row's paragraphs the base game text lacks;
     /// none means only spacing or markup differs. Dialogue is left out, as for <see cref="Find"/>.
     /// </summary>
-    public GameStringMatch? FindSimilar(string? rec, string sourceText)
+    public GameStringMatch? FindSimilar(string? rec, string sourceText) => FindSimilarWithIdentity(rec, sourceText).Match;
+
+    private (GameStringMatch? Match, string? Identity) FindSimilarWithIdentity(string? rec, string sourceText)
     {
-        if (_byParagraph.Count == 0 || IsDialogue(rec)) return null;
+        if (_byParagraph.Count == 0 || IsDialogue(rec)) return (null, null);
         var paragraphs = Paragraphs(sourceText);
         var keys = paragraphs.Select(p => p.Key).Distinct(StringComparer.Ordinal).ToList();
-        if (keys.Count < MinSharedParagraphs) return null;
+        if (keys.Count < MinSharedParagraphs) return (null, null);
         var shared = new Dictionary<string, int>(StringComparer.Ordinal);
         foreach (var key in keys)
         {
@@ -142,25 +156,34 @@ public sealed class GameStringDictionary
                         && s.Value >= _paragraphs[s.Key].Distinct(StringComparer.Ordinal).Count() * MinSharedShare)
             .OrderByDescending(s => s.Value).ThenBy(s => s.Key, StringComparer.Ordinal)
             .Select(s => s.Key).FirstOrDefault();
-        if (best == null || !_byField.TryGetValue(best, out var field)) return null;
+        if (best == null || !_byField.TryGetValue(best, out var field)) return (null, null);
         var baseKeys = _paragraphs[best].ToHashSet(StringComparer.Ordinal);
         var changed = paragraphs.Where(p => !baseKeys.Contains(p.Key)).Select(p => p.Text).Distinct(StringComparer.Ordinal).ToList();
         // A copy that dropped some of the base game's paragraphs is not the same text either.
         var dropped = shared[best] < baseKeys.Count;
-        return new GameStringMatch(field.Korean, $"{field.Plugin} 비슷한 글 {shared[best]}/{keys.Count}문단",
+        return (new GameStringMatch(field.Korean, $"{field.Plugin} 비슷한 글 {shared[best]}/{keys.Count}문단",
             changed.Count == 0 && dropped ? new[] { "(the base game's text has paragraphs this source does not)" } : changed,
-            _paragraphs[best]);
+            _paragraphs[best]), best);
     }
 
     /// <summary>
     /// The base game's Korean for a long text the mod copied changing only spacing or markup: every paragraph is the
-    /// same. Applied as the game's own text is, laid out with the source's blank lines, when its tags fit the row.
-    /// LotD's Japhet's Journal has one blank line more than the base game's, and was translated anew for it.
+    /// same, short lines included. Applied as the game's own text is, laid out with the source's blank lines, when its
+    /// tags fit the row. LotD's Japhet's Journal has one blank line more than the base game's, and was translated anew
+    /// for it. A dictionary without the short lines' fingerprints applies nothing this way.
     /// </summary>
     public GameStringMatch? FindSameParagraphs(string? rec, string sourceText)
-        => FindSimilar(rec, sourceText) is { ChangedParagraphs.Count: 0 } match
-            ? new GameStringMatch(Relayout(sourceText, match.Text) ?? match.Text, match.Origin.Split(' ')[0] + " 같은 글(공백·꾸밈만 다름)")
-            : null;
+    {
+        var (match, identity) = FindSimilarWithIdentity(rec, sourceText);
+        if (match is not { ChangedParagraphs.Count: 0 } || identity == null
+            || !_shortParagraphs.TryGetValue(identity, out var shortLines)
+            || !shortLines.SequenceEqual(ShortParagraphKeys(sourceText), StringComparer.Ordinal))
+        {
+            return null;
+        }
+
+        return new GameStringMatch(Relayout(sourceText, match.Text) ?? match.Text, match.Origin.Split(' ')[0] + " 같은 글(공백·꾸밈만 다름)");
+    }
 
     // Blank-line runs, kept by Regex.Split as the odd entries.
     private static readonly Regex BlankLines = new(@"(\r?\n[ \t]*\r?\n(?:[ \t]*\r?\n)*)", RegexOptions.CultureInvariant);
@@ -455,6 +478,12 @@ public sealed class GameStringDictionary
             writer.Write('\n');
         }
 
+        foreach (var (identity, keys) in _shortParagraphs)
+        {
+            writer.Write(string.Join('\t', "PS", identity, string.Join(',', keys)));
+            writer.Write('\n');
+        }
+
         foreach (var line in Speakers?.Lines() ?? Enumerable.Empty<string>())
         {
             writer.Write(line);
@@ -474,6 +503,7 @@ public sealed class GameStringDictionary
         var byField = new Dictionary<string, (string, string, string)>(StringComparer.Ordinal);
         var byText = new Dictionary<string, string>(StringComparer.Ordinal);
         var paragraphs = new Dictionary<string, string[]>(StringComparer.Ordinal);
+        var shortParagraphs = new Dictionary<string, string[]>(StringComparer.Ordinal);
         var speakers = new MasterSpeakerIndex.Maps();
         while (reader.ReadLine() is { } line)
         {
@@ -490,13 +520,17 @@ public sealed class GameStringDictionary
             {
                 paragraphs[parts[1]] = parts[2].Split(',', StringSplitOptions.RemoveEmptyEntries);
             }
+            else if (parts.Length == 3 && parts[0] == "PS")
+            {
+                shortParagraphs[parts[1]] = parts[2].Split(',', StringSplitOptions.RemoveEmptyEntries);
+            }
             else
             {
                 MasterSpeakerIndex.TryReadLine(parts, speakers);
             }
         }
 
-        return new GameStringDictionary(byField, byText, MasterSpeakerIndex.FromMaps(speakers), paragraphs);
+        return new GameStringDictionary(byField, byText, MasterSpeakerIndex.FromMaps(speakers), paragraphs, shortParagraphs);
     }
 
     // 128 bits of SHA-256 over the normalized English: equal text gives an equal fingerprint, and no text can be read back.
