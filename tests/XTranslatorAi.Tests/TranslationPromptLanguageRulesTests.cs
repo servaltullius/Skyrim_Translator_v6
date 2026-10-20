@@ -17,6 +17,9 @@ public sealed class TranslationPromptLanguageRulesTests
         Assert.DoesNotContain("NPC는", japanese);
         Assert.Contains("matching meaning and grammatical use", korean);
         Assert.Contains("matching meaning and grammatical use", japanese);
+        // The Teldryn blind test: "If you like foggy swamps." read as a compliment in all three models' Korean.
+        Assert.Contains(TranslationPrompt.SarcasmRule, korean);
+        Assert.DoesNotContain(TranslationPrompt.SarcasmRule, japanese);
     }
 
     [Theory]

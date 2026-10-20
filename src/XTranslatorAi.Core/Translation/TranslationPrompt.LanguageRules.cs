@@ -16,7 +16,13 @@ public static partial class TranslationPrompt
         sb.AppendLine("- Korean grammar: Choose particles by Korean pronunciation, including retained acronyms (e.g. NPC는, NPC를). Keep identifiers and key labels unchanged when appropriate; do not choose particles by the final Latin letter alone.");
         sb.AppendLine("- When avoiding particles on numeric tokens, restructure the sentence around a noun; do not drop required particles or connecting words. For example, prefer 치명타 확률이 __XT_PH_NUM_0000__ 증가합니다 over an unfinished 보너스 __XT_PH_NUM_0000__ 제공 phrase.");
         sb.AppendLine("- Do NOT output ambiguous particle markers like \"을(를)\", \"(을)를\", \"은(는)\", \"(은)는\", \"이(가)\", \"(이)가\", \"와(과)\", \"(와)과\", or \"(으)로\". Choose one correct form.");
+        sb.AppendLine(SarcasmRule);
     }
+
+    // The Teldryn blind test: "Oh this is lovely. If you like foggy swamps." came out as a plain compliment in all three
+    // models (참 좋군… 늪을 좋아한다면 말이오), and a reader pointed out the mockery was lost; 끝내주는 and ~한테나 keep it.
+    internal const string SarcasmRule =
+        "- Keep sarcasm and irony audible in Korean. A line that praises what it mocks must still read as mockery, not as a plain compliment: use an overdone word and an ending that says the speaker does not mean it (e.g. \"Oh this is lovely. If you like foggy swamps.\" => 아, 아주 끝내주는 곳이군. 안개 낀 늪을 좋아하는 사람한테나 말이오.; not 참 좋군… 좋아한다면 말이오).";
 
     private const string ControlKeyTokenPrefix = "__XT_PH_KEY_";
 
