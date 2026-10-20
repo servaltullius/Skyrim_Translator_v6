@@ -99,6 +99,8 @@ public sealed partial class TranslationService
             escFinal = KoreanProtectFromFixer.Fix(escCtx.TargetLang, row.Source, escFinal);
             escFinal = KoreanSourceAwareFixes.Apply(escCtx.TargetLang, row.Source, escFinal);
             escFinal = KoreanTranslationFixer.Fix(escCtx.TargetLang, escFinal);
+            // As the first answer was: a base game book's unchanged blocks are the Korean patch's (its duplicates take them too).
+            escFinal = SpliceGamePatch(row.Id, row.Source, escFinal);
             TokenValidator.ValidateFinalTextIntegrity(row.Source, escFinal, context: $"id={row.Id} quality-escalation post-edits");
 
             if (TryGetQualityEscalationTrigger(row.Source, escFinal, escCtx.TargetLang, out _, out _))

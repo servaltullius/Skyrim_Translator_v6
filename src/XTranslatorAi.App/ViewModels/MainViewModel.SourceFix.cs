@@ -19,7 +19,8 @@ public partial class MainViewModel
     /// are unmarked; otherwise all are marked. A marked row's translation is taken out of the project TM. Retranslating
     /// a row removes its mark.
     /// </summary>
-    [RelayCommand(CanExecute = nameof(CanRetranslate))]
+    // Not CanRetranslate: marking during a quality check is allowed (the row is checked again when it ends).
+    [RelayCommand(CanExecute = nameof(CanToggleSourceFix))]
     private async Task ToggleSourceFixAsync(IList? selectedRows)
     {
         var db = _projectState.Db;
@@ -72,4 +73,6 @@ public partial class MainViewModel
             AppLog.Write($"WARN 원문 오류 수정 표시 후 다시 검사하지 못했습니다: {ex.Message}");
         }
     }
+
+    private bool CanToggleSourceFix() => IsProjectLoaded && !IsTranslating && IsWorkspaceInteractive;
 }

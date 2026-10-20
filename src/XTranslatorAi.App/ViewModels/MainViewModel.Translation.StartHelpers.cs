@@ -91,6 +91,7 @@ public partial class MainViewModel
         IsPaused = false;
         _resumeTcs = null;
         _inProgressSinceTranslationStart.Clear();
+        _changedSinceTranslationStart.Clear();
         StatusMessage = "번역 중...";
     }
 

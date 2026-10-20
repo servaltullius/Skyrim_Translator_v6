@@ -27,6 +27,9 @@ public sealed partial class PluginUiLifecycleTests
             fixture.Vm.IsLqaScanning = true;
             Assert.False(fixture.Vm.StartTranslationCommand.CanExecute(null));
             Assert.False(fixture.Vm.RetranslateVisibleCommand.CanExecute(null));
+            // Marking a source fix during a check is allowed: the row is checked again when the check ends.
+            fixture.Vm.SelectedEntry = row;
+            Assert.True(fixture.Vm.ToggleSourceFixCommand.CanExecute(null));
             fixture.Vm.IsLqaScanning = false;
 
             await fixture.Vm.StartTranslationCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));

@@ -153,15 +153,16 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Equal(await File.ReadAllTextAsync(_session.RequestPath(_project)), request.GetProperty("content")[0].GetProperty("text").GetString());
 
         // The answer goes through a file of its own, gone after the call: lanes' servers share the work folder, and a
-        // fixed answer.txt let one lane's answer be saved into another lane's request.
+        // fixed answer.txt let one lane's answer be saved into another lane's request. The call goes to a project that
+        // does not exist: a real submit would open the user's global DB (the server's commands have no test root).
         var submit = JsonSerializer.Serialize(new
         {
             jsonrpc = "2.0", id = 6, method = "tools/call",
-            @params = new { name = "submit", arguments = new { project = "Thalmor", answer = Answer(_session.Pending(_project)!) } },
+            @params = new { name = "submit", arguments = new { project = "NoSuchProject", answer = "번역" } },
         });
         var submitted = new StringWriter();
         Assert.Equal(0, await AgentMcpServer.ServeAsync(server, new StringReader(submit), submitted));
-        Assert.False(JsonDocument.Parse(submitted.ToString()).RootElement.GetProperty("result").GetProperty("isError").GetBoolean());
+        Assert.True(JsonDocument.Parse(submitted.ToString()).RootElement.GetProperty("result").GetProperty("isError").GetBoolean());
         Assert.Empty(Directory.GetFiles(Path.Combine(_root, "work", ".mcp")));
     }
 
@@ -353,6 +354,19 @@ public sealed class AgentModeTests : IAsyncLifetime
 
         Assert.True(AgentSession.NumbersFit("Deals 10 damage for 10 seconds.", "10초 동안 10의 피해를 줍니다."));
         Assert.False(AgentSession.NumbersFit("Deals 10 damage for 10 seconds.", "10의 피해를 줍니다."));
+        // A font size the release changed for Korean is markup, not text; "1,000" is one number.
+        Assert.True(AgentSession.NumbersFit("<font size='60'>Deals 10 damage.</font>", "<font size='48'>10의 피해를 줍니다.</font>"));
+        Assert.True(AgentSession.NumbersFit("Costs 1,000 gold.", "1000골드가 듭니다."));
+        Assert.False(AgentSession.NumbersFit("Costs 1,500 gold.", "1,000골드가 듭니다."));
+
+        // A wrong --english path is refused before anything is linked.
+        var wrong = await OpenAsync("Bites3.esp", current);
+        await Assert.ThrowsAsync<AgentModeException>(() =>
+            _session.LinkKoreanAsync(wrong, korean, null, CancellationToken.None, Path.Combine(_root, "English", "NoSuch.esp")));
+        await using (var db = await ProjectDb.OpenOrCreateAsync(wrong.DbPath, CancellationToken.None))
+        {
+            Assert.Null(await db.GetPreviousTranslationSourceAsync(CancellationToken.None));
+        }
     }
 
     [Fact]

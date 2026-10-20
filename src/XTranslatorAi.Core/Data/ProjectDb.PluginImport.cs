@@ -90,8 +90,9 @@ public sealed partial class ProjectDb
                     }
                     else
                     {
-                        // A record of a master the update dropped: set aside under its old key instead of lost.
-                        unmapped[key] = value;
+                        // A record of a master the update dropped: set aside under that master's name instead of lost. Its
+                        // old key would name another master's record, or the plugin's own, in the new list.
+                        unmapped[PreviousTranslationMatcher.DetachKey(key, oldSource.Info.Masters) ?? key] = value;
                     }
                 }
 
@@ -324,7 +325,9 @@ public sealed partial class ProjectDb
         const string Moving = "\u0001remap\u0001";
         foreach (var table in new[] { "PluginRetiredTranslation", "PreviousTranslation", "PreviousSource" })
         {
+            var retired = table == "PluginRetiredTranslation";
             var moves = new List<(string From, string To)>();
+            var dropped = new List<string>();
             await using (var query = _connection.CreateCommand())
             {
                 query.Transaction = tx;
@@ -333,10 +336,35 @@ public sealed partial class ProjectDb
                 while (await reader.ReadAsync(ct))
                 {
                     var key = reader.GetString(0);
-                    if (PreviousTranslationMatcher.TryMapKey(key, fromMasters, toMasters, out var mapped) && !string.Equals(mapped, key, StringComparison.Ordinal))
+                    if (key.StartsWith('@'))
+                    {
+                        // Set aside when its master left the list: numbered again once the master is back.
+                        if (PreviousTranslationMatcher.TryAttachKey(key, toMasters, out var attached)) moves.Add((key, attached));
+                    }
+                    else if (!PreviousTranslationMatcher.TryMapKey(key, fromMasters, toMasters, out var mapped))
+                    {
+                        // The master left the list: a translation set aside keeps it by name; an earlier release's text or
+                        // English for it is dropped, or it would show as another record's reference.
+                        if (retired && PreviousTranslationMatcher.DetachKey(key, fromMasters) is { } detached) moves.Add((key, detached));
+                        else dropped.Add(key);
+                    }
+                    else if (!string.Equals(mapped, key, StringComparison.Ordinal))
                     {
                         moves.Add((key, mapped));
                     }
+                }
+            }
+
+            if (dropped.Count > 0)
+            {
+                await using var delete = _connection.CreateCommand();
+                delete.Transaction = tx;
+                delete.CommandText = $"DELETE FROM {table} WHERE FieldKey=$key;";
+                var droppedKey = delete.Parameters.Add("$key", SqliteType.Text);
+                foreach (var key in dropped)
+                {
+                    droppedKey.Value = key;
+                    await delete.ExecuteNonQueryAsync(ct);
                 }
             }
 

@@ -44,11 +44,11 @@ public partial class MainViewModel
         // The run adjusted the counters row by row; recount once the stopped rows are back to pending.
         RecountProgress();
 
-        // The quality-check list showed the rows' text before the run until the next full scan; the listed rows are
-        // checked again, as after a save.
+        // The quality-check list showed the rows' text before the run until the next full scan; the rows the run
+        // changed are checked again, as after a save (every listed row was, untouched ones too).
         try
         {
-            await RecheckLqaRowsAsync(Entries);
+            await RecheckLqaRowsAsync(Entries.Where(entry => _changedSinceTranslationStart.Contains(entry.Id)).ToList());
         }
         catch (Exception ex)
         {

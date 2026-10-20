@@ -115,6 +115,7 @@ public sealed class GameStringService
         var counts = $"레코드 {dictionary.FieldCount:N0}개 · 문장 {dictionary.TextCount:N0}개";
         return built
             ? $"직접 만든 게임 번역 사전: {counts} ({File.GetLastWriteTime(DictionaryPath):yyyy-MM-dd} 만듦)"
+              + (dictionary.HasBaseBlocks ? "" : ". 1.16.17 전에 만든 사전이라 바닐라 책 사본에 한글패치 문단을 끼워 넣지 못합니다. 사전을 다시 만드세요")
             : $"기본 게임 번역 사전(한글패치): {counts}";
     }
 

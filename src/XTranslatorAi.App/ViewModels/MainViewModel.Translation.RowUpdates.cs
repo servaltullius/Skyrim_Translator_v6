@@ -97,6 +97,10 @@ public partial class MainViewModel
                 vm.IsTranslationMemoryApplied = false;
                 vm.ErrorMessage = null;
             }
+            if (update.Status is StringEntryStatus.Done or StringEntryStatus.Error)
+            {
+                _changedSinceTranslationStart.Add(update.Id);
+            }
             if (update.Status == StringEntryStatus.Done)
             {
                 vm.ErrorMessage = null;
@@ -143,6 +147,7 @@ public partial class MainViewModel
         _rowUpdateTimer?.Stop();
         _rowUpdates.Clear();
         _inProgressSinceTranslationStart.Clear();
+        _changedSinceTranslationStart.Clear();
     }
 
     private sealed class RunFlowControlPort(MainViewModel owner, long generation) : ITranslationRunnerFlowControlPort

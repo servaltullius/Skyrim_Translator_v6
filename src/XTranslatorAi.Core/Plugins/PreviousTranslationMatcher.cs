@@ -218,6 +218,43 @@ public static class PreviousTranslationMatcher
         return true;
     }
 
+    /// <summary>
+    /// A key of a record whose master left the list, named by that master instead of its position
+    /// ("@Dawnguard.esm|WEAP/01001234/0/FULL/1"): the old position names another master, or the plugin's own records, in
+    /// the new list. Null for the plugin's own records and keys without a FormID.
+    /// </summary>
+    internal static string? DetachKey(string key, IReadOnlyList<string> fromMasters)
+        => TryReadIndex(key, out var index) && index < fromMasters.Count ? "@" + fromMasters[index] + "|" + key : null;
+
+    /// <summary>A key <see cref="DetachKey"/> made, numbered again where its master is in <paramref name="toMasters"/>.</summary>
+    internal static bool TryAttachKey(string detached, IReadOnlyList<string> toMasters, out string key)
+    {
+        key = detached;
+        var bar = detached.IndexOf('|');
+        if (!detached.StartsWith('@') || bar < 0) return false;
+        var target = IndexOf(toMasters, detached[1..bar]);
+        var inner = detached[(bar + 1)..];
+        if (target < 0 || !TryReadIndex(inner, out _)) return false;
+        var start = inner.IndexOf('/');
+        var formId = uint.Parse(inner.AsSpan(start + 3, 6), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+        key = inner[..(start + 1)] + (((uint)target << 24) | formId).ToString("X8", CultureInfo.InvariantCulture) + inner[(start + 9)..];
+        return true;
+    }
+
+    private static bool TryReadIndex(string key, out int index)
+    {
+        index = 0;
+        var start = key.IndexOf('/');
+        var end = start < 0 ? -1 : key.IndexOf('/', start + 1);
+        if (end - start != 9 || !uint.TryParse(key.AsSpan(start + 1, 8), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var formId))
+        {
+            return false;
+        }
+
+        index = (int)(formId >> 24);
+        return true;
+    }
+
     private static int IndexOf(IReadOnlyList<string> masters, string fileName)
     {
         for (var i = 0; i < masters.Count; i++)

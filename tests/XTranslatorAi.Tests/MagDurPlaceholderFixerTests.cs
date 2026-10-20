@@ -13,6 +13,7 @@ public sealed class MagDurPlaceholderFixerTests
     [Theory]
     [InlineData("Causes <mag> points of frost damage to a target for <dur> seconds.", "<dur>초 동안 대상에게 <mag>포인트의 냉기 피해를 입힙니다.")]
     [InlineData("Target takes <mag> points of shock damage over <dur> seconds.", "대상은 <dur>초간 <mag>포인트의 전격 피해를 입습니다.")]
+    [InlineData("Causes <mag> points of fire damage for <dur> seconds.", "<dur>초 동안 <mag>포인트의 화염 피해를 입힙니다.")]
     public void Fix_KeepsTheUsualKoreanOrder_DurationBeforeMagnitude(string source, string dest)
     {
         Assert.Equal(dest, MagDurPlaceholderFixer.Fix(source, dest, targetLang: "korean"));

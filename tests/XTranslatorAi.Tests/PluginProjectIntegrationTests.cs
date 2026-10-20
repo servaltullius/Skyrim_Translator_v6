@@ -318,6 +318,33 @@ public sealed class PluginProjectIntegrationTests
         Assert.Equal(new[] { "강철 검", "석궁" }, back.Select(row => row.DestText));
     }
 
+    // A master that leaves the list and comes back: its record's translation was set aside under its old key, which in
+    // the shorter list named the plugin's own records, so the record never got it back and the earlier release's text
+    // for it showed as a reference on one of the plugin's own records.
+    [Fact]
+    public async Task MasterThatLeavesAndComesBack_GetsItsTranslationBack_AndLendsNothingMeanwhile()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        static PluginField Keyed(uint formId, int order, string source) => new($"WEAP/{formId:X8}/0/FULL/1", order, "WEAP", "FULL", formId, "TestSword", 1, 1, source);
+        var withDawnguard = fixture.Source with { Masters = new[] { "Skyrim.esm", "Dawnguard.esm" } };
+        await fixture.Db.ReplaceImportedPluginStringsAsync(withDawnguard,
+            new[] { Keyed(0x02000800, 0, "Steel Sword"), Keyed(0x01001234, 1, "Crossbow") }, fixture.Project, "utf-8", CancellationToken.None);
+        var rows = await fixture.Db.GetStringsAsync(20, 0, CancellationToken.None);
+        await fixture.Db.UpdateStringTranslationAsync(rows[0].Id, "강철 검", StringEntryStatus.Done, null, CancellationToken.None);
+        await fixture.Db.UpdateStringTranslationAsync(rows[1].Id, "석궁", StringEntryStatus.Done, null, CancellationToken.None);
+        await fixture.Db.ReplacePreviousTranslationsAsync("old.esp", new Dictionary<string, string> { ["WEAP/01001234/0/FULL/1"] = "옛 석궁" }, CancellationToken.None);
+
+        // Dawnguard leaves: 01 is now the plugin's own records, one of which has the same English.
+        var without = await fixture.Db.ReplaceImportedPluginStringsAsync(fixture.Source with { Sha256 = "v2", Masters = new[] { "Skyrim.esm" } },
+            new[] { Keyed(0x01000800, 0, "Steel Sword"), Keyed(0x01001234, 1, "Crossbow") }, fixture.Project, "utf-8", CancellationToken.None);
+        Assert.Equal(("강철 검", StringEntryStatus.Pending), (without[0].DestText, without[1].Status));
+        Assert.False((await fixture.Db.GetPreviousTranslationsByStringIdAsync(CancellationToken.None)).ContainsKey(without[1].Id));
+
+        var back = await fixture.Db.ReplaceImportedPluginStringsAsync(withDawnguard with { Sha256 = "v3" },
+            new[] { Keyed(0x02000800, 0, "Steel Sword"), Keyed(0x01001234, 1, "Crossbow") }, fixture.Project, "utf-8", CancellationToken.None);
+        Assert.Equal(new[] { "강철 검", "석궁" }, back.Select(row => row.DestText));
+    }
+
     // A mod update that changes one source string used to delete that row's translation, reviewed ones included,
     // and reopening the earlier file did not bring it back.
     [Fact]

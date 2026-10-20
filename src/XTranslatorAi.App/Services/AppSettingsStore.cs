@@ -116,17 +116,24 @@ public sealed class AppSettingsStore
         }
     }
 
-    // settings.json.undecryptable-keys: the first file that held keys this account could not read, never overwritten.
+    // settings.json.undecryptable-keys: the file that held keys this account could not read. A later move with other
+    // keys gets a copy of its own (…-<time>) instead of the first one, which held only the keys of that first move.
     private string? KeepFileWithUndecryptableKeys()
     {
         var kept = _settingsPath + ".undecryptable-keys";
         try
         {
-            if (!File.Exists(kept))
+            if (File.Exists(kept))
             {
-                File.Copy(_settingsPath, kept);
+                if (File.ReadAllBytes(kept).AsSpan().SequenceEqual(File.ReadAllBytes(_settingsPath)))
+                {
+                    return kept;
+                }
+
+                kept += "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss", System.Globalization.CultureInfo.InvariantCulture);
             }
 
+            File.Copy(_settingsPath, kept);
             return kept;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)

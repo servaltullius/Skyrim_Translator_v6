@@ -202,5 +202,15 @@ public sealed class AppSettingsStoreTests : IDisposable
         Assert.Equal(original, File.ReadAllText(kept));
         Assert.Contains(Path.GetFileName(kept), store.LoadWarning);
         Assert.DoesNotContain("dpapi:AAAAAAAA", File.ReadAllText(SettingsPath));
+
+        // A later move with other keys gets a copy of its own; the first is kept as it was.
+        const string later = "{\"apiKeyProtected\":\"dpapi:BBBBBBBB\",\"batchSize\":9}";
+        File.WriteAllText(SettingsPath, later);
+        var again = new AppSettingsStore(SettingsPath);
+        again.Load();
+        Assert.Equal(original, File.ReadAllText(kept));
+        var second = Assert.Single(Directory.GetFiles(Path.GetDirectoryName(SettingsPath)!, Path.GetFileName(kept) + "-*"));
+        Assert.Equal(later, File.ReadAllText(second));
+        Assert.Contains(Path.GetFileName(second), again.LoadWarning);
     }
 }

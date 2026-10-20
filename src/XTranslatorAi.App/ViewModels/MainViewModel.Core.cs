@@ -49,6 +49,9 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
     private DispatcherTimer? _rowUpdateTimer;
     private readonly HashSet<long> _inProgressSinceTranslationStart = new();
 
+    // Rows a run saved or failed, checked again by the quality check when it ends.
+    private readonly HashSet<long> _changedSinceTranslationStart = new();
+
     public ObservableRangeCollection<StringEntryViewModel> Entries => _projectState.Entries;
     public ICollectionView EntriesView { get; }
     public ObservableRangeCollection<string> EntryStatusFilterValues { get; } = new();

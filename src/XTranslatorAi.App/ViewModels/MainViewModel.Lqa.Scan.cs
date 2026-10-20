@@ -51,13 +51,15 @@ public partial class MainViewModel
         var notes = referenceMemory is { Count: > 0 }
             ? LqaScanner.DropTmFallbacksMatchingMemory(tmFallbackNotes, ordered, referenceMemory)
             : tmFallbackNotes;
+        _lqaReferenceNames = referenceMemory is { Count: > 0 } ? XTranslatorAi.Core.Translation.ReferenceNameIndex.Build(referenceMemory) : null;
+        var referenceNames = _lqaReferenceNames;
         var issues = await Task.Run(() => LqaScanner.ScanAsync(
             entries: ordered,
             targetLang: targetLang,
             forceTokenGlossary: forceTokenGlossary,
             onProgress: progress.Report,
             tmFallbackNotes: notes,
-            referenceNames: referenceMemory is { Count: > 0 } ? XTranslatorAi.Core.Translation.ReferenceNameIndex.Build(referenceMemory) : null,
+            referenceNames: referenceNames,
             sourceFixIds: sourceFixIds,
             speakerStyles: speakerStyles
         ));
@@ -101,6 +103,9 @@ public partial class MainViewModel
         "name_inconsistent", "tone_inconsistent", "tone_differs_from_plugin", "rec_tone", "same_source_variant", "prefixed_name_variant", "tm_fallback", "official_name_missing",
         "speaker_tone_inconsistent", "speaker_tone_mixed", "player_tone_inconsistent",
     };
+
+    // The series TM's names the last full scan read; a row checked again reads them too.
+    private XTranslatorAi.Core.Translation.ReferenceNameIndex? _lqaReferenceNames;
 
     // Rows saved while a scan runs; the scan read them before the save, so they are checked again when it ends.
     private readonly HashSet<long> _lqaRowsChangedDuringScan = new();
@@ -159,7 +164,9 @@ public partial class MainViewModel
         var glossary = LanguageHelper.IsKoreanLanguage(TargetLang) ? BuildLqaForceTokenGlossary() : Array.Empty<GlossaryEntry>();
         var targetLang = TargetLang;
         var sourceFixIds = entries.Where(entry => entry.IsSourceFix).Select(entry => entry.Id).ToHashSet();
-        var fresh = await Task.Run(() => LqaScanner.ScanAsync(scanEntries, targetLang, glossary, sourceFixIds: sourceFixIds));
+        // With the full scan's TM names: without them a glossary term written as part of a TM name was flagged missing.
+        var referenceNames = _lqaReferenceNames;
+        var fresh = await Task.Run(() => LqaScanner.ScanAsync(scanEntries, targetLang, glossary, referenceNames: referenceNames, sourceFixIds: sourceFixIds));
         if (!ReferenceEquals(db, _projectState.Db))
         {
             return;

@@ -211,6 +211,25 @@ public sealed class GameStringDictionaryTests
         + "But as is always the story with slaves and their masters, the Falmer rose up. The overthrew the dwarves, and fled.\r\n\r\n"
         + "For decade upon decade, the two sides waged a bitter conflict, the War of the Crag, deep below Skyrim.\r\n";
 
+    private static GameStringDictionary WithoutLines(byte[] gz, string prefix)
+    {
+        string text;
+        using (var reader = new StreamReader(new System.IO.Compression.GZipStream(new MemoryStream(gz), System.IO.Compression.CompressionMode.Decompress)))
+        {
+            text = reader.ReadToEnd();
+        }
+
+        var kept = string.Join("\n", text.Split('\n').Where(line => !line.StartsWith(prefix, StringComparison.Ordinal)));
+        using var output = new MemoryStream();
+        using (var writer = new StreamWriter(new System.IO.Compression.GZipStream(output, System.IO.Compression.CompressionLevel.Fastest, leaveOpen: true)))
+        {
+            writer.Write(kept);
+        }
+
+        output.Position = 0;
+        return GameStringDictionary.Load(output);
+    }
+
     private static GameStringDictionary BuildWithBook()
         => GameStringDictionary.Build(new[]
         {
@@ -430,6 +449,12 @@ public sealed class GameStringDictionaryTests
         Assert.Equal(BuildWithBook().FindSimilar("BOOK:DESC", FalmerEnglish)!.BaseBlocks,
             loaded.FindSimilar("BOOK:DESC", FalmerEnglish)!.BaseBlocks);
         Assert.Equal(6, loaded.FindSimilar("BOOK:DESC", FalmerEnglish)!.BaseBlocks!.Count);
+        Assert.True(loaded.HasBaseBlocks);
+
+        // A dictionary the player built before the blocks were kept splices nothing, and says so.
+        var beforeBlocks = WithoutLines(stream.ToArray(), "PB\t");
+        Assert.False(beforeBlocks.HasBaseBlocks);
+        Assert.Null(beforeBlocks.FindSimilar("BOOK:DESC", FalmerEnglish)!.BaseBlocks);
         // The short lines' fingerprints come back too: the same text with other spacing is still filled.
         Assert.NotNull(loaded.FindSameParagraphs("BOOK:DESC", FalmerEnglish.Replace(". \r\n", ".\r\n")));
         Assert.Null(loaded.FindSameParagraphs("BOOK:DESC", FalmerEnglish.Replace("Ursa Uthrax", "Ursa")));

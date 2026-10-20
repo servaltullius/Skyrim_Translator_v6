@@ -383,7 +383,12 @@ internal static class AgentMcpServer
         }
         finally
         {
-            if (temp != null) File.Delete(temp);
+            // A file held for a moment (antivirus, the indexer) is left behind rather than turning a saved answer into an error.
+            if (temp != null)
+            {
+                try { File.Delete(temp); }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
+            }
         }
 
         failed = exit != 0;

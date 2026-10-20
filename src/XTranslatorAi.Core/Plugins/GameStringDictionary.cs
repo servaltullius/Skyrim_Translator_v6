@@ -77,6 +77,12 @@ public sealed class GameStringDictionary
     public int ParagraphTextCount => _paragraphs.Count;
 
     /// <summary>
+    /// Whether the dictionary keeps the base game's blocks (PB lines), without which <see cref="SpliceUnchanged"/> puts no
+    /// Korean patch block into an edited copy. A dictionary the player built before 1.16.17 has the paragraphs only.
+    /// </summary>
+    public bool HasBaseBlocks => _blocks.Count > 0 || _paragraphs.Count == 0;
+
+    /// <summary>
     /// This dictionary with the paragraph fingerprints of the base game's long texts (books, notes), each kept only
     /// where the record's English is the one its Korean translates. The translations are shared, not copied.
     /// </summary>

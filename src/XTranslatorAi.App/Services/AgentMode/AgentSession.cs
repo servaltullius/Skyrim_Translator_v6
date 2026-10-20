@@ -168,10 +168,13 @@ public sealed class AgentSession
             throw new AgentModeException($"{Path.GetFileName(path)}에서 같은 레코드의 번역문을 찾지 못했습니다. 같은 모드의 한국어판인지 확인하세요.");
         }
 
+        // The English original is read and checked first: a wrong --english path, refused after the release was linked,
+        // left the release linked without its English, and the next request asked every row.
+        var englishSources = englishPath == null ? null : await ReadEnglishSourcesAsync(current, englishPath, cancellationToken);
         await db.ReplacePreviousTranslationsAsync(Path.GetFileName(path), match.TextByFieldKey, cancellationToken);
-        if (englishPath != null)
+        if (englishSources != null)
         {
-            await LinkEnglishAsync(db, current, englishPath, cancellationToken);
+            await db.ReplacePreviousSourcesAsync(Path.GetFileName(Path.GetFullPath(englishPath!)), englishSources, cancellationToken);
         }
 
         var earlier = await db.GetPreviousTranslationsByStringIdAsync(cancellationToken);
@@ -210,7 +213,8 @@ public sealed class AgentSession
             changed.OrderBy(id => id).ToList(), englishPath != null);
     }
 
-    private async Task LinkEnglishAsync(ProjectDb db, PluginDocument current, string englishPath, CancellationToken cancellationToken)
+    private static async Task<IReadOnlyDictionary<string, string>> ReadEnglishSourcesAsync(PluginDocument current, string englishPath,
+        CancellationToken cancellationToken)
     {
         var path = Path.GetFullPath(englishPath);
         if (!File.Exists(path)) throw new AgentModeException($"한국어판의 영어 원본 플러그인이 없습니다: {englishPath}");
@@ -227,20 +231,26 @@ public sealed class AgentSession
             throw new AgentModeException($"{Path.GetFileName(path)}은 한국어로 번역된 파일입니다. --english에는 한국어판이 번역한 영어 원본을 주세요.");
         }
 
-        await db.ReplacePreviousSourcesAsync(Path.GetFileName(path), sources.SourceByFieldKey, cancellationToken);
+        return sources.SourceByFieldKey;
     }
 
-    private static readonly System.Text.RegularExpressions.Regex Digits = new(@"\d+", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+    // A number, its thousands separators included ("1,000" is one number, not 1 and 000).
+    private static readonly System.Text.RegularExpressions.Regex Digits = new(@"\d{1,3}(?:,\d{3})+(?!\d)|\d+", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 
-    /// <summary>Every number of the English is in the Korean as many times (a changed magnitude is not).</summary>
+    // Markup: a Korean release that changed a font size (<font size='60'>) or an image's width is not a changed text.
+    private static readonly System.Text.RegularExpressions.Regex Markup = new(@"<[^<>]*>", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+    /// <summary>Every number of the English text (markup left out) is in the Korean as many times (a changed magnitude is not).</summary>
     internal static bool NumbersFit(string english, string korean)
     {
-        var left = Digits.Matches(korean).Select(m => m.Value).GroupBy(v => v).ToDictionary(g => g.Key, g => g.Count());
-        foreach (System.Text.RegularExpressions.Match number in Digits.Matches(english))
+        static IEnumerable<string> Numbers(string text)
+            => Digits.Matches(Markup.Replace(text, " ")).Select(m => m.Value.Replace(",", ""));
+        var left = Numbers(korean).GroupBy(v => v).ToDictionary(g => g.Key, g => g.Count());
+        foreach (var number in Numbers(english))
         {
-            var count = left.GetValueOrDefault(number.Value);
+            var count = left.GetValueOrDefault(number);
             if (count == 0) return false;
-            left[number.Value] = count - 1;
+            left[number] = count - 1;
         }
 
         return true;
