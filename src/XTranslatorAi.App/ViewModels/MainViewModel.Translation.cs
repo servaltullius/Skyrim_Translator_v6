@@ -54,6 +54,7 @@ public partial class MainViewModel
             var canceled = false;
             var nothingToTranslate = false;
             Exception? error = null;
+            IReadOnlyList<string>? missingGlobalData = null;
             try
             {
                 await SaveProjectInfoAsync(cancellationToken);
@@ -114,6 +115,7 @@ public partial class MainViewModel
                 var result = await Task.Run(() => _translationRunnerService.RunAsync(request), cancellationToken);
                 canceled = result.Canceled;
                 error = result.Error;
+                missingGlobalData = result.MissingGlobalData;
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -132,6 +134,12 @@ public partial class MainViewModel
                     if (nothingToTranslate)
                     {
                         StatusMessage = "번역할 미완료 항목이 없습니다. 기존 번역과 편집 내용을 유지했습니다.";
+                    }
+
+                    if (missingGlobalData is { Count: > 0 })
+                    {
+                        StatusMessage += $" 단, 전체 DB의 {string.Join("·", missingGlobalData)}을(를) 읽지 못해 없이 번역했습니다"
+                                         + $"(용어 고정·한글패치 이름이 빠졌을 수 있음, 자세한 내용: {AppLog.PathForUser}).";
                     }
                 }
                 finally

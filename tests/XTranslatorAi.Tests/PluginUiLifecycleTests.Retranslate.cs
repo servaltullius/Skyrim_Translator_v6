@@ -35,6 +35,31 @@ public sealed partial class PluginUiLifecycleTests
             Assert.DoesNotContain(fixture.Vm.LqaIssues, i => i.Id == row.Id && i.Code == "untranslated");
         });
 
+    // The global DB opened but its glossary could not be read: the run went without the forced terms and saved the
+    // rows as Done, with only a WARN line in app.log. The finished run now says what it went without.
+    [Fact]
+    public Task RunWithoutPartOfTheGlobalDb_SaysSoWhenItEnds()
+        => RunOnSta(async () =>
+        {
+            var handler = new FakeGeminiHandler { GeneratedText = "철검" };
+            await using var fixture = new Fixture(handler);
+            await fixture.LoadPluginWorkspaceAsync();
+            var global = await fixture.GlobalDb.GetOrCreateAsync(XTranslatorAi.Core.Models.BethesdaFranchise.ElderScrolls, CancellationToken.None);
+            await using (var drop = global!.Connection.CreateCommand())
+            {
+                drop.CommandText = "DROP TABLE Glossary;";
+                await drop.ExecuteNonQueryAsync();
+            }
+
+            Assert.NotNull(global);
+
+            await fixture.Vm.StartTranslationCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            Assert.Equal(StringEntryStatus.Done, Assert.Single(fixture.Vm.Entries).Status);
+            Assert.Contains("전체 용어집", fixture.Vm.StatusMessage);
+            Assert.Contains("없이 번역했습니다", fixture.Vm.StatusMessage);
+        });
+
     [Fact]
     public Task Retranslate_PutsFinishedRowsBackInTheQueue_AndTheNextStartTranslatesThemAgain()
         => RunOnSta(async () =>

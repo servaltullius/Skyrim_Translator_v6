@@ -39,8 +39,10 @@ public static class TranslationMemoryFileService
         var pairs = new List<(string SourceText, string DestText)>();
         var escaped = false;
         var firstRecord = true;
+        var number = 0;
         foreach (var line in lines)
         {
+            number++;
             if (string.IsNullOrWhiteSpace(line)) continue;
             var parts = line.Split('\t');
             if (parts.Length < 2) continue;
@@ -52,8 +54,16 @@ public static class TranslationMemoryFileService
                 continue;
             }
             firstRecord = false;
-            var source = escaped ? JsonSerializer.Deserialize<string>(parts[0]) ?? "" : parts[0];
-            var target = escaped ? JsonSerializer.Deserialize<string>(parts[1]) ?? "" : parts[1];
+            string source, target;
+            try
+            {
+                source = escaped ? JsonSerializer.Deserialize<string>(parts[0]) ?? "" : parts[0];
+                target = escaped ? JsonSerializer.Deserialize<string>(parts[1]) ?? "" : parts[1];
+            }
+            catch (JsonException ex)
+            {
+                throw new JsonException($"{number}번째 줄", ex);
+            }
             if (!string.IsNullOrWhiteSpace(source) && !string.IsNullOrWhiteSpace(target))
                 pairs.Add((source, target));
         }

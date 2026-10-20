@@ -76,6 +76,32 @@ public sealed class ImportTextFileReaderTests : IDisposable
         }
     }
 
+    // An exported TSV re-saved by Excel loses its JSON quotes. Its JsonException stopped the automatic import loop, so
+    // every file after it, the bundled seed's changes too, was never imported; it is now an error of this file alone,
+    // which the loop skips like an unreadable encoding, naming the file and the line.
+    [Fact]
+    public async Task TmImport_OfAnExportWhoseQuotesExcelDropped_IsThatFilesErrorAlone()
+    {
+        var path = Path.Combine(_root, "exported.tsv");
+        await File.WriteAllTextAsync(path, "Source\tTarget\tXTranslatorAi-JSON-v1\r\n\"Iron Sword\"\t\"철검\"\r\nSteel Sword\t강철 검\r\n");
+        var global = new GlobalProjectDbService(new BuiltInGlossaryService(), Path.Combine(_root, "global"));
+        try
+        {
+            var tm = new FranchiseTranslationMemoryService(global);
+            var error = await Assert.ThrowsAsync<ImportFileEncodingException>(() => tm.ImportFromTsvAsync("english", "korean", path, CancellationToken.None));
+            Assert.Contains("exported.tsv", error.Message);
+            Assert.Contains("3번째 줄", error.Message);
+        }
+        finally
+        {
+            await global.DisposeAsync();
+            foreach (var db in Directory.GetFiles(_root, "*.sqlite", SearchOption.AllDirectories))
+            {
+                TestDbHelper.ReleaseProjectPoolAndDeleteDbFiles(db);
+            }
+        }
+    }
+
     [Fact]
     public async Task TmImport_ReadsAnExcelTsvFromKoreanWindows()
     {

@@ -97,7 +97,21 @@ public sealed class FranchiseTranslationMemoryService
             return await db.ApplyTranslationMemoryChangesAsync(sourceLang, targetLang, changes, cancellationToken);
         }
 
-        var pairs = TranslationMemoryFileService.ParseTsvPairs(lines);
+        List<(string SourceText, string DestText)> pairs;
+        try
+        {
+            pairs = TranslationMemoryFileService.ParseTsvPairs(lines);
+        }
+        catch (System.Text.Json.JsonException ex)
+        {
+            // An exported TSV re-saved by Excel loses its JSON quotes. The error stopped the automatic import of every
+            // file after this one (the bundled seed's changes too) on each load; it is now this file's alone, which stays
+            // in tm-import to be fixed.
+            throw new ImportFileEncodingException(
+                $"{Path.GetFileName(tsvPath)}의 {ex.Message}이 TM 내보내기 형식(JSON 문자열 칸)이 아니어서 이 파일은 가져오지 않았습니다. "
+                + "엑셀로 다시 저장하면 따옴표가 빠집니다. 내보낸 원래 파일을 쓰거나, 머리줄을 'Source<탭>Target'으로 바꿔 두 칸 TSV로 저장하세요.", ex);
+        }
+
         if (pairs.Count == 0)
         {
             return 0;

@@ -65,12 +65,31 @@ public sealed class TranslationRunnerService
         IReadOnlySet<long>? NameMemoryRows = null
     );
 
-    public sealed record Result(bool Canceled, Exception? Error);
+    /// <param name="MissingGlobalData">What of the global DB could not be read, so the run went without it (the
+    /// global glossary, the series TM, the TM name index). The run saved its rows as Done with only a WARN line in
+    /// app.log, so a damaged page meant translating without the forced terms and official names unnoticed.</param>
+    public sealed record Result(bool Canceled, Exception? Error, IReadOnlyList<string>? MissingGlobalData = null);
+
+    private readonly List<string> _missingGlobalData = new();
+
+    private void NoteMissing(string what)
+    {
+        lock (_missingGlobalData)
+        {
+            if (!_missingGlobalData.Contains(what)) _missingGlobalData.Add(what);
+        }
+    }
+
+    private IReadOnlyList<string> MissingGlobalData()
+    {
+        lock (_missingGlobalData) return _missingGlobalData.ToList();
+    }
 
     /// @critical: Orchestrates translation runs (model overrides, failover).
     public async Task<Result> RunAsync(Request request)
     {
         var triedApiKeys = new HashSet<string>(StringComparer.Ordinal);
+        lock (_missingGlobalData) _missingGlobalData.Clear();
 
         try
         {
@@ -83,16 +102,16 @@ public sealed class TranslationRunnerService
             var budget = new TranslationGenerationBudget(request.MaxRetryGenerations, request.MaxTotalGenerations);
             await ExecuteRunsWithFailoverAsync(request, runs, triedApiKeys, budget);
 
-            return new Result(Canceled: false, Error: null);
+            return new Result(Canceled: false, Error: null, MissingGlobalData());
         }
         catch (OperationCanceledException) when (request.CancellationToken.IsCancellationRequested)
         {
-            return new Result(Canceled: true, Error: null);
+            return new Result(Canceled: true, Error: null, MissingGlobalData());
         }
         catch (Exception ex)
         {
             await request.StatusPort.DispatchAsync(() => request.StatusPort.SetUserFacingError("번역", ex));
-            return new Result(Canceled: false, Error: ex);
+            return new Result(Canceled: false, Error: ex, MissingGlobalData());
         }
     }
 
@@ -372,6 +391,7 @@ public sealed class TranslationRunnerService
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             AppLog.Write($"WARN 전체 용어집을 읽지 못해 없이 번역합니다: {ex}");
+            NoteMissing("전체 용어집");
             return null;
         }
     }
@@ -395,6 +415,7 @@ public sealed class TranslationRunnerService
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             AppLog.Write($"WARN 시리즈 TM을 읽지 못해 없이 번역합니다: {ex}");
+            NoteMissing("시리즈 TM");
             return null;
         }
     }
@@ -416,6 +437,7 @@ public sealed class TranslationRunnerService
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             AppLog.Write($"WARN TM 이름 색인을 읽지 못해 없이 번역합니다: {ex}");
+            NoteMissing("TM 이름 색인");
             return null;
         }
     }
