@@ -20,9 +20,11 @@ public sealed partial class ReferenceNameIndex
     private const int MaxNameLength = 40;
     private const int MaxTargetLength = 30;
 
-    // One to four words; the first and last capitalized, inner words capitalized or a short connector.
+    // One to six words; the first and last capitalized, inner words capitalized or a short connector. Book titles run
+    // longer than four: LotD's copy of The Falmer: A Study cites "Fall of the Snow Prince" (눈의 왕자의 몰락), which the
+    // GUI wrote 스노우 프린스의 몰락 while every agent looked it up.
     private static readonly Regex NamePattern = new(
-        @"^[A-Z][A-Za-z]*(?:['’-][A-Za-z]+)*(?: (?:(?:of|the|and)|[A-Z][A-Za-z]*(?:['’-][A-Za-z]+)*)){0,2}(?: [A-Z][A-Za-z]*(?:['’-][A-Za-z]+)*)?$",
+        @"^[A-Z][A-Za-z]*(?:['’-][A-Za-z]+)*(?: (?:(?:of|the|and)|[A-Z][A-Za-z]*(?:['’-][A-Za-z]+)*)){0,4}(?: [A-Z][A-Za-z]*(?:['’-][A-Za-z]+)*)?$",
         RegexOptions.CultureInvariant
     );
 
@@ -226,7 +228,12 @@ public sealed partial class ReferenceNameIndex
     private static readonly Regex WholeTokenRegex = new(@"^__XT_[A-Z0-9_]+__$", RegexOptions.CultureInvariant);
 
     private static Regex NameOccurrence(string source)
-        => new(@"(?<![A-Za-z'’\-])" + Regex.Escape(source) + @"(?![A-Za-z\-])(?!['’](?!s\b))", RegexOptions.CultureInvariant);
+        => new(@"(?<![A-Za-z'’\-])" + Regex.Escape(source) + (source.Contains(' ') ? "s?" : "") + @"(?![A-Za-z\-])(?!['’](?!s\b))", RegexOptions.CultureInvariant);
+
+    // The plural of a name of two or more words, which Korean does not mark: "Dragon Priests" is 드래곤 사제 as "Dragon
+    // Priest" is (the GUI wrote 드래곤 프리스트). A one-word name stays exact: the memory spells Nords, Dwemer and the like on their own.
+    private static int PluralEnd(string text, int end, string name)
+        => name.Contains(' ') && end < text.Length && text[end] == 's' && EndsAtWordBoundary(text, end + 1) ? end + 1 : end;
 
     private string ReplaceName(string text, string source, string token)
         => NameOccurrence(source).Replace(text, m => StartsAnotherName(text, m.Index + m.Length, source) ? m.Value : token);
@@ -286,14 +293,18 @@ public sealed partial class ReferenceNameIndex
 
             foreach (var candidate in candidates)
             {
-                if (string.CompareOrdinal(text, word.Index, candidate.Source, 0, candidate.Source.Length) != 0
-                    || !EndsAtWordBoundary(text, word.Index + candidate.Source.Length)
-                    || StartsAnotherName(text, word.Index + candidate.Source.Length, candidate.Source))
+                if (string.CompareOrdinal(text, word.Index, candidate.Source, 0, candidate.Source.Length) != 0)
                 {
                     continue;
                 }
 
-                coveredUntil = word.Index + candidate.Source.Length;
+                var end = PluralEnd(text, word.Index + candidate.Source.Length, candidate.Source);
+                if (!EndsAtWordBoundary(text, end) || StartsAnotherName(text, end, candidate.Source))
+                {
+                    continue;
+                }
+
+                coveredUntil = end;
                 if (seen.Add(candidate.Source) && include?.Invoke(candidate) != false)
                 {
                     found.Add(candidate);
