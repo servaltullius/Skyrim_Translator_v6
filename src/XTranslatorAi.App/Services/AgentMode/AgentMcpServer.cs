@@ -135,7 +135,8 @@ internal static class AgentMcpServer
             (처음 한 번 서버 사용을 허용하거나 폴더를 신뢰한다고 답합니다).
 
             안티그라비티(MCP 서버 관리 → raw config 보기)와 Gemini CLI(settings.json)는 아래 설정을 넣습니다
-            (이미 mcpServers가 있으면 그 안에 tullius 항목만 더합니다).
+            (이미 mcpServers가 있으면 그 안에 tullius 항목만 더합니다). 안티그라비티는 설정 파일이
+            %USERPROFILE%\.gemini\config\mcp_config.json이고, 넣은 뒤 앱을 다시 시작해야 도구가 보입니다.
 
             {json}
 

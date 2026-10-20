@@ -71,6 +71,27 @@ Codex의 두 번째 시험과 같은 플러그인(EldenWarAshPack1, 150줄)을 �
 - Claude가 새로 정한 이름 가운데 "Starscourge of Arrows → 별 바수는 화살"은 어색하다. 번역 품질 문제이고 도구와는 상관없다.
 - 출력: `artifacts/mcp-trial-20261020/mcp-claude/`(stream-json 기록과 내보낸 플러그인).
 
+## 안티그라비티 시험
+
+1.16.4 루트 EXE로 같은 플러그인(EldenWarAshPack1, 150줄)을 안티그라비티 2.24.0에 맡겼다. 화면은 컴퓨터 유즈로 조작했다.
+
+- **등록**
+  - 안티그라비티는 전역 설정 `~/.gemini/config/mcp_config.json` 하나만 읽는다. 폴더별 설정이 없어 agent-kit에 넣어 둘 수 없다. `tullius.cmd mcp-config`가 내놓는 형식 그대로 넣었다(시험에서는 `--work`, `--projects`를 시험 폴더로 지정).
+  - 켜져 있는 동안 바꾼 설정은 다시 읽지 않는다. 앱을 닫았다 다시 열자 Customizations → Installed → MCP Servers에 "tullius · 17 tools enabled"로 보였다.
+  - 시험이 끝난 뒤 설정 파일은 원래대로(빈 파일) 되돌렸다.
+- **작업 폴더**: 안티그라비티에 이미 있던 "agent-kit" 프로젝트(루트 `agent-kit`)에서 새 대화를 열고 "○○.esp 번역해 줘"만 입력했다. 모델은 기본값 Gemini 3.8 Flash(Medium)였다.
+- **허락 창**: 도구마다 처음 부를 때 "Allow using this MCP tool?"을 묻는다. "이 대화에서는 항상 허용"을 골랐고, 7번 물었다(open, style, next, lookup, check, show, export). 프로젝트 단위나 전체 허용도 고를 수 있다.
+- **결과**: 4분 만에 150줄을 저장했고, 품질검사(`--all`)는 0건이었다.
+  - 안내 파일과 instructions.md는 파일로 직접 읽었다.
+  - 긴 도구 결과는 안티그라비티가 `output.txt`로 받아 나눠 읽었다.
+- **번역**: 뜻은 맞지만 이름 몇 개는 어색하다. Floating Passage를 "유주"로 옮겼고, "Learning - " 접두어는 "배우기"로 썼다(Claude·Codex는 "습득").
+
+| | Codex | Claude | 안티그라비티 |
+|---|---|---|---|
+| 걸린 시간 | 2분 10초 | 5분 49초 | 약 4분(허락 창 대기 포함) |
+| 남은 품질검사 | 4건(오탐, 고침) | 0건 | 0건 |
+| 등록 | 폴더의 `.codex\config.toml` | 폴더의 `.mcp.json` | 전역 설정에 직접(`mcp-config`) |
+
 ## 남은 것
 
 - 배포할 때 agent-kit zip에 `.mcp.json`과 `.codex\` 폴더를 넣는다. 점으로 시작해 탐색기 복사에서 빠지기 쉽다.

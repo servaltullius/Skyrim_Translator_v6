@@ -11,7 +11,7 @@
    - Claude와 Codex는 이 폴더의 설정(.mcp.json, .codex\config.toml)으로 번역기를 도구(tullius)로 바로 씁니다.
      처음 한 번 "tullius 서버를 쓸까요?", "이 폴더를 신뢰할까요?"처럼 물으면 허용합니다.
    - 안티그라비티·Gemini CLI는 tullius.cmd 명령으로 번역합니다. 도구로 쓰고 싶으면 이 폴더에서
-     tullius.cmd mcp-config 를 실행해 나오는 설정을 앱의 MCP 설정에 넣습니다(번역 결과는 같습니다).
+     tullius.cmd mcp-config 를 실행해 나오는 설정을 앱의 MCP 설정에 넣고 앱을 다시 시작합니다(번역 결과는 같습니다).
 
 이렇게도 말할 수 있습니다.
 - 이미 한국어판이 있는 모드: "G:\모드\○○\○○.esp를 이 한국어판(G:\한글\○○.esp)으로 검수해 줘"
