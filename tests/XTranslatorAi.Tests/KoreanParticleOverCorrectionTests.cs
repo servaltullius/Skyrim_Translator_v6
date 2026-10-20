@@ -112,6 +112,15 @@ public class KoreanParticleOverCorrectionTests
         yield return new object[] { "사빈", "야!", "사빈야!" };
         // A syllable that starts another word is not a copula.
         yield return new object[] { "사빈", "다른 곳으로", "사빈다른 곳으로" };
+        // A closing bracket or quote between the term and its particle: EldenWarAshPack1's "[sprint button]" was
+        // the glossary term 질주 버튼 in brackets, and the GUI saved "[질주 버튼]를" on ten lines.
+        yield return new object[] { "질주 버튼", "]를 길게 누르면", "질주 버튼]을 길게 누르면" };
+        yield return new object[] { "질주 버튼", "]이나 [방향 버튼]", "질주 버튼]이나 [방향 버튼]" };
+        yield return new object[] { "화이트런", "\"과 싸웠다.", "화이트런\"과 싸웠다." };
+        yield return new object[] { "리프튼", ")로 향했다.", "리프튼)으로 향했다." };
+        // A vowel-final term keeps the vowel form; a bracket with no particle after it is left as it is.
+        yield return new object[] { "사피아", "]을 불러", "사피아]를 불러" };
+        yield return new object[] { "질주 버튼", "] 키", "질주 버튼] 키" };
     }
 
     [Theory]

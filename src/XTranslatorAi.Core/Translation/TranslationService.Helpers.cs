@@ -282,16 +282,32 @@ public sealed partial class TranslationService
             result.Append(text, cursor, pos - cursor).Append(replacement);
             cursor = afterStart;
 
-            // The model chose this particle while seeing only the token, not the term.
+            // The model chose this particle while seeing only the token, not the term. A closing bracket or quote
+            // between them belongs to the term: "[__XT_TERM__]를" became "[질주 버튼]를" in EldenWarAshPack1.
+            var closers = fixKoreanParticles ? ClosersAt(text, afterStart) : 0;
             if (fixKoreanParticles
-                && (KoreanParticleSelector.TryFixParticleAfterTerm(replacement, text, afterStart, out var particle, out var particleLength)
-                    || KoreanParticleSelector.TryFixCopulaAfterTerm(replacement, text, afterStart, out particle, out particleLength)))
+                && (KoreanParticleSelector.TryFixParticleAfterTerm(replacement, text, afterStart + closers, out var particle, out var particleLength)
+                    || KoreanParticleSelector.TryFixCopulaAfterTerm(replacement, text, afterStart + closers, out particle, out particleLength)))
             {
-                result.Append(particle);
-                cursor = afterStart + particleLength;
+                result.Append(text, afterStart, closers).Append(particle);
+                cursor = afterStart + closers + particleLength;
             }
         }
         return result.Append(text, cursor, text.Length - cursor).ToString();
+    }
+
+    private const string ClosingMarks = "])}」』\"'”’";
+
+    // Closing brackets and quotes right after a token, at most two ("[term]", "\"[term]\"").
+    private static int ClosersAt(string text, int start)
+    {
+        var length = 0;
+        while (length < 2 && start + length < text.Length && ClosingMarks.Contains(text[start + length]))
+        {
+            length++;
+        }
+
+        return length;
     }
 
     private static readonly HashSet<string> DuplicateParticles = new(StringComparer.Ordinal)
