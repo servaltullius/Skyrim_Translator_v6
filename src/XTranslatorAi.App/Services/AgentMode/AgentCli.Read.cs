@@ -160,6 +160,9 @@ public static partial class AgentCli
         var lines = index.LinesOf(who).Select(id => game.FindRecord(id, "")?.Korean).OfType<string>()
             .Select(Flat).Where(t => t.Length is >= 8 and <= 120).Distinct(StringComparer.Ordinal).ToList();
         Console.WriteLine($"{name} ({Korean(who) ?? "한국어 이름 없음"}, {who}): 한글패치 대사 {count}줄");
+        // The level the requests name for this NPC when none is decided (Speaker: … (한글패치 말투: 하오체)).
+        var all = index.LinesOf(who).Select(id => game.FindRecord(id, "")?.Korean).OfType<string>().ToList();
+        Console.WriteLine("한글패치 말투: " + (DialogueSpeakerNames.KoreanPatchLevel(all) ?? "판단하기 어려움(대사가 적거나 섞임)"));
         var step = Math.Max(1, lines.Count / 15);
         foreach (var line in lines.Where((_, i) => i % step == 0).Take(15)) Console.WriteLine("- " + line);
     }

@@ -28,7 +28,7 @@ public static partial class AgentCli
         var masters = await db.GetPluginMastersAsync(c.Ct);
         static string Bare(string label)
         {
-            foreach (var cut in new[] { DialogueSpeakerNames.GuessedListenerLabelSeparator, DialogueSpeakerNames.ListenerLabelSeparator, " (정한 말투", DialogueSpeakerNames.MaleLabel, DialogueSpeakerNames.FemaleLabel })
+            foreach (var cut in new[] { DialogueSpeakerNames.GuessedListenerLabelSeparator, DialogueSpeakerNames.ListenerLabelSeparator, " (정한 말투", DialogueSpeakerNames.PatchStyleLabel, DialogueSpeakerNames.MaleLabel, DialogueSpeakerNames.FemaleLabel })
             {
                 var at = label.IndexOf(cut, StringComparison.Ordinal);
                 if (at >= 0) label = label[..at];

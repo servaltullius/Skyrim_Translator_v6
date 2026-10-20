@@ -478,9 +478,13 @@ public sealed partial class TranslationService
     private static string? TrySanitizeDialogueContextLine(DialogueContextRow row)
     {
         var line = TrySanitizeDialogueContextLine(row.SourceText);
-        // The speaker's sex is said once, on the line's own "Speaker:", not again on each neighbour.
+        // The speaker's sex and Korean patch level are said once, on the line's own "Speaker:", not again on each neighbour.
         var speaker = row.Speaker?.Replace(DialogueSpeakerNames.MaleLabel, "", StringComparison.Ordinal)
             .Replace(DialogueSpeakerNames.FemaleLabel, "", StringComparison.Ordinal);
+        if (speaker?.IndexOf(DialogueSpeakerNames.PatchStyleLabel, StringComparison.Ordinal) is >= 0 and var patch)
+        {
+            speaker = speaker[..patch];
+        }
         return line == null || speaker == null ? line : $"[{speaker}] {line}";
     }
 

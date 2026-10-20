@@ -64,6 +64,10 @@ public sealed class MasterSpeakerIndex
     /// <summary>The dialogue lines (field identities, as <see cref="GameStringDictionary.FieldIdentity"/>) an NPC says.</summary>
     public IReadOnlyList<string> LinesOf(string npc) => _lines.TryGetValue(npc, out var lines) ? lines : Array.Empty<string>();
 
+    /// <summary>The dialogue lines of a base game NPC named by its FormID in a plugin's master order.</summary>
+    public IReadOnlyList<string> LinesOf(uint formId, IReadOnlyList<string> masters, string pluginFileName)
+        => LinesOf(Identity(formId, masters, pluginFileName));
+
     /// <summary>
     /// The EditorID of the voice type a speaker hint names ("V:00013AF2" → MaleNord), for a line the voice names no one
     /// NPC by: in the Codex trial 111 of Teldryn's lines were said by unnamed Windhelm NPCs, and the voice type at least

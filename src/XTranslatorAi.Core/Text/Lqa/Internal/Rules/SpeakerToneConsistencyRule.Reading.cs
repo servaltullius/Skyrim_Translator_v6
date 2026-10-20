@@ -13,6 +13,64 @@ namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 /// </summary>
 internal static partial class SpeakerToneConsistencyRule
 {
+    private static readonly System.Text.RegularExpressions.Regex FormalEnding = new(@"(니다|니까)[\s.!?…""']*$",
+        System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+    /// <summary>
+    /// The speech level a base game NPC speaks in the Korean patch, read from its lines there; null when they are too
+    /// few or mixed. A 하오체 speaker mixes ~지 and ~군 that read as 반말 (Teldryn Sero: 다음엔 어디요?, ...좋겠군), so a
+    /// quarter of the plain lines in 하오체 makes one; a 반말 speaker's stray 하오체 line or two does not.
+    /// In the Teldryn comparison the GUI wrote him in 반말 and the agent mode's Gemini Flash in 해요체, where the patch
+    /// and the reviewed release have 하오체.
+    /// </summary>
+    internal static string? PatchLevel(IEnumerable<string> lines)
+    {
+        int polite = 0, formal = 0, hao = 0, hage = 0, casual = 0;
+        foreach (var line in lines)
+        {
+            var (register, weak) = Level(line);
+            if (weak)
+            {
+                continue;
+            }
+
+            switch (register)
+            {
+                case Register.Polite:
+                    polite++;
+                    if (FormalEnding.IsMatch(line)) formal++;
+                    break;
+                case Register.Hao: hao++; break;
+                case Register.Hage: hage++; break;
+                case Register.Casual: casual++; break;
+            }
+        }
+
+        var total = polite + hao + hage + casual;
+        if (total < 8)
+        {
+            return null;
+        }
+
+        if (polite >= total * 0.6)
+        {
+            return formal * 2 >= polite ? "합쇼체" : "해요체";
+        }
+
+        var plain = hao + hage + casual;
+        if (hao >= 3 && hao >= plain * 0.25 && hao >= hage)
+        {
+            return "하오체";
+        }
+
+        if (hage >= 3 && hage >= plain * 0.25)
+        {
+            return "하게체";
+        }
+
+        return casual >= total * 0.6 ? "반말" : null;
+    }
+
     /// <summary>
     /// 존댓말 when any sentence or clause of the line is: "어디 한번 보죠. 당신이 어떤 실력인지." and "물론이죠, 돈만
     /// 있다면야." are polite lines that trail off. Otherwise the last sentence's level.

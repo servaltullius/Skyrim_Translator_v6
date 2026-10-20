@@ -36,10 +36,11 @@ public static class DialogueSpeakerNames
         var names = await db.GetPluginNpcNamesAsync(cancellationToken).ConfigureAwait(false);
         var sexes = await db.GetPluginNpcSexesAsync(cancellationToken).ConfigureAwait(false);
         var styles = SpeakerStyles.ByPair(await db.GetSpeakerStylesAsync(cancellationToken).ConfigureAwait(false));
-        var fieldKeys = styles.Count == 0
+        var fieldKeys = styles.Count == 0 && gameStrings?.Speakers == null
             ? new Dictionary<long, string>()
             : await db.GetPluginFieldKeysByStringIdAsync(cancellationToken).ConfigureAwait(false);
         var plugin = await db.GetPluginMastersAsync(cancellationToken).ConfigureAwait(false);
+        var patchLevels = new Dictionary<uint, string?>();
         var labels = new Dictionary<uint, string>();
         var result = new Dictionary<long, string>(speakers.Count);
         foreach (var (id, value) in speakers)
@@ -75,11 +76,6 @@ public static class DialogueSpeakerNames
         // topic's text), the player's level to the NPC. A guessed listener's line names both it may be said to.
         string DecidedStyle(long id, string value)
         {
-            if (styles.Count == 0)
-            {
-                return "";
-            }
-
             var key = fieldKeys.GetValueOrDefault(id) ?? "";
             if (key.StartsWith("DIAL/", StringComparison.Ordinal) || key.Contains("/RNAM/", StringComparison.Ordinal))
             {
@@ -94,7 +90,29 @@ public static class DialogueSpeakerNames
                     : $" (정한 말투: 상대에게 {toListener ?? "정하지 않음"}, 플레이어에게 {toPlayer ?? "정하지 않음"})";
             }
 
-            return SpeakerStyles.For(styles, value) is { } level ? $" (정한 말투: {level})" : "";
+            if (SpeakerStyles.For(styles, value) is { } level)
+            {
+                return $" (정한 말투: {level})";
+            }
+
+            // Nothing decided for a base game NPC speaking to the player: the level it speaks in the Korean patch.
+            return value.IndexOf(ListenerSeparator) < 0 && TryFormId(value, out var npc) && PatchLevel(npc) is { } patch
+                ? $"{PatchStyleLabel}{patch})"
+                : "";
+        }
+
+        string? PatchLevel(uint formId)
+        {
+            if (!patchLevels.TryGetValue(formId, out var level))
+            {
+                level = plugin is { } p && formId >> 24 < p.Masters.Count && gameStrings?.Speakers is { } index
+                    ? Text.Lqa.Internal.Rules.SpeakerToneConsistencyRule.PatchLevel(index.LinesOf(formId, p.Masters, p.PluginFileName)
+                        .Select(line => gameStrings.FindRecord(line, "")?.Korean).OfType<string>())
+                    : null;
+                patchLevels[formId] = level;
+            }
+
+            return level;
         }
 
         string NpcLabel(uint formId)
@@ -116,6 +134,16 @@ public static class DialogueSpeakerNames
             return label;
         }
     }
+
+    /// <summary>
+    /// After a base game NPC with no level decided, the level it speaks in the Korean patch: "Teldryn Sero (텔드린 세로)
+    /// (male) (한글패치 말투: 하오체)".
+    /// </summary>
+    public const string PatchStyleLabel = " (한글패치 말투: ";
+
+    /// <summary>The level a character's Korean lines are in (합쇼체 … 반말), or null when too few or mixed.</summary>
+    public static string? KoreanPatchLevel(IEnumerable<string> lines)
+        => Text.Lqa.Internal.Rules.SpeakerToneConsistencyRule.PatchLevel(lines);
 
     /// <summary>After a speaker's name, its sex: "Faryl Atheron (페릴 아세론) (male)".</summary>
     public const string MaleLabel = " (male)";
