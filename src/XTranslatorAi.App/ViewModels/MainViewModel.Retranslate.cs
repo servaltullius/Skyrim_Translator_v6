@@ -25,7 +25,7 @@ public partial class MainViewModel
     private Task RetranslateVisibleAsync()
         => RetranslateAsync(EntriesView.OfType<StringEntryViewModel>().Where(MatchesEntryFilter).ToList(), "목록에 보이는 행");
 
-    private bool CanRetranslate() => IsProjectLoaded && !IsTranslating && IsWorkspaceInteractive;
+    private bool CanRetranslate() => IsProjectLoaded && !IsTranslating && IsWorkspaceInteractive && !IsLqaScanning;
 
     private async Task RetranslateAsync(IReadOnlyList<StringEntryViewModel> rows, string scope)
     {
@@ -91,6 +91,7 @@ public partial class MainViewModel
 
             RecountProgress();
             EntriesView.Refresh();
+            await RecheckLqaRowsAsync(targets);
             StatusMessage = $"{reset}개 행을 다시 번역 대기로 돌렸습니다. '번역 시작'을 누르면 번역합니다.";
         });
     }

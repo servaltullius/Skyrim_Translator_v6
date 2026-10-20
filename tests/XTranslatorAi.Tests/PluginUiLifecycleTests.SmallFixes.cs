@@ -52,6 +52,23 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Equal((1, 2), (fixture.Vm.DoneCount, fixture.Vm.PendingCount));
         });
 
+    // An XML's rows that already had a translation come in as Skipped and were not counted as finished: an XML of 1,000
+    // rows, 900 translated before, showed 10% once the other 100 were done. A Skipped row that kept its English is not.
+    [Fact]
+    public Task SkippedRowsWithATranslation_CountAsFinished()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            var rows = await LoadXmlWorkspaceAsync(fixture, "Iron Sword", "Steel Sword", "Elven Sword");
+            (rows[0].DestText, rows[0].Status) = ("철검", StringEntryStatus.Skipped);
+            (rows[1].DestText, rows[1].Status) = ("Steel Sword", StringEntryStatus.Skipped);
+
+            await (Task)typeof(MainViewModel).GetMethod("FinishTranslationUiStateAsync", BindingFlags.NonPublic | BindingFlags.Instance)!
+                .Invoke(fixture.Vm, new object?[] { true, null })!;
+
+            Assert.Equal((1, 1), (fixture.Vm.DoneCount, fixture.Vm.PendingCount));
+        });
+
     [Fact]
     public Task DeletingTheActiveSavedApiKey_ClearsTheKeyField_SoItIsNotSavedAgain()
         => RunOnSta(async () =>

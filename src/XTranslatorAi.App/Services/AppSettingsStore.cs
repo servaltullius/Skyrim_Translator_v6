@@ -91,8 +91,12 @@ public sealed class AppSettingsStore
             var settings = NormalizeTranslationPreferences(ConvertFromPersisted(persisted, out var needsMigration));
             if (_undecryptableKeyCount > 0)
             {
+                // The next save writes the settings without them, so they were gone for good even if the account could
+                // read them again later (a profile repaired, the right account). The file is kept once as it was read.
+                var kept = KeepFileWithUndecryptableKeys();
                 LoadWarning = $"저장된 API 키 {_undecryptableKeyCount}개를 이 Windows 계정에서 풀 수 없어 비워 두었습니다"
-                    + "(다른 PC나 계정에서 옮긴 설정일 수 있음). 키를 다시 입력하세요.";
+                    + "(다른 PC나 계정에서 옮긴 설정일 수 있음). 키를 다시 입력하세요."
+                    + (kept == null ? "" : $" 원래 설정은 {Path.GetFileName(kept)}에 남겨 두었습니다(원래 계정에서 이 파일을 settings.json으로 되돌리면 키가 돌아옵니다).");
                 AppLog.Write($"WARN 저장된 API 키 {_undecryptableKeyCount}개를 DPAPI로 풀지 못했습니다: {_settingsPath}");
             }
 
@@ -109,6 +113,26 @@ public sealed class AppSettingsStore
             }
 
             return settings;
+        }
+    }
+
+    // settings.json.undecryptable-keys: the first file that held keys this account could not read, never overwritten.
+    private string? KeepFileWithUndecryptableKeys()
+    {
+        var kept = _settingsPath + ".undecryptable-keys";
+        try
+        {
+            if (!File.Exists(kept))
+            {
+                File.Copy(_settingsPath, kept);
+            }
+
+            return kept;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            AppLog.Write($"WARN 풀지 못한 API 키가 든 설정을 따로 남기지 못했습니다: {ex.Message}");
+            return null;
         }
     }
 

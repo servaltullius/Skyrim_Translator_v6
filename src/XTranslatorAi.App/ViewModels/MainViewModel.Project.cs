@@ -348,7 +348,9 @@ public partial class MainViewModel
     /// </summary>
     private void RecountProgress()
     {
-        DoneCount = Entries.Count(row => row.Status is StringEntryStatus.Done or StringEntryStatus.Edited);
+        // An XML's rows that already had a translation come in as Skipped; they are finished too (the quality check's
+        // rule), or a fully translated XML showed 0%.
+        DoneCount = Entries.Count(row => LqaStatus(row) is StringEntryStatus.Done or StringEntryStatus.Edited);
         PendingCount = Entries.Count(row => row.Status is StringEntryStatus.Pending or StringEntryStatus.Error or StringEntryStatus.InProgress);
     }
 

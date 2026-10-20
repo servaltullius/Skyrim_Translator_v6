@@ -39,6 +39,21 @@ public sealed partial class ProjectDb
             cmd.Parameters.AddWithValue("$UpdatedAt", DateTimeOffset.UtcNow.ToString("O"));
             await cmd.ExecuteNonQueryAsync(cancellationToken);
 
+            if (status == StringEntryStatus.Edited)
+            {
+                // A hand edit is no longer the TM's, the game's or the earlier release's text: their notes stayed, so the
+                // next run's TM refresh and reopening the project colored the row as a TM hit again, and every scan kept
+                // its "TM 대신 번역" notice.
+                await using var notes = _connection.CreateCommand();
+                notes.CommandText = "DELETE FROM StringNote WHERE StringId=$Id AND Kind IN ($TmHit, $GameString, $PreviousRelease, $TmFallback);";
+                notes.Parameters.AddWithValue("$Id", id);
+                notes.Parameters.AddWithValue("$TmHit", TranslationConstants.TmHitNoteKind);
+                notes.Parameters.AddWithValue("$GameString", TranslationConstants.GameStringNoteKind);
+                notes.Parameters.AddWithValue("$PreviousRelease", TranslationConstants.PreviousReleaseNoteKind);
+                notes.Parameters.AddWithValue("$TmFallback", TranslationConstants.TmFallbackNoteKind);
+                await notes.ExecuteNonQueryAsync(cancellationToken);
+            }
+
             if (status == StringEntryStatus.Edited && !string.IsNullOrWhiteSpace(destText))
             {
                 await TryUpsertEditedTranslationMemoryUnsafeAsync(id, destText, cancellationToken);

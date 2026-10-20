@@ -6,6 +6,35 @@ namespace XTranslatorAi.Tests;
 
 public sealed partial class PluginUiLifecycleTests
 {
+    // A run changed the rows the quality-check list had read, and the list kept the old text's problems
+    // ("번역 안 됨") for rows that were now translated, until the next full scan. A run cannot start during a scan.
+    [Fact]
+    public Task TranslationRun_RechecksTheListedRows_AndCannotStartDuringAScan()
+        => RunOnSta(async () =>
+        {
+            var handler = new FakeGeminiHandler { GeneratedText = "Iron Sword" };
+            await using var fixture = new Fixture(handler);
+            await fixture.LoadPluginWorkspaceAsync();
+            var row = Assert.Single(fixture.Vm.Entries);
+            await fixture.Vm.StartTranslationCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+            await fixture.Vm.ScanLqaCommand.ExecuteAsync(null);
+            Assert.Contains(fixture.Vm.LqaIssues, i => i.Id == row.Id && i.Code == "untranslated");
+            // The row goes back to the queue behind the list's back, as a run's own rows do.
+            await fixture.State.Db!.UpdateStringStatusesAsync(new[] { row.Id }, StringEntryStatus.Pending, null, CancellationToken.None);
+            row.Status = StringEntryStatus.Pending;
+            handler.GeneratedText = "철검";
+
+            fixture.Vm.IsLqaScanning = true;
+            Assert.False(fixture.Vm.StartTranslationCommand.CanExecute(null));
+            Assert.False(fixture.Vm.RetranslateVisibleCommand.CanExecute(null));
+            fixture.Vm.IsLqaScanning = false;
+
+            await fixture.Vm.StartTranslationCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            Assert.Equal(StringEntryStatus.Done, row.Status);
+            Assert.DoesNotContain(fixture.Vm.LqaIssues, i => i.Id == row.Id && i.Code == "untranslated");
+        });
+
     [Fact]
     public Task Retranslate_PutsFinishedRowsBackInTheQueue_AndTheNextStartTranslatesThemAgain()
         => RunOnSta(async () =>

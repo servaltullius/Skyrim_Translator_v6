@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using XTranslatorAi.App.Services;
 using XTranslatorAi.Core.Models;
 
 namespace XTranslatorAi.App.ViewModels;
@@ -42,6 +43,17 @@ public partial class MainViewModel
 
         // The run adjusted the counters row by row; recount once the stopped rows are back to pending.
         RecountProgress();
+
+        // The quality-check list showed the rows' text before the run until the next full scan; the listed rows are
+        // checked again, as after a save.
+        try
+        {
+            await RecheckLqaRowsAsync(Entries);
+        }
+        catch (Exception ex)
+        {
+            AppLog.Write($"WARN 번역 뒤 품질 검사 결과를 다시 보지 못했습니다: {ex.Message}");
+        }
 
         if (!canceled && error == null)
         {

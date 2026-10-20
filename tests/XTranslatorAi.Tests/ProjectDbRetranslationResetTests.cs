@@ -62,6 +62,26 @@ public class ProjectDbRetranslationResetTests : IAsyncLifetime
         Assert.Equal(4, pendingForNextRun.Count);
     }
 
+    // A hand edit is the user's text: its TM, game and earlier-release notes stayed, so the next run's TM refresh and
+    // reopening colored it as a TM hit again, and every scan kept its "TM 대신 번역" notice.
+    [Fact]
+    public async Task HandEdit_DropsTheNotesOfTheTextItReplaced()
+    {
+        var done = (await RowsAsync())["done"];
+        await _db.UpsertStringNoteAsync(done.Id, TranslationConstants.TmHitNoteKind, "TM 적용", CancellationToken.None);
+        await _db.UpsertStringNoteAsync(done.Id, TranslationConstants.TmFallbackNoteKind, "TM 대신 번역", CancellationToken.None);
+        await _db.UpsertStringNoteAsync(done.Id, TranslationConstants.SourceFixNoteKind, "원문 오류 수정", CancellationToken.None);
+
+        await _db.UpdateStringTranslationAsync(done.Id, "번역됨", StringEntryStatus.Done, null, CancellationToken.None);
+        Assert.NotEmpty(await _db.GetStringNotesByKindAsync(TranslationConstants.TmHitNoteKind, CancellationToken.None));
+
+        await _db.UpdateStringTranslationAsync(done.Id, "내가 고침", StringEntryStatus.Edited, null, CancellationToken.None);
+
+        Assert.Empty(await _db.GetStringNotesByKindAsync(TranslationConstants.TmHitNoteKind, CancellationToken.None));
+        Assert.Empty(await _db.GetStringNotesByKindAsync(TranslationConstants.TmFallbackNoteKind, CancellationToken.None));
+        Assert.NotEmpty(await _db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None));
+    }
+
     [Fact]
     public async Task ManualEdits_AreResetOnlyWhenIncluded()
     {

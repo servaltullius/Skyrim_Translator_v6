@@ -191,6 +191,9 @@ public partial class MainViewModel
     [NotifyCanExecuteChangedFor(nameof(ScanLqaCommand))]
     [NotifyCanExecuteChangedFor(nameof(ClearLqaCommand))]
     [NotifyCanExecuteChangedFor(nameof(ToggleLqaReviewedCommand))]
+    [NotifyCanExecuteChangedFor(nameof(StartTranslationCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RetranslateSelectedCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RetranslateVisibleCommand))]
     private bool _isLqaScanning;
 
     [ObservableProperty]

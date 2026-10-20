@@ -144,8 +144,10 @@ public partial class MainViewModel
             }
         });
     }
+    // Not while a quality check runs: the run changed the rows the check had read, and its list then showed the old
+    // text's problems ("번역 안 됨") for rows that were translated.
     private bool CanStartTranslation() => IsProjectLoaded && !IsTranslating && IsWorkspaceInteractive
-        && !_projectOperations.IsRunning && !HasPromptLintBlockingIssues;
+        && !_projectOperations.IsRunning && !HasPromptLintBlockingIssues && !IsLqaScanning;
 
     private static bool IsBookFullRec(string? rec)
     {

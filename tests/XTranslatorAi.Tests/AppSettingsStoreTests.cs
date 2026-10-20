@@ -184,4 +184,23 @@ public sealed class AppSettingsStoreTests : IDisposable
         Assert.NotNull(store.LoadWarning);
         Assert.Contains("API 키 2개", store.LoadWarning);
     }
+
+    // The next save writes the settings without the keys it could not read, so they were gone for good even if the
+    // account could read them again later. The file is kept once, as it was read.
+    [Fact]
+    public void KeyThatCannotBeDecrypted_IsKeptInACopyBeforeTheNextSave()
+    {
+        const string original = "{\"apiKeyProtected\":\"dpapi:AAAAAAAA\",\"batchSize\":9}";
+        File.WriteAllText(SettingsPath, original);
+        var store = new AppSettingsStore(SettingsPath);
+
+        var loaded = store.Load();
+        store.Save(loaded with { BatchSize = 12 });
+        new AppSettingsStore(SettingsPath).Load();
+
+        var kept = SettingsPath + ".undecryptable-keys";
+        Assert.Equal(original, File.ReadAllText(kept));
+        Assert.Contains(Path.GetFileName(kept), store.LoadWarning);
+        Assert.DoesNotContain("dpapi:AAAAAAAA", File.ReadAllText(SettingsPath));
+    }
 }
