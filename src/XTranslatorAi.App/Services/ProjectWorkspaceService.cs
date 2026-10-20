@@ -68,6 +68,7 @@ public sealed partial class ProjectWorkspaceService
             await TryMigrateLegacyProjectDbAsync(legacyPath, dbPath, franchise, preInfo, xmlPath, cancellationToken);
         }
 
+        var created = !File.Exists(dbPath);
         var db = await ProjectDb.OpenOrCreateAsync(dbPath, cancellationToken);
         try
         {
@@ -90,6 +91,13 @@ public sealed partial class ProjectWorkspaceService
         {
             // The caller takes ownership only after a successful return.
             await db.DisposeAsync();
+            // A first open that failed or was canceled left a schema-only DB, and the next open found it and skipped
+            // migrating the legacy project DB: the user got an empty project instead of their translations.
+            if (created)
+            {
+                DeleteUnimportedProject(dbPath);
+            }
+
             throw;
         }
     }

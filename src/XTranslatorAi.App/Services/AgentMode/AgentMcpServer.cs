@@ -184,8 +184,14 @@ internal static class AgentMcpServer
 
             if (message is not JsonObject request) continue;
             var id = request["id"]?.DeepClone();
-            var method = request["method"]?.GetValue<string>();
-            if (method == null || id == null) continue; // a notification (initialized, cancelled) or a response: nothing to answer
+            // A method that is not a string threw out of the loop and ended the server for every later call.
+            var method = request["method"] is JsonValue value && value.TryGetValue<string>(out var name) ? name : null;
+            if (id == null) continue; // a notification (initialized, cancelled) or a response: nothing to answer
+            if (method == null)
+            {
+                await WriteAsync(output, Error(id, -32600, "method가 없거나 글자가 아닙니다."));
+                continue;
+            }
 
             JsonObject reply;
             try
@@ -195,7 +201,7 @@ internal static class AgentMcpServer
                     "initialize" => Result(id, Initialize(request["params"] as JsonObject)),
                     "ping" => Result(id, new JsonObject()),
                     "tools/list" => Result(id, new JsonObject { ["tools"] = new JsonArray(Tools.Select(Describe).ToArray<JsonNode?>()) }),
-                    "tools/call" => Result(id, await CallAsync(server, request["params"] as JsonObject)),
+                    "tools/call" => Result(id, await CallOrReportAsync(server, request["params"] as JsonObject)),
                     // An app whose shell cannot read the guides (Codex's sandbox failed so in the trial) looks for them here.
                     "resources/list" => Result(id, new JsonObject { ["resources"] = new JsonArray(Guides.Where(g => File.Exists(GuidePath(g.File)))
                         .Select(g => (JsonNode?)new JsonObject { ["uri"] = GuideUri(g.Name), ["name"] = g.File, ["title"] = g.Title, ["mimeType"] = "text/markdown" }).ToArray()) }),
@@ -213,6 +219,19 @@ internal static class AgentMcpServer
         }
 
         return 0;
+    }
+
+    // A tool's own failure (an unknown project, a bad lane) is a tool result the agent reads, not a protocol error.
+    private static async Task<JsonObject> CallOrReportAsync(AgentCommand server, JsonObject? parameters)
+    {
+        try
+        {
+            return await CallAsync(server, parameters);
+        }
+        catch (AgentModeException ex)
+        {
+            return Content("실패: " + ex.Message, isError: true);
+        }
     }
 
     private static JsonObject Initialize(JsonObject? parameters)

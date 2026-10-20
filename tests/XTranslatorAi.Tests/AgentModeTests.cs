@@ -133,13 +133,18 @@ public sealed class AgentModeTests : IAsyncLifetime
             """{"jsonrpc":"2.0","id":3,"method":"prompts/list"}""",
             """{"jsonrpc":"2.0","id":"r4","method":"tools/call","params":{"name":"nosuch","arguments":{}}}""",
             """{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"request","arguments":{"project":"Thalmor"}}}""",
+            // A method that is not a string ended the server; an unknown project came back as a protocol error.
+            """{"jsonrpc":"2.0","id":7,"method":42}""",
+            """{"jsonrpc":"2.0","id":8,"method":"tools/call","params":{"name":"request","arguments":{"project":"NoSuchProject"}}}""",
         };
         var output = new StringWriter();
 
         Assert.Equal(0, await AgentMcpServer.ServeAsync(server, new StringReader(string.Join("\n", lines)), output));
 
         var replies = output.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(r => JsonDocument.Parse(r).RootElement).ToList();
-        Assert.Equal(6, replies.Count);
+        Assert.Equal(8, replies.Count);
+        Assert.Equal(-32600, replies[6].GetProperty("error").GetProperty("code").GetInt32());
+        Assert.True(replies[7].GetProperty("result").GetProperty("isError").GetBoolean());
         Assert.Equal("2025-03-26", replies[0].GetProperty("result").GetProperty("protocolVersion").GetString());
         var tools = replies[1].GetProperty("result").GetProperty("tools").EnumerateArray().ToDictionary(t => t.GetProperty("name").GetString()!);
         Assert.Contains("submit", tools.Keys);
@@ -242,7 +247,11 @@ public sealed class AgentModeTests : IAsyncLifetime
         var two = project with { Lane = AgentLane.Parse("2/2") };
 
         var first = await _session.NextAsync(one, CancellationToken.None);
+        // The lane count is written once, not by every step of every lane (two lanes met on the file and one step failed).
+        var lanesFile = Path.Combine(_root, "work", project.Key, "lanes.json");
+        File.SetLastWriteTimeUtc(lanesFile, new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc));
         var second = await _session.NextAsync(two, CancellationToken.None);
+        Assert.Equal(new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc), File.GetLastWriteTimeUtc(lanesFile));
 
         var ids1 = Ids(first.Next!);
         var ids2 = Ids(second.Next!);

@@ -400,8 +400,10 @@ public sealed class AgentSession
         var answerPath = AnswerPath(project, pending.Hash, pending.Attempt);
         Directory.CreateDirectory(Path.GetDirectoryName(answerPath)!);
         await File.WriteAllTextAsync(answerPath, answer, cancellationToken);
-        ClearPending(project);
+        // The request is cleared once the run has gone through: a run that failed (a lane count typed wrong, lanes.json
+        // busy) used to leave no request, and the output said only "실패".
         var (report, used) = await StepAsync(project, cancellationToken);
+        ClearPending(project);
         if (!used.Contains((pending.Hash, pending.Attempt)))
         {
             File.Delete(answerPath);
@@ -567,14 +569,25 @@ public sealed class AgentSession
     {
         if (project.Lane is not { } lane) return null;
         var countPath = Path.Combine(ProjectDir(project), "lanes.json");
-        if (File.Exists(countPath) && int.TryParse(File.ReadAllText(countPath).Trim(), out var kept) && kept != lane.Count
+        var keptText = await WithRetryAsync(() => File.Exists(countPath) ? File.ReadAllText(countPath).Trim() : null);
+        var hasKept = int.TryParse(keptText, out var kept);
+        if (hasKept && kept != lane.Count
             && Directory.GetDirectories(ProjectDir(project), "lane-*").Any(d => File.Exists(Path.Combine(d, "pending.json"))))
         {
             throw new AgentModeException($"이 프로젝트는 {kept}갈래로 나눠 번역 중입니다(대기 중인 요청이 있음). --lane ?/{kept}로 이어 하세요.");
         }
 
-        Directory.CreateDirectory(ProjectDir(project));
-        await File.WriteAllTextAsync(countPath, lane.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), cancellationToken);
+        // Written only when the count changes: every lane's every step rewrote it, and two lanes at once could meet on
+        // the file (a sharing violation that failed the step).
+        if (!hasKept || kept != lane.Count)
+        {
+            Directory.CreateDirectory(ProjectDir(project));
+            await WithRetryAsync(() =>
+            {
+                File.WriteAllText(countPath, lane.Count.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                return true;
+            });
+        }
         var rows = new List<StringEntry>();
         for (var offset = 0; ; offset += 1000)
         {
@@ -629,6 +642,22 @@ public sealed class AgentSession
     {
         var path = Path.Combine(_workRoot, key, "project.json");
         return File.Exists(path) ? JsonSerializer.Deserialize<AgentProject>(File.ReadAllText(path)) : null;
+    }
+
+    // A small shared file another lane's process may hold for a moment.
+    private static async Task<T> WithRetryAsync<T>(Func<T> action)
+    {
+        for (var attempt = 1; ; attempt++)
+        {
+            try
+            {
+                return action();
+            }
+            catch (IOException) when (attempt < 5)
+            {
+                await Task.Delay(50 * attempt);
+            }
+        }
     }
 
     private void ClearPending(AgentProject project)
