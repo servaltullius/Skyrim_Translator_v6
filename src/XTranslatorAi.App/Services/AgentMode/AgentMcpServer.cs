@@ -92,7 +92,8 @@ internal static class AgentMcpServer
         new("review", "그대로 둘 줄의 품질검사 결과를 확인함으로 표시(번역문이 바뀌면 다시 나옴).",
             new JsonObject { ["project"] = Project(), ["ids"] = Str("id 목록(예: 12,40)"), ["undo"] = Bool("표시를 지운다") }, new[] { "project", "ids" }),
         new("korean", "기존 한국어판을 연결하고 아직 번역 안 된 줄을 채운다(검수 모드).",
-            new JsonObject { ["project"] = Project(), ["korean_plugin"] = Str("한국어판 플러그인 전체 경로"), ["strings"] = Str("한국어판 Strings 폴더") },
+            new JsonObject { ["project"] = Project(), ["korean_plugin"] = Str("한국어판 플러그인 전체 경로"), ["strings"] = Str("한국어판 Strings 폴더"),
+                ["english_plugin"] = Str("한국어판이 번역한 영어 원본 플러그인 전체 경로(있으면 영어가 바뀐 줄만 번역)") },
             new[] { "project", "korean_plugin" }),
         new("export", "번역된 플러그인 저장(작업 폴더 옆 output).", new JsonObject { ["project"] = Project() }, new[] { "project" }),
         new("version", "번역기 버전.", new JsonObject(), Array.Empty<string>()),
@@ -319,6 +320,7 @@ internal static class AgentMcpServer
             case "korean":
                 args.AddRange(new[] { "korean", project ?? "", Text("korean_plugin") ?? "" });
                 Option("--strings", Text("strings"));
+                Option("--english", Text("english_plugin"));
                 break;
             case "voice":
                 args.AddRange(new[] { "voice", project ?? "", Text("who") ?? "" });

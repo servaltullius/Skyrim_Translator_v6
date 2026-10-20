@@ -58,9 +58,11 @@ public sealed record AgentLane(int Index, int Count)
 /// when the plugin is done, with the size of its request.md) and why it stopped.
 /// </summary>
 /// <summary>What linking a Korean release did: rows it filled, rows already translated it left as they are, rows it
-/// has no translation for (still 대기), and the filled rows whose game text (the Korean patch's) is different.</summary>
+/// has no translation for (still 대기), the filled rows whose game text (the Korean patch's) is different, and the rows
+/// it did not fill because their English changed since the release (its English original linked) or their numbers
+/// are not the release's (without it).</summary>
 public sealed record AgentKoreanLink(PreviousTranslationMatcher.Result Match, int Filled, int KeptTranslated, int Untranslated,
-    IReadOnlyList<long> DifferentFromGame);
+    IReadOnlyList<long> DifferentFromGame, IReadOnlyList<long> EnglishChanged, bool ComparedWithEnglish);
 
 /// <summary>
 /// The project's glossary terms in use, and those a new project took from the same mod's other projects (the GUI says so
@@ -143,7 +145,7 @@ public sealed class AgentSession
     /// show an earlier translation as reference where the release has one.
     /// </summary>
     public async Task<AgentKoreanLink> LinkKoreanAsync(AgentProject project, string koreanPath, string? stringsDirectory,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, string? englishPath = null)
     {
         if (Pending(project) != null || Directory.Exists(ProjectDir(project))
             && Directory.GetDirectories(ProjectDir(project), "lane-*").Any(d => File.Exists(Path.Combine(d, "pending.json"))))
@@ -167,8 +169,25 @@ public sealed class AgentSession
         }
 
         await db.ReplacePreviousTranslationsAsync(Path.GetFileName(path), match.TextByFieldKey, cancellationToken);
+        if (englishPath != null)
+        {
+            await LinkEnglishAsync(db, current, englishPath, cancellationToken);
+        }
+
         var earlier = await db.GetPreviousTranslationsByStringIdAsync(cancellationToken);
         var open = (await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending, StringEntryStatus.Error }, cancellationToken)).ToHashSet();
+        // A release made for an earlier version of the mod: a row whose English changed since (new magnitudes, a
+        // rewritten line) was filled with the old text as 완료, and nothing told the review it differed. With the
+        // release's English original linked, only rows whose English is the same are filled (as the GUI reuses an
+        // earlier translation); without it, rows whose numbers are not the release's. The others are translated with
+        // the release's line as a reference.
+        var sameEnglish = englishPath == null ? null : (await db.GetReusablePreviousTranslationsByStringIdAsync(cancellationToken)).Keys.ToHashSet();
+        var sources = (await db.GetStringTranslationContextsByIdsAsync(earlier.Keys.Where(open.Contains).ToList(), cancellationToken))
+            .ToDictionary(kv => kv.Key, kv => kv.Value.SourceText);
+        var changed = earlier.Where(kv => open.Contains(kv.Key)
+                && (sameEnglish != null ? !sameEnglish.Contains(kv.Key) : !NumbersFit(sources.GetValueOrDefault(kv.Key) ?? "", kv.Value)))
+            .Select(kv => kv.Key).ToHashSet();
+        open.ExceptWith(changed);
         // The release fills the base game's lines too: the Teldryn release has him speak 반말 where the Korean patch has
         // 하오체, and the game's text for his 44 vanilla lines left him switching between the two. Those that differ from
         // the game's text are listed, for the review to judge (a name the patch spells otherwise, or a speech level).
@@ -187,7 +206,44 @@ public sealed class AgentSession
 
         var different = fill.Where(row => gameRows.TryGetValue(row.Id, out var g) && g.Text.Trim() != row.DestText.Trim())
             .Select(row => row.Id).OrderBy(id => id).ToList();
-        return new AgentKoreanLink(match, fill.Count, earlier.Count - fill.Count, open.Count - fill.Count, different);
+        return new AgentKoreanLink(match, fill.Count, earlier.Count - fill.Count - changed.Count, open.Count - fill.Count + changed.Count, different,
+            changed.OrderBy(id => id).ToList(), englishPath != null);
+    }
+
+    private async Task LinkEnglishAsync(ProjectDb db, PluginDocument current, string englishPath, CancellationToken cancellationToken)
+    {
+        var path = Path.GetFullPath(englishPath);
+        if (!File.Exists(path)) throw new AgentModeException($"한국어판의 영어 원본 플러그인이 없습니다: {englishPath}");
+        // The earlier English is read as the current English is, with its own Strings or BSA next to it.
+        var english = await PluginReader.ReadAsync(path, current.Info.Options.ForOtherRelease(), cancellationToken);
+        var sources = PreviousTranslationMatcher.MatchSources(current.Fields, current.Info.Masters, english.Fields, english.Info.Masters);
+        if (sources.SourceByFieldKey.Count == 0)
+        {
+            throw new AgentModeException($"{Path.GetFileName(path)}에서 같은 레코드를 찾지 못했습니다. 한국어판이 번역한 영어 원본인지 확인하세요.");
+        }
+
+        if (sources.WithHangul * 2 > sources.SourceByFieldKey.Count)
+        {
+            throw new AgentModeException($"{Path.GetFileName(path)}은 한국어로 번역된 파일입니다. --english에는 한국어판이 번역한 영어 원본을 주세요.");
+        }
+
+        await db.ReplacePreviousSourcesAsync(Path.GetFileName(path), sources.SourceByFieldKey, cancellationToken);
+    }
+
+    private static readonly System.Text.RegularExpressions.Regex Digits = new(@"\d+", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+    /// <summary>Every number of the English is in the Korean as many times (a changed magnitude is not).</summary>
+    internal static bool NumbersFit(string english, string korean)
+    {
+        var left = Digits.Matches(korean).Select(m => m.Value).GroupBy(v => v).ToDictionary(g => g.Key, g => g.Count());
+        foreach (System.Text.RegularExpressions.Match number in Digits.Matches(english))
+        {
+            var count = left.GetValueOrDefault(number.Value);
+            if (count == 0) return false;
+            left[number.Value] = count - 1;
+        }
+
+        return true;
     }
 
     /// <summary>

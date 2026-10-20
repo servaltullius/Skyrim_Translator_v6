@@ -302,6 +302,59 @@ public sealed class AgentModeTests : IAsyncLifetime
         await Assert.ThrowsAsync<AgentModeException>(() => _session.LinkKoreanAsync(_project, korean, null, CancellationToken.None));
     }
 
+    /// <summary>
+    /// A Korean release made for an earlier version of the mod: a row whose English changed since was filled with the
+    /// old text as 완료. With the release's English original, only rows whose English is the same are filled; without
+    /// it, rows whose numbers are not the release's are left to translate (with the release's line as a reference).
+    /// </summary>
+    [Fact]
+    public async Task KoreanRelease_LeavesRowsWhoseEnglishChanged()
+    {
+        static byte[] Bites(string fireName, string fire, string frostName, string frost)
+            => Header().Concat(Group(
+                    Record("MGEF", 0x3001, Sub("EDID", Z("aaFireBite")), Sub("FULL", Z(fireName)), Sub("DNAM", Z(fire))),
+                    Record("MGEF", 0x3002, Sub("EDID", Z("aaFrostBite")), Sub("FULL", Z(frostName)), Sub("DNAM", Z(frost)))))
+                .ToArray();
+        var korean = Path.Combine(_root, "Korean", "Bites.esp");
+        Directory.CreateDirectory(Path.GetDirectoryName(korean)!);
+        await File.WriteAllBytesAsync(korean, Bites("불꽃 물기", "15의 화염 피해를 줍니다.", "냉기 물기", "10의 냉기 피해를 줍니다."));
+        var english = Path.Combine(_root, "English", "Bites.esp");
+        Directory.CreateDirectory(Path.GetDirectoryName(english)!);
+        await File.WriteAllBytesAsync(english, Bites("Fire Bite", "Deals 15 fire damage.", "Frost Nip", "Deals 10 frost damage."));
+        var current = Bites("Fire Bite", "Deals 25 fire damage.", "Frost Bite", "Deals 10 frost damage.");
+
+        // Without the English original: the magnitude that changed is caught by its number.
+        var byNumbers = await OpenAsync("Bites.esp", current);
+        var link = await _session.LinkKoreanAsync(byNumbers, korean, null, CancellationToken.None);
+
+        Assert.False(link.ComparedWithEnglish);
+        Assert.Equal(3, link.Filled);
+        var fireRow = Assert.Single(link.EnglishChanged);
+        Assert.Equal(1, link.Untranslated);
+        await using (var db = await ProjectDb.OpenOrCreateAsync(byNumbers.DbPath, CancellationToken.None))
+        {
+            var row = (await db.GetStringsAsync(50, 0, CancellationToken.None)).Single(r => r.Id == fireRow);
+            Assert.Equal((StringEntryStatus.Pending, "Deals 25 fire damage."), (row.Status, row.SourceText));
+        }
+
+        // With it: the renamed spell is caught too, and the line whose English is the same is filled.
+        var byEnglish = await OpenAsync("Bites2.esp", current);
+        var compared = await _session.LinkKoreanAsync(byEnglish, korean, null, CancellationToken.None, english);
+
+        Assert.True(compared.ComparedWithEnglish);
+        Assert.Equal(2, compared.Filled);
+        Assert.Equal(2, compared.EnglishChanged.Count);
+        await using (var db = await ProjectDb.OpenOrCreateAsync(byEnglish.DbPath, CancellationToken.None))
+        {
+            var rows = await db.GetStringsAsync(50, 0, CancellationToken.None);
+            Assert.Contains(rows, r => r.Status == StringEntryStatus.Done && r.DestText == "10의 냉기 피해를 줍니다.");
+            Assert.Contains(rows, r => r.Status == StringEntryStatus.Pending && r.SourceText == "Frost Bite");
+        }
+
+        Assert.True(AgentSession.NumbersFit("Deals 10 damage for 10 seconds.", "10초 동안 10의 피해를 줍니다."));
+        Assert.False(AgentSession.NumbersFit("Deals 10 damage for 10 seconds.", "10의 피해를 줍니다."));
+    }
+
     [Fact]
     public async Task Answers_AreSavedOneRequestAtATime_UntilThePluginIsDone()
     {

@@ -105,7 +105,7 @@ public static partial class AgentCli
     {
         c.RefuseWhileAppRuns();
         var project = c.Session.Find(c.Arg(0, "프로젝트"));
-        var link = await c.Session.LinkKoreanAsync(project, c.Arg(1, "한국어판 경로"), c.Option("--strings"), c.Ct);
+        var link = await c.Session.LinkKoreanAsync(project, c.Arg(1, "한국어판 경로"), c.Option("--strings"), c.Ct, c.Option("--english"));
         var m = link.Match;
         Console.WriteLine($"한국어판 연결: {m.TextByFieldKey.Count}줄 (빠짐: 한국어판에 없음 {m.NotInPreviousRelease}, 레코드 구성이 바뀜 {m.ChangedRecord}, "
                           + $"영어 그대로 {m.SameAsSource}, 한글 없음 {m.NotTranslated})");
@@ -116,8 +116,22 @@ public static partial class AgentCli
                               + $"tullius.cmd show {project.Key} --id {string.Join(",", link.DifferentFromGame.Take(40))}" + (link.DifferentFromGame.Count > 40 ? " …" : ""));
         }
 
+        if (link.EnglishChanged.Count > 0)
+        {
+            Console.WriteLine((link.ComparedWithEnglish
+                                  ? $"영어가 한국어판 때와 달라 채우지 않은 줄: {link.EnglishChanged.Count}"
+                                  : $"숫자가 한국어판과 달라 채우지 않은 줄(모드가 바뀌었을 수 있음): {link.EnglishChanged.Count}")
+                              + $" → next 요청에 한국어판 번역이 참고로 붙습니다. 보기: tullius.cmd show {project.Key} --id "
+                              + string.Join(",", link.EnglishChanged.Take(40)) + (link.EnglishChanged.Count > 40 ? " …" : ""));
+        }
+
+        if (!link.ComparedWithEnglish)
+        {
+            Console.WriteLine("영어가 바뀐 줄은 숫자로만 골랐습니다. 한국어판이 번역한 영어 원본이 있으면 다음에는 korean에 --english \"<영어 원본 경로>\"를 함께 주세요(영어가 바뀐 줄을 모두 골라 번역).");
+        }
+
         Console.WriteLine(link.Untranslated > 0
-            ? $"번역할 줄(한국어판에 없음): {link.Untranslated} → tullius.cmd next {project.Key}"
+            ? $"번역할 줄(한국어판에 없거나 바뀜): {link.Untranslated} → tullius.cmd next {project.Key}"
             : "번역할 줄: 0");
         Console.WriteLine($"검수: tullius.cmd check {project.Key}, 이어서 tullius.cmd show {project.Key} --count 40 으로 차례로 읽기");
     }
