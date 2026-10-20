@@ -165,8 +165,18 @@ public sealed class PlaceholderMasker
             return GetNumericAngleLabel(hasPercentSuffix, fullText, matchIndex, matchLength);
         }
 
-        return null;
+        return IsPronounAlias(placeholder) ? "PRON" : null;
     }
+
+    private static readonly Regex PronounAliasRegex = new(
+        @"^<Alias(?:\.Pronoun\w*=[^>]+|=[^>.]+\.Pronoun\w*)>$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+
+    /// <summary>
+    /// A character's pronoun the game fills in (&lt;Alias.PronounPos=Player&gt; → his/her). Korean usually leaves it
+    /// out: the Korean patch drops 11 of 13 PronounPosObj tags, and the model dropping them failed every retry of
+    /// Kodlak's Journal until the row ran out of recovery calls. Such a token may be left out of a translation.
+    /// </summary>
+    public static bool IsPronounAlias(string placeholder) => PronounAliasRegex.IsMatch(placeholder.Trim());
 
     private static ReadOnlySpan<char> StripLeadingSign(ReadOnlySpan<char> s)
     {
@@ -308,7 +318,8 @@ public sealed class PlaceholderMasker
     {
         foreach (var token in tokenToOriginal.Keys)
         {
-            if (!text.Contains(token, StringComparison.Ordinal))
+            // A pronoun the translation left out, as Korean does (see IsPronounAlias), is not missing.
+            if (!text.Contains(token, StringComparison.Ordinal) && !token.StartsWith("__XT_PH_PRON_", StringComparison.Ordinal))
             {
                 throw new InvalidOperationException($"Missing placeholder token in translation: {token}");
             }

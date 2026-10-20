@@ -24,6 +24,11 @@ public static partial class TranslationPrompt
     internal const string SarcasmRule =
         "- Keep sarcasm and irony audible in Korean. A line that praises what it mocks must still read as mockery, not as a plain compliment: use an overdone word and an ending that says the speaker does not mean it (e.g. \"Oh this is lovely. If you like foggy swamps.\" => 아, 아주 끝내주는 곳이군. 안개 낀 늪을 좋아하는 사람한테나 말이오.; not 참 좋군… 좋아한다면 말이오).";
 
+    // A character's pronoun the game fills in (see PlaceholderMasker.IsPronounAlias). The model left it out of Kodlak's
+    // Journal as Korean does, and every check failed until the row ran out of retries; the checks now accept that.
+    internal const string PronounTokenRule =
+        "- Exception: __XT_PH_PRON_####__ is a character's pronoun the game fills in (his/her, him/her). Where the target language leaves the pronoun out, as Korean usually does, leave the token out too; never add one the input does not have.";
+
     private const string ControlKeyTokenPrefix = "__XT_PH_KEY_";
 
     // Help messages name controls the game replaces with the player's key ("Hold [Sprint] to sprint").

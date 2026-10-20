@@ -65,6 +65,7 @@ public static partial class TranslationPrompt
         sb.AppendLine("- Preserve any tokens like __XT_PH_0000__, __XT_PH_MAG_0000__, __XT_PH_DUR_0001__, __XT_PH_NUM_0002__, __XT_PH_VAR_0003__, __XT_TERM_0000__, or __XT_TERM_SESS_0000__ exactly (do not alter or remove).");
         sb.AppendLine("- Hint markers like \"⟦XT_MAG=100⟧\" or \"⟦XT_TERM=...⟧\" may appear next to tokens. They are hints only; ignore them and DO NOT include them in the output.");
         sb.AppendLine("- The output MUST contain every token that appears in the input (same counts). Do not delete, merge, or duplicate tokens.");
+        sb.AppendLine(PronounTokenRule);
         sb.AppendLine("- Do NOT output any raw markup tags/markers that were NOT present in the input (e.g., <p ...>, <img ...>, or [pagebreak]). If the input contains runtime tags like <mag>/<dur>/<bur>/<100%>, preserve them exactly.");
         sb.AppendLine("- Translate ALL content. Do not omit, summarize, or add extra sentences.");
         sb.AppendLine("- Keep the tone/register consistent within this text.");

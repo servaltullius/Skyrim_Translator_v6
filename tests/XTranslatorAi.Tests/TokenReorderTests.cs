@@ -30,7 +30,34 @@ public class TokenReorderTests
     {
         var masked = new PlaceholderMasker().Mask("Plant the <Alias=Evidence> in <Alias=WealthyHome> in <Alias.Pronoun=City>");
 
-        Assert.Equal("Plant the __XT_PH_VAR_0000__ in __XT_PH_VAR_0001__ in __XT_PH_VAR_0002__", masked.Text);
+        // A pronoun alias is a runtime value too, labeled so a translation may leave it out.
+        Assert.Equal("Plant the __XT_PH_VAR_0000__ in __XT_PH_VAR_0001__ in __XT_PH_PRON_0002__", masked.Text);
+    }
+
+    /// <summary>
+    /// Kodlak's Journal: "__VAR__ calls __PRON__ __VAR__, and has impressed the Circle with __PRON__ mettle" came back as
+    /// "…(이)라 칭하며, 그 기개로…" every time, and each retry failed until the row ran out of recovery calls. A left-out
+    /// pronoun passes; a left-out name or an added pronoun still fails.
+    /// </summary>
+    [Fact]
+    public void PronounAliases_MayBeLeftOut_ButNotAddedAndNamesStay()
+    {
+        var masked = new PlaceholderMasker().Mask("<Alias=Player> calls <Alias.PronounObj=Player> <Alias.ShortName=Player>, impressing them with <Alias.PronounPos=Player> mettle.");
+        Assert.Equal("__XT_PH_VAR_0000__ calls __XT_PH_PRON_0001__ __XT_PH_VAR_0002__, impressing them with __XT_PH_PRON_0003__ mettle.", masked.Text);
+
+        TokenValidator.ValidateTokensPreserved(masked.Text, "__XT_PH_VAR_0000__ 스스로를 __XT_PH_VAR_0002__(이)라 칭하며, 그 기개로 감탄을 자아냈다.", "test");
+        Assert.Equal("<Alias=Player> 스스로를 <Alias.ShortName=Player>(이)라 칭하며, 그 기개로 감탄을 자아냈다.",
+            new PlaceholderMasker().Unmask("__XT_PH_VAR_0000__ 스스로를 __XT_PH_VAR_0002__(이)라 칭하며, 그 기개로 감탄을 자아냈다.", masked.TokenToOriginal));
+        Assert.ThrowsAny<InvalidOperationException>(() => new PlaceholderMasker().Unmask("스스로를 칭하며.", masked.TokenToOriginal));
+        Assert.ThrowsAny<InvalidOperationException>(() =>
+            TokenValidator.ValidateTokensPreserved(masked.Text, "스스로를 __XT_PH_VAR_0002__(이)라 칭하며 __XT_PH_PRON_0001__ 감탄을 자아냈다.", "test"));
+        Assert.ThrowsAny<InvalidOperationException>(() =>
+            TokenValidator.ValidateTokensPreserved(masked.Text, "__XT_PH_VAR_0000__ __XT_PH_PRON_0001__ __XT_PH_PRON_0001__ __XT_PH_VAR_0002__ 칭하며.", "test"));
+
+        const string source = "<Alias=Player> earned <Alias.PronounPosObj=Player> place.\n<font size='18'>Next</font>";
+        TokenValidator.ValidateFinalTextIntegrity(source, "<Alias=Player>은 자리를 얻었다.\n<font size='18'>다음</font>", "test");
+        Assert.ThrowsAny<InvalidOperationException>(() =>
+            TokenValidator.ValidateFinalTextIntegrity(source, "자리를 얻었다.\n<font size='18'>다음</font>", "test"));
     }
 
     [Theory]

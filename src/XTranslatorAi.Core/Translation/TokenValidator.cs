@@ -103,8 +103,8 @@ internal static class TokenValidator
 
     internal static void ValidateTokensPreserved(string inputText, string outputText, string context)
     {
-        var expected = ExtractTokens(inputText);
         var actual = ExtractTokens(outputText);
+        var expected = WithoutDroppedPronouns(ExtractTokens(inputText), actual);
 
         if (expected.Count == actual.Count)
         {
@@ -175,7 +175,7 @@ internal static class TokenValidator
         foreach (var (tag, expectedCount) in expectedCounts)
         {
             actualCounts.TryGetValue(tag, out var actualCount);
-            if (actualCount != expectedCount)
+            if (actualCount != expectedCount && !IsDroppedPronoun(tag, expectedCount, actualCount))
             {
                 throw new InvalidOperationException(
                     $"Raw tag count mismatch for {context}: {tag} (expected {expectedCount}, got {actualCount})."
@@ -215,7 +215,7 @@ internal static class TokenValidator
         foreach (var (placeholder, count) in expected)
         {
             actual.TryGetValue(placeholder, out var actualCount);
-            if (count != actualCount)
+            if (count != actualCount && !IsDroppedPronoun(placeholder, count, actualCount))
             {
                 throw new InvalidOperationException(
                     $"Protected text mismatch for {context}: {placeholder} (expected {count}, got {actualCount})."
@@ -785,8 +785,42 @@ internal static class TokenValidator
         movableSegments.Add(current);
     }
 
+    private const string PronounTokenPrefix = "__XT_PH_PRON_";
+
+    // A pronoun token the translation left out is not missing (see PlaceholderMasker.IsPronounAlias); one it repeats or
+    // invents still fails.
+    private static List<string> WithoutDroppedPronouns(List<string> expected, IReadOnlyList<string> actual)
+    {
+        if (!expected.Any(token => token.StartsWith(PronounTokenPrefix, StringComparison.Ordinal)))
+        {
+            return expected;
+        }
+
+        var kept = CountTokens(actual);
+        var result = new List<string>(expected.Count);
+        foreach (var token in expected)
+        {
+            if (!token.StartsWith(PronounTokenPrefix, StringComparison.Ordinal))
+            {
+                result.Add(token);
+            }
+            else if (kept.TryGetValue(token, out var n) && n > 0)
+            {
+                kept[token] = n - 1;
+                result.Add(token);
+            }
+        }
+
+        return result;
+    }
+
+    // The same for the raw tags of a finished text: fewer pronoun aliases than the source is fine.
+    private static bool IsDroppedPronoun(string original, int expectedCount, int actualCount)
+        => actualCount < expectedCount && XTranslatorAi.Core.Text.PlaceholderMasker.IsPronounAlias(original);
+
     private static bool IsFreeToken(string token)
         => token.StartsWith("__XT_PH_VAR_", StringComparison.Ordinal)
+            || token.StartsWith(PronounTokenPrefix, StringComparison.Ordinal)
             || token.StartsWith("__XT_PH_KEY_", StringComparison.Ordinal)
             || token.StartsWith("__XT_TERM_", StringComparison.Ordinal);
 
@@ -810,6 +844,7 @@ internal static class TokenValidator
             || token.StartsWith("__XT_PH_DUR_", StringComparison.Ordinal)
             || token.StartsWith("__XT_PH_NUM_", StringComparison.Ordinal)
             || token.StartsWith("__XT_PH_VAR_", StringComparison.Ordinal)
+            || token.StartsWith(PronounTokenPrefix, StringComparison.Ordinal)
             || token.StartsWith("__XT_PH_KEY_", StringComparison.Ordinal)
             || token.StartsWith("__XT_TERM_", StringComparison.Ordinal);
 
