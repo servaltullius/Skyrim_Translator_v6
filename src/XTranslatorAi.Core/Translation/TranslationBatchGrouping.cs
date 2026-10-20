@@ -26,7 +26,21 @@ internal static class TranslationBatchGrouping
             .ToDictionary(g => g.Key, g => g.Count(), StringComparer.OrdinalIgnoreCase);
         bool IsSeries(string stem) => stem.Length > 0 && counts[stem] >= MinSeriesRows;
 
-        var names = items.Select(it => SkillName(it.Rec, it.SourceText)).ToArray();
+        // A one-word name is a skill's only when the mod never writes the word in lowercase: "Kaiten" (회천/카이텐 in
+        // two batches) is one, "Fire" in "Enchanting - Fire" and "Blade Oil - Fire" is not.
+        var lowercase = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var it in items)
+        {
+            foreach (System.Text.RegularExpressions.Match word in LowercaseWord.Matches(it.SourceText))
+            {
+                lowercase.Add(word.Value);
+            }
+        }
+
+        var names = items.Select(it => SkillName(it.Rec, it.SourceText) is var name
+                                       && (name.Contains(' ') || name.Length > 0 && !lowercase.Contains(name.ToLowerInvariant()))
+            ? name
+            : "").ToArray();
         var forms = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
         for (var i = 0; i < items.Count; i++)
         {
@@ -60,10 +74,14 @@ internal static class TranslationBatchGrouping
         return keys;
     }
 
-    private static readonly string[] PrefixSeparators = { " - ", " – ", " — ", ": " };
+    private static readonly System.Text.RegularExpressions.Regex LowercaseWord = new(@"\b[a-z]+\b",
+        System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+    // "Rim Scroll- Crescent Cleave": three of Elden Rim's scrolls lack the space before the dash.
+    private static readonly string[] PrefixSeparators = { " - ", " – ", " — ", ": ", "- " };
 
     // The name after a prefix and without a trailing qualifier: "Weapon Art - Waterfowl Dance (Charged)" → "Waterfowl Dance".
-    // Only names of two or more words; "Enchanting - Fire" and "Blade Oil - Fire" are not one skill.
+    // A one-word name is returned too; ComputeGroupKeys keeps it only for a word the mod never writes in lowercase.
     private static string SkillName(string? rec, string sourceText)
     {
         var text = sourceText.Trim();
@@ -91,7 +109,11 @@ internal static class TranslationBatchGrouping
         }
 
         name = name.Trim();
-        return name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length >= 2 ? name : "";
+        var words = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        // "World-Shaking" is one word too (천지진동 and 천지개벽 in two batches).
+        return words.Length >= 2 || words.Length == 1 && cut > 0 && char.IsUpper(name[0]) && name.All(c => char.IsLetter(c) || c is '-' or '\'')
+            ? name
+            : "";
     }
 
     // Dialogue lines belong with their topic; a shared "Yes (Persuade)" prefix says nothing about them.

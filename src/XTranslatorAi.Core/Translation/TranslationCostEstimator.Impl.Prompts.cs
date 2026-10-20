@@ -175,6 +175,7 @@ public sealed partial class TranslationCostEstimator
 
         static string GetRecSortKey(string? rec) => (rec ?? "").Trim();
 
+        var groupById = new Dictionary<long, string>();
         void SortForBatchConsistency(List<PreparedRow> list)
         {
             if (list.Count <= 1)
@@ -200,11 +201,11 @@ public sealed partial class TranslationCostEstimator
                 .ThenBy(x => x.Rec, StringComparer.OrdinalIgnoreCase)
                 .ThenBy(x => x.Item.Masked.Length)
                 .ThenBy(x => x.Index)
-                .Select(x => x.Item)
                 .ToList();
 
             list.Clear();
-            list.AddRange(sorted);
+            list.AddRange(sorted.Select(x => x.Item));
+            foreach (var x in sorted) groupById.TryAdd(x.Item.Id, x.Group);
         }
 
         SortForBatchConsistency(shortItems);
@@ -233,9 +234,9 @@ public sealed partial class TranslationCostEstimator
             }
         }
 
-        var shortBatches = TranslationBatching.ChunkBy(shortItems, it => it.Masked.Length, batchSize, maxChars).ToList();
+        var shortBatches = TranslationBatching.ChunkBy(shortItems, it => it.Masked.Length, batchSize, maxChars, it => groupById.GetValueOrDefault(it.Id, "")).ToList();
         var longBatchSize = Math.Max(1, Math.Min(batchSize, 8));
-        var longBatches = TranslationBatching.ChunkBy(longItems, it => it.Masked.Length, longBatchSize, maxChars).ToList();
+        var longBatches = TranslationBatching.ChunkBy(longItems, it => it.Masked.Length, longBatchSize, maxChars, it => groupById.GetValueOrDefault(it.Id, "")).ToList();
 
         var batchPrompts = new List<string>(capacity: shortBatches.Count + longBatches.Count);
         var textPrompts = new List<string>(capacity: veryLongItems.Count + 16);

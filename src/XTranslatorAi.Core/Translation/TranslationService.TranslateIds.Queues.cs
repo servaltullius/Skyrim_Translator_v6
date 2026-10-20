@@ -28,13 +28,13 @@ public sealed partial class TranslationService
     {
         var (shortItems, longItems, veryLongItems) = PartitionWorkItems(request, items);
 
-        SortForBatchConsistency(shortItems);
-        SortForBatchConsistency(longItems);
+        var shortGroups = SortForBatchConsistency(shortItems);
+        var longGroups = SortForBatchConsistency(longItems);
         await TryUpdateMaskedTokensPerCharHintAsync(request, veryLongItems);
 
-        var shortBatches = BuildBatches(shortItems, request.BatchSize, request.MaxChars);
+        var shortBatches = BuildBatches(shortItems, request.BatchSize, request.MaxChars, shortGroups);
         var longBatchSize = Math.Max(1, Math.Min(request.BatchSize, 8));
-        var longBatches = BuildBatches(longItems, longBatchSize, request.MaxChars);
+        var longBatches = BuildBatches(longItems, longBatchSize, request.MaxChars, longGroups);
         var veryLongBatches = BuildVeryLongBatches(veryLongItems);
 
         SortBatchesByWeight(shortBatches);
@@ -84,11 +84,12 @@ public sealed partial class TranslationService
         return (shortItems, longItems, veryLongItems);
     }
 
-    private void SortForBatchConsistency(List<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> list)
+    // Sorts the rows so related names sit together, and returns each row's group for BuildBatches.
+    private Dictionary<long, string> SortForBatchConsistency(List<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> list)
     {
         if (list.Count <= 1)
         {
-            return;
+            return new Dictionary<long, string>();
         }
 
         var groups = TranslationBatchGrouping.ComputeGroupKeys(
@@ -109,11 +110,13 @@ public sealed partial class TranslationService
             .ThenBy(x => x.Rec, StringComparer.OrdinalIgnoreCase)
             .ThenBy(x => x.Item.Masked.Length)
             .ThenBy(x => x.Index)
-            .Select(x => x.Item)
             .ToList();
 
         list.Clear();
-        list.AddRange(sorted);
+        list.AddRange(sorted.Select(x => x.Item));
+        var groupById = new Dictionary<long, string>();
+        foreach (var x in sorted) groupById.TryAdd(x.Item.Id, x.Group);
+        return groupById;
     }
 
     private async Task TryUpdateMaskedTokensPerCharHintAsync(
@@ -159,13 +162,14 @@ public sealed partial class TranslationService
     private List<IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>> BuildBatches(
         IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> items,
         int batchSize,
-        int maxChars
+        int maxChars,
+        IReadOnlyDictionary<long, string> groups
     )
     {
         var batches = new List<IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>>();
         foreach (var batch in TranslationBatching.ChunkBy(items,
                      it => it.Masked.Length + (Ctx.EnableAdaptiveOutputBudget ? 8 * TranslationConstants.XtTokenRegex.Matches(it.Masked).Count : 0),
-                     batchSize, maxChars))
+                     batchSize, maxChars, it => groups.GetValueOrDefault(it.Id, "")))
         {
             batches.Add(batch);
         }
