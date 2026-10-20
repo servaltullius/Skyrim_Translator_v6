@@ -518,5 +518,8 @@ public static class LqaScanner
     /// Whether clearing this source would remove protected content. This deliberately
     /// includes placeholders and line breaks, not only visible angle-bracket tags.
     /// </summary>
-    public static bool HasProtectedText(string text) => HasTokenMismatch(text, "");
+    // A pronoun alias may be left out of a translation (see PlaceholderMasker.IsPronounAlias), so clearing a text
+    // that holds only one passes the check; it is still protected content.
+    public static bool HasProtectedText(string text)
+        => HasTokenMismatch(text, "") || new PlaceholderMasker().Mask(text).TokenToOriginal.Count > 0;
 }

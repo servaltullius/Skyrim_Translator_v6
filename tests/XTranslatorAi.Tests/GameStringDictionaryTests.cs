@@ -307,6 +307,40 @@ public sealed class GameStringDictionaryTests
         Assert.False(spliced!.EndsWith("\n", StringComparison.Ordinal));
     }
 
+    /// <summary>
+    /// The patch's blocks pair with the source's by position. A copy that drops one of the base game's paragraphs and
+    /// adds its own keeps the block count, so the base game's paragraphs after the gap stand where the patch has other
+    /// ones: those keep the model's text. A copy with a paragraph added (or dropped) pairs nothing.
+    /// </summary>
+    [Fact]
+    public void BlocksOutOfTheirBaseGamePosition_KeepTheModelsText()
+    {
+        var game = GameStringDictionary.Build(new[]
+        {
+            new GameStringPlugin("Skyrim.esm", new string[0], new[] { Field("BOOK/000E0D68/0/DESC/0", FalmerEnglish, PluginStringTableKind.DlStrings, 1) },
+                new Dictionary<(PluginStringTableKind, uint), string> { [(PluginStringTableKind.DlStrings, 1)] = PatchKorean }),
+        });
+        const string secondEnglish = "No one really knows when the story of the Snow Elves began, but the ancient work tells of its ending.\r\n\r\n";
+        const string added = "\r\n\r\nA new closing paragraph the mod wrote itself, long enough to be counted as one.";
+        var shifted = FalmerEnglish.Replace(secondEnglish, "").TrimEnd() + added;
+        var model = "[pagebreak]\r\n<p align=\"center\">팔머: 연구\r\n\r\n저자\r\n우르사 우스락스</p>\r\n\r\n[pagebreak]\r\n<p align=\"left\">"
+                    + "<img src='img://Textures/Interface/Books/Illuminated_Letters/I_letter.png'>나는 연구했다.\r\n\r\n"
+                    + "팔머는 봉기했다.\r\n\r\n"
+                    + "수십 년 동안 전쟁이 벌어졌다.\r\n\r\n"
+                    + "모드가 새로 쓴 마지막 문단.";
+
+        var spliced = GameStringDictionary.SpliceUnchanged(shifted, model, game.FindSimilar("BOOK:DESC", shifted)!);
+
+        // The first paragraph is where the base game has it; the next two are not.
+        Assert.Contains("연구, 여행을 거쳐 드디어 나의 가설이 뒷받침되었다.", spliced);
+        Assert.DoesNotContain("스노우 엘프의 이야기가", spliced);
+        Assert.Contains("팔머는 봉기했다.", spliced);
+        Assert.Contains("수십 년 동안 전쟁이 벌어졌다.", spliced);
+
+        var longer = FalmerEnglish.TrimEnd() + added;
+        Assert.Null(GameStringDictionary.SpliceUnchanged(longer, model, game.FindSimilar("BOOK:DESC", longer)!));
+    }
+
     /// <summary>A copy with one blank line more than the base game's still takes the patch's text, laid out as the source is.</summary>
     [Fact]
     public void SameParagraphsWithOtherBlankLines_TakeThePatchLaidOutAsTheSource()

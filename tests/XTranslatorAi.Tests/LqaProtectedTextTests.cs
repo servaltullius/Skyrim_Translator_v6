@@ -66,6 +66,8 @@ public sealed class LqaProtectedTextTests
     [InlineData("[pagebreak]", true)]
     [InlineData("__XT_PH_0000__", true)]
     [InlineData("25% resistance", true)]
+    // A pronoun alias may be left out of a translation, but it is still protected content in the source.
+    [InlineData("Tell <Alias.PronounObj=Player>.", true)]
     [InlineData("Read this", false)]
     [InlineData("", false)]
     public void SourceProtectionFilter_IncludesVariablesAndLineBreaks(string source, bool expected)

@@ -15,7 +15,7 @@ namespace XTranslatorAi.Core.Plugins;
 /// copied with changes, the row's paragraphs the base game does not have (see GameStringDictionary.FindSimilar).
 /// </summary>
 public sealed record GameStringMatch(string Text, string Origin, IReadOnlyList<string>? ChangedParagraphs = null,
-    IReadOnlySet<string>? BaseParagraphKeys = null);
+    IReadOnlyList<string>? BaseParagraphOrder = null);
 
 /// <summary>One base game plugin read with its English tables, and the Korean patch's tables for it.</summary>
 public sealed record GameStringPlugin(
@@ -149,7 +149,7 @@ public sealed class GameStringDictionary
         var dropped = shared[best] < baseKeys.Count;
         return new GameStringMatch(field.Korean, $"{field.Plugin} 비슷한 글 {shared[best]}/{keys.Count}문단",
             changed.Count == 0 && dropped ? new[] { "(the base game's text has paragraphs this source does not)" } : changed,
-            baseKeys);
+            _paragraphs[best]);
     }
 
     /// <summary>
@@ -213,16 +213,27 @@ public sealed class GameStringDictionary
     /// </summary>
     public static string? SpliceUnchanged(string source, string translated, GameStringMatch match)
     {
-        if (match.BaseParagraphKeys is not { } baseKeys) return null;
+        if (match.BaseParagraphOrder is not { } baseOrder) return null;
         var s = BlankLines.Split(source);
         var t = BlankLines.Split(translated);
         var k = BlankLines.Split(match.Text.Trim());
         if (s.Length != t.Length || s.Length != k.Length) return null;
+
+        // The patch's blocks pair with the source's by position, so a block is the base game's only where its
+        // paragraphs stand where the base game has them. A copy that drops one paragraph and adds another keeps the
+        // block count, and a set check put the patch's next paragraph into the wrong block; with paragraphs added or
+        // dropped nothing pairs up.
+        var blockKeys = new List<List<string>>();
+        for (var i = 0; i < s.Length; i += 2) blockKeys.Add(Paragraphs(s[i]).Select(p => p.Key).ToList());
+        if (blockKeys.Sum(keys => keys.Count) != baseOrder.Count) return null;
         var spliced = false;
+        var position = 0;
         for (var i = 0; i < s.Length; i += 2)
         {
-            var keys = Paragraphs(s[i]).Select(p => p.Key).ToList();
-            if (keys.Count == 0 || !keys.All(baseKeys.Contains)) continue;
+            var keys = blockKeys[i / 2];
+            var at = position;
+            position += keys.Count;
+            if (keys.Count == 0 || keys.Where((key, j) => !string.Equals(key, baseOrder[at + j], StringComparison.Ordinal)).Any()) continue;
             // The patch's block laid out as the source's, with the spacing the model kept around it.
             if (Relayout(s[i].Trim(), k[i].Trim()) is not { } block) continue;
             var lead = t[i][..(t[i].Length - t[i].TrimStart().Length)];
