@@ -102,6 +102,12 @@ public static partial class AgentCli
             Console.WriteLine("실패: " + ex.Message);
             return 2;
         }
+        finally
+        {
+            // The MCP server runs a command per tool call in one process: a global DB left open by each kept hundreds
+            // of SQLite connections on the global glossary and its WAL over a session of submits.
+            await c.GlobalDb.DisposeAsync();
+        }
     }
 
     private static string Flat(string text) => text.Replace("\r\n", "⏎").Replace("\n", "⏎");
