@@ -12,7 +12,7 @@
 
 ## tullius 도구(MCP)
 
-- 앱에 `tullius` 도구(`open`, `next`, `submit`, `lookup` …)가 있으면 `tullius.cmd` 대신 그것을 쓴다. 이 폴더의 `.mcp.json`(Claude)과 `.codex\config.toml`(Codex)이 등록한다. 도구 이름과 인자는 아래 안내의 `tullius.cmd` 명령과 같고 결과도 같다.
+- 앱에 `tullius` 도구(`open`, `next`, `submit`, `lookup` …)가 있으면 `tullius.cmd` 대신 그것을 쓴다. 이 폴더의 `.mcp.json`·`.claude\settings.json`(Claude)과 `.codex\config.toml`(Codex)이 등록하고 허용한다. 도구 이름과 인자는 아래 안내의 `tullius.cmd` 명령과 같고 결과도 같다.
 - 답은 파일을 쓰지 않고 `submit`의 `answer`에 요청의 응답 형식 그대로 넣는다. 수정은 `edit`의 `edits`에 `[{"id": 12, "text": "…"}]`로 넣는다. 인코딩·`&` 걱정이 없다.
 - `next`·`submit` 결과 끝의 `----- 다음 요청 -----` 아래가 다음 request.md 내용이다. 파일을 따로 읽지 않는다. 지시는 `instructions` 도구로 읽는다(첫 요청과 새 지시 절이 있을 때만).
 - 셸로 파일을 읽을 수 없으면 안내 파일은 `guide` 도구(`translate`, `review`, `lanes`)로 읽는다.
