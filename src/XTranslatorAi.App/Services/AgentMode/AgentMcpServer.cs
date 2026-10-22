@@ -112,7 +112,24 @@ internal static class AgentMcpServer
     // and the 1.16.4 build found no agent-kit there.
     private static string ExeFolder => Path.GetDirectoryName(Environment.ProcessPath) ?? AppContext.BaseDirectory;
 
-    private static string GuidePath(string file) => Path.Combine(ExeFolder, "agent-kit", file);
+    private static string GuidePath(string file) => Path.Combine(KitFolder(ExeFolder, Environment.CurrentDirectory), file);
+
+    /// <summary>
+    /// The kit whose guides the server reads: agent-kit beside the translator, or else the folder the app started the
+    /// server in when it is a kit itself (its AGENTS.md and tullius.cmd), as when the kit folder was renamed. Codex in
+    /// a renamed kit got only "없는 안내" and stopped.
+    /// </summary>
+    internal static string KitFolder(string exeFolder, string currentDirectory)
+    {
+        var beside = Path.Combine(exeFolder, "agent-kit");
+        if (Directory.Exists(beside)) return beside;
+        return File.Exists(Path.Combine(currentDirectory, "AGENTS.md")) && File.Exists(Path.Combine(currentDirectory, "tullius.cmd"))
+            ? currentDirectory
+            : beside;
+    }
+
+    internal static string MissingGuideText(string path)
+        => $"안내 파일이 없습니다: {path}\n키트 zip을 푼 agent-kit 폴더가 TulliusTranslator.exe 바로 옆에 있어야 합니다. 폴더 이름을 바꿨다면 agent-kit으로 되돌리세요.";
 
     private static string GuideUri(string name) => "tullius://guide/" + name;
 
@@ -462,9 +479,10 @@ internal static class AgentMcpServer
             {
                 var wanted = (Text("name") ?? "").Trim();
                 var guide = Guides.FirstOrDefault(g => g.Name.Equals(wanted, StringComparison.OrdinalIgnoreCase) || g.File.Equals(wanted, StringComparison.OrdinalIgnoreCase));
-                return guide.File != null && File.Exists(GuidePath(guide.File))
+                if (guide.File == null) return Content("없는 안내: " + wanted + " (rules, translate, review, lanes 중 하나)", isError: true);
+                return File.Exists(GuidePath(guide.File))
                     ? Content(await File.ReadAllTextAsync(GuidePath(guide.File)))
-                    : Content("없는 안내: " + wanted + " (rules, translate, review, lanes 중 하나)", isError: true);
+                    : Content(MissingGuideText(GuidePath(guide.File)), isError: true);
             }
             default:
                 return Content("없는 도구: " + name, isError: true);

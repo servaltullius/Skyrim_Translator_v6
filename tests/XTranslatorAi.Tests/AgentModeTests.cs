@@ -171,6 +171,39 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Empty(Directory.GetFiles(Path.Combine(_root, "work", ".mcp")));
     }
 
+    // Codex ran in a kit folder that was not named agent-kit, its shell failed, and the guide tool answered
+    // "없는 안내: translate" for a name that exists, so it stopped. The server now also reads the kit it is started in,
+    // and when there is none says where it looked.
+    [Fact]
+    public async Task McpServer_GuideReadsTheRenamedKitItRunsIn_AndSaysWhereItLookedOtherwise()
+    {
+        var exeFolder = Path.Combine(_root, "translator");
+        var kit = Path.Combine(exeFolder, "kit-codex");
+        Directory.CreateDirectory(kit);
+        var beside = Path.Combine(exeFolder, "agent-kit");
+        // Another project's AGENTS.md is not a kit: Antigravity starts the global server in whatever folder is open.
+        await File.WriteAllTextAsync(Path.Combine(kit, "AGENTS.md"), "rules");
+        Assert.Equal(beside, AgentMcpServer.KitFolder(exeFolder, kit));
+        await File.WriteAllTextAsync(Path.Combine(kit, "tullius.cmd"), "");
+        Assert.Equal(kit, AgentMcpServer.KitFolder(exeFolder, kit));
+        Directory.CreateDirectory(beside);
+        Assert.Equal(beside, AgentMcpServer.KitFolder(exeFolder, kit));
+
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") });
+        var call = JsonSerializer.Serialize(new
+        {
+            jsonrpc = "2.0", id = 1, method = "tools/call",
+            @params = new { name = "guide", arguments = new { name = "translate" } },
+        });
+        var output = new StringWriter();
+        Assert.Equal(0, await AgentMcpServer.ServeAsync(server, new StringReader(call), output));
+        var result = JsonDocument.Parse(output.ToString()).RootElement.GetProperty("result");
+        Assert.True(result.GetProperty("isError").GetBoolean());
+        var text = result.GetProperty("content")[0].GetProperty("text").GetString()!;
+        Assert.Contains(Path.Combine("agent-kit", "guide-translate.md"), text);
+        Assert.Contains("TulliusTranslator.exe 바로 옆", text);
+    }
+
     // Antigravity reads one global MCP config; pasting the mcp-config text into it was its one manual setup step.
     // The install keeps the other servers, copies a file with content aside, and leaves a file that is not JSON alone.
     [Fact]
