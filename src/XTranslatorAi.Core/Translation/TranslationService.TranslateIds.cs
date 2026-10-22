@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Models;
@@ -116,6 +117,10 @@ public sealed partial class TranslationService
         var placeholderMasker = new PlaceholderMasker(new PlaceholderMaskerOptions(KeepSkyrimTagsRaw: request.KeepSkyrimTagsRaw));
         var glossaryApplier = new GlossaryApplier(glossary);
         Ctx.Glossary = glossaryApplier;
+        var projectTerms = projectGlossary
+            .Where(e => e.Enabled && e.ForceMode == GlossaryForceMode.ForceToken && e.MatchMode != GlossaryMatchMode.Regex)
+            .ToList();
+        Ctx.ProjectTerms = projectTerms.Count == 0 ? null : new GlossaryApplier(projectTerms);
         Ctx.ReferenceNames = request.ReferenceNameMemory is { Count: > 0 } names ? ReferenceNameIndex.Build(names) : null;
         // The official item-name form is a Korean convention.
         Ctx.EnchantmentNames = request.ReferenceNameMemory is { Count: > 0 } memory && LanguageHelper.IsKoreanLanguage(request.TargetLang)

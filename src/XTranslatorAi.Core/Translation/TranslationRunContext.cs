@@ -48,6 +48,9 @@ internal sealed class TranslationRunContext : IDisposable
     // The run's glossary, so seeding leaves glossary terms (and their plurals) to it.
     public GlossaryApplier? Glossary { get; set; }
 
+    // The project's own forced terms: a game or TM translation that spells one of them otherwise goes to the model.
+    public GlossaryApplier? ProjectTerms { get; set; }
+
     // Sentences that recur across description rows, translated once before the run (TranslationService.SentenceMemory).
     public System.Collections.Concurrent.ConcurrentDictionary<string, string> RepeatedSentences { get; } = new(StringComparer.Ordinal);
     public RunNameMemory? RunNames { get; set; }

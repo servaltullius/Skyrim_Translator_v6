@@ -389,6 +389,35 @@ internal static class AgentMcpServer
             },
         };
 
+    /// <summary>
+    /// An array argument, also when a model wrote it as a JSON string ("[{\"source\": ..}]"): read as no array, a
+    /// terms call fell through to listing the glossary and looked saved.
+    /// </summary>
+    internal static JsonArray? AsArray(JsonNode? node)
+    {
+        if (node is JsonArray array) return array;
+        if (node is not JsonValue value || !value.TryGetValue<string>(out var text) || !text.TrimStart().StartsWith('[')) return null;
+        try
+        {
+            return JsonNode.Parse(text) as JsonArray;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>The words of a word list; a number is its digits and {"source": ..} its source, where GetValue threw.</summary>
+    internal static IEnumerable<string> Words(JsonArray? list)
+        => (list ?? new JsonArray()).Select(item => item switch
+            {
+                JsonValue v when v.TryGetValue<string>(out var s) => s,
+                JsonValue v => v.ToJsonString(),
+                JsonObject o when o["source"] is JsonValue s && s.TryGetValue<string>(out var source) => source,
+                _ => null,
+            })
+            .OfType<string>().Where(word => word.Trim().Length > 0);
+
     private static async Task<JsonObject> CallAsync(AgentCommand server, JsonObject? parameters)
     {
         var name = parameters?["name"]?.GetValue<string>() ?? "";
@@ -421,7 +450,7 @@ internal static class AgentMcpServer
             }
             case "lookup":
             {
-                var words = arguments["words"] is JsonArray list ? list.Select(w => w?.GetValue<string>()).OfType<string>().ToList() : new List<string>();
+                var words = Words(AsArray(arguments["words"])).ToList();
                 if (Text("word") is { } single) words.Add(single);
                 var parts = new List<string>();
                 failed = words.Count == 0;
@@ -489,46 +518,26 @@ internal static class AgentMcpServer
                 break;
             case "terms":
             {
-                if (arguments["remove"] is JsonArray remove && remove.Count > 0)
+                // One file for both, so a waiting request is made again once: {"source": .., "remove": true} removes.
+                var items = new JsonArray();
+                foreach (var word in Words(AsArray(arguments["remove"]))) items.Add(new JsonObject { ["source"] = word, ["remove"] = true });
+                foreach (var term in AsArray(arguments["terms"]) ?? new JsonArray()) items.Add(term?.DeepClone());
+                if (items.Count == 0)
                 {
-                    var parts = new List<string>();
-                    failed = false;
-                    foreach (var word in remove.Select(w => w?.GetValue<string>()).OfType<string>())
+                    if (arguments["terms"] != null || arguments["remove"] != null)
                     {
-                        var (text, code) = await RunAsync(server, new List<string> { "terms", project ?? "", word, "--clear" });
-                        parts.Add(text.TrimEnd());
-                        failed |= code != 0;
+                        return Content("terms는 [{\"source\": \"영어\", \"target\": \"한국어\"}] 배열로, remove는 영어 용어 배열로 주세요. 아무것도 저장하지 않았습니다.", isError: true);
                     }
 
-                    if (arguments["terms"] is not JsonArray { Count: > 0 }) return Content(string.Join("\n", parts), failed);
-                    var (added, addedCode) = await RunTermsFileAsync();
-                    return Content(string.Join("\n", parts.Append(added.TrimEnd())), failed || addedCode != 0);
+                    args.AddRange(new[] { "terms", project ?? "" });
+                    Option("--find", Text("find"));
+                    break;
                 }
 
-                if (arguments["terms"] is JsonArray { Count: > 0 })
-                {
-                    var (added, addedCode) = await RunTermsFileAsync();
-                    return Content(added, addedCode != 0);
-                }
-
-                args.AddRange(new[] { "terms", project ?? "" });
-                Option("--find", Text("find"));
+                var file = temp = TempFile(server, "terms.json");
+                await File.WriteAllTextAsync(file, items.ToJsonString(), new UTF8Encoding(false));
+                args.AddRange(new[] { "terms", project ?? "", file });
                 break;
-
-                async Task<(string Text, int Code)> RunTermsFileAsync()
-                {
-                    var file = TempFile(server, "terms.json");
-                    await File.WriteAllTextAsync(file, arguments["terms"]!.ToJsonString(), new UTF8Encoding(false));
-                    try
-                    {
-                        return await RunAsync(server, new List<string> { "terms", project ?? "", file });
-                    }
-                    finally
-                    {
-                        try { File.Delete(file); }
-                        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
-                    }
-                }
             }
             case "show":
                 args.AddRange(new[] { "show", project ?? "" });

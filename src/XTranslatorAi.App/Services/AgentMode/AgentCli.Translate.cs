@@ -33,6 +33,15 @@ public static partial class AgentCli
         Console.WriteLine($"용어집: 이 프로젝트 {glossary.Count}개"
                           + (glossary.Inherited > 0 ? $" (같은 모드의 다른 프로젝트 {string.Join(", ", glossary.From.Take(3))}에서 {glossary.Inherited}개를 가져옴)" : "")
                           + (glossary.Count > 0 ? ". 요청이 이 용어를 따르고, lookup으로 찾을 수 있다." : ""));
+        // Agent mode uses a saved context whatever the GUI's box says: one generated in the GUI long ago is named here.
+        await using (var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, c.Ct))
+        {
+            if ((await db.TryGetProjectContextAsync(c.Ct))?.ContextText.Trim() is { Length: > 0 } context)
+            {
+                Console.WriteLine($"프로젝트 문맥: 있음({context.Length}자). 모든 요청의 지시에 들어간다. 내용은 context {project.Key}로 보고, 맞지 않으면 사용자에게 묻고 바꾸거나 지운다.");
+            }
+        }
+
         Console.WriteLine($"다음: tullius.cmd next {project.Key}");
     }
 

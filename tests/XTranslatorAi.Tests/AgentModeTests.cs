@@ -700,7 +700,7 @@ public sealed class AgentModeTests : IAsyncLifetime
         {
             await db.UpsertProjectContextAsync("이 모드는 ESO 시대 배경이다.", CancellationToken.None);
             var saved = await AgentCli.SaveTermsAsync(db, AgentCli.ParseTerms("""[{"source": "Dominion", "target": "알드메리 자치령", "hint": true}]"""), CancellationToken.None);
-            Assert.Equal(new[] { "추가: Dominion → 알드메리 자치령" }, saved);
+            Assert.Equal(new[] { "추가: Dominion → 알드메리 자치령 (참고만)" }, saved.Lines);
         }
 
         var request = (await session.NextAsync(_project, CancellationToken.None)).Next!;
@@ -710,22 +710,48 @@ public sealed class AgentModeTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task Terms_AreAddedAsTheGuiAddsThem_AndAChangedOneSaysWhatItHad()
+    public async Task Terms_AreOneEntryPerSource_AsTheGuiAddsThem_AndAChangeSaysWhatItHad()
     {
         Assert.Throws<AgentModeException>(() => AgentCli.ParseTerms("""[{"source": "Fury", "target": " "}]"""));
         Assert.Throws<AgentModeException>(() => AgentCli.ParseTerms("[]"));
         Assert.Throws<AgentModeException>(() => AgentCli.ParseTerms("{not json"));
+        Assert.Single(AgentCli.ParseTerms("""[{"source": "Fury", "remove": true}]"""));
         await using var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None);
 
-        await AgentCli.SaveTermsAsync(db, AgentCli.ParseTerms("""[{"source": "Fury", "target": "격노"}, {"source": "Frenzy", "target": "광분", "hint": true}]"""), CancellationToken.None);
-        var lines = await AgentCli.SaveTermsAsync(db, AgentCli.ParseTerms("""[{"Source": "fury", "Target": "분노"}, {"source": "Frenzy", "target": "광분", "hint": true}]"""), CancellationToken.None);
+        await AgentCli.SaveTermsAsync(db, AgentCli.ParseTerms("""[{"source": "Fury", "target": "격노"}, {"source": "Frenzy", "target": "광기", "hint": true}, {"source": "Calm", "target": "진정"}]"""), CancellationToken.None);
+        var (lines, changed) = await AgentCli.SaveTermsAsync(db, AgentCli.ParseTerms(
+            """[{"Source": "fury", "Target": "분노"}, {"source": "Frenzy", "target": "광분", "hint": true}, {"source": "Calm", "target": "진정"}, {"source": "Calm", "target": "진정", "hint": true}, {"source": "Nothing", "remove": true}]"""),
+            CancellationToken.None);
 
-        Assert.Equal(new[] { "바꿈: fury → 분노 (이전: 격노)", "그대로: Frenzy → 광분" }, lines);
+        // A hint beside a hint was added next to the old one, which every request kept sending.
+        Assert.True(changed);
+        Assert.Equal(new[]
+        {
+            "바꿈: fury → 분노 (강제; 이전: 격노, 강제)", "바꿈: Frenzy → 광분 (참고만; 이전: 광기, 참고만)", "그대로: Calm → 진정",
+            "바꿈: Calm → 진정 (참고만; 이전: 강제)", "없음: Nothing (지울 것이 없습니다)",
+        }, lines);
         var glossary = await db.GetGlossaryAsync(CancellationToken.None);
         var fury = Assert.Single(glossary, e => e.SourceTerm.Equals("fury", StringComparison.OrdinalIgnoreCase));
         Assert.Equal(("분노", XTranslatorAi.Core.Text.GlossaryForceMode.ForceToken, XTranslatorAi.Core.Text.GlossaryMatchMode.WordBoundary, 10),
             (fury.TargetTerm, fury.ForceMode, fury.MatchMode, fury.Priority));
-        Assert.Equal(XTranslatorAi.Core.Text.GlossaryForceMode.PromptOnly, Assert.Single(glossary, e => e.SourceTerm == "Frenzy").ForceMode);
+        Assert.Equal("광분", Assert.Single(glossary, e => e.SourceTerm == "Frenzy").TargetTerm);
+        Assert.Equal(XTranslatorAi.Core.Text.GlossaryForceMode.PromptOnly, Assert.Single(glossary, e => e.SourceTerm == "Calm").ForceMode);
+
+        var again = await AgentCli.SaveTermsAsync(db, AgentCli.ParseTerms("""[{"source": "Calm", "target": "진정", "hint": true}]"""), CancellationToken.None);
+        Assert.False(again.Changed);
+        var removed = await AgentCli.SaveTermsAsync(db, AgentCli.ParseTerms("""[{"source": "FURY", "remove": true}]"""), CancellationToken.None);
+        Assert.Equal(new[] { "지움: fury → 분노" }, removed.Lines);
+    }
+
+    // A model wrote the terms as a JSON string, read as no array: the call listed the glossary and looked saved.
+    [Fact]
+    public void McpArrays_WrittenAsJsonStrings_AreReadAsArrays()
+    {
+        var terms = AgentMcpServer.AsArray(System.Text.Json.Nodes.JsonValue.Create("""[{"source": "Fury", "target": "분노"}]"""));
+        Assert.Equal("Fury", terms![0]!["source"]!.GetValue<string>());
+        Assert.Null(AgentMcpServer.AsArray(System.Text.Json.Nodes.JsonValue.Create("Fury")));
+        var words = System.Text.Json.Nodes.JsonNode.Parse("""["Fury", 42, {"source": "Mages Guild"}, " "]""")!.AsArray();
+        Assert.Equal(new[] { "Fury", "42", "Mages Guild" }, AgentMcpServer.Words(words));
     }
 
     [Fact]
