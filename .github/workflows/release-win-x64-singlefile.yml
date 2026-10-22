@@ -58,6 +58,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Could not resolve release tag." }
           if ($headCommit -ne $tagCommit) { throw "Checkout does not match the release tag." }
           Write-Host "Building release commit: $headCommit"
+          # A release made before its version commit was pushed tags the previous commit, and its zip shipped the
+          # previous version's EXE and kit under the new name. A Korean patch tag given by hand stops here too.
+          $version = (Select-Xml -Path 'src/XTranslatorAi.App/XTranslatorAi.App.csproj' -XPath '//Version').Node.InnerText | Select-Object -First 1
+          if ($version -ne $env:RELEASE_TAG) { throw "Release tag $env:RELEASE_TAG does not match the app version $version in XTranslatorAi.App.csproj." }
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5

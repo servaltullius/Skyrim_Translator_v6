@@ -103,6 +103,28 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Equal("전체 2건", fixture.Vm.LqaTab.LqaVisibleSummary);
         });
 
+    // The button reads "확인함 표시 해제" on a marked current result; with an unmarked one picked beside it, the
+    // command decided by the whole selection and marked both.
+    [Fact]
+    public Task TheReviewedButton_DoesWhatItSaysForTheCurrentResult()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            var rows = await LoadTranslatedRowsAsync(fixture, ("Iron Sword", "Iron 검"), ("Iron Axe", "Iron 도끼"));
+            fixture.Vm.SelectedEntry = null;
+            await fixture.Vm.ScanLqaCommand.ExecuteAsync(null);
+            fixture.Vm.LqaTab.LqaHideReviewed = false;
+            fixture.Vm.SelectedLqaIssue = Residue(fixture, rows[0].Id);
+            await fixture.Vm.LqaTab.ToggleLqaReviewedCommand.ExecuteAsync(null);
+            Assert.True(Residue(fixture, rows[0].Id).IsReviewed);
+
+            fixture.Vm.SelectedLqaIssue = Residue(fixture, rows[0].Id);
+            await fixture.Vm.LqaTab.ToggleLqaReviewedCommand.ExecuteAsync(new System.Collections.ArrayList { Residue(fixture, rows[0].Id), Residue(fixture, rows[1].Id) });
+
+            Assert.All(fixture.Vm.LqaIssues, i => Assert.False(i.IsReviewed));
+            Assert.Empty(await fixture.State.Db!.GetLqaReviewedMarksAsync(CancellationToken.None));
+        });
+
     [Fact]
     public Task TheReviewedButton_IsOffWithoutAProject()
         => RunOnSta(async () =>

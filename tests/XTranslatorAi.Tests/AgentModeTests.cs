@@ -743,6 +743,25 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Equal(new[] { "지움: fury → 분노" }, removed.Lines);
     }
 
+    // Arguments in another shape than the schema's did something else: review's "undo": "true" marked the lines,
+    // an answer sent as an object was submitted empty, "ids" as a list showed every line, and a null term crashed.
+    [Fact]
+    public void McpArguments_InAnotherShape_MeanWhatTheModelMeant()
+    {
+        static System.Text.Json.Nodes.JsonNode? Node(string json) => System.Text.Json.Nodes.JsonNode.Parse(json);
+
+        Assert.True(AgentMcpServer.ArgumentFlag(Node("\"true\"")));
+        Assert.True(AgentMcpServer.ArgumentFlag(Node("1")));
+        Assert.True(AgentMcpServer.ArgumentFlag(Node("true")));
+        Assert.False(AgentMcpServer.ArgumentFlag(Node("\"false\"")));
+        Assert.False(AgentMcpServer.ArgumentFlag(null));
+        Assert.Equal("12,40", AgentMcpServer.ArgumentText(Node("[12, 40]")));
+        Assert.Equal("40", AgentMcpServer.ArgumentText(Node("40")));
+        Assert.Equal("""{"translations":[{"id":1,"text":"검"}]}""", AgentMcpServer.ArgumentText(Node("""{"translations":[{"id":1,"text":"검"}]}""")));
+        Assert.Null(AgentMcpServer.ArgumentText(null));
+        Assert.Throws<AgentModeException>(() => AgentCli.ParseTerms("""[{"source": "Fury", "target": "분노"}, null]"""));
+    }
+
     // A model wrote the terms as a JSON string, read as no array: the call listed the glossary and looked saved.
     [Fact]
     public void McpArrays_WrittenAsJsonStrings_AreReadAsArrays()

@@ -407,6 +407,26 @@ internal static class AgentMcpServer
         }
     }
 
+    /// <summary>
+    /// A string argument as the model sent it: a number as its digits, a list of values ("ids": [12, 40]) joined with
+    /// commas, an object or other list (an answer sent as {"translations": [..]}) as its JSON. Read as strings only,
+    /// such an answer was submitted empty and refused, and "ids" as a list showed every line.
+    /// </summary>
+    internal static string? ArgumentText(JsonNode? node) => node switch
+    {
+        JsonValue v when v.TryGetValue<string>(out var s) => s,
+        JsonValue v => v.ToJsonString(),
+        JsonArray list when list.All(item => item is JsonValue) => string.Join(",", list.Select(item => ArgumentText(item))),
+        null => null,
+        _ => node.ToJsonString(new System.Text.Json.JsonSerializerOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping }),
+    };
+
+    /// <summary>A switch, also when sent as "true" or 1: as false, review's "undo": "true" marked the lines instead.</summary>
+    internal static bool ArgumentFlag(JsonNode? node) => node is JsonValue v
+        && (v.TryGetValue<bool>(out var b) ? b
+            : v.TryGetValue<string>(out var s) ? s.Trim() is "true" or "True" or "1" or "yes"
+            : v.TryGetValue<int>(out var n) && n != 0);
+
     /// <summary>The words of a word list; a number is its digits and {"source": ..} its source, where GetValue threw.</summary>
     internal static IEnumerable<string> Words(JsonArray? list)
         => (list ?? new JsonArray()).Select(item => item switch
@@ -422,9 +442,8 @@ internal static class AgentMcpServer
     {
         var name = parameters?["name"]?.GetValue<string>() ?? "";
         var arguments = parameters?["arguments"] as JsonObject ?? new JsonObject();
-        string? Text(string key) => arguments[key] is JsonValue v && v.TryGetValue<string>(out var s) ? s
-            : arguments[key] is JsonValue n ? n.ToJsonString() : null;
-        bool Flag(string key) => arguments[key] is JsonValue v && v.TryGetValue<bool>(out var b) && b;
+        string? Text(string key) => ArgumentText(arguments[key]);
+        bool Flag(string key) => ArgumentFlag(arguments[key]);
 
         var project = Text("project");
         var lane = Text("lane");
@@ -473,7 +492,7 @@ internal static class AgentMcpServer
             case "edit":
             {
                 var file = temp = TempFile(server, "edit.json");
-                await File.WriteAllTextAsync(file, (arguments["edits"] ?? new JsonArray()).ToJsonString(), new UTF8Encoding(false));
+                await File.WriteAllTextAsync(file, (AsArray(arguments["edits"]) ?? arguments["edits"] ?? new JsonArray()).ToJsonString(), new UTF8Encoding(false));
                 args.AddRange(new[] { "edit", project ?? "", file });
                 break;
             }
@@ -524,7 +543,8 @@ internal static class AgentMcpServer
                 foreach (var term in AsArray(arguments["terms"]) ?? new JsonArray()) items.Add(term?.DeepClone());
                 if (items.Count == 0)
                 {
-                    if (arguments["terms"] != null || arguments["remove"] != null)
+                    // Empty lists ask for nothing to change: the list is shown. Anything else was not understood.
+                    if (arguments["terms"] is { } given && AsArray(given) == null || arguments["remove"] is { } removing && AsArray(removing) == null)
                     {
                         return Content("terms는 [{\"source\": \"영어\", \"target\": \"한국어\"}] 배열로, remove는 영어 용어 배열로 주세요. 아무것도 저장하지 않았습니다.", isError: true);
                     }
@@ -596,14 +616,17 @@ internal static class AgentMcpServer
 
         failed = exit != 0;
 
-        // next and submit end with the next request: its text comes with the result, so no file needs reading.
-        if (name is "next" or "submit" && !failed && output.Contains("다음 요청:", StringComparison.Ordinal))
+        // next and submit end with the next request: its text comes with the result, so no file needs reading. style,
+        // context and terms make a waiting request again; without its text an agent answered from the one it had.
+        var remade = name is "style" or "context" or "terms" && output.Contains("대기 중이던 요청을", StringComparison.Ordinal);
+        if (!failed && (name is "next" or "submit" && output.Contains("다음 요청:", StringComparison.Ordinal) || remade))
         {
             var session = AgentCommand.Parse(ServerOptions(server)).Session;
             var found = session.Find(project ?? "") with { Lane = AgentLane.Parse(lane) };
             if (File.Exists(session.RequestPath(found)))
             {
-                output = output.TrimEnd() + "\n\n----- 다음 요청 -----\n\n" + await File.ReadAllTextAsync(session.RequestPath(found));
+                output = output.TrimEnd() + (remade ? "\n\n----- 다시 만든 요청 -----\n\n" : "\n\n----- 다음 요청 -----\n\n")
+                         + await File.ReadAllTextAsync(session.RequestPath(found));
             }
         }
 

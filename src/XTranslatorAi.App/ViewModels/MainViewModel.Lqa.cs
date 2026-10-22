@@ -104,6 +104,8 @@ public partial class MainViewModel
         LqaIssues.Clear();
         LqaIssuesView.Refresh();
         _lqaReviewedMarks = new Dictionary<(long StringId, string Code), string>();
+        // The earlier project's TM name index checked the new project's rows until its first full scan.
+        _lqaReferenceNames = null;
         ClearLqaCommand.NotifyCanExecuteChanged();
         ClearCompareOutputs();
         LastCostEstimateSummary = "";

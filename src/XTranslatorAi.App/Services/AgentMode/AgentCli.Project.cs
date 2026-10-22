@@ -135,11 +135,12 @@ public static partial class AgentCli
         }
 
         var list = terms ?? new();
-        var blank = list.Where(t => string.IsNullOrWhiteSpace(t.Source) || !t.Remove && string.IsNullOrWhiteSpace(t.Target)).ToList();
+        // A null item ([{..}, null]) is a blank one, not a crash.
+        var blank = list.Where(t => t is null || string.IsNullOrWhiteSpace(t.Source) || !t.Remove && string.IsNullOrWhiteSpace(t.Target)).ToList();
         if (list.Count == 0 || blank.Count > 0)
         {
             throw new AgentModeException("source와 target이 다 있는 용어만 쓰세요([{\"source\": \"영어\", \"target\": \"한국어\"}], 지울 것은 {\"source\": \"영어\", \"remove\": true}). 아무것도 저장하지 않았습니다."
-                                         + (blank.Count > 0 ? $" 빈 항목: {string.Join(", ", blank.Select(t => t.Source ?? t.Target ?? "(빈 항목)"))}" : ""));
+                                         + (blank.Count > 0 ? $" 빈 항목: {string.Join(", ", blank.Select(t => t?.Source ?? t?.Target ?? "(빈 항목)"))}" : ""));
         }
 
         return list;

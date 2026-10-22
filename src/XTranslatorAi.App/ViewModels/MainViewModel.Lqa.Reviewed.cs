@@ -17,8 +17,9 @@ public partial class MainViewModel
     /// <summary>
     /// Marks the selected results "확인함" or takes the mark off. A result left as it is on purpose (Serana speaking
     /// politely to her father, a mod name kept in English) came back on every scan, among the ones still to fix.
-    /// The mark holds the row's translation; when the translation changes the result is shown again. Results that
-    /// are all marked are unmarked; otherwise all are marked.
+    /// The mark holds the row's translation; when the translation changes the result is shown again. The current
+    /// result decides, as the button's text does: marked, the picked results are unmarked; otherwise all are marked.
+    /// Without a current one among them, results that are all marked are unmarked.
     /// </summary>
     [RelayCommand(CanExecute = nameof(CanToggleLqaReviewed))]
     private async Task ToggleLqaReviewedAsync(IList? selectedIssues)
@@ -47,7 +48,11 @@ public partial class MainViewModel
             return;
         }
 
-        var mark = !issues.All(issue => issue.IsReviewed);
+        // The button says what the current result calls for ("확인함 표시 해제" on a marked one), and that is what
+        // happens to every picked result: decided by the whole selection, a marked current result among unmarked ones
+        // read "해제" and marked them all.
+        var current = SelectedLqaIssue is { } selectedIssue && issues.Contains(selectedIssue) ? selectedIssue : null;
+        var mark = current != null ? !current.IsReviewed : !issues.All(issue => issue.IsReviewed);
         var results = issues
             .Select(issue => (issue.Id, issue.Code, Dest: _projectState.TryGetById(issue.Id, out var entry) ? entry.DestText ?? "" : null))
             .Where(result => result.Dest != null)
