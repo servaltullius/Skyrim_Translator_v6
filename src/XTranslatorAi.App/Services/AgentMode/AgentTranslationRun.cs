@@ -58,9 +58,11 @@ public static class AgentTranslationRun
             if (page.Count < 1000) break;
         }
 
-        var context = settings.EnableProjectContext ? (await db.TryGetProjectContextAsync(cancellationToken))?.ContextText : null;
+        // The agent saves the project's context itself (context): a saved one is used whatever the GUI's
+        // "생성한 프로젝트 문맥 사용" box says, and context --clear is how it stops.
+        var context = (await db.TryGetProjectContextAsync(cancellationToken))?.ContextText;
         var systemPrompt = new SystemPromptBuilder().Build(EmbeddedAssets.LoadMetaPrompt(BethesdaFranchise.ElderScrolls),
-            settings.UseCustomPrompt, settings.CustomPromptText, settings.EnableProjectContext, context);
+            settings.UseCustomPrompt, settings.CustomPromptText, !string.IsNullOrWhiteSpace(context), context);
         using var stop = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         var client = new AgentRelayClient(answer, stop);
         var host = new QuietHost();

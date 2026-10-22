@@ -65,6 +65,30 @@ internal static class AgentMcpServer
                 ["to"] = Str("상대(생략하면 플레이어; other, *, 이름, FormID)"), ["note"] = Str("메모(1인칭·호칭 등)"), ["clear"] = Bool("정한 말투를 지운다"),
             },
             new[] { "project" }),
+        new("context", "프로젝트 문맥(모드 배경·시대·인물 관계·말투) 보기·저장. 모든 요청의 지시에 들어간다. text·clear 없이 부르면 지금 문맥을 보여 준다.",
+            new JsonObject { ["project"] = Project(), ["text"] = Str("저장할 문맥 전체(앞 문맥을 바꾼다)"), ["clear"] = Bool("문맥을 지운다") },
+            new[] { "project" }),
+        new("terms", "프로젝트 용어집 보기·추가·지우기. 넣은 용어는 한글패치 표기보다 먼저 쓰인다. terms·remove 없이 부르면 목록을 보여 준다.",
+            new JsonObject
+            {
+                ["project"] = Project(), ["find"] = Str("목록에서 이 글자가 든 용어만"),
+                ["terms"] = new JsonObject
+                {
+                    ["type"] = "array", ["description"] = "추가하거나 바꿀 용어들",
+                    ["items"] = new JsonObject
+                    {
+                        ["type"] = "object",
+                        ["properties"] = new JsonObject
+                        {
+                            ["source"] = Str("영어"), ["target"] = Str("한국어"), ["note"] = Str("메모"),
+                            ["hint"] = Bool("강제하지 않고 참고로만 보낸다(뜻이 여럿인 낱말)"),
+                        },
+                        ["required"] = new JsonArray("source", "target"),
+                    },
+                },
+                ["remove"] = StrArray("지울 영어 용어들"),
+            },
+            new[] { "project" }),
         new("show", "줄 보기(#id, 화자, 영어, 번역).",
             new JsonObject
             {
@@ -449,6 +473,63 @@ internal static class AgentMcpServer
                 Option("--note", Text("note"));
                 if (Flag("clear")) args.Add("--clear");
                 break;
+            case "context":
+                args.AddRange(new[] { "context", project ?? "" });
+                if (Flag("clear"))
+                {
+                    args.Add("--clear");
+                }
+                else if (Text("text") is { Length: > 0 } context)
+                {
+                    var file = temp = TempFile(server, "context.txt");
+                    await File.WriteAllTextAsync(file, context, new UTF8Encoding(false));
+                    args.Add(file);
+                }
+
+                break;
+            case "terms":
+            {
+                if (arguments["remove"] is JsonArray remove && remove.Count > 0)
+                {
+                    var parts = new List<string>();
+                    failed = false;
+                    foreach (var word in remove.Select(w => w?.GetValue<string>()).OfType<string>())
+                    {
+                        var (text, code) = await RunAsync(server, new List<string> { "terms", project ?? "", word, "--clear" });
+                        parts.Add(text.TrimEnd());
+                        failed |= code != 0;
+                    }
+
+                    if (arguments["terms"] is not JsonArray { Count: > 0 }) return Content(string.Join("\n", parts), failed);
+                    var (added, addedCode) = await RunTermsFileAsync();
+                    return Content(string.Join("\n", parts.Append(added.TrimEnd())), failed || addedCode != 0);
+                }
+
+                if (arguments["terms"] is JsonArray { Count: > 0 })
+                {
+                    var (added, addedCode) = await RunTermsFileAsync();
+                    return Content(added, addedCode != 0);
+                }
+
+                args.AddRange(new[] { "terms", project ?? "" });
+                Option("--find", Text("find"));
+                break;
+
+                async Task<(string Text, int Code)> RunTermsFileAsync()
+                {
+                    var file = TempFile(server, "terms.json");
+                    await File.WriteAllTextAsync(file, arguments["terms"]!.ToJsonString(), new UTF8Encoding(false));
+                    try
+                    {
+                        return await RunAsync(server, new List<string> { "terms", project ?? "", file });
+                    }
+                    finally
+                    {
+                        try { File.Delete(file); }
+                        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
+                    }
+                }
+            }
             case "show":
                 args.AddRange(new[] { "show", project ?? "" });
                 Option("--find", Text("find"));

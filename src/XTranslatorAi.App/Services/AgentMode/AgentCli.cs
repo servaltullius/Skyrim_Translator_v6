@@ -88,6 +88,8 @@ public static partial class AgentCli
                 case "names": await NamesAsync(c); break;
                 case "voice": await VoiceAsync(c); break;
                 case "style": await StyleAsync(c); break;
+                case "context": await ContextAsync(c); break;
+                case "terms": await TermsAsync(c); break;
                 case "korean": await KoreanAsync(c); break;
                 case "version": Console.WriteLine(Version()); break;
                 case "mcp": await AgentMcpServer.RunAsync(c); break;
@@ -155,6 +157,8 @@ public static partial class AgentCli
           tullius.cmd names <프로젝트>                                               새로 정한 이름(용어집·TM·게임 사전·한국어판에 없던 이름 줄, 끝 보고용)
           tullius.cmd voice <프로젝트> <이름|FormID>                                 바닐라 인물이 한글패치에서 하는 말(말투 참고, 앱이 켜져 있어도 됨)
           tullius.cmd style <프로젝트> [<화자> <말투> [--to <상대>] [--note <메모>] [--clear]]  화자별로 정한 말투 보기·정하기(요청과 품질검사가 따름)
+          tullius.cmd context <프로젝트> [<문맥 파일> | --clear]                     프로젝트 문맥(모드 배경·인물 관계·말투) 보기·저장·지우기(모든 요청의 지시에 들어감)
+          tullius.cmd terms <프로젝트> [--find 낱말 | <용어.json> | <영어> --clear]   프로젝트 용어집 보기·추가([{"source": "영어", "target": "한국어"}], 한글패치 표기보다 먼저)·지우기
           tullius.cmd edit <프로젝트> <수정.json>                                    줄 고치기([{"id": 번호, "text": "새 번역"}])
           tullius.cmd export <프로젝트> [출력 폴더]                                  번역된 플러그인 저장(이미 있으면 output\<키>-2처럼 새 폴더)
           tullius.cmd version                                                        번역기 버전

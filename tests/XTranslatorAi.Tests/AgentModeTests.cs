@@ -689,6 +689,45 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Contains("앞 요청과 같음", await File.ReadAllTextAsync(report.NextRequestPath!));
     }
 
+    // A mod set in ESO's time needs its setting and names before the first request, and both lived only in the GUI,
+    // whose "생성한 프로젝트 문맥 사용" box also decided whether agent mode read the context at all.
+    [Fact]
+    public async Task ContextAndTermsTheAgentSaved_AreInTheRequest_WhateverTheGuiBoxSays()
+    {
+        var session = new AgentSession(Path.Combine(_root, "work"), _global, gameStrings: null, new AppSettings(EnableProjectContext: false),
+            projectsRootOverride: Path.Combine(_root, "projects"));
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            await db.UpsertProjectContextAsync("이 모드는 ESO 시대 배경이다.", CancellationToken.None);
+            var saved = await AgentCli.SaveTermsAsync(db, AgentCli.ParseTerms("""[{"source": "Dominion", "target": "알드메리 자치령", "hint": true}]"""), CancellationToken.None);
+            Assert.Equal(new[] { "추가: Dominion → 알드메리 자치령" }, saved);
+        }
+
+        var request = (await session.NextAsync(_project, CancellationToken.None)).Next!;
+
+        Assert.Contains("이 모드는 ESO 시대 배경이다.", request.SystemInstruction);
+        Assert.Contains("알드메리 자치령", string.Join("\n", request.Messages.Select(m => m.Text)));
+    }
+
+    [Fact]
+    public async Task Terms_AreAddedAsTheGuiAddsThem_AndAChangedOneSaysWhatItHad()
+    {
+        Assert.Throws<AgentModeException>(() => AgentCli.ParseTerms("""[{"source": "Fury", "target": " "}]"""));
+        Assert.Throws<AgentModeException>(() => AgentCli.ParseTerms("[]"));
+        Assert.Throws<AgentModeException>(() => AgentCli.ParseTerms("{not json"));
+        await using var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None);
+
+        await AgentCli.SaveTermsAsync(db, AgentCli.ParseTerms("""[{"source": "Fury", "target": "격노"}, {"source": "Frenzy", "target": "광분", "hint": true}]"""), CancellationToken.None);
+        var lines = await AgentCli.SaveTermsAsync(db, AgentCli.ParseTerms("""[{"Source": "fury", "Target": "분노"}, {"source": "Frenzy", "target": "광분", "hint": true}]"""), CancellationToken.None);
+
+        Assert.Equal(new[] { "바꿈: fury → 분노 (이전: 격노)", "그대로: Frenzy → 광분" }, lines);
+        var glossary = await db.GetGlossaryAsync(CancellationToken.None);
+        var fury = Assert.Single(glossary, e => e.SourceTerm.Equals("fury", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(("분노", XTranslatorAi.Core.Text.GlossaryForceMode.ForceToken, XTranslatorAi.Core.Text.GlossaryMatchMode.WordBoundary, 10),
+            (fury.TargetTerm, fury.ForceMode, fury.MatchMode, fury.Priority));
+        Assert.Equal(XTranslatorAi.Core.Text.GlossaryForceMode.PromptOnly, Assert.Single(glossary, e => e.SourceTerm == "Frenzy").ForceMode);
+    }
+
     [Fact]
     public void StyleSharedByLines_IsWrittenOnceAsASection_AndTheLinesNameIt()
     {
