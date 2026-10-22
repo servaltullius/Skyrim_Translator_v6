@@ -238,6 +238,8 @@ public static class LqaScanner
 
         BracketMismatchRule.Apply(entry, sourceText, destText, issues);
 
+        CutOffRule.Apply(entry, sourceText, destText, issues);
+
         EnglishResidueRule.Apply(entry, sourceText, destText, isKorean, glossaryLatinWords, issues);
 
         ForeignScriptResidueRule.Apply(entry, sourceText, destText, isKorean, issues);

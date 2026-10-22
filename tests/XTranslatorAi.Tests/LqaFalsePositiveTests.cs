@@ -679,6 +679,21 @@ public class LqaFalsePositiveTests
         Assert.Equal(expected, issues.Any(i => i.Code == "bracket_mismatch"));
     }
 
+    // An agent's script cut answers after a separator; the run's checks passed them.
+    [Theory]
+    [InlineData("Atronach Forge Recipe - Staff of the Cold Flames", "아트로나크 대장간 제조법 -", true)]
+    [InlineData("Spell Tome: Cold Flames", "마법책:", true)]
+    [InlineData("Ingredients:", "재료:", false)]
+    [InlineData("I was going to—", "나는 막—", false)]
+    [InlineData("Staff of the Cold Flames", "지팡이 - 차가운 불길", false)]
+    [InlineData("Cold Flames", "차가운 불길 ", false)]
+    public async Task CutOff_IsATranslationEndingAtASeparatorItsEnglishDoesNot(string source, string dest, bool expected)
+    {
+        var issues = await LqaScanner.ScanAsync(new List<LqaScanEntry> { Row(1, "BOOK:FULL", dest, source) }, "ko", new List<GlossaryEntry>());
+
+        Assert.Equal(expected, issues.Any(i => i.Code == "cut_off"));
+    }
+
     private static LqaScanEntry Row(long id, string rec, string dest, string source = "Source text.")
         => new(id, (int)id, $"EDID{id:000}", rec, StringEntryStatus.Done, source, dest);
 

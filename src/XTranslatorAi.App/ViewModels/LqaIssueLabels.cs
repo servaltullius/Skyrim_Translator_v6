@@ -34,6 +34,7 @@ public static class LqaIssueLabels
         ["percent_artifact"] = "퍼센트 표기",
         ["legacy_postedit_damage"] = "이전 교정 손상",
         ["bracket_mismatch"] = "괄호 짝 불일치",
+        ["cut_off"] = "번역 끝 잘림",
         ["english_residue"] = "영문 남음",
         ["foreign_script_residue"] = "한자·가나 남음",
         ["hidden_topic_translated"] = "숨은 토픽 번역됨",
