@@ -516,6 +516,10 @@ cd1e384부터 a4a3877까지의 수정 커밋 9개를 리뷰했다. 중간 4건�
 - 시험에서 찾은 것
   - Codex 첫 실행은 시작하지 못했다. 셸 실행이 Codex 샌드박스 오류(`helper_unknown_error: setup refresh had errors`)로 실패했고, 시험 폴더 이름을 `kit-codex`로 지어 `guide` 도구도 안내를 못 찾았다(번역기는 EXE 옆 `agent-kit`에서 찾는다). 폴더 이름을 `agent-kit`으로 하자 셸 오류는 그대로였지만 `guide` 도구로 안내를 읽고 끝까지 했다.
   - 안티그라비티는 화면 가운데를 관리자 권한 앱 창(게임·런처)이 가리면 computer-use 화면에서 가려 보인다. 안티그라비티 창을 오른쪽 빈 곳으로 좁게 옮겨 진행했다. 시험 뒤 전역 `mcp_config.json`은 빈 파일로, 안티그라비티가 기억하는 `kit-ag` 폴더는 원래대로 되돌렸다.
+- 시험 뒤 고친 것
+  - `guide` 도구: EXE 옆에 `agent-kit`이 없으면 서버를 띄운 폴더가 키트(AGENTS.md와 tullius.cmd)일 때 거기서 읽는다. 못 찾으면 찾아본 경로와 키트를 둘 곳을 알려 준다(bef83a7).
+  - 대화 묶음 말투 검사: 플레이어 선택지(DIAL:FULL, INFO:RNAM)는 선택지끼리만 비교한다. 사용자 프로젝트 56개의 경고 47건 중 1건(세라나의 존댓말 답이 같은 INFO의 플레이어 반말 선택지와 비교됨)이 빠졌다. 나머지 46건은 플레이어 선택지끼리 말투가 다른 것이라 그대로 둔다(ec3c8a8).
+  - 돈 단위는 그대로 둔다. 한글패치에서 금액(N septims) 54줄이 셉팀 25, 골드 16, 동전 4, 금화 1, 그 밖("한 푼" 등) 8로 갈려 다수 표기가 없다. 앱마다 "골드/금화/셉팀"이 갈린 것도 이 때문이다. 통일하려면 한패 검수에서 표기를 먼저 정해야 한다.
 - 자료: 요청 원문 `artifacts/mature-test-20261022/`, 결과 플러그인 `artifacts/e2e-mature-20261022/`(Claude `install/kit-claude/output`, Codex `install-codex/agent-kit/output`, 안티그라비티 `output`)
 
 ## 남은 것
