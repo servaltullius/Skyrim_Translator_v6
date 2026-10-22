@@ -29,6 +29,11 @@ internal static class DialogueToneConsistencyRule
                 continue;
             }
 
+            if (IsSpeechCheckChoice(entry))
+            {
+                continue;
+            }
+
             var edidStem = LqaScanner.NormalizeEdidStem(entry.Edid);
             string groupKey;
             if (!string.IsNullOrWhiteSpace(edidStem))
@@ -96,6 +101,11 @@ internal static class DialogueToneConsistencyRule
             return;
         }
 
+        if (IsSpeechCheckChoice(entry))
+        {
+            return;
+        }
+
         var groupKey = ComputeDialogueGroupKeyForIssue(entry);
         if (string.IsNullOrWhiteSpace(groupKey))
         {
@@ -123,8 +133,8 @@ internal static class DialogueToneConsistencyRule
                 Severity: "Warn",
                 Code: "tone_inconsistent",
                 Message: IsPlayerLine(entry)
-                    ? $"같은 대화 묶음의 다른 플레이어 선택지와 말투가 다릅니다: 대부분 {LqaToneClassifier.ToDisplay(majority)}, 이 선택지 {LqaToneClassifier.ToDisplay(tone)}"
-                    : $"같은 대화 묶음의 다른 대사와 말투가 다릅니다: 대부분 {LqaToneClassifier.ToDisplay(majority)}, 이 대사 {LqaToneClassifier.ToDisplay(tone)}",
+                    ? $"같은 대화 묶음의 다른 플레이어 선택지와 말투가 다릅니다: 대부분 {Display(majority)}, 이 선택지 {Display(tone)}"
+                    : $"같은 대화 묶음의 다른 대사와 말투가 다릅니다: 대부분 {Display(majority)}, 이 대사 {Display(tone)}",
                 SourceText: entry.SourceText ?? "",
                 DestText: entry.DestText ?? ""
             )
@@ -136,9 +146,11 @@ internal static class DialogueToneConsistencyRule
     // A line whose speaker is known is compared with that speaker's other lines (SpeakerToneConsistencyRule). Left in,
     // the speakers who say most of a plugin set its level: Serana Dialogue Add-On's 반말 marked 105 lines, 93 of them
     // Serana's own lines to her father or the Jarl and other NPCs' lines to her.
+    // The player's prompts stay out too, as in an EDID group: a prompt with no speaker condition was counted with the
+    // NPC lines, and the player's 반말 "그게 뭐지?" was marked against the NPCs' 해요체.
     private static bool IsPluginWideLine(LqaScanEntry entry)
         => LqaScanner.GetRecBase(entry.Rec) == "INFO" && string.IsNullOrWhiteSpace(LqaScanner.NormalizeEdidStem(entry.Edid))
-           && string.IsNullOrWhiteSpace(entry.Speaker);
+           && string.IsNullOrWhiteSpace(entry.Speaker) && !IsPlayerLine(entry);
 
     private static void ApplyPluginWide(LqaScanEntry entry, IReadOnlyDictionary<string, ToneKind> strongDialogueMajority, List<LqaIssue> issues)
     {
@@ -161,7 +173,7 @@ internal static class DialogueToneConsistencyRule
                 Rec: entry.Rec,
                 Severity: "Info",
                 Code: "tone_differs_from_plugin",
-                Message: $"이 플러그인 대사 대부분과 말투가 다릅니다(다른 화자일 수 있음): 대부분 {LqaToneClassifier.ToDisplay(majority)}, 이 대사 {LqaToneClassifier.ToDisplay(tone)}",
+                Message: $"이 플러그인 대사 대부분과 말투가 다릅니다(다른 화자일 수 있음): 대부분 {Display(majority)}, 이 대사 {Display(tone)}",
                 SourceText: entry.SourceText ?? "",
                 DestText: entry.DestText ?? ""
             )
@@ -175,11 +187,17 @@ internal static class DialogueToneConsistencyRule
         return tone != ToneKind.Unknown && tone == ClassifySpeech(after);
     }
 
-    // In speech, 해라체 statements mix naturally into 반말 ("가자, 나도 모르겠다."), so both count as 반말.
-    // A lone word in 다 or 라 is usually a name ("사만다.", "젤다.", "키아라."), not a speech level.
+    // In speech, 해라체 statements mix naturally into 반말 ("가자, 나도 모르겠다."), so both count as 반말, and
+    // 합니다체 mixes into 해요체 ("환영합니다. 참으로 흥미롭군요."), so both count as 존댓말, as the speaker check
+    // reads them. A lone word in 다 or 라 is usually a name ("사만다.", "젤다.", "키아라."), not a speech level.
     private static ToneKind ClassifySpeech(string? text)
     {
         var tone = LqaToneClassifier.Classify(text);
+        if (tone == ToneKind.Hamnida)
+        {
+            return ToneKind.Haeyo;
+        }
+
         if (tone != ToneKind.PlainDa)
         {
             return tone;
@@ -208,4 +226,11 @@ internal static class DialogueToneConsistencyRule
         => (IsPlayerLine(entry) ? "player-edid:" : "edid:") + edidStem;
 
     private static bool IsPlayerLine(LqaScanEntry entry) => entry.Rec is "DIAL:FULL" or "INFO:RNAM";
+
+    // A persuasion, threat or bribe takes its own attitude ("(위협) 당장 비켜."), as the speaker check reads it: compared
+    // with the player's other choices it was marked as unlike them.
+    private static bool IsSpeechCheckChoice(LqaScanEntry entry)
+        => IsPlayerLine(entry) && SpeakerToneConsistencyRule.SpeechCheck.IsMatch(entry.SourceText ?? "");
+
+    private static string Display(ToneKind tone) => tone == ToneKind.Haeyo ? "존댓말" : LqaToneClassifier.ToDisplay(tone);
 }

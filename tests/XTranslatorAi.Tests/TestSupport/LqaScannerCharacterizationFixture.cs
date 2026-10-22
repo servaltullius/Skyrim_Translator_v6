@@ -85,7 +85,7 @@ internal static class LqaScannerCharacterizationFixture
                 Rec: "DIAL:000104",
                 Status: StringEntryStatus.Done,
                 SourceText: "Hello.",
-                DestText: "이제 가요."
+                DestText: "이제 가는 거야?"
             ),
         };
     }
@@ -189,7 +189,7 @@ internal static class LqaScannerCharacterizationFixture
             issue =>
             {
                 AssertIssueShape(issue, id: 204, orderIndex: 53, severity: "Warn", code: "tone_inconsistent");
-                AssertMessageContainsAll(issue.Message, "대화 묶음", "말투", "대부분 합니다체");
+                AssertMessageContainsAll(issue.Message, "대화 묶음", "말투", "대부분 존댓말");
             },
             issue =>
             {

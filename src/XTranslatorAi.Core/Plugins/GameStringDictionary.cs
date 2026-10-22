@@ -259,14 +259,19 @@ public sealed class GameStringDictionary
     /// The model's translation of a base game text the mod copied with changes, with each block the mod left as the base
     /// game wrote it replaced by the Korean patch's block: told to copy the patch, gemini-3.8-flash still retranslated
     /// LotD's Falmer: A Study (암벽 전쟁 for the patch's 크래그 전쟁). Blocks pair up by position between blank lines; a
-    /// block whose markup differs from the source's keeps the model's text. Null when nothing pairs up, and for a
-    /// dictionary built before it kept the base game's blocks.
+    /// block whose markup differs from the source's keeps the model's text, and so does one <paramref name="keepPatchBlock"/>
+    /// turns down (source block, patch block). Null when nothing pairs up, and for a dictionary built before it kept the
+    /// base game's blocks.
     /// </summary>
-    public static string? SpliceUnchanged(string source, string translated, GameStringMatch match)
+    public static string? SpliceUnchanged(string source, string translated, GameStringMatch match, Func<string, string, bool>? keepPatchBlock = null)
     {
         if (match.BaseBlocks is not { } baseBlocks) return null;
-        var s = BlankLines.Split(source);
-        var t = BlankLines.Split(translated);
+        // The base game's blocks and the patch's are taken trimmed: a source or answer starting or ending with a blank
+        // line split into one block more and paired nothing.
+        var lead = translated[..(translated.Length - translated.TrimStart().Length)];
+        var trail = translated.Trim().Length == 0 ? "" : translated[translated.TrimEnd().Length..];
+        var s = BlankLines.Split(source.Trim());
+        var t = BlankLines.Split(translated.Trim());
         var k = BlankLines.Split(match.Text.Trim());
         if (s.Length != t.Length || s.Length != k.Length || baseBlocks.Count != (s.Length + 1) / 2) return null;
 
@@ -279,14 +284,14 @@ public sealed class GameStringDictionary
             var key = BlockKey(s[i]);
             if (key.Length == 0 || !string.Equals(key, baseBlocks[i / 2], StringComparison.Ordinal)) continue;
             // The patch's block laid out as the source's, with the spacing the model kept around it.
-            if (Relayout(s[i].Trim(), k[i].Trim()) is not { } block) continue;
-            var lead = t[i][..(t[i].Length - t[i].TrimStart().Length)];
-            var trail = t[i].Length == lead.Length ? "" : t[i][t[i].TrimEnd().Length..];
-            t[i] = lead + block + trail;
+            if (Relayout(s[i].Trim(), k[i].Trim()) is not { } block || keepPatchBlock?.Invoke(s[i], block) == false) continue;
+            var blockLead = t[i][..(t[i].Length - t[i].TrimStart().Length)];
+            var blockTrail = t[i].Length == blockLead.Length ? "" : t[i][t[i].TrimEnd().Length..];
+            t[i] = blockLead + block + blockTrail;
             spliced = true;
         }
 
-        return spliced ? string.Concat(t) : null;
+        return spliced ? lead + string.Concat(t) + trail : null;
     }
 
     /// <summary>For each given row that is a base game text or a copy of one with changes, that text's Korean, as a reference.</summary>

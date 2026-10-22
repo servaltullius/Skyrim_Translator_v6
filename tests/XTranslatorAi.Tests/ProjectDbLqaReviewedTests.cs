@@ -72,6 +72,25 @@ public sealed class ProjectDbLqaReviewedTests
         Assert.False(LqaReviewedMarks.Holds(marks, name, "glossary_missing", "도대체 뭘 원하는 거야?"));
     }
 
+    /// <summary>
+    /// A speech-level result held by another check's mark on its line could not be taken off: unmarking removed its own
+    /// code, which had no mark, and the other mark kept it 확인함. Taking a mark off removes every code that holds it.
+    /// </summary>
+    [Fact]
+    public void TakingAMarkOff_RemovesTheMarksThatHoldIt()
+    {
+        const string text = "시빌, 토리그와는 알고 지낸 지 얼마나 됐나요?";
+        var marks = new Dictionary<(long StringId, string Code), string> { [(1, "speaker_tone_inconsistent")] = text, [(1, "english_residue")] = text };
+        Assert.True(LqaReviewedMarks.Holds(marks, 1, "tone_inconsistent", text));
+
+        foreach (var code in LqaReviewedMarks.CodesHolding("tone_inconsistent")) marks.Remove((1, code));
+
+        Assert.False(LqaReviewedMarks.Holds(marks, 1, "tone_inconsistent", text));
+        Assert.False(LqaReviewedMarks.Holds(marks, 1, "speaker_tone_inconsistent", text));
+        Assert.True(LqaReviewedMarks.Holds(marks, 1, "english_residue", text));
+        Assert.Equal(new[] { "glossary_missing" }, LqaReviewedMarks.CodesHolding("glossary_missing"));
+    }
+
     // A retranslated row is checked afresh.
     [Fact]
     public async Task Retranslating_TakesTheRowsMarksOff()

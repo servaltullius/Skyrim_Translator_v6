@@ -56,6 +56,15 @@ public static class LqaReviewedMarks
                && LqaScanner.LatinWords(destText).All(new HashSet<string>(LqaScanner.LatinWords(residueMarked), StringComparer.Ordinal).Contains);
     }
 
+    /// <summary>
+    /// The codes whose marks can hold a result of <paramref name="code"/>: taking a mark off removes them all. Removing
+    /// the result's own code left a speech-level result held by another check's mark on the line, so it stayed 확인함.
+    /// </summary>
+    public static IReadOnlyList<string> CodesHolding(string code)
+        => Array.IndexOf(SpeakerLevelCodes, code) >= 0 || Array.IndexOf(DialogueLevelCodes, code) >= 0
+            ? SpeakerLevelCodes.Concat(DialogueLevelCodes).ToArray()
+            : new[] { code };
+
     private static bool HoldsExactly(IReadOnlyDictionary<(long StringId, string Code), string> marks, long stringId, string code, string? destText)
         => marks.TryGetValue((stringId, code), out var marked) && string.Equals(marked, destText ?? "", StringComparison.Ordinal);
 }

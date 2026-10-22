@@ -144,4 +144,43 @@ public class GameStringTranslationTests
             Assert.DoesNotContain("바닐라 책의 넷째 문단.", row.DestText);
         });
     }
+
+    /// <summary>
+    /// A vanilla book with Frenzy → 격분 in the project glossary goes to the model for it, and the splice put the patch's
+    /// 광분 back. A block with a project term the patch spells otherwise keeps the model's text; the others take the patch.
+    /// </summary>
+    [Fact]
+    public async Task SpliceOfABaseGameBook_KeepsTheModelsBlockWhereAProjectTermDiffersFromThePatch()
+    {
+        const string english = "The first paragraph of the base game book, long enough to be counted.\r\n\r\n"
+                               + "The second paragraph tells how Frenzy turned the guards on each other.\r\n\r\n"
+                               + "The third paragraph of the base game book, which the mod left alone too.\r\n\r\n"
+                               + "The fourth paragraph of the base game book, which the mod rewrote a little.";
+        var game = GameStringDictionary.Build(new[]
+        {
+            new GameStringPlugin("Skyrim.esm", new string[0], new[]
+            {
+                new PluginField("BOOK/00001000/0/DESC/0", 0, "BOOK", "DESC", 0x1000, null, 0, 0, english, PluginStringTableKind.DlStrings, 1),
+            }, new Dictionary<(PluginStringTableKind, uint), string>
+            {
+                [(PluginStringTableKind.DlStrings, 1)] = "바닐라 책의 첫 문단.\r\n\r\n광분으로 경비들이 서로 싸웠다.\r\n\r\n바닐라 책의 셋째 문단.\r\n\r\n바닐라 책의 넷째 문단.",
+            }),
+        });
+        var copy = english.Replace("rewrote a little.", "rewrote a little more.");
+        await using var fixture = await TranslationRunFixture.CreateAsync((copy, "BOOK:DESC"));
+        await fixture.Db.BulkInsertGlossaryAsync(new[] { ((string?)null, "Frenzy", "격분", true, 10, 0, 0, (string?)null) }, CancellationToken.None);
+        var match = game.FindSimilar("BOOK:DESC", copy);
+        Assert.NotNull(match);
+
+        await fixture.Service.TranslateIdsAsync(fixture.Request with
+        {
+            GameStringReferences = fixture.Ids.ToDictionary(id => id, _ => match),
+        });
+
+        var dest = (await fixture.RowsAsync()).Values.Single().DestText;
+        Assert.Contains("바닐라 책의 첫 문단.", dest);
+        Assert.Contains("바닐라 책의 셋째 문단.", dest);
+        Assert.Contains("격분", dest);
+        Assert.DoesNotContain("광분", dest);
+    }
 }

@@ -36,7 +36,7 @@ internal static partial class SpeakerToneConsistencyRule
     // A scene line said to a character the plugin does not name (PluginSpeakers.UnknownListener, as "%08X").
     private const string UnknownListener = "00000000";
 
-    private static readonly System.Text.RegularExpressions.Regex SpeechCheck = new(
+    internal static readonly System.Text.RegularExpressions.Regex SpeechCheck = new(
         @"\((?:Persuade|Intimidate|Bribe|Lie|Brawl|Threaten)[^)]*\)",
         System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 

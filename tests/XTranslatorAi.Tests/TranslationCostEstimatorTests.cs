@@ -84,6 +84,35 @@ public class TranslationCostEstimatorTests
         Assert.Contains("요청 없이 채울 행: 2 (게임 번역 1, 이전 번역 그대로 1)", result.ToHumanReadableString());
     }
 
+    // A game text that spells a project term otherwise goes to the model (Frenzy → 격분 for the patch's 광분), and the
+    // estimate left it out with the rows filled without a request.
+    [Fact]
+    public async Task GameRowThatSpellsAProjectTermOtherwise_IsEstimated()
+    {
+        var db = new StubProjectDb
+        {
+            RowCount = 3,
+            ExtraRows = new[] { ("Ice Storm", "SPEL:FULL") },
+            Glossary = new[] { new GlossaryEntry(1, null, "Ice Storm", "빙결 폭풍", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null) },
+        };
+        var game = XTranslatorAi.Core.Plugins.GameStringDictionary.Build(new[]
+        {
+            new XTranslatorAi.Core.Plugins.GameStringPlugin("Skyrim.esm", Array.Empty<string>(), new[]
+            {
+                new XTranslatorAi.Core.Plugins.PluginField("SPEL/0002B96C/0/FULL/0", 0, "SPEL", "FULL", 0x0002B96Cu, null, 0, 0,
+                    "Ice Storm", XTranslatorAi.Core.Plugins.PluginStringTableKind.Strings, 3),
+            }, new Dictionary<(XTranslatorAi.Core.Plugins.PluginStringTableKind, uint), string>
+            {
+                [(XTranslatorAi.Core.Plugins.PluginStringTableKind.Strings, 3)] = "얼음 폭풍",
+            }),
+        });
+
+        var result = await new TranslationCostEstimator(db, new StubGeminiClient())
+            .EstimateAsync(MakeRequest("fixture", GeminiModelCatalog.DefaultModel) with { BatchSize = 1, GameStrings = game }, CancellationToken.None);
+
+        Assert.Equal(0, result.GameStringRows);
+    }
+
     [Fact]
     public async Task EmptyWork_HasNoCacheStorageOrGenerationCost()
     {
@@ -296,8 +325,10 @@ public class TranslationCostEstimatorTests
         private IEnumerable<(long Id, string Source, string Rec)> AllRows()
             => Enumerable.Range(1, RowCount).Select(i => ((long)i, "source " + i, "INFO:NAM1"))
                 .Concat(ExtraRows.Select((r, i) => ((long)(1000 + i), r.Source, r.Rec)));
+        public GlossaryEntry[] Glossary { get; init; } = Array.Empty<GlossaryEntry>();
+
         public Task<IReadOnlyList<GlossaryEntry>> GetGlossaryAsync(CancellationToken cancellationToken)
-            => Task.FromResult<IReadOnlyList<GlossaryEntry>>(Array.Empty<GlossaryEntry>());
+            => Task.FromResult<IReadOnlyList<GlossaryEntry>>(Glossary);
 
         public Task<bool> TryInsertGlossaryIfMissingAsync(GlossaryUpsertRequest request, CancellationToken cancellationToken)
             => Task.FromResult(false);

@@ -22,6 +22,14 @@ internal static class CutOffRule
             return;
         }
 
+        // A decoration around the text ("- 끝 -" for "THE END"), and speech broken off with a dash where the English
+        // trails off ("하지만 난—" for "But I..."), end there on purpose.
+        var trailsOff = source.EndsWith("...", StringComparison.Ordinal) || source.EndsWith('…');
+        if (dest.TrimStart()[0] == dest[^1] || trailsOff && dest[^1] is '-' or '–' or '—')
+        {
+            return;
+        }
+
         issues.Add(
             new LqaIssue(
                 Id: entry.Id,

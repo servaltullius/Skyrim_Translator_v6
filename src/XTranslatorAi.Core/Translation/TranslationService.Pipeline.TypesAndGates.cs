@@ -64,12 +64,16 @@ public sealed partial class TranslationService
 
     /// <summary>
     /// A row copied from a base game text with changes, with the blocks the mod left as the base game wrote them taken
-    /// from the Korean patch (see GameStringDictionary.SpliceUnchanged); the model's text when they do not fit.
+    /// from the Korean patch (see GameStringDictionary.SpliceUnchanged); the model's text when they do not fit. A block
+    /// with a project term the patch spells otherwise keeps the model's text: a vanilla book with Frenzy → 격분 in the
+    /// project glossary was sent to the model for it, and the splice put the patch's 광분 back.
     /// </summary>
     private string SpliceGamePatch(long id, string source, string final)
     {
+        bool KeepsProjectTerms(string sourceBlock, string patchBlock) => ProjectTermCheck.Keeps(Ctx.ProjectTerms, sourceBlock, patchBlock);
+
         if (Ctx.GameReferenceById?.TryGetValue(id, out var game) != true
-            || XTranslatorAi.Core.Plugins.GameStringDictionary.SpliceUnchanged(source, final, game!) is not { } spliced)
+            || XTranslatorAi.Core.Plugins.GameStringDictionary.SpliceUnchanged(source, final, game!, KeepsProjectTerms) is not { } spliced)
         {
             return final;
         }

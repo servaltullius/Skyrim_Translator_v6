@@ -77,7 +77,8 @@ public sealed partial class TranslationCostEstimator
     /// <summary>
     /// Leaves out the rows a run fills without a request, in the run's order: the game's own translation, then the
     /// earlier translation where the English did not change (see TranslationService.BuildTranslationItemsAsync).
-    /// A text that fails the tag check there goes to the model after all, so this is the most the run can skip.
+    /// A text that fails the tag check there goes to the model after all, so this is the most the run can skip. A game
+    /// text that spells a project term otherwise goes to the model too, and is counted with the rows to translate.
     /// </summary>
     private async Task<(IReadOnlyList<(long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)> Rows, int GameStrings, int PreviousRelease)>
         DropKnownTranslationsAsync(
@@ -99,11 +100,12 @@ public sealed partial class TranslationCostEstimator
             return (rows, 0, 0);
         }
 
+        var projectTerms = ProjectTermCheck.Build(await _db.GetGlossaryAsync(cancellationToken));
         int gameRows = 0, previousRows = 0;
         var kept = new List<(long Id, string SourceText, string? Rec, string? Edid, StringEntryStatus Status)>(rows.Count);
         foreach (var row in rows)
         {
-            if (game.ContainsKey(row.Id))
+            if (game.TryGetValue(row.Id, out var match) && ProjectTermCheck.Keeps(projectTerms, row.SourceText, match.Text))
             {
                 gameRows++;
             }

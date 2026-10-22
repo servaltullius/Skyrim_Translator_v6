@@ -334,6 +334,58 @@ public class LqaFalsePositiveTests
         Assert.DoesNotContain(issues, i => i.Code == "tone_differs_from_plugin");
     }
 
+    /// <summary>
+    /// The player's prompt with no speaker condition was counted with the NPC lines of a plugin without EDIDs, and its
+    /// 반말 was marked against their 해요체: the case the EDID groups had already fixed.
+    /// </summary>
+    [Fact]
+    public async Task DialogueTone_PlayerPromptsWithoutASpeaker_StayOutOfThePluginsDialogue()
+    {
+        static LqaScanEntry Line(long id, string dest, string rec = "INFO:NAM1")
+            => new(id, (int)id, null, rec, StringEntryStatus.Done, "x", dest);
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "어서 오세요."),
+            Line(2, "필요한 게 있나요?"),
+            Line(3, "조심하세요."),
+            Line(4, "그게 뭐지?", rec: "INFO:RNAM"),
+        };
+
+        Assert.DoesNotContain(await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>()), i => i.Code == "tone_differs_from_plugin");
+    }
+
+    /// <summary>
+    /// 합니다체 and 해요체 mix in one NPC's speech ("환영합니다. 참으로 흥미롭군요."), as the speaker check reads them; the
+    /// dialogue check counted them as two levels and marked the 해요체 line. 반말 among them is still marked.
+    /// </summary>
+    [Fact]
+    public async Task DialogueTone_HamnidaAndHaeyo_AreOneLevel()
+    {
+        static LqaScanEntry Line(long id, string dest)
+            => new(id, (int)id, "MerchantGreeting" + id, "INFO:NAM1", StringEntryStatus.Done, "x", dest);
+        var polite = new List<LqaScanEntry>
+        {
+            Line(1, "환영합니다."), Line(2, "기억해 두겠습니다."), Line(3, "물건을 보여 드리겠습니다."), Line(4, "참으로 흥미롭군요."),
+        };
+        Assert.DoesNotContain(await LqaScanner.ScanAsync(polite, "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
+
+        // A persuasion or threat takes its own attitude, as the speaker check reads it.
+        var choices = new List<LqaScanEntry>
+        {
+            new(1, 1, "XTopic1", "DIAL:FULL", StringEntryStatus.Done, "x", "도와줄 수 있나요?"),
+            new(2, 2, "XTopic2", "DIAL:FULL", StringEntryStatus.Done, "x", "어디로 가면 되나요?"),
+            new(3, 3, "XTopic3", "DIAL:FULL", StringEntryStatus.Done, "x", "고마워요."),
+            new(4, 4, "XTopic4", "DIAL:FULL", StringEntryStatus.Done, "x", "다시 올게요."),
+            new(5, 5, "XTopic5", "DIAL:FULL", StringEntryStatus.Done, "(Intimidate) Move. Now.", "(위협) 당장 비켜. 안 그러면 죽는다."),
+        };
+        Assert.DoesNotContain(await LqaScanner.ScanAsync(choices, "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
+
+        var withCasual = polite.Append(Line(5, "그게 뭐지?")).Append(Line(6, "환영합니다, 손님.")).ToList();
+        var issue = Assert.Single(await LqaScanner.ScanAsync(withCasual, "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
+        Assert.Equal(5L, issue.Id);
+        Assert.Contains("대부분 존댓말", issue.Message);
+    }
+
     [Fact]
     public async Task NameConsistency_FindsOneNameSpelledTwoWays_ButNotTitlesOrParticles()
     {
@@ -687,6 +739,9 @@ public class LqaFalsePositiveTests
     [InlineData("I was going to—", "나는 막—", false)]
     [InlineData("Staff of the Cold Flames", "지팡이 - 차가운 불길", false)]
     [InlineData("Cold Flames", "차가운 불길 ", false)]
+    [InlineData("THE END", "- 끝 -", false)]
+    [InlineData("But I...", "하지만 난—", false)]
+    [InlineData("But I...", "하지만 난:", true)]
     public async Task CutOff_IsATranslationEndingAtASeparatorItsEnglishDoesNot(string source, string dest, bool expected)
     {
         var issues = await LqaScanner.ScanAsync(new List<LqaScanEntry> { Row(1, "BOOK:FULL", dest, source) }, "ko", new List<GlossaryEntry>());

@@ -107,7 +107,7 @@ public sealed partial class TranslationService
         // the glossary, the spell named Frenzy was still filled with the patch's 광분. The earlier release is this
         // field's own translation.
         if (hitNoteKind != TranslationConstants.PreviousReleaseNoteKind
-            && Ctx.ProjectTerms?.Apply(sourceText).TokenToReplacement.Values.Any(term => !tmText.Contains(term, StringComparison.Ordinal)) == true)
+            && !ProjectTermCheck.Keeps(Ctx.ProjectTerms, sourceText, tmText))
         {
             return false;
         }

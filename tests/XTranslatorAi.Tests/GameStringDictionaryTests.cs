@@ -469,4 +469,37 @@ public sealed class GameStringDictionaryTests
         });
         Assert.Equal(0, added.ParagraphTextCount);
     }
+
+    /// <summary>
+    /// A source that ends (or starts) with a blank line split into one block more than the patch's, so nothing paired
+    /// and the model's text stayed. Blocks pair on the trimmed texts, and the answer keeps its own ends.
+    /// </summary>
+    [Fact]
+    public void SourceEndingWithABlankLine_StillTakesThePatchsBlocks()
+    {
+        const string first = "The first paragraph of the base game book, long enough to be counted.";
+        const string second = "The second paragraph of the base game book, also long enough to count.";
+        const string third = "The third paragraph of the base game book, which the mod left alone too.";
+        const string fourth = "The fourth paragraph of the base game book, which the mod rewrote a little.";
+        const string gap = "\r\n\r\n";
+        var english = string.Join(gap, first, second, third, fourth);
+        var game = GameStringDictionary.Build(new[]
+        {
+            new GameStringPlugin("Skyrim.esm", new string[0], new[] { Field("BOOK/000E0D68/0/DESC/0", english, PluginStringTableKind.DlStrings, 1) },
+                new Dictionary<(PluginStringTableKind, uint), string>
+                {
+                    [(PluginStringTableKind.DlStrings, 1)] = string.Join(gap, "첫 문단.", "둘째 문단.", "셋째 문단.", "넷째 문단."),
+                }),
+        });
+        var copy = gap + string.Join(gap, first, second, third, fourth.Replace("a little.", "a little more.")) + gap;
+        var model = string.Join(gap, "모델의 첫 문단.", "모델의 둘째 문단.", "모델의 셋째 문단.", "모델이 옮긴 넷째 문단.") + "\r\n";
+        var match = game.FindSimilar("BOOK:DESC", copy);
+        Assert.NotNull(match);
+
+        var spliced = GameStringDictionary.SpliceUnchanged(copy, model, match!);
+
+        Assert.Equal(string.Join(gap, "첫 문단.", "둘째 문단.", "셋째 문단.", "모델이 옮긴 넷째 문단.") + "\r\n", spliced);
+        Assert.Equal(string.Join(gap, "모델의 첫 문단.", "둘째 문단.", "셋째 문단.", "모델이 옮긴 넷째 문단.") + "\r\n",
+            GameStringDictionary.SpliceUnchanged(copy, model, match!, (_, patch) => patch != "첫 문단."));
+    }
 }

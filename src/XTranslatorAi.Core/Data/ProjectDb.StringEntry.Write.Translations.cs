@@ -21,7 +21,10 @@ public sealed partial class ProjectDb
         await _gate.WaitAsync(cancellationToken);
         try
         {
+            // The row and its notes change together: an edit cancelled between them left the TM's note on a 수정됨 row.
+            await using var tx = (SqliteTransaction)await _connection.BeginTransactionAsync(cancellationToken);
             await using var cmd = _connection.CreateCommand();
+            cmd.Transaction = tx;
             cmd.CommandText =
                 """
                 UPDATE StringEntry
@@ -45,6 +48,7 @@ public sealed partial class ProjectDb
                 // next run's TM refresh and reopening the project colored the row as a TM hit again, and every scan kept
                 // its "TM 대신 번역" notice.
                 await using var notes = _connection.CreateCommand();
+                notes.Transaction = tx;
                 notes.CommandText = "DELETE FROM StringNote WHERE StringId=$Id AND Kind IN ($TmHit, $GameString, $PreviousRelease, $TmFallback);";
                 notes.Parameters.AddWithValue("$Id", id);
                 notes.Parameters.AddWithValue("$TmHit", TranslationConstants.TmHitNoteKind);
@@ -54,6 +58,7 @@ public sealed partial class ProjectDb
                 await notes.ExecuteNonQueryAsync(cancellationToken);
             }
 
+            await tx.CommitAsync(cancellationToken);
             if (status == StringEntryStatus.Edited && !string.IsNullOrWhiteSpace(destText))
             {
                 await TryUpsertEditedTranslationMemoryUnsafeAsync(id, destText, cancellationToken);

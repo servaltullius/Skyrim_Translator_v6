@@ -51,7 +51,7 @@ public partial class MainViewModel
         var results = issues
             .Select(issue => (issue.Id, issue.Code, Dest: _projectState.TryGetById(issue.Id, out var entry) ? entry.DestText ?? "" : null))
             .Where(result => result.Dest != null)
-            .Select(result => (result.Id, result.Code, result.Dest!))
+            .SelectMany(result => (mark ? new[] { result.Code } : LqaReviewedMarks.CodesHolding(result.Code)).Select(code => (result.Id, code, result.Dest!)))
             .Distinct()
             .ToList();
         try
@@ -85,7 +85,9 @@ public partial class MainViewModel
         // goes on from there.
         var shown = LqaIssuesView.Cast<LqaIssueViewModel>().ToList();
         var position = issues.Select(issue => shown.IndexOf(issue)).Where(index => index >= 0).DefaultIfEmpty(0).Min();
-        ApplyLqaReviewedMarks(issues);
+        // A speech-level mark holds the line's other speech-level results too: those are set again with it.
+        var rows = results.Select(result => result.Item1).ToHashSet();
+        ApplyLqaReviewedMarks(LqaIssues.Where(issue => rows.Contains(issue.Id)));
         LqaIssuesView.Refresh();
         OnPropertyChanged(nameof(LqaVisibleSummary));
         if (mark && LqaHideReviewed)
