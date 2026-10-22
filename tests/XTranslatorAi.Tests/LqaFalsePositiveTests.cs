@@ -424,6 +424,44 @@ public class LqaFalsePositiveTests
         Assert.DoesNotContain(await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>()), i => i.Code == "tone_differs_from_plugin");
     }
 
+    /// <summary>
+    /// The shared classifier missed Flint's 반말 among 존댓말 choices ("…다르거든.", "…것 같아! 하하!", "…모르겠네.")
+    /// and read the 하오체 "…있는거요?" as 해요체. The dialogue check reads lines as the speaker check does.
+    /// </summary>
+    [Fact]
+    public async Task DialogueTone_ReadsCasualAndHaoEndingsTheSharedClassifierMissed()
+    {
+        static LqaScanEntry Choice(long id, string dest)
+            => new(id, (int)id, "EGG1FlintTalk" + id, "DIAL:FULL", StringEntryStatus.Done, "x", dest);
+        var choices = new List<LqaScanEntry>
+        {
+            Choice(1, "그거 좋군요. 개인적으로 전 스위트롤을 좋아합니다."), Choice(2, "스위트롤요! 원뿔 모양의 빵 같은 거예요."),
+            Choice(3, "아, 언제 한번 꼭 드셔보게 해야겠네요."), Choice(4, "좋네요. 마음을 열어준 것 같아 기쁩니다."),
+            Choice(5, "절대 그러지 않을 겁니다."), Choice(6, "절대로요, 약속합니다."),
+            Choice(7, "어디 가시는 거죠? 그냥 가버리시면 안 됩니다."), Choice(8, "아끼는 마음에서 그 모든 일을 한 거라고요!"),
+            Choice(9, "용서할게요."), Choice(10, "바로 그 기세예요."), Choice(11, "고마워요."), Choice(12, "다시 올게요."),
+            Choice(13, "분명 좋아할 거야, 장담해. 야생에서 맛보던 것들과는 차원이 다르거든."),
+            Choice(14, "그 자리에서 바로 죽어도 여한이 없을 것 같아! 하하!"),
+            Choice(15, "문제없어. 다음번엔 스위트롤도 좀 가져올지 모르겠네."),
+            Choice(16, "무슨 말을 하고 있는거요?"),
+        };
+
+        var marked = (await LqaScanner.ScanAsync(choices, "ko", new List<GlossaryEntry>()))
+            .Where(i => i.Code == "tone_inconsistent").Select(i => i.Id).ToList();
+
+        Assert.Equal(new long[] { 13, 14, 15, 16 }, marked);
+
+        // A 해요체 "~같은 거요" is not 하오체, and a 하오체 speaker's sentence in ~지 beside one in ~소 is 하오체.
+        choices[12] = Choice(13, "자, 당신에게 물어볼 만한 게 생각났어요. 일상적인 대화거리 같은 거요.");
+        Assert.DoesNotContain(await LqaScanner.ScanAsync(choices, "ko", new List<GlossaryEntry>()), i => i.Id == 13 && i.Code == "tone_inconsistent");
+        var hao = new List<LqaScanEntry>
+        {
+            Choice(1, "당신은 누구요?"), Choice(2, "내가 무엇을 해야 할지 말해 보시오."), Choice(3, "평화롭게 살기를 원하오."),
+            Choice(4, "이제 어떻게 되는 거요?"), Choice(5, "그는 더 이상 마르카스를 통치하지 않소. 이제는 전부 실버블러드 가문의 손아귀에 들어갔지."),
+        };
+        Assert.DoesNotContain(await LqaScanner.ScanAsync(hao, "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
+    }
+
     [Fact]
     public async Task NameConsistency_FindsOneNameSpelledTwoWays_ButNotTitlesOrParticles()
     {

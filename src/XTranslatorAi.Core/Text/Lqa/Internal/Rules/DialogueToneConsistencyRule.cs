@@ -190,16 +190,40 @@ internal static class DialogueToneConsistencyRule
     // In speech, 해라체 statements mix naturally into 반말 ("가자, 나도 모르겠다."), so both count as 반말, and
     // 합니다체 mixes into 해요체 ("환영합니다. 참으로 흥미롭군요."), so both count as 존댓말, as the speaker check
     // reads them. A lone word in 다 or 라 is usually a name ("사만다.", "젤다.", "키아라."), not a speech level.
-    // The plugin-wide comparison keeps the two apart (mergePolite false): lines without a known speaker are many
-    // people's, and with them merged IDE Thalmor's officials' 반말 was 30 notes against the others' 존댓말.
+    // 하오체 is read with the speaker check's endings: the shared classifier took "…있는거요?" for 해요체 and "무슨
+    // 뜻이오?" for nothing. The plugin-wide comparison does not read it: there a 하오체 line is another speaker's. (The speaker check's whole reading was tried and dropped: it is tuned for a speaker's lines
+    // taken together, and line by line it read 반말's "~네" as 하게체, 102 false results over the user's projects.)
+    // The plugin-wide comparison keeps 합니다체 and 해요체 apart (mergePolite false): lines without a known speaker are
+    // many people's, and with them merged IDE Thalmor's officials' 반말 was 30 notes against the others' 존댓말.
     private static ToneKind ClassifySpeech(string? text, bool mergePolite = true)
     {
         // A stage direction is not speech: "[양초를 제작하는 방법을 설명한다]" and "…있네요. (서류철을 보여준다)" read as 반말.
         var spoken = StageDirection.Replace(text ?? "", " ").Trim();
+        if (!spoken.Any(char.IsLetter))
+        {
+            return ToneKind.Unknown;
+        }
+
+        if (mergePolite && SpeakerToneConsistencyRule.HasHaoSentence(spoken))
+        {
+            return ToneKind.Hao;
+        }
+
         var tone = LqaToneClassifier.Classify(spoken);
         if (tone == ToneKind.Hamnida && mergePolite)
         {
             return ToneKind.Haeyo;
+        }
+
+        // "당신은 누구요?" is a 하오체 speaker's as much as a 해요체 one's: such a line is not counted either way.
+        if (tone == ToneKind.Haeyo && mergePolite && SpeakerToneConsistencyRule.IsSharedWithHao(spoken))
+        {
+            return ToneKind.Unknown;
+        }
+
+        if (tone == ToneKind.Unknown && mergePolite)
+        {
+            return SpokenCasual(spoken) ? ToneKind.Casual : ToneKind.Unknown;
         }
 
         if (tone != ToneKind.PlainDa)
@@ -209,6 +233,28 @@ internal static class DialogueToneConsistencyRule
 
         return LqaScanner.StripUiTokens(spoken).Trim().Any(char.IsWhiteSpace) ? ToneKind.Casual : ToneKind.Unknown;
     }
+
+    // Spoken 반말 endings the shared classifier leaves unread, since a book or a description ending in one is quoting
+    // speech: ~거든, ~네 (a lone 네 is the polite "yes"), ~어/아 after ㅆ or ㅄ (있어, 했어, 겠어) and a few common
+    // verbs, with laughter at the end set aside ("…것 같아! 하하!").
+    private static bool SpokenCasual(string spoken)
+    {
+        var cleaned = TrailingLaughter.Replace(LqaScanner.StripUiTokens(spoken).Trim().TrimEnd(' ', '.', '!', '?', '…', '~'), "").TrimEnd(' ', '.', ',', '!', '?', '…', '~', '"', '\'', '”', '’');
+        if (cleaned.Length < 2)
+        {
+            return false;
+        }
+
+        var last = cleaned[(cleaned.LastIndexOfAny(new[] { ' ', '\t', '\n', '.', ',', '!', '?' }) + 1)..];
+        return last.EndsWith("거든", StringComparison.Ordinal)
+               || last.Length >= 2 && last.EndsWith("네", StringComparison.Ordinal)
+               || last is "같아" or "좋아" or "싫어" or "알아" or "몰라" || last.EndsWith("잖아", StringComparison.Ordinal)
+               || cleaned[^1] is '어' or '아' && KoreanSyllables.IsHangulSyllable(cleaned[^2]) && (cleaned[^2] - '가') % 28 is 18 or 20;
+    }
+
+    private static readonly System.Text.RegularExpressions.Regex TrailingLaughter = new(
+        @"[\s.,!?…~]*(?:하하|호호|후후|흐흐|헤헤|히히|크크|껄껄|ㅎㅎ|ㅋㅋ)[하호후흐헤히크껄ㅎㅋ]*$",
+        System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 
     private static readonly System.Text.RegularExpressions.Regex StageDirection = new(@"\[[^\]]*\]|\([^)]*\)",
         System.Text.RegularExpressions.RegexOptions.CultureInvariant);

@@ -10,6 +10,8 @@ internal enum ToneKind
     Haeyo,
     PlainDa,
     Casual,
+    // 하오체, read by the dialogue check with the speaker check's 하오체 endings; Classify never returns it.
+    Hao,
 }
 
 internal static class LqaToneClassifier
@@ -111,6 +113,7 @@ internal static class LqaToneClassifier
         ToneKind.Haeyo => "해요체",
         ToneKind.PlainDa => "해라체(…다)",
         ToneKind.Casual => "반말",
+        ToneKind.Hao => "하오체",
         _ => "알 수 없음",
     };
 

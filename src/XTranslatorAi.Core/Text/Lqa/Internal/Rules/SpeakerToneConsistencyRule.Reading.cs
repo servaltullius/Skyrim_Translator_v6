@@ -79,6 +79,27 @@ internal static partial class SpeakerToneConsistencyRule
     }
 
     /// <summary>
+    /// Whether a sentence of the line ends in this rule's 하오체 ("무슨 뜻이오?", "괜찮소?", "…있는거요?";
+    /// DialogueToneConsistencyRule). A 하오체 speaker closes some sentences with ~지 or ~군 ("…통치하지 않소. 이제는
+    /// … 들어갔지."), so one 하오체 sentence makes the line 하오체. A lone 거요 counts after ~ㄹ or ~는 only ("할 거요",
+    /// "하는 거요"): "대화거리 같은 거요" is 해요체.
+    /// </summary>
+    internal static bool HasHaoSentence(string? text)
+        => (text ?? "").Split(new[] { '.', '!', '?', '…', ',' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(Clean)
+            .Any(sentence => sentence.Length > 0 && !sentence.EndsWith("십시오", StringComparison.Ordinal) && IsHao(sentence)
+                             && !(LastWord(sentence) == "거요" && !AfterModifierOfHao(sentence)));
+
+    /// <summary>A line whose 존댓말 sign 하오체 shares ("누구요", "어디요", "갑시다"; see IsWeakPolite).</summary>
+    internal static bool IsSharedWithHao(string? text) => IsWeakPolite(text);
+
+    private static bool AfterModifierOfHao(string sentence)
+    {
+        var before = sentence[..^2].TrimEnd();
+        return before.Length > 0 && (before[^1] == '는' || FinalConsonant(before[^1]) == 8);
+    }
+
+    /// <summary>
     /// 존댓말 when any sentence or clause of the line is: "어디 한번 보죠. 당신이 어떤 실력인지." and "물론이죠, 돈만
     /// 있다면야." are polite lines that trail off. Otherwise the last sentence's level.
     /// </summary>
