@@ -67,6 +67,13 @@ internal static class LqaToneClassifier
             return ToneKind.Hamnida;
         }
 
+        // The old 하소서체 of scripture ("굽어살피겠다 맹세하셨나이다") is 존댓말, not 해라체. A 소서 is left unread: any
+        // speaker cries out "스텐다르이시여, 자비를 베푸소서", and feris's 반말 speaker was marked as 합니다체 for it.
+        if (EndsWithAny(cleaned, "나이다", "니이다"))
+        {
+            return ToneKind.Hamnida;
+        }
+
         if (cleaned.EndsWith("요", StringComparison.Ordinal))
         {
             return ToneKind.Haeyo;

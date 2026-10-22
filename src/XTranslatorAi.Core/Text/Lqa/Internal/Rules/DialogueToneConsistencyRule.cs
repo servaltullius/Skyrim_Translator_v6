@@ -68,7 +68,7 @@ internal static class DialogueToneConsistencyRule
                     groupToTones[PluginWideKey] = pluginWide;
                 }
 
-                pluginWide.Add(tone);
+                pluginWide.Add(ClassifySpeech(entry.DestText, mergePolite: false));
             }
         }
 
@@ -159,7 +159,7 @@ internal static class DialogueToneConsistencyRule
             return;
         }
 
-        var tone = ClassifySpeech(entry.DestText);
+        var tone = ClassifySpeech(entry.DestText, mergePolite: false);
         if (tone == ToneKind.Unknown || tone == majority)
         {
             return;
@@ -173,7 +173,7 @@ internal static class DialogueToneConsistencyRule
                 Rec: entry.Rec,
                 Severity: "Info",
                 Code: "tone_differs_from_plugin",
-                Message: $"이 플러그인 대사 대부분과 말투가 다릅니다(다른 화자일 수 있음): 대부분 {Display(majority)}, 이 대사 {Display(tone)}",
+                Message: $"이 플러그인 대사 대부분과 말투가 다릅니다(다른 화자일 수 있음): 대부분 {LqaToneClassifier.ToDisplay(majority)}, 이 대사 {LqaToneClassifier.ToDisplay(tone)}",
                 SourceText: entry.SourceText ?? "",
                 DestText: entry.DestText ?? ""
             )
@@ -190,10 +190,14 @@ internal static class DialogueToneConsistencyRule
     // In speech, 해라체 statements mix naturally into 반말 ("가자, 나도 모르겠다."), so both count as 반말, and
     // 합니다체 mixes into 해요체 ("환영합니다. 참으로 흥미롭군요."), so both count as 존댓말, as the speaker check
     // reads them. A lone word in 다 or 라 is usually a name ("사만다.", "젤다.", "키아라."), not a speech level.
-    private static ToneKind ClassifySpeech(string? text)
+    // The plugin-wide comparison keeps the two apart (mergePolite false): lines without a known speaker are many
+    // people's, and with them merged IDE Thalmor's officials' 반말 was 30 notes against the others' 존댓말.
+    private static ToneKind ClassifySpeech(string? text, bool mergePolite = true)
     {
-        var tone = LqaToneClassifier.Classify(text);
-        if (tone == ToneKind.Hamnida)
+        // A stage direction is not speech: "[양초를 제작하는 방법을 설명한다]" and "…있네요. (서류철을 보여준다)" read as 반말.
+        var spoken = StageDirection.Replace(text ?? "", " ").Trim();
+        var tone = LqaToneClassifier.Classify(spoken);
+        if (tone == ToneKind.Hamnida && mergePolite)
         {
             return ToneKind.Haeyo;
         }
@@ -203,8 +207,11 @@ internal static class DialogueToneConsistencyRule
             return tone;
         }
 
-        return LqaScanner.StripUiTokens(text ?? "").Trim().Any(char.IsWhiteSpace) ? ToneKind.Casual : ToneKind.Unknown;
+        return LqaScanner.StripUiTokens(spoken).Trim().Any(char.IsWhiteSpace) ? ToneKind.Casual : ToneKind.Unknown;
     }
+
+    private static readonly System.Text.RegularExpressions.Regex StageDirection = new(@"\[[^\]]*\]|\([^)]*\)",
+        System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 
     private static string ComputeDialogueGroupKeyForIssue(LqaScanEntry entry)
     {

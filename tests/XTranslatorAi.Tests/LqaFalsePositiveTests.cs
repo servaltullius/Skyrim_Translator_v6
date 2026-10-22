@@ -386,6 +386,44 @@ public class LqaFalsePositiveTests
         Assert.Contains("대부분 존댓말", issue.Message);
     }
 
+    /// <summary>
+    /// Run over the user's 56 projects, 1.16.28's dialogue check marked stage directions and old prayers as 반말 among
+    /// 존댓말 choices: "[양초를 제작하는 방법을 설명한다]", "…있네요. (울프릭의 서류철을 보여준다)",
+    /// "…맹세하셨나이다." A direction is not speech, and 하소서체 is 존댓말.
+    /// </summary>
+    [Fact]
+    public async Task DialogueTone_ReadsNeitherStageDirectionsNorPrayersAsCasual()
+    {
+        static LqaScanEntry Choice(long id, string dest)
+            => new(id, (int)id, "DBMQuestTopic" + id, "DIAL:FULL", StringEntryStatus.Done, "x", dest);
+        var choices = new List<LqaScanEntry>
+        {
+            Choice(1, "도와드릴 일이 있을까요?"), Choice(2, "고마워요."), Choice(3, "다시 올게요."), Choice(4, "알겠습니다."),
+            Choice(5, "[양초를 제작하는 방법을 설명한다]"),
+            Choice(6, "마침 딱 맞는 게 있네요. (울프릭의 서류철을 보여준다)"),
+            Choice(7, "\"마라께서 우리를 당신의 자녀로 굽어살피겠다 맹세하셨나이다.\""),
+        };
+
+        Assert.DoesNotContain(await LqaScanner.ScanAsync(choices, "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
+    }
+
+    /// <summary>
+    /// Lines without a known speaker are many people's: read with 합니다체 and 해요체 as one, IDE Thalmor's
+    /// officials' 반말 was 30 notes against the others' 존댓말. The plugin-wide comparison keeps the two apart.
+    /// </summary>
+    [Fact]
+    public async Task DialogueTone_PluginWide_KeepsHamnidaAndHaeyoApart()
+    {
+        static LqaScanEntry Line(long id, string dest) => new(id, (int)id, null, "INFO:NAM1", StringEntryStatus.Done, "x", dest);
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "환영합니다."), Line(2, "기억해 두겠습니다."), Line(3, "물건을 보여 드리겠습니다."),
+            Line(4, "참으로 흥미롭군요."), Line(5, "또 오세요."), Line(6, "잠깐... 이건 대체 누구지?"),
+        };
+
+        Assert.DoesNotContain(await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>()), i => i.Code == "tone_differs_from_plugin");
+    }
+
     [Fact]
     public async Task NameConsistency_FindsOneNameSpelledTwoWays_ButNotTitlesOrParticles()
     {
