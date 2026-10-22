@@ -35,16 +35,15 @@ public class GameStringTranslationTests
         Assert.Contains("Skyrim.esm 같은 레코드", notes[line.Id]);
     }
 
-    // In a mod set in ESO's time the user put Pacify → 광역 진정 in the project glossary, and the game's 진정 still
-    // filled the name. A project term the game or TM text spells otherwise sends the row to the model; one it keeps
-    // does not, and the global glossary does not count.
+    // With Frenzy → 격분 in the project glossary, the spell named Frenzy was still filled with the patch's 광분. A
+    // project term the game or TM text spells otherwise sends the row to the model; one it keeps does not.
     [Fact]
     public async Task ProjectTermTheGameTextSpellsOtherwise_SendsTheRowToTheModel()
     {
-        await using var fixture = await TranslationRunFixture.CreateAsync(("Pacify", "SPEL:FULL"), ("Calm", "SPEL:FULL"), ("Fury", "SPEL:FULL"));
+        await using var fixture = await TranslationRunFixture.CreateAsync(("Frenzy", "SPEL:FULL"), ("Calm", "SPEL:FULL"), ("Fury", "SPEL:FULL"));
         await fixture.Db.BulkInsertGlossaryAsync(new[]
         {
-            ((string?)null, "Pacify", "광역 진정", true, 10, 0, 0, (string?)null),
+            ((string?)null, "Frenzy", "격분", true, 10, 0, 0, (string?)null),
             ((string?)null, "Calm", "진정", true, 10, 0, 0, (string?)null),
         }, CancellationToken.None);
         var rows = (await fixture.RowsAsync()).Values.ToDictionary(r => r.SourceText);
@@ -53,7 +52,7 @@ public class GameStringTranslationTests
         {
             GameStringMatches = new Dictionary<long, GameStringMatch>
             {
-                [rows["Pacify"].Id] = new("진정", "Skyrim.esm 같은 레코드"),
+                [rows["Frenzy"].Id] = new("광분", "Skyrim.esm 같은 레코드"),
                 [rows["Calm"].Id] = new("진정", "Skyrim.esm 같은 레코드"),
                 [rows["Fury"].Id] = new("격노", "Skyrim.esm 같은 레코드"),
             },
@@ -63,7 +62,7 @@ public class GameStringTranslationTests
         Assert.Equal("진정", after[rows["Calm"].Id].DestText);
         Assert.Equal("격노", after[rows["Fury"].Id].DestText);
         // A name that is the whole term needs no request: the glossary fills it.
-        Assert.Equal("광역 진정", after[rows["Pacify"].Id].DestText);
+        Assert.Equal("격분", after[rows["Frenzy"].Id].DestText);
         Assert.DoesNotContain("Calm", string.Join(" | ", fixture.Client.Requests.Select(r => r.Contents[0].Parts[0].Text)));
     }
 

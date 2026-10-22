@@ -103,8 +103,9 @@ public sealed partial class TranslationService
         CancellationToken cancellationToken
     )
     {
-        // A term the user put in the project glossary comes before the Skyrim patch's spelling: in a mod set in ESO's
-        // time "Pacify" → 광역 진정 was filled with the game's 진정. The earlier release is this field's own translation.
+        // A term the user put in the project glossary comes before the Skyrim patch's spelling: with Frenzy → 격분 in
+        // the glossary, the spell named Frenzy was still filled with the patch's 광분. The earlier release is this
+        // field's own translation.
         if (hitNoteKind != TranslationConstants.PreviousReleaseNoteKind
             && Ctx.ProjectTerms?.Apply(sourceText).TokenToReplacement.Values.Any(term => !tmText.Contains(term, StringComparison.Ordinal)) == true)
         {
