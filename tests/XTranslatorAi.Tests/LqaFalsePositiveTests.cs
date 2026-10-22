@@ -245,6 +245,36 @@ public class LqaFalsePositiveTests
     }
 
     /// <summary>
+    /// An INFO's prompt and responses share its EDID: Serana's 존댓말 answer was marked against the player's 반말 prompt.
+    /// The player's choices are compared with each other only, and an odd one among them is still marked.
+    /// </summary>
+    [Fact]
+    public async Task DialogueTone_ComparesPlayerChoicesApartFromTheNpcsLines()
+    {
+        static LqaScanEntry Line(long id, string rec, string dest)
+            => new(id, (int)id, "[05515D2E]", rec, StringEntryStatus.Done, "x", dest);
+        var answer = new List<LqaScanEntry>
+        {
+            Line(1, "INFO:RNAM", "확실해? 이 흡혈귀들은 네 친구들 아니야?"),
+            Line(2, "INFO:RNAM", "그럼 같이 가자."),
+            Line(3, "INFO:RNAM", "정말 그렇게 할 거야?"),
+            Line(4, "INFO:NAM1", "저조차 참는 데 한계가 있다고요!"),
+        };
+        Assert.DoesNotContain(await LqaScanner.ScanAsync(answer, "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
+
+        var choices = new List<LqaScanEntry>
+        {
+            new(1, 1, "EGG1FlintFriendship1", "DIAL:FULL", StringEntryStatus.Done, "x", "고마워요, 즐겁게 들었어요."),
+            new(2, 2, "EGG1FlintFriendship2", "DIAL:FULL", StringEntryStatus.Done, "x", "기분이 좀 나아졌나요?"),
+            new(3, 3, "EGG1FlintFriendship3", "DIAL:FULL", StringEntryStatus.Done, "x", "저도 당신 덕분에 행복해요."),
+            new(4, 4, "EGG1FlintFriendship4", "DIAL:FULL", StringEntryStatus.Done, "x", "그게 뭐지?"),
+        };
+        var issue = Assert.Single(await LqaScanner.ScanAsync(choices, "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
+        Assert.Equal(4L, issue.Id);
+        Assert.Contains("플레이어 선택지", issue.Message);
+    }
+
+    /// <summary>
     /// Plugin dialogue has no EDID, so the tone check never ran: Serana Dialogue Add-On had 359 lines in 해요체 among
     /// her 반말 lines and the review changed them by hand with no warning. Such lines are now compared with the
     /// plugin's dialogue as a whole, as information only, since another speaker may talk differently.

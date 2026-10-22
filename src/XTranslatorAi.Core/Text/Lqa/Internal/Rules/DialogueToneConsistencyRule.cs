@@ -33,7 +33,7 @@ internal static class DialogueToneConsistencyRule
             string groupKey;
             if (!string.IsNullOrWhiteSpace(edidStem))
             {
-                groupKey = "edid:" + edidStem;
+                groupKey = EdidGroupKey(entry, edidStem);
                 prevWasSeqDialogue = false;
             }
             else
@@ -122,7 +122,9 @@ internal static class DialogueToneConsistencyRule
                 Rec: entry.Rec,
                 Severity: "Warn",
                 Code: "tone_inconsistent",
-                Message: $"같은 대화 묶음의 다른 대사와 말투가 다릅니다: 대부분 {LqaToneClassifier.ToDisplay(majority)}, 이 대사 {LqaToneClassifier.ToDisplay(tone)}",
+                Message: IsPlayerLine(entry)
+                    ? $"같은 대화 묶음의 다른 플레이어 선택지와 말투가 다릅니다: 대부분 {LqaToneClassifier.ToDisplay(majority)}, 이 선택지 {LqaToneClassifier.ToDisplay(tone)}"
+                    : $"같은 대화 묶음의 다른 대사와 말투가 다릅니다: 대부분 {LqaToneClassifier.ToDisplay(majority)}, 이 대사 {LqaToneClassifier.ToDisplay(tone)}",
                 SourceText: entry.SourceText ?? "",
                 DestText: entry.DestText ?? ""
             )
@@ -184,10 +186,19 @@ internal static class DialogueToneConsistencyRule
         var edidStem = LqaScanner.NormalizeEdidStem(entry.Edid);
         if (!string.IsNullOrWhiteSpace(edidStem))
         {
-            return "edid:" + edidStem;
+            return EdidGroupKey(entry, edidStem);
         }
 
         // Fallback: no stable EDID stem => do not flag tone mismatches (avoid high false positives).
         return "";
     }
+
+    // The player's choices (the topic text and an INFO's prompt) are compared with each other, not with the NPC's
+    // answers: the player may speak 반말 to an NPC who answers in 존댓말. An INFO's prompt and responses share its EDID,
+    // so Serana's 존댓말 answer was marked against the player's 반말 "확실해? 이 흡혈귀들은 네 친구들 아니야?"
+    // (1 of the 47 warnings over the user's 56 projects; the other 46, player choices against each other, stay).
+    private static string EdidGroupKey(LqaScanEntry entry, string edidStem)
+        => (IsPlayerLine(entry) ? "player-edid:" : "edid:") + edidStem;
+
+    private static bool IsPlayerLine(LqaScanEntry entry) => entry.Rec is "DIAL:FULL" or "INFO:RNAM";
 }
