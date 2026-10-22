@@ -102,6 +102,26 @@ jobs:
           $hash = (Get-FileHash -Path $exe -Algorithm SHA256).Hash.ToLowerInvariant()
           "$hash  TulliusTranslator.exe" | Out-File -FilePath "artifacts/current/TulliusTranslator.exe.sha256" -Encoding ascii
 
+      # The translator and its agent kit in one zip, so the kit lands beside the EXE where .mcp.json and
+      # tullius.cmd look for it; the kit alone stays for those who followed the earlier two-file instructions.
+      - name: Package EXE with agent kit
+        shell: pwsh
+        env:
+          RELEASE_TAG: ${{ steps.release_tag.outputs.value }}
+        run: |
+          # The checkout holds only the kit's tracked files (no work or output folders).
+          $stage = "$PWD/artifacts/package"
+          New-Item -ItemType Directory -Force $stage | Out-Null
+          Copy-Item -Path "agent-kit" -Destination $stage -Recurse -Force
+          Copy-Item "artifacts/current/TulliusTranslator.exe" "$stage/TulliusTranslator.exe"
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          [System.IO.Compression.ZipFile]::CreateFromDirectory($stage, "$PWD/artifacts/current/TulliusTranslator-$($env:RELEASE_TAG).zip")
+          [System.IO.Compression.ZipFile]::CreateFromDirectory("$stage/agent-kit", "$PWD/artifacts/current/TulliusTranslator-agent-kit.zip", [System.IO.Compression.CompressionLevel]::Optimal, $true)
+          $zip = [System.IO.Compression.ZipFile]::OpenRead("$PWD/artifacts/current/TulliusTranslator-$($env:RELEASE_TAG).zip")
+          $names = $zip.Entries.FullName; $zip.Dispose()
+          $names
+          if ($names -notcontains "TulliusTranslator.exe" -or $names -notcontains "agent-kit/.mcp.json") { throw "The zip is missing the EXE or the kit." }
+
       - name: Upload assets to release
         shell: pwsh
         env:
@@ -112,6 +132,8 @@ jobs:
           gh release upload $env:RELEASE_TAG `
             "artifacts/current/TulliusTranslator.exe" `
             "artifacts/current/TulliusTranslator.exe.sha256" `
+            "artifacts/current/TulliusTranslator-$($env:RELEASE_TAG).zip" `
+            "artifacts/current/TulliusTranslator-agent-kit.zip" `
             --clobber `
             --repo $env:RELEASE_REPOSITORY
 
