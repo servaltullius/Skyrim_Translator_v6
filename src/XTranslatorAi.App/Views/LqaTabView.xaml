@@ -19,7 +19,7 @@
             <Button Content="지우기" Command="{Binding ClearLqaCommand}" Style="{StaticResource XT.ToolbarButton}" />
             <Button Command="{Binding ToggleLqaReviewedCommand}"
                     CommandParameter="{Binding SelectedItems, ElementName=LqaIssuesGrid}"
-                    ToolTip="고칠 필요가 없다고 본 결과(일부러 다르게 쓴 말투, 영어로 둔 모드 이름 등)를 표시합니다. 행의 번역문이 바뀌면 표시가 풀려 다시 나옵니다. 여러 결과를 골라 한 번에 표시할 수 있습니다.">
+                    ToolTip="고칠 필요가 없다고 본 결과(일부러 다르게 쓴 말투, 영어로 둔 모드 이름 등)를 표시합니다. 문장을 다듬어도 말투나 남은 영어가 그대로면 표시가 남고, 그 밖의 결과는 번역문이 바뀌면 다시 나옵니다. 여러 결과를 골라 한 번에 표시할 수 있습니다.">
                 <Button.Style>
                     <Style TargetType="Button" BasedOn="{StaticResource XT.ToolbarButton}">
                         <Setter Property="Content" Value="확인함으로 표시" />

@@ -106,7 +106,7 @@ public static partial class AgentCli
         }
 
         var marked = picked.Select(i => i.Id).ToHashSet();
-        Console.WriteLine($"확인함으로 표시: {picked.Count}건(줄 {marked.Count}개). 번역문이 바뀌면 다시 나옵니다.");
+        Console.WriteLine($"확인함으로 표시: {picked.Count}건(줄 {marked.Count}개). 문장을 다듬어도 말투나 남은 영어가 그대로면 표시가 남고, 그 밖에는 번역문이 바뀌면 다시 나옵니다.");
         var none = ids.Where(id => !marked.Contains(id)).OrderBy(id => id).ToList();
         if (none.Count > 0)
         {

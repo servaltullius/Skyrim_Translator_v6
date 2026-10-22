@@ -71,6 +71,13 @@ internal static partial class SpeakerToneConsistencyRule
         return casual >= total * 0.6 ? "반말" : null;
     }
 
+    /// <summary>Whether two versions of a line read at the same known level, as this rule reads them (LqaReviewedMarks).</summary>
+    internal static bool SameLevel(string? before, string? after)
+    {
+        var level = Level(before);
+        return level.Register != Register.Unknown && level == Level(after);
+    }
+
     /// <summary>
     /// 존댓말 when any sentence or clause of the line is: "어디 한번 보죠. 당신이 어떤 실력인지." and "물론이죠, 돈만
     /// 있다면야." are polite lines that trail off. Otherwise the last sentence's level.

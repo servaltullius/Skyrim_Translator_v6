@@ -89,7 +89,7 @@ internal static class AgentMcpServer
                 },
             },
             new[] { "project", "edits" }),
-        new("review", "그대로 둘 줄의 품질검사 결과를 확인함으로 표시(번역문이 바뀌면 다시 나옴).",
+        new("review", "그대로 둘 줄의 품질검사 결과를 확인함으로 표시(말투·남은 영어가 바뀌면 다시 나옴).",
             new JsonObject { ["project"] = Project(), ["ids"] = Str("id 목록(예: 12,40)"), ["undo"] = Bool("표시를 지운다") }, new[] { "project", "ids" }),
         new("korean", "기존 한국어판을 연결하고 아직 번역 안 된 줄을 채운다(검수 모드).",
             new JsonObject { ["project"] = Project(), ["korean_plugin"] = Str("한국어판 플러그인 전체 경로"), ["strings"] = Str("한국어판 Strings 폴더"),

@@ -69,8 +69,10 @@ public sealed partial class PluginUiLifecycleTests
             fixture.Vm.SelectedLqaIssue = Residue(fixture, rows[0].Id);
             await fixture.Vm.LqaTab.ToggleLqaReviewedCommand.ExecuteAsync(null);
 
+            // A rewording that keeps only the English looked at keeps the mark (ProjectDbLqaReviewedTests); a new
+            // English word is something nobody has looked at.
             fixture.Vm.SelectedEntry = rows[0];
-            rows[0].EditableDestText = "Iron 장검";
+            rows[0].EditableDestText = "Iron Long 검";
             await fixture.Vm.SaveSelectedDestCommand.ExecuteAsync(null);
 
             Assert.False(Residue(fixture, rows[0].Id).IsReviewed);

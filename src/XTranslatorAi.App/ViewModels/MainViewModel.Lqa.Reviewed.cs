@@ -95,7 +95,7 @@ public partial class MainViewModel
         }
 
         StatusMessage = mark
-            ? $"{issues.Count}건을 확인함으로 표시했습니다. 번역문이 바뀌면 다시 나옵니다."
+            ? $"{issues.Count}건을 확인함으로 표시했습니다. 문장을 다듬어도 말투나 남은 영어가 그대로면 표시가 남습니다."
             : $"{issues.Count}건의 확인함 표시를 해제했습니다.";
     }
 

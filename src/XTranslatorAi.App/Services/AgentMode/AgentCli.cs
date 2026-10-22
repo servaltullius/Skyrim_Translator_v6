@@ -148,7 +148,7 @@ public static partial class AgentCli
           tullius.cmd next <프로젝트>                                                첫 요청 만들기(끊긴 뒤 다시 시작할 때도)
           tullius.cmd submit <프로젝트> <답 파일>                                    답 저장, 다음 요청 만들기
           tullius.cmd check <프로젝트> [--all]                                       품질검사(--all: 고칠 것 없는 참고·확인함까지)
-          tullius.cmd review <프로젝트> --id 12,40 [--undo]                          그대로 둘 줄의 품질검사 결과를 확인함으로 표시(번역문이 바뀌면 다시 나옴)
+          tullius.cmd review <프로젝트> --id 12,40 [--undo]                          그대로 둘 줄의 품질검사 결과를 확인함으로 표시(말투·남은 영어가 바뀌면 다시 나옴)
           tullius.cmd show <프로젝트> [--find 글자] [--rec WEAP:FULL] [--id 12,40] [--after <id>] [--count 40]  줄 보기(#id, 영어, 번역; --after·--count로 쪽 나눠 읽기)
           tullius.cmd korean <프로젝트> <한국어판 경로> [--strings <폴더>] [--english <영어 원본>]  기존 한국어판을 연결하고 아직 번역 안 된 줄을 채움(검수 모드, 영어가 바뀐 줄은 번역)
           tullius.cmd lookup <프로젝트> <낱말>                                       이름·용어의 기존 표기(용어집·게임 사전·TM, 앱이 켜져 있어도 됨)

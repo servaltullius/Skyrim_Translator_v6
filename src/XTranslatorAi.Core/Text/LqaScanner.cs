@@ -54,6 +54,10 @@ public static class LqaScanner
         options: RegexOptions.CultureInvariant
     );
 
+    /// <summary>The Latin words of a translation, as the English-residue check reads them (LqaReviewedMarks).</summary>
+    internal static IEnumerable<string> LatinWords(string? text)
+        => LatinWordRegex.Matches(StripUiTokens(text ?? "")).Select(match => match.Value);
+
     // A whole run of Latin letters and digits, so "05000A6E" in [ARMO:05000A6E] is one identifier.
     private static readonly Regex LatinWordRegex = new(
         pattern: @"[A-Za-z0-9]*[A-Za-z][A-Za-z0-9]*",

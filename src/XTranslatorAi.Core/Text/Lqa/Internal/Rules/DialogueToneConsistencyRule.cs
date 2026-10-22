@@ -168,6 +168,13 @@ internal static class DialogueToneConsistencyRule
         );
     }
 
+    /// <summary>Whether two versions of a line read at the same known level, as this rule reads them (LqaReviewedMarks).</summary>
+    internal static bool SameSpeech(string? before, string? after)
+    {
+        var tone = ClassifySpeech(before);
+        return tone != ToneKind.Unknown && tone == ClassifySpeech(after);
+    }
+
     // In speech, 해라체 statements mix naturally into 반말 ("가자, 나도 모르겠다."), so both count as 반말.
     // A lone word in 다 or 라 is usually a name ("사만다.", "젤다.", "키아라."), not a speech level.
     private static ToneKind ClassifySpeech(string? text)
