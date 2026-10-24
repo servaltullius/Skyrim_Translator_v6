@@ -237,7 +237,7 @@ public partial class MainViewModel
     /// <summary>
     /// Saving with rows still in error or pending used to finish silently, so a half-translated file went out
     /// looking complete. A plugin keeps the source text of an unfinished row; an XML keeps its translation field as it
-    /// is, so a row never translated goes out with an empty one (the question used to say "source" for both).
+    /// is, empty or as the opened XML had it (the question used to say "source" for both).
     /// </summary>
     private bool ConfirmExportWithUnfinishedRows(bool xml)
     {
@@ -257,7 +257,7 @@ public partial class MainViewModel
         var answer = _uiInteractionService.ShowMessage(
             $"번역이 끝나지 않은 행이 있습니다: 오류 {errors}개, 대기 {pending}개.{Environment.NewLine}{Environment.NewLine}"
             + (xml
-                ? "XML에는 이 행들의 번역란이 지금 그대로 저장됩니다(번역하지 않은 행은 빈 채로). 그래도 저장할까요?"
+                ? "XML에는 이 행들의 번역란이 지금 그대로 저장됩니다(비어 있으면 빈 채로). 그래도 저장할까요?"
                 : "플러그인에는 이 행들의 원문이 그대로 남습니다. 그래도 저장할까요?"),
             "저장 확인",
             UiMessageBoxButton.YesNo,

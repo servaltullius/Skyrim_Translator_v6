@@ -45,7 +45,8 @@ public static partial class AgentCli
             : who == SpeakerStyles.Player ? "플레이어"
             : who == SpeakerStyles.Other ? "다른 인물"
             : who == SpeakerStyles.Anyone ? "누구에게나"
-            : npcs.TryGetValue(who, out var npc) ? $"{npc.Name} ({who})" : who;
+            : npcs.TryGetValue(who, out var npc) ? $"{npc.Name} ({who})"
+            : who.StartsWith('@') ? $"{who} (마스터가 빠져 쓰이지 않음, 돌아오면 다시 쓰임)" : who;
         string Resolve(string query, bool listener)
         {
             var q = query.Trim();
@@ -53,6 +54,8 @@ public static partial class AgentCli
             if (listener && q is "other" or "다른 인물" or "다른인물") return SpeakerStyles.Other;
             if (listener && q is "*" or "anyone" or "누구에게나" or "모두") return SpeakerStyles.Anyone;
             if (q.Length == 8 && q.All(Uri.IsHexDigit)) return q.ToUpperInvariant();
+            // A style kept for an NPC whose master left the list ("@Dawnguard.esm|01001234"), to clear it.
+            if (q.StartsWith('@') && q.Contains('|')) return q;
             var found = npcs.Where(n => n.Value.Name.Contains(q, StringComparison.OrdinalIgnoreCase)).ToList();
             // A base game NPC's label is its Korean name: its English name is in the dictionary's speaker index.
             if (found.Count == 0 && game?.Speakers is { } index && masters is { } m)

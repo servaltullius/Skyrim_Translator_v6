@@ -89,7 +89,7 @@ public sealed partial class ProjectDb
                 // Notes (TM applied, TM fallback) describe the translation, so a row that keeps it keeps them:
                 // reopening used to delete them all. A hand edit's TM notes are stale (saving the edit leaves them), but
                 // the marks the user put on it stay: "원문 오류 수정" and "확인함", which reopening dropped on edited rows.
-                // A translation set aside by an earlier import brings back the marks kept with it.
+                // A translation set aside by an earlier import brings back the notes kept with it.
                 if (kept != null && status != StringEntryStatus.Pending
                     && string.Equals(destText, kept.DestText, StringComparison.Ordinal)
                     && (notes.TryGetValue((identity!, kept.OrderIndex), out var keptNotes) || kept.Marks is { Count: > 0 }))
@@ -187,7 +187,7 @@ public sealed partial class ProjectDb
         {
             var key = reader.GetString(0);
             if (!result.TryGetValue(key, out var entries)) result[key] = entries = new List<SavedTranslation>();
-            entries.Add(new SavedTranslation(reader.GetInt32(1), reader.GetString(2), (StringEntryStatus)reader.GetInt32(3), ReadUserMarks(reader, 4)));
+            entries.Add(new SavedTranslation(reader.GetInt32(1), reader.GetString(2), (StringEntryStatus)reader.GetInt32(3), ReadKeptNotes(reader, 4)));
         }
         return result;
     }
@@ -238,7 +238,7 @@ public sealed partial class ProjectDb
                 pOrder.Value = entry.OrderIndex;
                 pDest.Value = entry.DestText;
                 pStatus.Value = (int)entry.Status;
-                pMarks.Value = (object?)SerializeUserMarks(notes.GetValueOrDefault((key, entry.OrderIndex))) ?? DBNull.Value;
+                pMarks.Value = (object?)SerializeKeptNotes(notes.GetValueOrDefault((key, entry.OrderIndex)), entry.Status) ?? DBNull.Value;
                 await retire.ExecuteNonQueryAsync(cancellationToken);
             }
         }
@@ -273,8 +273,8 @@ public sealed partial class ProjectDb
             element.Element("Source")?.Value ?? "");
     }
 
-    /// <param name="Marks">The user's marks kept with a retired translation (none for a row still in the project,
-    /// whose notes are read from StringNote).</param>
+    /// <param name="Marks">The notes kept with a retired translation (none for a row still in the project, whose notes
+    /// are read from StringNote).</param>
     private sealed record SavedTranslation(int OrderIndex, string DestText, StringEntryStatus Status,
         IReadOnlyList<(string Kind, string Message, string UpdatedAt)>? Marks = null);
 }

@@ -138,4 +138,25 @@ public sealed partial class PluginProjectIntegrationTests
             new[] { Line(0x03000900) }, fixture.Project, "utf-8", CancellationToken.None);
         Assert.Equal(new SpeakerStyle("02001234", "", "반말"), Assert.Single(await fixture.Db.GetSpeakerStylesAsync(CancellationToken.None)));
     }
+
+    // A row still present keeps every note of a machine translation (the grid's TM mark, the check's TM notes); one
+    // set aside and back kept only the user's marks.
+    [Fact]
+    public async Task ChangedSourceThatComesBack_BringsBackTheTmNoteOfAMachineTranslation()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        static PluginField Sword(string source) => new("WEAP/00000800/0/FULL/1", 0, "WEAP", "FULL", 0x00000800, "Sword", 1, 1, source);
+        await fixture.ImportAsync(Sword("Steel Sword"));
+        var row = Assert.Single(await fixture.Db.GetStringsAsync(10, 0, CancellationToken.None));
+        await fixture.Db.UpdateStringTranslationAsync(row.Id, "강철 검", StringEntryStatus.Done, null, CancellationToken.None);
+        await fixture.Db.UpsertStringNoteAsync(row.Id, "tm_fallback", "TM", CancellationToken.None);
+
+        await fixture.Db.ReplaceImportedPluginStringsAsync(fixture.Source with { Sha256 = "v2" }, new[] { Sword("Steel Greatsword") },
+            fixture.Project, "utf-8", CancellationToken.None);
+        var back = Assert.Single(await fixture.Db.ReplaceImportedPluginStringsAsync(fixture.Source with { Sha256 = "v3" }, new[] { Sword("Steel Sword") },
+            fixture.Project, "utf-8", CancellationToken.None));
+
+        Assert.Equal(("강철 검", StringEntryStatus.Done), (back.DestText, back.Status));
+        Assert.Equal("TM", (await fixture.Db.GetStringNotesByKindAsync("tm_fallback", CancellationToken.None))[back.Id]);
+    }
 }

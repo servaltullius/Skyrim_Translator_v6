@@ -50,8 +50,18 @@ public static partial class AgentCli
             .Where(e => e.Enabled && e.ForceMode == GlossaryForceMode.ForceToken && e.MatchMode != GlossaryMatchMode.Regex)
             .Where(e => !string.IsNullOrWhiteSpace(e.SourceTerm) && !string.IsNullOrWhiteSpace(e.TargetTerm))
             .OrderByDescending(e => e.Priority).ThenByDescending(e => e.SourceTerm.Length).ToList();
-        var memory = global == null ? new List<(string, string)>()
-            : (await global.GetTranslationMemoryEntriesAsync("english", "korean", c.Ct)).Select(e => (e.SourceText, e.DestText)).ToList();
+        // An unreadable series TM ended the check; the GUI's goes on without the TM name index, and so does this one.
+        var memory = new List<(string, string)>();
+        try
+        {
+            if (global != null)
+                memory = (await global.GetTranslationMemoryEntriesAsync("english", "korean", c.Ct)).Select(e => (e.SourceText, e.DestText)).ToList();
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            AppLog.Write($"WARN 품질 검사용 TM 이름 색인을 읽지 못했습니다: {ex.Message}");
+            Console.WriteLine("경고: 전체 DB의 시리즈 TM을 읽지 못해 TM 이름 색인 없이 검사했습니다(한글패치 이름 표기 결과가 빠질 수 있음).");
+        }
         var tmNotes = await db.GetStringNotesByKindAsync("tm_fallback", c.Ct);
         var sourceFix = (await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, c.Ct)).Keys.ToHashSet();
         var notes = memory.Count > 0 ? LqaScanner.DropTmFallbacksMatchingMemory(tmNotes, entries, memory) : tmNotes;

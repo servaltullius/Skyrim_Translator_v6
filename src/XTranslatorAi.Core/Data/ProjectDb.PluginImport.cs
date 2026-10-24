@@ -119,7 +119,7 @@ public sealed partial class ProjectDb
                 : await ReadPluginStringNotesAsync(tx, cancellationToken);
             if (oldSource != null && !oldSource.Info.Masters.SequenceEqual(source.Masters, StringComparer.OrdinalIgnoreCase))
             {
-                // A key whose master left is detached as its translation is (unmapped), so its marks retire with it.
+                // A key whose master left is detached as its translation is (unmapped), so its notes retire with it.
                 notesByKey = notesByKey
                     .Select(pair => PreviousTranslationMatcher.TryMapKey(pair.Key, oldSource.Info.Masters, source.Masters, out var mapped)
                         ? (mapped, pair.Value) : (PreviousTranslationMatcher.DetachKey(pair.Key, oldSource.Info.Masters), pair.Value))
@@ -317,8 +317,8 @@ public sealed partial class ProjectDb
             source.Value = previous.Source;
             dest.Value = previous.Dest;
             status.Value = (int)previous.Status;
-            marks.Value = (object?)SerializeUserMarks(notesByKey.TryGetValue(fieldKey, out var notes)
-                && string.Equals(notes.Source, previous.Source, StringComparison.Ordinal) ? notes.Notes : null) ?? DBNull.Value;
+            marks.Value = (object?)SerializeKeptNotes(notesByKey.TryGetValue(fieldKey, out var notes)
+                && string.Equals(notes.Source, previous.Source, StringComparison.Ordinal) ? notes.Notes : null, previous.Status) ?? DBNull.Value;
             await retire.ExecuteNonQueryAsync(ct);
             count++;
         }
@@ -418,7 +418,7 @@ public sealed partial class ProjectDb
         await using var reader = await query.ExecuteReaderAsync(ct);
         while (await reader.ReadAsync(ct))
         {
-            retired[(reader.GetString(0), reader.GetString(1))] = (reader.GetString(2), (StringEntryStatus)reader.GetInt32(3), ReadUserMarks(reader, 4));
+            retired[(reader.GetString(0), reader.GetString(1))] = (reader.GetString(2), (StringEntryStatus)reader.GetInt32(3), ReadKeptNotes(reader, 4));
         }
 
         return retired;
