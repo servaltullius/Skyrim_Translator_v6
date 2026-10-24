@@ -7,7 +7,7 @@ using XTranslatorAi.Tests.TestSupport;
 
 namespace XTranslatorAi.Tests;
 
-public sealed class PluginProjectIntegrationTests
+public sealed partial class PluginProjectIntegrationTests
 {
     [Fact]
     public void PluginPaths_IsolateXmlInputLocationLanguageAndEncoding()

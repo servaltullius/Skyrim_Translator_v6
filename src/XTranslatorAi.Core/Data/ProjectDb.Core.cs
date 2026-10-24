@@ -141,6 +141,7 @@ public sealed partial class ProjectDb : IAsyncDisposable, IProjectDb
           DestText TEXT NOT NULL,
           Status INTEGER NOT NULL,
           RetiredAt TEXT NOT NULL,
+          Marks TEXT,
           PRIMARY KEY (ImportIdentity, OrderIndex)
         );
 
@@ -150,6 +151,7 @@ public sealed partial class ProjectDb : IAsyncDisposable, IProjectDb
           DestText TEXT NOT NULL,
           Status INTEGER NOT NULL,
           RetiredAt TEXT NOT NULL,
+          Marks TEXT,
           PRIMARY KEY (FieldKey, SourceText)
         );
         """;
@@ -239,6 +241,9 @@ public sealed partial class ProjectDb : IAsyncDisposable, IProjectDb
 
             // Migration: older DBs won't have the Franchise column.
             await EnsureProjectFranchiseColumnAsync(cancellationToken);
+
+            // Migration: older DBs keep no marks with a retired translation.
+            await EnsureRetiredMarksColumnsAsync(cancellationToken);
         }
         finally
         {

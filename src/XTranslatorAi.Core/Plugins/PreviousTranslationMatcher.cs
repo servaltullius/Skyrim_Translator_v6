@@ -241,6 +241,31 @@ public static class PreviousTranslationMatcher
         return true;
     }
 
+    /// <summary>
+    /// A bare FormID ("02000800", as a speaker style names its speaker) in the new numbering, like
+    /// <see cref="TryMapKey"/>; false when its master left the list.
+    /// </summary>
+    internal static bool TryMapFormId(string formId, IReadOnlyList<string> fromMasters, IReadOnlyList<string> toMasters, out string mapped)
+    {
+        var ok = TryMapKey("S/" + formId + "/", fromMasters, toMasters, out var key);
+        mapped = ok ? key[2..^1] : formId;
+        return ok;
+    }
+
+    /// <summary>A bare FormID of a master that left the list, named by that master ("@Dawnguard.esm|01001234").</summary>
+    internal static string? DetachFormId(string formId, IReadOnlyList<string> fromMasters)
+        => DetachKey("S/" + formId + "/", fromMasters) is { } key ? key[..(key.IndexOf('|') + 1)] + formId : null;
+
+    /// <summary>A FormID <see cref="DetachFormId"/> made, numbered again where its master is in <paramref name="toMasters"/>.</summary>
+    internal static bool TryAttachFormId(string detached, IReadOnlyList<string> toMasters, out string formId)
+    {
+        formId = detached;
+        var bar = detached.IndexOf('|');
+        if (bar < 0 || !TryAttachKey(detached[..(bar + 1)] + "S/" + detached[(bar + 1)..] + "/", toMasters, out var key)) return false;
+        formId = key[2..^1];
+        return true;
+    }
+
     private static bool TryReadIndex(string key, out int index)
     {
         index = 0;

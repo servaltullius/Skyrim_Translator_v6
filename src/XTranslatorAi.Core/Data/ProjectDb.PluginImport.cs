@@ -98,6 +98,7 @@ public sealed partial class ProjectDb
 
                 saved = remapped;
                 await RemapPluginFieldKeysAsync(tx, oldSource.Info.Masters, source.Masters, cancellationToken);
+                await RemapSpeakerStylesAsync(tx, oldSource.Info.Masters, source.Masters, cancellationToken);
             }
 
             var sourceByKey = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -108,7 +109,7 @@ public sealed partial class ProjectDb
 
             RejectTranslatedPluginAsSource(saved, sourceByKey);
             var retired = oldSource == null
-                ? new Dictionary<(string Key, string Source), (string Dest, StringEntryStatus Status)>()
+                ? new Dictionary<(string Key, string Source), (string Dest, StringEntryStatus Status, IReadOnlyList<(string Kind, string Message, string UpdatedAt)> Marks)>()
                 : await ReadRetiredPluginTranslationsAsync(tx, cancellationToken);
 
             // Notes (TM applied, TM fallback) are kept for rows whose translation is kept, by field key: reopening
@@ -118,8 +119,10 @@ public sealed partial class ProjectDb
                 : await ReadPluginStringNotesAsync(tx, cancellationToken);
             if (oldSource != null && !oldSource.Info.Masters.SequenceEqual(source.Masters, StringComparer.OrdinalIgnoreCase))
             {
+                // A key whose master left is detached as its translation is (unmapped), so its marks retire with it.
                 notesByKey = notesByKey
-                    .Select(pair => PreviousTranslationMatcher.TryMapKey(pair.Key, oldSource.Info.Masters, source.Masters, out var mapped) ? (mapped, pair.Value) : (null, pair.Value))
+                    .Select(pair => PreviousTranslationMatcher.TryMapKey(pair.Key, oldSource.Info.Masters, source.Masters, out var mapped)
+                        ? (mapped, pair.Value) : (PreviousTranslationMatcher.DetachKey(pair.Key, oldSource.Info.Masters), pair.Value))
                     .Where(pair => pair.Item1 != null)
                     .GroupBy(pair => pair.Item1!, StringComparer.Ordinal)
                     .ToDictionary(group => group.Key, group => group.First().Value, StringComparer.Ordinal);
@@ -132,8 +135,8 @@ public sealed partial class ProjectDb
                 await clear.ExecuteNonQueryAsync(cancellationToken);
             }
 
-            var retiredCount = await RetireChangedPluginTranslationsAsync(tx, saved, sourceByKey, cancellationToken)
-                + await RetireChangedPluginTranslationsAsync(tx, unmapped, new Dictionary<string, string>(), cancellationToken);
+            var retiredCount = await RetireChangedPluginTranslationsAsync(tx, saved, sourceByKey, notesByKey, cancellationToken)
+                + await RetireChangedPluginTranslationsAsync(tx, unmapped, new Dictionary<string, string>(), notesByKey, cancellationToken);
             await using var insert = CreateBulkInsertStringsCommand(_connection, tx, out var parameters);
             await using var binding = _connection.CreateCommand();
             binding.Transaction = tx;
@@ -149,6 +152,7 @@ public sealed partial class ProjectDb
                 var dest = field.SourceText;
                 var status = StringEntryStatus.Pending;
                 var keptTranslation = false;
+                IReadOnlyList<(string Kind, string Message, string UpdatedAt)>? restoredMarks = null;
                 if (saved.TryGetValue(field.Key, out var previous)
                     && string.Equals(previous.Source, field.SourceText, StringComparison.Ordinal))
                 {
@@ -161,6 +165,7 @@ public sealed partial class ProjectDb
                     // The source is back to a text this row had before (the earlier plugin version reopened).
                     dest = kept.Dest;
                     status = kept.Status;
+                    restoredMarks = kept.Marks;
                     await DeleteRetiredPluginTranslationAsync(tx, field.Key, field.SourceText, cancellationToken);
                 }
                 parameters.BindRow((field.OrderIndex, null, null, null, field.EditorId, field.Rec,
@@ -172,6 +177,10 @@ public sealed partial class ProjectDb
                 if (keptTranslation && notesByKey.TryGetValue(field.Key, out var notes) && string.Equals(notes.Source, field.SourceText, StringComparison.Ordinal))
                 {
                     await RestorePluginStringNotesAsync(tx, id, notes.Notes, cancellationToken);
+                }
+                else if (restoredMarks is { Count: > 0 })
+                {
+                    await RestorePluginStringNotesAsync(tx, id, restoredMarks, cancellationToken);
                 }
                 imported.Add(new StringEntry(id, field.OrderIndex, null, null, null, field.EditorId,
                     field.Rec, field.SourceText, dest, status, null, updatedAt));
@@ -280,19 +289,21 @@ public sealed partial class ProjectDb
         SqliteTransaction tx,
         IReadOnlyDictionary<string, (string Source, string Dest, StringEntryStatus Status)> saved,
         IReadOnlyDictionary<string, string> sourceByKey,
+        IReadOnlyDictionary<string, (string Source, List<(string Kind, string Message, string UpdatedAt)> Notes)> notesByKey,
         CancellationToken ct)
     {
         await using var retire = _connection.CreateCommand();
         retire.Transaction = tx;
         retire.CommandText = """
-            INSERT INTO PluginRetiredTranslation(FieldKey, SourceText, DestText, Status, RetiredAt)
-            VALUES ($key, $source, $dest, $status, $at)
-            ON CONFLICT(FieldKey, SourceText) DO UPDATE SET DestText=$dest, Status=$status, RetiredAt=$at;
+            INSERT INTO PluginRetiredTranslation(FieldKey, SourceText, DestText, Status, RetiredAt, Marks)
+            VALUES ($key, $source, $dest, $status, $at, $marks)
+            ON CONFLICT(FieldKey, SourceText) DO UPDATE SET DestText=$dest, Status=$status, RetiredAt=$at, Marks=$marks;
             """;
         var key = retire.Parameters.Add("$key", SqliteType.Text);
         var source = retire.Parameters.Add("$source", SqliteType.Text);
         var dest = retire.Parameters.Add("$dest", SqliteType.Text);
         var status = retire.Parameters.Add("$status", SqliteType.Integer);
+        var marks = retire.Parameters.Add("$marks", SqliteType.Text);
         retire.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O"));
         var count = 0;
         foreach (var (fieldKey, previous) in saved)
@@ -306,6 +317,8 @@ public sealed partial class ProjectDb
             source.Value = previous.Source;
             dest.Value = previous.Dest;
             status.Value = (int)previous.Status;
+            marks.Value = (object?)SerializeUserMarks(notesByKey.TryGetValue(fieldKey, out var notes)
+                && string.Equals(notes.Source, previous.Source, StringComparison.Ordinal) ? notes.Notes : null) ?? DBNull.Value;
             await retire.ExecuteNonQueryAsync(ct);
             count++;
         }
@@ -395,17 +408,17 @@ public sealed partial class ProjectDb
         }
     }
 
-    private async Task<Dictionary<(string Key, string Source), (string Dest, StringEntryStatus Status)>> ReadRetiredPluginTranslationsAsync(
+    private async Task<Dictionary<(string Key, string Source), (string Dest, StringEntryStatus Status, IReadOnlyList<(string Kind, string Message, string UpdatedAt)> Marks)>> ReadRetiredPluginTranslationsAsync(
         SqliteTransaction tx, CancellationToken ct)
     {
-        var retired = new Dictionary<(string Key, string Source), (string Dest, StringEntryStatus Status)>();
+        var retired = new Dictionary<(string Key, string Source), (string Dest, StringEntryStatus Status, IReadOnlyList<(string Kind, string Message, string UpdatedAt)> Marks)>();
         await using var query = _connection.CreateCommand();
         query.Transaction = tx;
-        query.CommandText = "SELECT FieldKey, SourceText, DestText, Status FROM PluginRetiredTranslation;";
+        query.CommandText = "SELECT FieldKey, SourceText, DestText, Status, Marks FROM PluginRetiredTranslation;";
         await using var reader = await query.ExecuteReaderAsync(ct);
         while (await reader.ReadAsync(ct))
         {
-            retired[(reader.GetString(0), reader.GetString(1))] = (reader.GetString(2), (StringEntryStatus)reader.GetInt32(3));
+            retired[(reader.GetString(0), reader.GetString(1))] = (reader.GetString(2), (StringEntryStatus)reader.GetInt32(3), ReadUserMarks(reader, 4));
         }
 
         return retired;

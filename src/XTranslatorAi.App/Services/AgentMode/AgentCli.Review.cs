@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.App.ViewModels;
 using XTranslatorAi.Core;
@@ -16,24 +17,35 @@ namespace XTranslatorAi.App.Services.AgentMode;
 /// <summary>The review commands: check (the GUI's quality check), review (확인함 marks), edit and export.</summary>
 public static partial class AgentCli
 {
-    // The quality check as the GUI runs it on the whole project, with each row's translation by id.
-    private static async Task<(List<LqaIssue> Issues, Dictionary<long, string> Dest)> ScanProjectAsync(AgentCommand c, ProjectDb db)
+    /// <summary>
+    /// Every row as the GUI's check reads it: its speaker, and the linked earlier release's translation (an English word
+    /// that release kept too, such as an author's name, is not left over; the agent's check used to flag it).
+    /// </summary>
+    internal static async Task<(List<StringEntry> Rows, List<LqaScanEntry> Entries)> LoadScanEntriesAsync(ProjectDb db, CancellationToken ct)
     {
-        var global = await c.GlobalDb.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, c.Ct);
         var rows = new List<StringEntry>();
         for (var offset = 0; ; offset += 1000)
         {
-            var page = await db.GetStringsAsync(1000, offset, c.Ct);
+            var page = await db.GetStringsAsync(1000, offset, ct);
             rows.AddRange(page);
             if (page.Count < 1000) break;
         }
 
-        var speakers = await DialogueSpeakerNames.LoadCheckGroupsAsync(db, c.Ct);
+        var speakers = await DialogueSpeakerNames.LoadCheckGroupsAsync(db, ct);
+        var previous = await db.GetPreviousTranslationsByStringIdAsync(ct);
         static StringEntryStatus Status(StringEntry e)
             => e.Status == StringEntryStatus.Skipped && !string.IsNullOrWhiteSpace(e.DestText)
                && !string.Equals(e.DestText.Trim(), e.SourceText.Trim(), StringComparison.Ordinal) ? StringEntryStatus.Done : e.Status;
         var entries = rows.Select(e => new LqaScanEntry(e.Id, e.OrderIndex, e.Edid, e.Rec, Status(e), e.SourceText ?? "", e.DestText ?? "",
-            Speaker: speakers.GetValueOrDefault(e.Id))).ToList();
+            PreviousText: previous.GetValueOrDefault(e.Id), Speaker: speakers.GetValueOrDefault(e.Id))).ToList();
+        return (rows, entries);
+    }
+
+    // The quality check as the GUI runs it on the whole project, with each row's translation by id.
+    private static async Task<(List<LqaIssue> Issues, Dictionary<long, string> Dest)> ScanProjectAsync(AgentCommand c, ProjectDb db)
+    {
+        var global = await c.GlobalDb.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, c.Ct);
+        var (rows, entries) = await LoadScanEntriesAsync(db, c.Ct);
         var glossary = GlossaryMerger.Merge(await db.GetGlossaryAsync(c.Ct), global == null ? null : await global.GetGlossaryAsync(c.Ct))
             .Where(e => e.Enabled && e.ForceMode == GlossaryForceMode.ForceToken && e.MatchMode != GlossaryMatchMode.Regex)
             .Where(e => !string.IsNullOrWhiteSpace(e.SourceTerm) && !string.IsNullOrWhiteSpace(e.TargetTerm))

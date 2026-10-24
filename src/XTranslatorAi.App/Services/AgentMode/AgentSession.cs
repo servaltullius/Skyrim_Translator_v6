@@ -78,6 +78,12 @@ public sealed record AgentStepReport(AgentProject Project, int PendingBefore, in
     public IReadOnlyList<AgentRejection> Rejected { get; init; } = Array.Empty<AgentRejection>();
     public int NextRequestChars { get; init; }
     public IReadOnlySet<string> NewInstructionSections { get; init; } = new HashSet<string>();
+
+    /// <summary>
+    /// What of the global DB (global glossary, series TM, TM name index) the run could not read and translated without.
+    /// The GUI says so; the agent's step used to report 번역 완료 with only a WARN line in app.log.
+    /// </summary>
+    public IReadOnlyList<string> MissingGlobalData { get; init; } = Array.Empty<string>();
 }
 
 public sealed class AgentModeException(string message) : Exception(message);
@@ -467,6 +473,7 @@ public sealed class AgentSession
         var outcome = await AgentTranslationRun.RunAsync(db, _settings, options, Answer, _globalDb, gameStrings, cancellationToken);
         var pendingBefore = outcome.PendingBefore;
         var used = new HashSet<(string Hash, int Attempt)>(outcome.Used);
+        var missing = new List<string>(outcome.MissingGlobalData);
         // A request recorded after answers in the same run was built while the answered rows were still that run's
         // rows (and its name memory had their translations); the next run starts without them and asks differently.
         // So the request kept is the first one of a fresh run, the one a replay will ask for. The same goes for rows the
@@ -477,6 +484,7 @@ public sealed class AgentSession
         {
             outcome = await AgentTranslationRun.RunAsync(db, _settings, options, Answer, _globalDb, gameStrings, cancellationToken);
             used.UnionWith(outcome.Used);
+            missing.AddRange(outcome.MissingGlobalData.Where(what => !missing.Contains(what)));
         }
 
         // A line the run gave up on (오류) is asked with the same request the next time, so its stored answers were
@@ -498,7 +506,7 @@ public sealed class AgentSession
         }
 
         return (new AgentStepReport(project, outcome.PendingBefore, outcome.PendingAfter, outcome.ErrorRows, outcome.Next,
-            outcome.Next == null ? null : RequestPath(project), problem), outcome.Used);
+            outcome.Next == null ? null : RequestPath(project), problem) { MissingGlobalData = missing }, outcome.Used);
     }
 
     /// <summary>Writes the report's next request (pending.json, instructions.md, request.md), if it has one.</summary>

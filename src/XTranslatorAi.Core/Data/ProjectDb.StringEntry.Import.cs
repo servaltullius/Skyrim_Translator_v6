@@ -89,14 +89,16 @@ public sealed partial class ProjectDb
                 // Notes (TM applied, TM fallback) describe the translation, so a row that keeps it keeps them:
                 // reopening used to delete them all. A hand edit's TM notes are stale (saving the edit leaves them), but
                 // the marks the user put on it stay: "원문 오류 수정" and "확인함", which reopening dropped on edited rows.
+                // A translation set aside by an earlier import brings back the marks kept with it.
                 if (kept != null && status != StringEntryStatus.Pending
                     && string.Equals(destText, kept.DestText, StringComparison.Ordinal)
-                    && notes.TryGetValue((identity!, kept.OrderIndex), out var keptNotes))
+                    && (notes.TryGetValue((identity!, kept.OrderIndex), out var keptNotes) || kept.Marks is { Count: > 0 }))
                 {
-                    var restored = kept.Status != StringEntryStatus.Edited
-                        ? keptNotes
-                        : keptNotes.Where(note => note.Kind == TranslationConstants.SourceFixNoteKind
-                                                  || note.Kind.StartsWith(TranslationConstants.LqaReviewedNoteKindPrefix, StringComparison.Ordinal)).ToList();
+                    var restored = keptNotes == null
+                        ? kept.Marks!.ToList()
+                        : kept.Status != StringEntryStatus.Edited
+                            ? keptNotes
+                            : keptNotes.Where(note => IsUserMark(note.Kind)).ToList();
                     if (restored.Count > 0)
                     {
                         await RestorePluginStringNotesAsync(tx, await LastInsertedRowIdAsync(tx, cancellationToken), restored, cancellationToken);
@@ -106,7 +108,7 @@ public sealed partial class ProjectDb
 
             if (preserveExistingTranslations)
             {
-                await RetainMissingTranslationsAsync(tx, saved, retired, present, now, cancellationToken);
+                await RetainMissingTranslationsAsync(tx, saved, retired, present, notes, now, cancellationToken);
             }
 
             if (projectFactory != null)
@@ -179,13 +181,13 @@ public sealed partial class ProjectDb
         var result = new Dictionary<string, List<SavedTranslation>>(StringComparer.Ordinal);
         await using var cmd = _connection.CreateCommand();
         cmd.Transaction = tx;
-        cmd.CommandText = "SELECT ImportIdentity, OrderIndex, DestText, Status FROM RetiredTranslation;";
+        cmd.CommandText = "SELECT ImportIdentity, OrderIndex, DestText, Status, Marks FROM RetiredTranslation;";
         await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
         while (await reader.ReadAsync(cancellationToken))
         {
             var key = reader.GetString(0);
             if (!result.TryGetValue(key, out var entries)) result[key] = entries = new List<SavedTranslation>();
-            entries.Add(new SavedTranslation(reader.GetInt32(1), reader.GetString(2), (StringEntryStatus)reader.GetInt32(3)));
+            entries.Add(new SavedTranslation(reader.GetInt32(1), reader.GetString(2), (StringEntryStatus)reader.GetInt32(3), ReadUserMarks(reader, 4)));
         }
         return result;
     }
@@ -196,6 +198,7 @@ public sealed partial class ProjectDb
         IReadOnlyDictionary<string, List<SavedTranslation>> saved,
         IReadOnlyDictionary<string, List<SavedTranslation>> retired,
         IReadOnlySet<string> present,
+        IReadOnlyDictionary<(string Identity, int OrderIndex), List<(string Kind, string Message, string UpdatedAt)>> notes,
         string now,
         CancellationToken cancellationToken)
     {
@@ -215,15 +218,16 @@ public sealed partial class ProjectDb
         retire.Transaction = tx;
         retire.CommandText =
             """
-            INSERT INTO RetiredTranslation (ImportIdentity, OrderIndex, DestText, Status, RetiredAt)
-            VALUES ($Identity, $OrderIndex, $DestText, $Status, $RetiredAt)
+            INSERT INTO RetiredTranslation (ImportIdentity, OrderIndex, DestText, Status, RetiredAt, Marks)
+            VALUES ($Identity, $OrderIndex, $DestText, $Status, $RetiredAt, $Marks)
             ON CONFLICT(ImportIdentity, OrderIndex) DO UPDATE SET
-              DestText=excluded.DestText, Status=excluded.Status, RetiredAt=excluded.RetiredAt;
+              DestText=excluded.DestText, Status=excluded.Status, RetiredAt=excluded.RetiredAt, Marks=excluded.Marks;
             """;
         var pIdentity = retire.Parameters.Add("$Identity", SqliteType.Text);
         var pOrder = retire.Parameters.Add("$OrderIndex", SqliteType.Integer);
         var pDest = retire.Parameters.Add("$DestText", SqliteType.Text);
         var pStatus = retire.Parameters.Add("$Status", SqliteType.Integer);
+        var pMarks = retire.Parameters.Add("$Marks", SqliteType.Text);
         retire.Parameters.AddWithValue("$RetiredAt", now);
         foreach (var (key, entries) in saved)
         {
@@ -234,6 +238,7 @@ public sealed partial class ProjectDb
                 pOrder.Value = entry.OrderIndex;
                 pDest.Value = entry.DestText;
                 pStatus.Value = (int)entry.Status;
+                pMarks.Value = (object?)SerializeUserMarks(notes.GetValueOrDefault((key, entry.OrderIndex))) ?? DBNull.Value;
                 await retire.ExecuteNonQueryAsync(cancellationToken);
             }
         }
@@ -268,5 +273,8 @@ public sealed partial class ProjectDb
             element.Element("Source")?.Value ?? "");
     }
 
-    private sealed record SavedTranslation(int OrderIndex, string DestText, StringEntryStatus Status);
+    /// <param name="Marks">The user's marks kept with a retired translation (none for a row still in the project,
+    /// whose notes are read from StringNote).</param>
+    private sealed record SavedTranslation(int OrderIndex, string DestText, StringEntryStatus Status,
+        IReadOnlyList<(string Kind, string Message, string UpdatedAt)>? Marks = null);
 }

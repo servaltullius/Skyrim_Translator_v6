@@ -475,6 +475,29 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Empty(await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.InProgress }, CancellationToken.None));
     }
 
+    // The GUI says when the global DB's series TM or name index could not be read; the agent's step reported 번역 완료
+    // with only a WARN line in app.log, so it and the user took a run without the official names for a full one.
+    [Fact]
+    public async Task UnreadableGlobalTm_IsInTheStepReport()
+    {
+        var global = await _global.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None);
+        Assert.NotNull(global);
+        var path = ProjectPaths.GetGlobalGlossaryDbPath(BethesdaFranchise.ElderScrolls, Path.Combine(_root, "global"));
+        await using (var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={path};Pooling=False"))
+        {
+            await connection.OpenAsync();
+            await using var drop = connection.CreateCommand();
+            drop.CommandText = "DROP TABLE TranslationMemory;";
+            await drop.ExecuteNonQueryAsync();
+        }
+
+        var report = await _session.NextAsync(_project, CancellationToken.None);
+
+        Assert.Contains("시리즈 TM", report.MissingGlobalData);
+        Assert.Contains("TM 이름 색인", report.MissingGlobalData);
+        Assert.Null(report.Problem);
+    }
+
     // Lanes run at the same time in their own processes: a lane's run used to put the other lane's 번역 중 batch back
     // to 대기, so that lane's split dropped the rows and its answer no longer fit.
     [Fact]

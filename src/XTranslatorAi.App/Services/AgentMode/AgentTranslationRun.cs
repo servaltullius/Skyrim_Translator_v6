@@ -30,7 +30,11 @@ public static class AgentTranslationRun
     }
 
     public sealed record Outcome(AgentRequest? Next, IReadOnlySet<(string Hash, int Attempt)> Used, int PendingBefore,
-        int PendingAfter, int ErrorRows, int GenerationCalls, Exception? Error);
+        int PendingAfter, int ErrorRows, int GenerationCalls, Exception? Error)
+    {
+        /// <summary>What of the global DB the run could not read and went without (TranslationRunnerService.Result).</summary>
+        public IReadOnlyList<string> MissingGlobalData { get; init; } = Array.Empty<string>();
+    }
 
     public static async Task<Outcome> RunAsync(ProjectDb db, AppSettings settings, Options options,
         Func<string, int, string?> answer, GlobalProjectDbService globalDb, GameStringDictionary? gameStrings,
@@ -119,7 +123,7 @@ public static class AgentTranslationRun
         }
 
         return new Outcome(client.Recorded, client.Used, pending.Count, after.Count, errors.Count, client.GenerationCalls,
-            result.Error ?? host.Error);
+            result.Error ?? host.Error) { MissingGlobalData = result.MissingGlobalData ?? Array.Empty<string>() };
     }
 
     /// <summary>

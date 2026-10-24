@@ -90,6 +90,11 @@ public static partial class AgentCli
         }
 
         if (report.Problem != null) Console.WriteLine("알림: " + report.Problem);
+        if (report.MissingGlobalData.Count > 0)
+        {
+            Console.WriteLine($"경고: 전체 DB의 {string.Join("·", report.MissingGlobalData)}을(를) 읽지 못해 없이 번역했습니다"
+                              + "(용어 고정·한글패치 이름이 빠졌을 수 있음). 사용자에게 알리고, 이번에 저장한 줄은 check로 용어·이름을 확인하세요.");
+        }
         if (report.Next != null)
         {
             var chars = report.NextRequestChars > 0 ? report.NextRequestChars : report.Next.Chars;

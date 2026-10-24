@@ -180,7 +180,7 @@ public partial class MainViewModel
         if (db == null || document == null) return;
         // The plugin writer reads the DB; an edit still only in the editor would be missing from the ESP.
         if (!await TryCommitPendingDestEditsAsync()) return;
-        if (!ConfirmExportWithUnfinishedRows()) return;
+        if (!ConfirmExportWithUnfinishedRows(xml: false)) return;
         var outputDirectory = _uiInteractionService.ShowSaveFileDialog(new SaveFileDialogRequest(
             "새 출력 폴더 이름|*.*", "새 출력 폴더 이름을 지정하세요 (폴더 안에 원본 파일명으로 저장)",
             Path.GetFileNameWithoutExtension(document.Info.InputPath) + ".translated"));
