@@ -105,11 +105,12 @@ public static class PluginReader
     /// <summary>
     /// English plugins are usually saved in Windows-1252, while the source encoding defaults to UTF-8, so a
     /// single "cliché" stopped the whole plugin from opening. When UTF-8 cannot decode the source text, the
-    /// plugin is read again as Windows-1252 — unless some text was valid UTF-8, which a mixed file would
-    /// turn into mojibake ("â€™"); that keeps the original error. Every byte sequence is valid Windows-1252,
-    /// so an older Korean translation saved in CP949 would also open, "검을" as "°ËÀ»", and a UTF-8
-    /// export would then write that mojibake over the Korean text. Such a file keeps the error too, with a
-    /// hint that it looks like CP949 Korean.
+    /// plugin is read again as Windows-1252. A file with some text in valid UTF-8 too ("Café" beside a 0x92 "’")
+    /// would turn that text into mojibake ("CafÃ©") that way, and kept the error until it was saved once in
+    /// xTranslator; it is read string by string instead (<see cref="Utf8OrWindows1252Encoding"/>). Every byte
+    /// sequence is valid Windows-1252, so an older Korean translation saved in CP949 would also open, "검을" as
+    /// "°ËÀ»", and a UTF-8 export would then write that mojibake over the Korean text. Such a file keeps the
+    /// error, with a hint that it looks like CP949 Korean.
     /// </summary>
     private static PluginDocument ReadWithSourceEncodingFallback(string path, byte[] bytes, PluginReadOptions options,
         IReadOnlyDictionary<PluginStringTableKind, byte[]> tables, IReadOnlyDictionary<string, string> dependencies,
@@ -137,9 +138,30 @@ public static class PluginReader
             var windows1252 = PluginBinary.GetEncoding(Windows1252);
             if (fallback != null && LooksLikeCp949Korean(SourceTexts(fallback), windows1252))
                 throw new InvalidDataException(utf8Error.Message + Cp949KoreanHint, utf8Error.InnerException);
-            if (fallback == null || SourceTexts(fallback).Any(text => WasValidUtf8(text, windows1252)))
+            if (fallback == null)
             {
                 throw;
+            }
+
+            if (SourceTexts(fallback).Any(text => WasValidUtf8(text, windows1252)))
+            {
+                var asWindows1252 = SourceTexts(fallback).Count(text => !text.All(char.IsAscii) && !WasValidUtf8(text, windows1252));
+                PluginDocument mixed;
+                try
+                {
+                    mixed = ReadSnapshot(path, bytes, options with { SourceEncoding = Utf8OrWindows1252Encoding.Name }, tables, dependencies,
+                        structure, cancellationToken, sources);
+                }
+                catch (InvalidDataException)
+                {
+                    throw utf8Error;
+                }
+
+                var notes = mixed.Info.Diagnostics.Append(new PluginDiagnostic("source_encoding_mixed",
+                    $"원문에 UTF-8과 windows-1252 문자열이 섞여 있어 문자열마다 판별해 읽었습니다(windows-1252 {asWindows1252}개). "
+                    + "저장하면 모든 문자열이 출력 인코딩으로 통일됩니다.")).ToArray();
+                return new PluginDocument(mixed.Info with { Diagnostics = Array.AsReadOnly(notes) }, mixed.Fields,
+                    mixed.Bytes, mixed.Nodes, mixed.Records, mixed.Tables, mixed.DependencyHashes);
             }
 
             var diagnostics = fallback.Info.Diagnostics.Append(new PluginDiagnostic("source_encoding_fallback",
@@ -157,6 +179,9 @@ public static class PluginReader
         => PluginBinary.GetEncoding(sourceEncoding).CodePage == Encoding.UTF8.CodePage ? Windows1252 : null;
 
     private const string Windows1252 = "windows-1252";
+
+    /// <summary>The source encoding recorded for a plugin read string by string (<see cref="Utf8OrWindows1252Encoding"/>).</summary>
+    public const string MixedSourceEncoding = Utf8OrWindows1252Encoding.Name;
 
     /// <summary>Appended to the decoding error; PluginUserFacingErrorClassifier turns it into the ks_c_5601-1987 hint.</summary>
     internal const string Cp949KoreanHint = " CP949 한글 원문으로 보입니다.";

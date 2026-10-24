@@ -30,6 +30,13 @@ public static partial class AgentCli
         Console.WriteLine($"플러그인: {project.PluginPath}");
         Console.WriteLine($"DB: {project.DbPath}");
         Console.WriteLine($"줄: {rows}, 번역할 줄: {pending}, 묶음 크기: {project.BatchSize}");
+        // The plugin was not UTF-8 (or only partly): it was read another way, and the export writes it all as UTF-8.
+        if (!string.Equals(project.ReadOptions.SourceEncoding, options.SourceEncoding, StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine(project.ReadOptions.SourceEncoding == "windows-1252"
+                ? "원문 인코딩: windows-1252로 읽었습니다(UTF-8이 아님). 저장하면 출력 인코딩으로 바뀝니다."
+                : $"원문 인코딩: UTF-8과 windows-1252 문자열이 섞여 있어 문자열마다 판별해 읽었습니다({project.ReadOptions.SourceEncoding}). 저장하면 모두 출력 인코딩으로 통일됩니다.");
+        }
         Console.WriteLine($"용어집: 이 프로젝트 {glossary.Count}개"
                           + (glossary.Inherited > 0 ? $" (같은 모드의 다른 프로젝트 {string.Join(", ", glossary.From.Take(3))}에서 {glossary.Inherited}개를 가져옴)" : "")
                           + (glossary.Count > 0 ? ". 요청이 이 용어를 따르고, lookup으로 찾을 수 있다." : ""));

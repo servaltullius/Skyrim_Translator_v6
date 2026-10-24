@@ -395,17 +395,57 @@ public sealed class PluginReadWriteTests
         Assert.Equal(new[] { "Cliché", "검" }, output.Fields.Select(field => field.SourceText));
     }
 
+    // A user's mod stopped at an INFO:NAM1 with a Windows-1252 "’" (0x92) while other strings were UTF-8, and opened only
+    // after being saved once in xTranslator. Read whole as Windows-1252, the valid UTF-8 "Café" became "CafÃ©"; each
+    // string is now read by itself, and the export writes every string as UTF-8.
     [Fact]
-    public async Task PluginMixingUtf8AndWindows1252_KeepsTheEncodingError()
+    public async Task PluginMixingUtf8AndWindows1252_IsReadStringByString_AndSavedAsUtf8()
     {
-        // Reading it as Windows-1252 would turn the valid UTF-8 "Café" into "CafÃ©".
+        var cp1252 = PluginBinary.GetEncoding("windows-1252");
+        using var fixture = new Fixture(Header().Concat(Group(
+            Record("WEAP", 0x800, Sub("FULL", Encoding.UTF8.GetBytes("Café\0"))),
+            Record("WEAP", 0x801, Sub("FULL", cp1252.GetBytes("Don\u2019t move.\0"))),
+            Record("WEAP", 0x802, Sub("FULL", Z("Sword"))))).ToArray());
+
+        var document = await PluginReader.ReadAsync(fixture.Input, new(), default);
+
+        Assert.Equal(new[] { "Café", "Don\u2019t move.", "Sword" }, document.Fields.Select(field => field.SourceText));
+        Assert.Equal("utf-8+windows-1252", document.Info.Options.SourceEncoding);
+        var note = Assert.Single(document.Info.Diagnostics, item => item.Code == "source_encoding_mixed");
+        Assert.False(note.BlocksExport);
+        Assert.Contains("windows-1252 1개", note.Message);
+
+        var result = await PluginWriter.ExportAsync(document, new Dictionary<string, string> { [document.Fields[2].Key] = "검" },
+            new(fixture.Output), default);
+        var output = await PluginReader.ReadAsync(result.PluginPath, new(), default);
+        Assert.Equal("utf-8", output.Info.Options.SourceEncoding);
+        Assert.Equal(new[] { "Café", "Don\u2019t move.", "검" }, output.Fields.Select(field => field.SourceText));
+    }
+
+    [Fact]
+    public async Task MixedPlugin_ReopenedWithTheEncodingItWasReadWith_ReadsTheSame()
+    {
+        // An agent project keeps the encoding the plugin was read with and reads it again with it to export.
         using var fixture = new Fixture(Header().Concat(Group(
             Record("WEAP", 0x800, Sub("FULL", Encoding.UTF8.GetBytes("Café\0"))),
             Record("WEAP", 0x801, Sub("FULL", PluginBinary.GetEncoding("windows-1252").GetBytes("Cliché\0"))))).ToArray());
+        var first = await PluginReader.ReadAsync(fixture.Input, new(), default);
 
-        var error = await Assert.ThrowsAsync<InvalidDataException>(() => PluginReader.ReadAsync(fixture.Input, new(), default));
+        var again = await PluginReader.ReadAsync(fixture.Input, first.Info.Options, default);
 
-        Assert.IsType<DecoderFallbackException>(error.InnerException);
+        Assert.Equal(first.Fields.Select(field => field.SourceText), again.Fields.Select(field => field.SourceText));
+    }
+
+    [Fact]
+    public void MixedEncoding_ReadsEachStringByItself_AndWritesUtf8()
+    {
+        var mixed = PluginBinary.GetEncoding("utf-8+windows-1252");
+
+        Assert.Equal("Café", mixed.GetString(Encoding.UTF8.GetBytes("Café")));
+        Assert.Equal("Don\u2019t", mixed.GetString(new byte[] { 0x44, 0x6F, 0x6E, 0x92, 0x74 }));
+        Assert.Equal(Encoding.UTF8.GetBytes("Don\u2019t 검"), mixed.GetBytes("Don\u2019t 검"));
+        Assert.NotEqual(Encoding.UTF8.CodePage, mixed.CodePage);
+        Assert.NotEqual(PluginBinary.GetEncoding("windows-1252").CodePage, mixed.CodePage);
     }
 
     [Theory]

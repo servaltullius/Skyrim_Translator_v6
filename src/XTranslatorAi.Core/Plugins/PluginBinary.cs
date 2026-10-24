@@ -34,6 +34,7 @@ internal static class PluginBinary
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         var normalized = name.Trim().ToLowerInvariant();
+        if (normalized == Utf8OrWindows1252Encoding.Name) return new Utf8OrWindows1252Encoding(GetEncoding("windows-1252"));
         if (normalized is not ("utf-8" or "utf8" or "windows-1252" or "cp1252" or "1252" or "949" or "cp949" or "ks_c_5601-1987"))
             throw new NotSupportedException($"지원하지 않는 플러그인 인코딩: {name}");
         if (normalized is "cp1252" or "1252") normalized = "windows-1252";

@@ -134,7 +134,8 @@ public sealed partial class ProjectWorkspaceService
     /// UTF-8 project; v2 adds one Windows-1252 apostrophe and is read as Windows-1252. Keying only on the
     /// encoding read would open a new, empty project and leave the translated one unreachable. So an existing
     /// project for the encoding read comes first (Serana's Windows-1252 project), then one for the setting,
-    /// then the setting's fallback project, for an update that drops the only Windows-1252 text. Only a plugin
+    /// then the setting's fallback project, for an update that drops the only Windows-1252 text, then the project of
+    /// a plugin read string by string (UTF-8 and Windows-1252 mixed). Only a plugin
     /// with none of them gets a new project, keyed on the encoding read. The import then records the encoding
     /// read in that project, and export converts from it.
     /// </summary>
@@ -142,7 +143,11 @@ public sealed partial class ProjectWorkspaceService
     {
         var read = document.Info.Options;
         var setting = request.Options.SourceEncoding;
-        var paths = new[] { read.SourceEncoding, setting, PluginReader.GetSourceEncodingFallback(setting) }
+        var fallback = PluginReader.GetSourceEncodingFallback(setting);
+        // A mixed file read string by string has a project of its own: an update that leaves it all UTF-8 or all
+        // Windows-1252 continues that one, and the other way round.
+        var paths = new[] { read.SourceEncoding, setting, fallback, fallback == null ? null : PluginReader.MixedSourceEncoding }
+            .Distinct(StringComparer.OrdinalIgnoreCase)
             .OfType<string>()
             .Select(encoding => ProjectPaths.GetPluginProjectDbPath(request.InputPath, read with { SourceEncoding = encoding },
                 request.TargetLanguage, request.TargetEncoding, _projectsRootOverride))
