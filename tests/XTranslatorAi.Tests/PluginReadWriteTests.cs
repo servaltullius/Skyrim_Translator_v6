@@ -413,13 +413,51 @@ public sealed class PluginReadWriteTests
         Assert.Equal("utf-8+windows-1252", document.Info.Options.SourceEncoding);
         var note = Assert.Single(document.Info.Diagnostics, item => item.Code == "source_encoding_mixed");
         Assert.False(note.BlocksExport);
-        Assert.Contains("windows-1252 1개", note.Message);
+        Assert.Contains("windows-1252로 읽은 줄 1개", note.Message);
 
         var result = await PluginWriter.ExportAsync(document, new Dictionary<string, string> { [document.Fields[2].Key] = "검" },
             new(fixture.Output), default);
         var output = await PluginReader.ReadAsync(result.PluginPath, new(), default);
         Assert.Equal("utf-8", output.Info.Options.SourceEncoding);
         Assert.Equal(new[] { "Café", "Don\u2019t move.", "검" }, output.Fields.Select(field => field.SourceText));
+    }
+
+    // CP949 Korean beside valid UTF-8 (two tools saved it): the UTF-8 text outweighed the CP949 bytes in the Korean
+    // check, and the file opened string by string with "강철 검" as "°­Ã¶ °Ë".
+    [Theory]
+    [InlineData("강철 단검")]
+    [InlineData("Café — \u201Cquoted\u201D résumé naïve")]
+    public async Task Cp949KoreanBesideUtf8_KeepsTheErrorWithAKoreanHint(string utf8Text)
+    {
+        using var fixture = new Fixture(Header().Concat(Group(
+            Record("WEAP", 0x800, Sub("FULL", PluginBinary.GetEncoding("ks_c_5601-1987").GetBytes("강철 검\0"))),
+            Record("WEAP", 0x801, Sub("FULL", Encoding.UTF8.GetBytes(utf8Text + "\0"))))).ToArray());
+
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() => PluginReader.ReadAsync(fixture.Input, new(), default));
+
+        Assert.EndsWith(PluginReader.Cp949KoreanHint, error.Message);
+    }
+
+    [Fact]
+    public async Task LocalizedPluginMixingUtf8AndWindows1252_CountsOnlyItsRows()
+    {
+        var plugin = Header(localized: true).Concat(Group(
+            Record("WEAP", 0x800, Sub("FULL", UInt(1))),
+            Record("WEAP", 0x801, Sub("FULL", UInt(2))))).ToArray();
+        using var fixture = new Fixture(plugin);
+        var cp1252 = PluginBinary.GetEncoding("windows-1252");
+        fixture.Table(PluginStringTableKind.Strings, new() { [1] = "Café", [2] = "Smith\u2019s Hammer", [3] = "Unused \u2019" },
+            entry => entry == "Café" ? Encoding.UTF8 : cp1252);
+
+        var document = await PluginReader.ReadAsync(fixture.Input, new(), default);
+
+        Assert.Equal(new[] { "Café", "Smith\u2019s Hammer" }, document.Fields.Select(field => field.SourceText));
+        Assert.Contains("windows-1252로 읽은 줄 1개", Assert.Single(document.Info.Diagnostics, item => item.Code == "source_encoding_mixed").Message);
+        var result = await PluginWriter.ExportAsync(document, new Dictionary<string, string>(), new(fixture.Output), default);
+        // The export writes the table's unused Windows-1252 string as UTF-8 too.
+        var output = await PluginReader.ReadAsync(result.PluginPath, new(), default);
+        Assert.Equal("utf-8", output.Info.Options.SourceEncoding);
+        Assert.Equal("Unused \u2019", output.Tables.Values.Single().Strings[3]);
     }
 
     [Fact]
@@ -651,6 +689,8 @@ public sealed class PluginReadWriteTests
         public string Output => Path.Combine(_root, "translated");
         public Fixture(byte[] plugin) { Directory.CreateDirectory(_root); File.WriteAllBytes(Input, plugin); }
         public void Table(PluginStringTableKind kind, Dictionary<uint, string> values, Encoding? encoding = null)
+            => Table(kind, values, _ => encoding ?? Encoding.UTF8);
+        public void Table(PluginStringTableKind kind, Dictionary<uint, string> values, Func<string, Encoding> encodingOf)
         {
             Directory.CreateDirectory(Path.Combine(_root, "Strings"));
             using var data = new MemoryStream();
@@ -661,7 +701,7 @@ public sealed class PluginReadWriteTests
             {
                 BinaryPrimitives.WriteUInt32LittleEndian(directory.AsSpan(8 + index * 8), id);
                 BinaryPrimitives.WriteUInt32LittleEndian(directory.AsSpan(12 + index * 8), (uint)data.Length);
-                var text = (encoding ?? Encoding.UTF8).GetBytes(value + "\0");
+                var text = encodingOf(value).GetBytes(value + "\0");
                 if (kind != PluginStringTableKind.Strings) data.Write(UInt((uint)text.Length));
                 data.Write(text); index++;
             }

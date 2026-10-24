@@ -139,6 +139,22 @@ public sealed partial class ProjectWorkspaceService
     /// with none of them gets a new project, keyed on the encoding read. The import then records the encoding
     /// read in that project, and export converts from it.
     /// </summary>
+    /// <summary>
+    /// Whether an earlier project's source encoding is the one this plugin was read with, counting as one the
+    /// encodings the UTF-8 setting reads with (UTF-8, its Windows-1252 fallback, the two mixed): a moved mod whose
+    /// update turned mixed started an empty project.
+    /// </summary>
+    private static bool SameSourceEncoding(string earlier, string read, string setting)
+    {
+        if (string.Equals(earlier, read, StringComparison.OrdinalIgnoreCase)) return true;
+        var fallback = PluginReader.GetSourceEncodingFallback(setting);
+        if (fallback == null) return false;
+        bool Read(string encoding) => string.Equals(encoding, setting, StringComparison.OrdinalIgnoreCase)
+                                      || string.Equals(encoding, fallback, StringComparison.OrdinalIgnoreCase)
+                                      || string.Equals(encoding, PluginReader.MixedSourceEncoding, StringComparison.OrdinalIgnoreCase);
+        return Read(earlier) && Read(read);
+    }
+
     private string ResolvePluginProjectDbPath(LoadFromPluginRequest request, PluginDocument document)
     {
         var read = document.Info.Options;
@@ -203,7 +219,7 @@ public sealed partial class ProjectWorkspaceService
             var otherEncoding = !string.Equals(earlier.TargetEncoding, request.TargetEncoding, StringComparison.OrdinalIgnoreCase);
             var sameOther = info.Options.Game == document.Info.Options.Game
                 && string.Equals(info.Options.SourceLanguage, request.Options.SourceLanguage, StringComparison.OrdinalIgnoreCase)
-                && string.Equals(info.Options.SourceEncoding, document.Info.Options.SourceEncoding, StringComparison.OrdinalIgnoreCase)
+                && SameSourceEncoding(info.Options.SourceEncoding, document.Info.Options.SourceEncoding, request.Options.SourceEncoding)
                 && string.Equals(earlier.TargetLanguage, request.TargetLanguage, StringComparison.OrdinalIgnoreCase);
             if (samePath && sameOther)
             {
@@ -215,7 +231,7 @@ public sealed partial class ProjectWorkspaceService
                 && !samePath
                 && info.Options.Game == document.Info.Options.Game
                 && string.Equals(info.Options.SourceLanguage, request.Options.SourceLanguage, StringComparison.OrdinalIgnoreCase)
-                && string.Equals(info.Options.SourceEncoding, document.Info.Options.SourceEncoding, StringComparison.OrdinalIgnoreCase)
+                && SameSourceEncoding(info.Options.SourceEncoding, document.Info.Options.SourceEncoding, request.Options.SourceEncoding)
                 && string.Equals(earlier.TargetEncoding, request.TargetEncoding, StringComparison.OrdinalIgnoreCase)
                 && string.Equals(earlier.TargetLanguage, request.TargetLanguage, StringComparison.OrdinalIgnoreCase);
             var sameFile = string.Equals(info.Sha256, document.Info.Sha256, StringComparison.OrdinalIgnoreCase);

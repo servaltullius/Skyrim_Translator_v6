@@ -32,18 +32,7 @@ internal sealed class Utf8OrWindows1252Encoding : Encoding
     public override string HeaderName => Name;
 
     /// <summary>Whether these bytes are read as Windows-1252 (they are not valid UTF-8).</summary>
-    internal static bool IsWindows1252(ReadOnlySpan<byte> bytes)
-    {
-        try
-        {
-            _ = Utf8.GetCharCount(bytes);
-            return false;
-        }
-        catch (DecoderFallbackException)
-        {
-            return true;
-        }
-    }
+    internal static bool IsWindows1252(ReadOnlySpan<byte> bytes) => !System.Text.Unicode.Utf8.IsValid(bytes);
 
     private Encoding For(ReadOnlySpan<byte> bytes) => IsWindows1252(bytes) ? _windows1252 : Utf8;
 
@@ -58,4 +47,9 @@ internal sealed class Utf8OrWindows1252Encoding : Encoding
         => For(bytes.AsSpan(index, count)).GetString(bytes, index, count);
     public override int GetMaxByteCount(int charCount) => Utf8.GetMaxByteCount(charCount);
     public override int GetMaxCharCount(int byteCount) => Utf8.GetMaxCharCount(byteCount);
+
+    // A string is judged whole: a decoder fed it in pieces would judge each piece ("é" split in two read as "Ã©").
+    public override Decoder GetDecoder()
+        => throw new NotSupportedException("문자열마다 판별하는 인코딩은 나눠 읽을 수 없습니다.");
+    public override Encoder GetEncoder() => Utf8.GetEncoder();
 }

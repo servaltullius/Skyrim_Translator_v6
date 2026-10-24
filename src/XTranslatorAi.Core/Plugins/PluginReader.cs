@@ -136,7 +136,9 @@ public static class PluginReader
             }
 
             var windows1252 = PluginBinary.GetEncoding(Windows1252);
-            if (fallback != null && LooksLikeCp949Korean(SourceTexts(fallback), windows1252))
+            // Only the strings UTF-8 could not read: valid UTF-8 beside CP949 Korean ("강철 단검" saved by another tool)
+            // outweighed its bytes, and the file opened string by string with the CP949 text as "°­Ã¶ °Ë".
+            if (fallback != null && LooksLikeCp949Korean(SourceTexts(fallback).Where(text => !WasValidUtf8(text, windows1252)), windows1252))
                 throw new InvalidDataException(utf8Error.Message + Cp949KoreanHint, utf8Error.InnerException);
             if (fallback == null)
             {
@@ -145,7 +147,8 @@ public static class PluginReader
 
             if (SourceTexts(fallback).Any(text => WasValidUtf8(text, windows1252)))
             {
-                var asWindows1252 = SourceTexts(fallback).Count(text => !text.All(char.IsAscii) && !WasValidUtf8(text, windows1252));
+                // Rows, so a localized plugin's table strings no field uses are not counted.
+                var asWindows1252 = fallback.Fields.Count(field => !field.SourceText.All(char.IsAscii) && !WasValidUtf8(field.SourceText, windows1252));
                 PluginDocument mixed;
                 try
                 {
@@ -158,7 +161,7 @@ public static class PluginReader
                 }
 
                 var notes = mixed.Info.Diagnostics.Append(new PluginDiagnostic("source_encoding_mixed",
-                    $"원문에 UTF-8과 windows-1252 문자열이 섞여 있어 문자열마다 판별해 읽었습니다(windows-1252 {asWindows1252}개). "
+                    $"원문에 UTF-8과 windows-1252 문자열이 섞여 있어 문자열마다 판별해 읽었습니다(windows-1252로 읽은 줄 {asWindows1252}개). "
                     + "저장하면 모든 문자열이 출력 인코딩으로 통일됩니다.")).ToArray();
                 return new PluginDocument(mixed.Info with { Diagnostics = Array.AsReadOnly(notes) }, mixed.Fields,
                     mixed.Bytes, mixed.Nodes, mixed.Records, mixed.Tables, mixed.DependencyHashes);
