@@ -461,19 +461,21 @@ public sealed class PluginReadWriteTests
     }
 
     // An earlier English release is read with ForOtherRelease of the current plugin's options: a current plugin read as
-    // windows-1252 made a UTF-8 earlier release read as windows-1252 too, "Café" as "CafÃ©".
+    // windows-1252 under the UTF-8 setting made a UTF-8 earlier release read as windows-1252 too, "Café" as "CafÃ©".
     [Theory]
     [InlineData("windows-1252")]
     [InlineData("utf-8+windows-1252")]
-    public async Task OtherRelease_OfAPluginReadByFallback_IsReadFromUtf8Again(string currentEncoding)
+    public async Task OtherRelease_OfAPluginReadByFallback_IsReadWithTheChosenEncoding(string currentEncoding)
     {
         using var fixture = new Fixture(Header().Concat(Group(Record("WEAP", 0x800, Sub("FULL", Encoding.UTF8.GetBytes("Café\0"))))).ToArray());
 
-        var options = new PluginReadOptions(SourceEncoding: currentEncoding).ForOtherRelease();
+        var options = new PluginReadOptions(SourceEncoding: currentEncoding).ForOtherRelease("utf-8");
         var earlier = await PluginReader.ReadAsync(fixture.Input, options, default);
 
         Assert.Equal("utf-8", options.SourceEncoding);
         Assert.Equal("Café", Assert.Single(earlier.Fields).SourceText);
+        // A windows-1252 the user chose stays so (a CP949-looking English mod opened that way links its earlier release).
+        Assert.Equal("windows-1252", new PluginReadOptions(SourceEncoding: "windows-1252").ForOtherRelease("windows-1252").SourceEncoding);
         Assert.Equal("ks_c_5601-1987", new PluginReadOptions(SourceEncoding: "ks_c_5601-1987").ForOtherRelease().SourceEncoding);
     }
 

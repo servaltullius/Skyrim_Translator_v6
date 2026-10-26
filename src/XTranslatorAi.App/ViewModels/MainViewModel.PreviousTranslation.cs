@@ -131,8 +131,9 @@ public partial class MainViewModel
             }
 
             StatusMessage = "이전 영어판을 읽는 중...";
-            // The earlier English is read as the current English is, with its own Strings or BSA next to it.
-            var options = document.Info.Options.ForOtherRelease();
+            // The earlier English is read as the current English is, with its own Strings or BSA next to it, from the
+            // chosen source encoding (the current one may be its fallback).
+            var options = document.Info.Options.ForOtherRelease(PluginSourceEncoding);
             var previous = await Task.Run(() => PluginReader.ReadAsync(path, options, cancellationToken), cancellationToken);
             var result = PreviousTranslationMatcher.MatchSources(document.Fields, document.Info.Masters,
                 previous.Fields, previous.Info.Masters);

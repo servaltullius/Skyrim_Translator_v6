@@ -27,7 +27,8 @@ public partial class MainViewModel
         IProgress<int> progress = new Progress<int>(pct => StatusMessage = $"품질 검사 중... {pct}%");
         var result = await Task.Run(() => ProjectLqaScan.ScanAsync(
             db, rows, targetLang, forceTokenGlossary, referenceMemory, progress.Report, CancellationToken.None));
-        _lqaReferenceNames = result.ReferenceNames;
+        // Only for the project still open: a scan of one the user has left would leave its TM names for the next.
+        if (ReferenceEquals(db, _projectState.Db)) _lqaReferenceNames = result.ReferenceNames;
 
         return result.Issues.Select(ToIssueViewModel).ToList();
     }

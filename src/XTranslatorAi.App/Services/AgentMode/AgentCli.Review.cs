@@ -17,18 +17,22 @@ namespace XTranslatorAi.App.Services.AgentMode;
 /// <summary>The review commands: check (the GUI's quality check), review (확인함 marks), edit and export.</summary>
 public static partial class AgentCli
 {
+    private static Task<(List<LqaIssue> Issues, Dictionary<long, string> Dest)> ScanProjectAsync(AgentCommand c, ProjectDb db)
+        => ScanProjectAsync(db, c.GlobalDb, c.Ct);
+
     // The quality check as the GUI runs it on the whole project (ProjectLqaScan), with each row's translation by id.
-    private static async Task<(List<LqaIssue> Issues, Dictionary<long, string> Dest)> ScanProjectAsync(AgentCommand c, ProjectDb db)
+    internal static async Task<(List<LqaIssue> Issues, Dictionary<long, string> Dest)> ScanProjectAsync(
+        ProjectDb db, GlobalProjectDbService globalDb, CancellationToken ct)
     {
-        var global = await c.GlobalDb.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, c.Ct);
-        var rows = await ProjectLqaScan.LoadRowsAsync(db, c.Ct);
-        var glossary = ProjectLqaScan.ForceTokenGlossary(await db.GetGlossaryAsync(c.Ct), global == null ? null : await global.GetGlossaryAsync(c.Ct));
+        var global = await globalDb.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, ct);
+        var rows = await ProjectLqaScan.LoadRowsAsync(db, ct);
+        var glossary = ProjectLqaScan.ForceTokenGlossary(await db.GetGlossaryAsync(ct), global == null ? null : await global.GetGlossaryAsync(ct));
         // An unreadable series TM ended the check; the GUI's goes on without the TM name index, and so does this one.
         List<(string, string)>? memory = null;
         try
         {
             if (global != null)
-                memory = (await global.GetTranslationMemoryEntriesAsync("english", "korean", c.Ct)).Select(e => (e.SourceText, e.DestText)).ToList();
+                memory = (await global.GetTranslationMemoryEntriesAsync("english", "korean", ct)).Select(e => (e.SourceText, e.DestText)).ToList();
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
@@ -36,7 +40,7 @@ public static partial class AgentCli
             Console.WriteLine("경고: 전체 DB의 시리즈 TM을 읽지 못해 TM 이름 색인 없이 검사했습니다(한글패치 이름 표기 결과가 빠질 수 있음).");
         }
 
-        var result = await ProjectLqaScan.ScanAsync(db, rows, "korean", glossary, memory, onProgress: null, c.Ct);
+        var result = await ProjectLqaScan.ScanAsync(db, rows, "korean", glossary, memory, onProgress: null, ct);
         return (result.Issues, rows.ToDictionary(row => row.Id, row => row.DestText));
     }
 

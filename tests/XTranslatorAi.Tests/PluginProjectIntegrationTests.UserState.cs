@@ -15,7 +15,7 @@ namespace XTranslatorAi.Tests;
 public sealed partial class PluginProjectIntegrationTests
 {
     [Fact]
-    public async Task AgentCheck_ReadsTheLinkedEarlierRelease_LikeTheGui()
+    public async Task ProjectRows_CarryTheLinkedEarlierRelease_SoItsEnglishIsNotLeftOver()
     {
         await using var fixture = await Fixture.CreateAsync();
         const string key = "WEAP/02000800/0/FULL/1";

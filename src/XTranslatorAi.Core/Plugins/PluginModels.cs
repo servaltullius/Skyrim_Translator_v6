@@ -19,18 +19,13 @@ public sealed record PluginReadOptions(
     /// <summary>
     /// Options for another release of the same plugin (an earlier English or translated release in its own folder):
     /// the Strings folder and archives named for this plugin are dropped, so that release's tables are found next to
-    /// it, loose or in its own BSA. An encoding this plugin was read with because UTF-8 failed (windows-1252, or the
-    /// two mixed) is not that release's: an earlier release in UTF-8 was read as windows-1252, "Café" as "CafÃ©", without
-    /// an error. That release is read from UTF-8 again and falls back on its own.
+    /// it, loose or in its own BSA. With <paramref name="sourceEncoding"/>, the encoding the user chose, it is read as
+    /// that: the encoding this plugin was read with may be a fallback of the UTF-8 setting (windows-1252, or the two
+    /// mixed), and an earlier release in UTF-8 was read as windows-1252, "Café" as "CafÃ©", without an error. Read from
+    /// the setting, that release falls back on its own; a windows-1252 the user chose stays windows-1252.
     /// </summary>
-    public PluginReadOptions ForOtherRelease() => this with
-    {
-        StringsDirectory = null,
-        ArchivePaths = null,
-        SourceEncoding = SourceEncoding.Trim().ToLowerInvariant() is "windows-1252" or "cp1252" or "1252" or Utf8OrWindows1252Encoding.Name
-            ? "utf-8"
-            : SourceEncoding,
-    };
+    public PluginReadOptions ForOtherRelease(string? sourceEncoding = null)
+        => this with { StringsDirectory = null, ArchivePaths = null, SourceEncoding = sourceEncoding ?? SourceEncoding };
 }
 
 /// <summary>Identity points at the original record and repeated subrecord occurrence, never at source text alone.</summary>

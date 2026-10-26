@@ -176,7 +176,8 @@ public sealed class AgentSession
 
         // The English original is read and checked first: a wrong --english path, refused after the release was linked,
         // left the release linked without its English, and the next request asked every row.
-        var englishSources = englishPath == null ? null : await ReadEnglishSourcesAsync(current, englishPath, cancellationToken);
+        var englishSources = englishPath == null ? null
+            : await ReadEnglishSourcesAsync(current, englishPath, _settings.PluginSourceEncoding, cancellationToken);
         await db.ReplacePreviousTranslationsAsync(Path.GetFileName(path), match.TextByFieldKey, cancellationToken);
         if (englishSources != null)
         {
@@ -220,12 +221,13 @@ public sealed class AgentSession
     }
 
     private static async Task<IReadOnlyDictionary<string, string>> ReadEnglishSourcesAsync(PluginDocument current, string englishPath,
-        CancellationToken cancellationToken)
+        string sourceEncoding, CancellationToken cancellationToken)
     {
         var path = Path.GetFullPath(englishPath);
         if (!File.Exists(path)) throw new AgentModeException($"한국어판의 영어 원본 플러그인이 없습니다: {englishPath}");
-        // The earlier English is read as the current English is, with its own Strings or BSA next to it.
-        var english = await PluginReader.ReadAsync(path, current.Info.Options.ForOtherRelease(), cancellationToken);
+        // The earlier English is read as the current English is, with its own Strings or BSA next to it, from the
+        // chosen source encoding (the current one may be its fallback).
+        var english = await PluginReader.ReadAsync(path, current.Info.Options.ForOtherRelease(sourceEncoding), cancellationToken);
         var sources = PreviousTranslationMatcher.MatchSources(current.Fields, current.Info.Masters, english.Fields, english.Info.Masters);
         if (sources.SourceByFieldKey.Count == 0)
         {

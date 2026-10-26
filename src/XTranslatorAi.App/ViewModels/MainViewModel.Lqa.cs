@@ -63,9 +63,14 @@ public partial class MainViewModel
                     : $"품질 검사: 오류 {CountSeverity("Error")}건, 경고 {CountSeverity("Warn")}건, 참고 {CountSeverity("Info")}건"
                       + (reviewed > 0 ? $", 확인함 {reviewed}건" : "");
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ReferenceEquals(db, _projectState.Db))
         {
             SetUserFacingError("품질 검사", ex);
+        }
+        catch (Exception)
+        {
+            // The user opened another project during the scan and its DB was closed under it; the results were for the
+            // project left, and the error would have shown over the new one.
         }
         finally
         {
