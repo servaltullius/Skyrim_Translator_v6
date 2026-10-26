@@ -460,6 +460,23 @@ public sealed class PluginReadWriteTests
         Assert.Equal("Unused \u2019", output.Tables.Values.Single().Strings[3]);
     }
 
+    // An earlier English release is read with ForOtherRelease of the current plugin's options: a current plugin read as
+    // windows-1252 made a UTF-8 earlier release read as windows-1252 too, "Café" as "CafÃ©".
+    [Theory]
+    [InlineData("windows-1252")]
+    [InlineData("utf-8+windows-1252")]
+    public async Task OtherRelease_OfAPluginReadByFallback_IsReadFromUtf8Again(string currentEncoding)
+    {
+        using var fixture = new Fixture(Header().Concat(Group(Record("WEAP", 0x800, Sub("FULL", Encoding.UTF8.GetBytes("Café\0"))))).ToArray());
+
+        var options = new PluginReadOptions(SourceEncoding: currentEncoding).ForOtherRelease();
+        var earlier = await PluginReader.ReadAsync(fixture.Input, options, default);
+
+        Assert.Equal("utf-8", options.SourceEncoding);
+        Assert.Equal("Café", Assert.Single(earlier.Fields).SourceText);
+        Assert.Equal("ks_c_5601-1987", new PluginReadOptions(SourceEncoding: "ks_c_5601-1987").ForOtherRelease().SourceEncoding);
+    }
+
     [Fact]
     public async Task MixedPlugin_ReopenedWithTheEncodingItWasReadWith_ReadsTheSame()
     {
