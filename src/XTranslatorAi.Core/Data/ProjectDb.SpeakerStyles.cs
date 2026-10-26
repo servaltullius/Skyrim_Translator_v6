@@ -43,8 +43,9 @@ public sealed partial class ProjectDb
         }
     }
 
-    /// <summary>Decides a speaker's level to a listener; an empty level takes the decision back.</summary>
-    public async Task SetSpeakerStyleAsync(SpeakerStyle style, CancellationToken cancellationToken)
+    /// <summary>Decides a speaker's level to a listener; an empty level takes the decision back. False when there was
+    /// nothing to take back.</summary>
+    public async Task<bool> SetSpeakerStyleAsync(SpeakerStyle style, CancellationToken cancellationToken)
     {
         await _gate.WaitAsync(cancellationToken);
         try
@@ -65,7 +66,7 @@ public sealed partial class ProjectDb
 
             cmd.Parameters.AddWithValue("$Speaker", style.Speaker);
             cmd.Parameters.AddWithValue("$Listener", style.Listener);
-            await cmd.ExecuteNonQueryAsync(cancellationToken);
+            return await cmd.ExecuteNonQueryAsync(cancellationToken) > 0;
         }
         finally
         {

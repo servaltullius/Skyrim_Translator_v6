@@ -45,11 +45,16 @@ public static partial class AgentCli
     }
 
 
-    public static async Task<int> RunAsync(string[] args)
+    public static Task<int> RunAsync(string[] args) => RunAsync(args, argumentFiles: true);
+
+    /// <param name="argumentFiles">Whether "@파일" stands for the arguments in that file. The MCP server passes its tool's
+    /// values as they are: a speech style kept for an NPC whose master left is named "@Dawnguard.esm|01001234", and
+    /// was taken for a file that does not exist, so it could not be cleared.</param>
+    internal static async Task<int> RunAsync(string[] args, bool argumentFiles)
     {
         try
         {
-            args = ExpandArgumentFiles(args);
+            if (argumentFiles) args = ExpandArgumentFiles(args);
         }
         catch (AgentModeException ex)
         {
@@ -103,6 +108,14 @@ public static partial class AgentCli
         }
         catch (AgentModeException ex)
         {
+            Console.WriteLine("실패: " + ex.Message);
+            return 2;
+        }
+        catch (Exception ex) when (ex is InvalidDataException or IOException or NotSupportedException or UnauthorizedAccessException)
+        {
+            // A plugin that cannot be read or written (a CP949 Korean file given as the source, missing Strings) ended
+            // the process with .NET's "Unhandled exception" and a stack trace, and an MCP call with a protocol error,
+            // where the agent looks for "실패:".
             Console.WriteLine("실패: " + ex.Message);
             return 2;
         }

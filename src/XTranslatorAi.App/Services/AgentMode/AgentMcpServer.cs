@@ -641,7 +641,7 @@ internal static class AgentMcpServer
         Console.SetOut(captured);
         try
         {
-            var exit = await AgentCli.RunAsync(args.Concat(ServerOptions(server)).ToArray());
+            var exit = await AgentCli.RunAsync(args.Concat(ServerOptions(server)).ToArray(), argumentFiles: false);
             return (captured.ToString(), exit);
         }
         finally

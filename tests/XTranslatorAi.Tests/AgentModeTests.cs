@@ -171,6 +171,65 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Empty(Directory.GetFiles(Path.Combine(_root, "work", ".mcp")));
     }
 
+    // A style kept for an NPC whose master left is named "@Dawnguard.esm|01001234". Through MCP the name went through
+    // the "@file" arguments and failed as a missing file, so the guide's way to clear it could not work.
+    [Fact]
+    public async Task McpStyle_ClearsAStyleKeptForAMasterThatLeft_AndSaysWhenThereIsNothingToClear()
+    {
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            await db.SetSpeakerStyleAsync(new SpeakerStyle("@Dawnguard.esm|01001234", "", "반말"), CancellationToken.None);
+        }
+
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") });
+        string Call(int id, object arguments) => JsonSerializer.Serialize(new
+        {
+            jsonrpc = "2.0", id, method = "tools/call", @params = new { name = "style", arguments },
+        });
+        var output = new StringWriter();
+        var lines = string.Join("\n",
+            Call(1, new { project = "Thalmor", speaker = "@Dawnguard.esm|01001234", clear = true }),
+            Call(2, new { project = "Thalmor", speaker = "@Dawnguard.esm|01001234", clear = true }));
+
+        Assert.Equal(0, await AgentMcpServer.ServeAsync(server, new StringReader(lines), output));
+
+        var replies = output.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(r => JsonDocument.Parse(r).RootElement.GetProperty("result")).ToList();
+        Assert.False(replies[0].GetProperty("isError").GetBoolean(), replies[0].ToString());
+        Assert.StartsWith("지움:", replies[0].GetProperty("content")[0].GetProperty("text").GetString());
+        // Clearing it again printed 지움 too, though nothing was cleared.
+        Assert.True(replies[1].GetProperty("isError").GetBoolean());
+        Assert.Contains("지울 말투가 없습니다", replies[1].GetProperty("content")[0].GetProperty("text").GetString());
+        await using var check = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None);
+        Assert.Empty(await check.GetSpeakerStylesAsync(CancellationToken.None));
+    }
+
+    // A plugin that cannot be read (here an old Korean release saved in CP949) ended the CLI with .NET's "Unhandled
+    // exception" and an MCP call with a protocol error; the agent looks for "실패:".
+    [Fact]
+    public async Task McpKorean_WithACp949KoreanRelease_ReportsItAsAFailure()
+    {
+        var korean = Path.Combine(_root, "Korean", "Thalmor.esp");
+        Directory.CreateDirectory(Path.GetDirectoryName(korean)!);
+        await File.WriteAllBytesAsync(korean, Header().Concat(Group(Record("MISC", 0x2001,
+            Sub("FULL", PluginBinary.GetEncoding("ks_c_5601-1987").GetBytes("에테르의 메아리\0"))))).ToArray());
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") });
+        var call = JsonSerializer.Serialize(new
+        {
+            jsonrpc = "2.0", id = 1, method = "tools/call",
+            @params = new { name = "korean", arguments = new { project = "Thalmor", korean_plugin = korean } },
+        });
+        var output = new StringWriter();
+
+        Assert.Equal(0, await AgentMcpServer.ServeAsync(server, new StringReader(call), output));
+
+        var reply = JsonDocument.Parse(output.ToString()).RootElement;
+        Assert.False(reply.TryGetProperty("error", out _), output.ToString());
+        Assert.True(reply.GetProperty("result").GetProperty("isError").GetBoolean());
+        var text = reply.GetProperty("result").GetProperty("content")[0].GetProperty("text").GetString()!;
+        Assert.StartsWith("실패: 원문 인코딩으로 해석할 수 없습니다", text);
+        Assert.Contains(PluginReader.Cp949KoreanHint.Trim(), text);
+    }
+
     // Codex ran in a kit folder that was not named agent-kit, its shell failed, and the guide tool answered
     // "없는 안내: translate" for a name that exists, so it stopped. The server now also reads the kit it is started in,
     // and when there is none says where it looked.

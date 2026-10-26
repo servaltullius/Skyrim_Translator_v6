@@ -136,7 +136,13 @@ public static partial class AgentCli
                 $"말투는 {string.Join(", ", SpeakerStyles.Levels)} 중 하나로 쓰세요.");
         }
 
-        await db.SetSpeakerStyleAsync(new SpeakerStyle(speaker, listenerKey, level, c.Note), c.Ct);
+        // Clearing a pair that has no style printed 지움 all the same (a listener left out, a name copied with its note).
+        if (!await db.SetSpeakerStyleAsync(new SpeakerStyle(speaker, listenerKey, level, c.Note), c.Ct))
+        {
+            throw new AgentModeException($"지울 말투가 없습니다: {NameOf(speaker)} → {NameOf(listenerKey)}. "
+                                         + $"style {project.Key}로 목록을 보고 화자와 상대(--to)를 목록 그대로 쓰세요.");
+        }
+
         Console.WriteLine(c.Clear
             ? $"지움: {NameOf(speaker)} → {NameOf(listenerKey)}"
             : $"정함: {NameOf(speaker)} → {NameOf(listenerKey)}: {level}");
