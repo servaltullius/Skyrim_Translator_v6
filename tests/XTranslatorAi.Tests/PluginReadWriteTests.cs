@@ -479,6 +479,24 @@ public sealed class PluginReadWriteTests
         Assert.Equal("ks_c_5601-1987", new PluginReadOptions(SourceEncoding: "ks_c_5601-1987").ForOtherRelease().SourceEncoding);
     }
 
+    // An older Korean release saved in CP949 was refused as a translated release (read in the UTF-8 output encoding),
+    // so neither the GUI's 이전 번역 nor the agent's korean could use it.
+    [Fact]
+    public async Task TranslatedRelease_SavedInCp949_IsReadAsCp949()
+    {
+        using var korean = new Fixture(Header().Concat(Group(Record("WEAP", 0x800,
+            Sub("FULL", PluginBinary.GetEncoding("ks_c_5601-1987").GetBytes("강철 장검\0"))))).ToArray());
+        using var utf8 = new Fixture(Header().Concat(Group(Record("WEAP", 0x800, Sub("FULL", Encoding.UTF8.GetBytes("강철 장검\0"))))).ToArray());
+
+        await Assert.ThrowsAsync<InvalidDataException>(() => PluginReader.ReadAsync(korean.Input, new(), default));
+        var read = await PluginReader.ReadTranslatedReleaseAsync(korean.Input, new(), default);
+        var unchanged = await PluginReader.ReadTranslatedReleaseAsync(utf8.Input, new(), default);
+
+        Assert.Equal("강철 장검", Assert.Single(read.Fields).SourceText);
+        Assert.Equal(PluginReader.Cp949Encoding, read.Info.Options.SourceEncoding);
+        Assert.Equal(("강철 장검", "utf-8"), (Assert.Single(unchanged.Fields).SourceText, unchanged.Info.Options.SourceEncoding));
+    }
+
     [Fact]
     public async Task MixedPlugin_ReopenedWithTheEncodingItWasReadWith_ReadsTheSame()
     {

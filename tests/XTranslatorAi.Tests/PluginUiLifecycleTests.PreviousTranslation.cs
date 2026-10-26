@@ -6,6 +6,27 @@ namespace XTranslatorAi.Tests;
 
 public sealed partial class PluginUiLifecycleTests
 {
+    // An older Korean release saved in CP949 was refused (E452, choose CP949) and had to be saved again as UTF-8.
+    [Fact]
+    public Task PreviousTranslation_SavedInCp949_IsLinked()
+        => RunOnSta(async () =>
+        {
+            static byte[] Sword(byte[] name) => PluginReadWriteTests.Header().Concat(PluginReadWriteTests.Group(PluginReadWriteTests.Record("WEAP", 0x800,
+                PluginReadWriteTests.Sub("EDID", PluginReadWriteTests.Z("TestSword")), PluginReadWriteTests.Sub("FULL", name)))).ToArray();
+            await using var fixture = new Fixture();
+            await fixture.LoadPluginWorkspaceAsync(Sword(PluginReadWriteTests.Z("Iron Sword")));
+            var row = Assert.Single(fixture.Vm.Entries);
+            var oldRelease = Path.Combine(fixture.Root, "old", "Test.esp");
+            Directory.CreateDirectory(Path.GetDirectoryName(oldRelease)!);
+            await File.WriteAllBytesAsync(oldRelease, Sword(XTranslatorAi.Core.Plugins.PluginBinary.GetEncoding("ks_c_5601-1987").GetBytes("강철 장검\0")));
+            fixture.Ui.OpenPath = oldRelease;
+
+            await fixture.Vm.ImportPreviousTranslationCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            Assert.Contains("CP949로 읽음", fixture.Vm.StatusMessage);
+            Assert.Equal("강철 장검", row.PreviousTranslation);
+        });
+
     [Fact]
     public Task PreviousTranslation_IsLinkedByRecord_AndSentAsReferenceWhenTranslating()
         => RunOnSta(async () =>

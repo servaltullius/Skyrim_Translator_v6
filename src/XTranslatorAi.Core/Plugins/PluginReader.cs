@@ -186,6 +186,29 @@ public static class PluginReader
     /// <summary>The source encoding recorded for a plugin read string by string (<see cref="Utf8OrWindows1252Encoding"/>).</summary>
     public const string MixedSourceEncoding = Utf8OrWindows1252Encoding.Name;
 
+    /// <summary>Korean in CP949, the encoding older (LE-era) Korean releases were saved in.</summary>
+    public const string Cp949Encoding = "ks_c_5601-1987";
+
+    /// <summary>
+    /// A translated release of the plugin (the GUI's 이전 번역, the agent's korean), read in the output encoding. An older
+    /// Korean release saved in CP949 was refused there with the CP949 hint, and neither the GUI nor the agent could
+    /// read it: the user had to save it again as UTF-8 first. Such a release is read again as CP949. Its text is only
+    /// read (as the earlier translation), never written back, so the CP949 reading does not reach an export.
+    /// <see cref="PluginSourceInfo.Options"/> of the result says which encoding was used.
+    /// </summary>
+    public static async Task<PluginDocument> ReadTranslatedReleaseAsync(string path, PluginReadOptions options, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await ReadAsync(path, options, cancellationToken);
+        }
+        catch (InvalidDataException error) when (error.Message.EndsWith(Cp949KoreanHint, StringComparison.Ordinal)
+                                                 && GetSourceEncodingFallback(options.SourceEncoding) != null)
+        {
+            return await ReadAsync(path, options with { SourceEncoding = Cp949Encoding }, cancellationToken);
+        }
+    }
+
     /// <summary>Appended to the decoding error; PluginUserFacingErrorClassifier turns it into the ks_c_5601-1987 hint.</summary>
     internal const string Cp949KoreanHint = " CP949 한글 원문으로 보입니다.";
 

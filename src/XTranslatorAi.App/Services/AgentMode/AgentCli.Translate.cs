@@ -130,6 +130,7 @@ public static partial class AgentCli
         var m = link.Match;
         Console.WriteLine($"한국어판 연결: {m.TextByFieldKey.Count}줄 (빠짐: 한국어판에 없음 {m.NotInPreviousRelease}, 레코드 구성이 바뀜 {m.ChangedRecord}, "
                           + $"영어 그대로 {m.SameAsSource}, 한글 없음 {m.NotTranslated})");
+        if (link.ReadAsCp949) Console.WriteLine("한국어판 인코딩: 옛 방식(CP949)으로 저장된 한국어판이라 CP949로 읽었습니다. 저장하는 번역은 출력 인코딩 그대로입니다.");
         Console.WriteLine($"한국어판으로 채운 줄: {link.Filled}" + (link.KeptTranslated > 0 ? $", 이미 번역돼 그대로 둔 줄: {link.KeptTranslated}" : ""));
         if (link.DifferentFromGame.Count > 0)
         {

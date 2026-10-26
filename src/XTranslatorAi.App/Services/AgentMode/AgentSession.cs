@@ -62,7 +62,11 @@ public sealed record AgentLane(int Index, int Count)
 /// it did not fill because their English changed since the release (its English original linked) or their numbers
 /// are not the release's (without it).</summary>
 public sealed record AgentKoreanLink(PreviousTranslationMatcher.Result Match, int Filled, int KeptTranslated, int Untranslated,
-    IReadOnlyList<long> DifferentFromGame, IReadOnlyList<long> EnglishChanged, bool ComparedWithEnglish);
+    IReadOnlyList<long> DifferentFromGame, IReadOnlyList<long> EnglishChanged, bool ComparedWithEnglish)
+{
+    /// <summary>The release was an older one saved in CP949 and was read as CP949 (PluginReader.ReadTranslatedReleaseAsync).</summary>
+    public bool ReadAsCp949 { get; init; }
+}
 
 /// <summary>
 /// The project's glossary terms in use, and those a new project took from the same mod's other projects (the GUI says so
@@ -164,7 +168,7 @@ public sealed class AgentSession
         var current = await PluginReader.ReadAsync(project.PluginPath, project.ReadOptions, cancellationToken);
         // A translated release is written in the target encoding, with its Strings or BSA next to it.
         var options = project.ReadOptions.ForOtherRelease() with { SourceEncoding = project.TargetEncoding, StringsDirectory = stringsDirectory };
-        var korean = await PluginReader.ReadAsync(path, options, cancellationToken);
+        var korean = await PluginReader.ReadTranslatedReleaseAsync(path, options, cancellationToken);
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, cancellationToken);
         var info = await db.TryGetProjectAsync(cancellationToken);
         var match = PreviousTranslationMatcher.Match(current.Fields, current.Info.Masters, korean.Fields, korean.Info.Masters,
@@ -217,7 +221,11 @@ public sealed class AgentSession
         var different = fill.Where(row => gameRows.TryGetValue(row.Id, out var g) && g.Text.Trim() != row.DestText.Trim())
             .Select(row => row.Id).OrderBy(id => id).ToList();
         return new AgentKoreanLink(match, fill.Count, earlier.Count - fill.Count - changed.Count, open.Count - fill.Count + changed.Count, different,
-            changed.OrderBy(id => id).ToList(), englishPath != null);
+            changed.OrderBy(id => id).ToList(), englishPath != null)
+        {
+            ReadAsCp949 = korean.Info.Options.SourceEncoding == PluginReader.Cp949Encoding
+                          && !string.Equals(options.SourceEncoding, PluginReader.Cp949Encoding, StringComparison.OrdinalIgnoreCase),
+        };
     }
 
     private static async Task<IReadOnlyDictionary<string, string>> ReadEnglishSourcesAsync(PluginDocument current, string englishPath,

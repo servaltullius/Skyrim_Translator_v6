@@ -203,31 +203,37 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Empty(await check.GetSpeakerStylesAsync(CancellationToken.None));
     }
 
-    // A plugin that cannot be read (here an old Korean release saved in CP949) ended the CLI with .NET's "Unhandled
-    // exception" and an MCP call with a protocol error; the agent looks for "실패:".
+    // An older Korean release saved in CP949 could not be linked (it is read in the UTF-8 output encoding); it is read
+    // as CP949 now. A release that cannot be read at all ended the CLI with .NET's "Unhandled exception" and an MCP call
+    // with a protocol error; the agent looks for "실패:".
     [Fact]
-    public async Task McpKorean_WithACp949KoreanRelease_ReportsItAsAFailure()
+    public async Task McpKorean_LinksACp949KoreanRelease_AndReportsAnUnreadableOneAsAFailure()
     {
         var korean = Path.Combine(_root, "Korean", "Thalmor.esp");
+        var broken = Path.Combine(_root, "Korean", "Broken.esp");
         Directory.CreateDirectory(Path.GetDirectoryName(korean)!);
         await File.WriteAllBytesAsync(korean, Header().Concat(Group(Record("MISC", 0x2001,
             Sub("FULL", PluginBinary.GetEncoding("ks_c_5601-1987").GetBytes("에테르의 메아리\0"))))).ToArray());
+        await File.WriteAllBytesAsync(broken, Header()[..20]);
         var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") });
-        var call = JsonSerializer.Serialize(new
+        string Call(int id, string file) => JsonSerializer.Serialize(new
         {
-            jsonrpc = "2.0", id = 1, method = "tools/call",
-            @params = new { name = "korean", arguments = new { project = "Thalmor", korean_plugin = korean } },
+            jsonrpc = "2.0", id, method = "tools/call",
+            @params = new { name = "korean", arguments = new { project = "Thalmor", korean_plugin = file } },
         });
         var output = new StringWriter();
 
-        Assert.Equal(0, await AgentMcpServer.ServeAsync(server, new StringReader(call), output));
+        Assert.Equal(0, await AgentMcpServer.ServeAsync(server, new StringReader(Call(1, broken) + "\n" + Call(2, korean)), output));
 
-        var reply = JsonDocument.Parse(output.ToString()).RootElement;
-        Assert.False(reply.TryGetProperty("error", out _), output.ToString());
-        Assert.True(reply.GetProperty("result").GetProperty("isError").GetBoolean());
-        var text = reply.GetProperty("result").GetProperty("content")[0].GetProperty("text").GetString()!;
-        Assert.StartsWith("실패: 원문 인코딩으로 해석할 수 없습니다", text);
-        Assert.Contains(PluginReader.Cp949KoreanHint.Trim(), text);
+        var replies = output.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(r => JsonDocument.Parse(r).RootElement).ToList();
+        Assert.All(replies, reply => Assert.False(reply.TryGetProperty("error", out _), reply.ToString()));
+        Assert.True(replies[0].GetProperty("result").GetProperty("isError").GetBoolean());
+        Assert.StartsWith("실패: ", replies[0].GetProperty("result").GetProperty("content")[0].GetProperty("text").GetString());
+        var linked = replies[1].GetProperty("result");
+        Assert.False(linked.GetProperty("isError").GetBoolean(), linked.ToString());
+        Assert.Contains("CP949로 읽었습니다", linked.GetProperty("content")[0].GetProperty("text").GetString());
+        await using var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None);
+        Assert.Contains("에테르의 메아리", (await db.GetPreviousTranslationsByStringIdAsync(CancellationToken.None)).Values);
     }
 
     // Codex ran in a kit folder that was not named agent-kit, its shell failed, and the guide tool answered
