@@ -24,10 +24,11 @@ public sealed partial class PluginProjectIntegrationTests
         await fixture.Db.UpdateStringTranslationAsync(row.Id, "The One의 검", StringEntryStatus.Done, null, CancellationToken.None);
         await fixture.Db.ReplacePreviousTranslationsAsync("Old.esp", new Dictionary<string, string> { [key] = "The One의 검" }, CancellationToken.None);
 
-        var (_, entries) = await AgentCli.LoadScanEntriesAsync(fixture.Db, CancellationToken.None);
-        var issues = await LqaScanner.ScanAsync(entries, "korean", Array.Empty<GlossaryEntry>());
+        var rows = await ProjectLqaScan.LoadRowsAsync(fixture.Db, CancellationToken.None);
+        var entries = rows.Select(row => ProjectLqaScan.ToEntry(row)).ToList();
+        var issues = (await ProjectLqaScan.ScanAsync(fixture.Db, rows, "korean", Array.Empty<GlossaryEntry>(), null, null, CancellationToken.None)).Issues;
 
-        Assert.Equal("The One의 검", Assert.Single(entries).PreviousText);
+        Assert.Equal("The One의 검", Assert.Single(rows).PreviousText);
         // The earlier release kept "The One" too, so the GUI does not call it left over; the agent's check did.
         Assert.DoesNotContain(issues, issue => issue.Code == "english_residue");
         var withoutIt = await LqaScanner.ScanAsync(entries.Select(e => e with { PreviousText = null }).ToList(), "korean", Array.Empty<GlossaryEntry>());

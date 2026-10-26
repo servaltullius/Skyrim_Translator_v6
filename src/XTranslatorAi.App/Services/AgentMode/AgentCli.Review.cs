@@ -17,41 +17,14 @@ namespace XTranslatorAi.App.Services.AgentMode;
 /// <summary>The review commands: check (the GUI's quality check), review (확인함 marks), edit and export.</summary>
 public static partial class AgentCli
 {
-    /// <summary>
-    /// Every row as the GUI's check reads it: its speaker, and the linked earlier release's translation (an English word
-    /// that release kept too, such as an author's name, is not left over; the agent's check used to flag it).
-    /// </summary>
-    internal static async Task<(List<StringEntry> Rows, List<LqaScanEntry> Entries)> LoadScanEntriesAsync(ProjectDb db, CancellationToken ct)
-    {
-        var rows = new List<StringEntry>();
-        for (var offset = 0; ; offset += 1000)
-        {
-            var page = await db.GetStringsAsync(1000, offset, ct);
-            rows.AddRange(page);
-            if (page.Count < 1000) break;
-        }
-
-        var speakers = await DialogueSpeakerNames.LoadCheckGroupsAsync(db, ct);
-        var previous = await db.GetPreviousTranslationsByStringIdAsync(ct);
-        static StringEntryStatus Status(StringEntry e)
-            => e.Status == StringEntryStatus.Skipped && !string.IsNullOrWhiteSpace(e.DestText)
-               && !string.Equals(e.DestText.Trim(), e.SourceText.Trim(), StringComparison.Ordinal) ? StringEntryStatus.Done : e.Status;
-        var entries = rows.Select(e => new LqaScanEntry(e.Id, e.OrderIndex, e.Edid, e.Rec, Status(e), e.SourceText ?? "", e.DestText ?? "",
-            PreviousText: previous.GetValueOrDefault(e.Id), Speaker: speakers.GetValueOrDefault(e.Id))).ToList();
-        return (rows, entries);
-    }
-
-    // The quality check as the GUI runs it on the whole project, with each row's translation by id.
+    // The quality check as the GUI runs it on the whole project (ProjectLqaScan), with each row's translation by id.
     private static async Task<(List<LqaIssue> Issues, Dictionary<long, string> Dest)> ScanProjectAsync(AgentCommand c, ProjectDb db)
     {
         var global = await c.GlobalDb.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, c.Ct);
-        var (rows, entries) = await LoadScanEntriesAsync(db, c.Ct);
-        var glossary = GlossaryMerger.Merge(await db.GetGlossaryAsync(c.Ct), global == null ? null : await global.GetGlossaryAsync(c.Ct))
-            .Where(e => e.Enabled && e.ForceMode == GlossaryForceMode.ForceToken && e.MatchMode != GlossaryMatchMode.Regex)
-            .Where(e => !string.IsNullOrWhiteSpace(e.SourceTerm) && !string.IsNullOrWhiteSpace(e.TargetTerm))
-            .OrderByDescending(e => e.Priority).ThenByDescending(e => e.SourceTerm.Length).ToList();
+        var rows = await ProjectLqaScan.LoadRowsAsync(db, c.Ct);
+        var glossary = ProjectLqaScan.ForceTokenGlossary(await db.GetGlossaryAsync(c.Ct), global == null ? null : await global.GetGlossaryAsync(c.Ct));
         // An unreadable series TM ended the check; the GUI's goes on without the TM name index, and so does this one.
-        var memory = new List<(string, string)>();
+        List<(string, string)>? memory = null;
         try
         {
             if (global != null)
@@ -62,13 +35,9 @@ public static partial class AgentCli
             AppLog.Write($"WARN 품질 검사용 TM 이름 색인을 읽지 못했습니다: {ex.Message}");
             Console.WriteLine("경고: 전체 DB의 시리즈 TM을 읽지 못해 TM 이름 색인 없이 검사했습니다(한글패치 이름 표기 결과가 빠질 수 있음).");
         }
-        var tmNotes = await db.GetStringNotesByKindAsync("tm_fallback", c.Ct);
-        var sourceFix = (await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, c.Ct)).Keys.ToHashSet();
-        var notes = memory.Count > 0 ? LqaScanner.DropTmFallbacksMatchingMemory(tmNotes, entries, memory) : tmNotes;
-        var issues = await LqaScanner.ScanAsync(entries, "korean", glossary, tmFallbackNotes: notes,
-            referenceNames: memory.Count > 0 ? ReferenceNameIndex.Build(memory) : null, sourceFixIds: sourceFix,
-            speakerStyles: await db.GetSpeakerStylesAsync(c.Ct));
-        return (issues, rows.ToDictionary(row => row.Id, row => row.DestText ?? ""));
+
+        var result = await ProjectLqaScan.ScanAsync(db, rows, "korean", glossary, memory, onProgress: null, c.Ct);
+        return (result.Issues, rows.ToDictionary(row => row.Id, row => row.DestText));
     }
 
     private static async Task CheckAsync(AgentCommand c)

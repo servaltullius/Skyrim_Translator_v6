@@ -13,33 +13,10 @@ public partial class MainViewModel
 {
     private async Task<List<LqaIssueViewModel>> BuildLqaIssuesAsync()
     {
-        var speakers = _projectState.Db == null
-            ? new Dictionary<long, string>()
-            : await XTranslatorAi.Core.Translation.DialogueSpeakerNames.LoadCheckGroupsAsync(_projectState.Db, CancellationToken.None);
-        var ordered = Entries
-            .Select(
-                e =>
-                    new LqaScanEntry(
-                        Id: e.Id,
-                        OrderIndex: e.OrderIndex,
-                        Edid: e.Edid,
-                        Rec: e.Rec,
-                        Status: LqaStatus(e),
-                        SourceText: e.SourceText ?? "",
-                        DestText: e.DestText ?? "",
-                        PreviousText: e.PreviousTranslation,
-                        Speaker: speakers.GetValueOrDefault(e.Id)
-                    )
-        )
-            .ToList();
-
-        var forceTokenGlossary = LanguageHelper.IsKoreanLanguage(TargetLang) ? BuildLqaForceTokenGlossary() : Array.Empty<GlossaryEntry>();
+        // The rows as the grid holds them; the rest of the input is the agent's check's too (ProjectLqaScan).
         var db = _projectState.Db;
-        var tmFallbackNotes = db == null
-            ? new Dictionary<long, string>()
-            : await db.GetStringNotesByKindAsync("tm_fallback", CancellationToken.None);
-        var sourceFixIds = Entries.Where(e => e.IsSourceFix).Select(e => e.Id).ToHashSet();
-        var speakerStyles = db == null ? null : await db.GetSpeakerStylesAsync(CancellationToken.None);
+        var rows = Entries.Select(ToLqaRow).ToList();
+        var forceTokenGlossary = LanguageHelper.IsKoreanLanguage(TargetLang) ? BuildLqaForceTokenGlossary() : Array.Empty<GlossaryEntry>();
 
         // The rules read only this snapshot, so they run on a worker thread. On the UI thread the
         // project-wide rules (name consistency, tone majorities) ran before the first progress report
@@ -48,24 +25,16 @@ public partial class MainViewModel
         var referenceMemory = await Task.Run(TryLoadLqaReferenceMemoryAsync);
         var targetLang = TargetLang;
         IProgress<int> progress = new Progress<int>(pct => StatusMessage = $"품질 검사 중... {pct}%");
-        var notes = referenceMemory is { Count: > 0 }
-            ? LqaScanner.DropTmFallbacksMatchingMemory(tmFallbackNotes, ordered, referenceMemory)
-            : tmFallbackNotes;
-        _lqaReferenceNames = referenceMemory is { Count: > 0 } ? XTranslatorAi.Core.Translation.ReferenceNameIndex.Build(referenceMemory) : null;
-        var referenceNames = _lqaReferenceNames;
-        var issues = await Task.Run(() => LqaScanner.ScanAsync(
-            entries: ordered,
-            targetLang: targetLang,
-            forceTokenGlossary: forceTokenGlossary,
-            onProgress: progress.Report,
-            tmFallbackNotes: notes,
-            referenceNames: referenceNames,
-            sourceFixIds: sourceFixIds,
-            speakerStyles: speakerStyles
-        ));
+        var result = await Task.Run(() => ProjectLqaScan.ScanAsync(
+            db, rows, targetLang, forceTokenGlossary, referenceMemory, progress.Report, CancellationToken.None));
+        _lqaReferenceNames = result.ReferenceNames;
 
-        return issues.Select(ToIssueViewModel).ToList();
+        return result.Issues.Select(ToIssueViewModel).ToList();
     }
+
+    private static ProjectLqaRow ToLqaRow(StringEntryViewModel entry)
+        => new(entry.Id, entry.OrderIndex, entry.Edid, entry.Rec, entry.Status, entry.SourceText ?? "", entry.DestText ?? "",
+            entry.PreviousTranslation, entry.IsSourceFix);
 
     /// <summary>The series TM the translation's official-name index is built from; null when it cannot be read.</summary>
     private async Task<IReadOnlyList<(string Source, string Target)>?> TryLoadLqaReferenceMemoryAsync()
@@ -159,8 +128,7 @@ public partial class MainViewModel
         }
 
         var db = _projectState.Db;
-        var scanEntries = entries.Select(entry => new LqaScanEntry(entry.Id, entry.OrderIndex, entry.Edid, entry.Rec, LqaStatus(entry),
-            entry.SourceText ?? "", entry.DestText ?? "", entry.PreviousTranslation)).ToList();
+        var scanEntries = entries.Select(entry => ProjectLqaScan.ToEntry(ToLqaRow(entry))).ToList();
         var glossary = LanguageHelper.IsKoreanLanguage(TargetLang) ? BuildLqaForceTokenGlossary() : Array.Empty<GlossaryEntry>();
         var targetLang = TargetLang;
         var sourceFixIds = entries.Where(entry => entry.IsSourceFix).Select(entry => entry.Id).ToHashSet();
@@ -194,16 +162,8 @@ public partial class MainViewModel
         ClearLqaCommand.NotifyCanExecuteChanged();
     }
 
-    /// <summary>
-    /// An xTranslator XML opens its existing translations as 건너뜀 (Skipped); they are checked like finished rows. A row
-    /// skipped on purpose keeps its source text and has nothing to check.
-    /// </summary>
     private static StringEntryStatus LqaStatus(StringEntryViewModel entry)
-        => entry.Status == StringEntryStatus.Skipped
-           && !string.IsNullOrWhiteSpace(entry.DestText)
-           && !string.Equals((entry.DestText ?? "").Trim(), (entry.SourceText ?? "").Trim(), StringComparison.Ordinal)
-            ? StringEntryStatus.Done
-            : entry.Status;
+        => ProjectLqaScan.CheckStatus(entry.Status, entry.SourceText, entry.DestText);
 
     private static int LqaSeverityWeight(string severity)
         => string.Equals(severity, "Error", StringComparison.OrdinalIgnoreCase) ? 0
@@ -219,15 +179,7 @@ public partial class MainViewModel
             ? null
             : GlobalGlossary.Select(ToCoreGlossaryEntry).ToList();
 
-        var merged = GlossaryMerger.Merge(project, global);
-        return merged
-            .Where(e => e.Enabled)
-            .Where(e => e.ForceMode == GlossaryForceMode.ForceToken)
-            .Where(e => e.MatchMode != GlossaryMatchMode.Regex)
-            .Where(e => !string.IsNullOrWhiteSpace(e.SourceTerm) && !string.IsNullOrWhiteSpace(e.TargetTerm))
-            .OrderByDescending(e => e.Priority)
-            .ThenByDescending(e => e.SourceTerm.Length)
-            .ToList();
+        return ProjectLqaScan.ForceTokenGlossary(project, global);
     }
 
     private static GlossaryEntry ToCoreGlossaryEntry(GlossaryEntryViewModel vm)
