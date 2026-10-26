@@ -76,8 +76,7 @@ public partial class MainViewModel
             };
             // An older Korean release saved in CP949 is read as CP949 (it was refused, and had to be saved again as UTF-8).
             var previous = await Task.Run(() => PluginReader.ReadTranslatedReleaseAsync(path, options, cancellationToken), cancellationToken);
-            var asCp949 = previous.Info.Options.SourceEncoding == PluginReader.Cp949Encoding
-                && !string.Equals(options.SourceEncoding, PluginReader.Cp949Encoding, StringComparison.OrdinalIgnoreCase);
+            var asCp949 = previous.Info.Diagnostics.Any(item => item.Code == PluginReader.Cp949ReadDiagnostic);
             // The master lists let a release that added or dropped a master still pair its FormIDs.
             var result = PreviousTranslationMatcher.Match(document.Fields, document.Info.Masters,
                 previous.Fields, previous.Info.Masters, LanguageHelper.IsKoreanLanguage(TargetLang));
@@ -138,7 +137,8 @@ public partial class MainViewModel
             // The earlier English is read as the current English is, with its own Strings or BSA next to it, from the
             // chosen source encoding (the current one may be its fallback).
             var options = document.Info.Options.ForOtherRelease(PluginSourceEncoding);
-            var previous = await Task.Run(() => PluginReader.ReadAsync(path, options, cancellationToken), cancellationToken);
+            // A Korean file given here is read too, and refused below as Korean (not with E452's advice to choose CP949).
+            var previous = await Task.Run(() => PluginReader.ReadTranslatedReleaseAsync(path, options, cancellationToken), cancellationToken);
             var result = PreviousTranslationMatcher.MatchSources(document.Fields, document.Info.Masters,
                 previous.Fields, previous.Info.Masters);
             var name = Path.GetFileName(path);

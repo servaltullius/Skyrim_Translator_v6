@@ -480,21 +480,38 @@ public sealed class PluginReadWriteTests
     }
 
     // An older Korean release saved in CP949 was refused as a translated release (read in the UTF-8 output encoding),
-    // so neither the GUI's 이전 번역 nor the agent's korean could use it.
+    // so neither the GUI's 이전 번역 nor the agent's korean could use it. Read whole as CP949, a UTF-8 line of a mixed
+    // release ("강철") became other Hangul ("媛뺤쿋") without an error; each line is read by itself.
     [Fact]
-    public async Task TranslatedRelease_SavedInCp949_IsReadAsCp949()
+    public async Task TranslatedRelease_SavedInCp949_IsReadAsCp949_LineByLine()
     {
-        using var korean = new Fixture(Header().Concat(Group(Record("WEAP", 0x800,
-            Sub("FULL", PluginBinary.GetEncoding("ks_c_5601-1987").GetBytes("강철 장검\0"))))).ToArray());
+        var cp949 = PluginBinary.GetEncoding("ks_c_5601-1987");
+        using var korean = new Fixture(Header().Concat(Group(
+            Record("WEAP", 0x800, Sub("FULL", cp949.GetBytes("강철 장검\0"))),
+            Record("WEAP", 0x801, Sub("FULL", Encoding.UTF8.GetBytes("강철\0"))))).ToArray());
         using var utf8 = new Fixture(Header().Concat(Group(Record("WEAP", 0x800, Sub("FULL", Encoding.UTF8.GetBytes("강철 장검\0"))))).ToArray());
 
         await Assert.ThrowsAsync<InvalidDataException>(() => PluginReader.ReadAsync(korean.Input, new(), default));
         var read = await PluginReader.ReadTranslatedReleaseAsync(korean.Input, new(), default);
         var unchanged = await PluginReader.ReadTranslatedReleaseAsync(utf8.Input, new(), default);
 
-        Assert.Equal("강철 장검", Assert.Single(read.Fields).SourceText);
-        Assert.Equal(PluginReader.Cp949Encoding, read.Info.Options.SourceEncoding);
-        Assert.Equal(("강철 장검", "utf-8"), (Assert.Single(unchanged.Fields).SourceText, unchanged.Info.Options.SourceEncoding));
+        Assert.Equal(new[] { "강철 장검", "강철" }, read.Fields.Select(field => field.SourceText));
+        Assert.Contains(read.Info.Diagnostics, item => item.Code == PluginReader.Cp949ReadDiagnostic);
+        Assert.Equal("강철 장검", Assert.Single(unchanged.Fields).SourceText);
+        Assert.DoesNotContain(unchanged.Info.Diagnostics, item => item.Code == PluginReader.Cp949ReadDiagnostic);
+    }
+
+    // A line neither UTF-8 nor CP949 reads: the error no longer says to choose CP949 as the source encoding.
+    [Fact]
+    public async Task TranslatedRelease_NeitherUtf8NorCp949_SaysSo()
+    {
+        using var korean = new Fixture(Header().Concat(Group(
+            Record("WEAP", 0x800, Sub("FULL", PluginBinary.GetEncoding("ks_c_5601-1987").GetBytes("강철 장검\0"))),
+            Record("WEAP", 0x801, Sub("FULL", new byte[] { 0x41, 0x81, 0 })))).ToArray());
+
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() => PluginReader.ReadTranslatedReleaseAsync(korean.Input, new(), default));
+
+        Assert.StartsWith(PluginReader.TranslatedReleaseUnreadable, error.Message);
     }
 
     [Fact]

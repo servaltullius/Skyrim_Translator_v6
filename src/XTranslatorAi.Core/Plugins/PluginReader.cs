@@ -107,7 +107,7 @@ public static class PluginReader
     /// single "cliché" stopped the whole plugin from opening. When UTF-8 cannot decode the source text, the
     /// plugin is read again as Windows-1252. A file with some text in valid UTF-8 too ("Café" beside a 0x92 "’")
     /// would turn that text into mojibake ("CafÃ©") that way, and kept the error until it was saved once in
-    /// xTranslator; it is read string by string instead (<see cref="Utf8OrWindows1252Encoding"/>). Every byte
+    /// xTranslator; it is read string by string instead (<see cref="Utf8OrFallbackEncoding"/>). Every byte
     /// sequence is valid Windows-1252, so an older Korean translation saved in CP949 would also open, "검을" as
     /// "°ËÀ»", and a UTF-8 export would then write that mojibake over the Korean text. Such a file keeps the
     /// error, with a hint that it looks like CP949 Korean.
@@ -139,7 +139,11 @@ public static class PluginReader
             // Only the strings UTF-8 could not read: valid UTF-8 beside CP949 Korean ("강철 단검" saved by another tool)
             // outweighed its bytes, and the file opened string by string with the CP949 text as "°­Ã¶ °Ë".
             if (fallback != null && LooksLikeCp949Korean(SourceTexts(fallback).Where(text => !WasValidUtf8(text, windows1252)), windows1252))
-                throw new InvalidDataException(utf8Error.Message + Cp949KoreanHint, utf8Error.InnerException);
+            {
+                var korean = new InvalidDataException(utf8Error.Message + Cp949KoreanHint, utf8Error.InnerException);
+                korean.Data[Cp949KoreanDataKey] = true;
+                throw korean;
+            }
             if (fallback == null)
             {
                 throw;
@@ -152,7 +156,7 @@ public static class PluginReader
                 PluginDocument mixed;
                 try
                 {
-                    mixed = ReadSnapshot(path, bytes, options with { SourceEncoding = Utf8OrWindows1252Encoding.Name }, tables, dependencies,
+                    mixed = ReadSnapshot(path, bytes, options with { SourceEncoding = Utf8OrFallbackEncoding.Windows1252Name }, tables, dependencies,
                         structure, cancellationToken, sources);
                 }
                 catch (InvalidDataException)
@@ -183,18 +187,26 @@ public static class PluginReader
 
     private const string Windows1252 = "windows-1252";
 
-    /// <summary>The source encoding recorded for a plugin read string by string (<see cref="Utf8OrWindows1252Encoding"/>).</summary>
-    public const string MixedSourceEncoding = Utf8OrWindows1252Encoding.Name;
+    /// <summary>The source encoding recorded for a plugin read string by string (<see cref="Utf8OrFallbackEncoding"/>).</summary>
+    public const string MixedSourceEncoding = Utf8OrFallbackEncoding.Windows1252Name;
 
-    /// <summary>Korean in CP949, the encoding older (LE-era) Korean releases were saved in.</summary>
-    public const string Cp949Encoding = "ks_c_5601-1987";
+    /// <summary>Marks the CP949-hint error in <see cref="Exception.Data"/>, so callers need not match its message.</summary>
+    internal const string Cp949KoreanDataKey = "XTranslatorAi.Cp949Korean";
+
+    /// <summary>The diagnostic of a translated release read with CP949 for its lines that are not UTF-8.</summary>
+    public const string Cp949ReadDiagnostic = "source_encoding_cp949";
+
+    /// <summary>The start of the error for a translated release neither UTF-8 nor CP949 reads.</summary>
+    public const string TranslatedReleaseUnreadable = "한국어판을 UTF-8로도 CP949로도 읽지 못했습니다";
 
     /// <summary>
-    /// A translated release of the plugin (the GUI's 이전 번역, the agent's korean), read in the output encoding. An older
-    /// Korean release saved in CP949 was refused there with the CP949 hint, and neither the GUI nor the agent could
-    /// read it: the user had to save it again as UTF-8 first. Such a release is read again as CP949. Its text is only
-    /// read (as the earlier translation), never written back, so the CP949 reading does not reach an export.
-    /// <see cref="PluginSourceInfo.Options"/> of the result says which encoding was used.
+    /// A translated release of the plugin (the GUI's 이전 번역, the agent's korean, and the English originals linked with
+    /// them, which then read as Korean and are refused as such), read in the output encoding. An older Korean release
+    /// saved in CP949 was refused there with the CP949 hint, and neither the GUI nor the agent could read it: the user
+    /// had to save it again as UTF-8 first. Such a release is read again string by string, CP949 for its lines that are
+    /// not UTF-8 (read whole as CP949, a UTF-8 line "강철" of a mixed release became "媛뺤쿋" without an error). Its text
+    /// is only read, as the earlier translation, never written back, so the reading does not reach an export. The
+    /// result carries <see cref="Cp949ReadDiagnostic"/> then.
     /// </summary>
     public static async Task<PluginDocument> ReadTranslatedReleaseAsync(string path, PluginReadOptions options, CancellationToken cancellationToken)
     {
@@ -202,10 +214,24 @@ public static class PluginReader
         {
             return await ReadAsync(path, options, cancellationToken);
         }
-        catch (InvalidDataException error) when (error.Message.EndsWith(Cp949KoreanHint, StringComparison.Ordinal)
-                                                 && GetSourceEncodingFallback(options.SourceEncoding) != null)
+        catch (InvalidDataException error) when (error.Data.Contains(Cp949KoreanDataKey) && GetSourceEncodingFallback(options.SourceEncoding) != null)
         {
-            return await ReadAsync(path, options with { SourceEncoding = Cp949Encoding }, cancellationToken);
+            PluginDocument korean;
+            try
+            {
+                korean = await ReadAsync(path, options with { SourceEncoding = Utf8OrFallbackEncoding.Cp949Name }, cancellationToken);
+            }
+            catch (InvalidDataException again) when (again.InnerException is DecoderFallbackException)
+            {
+                // A line neither UTF-8 nor CP949 (a Windows-1252 "…" left in a CP949 release): the original error's advice,
+                // to choose CP949 as the source encoding, does not apply to an earlier translation.
+                throw new InvalidDataException(TranslatedReleaseUnreadable + "(여러 인코딩이 섞인 판으로 보입니다). UTF-8로 다시 저장한 판을 쓰세요.", again);
+            }
+
+            var notes = korean.Info.Diagnostics.Append(new PluginDiagnostic(Cp949ReadDiagnostic,
+                "옛 한국어판이라 UTF-8이 아닌 줄을 CP949로 읽었습니다.")).ToArray();
+            return new PluginDocument(korean.Info with { Diagnostics = Array.AsReadOnly(notes) }, korean.Fields, korean.Bytes,
+                korean.Nodes, korean.Records, korean.Tables, korean.DependencyHashes);
         }
     }
 

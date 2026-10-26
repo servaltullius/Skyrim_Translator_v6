@@ -223,8 +223,7 @@ public sealed class AgentSession
         return new AgentKoreanLink(match, fill.Count, earlier.Count - fill.Count - changed.Count, open.Count - fill.Count + changed.Count, different,
             changed.OrderBy(id => id).ToList(), englishPath != null)
         {
-            ReadAsCp949 = korean.Info.Options.SourceEncoding == PluginReader.Cp949Encoding
-                          && !string.Equals(options.SourceEncoding, PluginReader.Cp949Encoding, StringComparison.OrdinalIgnoreCase),
+            ReadAsCp949 = korean.Info.Diagnostics.Any(item => item.Code == PluginReader.Cp949ReadDiagnostic),
         };
     }
 
@@ -235,7 +234,8 @@ public sealed class AgentSession
         if (!File.Exists(path)) throw new AgentModeException($"한국어판의 영어 원본 플러그인이 없습니다: {englishPath}");
         // The earlier English is read as the current English is, with its own Strings or BSA next to it, from the
         // chosen source encoding (the current one may be its fallback).
-        var english = await PluginReader.ReadAsync(path, current.Info.Options.ForOtherRelease(sourceEncoding), cancellationToken);
+        // A Korean file given here is read too, and refused below as Korean (not as an encoding error).
+        var english = await PluginReader.ReadTranslatedReleaseAsync(path, current.Info.Options.ForOtherRelease(sourceEncoding), cancellationToken);
         var sources = PreviousTranslationMatcher.MatchSources(current.Fields, current.Info.Masters, english.Fields, english.Info.Masters);
         if (sources.SourceByFieldKey.Count == 0)
         {

@@ -35,6 +35,9 @@ public static class PluginUserFacingErrorClassifier
                 var rowHint = rows.Success ? " 관련 행: " + rows.Groups["ids"].Value : "";
                 return Error("E453", $"{table} StringID {id}를 공유하는 행의 번역이 다릅니다. Search에 string:{table.ToUpperInvariant()}/{id}를 입력하고 Status를 (All)로 설정한 뒤, 공유 행의 번역을 모두 일치시켜 저장하세요.{rowHint}");
             }
+            // An earlier translation read neither as UTF-8 nor as CP949: choosing a source encoding would not help.
+            if (message.StartsWith(XTranslatorAi.Core.Plugins.PluginReader.TranslatedReleaseUnreadable, StringComparison.Ordinal))
+                return Error("E452", "이전 번역판을 UTF-8로도 CP949로도 읽지 못했습니다(여러 인코딩이 섞인 판으로 보입니다). UTF-8로 다시 저장한 판을 쓰세요.");
             var decoding = Match(message, $@"^원문 인코딩으로 해석할 수 없습니다: (?<id>{Field}|{Table}:[0-9]{{1,10}}|EDID|MAST)\. 올바른 인코딩을 선택하세요\.(?<korean> CP949 한글 원문으로 보입니다\.)?$");
             if (decoding.Success)
             {
