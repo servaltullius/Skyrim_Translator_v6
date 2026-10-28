@@ -82,6 +82,22 @@ public sealed class TranslationMemoryUpdateTests
         Assert.True(tm.Count >= 33000, $"TM has {tm.Count} entries");
     }
 
+    // A TM entry ending in a line break (a title joined over two lines) was filled with the break trimmed away, failed
+    // the line check and went to the model.
+    [Fact]
+    public async Task TmHit_KeepsALineBreakAtTheEdge()
+    {
+        await using var fixture = await TranslationRunFixture.CreateAsync(("A Short History\nof Morrowind", "MESG:DESC"), ("A Short History\nof Morrowind", "MESG:DESC"));
+        var (edited, other) = (fixture.Ids[0], fixture.Ids[1]);
+        await fixture.Db.UpdateStringTranslationAsync(edited, "모로윈드 약사\n", StringEntryStatus.Edited, null, CancellationToken.None);
+
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { Ids = new[] { other } });
+
+        var rows = await fixture.RowsAsync();
+        Assert.Equal(("모로윈드 약사\n", StringEntryStatus.Done), (rows[other].DestText, rows[other].Status));
+        Assert.Equal(0, fixture.Client.Calls);
+    }
+
     [Fact]
     public async Task RetranslatingOrRevertingAnEditedRow_KeepsTheEditAsTheTmEntry()
     {

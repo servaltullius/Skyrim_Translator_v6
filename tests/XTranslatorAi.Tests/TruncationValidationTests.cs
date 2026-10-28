@@ -111,6 +111,17 @@ public class TruncationValidationTests
         Assert.Contains("dropped a line", ex.Message, StringComparison.Ordinal);
     }
 
+    // Counted, the tokens let a line dropped beside a repeated break pass: as many breaks as the source, one of them twice.
+    [Fact]
+    public void LineDroppedBesideARepeatedBreak_IsRefused()
+    {
+        const string input = "The first sentence is here.__XT_PH_0000__The second sentence is here.__XT_PH_0001__The third sentence is here.";
+
+        var ex = Assert.Throws<InvalidOperationException>(
+            () => TokenValidator.ValidateRepairKeptLines(input, "첫째 문장이다.__XT_PH_0000____XT_PH_0000__셋째 문장이다.", "id=1"));
+        Assert.Contains("dropped a line", ex.Message, StringComparison.Ordinal);
+    }
+
     // Plain __XT_PH_ tokens are formatting tags too: a term put back before a tag left the English before the tag an
     // empty slot in Korean word order, and a complete translation was refused.
     [Fact]

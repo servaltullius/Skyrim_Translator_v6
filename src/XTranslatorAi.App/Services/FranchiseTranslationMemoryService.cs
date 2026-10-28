@@ -71,8 +71,13 @@ public sealed class FranchiseTranslationMemoryService
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
                 // A user's file open in Excel (locked) stopped the loop, and the bundled seed after it in name order was
-                // never imported. It is this file's alone, tried again next time.
-                unreadable ??= $"{Path.GetFileName(path)}을(를) 읽지 못했습니다({ex.Message}). 다른 프로그램에서 닫은 뒤 다시 여세요.";
+                // never imported. It is this file's alone, tried again next time. A file gone meanwhile was imported and
+                // moved by another lane's process.
+                if (File.Exists(path))
+                {
+                    unreadable ??= $"{Path.GetFileName(path)}을(를) 읽지 못했습니다({ex.Message}). 다른 프로그램에서 닫은 뒤 다시 여세요.";
+                }
+
                 continue;
             }
 
@@ -83,9 +88,15 @@ public sealed class FranchiseTranslationMemoryService
             {
                 File.Move(path, Path.Combine(importedDir, $"{stem}.imported.{timestamp}.tsv"), overwrite: false);
             }
-            catch (IOException) when (!File.Exists(path))
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
-                // Another lane's process imported the same file and moved it first: the rows are the same.
+                // Gone: another lane's process imported the same file and moved it first, the rows being the same. Still
+                // there (another program holds it): its rows are in, it is imported again next time, and the files after
+                // it are still taken.
+                if (File.Exists(path))
+                {
+                    unreadable ??= $"{Path.GetFileName(path)}은(는) 가져왔지만 imported 폴더로 옮기지 못했습니다({ex.Message}). 다음에 다시 가져옵니다.";
+                }
             }
         }
 

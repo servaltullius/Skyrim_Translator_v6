@@ -5,6 +5,7 @@ using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text;
 using XTranslatorAi.Core.Text.Lqa.Internal;
 using Xunit;
+using XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 
 namespace XTranslatorAi.Tests;
 
@@ -893,8 +894,9 @@ public class LqaFalsePositiveTests
         }
     }
 
-    // A 하오체 speaker closes sentences with ~다 and ~네 as well: in a group mostly 하오체 those were marked 반말. A line
-    // plainly 반말 (~야, ~거든) is still marked there, and a 하오체 line or a "~ㅂ시다" among 반말 too.
+    // A 하오체 speaker closes sentences with ~다 and ~네 as well and asks with "~ㅂ시다": in a group mostly 하오체 those
+    // were marked 반말 or 존댓말. A line plainly 반말 (~야, ~거든, "자네도 알잖아") or with a 해요체 sentence of its own is
+    // still marked there, and a 하오체 line or a "~ㅂ시다" among 반말 too. A quotation is not the speaker's level.
     [Fact]
     public async Task DialogueTone_HaoMajority_DoesNotMarkItsOwnDaOrNe()
     {
@@ -911,17 +913,30 @@ public class LqaFalsePositiveTests
             Line(5, "거기 서 있어."), Line(6, last),
         };
 
-        foreach (var own in new[] { "그건 이미 끝난 일이다.", "오늘은 바람이 차갑네." })
+        foreach (var own in new[] { Hao("그건 이미 끝난 일이다."), Hao("오늘은 바람이 차갑네."), Hao("그럼 출발합시다!"), Hao("자, 갑시다!"),
+                     Casual("그 노인이 이렇게 말했어. \"조심하시오.\"") })
         {
-            Assert.DoesNotContain(await LqaScanner.ScanAsync(Hao(own), "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
+            Assert.DoesNotContain(await LqaScanner.ScanAsync(own, "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
         }
 
         foreach (var (lines, label) in new[] { (Hao("그건 네 몫이야."), "반말"), (Hao("난 이미 다 알고 있거든."), "반말"),
+                     (Hao("자네도 알잖아."), "반말"), (Hao("고마워요. 갑시다."), "존댓말"), (Hao("그 노인이 이렇게 말했어. \"조심하시오.\""), "반말"),
                      (Casual("그건 내가 하겠소."), "하오체"), (Casual("자, 갑시다!"), "존댓말") })
         {
             var issue = Assert.Single(await LqaScanner.ScanAsync(lines, "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
             Assert.Equal(lines[^1].Id, issue.Id);
             Assert.Contains("이 대사 " + label, issue.Message);
         }
+    }
+
+    // ~거든 before a comma is "if" ("그를 만나거든, …"), not 반말's sentence ending; it was 반말 against a decided 하오체.
+    [Fact]
+    public void Geodeun_EndingASentence_IsPlainCasual_ButNotBeforeAComma()
+    {
+        Assert.True(SpeakerToneConsistencyRule.IsPlainCasual("난 이미 다 알고 있거든."));
+        Assert.True(SpeakerToneConsistencyRule.IsPlainCasual("다 알고 있거든! 그러니 가자."));
+        Assert.False(SpeakerToneConsistencyRule.IsPlainCasual("그를 만나거든, 안부를 전해 주세요."));
+        Assert.Null(SpeakerToneConsistencyRule.StrayFromDeclared("그를 만나거든, 안부를 전해 주세요.", "하오체"));
+        Assert.Equal("반말", SpeakerToneConsistencyRule.StrayFromDeclared("난 이미 다 알고 있거든.", "하오체"));
     }
 }

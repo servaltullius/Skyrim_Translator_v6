@@ -97,10 +97,11 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Null((await _session.RemakePendingAsync(_project, CancellationToken.None)).Report);
         await _session.NextAsync(_project, CancellationToken.None);
 
-        var (remade, lanes) = await _session.RemakePendingAsync(_project, CancellationToken.None);
+        var (remade, lanes, left) = await _session.RemakePendingAsync(_project, CancellationToken.None);
 
         Assert.NotNull(remade?.Next);
         Assert.Equal(0, lanes);
+        Assert.False(left);
         Assert.NotNull(_session.Pending(_project));
         Assert.Contains(_session.InstructionsPath(_project), await File.ReadAllTextAsync(_session.RequestPath(_project)));
     }
@@ -316,11 +317,60 @@ public sealed class AgentModeTests : IAsyncLifetime
         Directory.CreateDirectory(laneDir);
         File.Copy(Path.Combine(_root, "work", _project.Key, "pending.json"), Path.Combine(laneDir, "pending.json"));
 
-        var (report, lanes) = await _session.RemakePendingAsync(_project, CancellationToken.None);
+        var (report, lanes, left) = await _session.RemakePendingAsync(_project, CancellationToken.None);
 
         Assert.Null(report);
         Assert.Equal(1, lanes);
+        Assert.True(left);
         Assert.NotNull(_session.Pending(_project));
+    }
+
+    // Both waiting (made by an earlier version): a lane's submit saved its answer and made its next request, which asked
+    // the laneless request's lines again.
+    [Fact]
+    public async Task LaneSubmit_WithTheLanelessRequestWaiting_SavesButMakesNoNextRequest()
+    {
+        var lane = _project with { Lane = AgentLane.Parse("1/2") };
+        await _session.NextAsync(lane, CancellationToken.None);
+        var pending = _session.Pending(lane)!;
+        File.Copy(Path.Combine(_root, "work", _project.Key, lane.Lane!.Folder, "pending.json"), Path.Combine(_root, "work", _project.Key, "pending.json"));
+        var answer = JsonSerializer.Serialize(new
+        {
+            translations = AgentAnswerCheck.Lines(pending).Where(line => line.Id != null).Select(line => new { id = line.Id, text = "번역문입니다." }),
+        });
+
+        var report = await _session.SubmitAsync(lane, answer, CancellationToken.None);
+
+        Assert.Null(report.Next);
+        Assert.Contains("다음 요청은 만들지 않았습니다", report.Problem);
+        Assert.Null(_session.Pending(lane));
+        Assert.NotNull(_session.Pending(_project));
+    }
+
+    // A file another program holds open for reading is imported but cannot be moved: the move's error stopped the loop,
+    // and the bundled seed after it in name order was never imported.
+    [Fact]
+    public async Task SeriesTmImport_WithAFileThatCannotBeMoved_TakesTheRest()
+    {
+        var root = Path.Combine(_root, "seed-held");
+        var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.ElderScrolls, root);
+        Directory.CreateDirectory(importDir);
+        var held = Path.Combine(importDir, "aaa.tsv");
+        await File.WriteAllTextAsync(held, "Source\tTarget\nHello\t안녕\n");
+        await using var global = new GlobalProjectDbService(new BuiltInGlossaryService(), root);
+        var session = new AgentSession(Path.Combine(_root, "work-held"), global, gameStrings: null, new AppSettings(),
+            projectsRootOverride: Path.Combine(_root, "projects-held"), tmSeed: new BundledFranchiseTmSeedService(root));
+
+        using (new FileStream(held, FileMode.Open, FileAccess.Read, FileShare.Read))
+        {
+            var (project, _, _, _) = await session.OpenAsync(Path.Combine(_root, "Mod", "Thalmor.esp"), new PluginReadOptions(), "korean", "utf-8",
+                batchSize: 2, CancellationToken.None);
+            _extraDbs.Add(project.DbPath);
+        }
+
+        var db = await global.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None);
+        Assert.True((await db!.GetTranslationMemoryEntriesAsync("english", "korean", CancellationToken.None)).Count > 20000);
+        Assert.Contains("옮기지 못했습니다", session.SeriesTmNote);
     }
 
     // A user's TSV open in Excel (locked) stopped the import loop, and the bundled seed after it in name order was never

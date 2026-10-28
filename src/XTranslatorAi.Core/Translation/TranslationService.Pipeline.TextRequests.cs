@@ -494,20 +494,7 @@ public sealed partial class TranslationService
     /// it). Trimming alone saved "Gold: " as "골드:", so a UI label ran into the value the game appends; a long
     /// text's chunks would join two words. Newline/pagebreak tokens are not whitespace and stay as translated.
     /// </summary>
-    internal static string RestoreSourceEdgeWhitespace(string source, string translated)
-    {
-        var leading = 0;
-        while (leading < source.Length && char.IsWhiteSpace(source[leading]))
-        {
-            leading++;
-        }
-        var trailing = source.Length;
-        while (trailing > leading && char.IsWhiteSpace(source[trailing - 1]))
-        {
-            trailing--;
-        }
-        return source[..leading] + translated.Trim() + source[trailing..];
-    }
+    internal static string RestoreSourceEdgeWhitespace(string source, string translated) => RestoreEdges(source, translated, char.IsWhiteSpace);
 
     /// <summary>
     /// <see cref="RestoreSourceEdgeWhitespace"/> for a final text, its tokens put back: a line break at an edge is the
@@ -515,28 +502,27 @@ public sealed partial class TranslationService
     /// restored and trimmed. Trimmed with the rest, the break was gone from the saved line and a leading one doubled.
     /// </summary>
     internal static string RestoreSourceEdgeSpaces(string source, string translated)
+        => RestoreEdges(source, translated, ch => ch is not ('\r' or '\n') && char.IsWhiteSpace(ch));
+
+    private static string RestoreEdges(string source, string translated, Func<char, bool> isSpace)
     {
-        static bool IsSpace(char ch) => ch is not ('\r' or '\n') && char.IsWhiteSpace(ch);
-        var leading = 0;
-        while (leading < source.Length && IsSpace(source[leading]))
+        static (int Start, int End) Inner(string text, Func<char, bool> isSpace)
         {
-            leading++;
+            var start = 0;
+            while (start < text.Length && isSpace(text[start]))
+            {
+                start++;
+            }
+            var end = text.Length;
+            while (end > start && isSpace(text[end - 1]))
+            {
+                end--;
+            }
+            return (start, end);
         }
-        var trailing = source.Length;
-        while (trailing > leading && IsSpace(source[trailing - 1]))
-        {
-            trailing--;
-        }
-        var start = 0;
-        while (start < translated.Length && IsSpace(translated[start]))
-        {
-            start++;
-        }
-        var end = translated.Length;
-        while (end > start && IsSpace(translated[end - 1]))
-        {
-            end--;
-        }
+
+        var (leading, trailing) = Inner(source, isSpace);
+        var (start, end) = Inner(translated, isSpace);
         return source[..leading] + translated[start..end] + source[trailing..];
     }
 

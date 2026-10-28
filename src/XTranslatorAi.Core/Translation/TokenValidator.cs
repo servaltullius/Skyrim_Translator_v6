@@ -469,57 +469,64 @@ internal static class TokenValidator
     /// the source lines that came out as one line may be a title and its fragment ("A Short History / of Morrowind"),
     /// not two sentences (one ends in . ! ? or is 20 letters long), and must keep some of their letters ("작자 미상"
     /// alone for a sentence and "by Anonymous" was a sentence dropped in the middle). An answer that kept every layout
-    /// token is not judged: a name before a tag empties a slot in Korean word order, and the slots are the source's.
+    /// token is not judged: a name before a tag empties a slot in Korean word order, and the slots are the source's. A
+    /// token the answer repeats (or the source does not have) is dropped by the repair, and its line runs on: counted
+    /// tokens let a line dropped beside a repeated break pass.
     /// </summary>
     internal static void ValidateRepairKeptLines(string inputText, string outputText, string context)
     {
         var inputTokens = LayoutTokenRegex.Matches(inputText).Select(m => m.Value).ToList();
         var outputTokens = LayoutTokenRegex.Matches(outputText).Select(m => m.Value).ToList();
-        if (outputTokens.Count >= inputTokens.Count)
+        if (!inputTokens.Except(outputTokens, StringComparer.Ordinal).Any())
         {
             return;
         }
 
-        // Where each kept token is in the source; an answer with its tokens out of the source's order is not judged here.
-        var kept = new List<int>(outputTokens.Count);
-        foreach (var token in outputTokens)
+        // Each output line with the source lines it stands for: from after the kept token before it to the kept token
+        // after it. An answer with its tokens out of the source's order is not judged here.
+        var inputSlots = LayoutTokenRegex.Split(inputText);
+        var outputSlots = LayoutTokenRegex.Split(outputText);
+        var lines = new List<(string Text, int First, int Last)>();
+        var used = new HashSet<string>(StringComparer.Ordinal);
+        var (text, first) = (outputSlots[0], 0);
+        for (var t = 0; t < outputTokens.Count; t++)
         {
-            var at = inputTokens.IndexOf(token, kept.Count == 0 ? 0 : kept[^1] + 1);
+            var at = used.Add(outputTokens[t]) ? inputTokens.IndexOf(outputTokens[t]) : -1;
             if (at < 0)
+            {
+                text += " " + outputSlots[t + 1];
+                continue;
+            }
+
+            if (at < first)
             {
                 return;
             }
 
-            kept.Add(at);
+            lines.Add((text, first, at));
+            (text, first) = (outputSlots[t + 1], at + 1);
         }
 
-        var inputSlots = LayoutTokenRegex.Split(inputText);
-        var outputSlots = LayoutTokenRegex.Split(outputText);
-        for (var s = 0; s < outputSlots.Length; s++)
+        lines.Add((text, first, inputSlots.Length - 1));
+        foreach (var line in lines.Where(line => line.Last > line.First))
         {
-            // Output line s stands for the source lines from after the kept token before it to the kept token after it.
-            var first = s == 0 ? 0 : kept[s - 1] + 1;
-            var last = s < kept.Count ? kept[s] : inputSlots.Length - 1;
-            if (last <= first)
+            var source = inputSlots[line.First..(line.Last + 1)];
+            var letters = source.Sum(Letters);
+            if (source.Count(IsSentence) >= 2 || letters >= 4 && Letters(line.Text) < Math.Ceiling(letters * 0.15))
             {
-                continue;
-            }
-
-            var lines = inputSlots[first..(last + 1)];
-            var letters = lines.Sum(Letters);
-            if (lines.Count(IsSentence) >= 2 || letters >= 4 && Letters(outputSlots[s]) < Math.Ceiling(letters * 0.15))
-            {
-                throw new InvalidOperationException($"Translation dropped a line for {context} (lines {first}-{last} came out as one).");
+                throw new InvalidOperationException($"Translation dropped a line for {context} (lines {line.First}-{line.Last} came out as one).");
             }
         }
 
-        static int Letters(string slot) => CountLettersOrDigits(RawAngleTagRegex.Replace(TranslationConstants.XtTokenRegex.Replace(slot, " "), " "));
+        static string Plain(string slot) => RawAngleTagRegex.Replace(TranslationConstants.XtTokenRegex.Replace(slot, " "), " ").Trim();
+
+        static int Letters(string slot) => CountLettersOrDigits(Plain(slot));
 
         static bool IsSentence(string slot)
         {
-            var text = RawAngleTagRegex.Replace(TranslationConstants.XtTokenRegex.Replace(slot, " "), " ").Trim();
+            var text = Plain(slot);
             var letters = CountLettersOrDigits(text);
-            return letters >= 20 || letters >= 4 && text.Length > 0 && text[^1] is '.' or '!' or '?' or '。';
+            return letters >= 20 || letters >= 4 && text[^1] is '.' or '!' or '?' or '。';
         }
     }
 

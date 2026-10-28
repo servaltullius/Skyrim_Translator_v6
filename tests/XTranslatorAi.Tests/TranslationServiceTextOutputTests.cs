@@ -66,15 +66,18 @@ public sealed class TranslationServiceTextOutputTests
     [Fact]
     public async Task Batch_KeepsALineBreakTheTranslationEndsIn()
     {
-        await using var fixture = await TranslationRunFixture.CreateAsync(("A Short History\nof Morrowind", "MESG:DESC"), ("Gold: ", "MESG:DESC"));
+        await using var fixture = await TranslationRunFixture.CreateAsync(("A Short History\nof Morrowind", "MESG:DESC"), ("Gold: ", "MESG:DESC"),
+            ("A Short History\nof Morrowind", "MESG:DESC"));
         var ids = fixture.Ids;
         fixture.Client.ResponseOverride = (_, _) =>
             "{\"translations\":[{\"id\":" + ids[0] + ",\"text\":\"모로윈드 약사__XT_PH_0000__\"},{\"id\":" + ids[1] + ",\"text\":\"골드:\"}]}";
 
-        await fixture.Service.TranslateIdsAsync(fixture.Request with { TargetLang = "korean", BatchSize = 2 });
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { TargetLang = "korean", BatchSize = 3 });
 
         var rows = await fixture.RowsAsync();
         Assert.Equal(("모로윈드 약사\n", StringEntryStatus.Done), (rows[ids[0]].DestText, rows[ids[0]].Status));
+        // The same text in another row is filled from the first (the duplicate-row path).
+        Assert.Equal(("모로윈드 약사\n", StringEntryStatus.Done), (rows[ids[2]].DestText, rows[ids[2]].Status));
     }
 
     [Theory]

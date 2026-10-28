@@ -200,10 +200,18 @@ public static partial class AgentCli
     /// <summary>A waiting request shows what was there before the change: it is made again, so its answer follows the new one.</summary>
     private static async Task RemakeWaitingAsync(AgentCommand c, AgentProject project, string made, string old)
     {
-        var (remade, lanesWaiting) = await c.Session.RemakePendingAsync(project, c.Ct);
+        var (remade, lanesWaiting, left) = await c.Session.RemakePendingAsync(project, c.Ct);
+        // Made again, the request imports the series TM as next does: what it took or could not take.
+        if (c.Session.SeriesTmNote is { } tmNote) Console.WriteLine(tmNote);
         if (remade?.Next != null)
         {
             Console.WriteLine($"대기 중이던 요청을 {made} 다시 만들었습니다: {remade.NextRequestPath}. 이 요청을 읽고 답하세요(앞 요청에 쓴 답은 내지 마세요).");
+        }
+
+        if (left)
+        {
+            Console.WriteLine($"알림: 갈래 없이 만든 대기 요청({c.Session.RequestPath(project)})은 갈래 요청이 남아 있어 다시 만들지 못했습니다. "
+                              + $"그 요청은 {old} 만들어졌으니 답하지 말고, open으로 다시 열어 대기 요청을 지운 뒤 이어 가세요.");
         }
 
         if (lanesWaiting > 0)

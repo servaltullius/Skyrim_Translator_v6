@@ -120,10 +120,12 @@ internal static class DialogueToneConsistencyRule
 
         var tone = ClassifySpeech(entry.DestText);
         // A 하오체 speaker closes sentences with ~지, ~군, ~다 and ~네 as well ("그건 이미 끝난 일이다."), which read as 반말
-        // line by line: in a group mostly 하오체 they are the same voice. A line plainly 반말 ("그건 네 몫이야.", "~거든",
-        // 너) is still marked, as the speaker check marks it against a decided 하오체.
+        // line by line, and asks with "~ㅂ시다" ("그럼 출발합시다!"), which reads as 존댓말: in a group mostly 하오체 they
+        // are the same voice. A line plainly 반말 ("그건 네 몫이야.", "~거든", 너, "자네도 알잖아") is still marked, as the
+        // speaker check marks it against a decided 하오체, and so is a line with a 해요체 sentence of its own.
         if (tone == ToneKind.Unknown || tone == majority
-            || majority == ToneKind.Hao && tone == ToneKind.Casual && SpeakerToneConsistencyRule.StrayFromDeclared(entry.DestText, "하오체") != "반말")
+            || majority == ToneKind.Hao && tone == ToneKind.Casual && !SpeakerToneConsistencyRule.IsPlainCasual(entry.DestText)
+            || majority == ToneKind.Hao && tone == ToneKind.Haeyo && SpeakerToneConsistencyRule.IsOnlySharedPolite(entry.DestText))
         {
             return;
         }
@@ -202,7 +204,8 @@ internal static class DialogueToneConsistencyRule
     private static ToneKind ClassifySpeech(string? text, bool mergePolite = true)
     {
         // A stage direction is not speech: "[양초를 제작하는 방법을 설명한다]" and "…있네요. (서류철을 보여준다)" read as 반말.
-        var spoken = StageDirection.Replace(text ?? "", " ").Trim();
+        // Nor is a quotation, for every reading below: …이렇게 말했어. "조심하시오." took the quoted 존댓말 for its own.
+        var spoken = SpeakerToneConsistencyRule.SpokenPart(StageDirection.Replace(text ?? "", " ")).Trim();
         if (!spoken.Any(char.IsLetter))
         {
             return ToneKind.Unknown;

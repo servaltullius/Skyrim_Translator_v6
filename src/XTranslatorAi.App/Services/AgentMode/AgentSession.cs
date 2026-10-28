@@ -314,16 +314,17 @@ public sealed class AgentSession
     /// written for the old request, would be dropped. In the Codex trial a level decided with a request waiting cost
     /// that request's 30 answers. Null when no request waits; a lane's waiting requests are left (count returned).
     /// </summary>
-    public async Task<(AgentStepReport? Report, int LanesWaiting)> RemakePendingAsync(AgentProject project, CancellationToken cancellationToken)
+    public async Task<(AgentStepReport? Report, int LanesWaiting, bool LeftAsItWas)> RemakePendingAsync(AgentProject project, CancellationToken cancellationToken)
     {
         var lanes = Directory.Exists(ProjectDir(project))
             ? Directory.GetDirectories(ProjectDir(project), "lane-*").Count(d => File.Exists(Path.Combine(d, "pending.json")))
             : 0;
+        if (Pending(project) == null) return (null, lanes, false);
         // A request that next would refuse to make (another lane's or the laneless run's request waiting) stays: cleared,
-        // it was gone and the command ended in 실패.
-        if (Pending(project) == null || LaneConflict(project, making: true) != null) return (null, lanes);
+        // it was gone and the command ended in 실패. It still shows what was there before (LeftAsItWas).
+        if (LaneConflict(project, making: true) != null) return (null, lanes, true);
         ClearPending(project);
-        return (await NextAsync(project, cancellationToken), lanes);
+        return (await NextAsync(project, cancellationToken), lanes, false);
     }
 
     public IReadOnlyList<AgentProject> Projects()
@@ -523,6 +524,17 @@ public sealed class AgentSession
         }
 
         var rejected = await RejectedAsync(project, pending, report, reasons, textReason, cancellationToken);
+        // Both waiting (made by an earlier version): the lane's answer is saved, and its next request, which would ask
+        // the laneless request's lines again, is not made.
+        if (LaneConflict(project, making: true) is { } refusal)
+        {
+            return report with
+            {
+                Rejected = rejected, Next = null,
+                Problem = (report.Problem == null ? "" : report.Problem + " ") + "이 답은 저장했고, 이 갈래의 다음 요청은 만들지 않았습니다. " + refusal,
+            };
+        }
+
         return await WriteNextAsync(report with { Rejected = rejected }, rejected, cancellationToken);
     }
 
