@@ -216,7 +216,7 @@ internal static class TokenSanitizer
             {
                 TokenValidator.ValidateTokensPreserved(inputText, repaired, context);
                 TokenValidator.ValidateNotTruncatedOrOmitted(inputText, repaired, context);
-                TokenValidator.ValidateRepairKeptLines(inputText, repaired, context);
+                TokenValidator.ValidateRepairKeptLines(inputText, outputText, context);
                 TokenValidator.ValidateRawTagsPreserved(inputText, repaired, context);
                 return repaired;
             }

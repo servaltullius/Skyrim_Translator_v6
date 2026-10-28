@@ -137,7 +137,7 @@ public sealed partial class TranslationService
                 // The same base game book in two records: the copy takes the Korean patch's blocks as the first does.
                 dupFinal = SpliceGamePatch(dup.Id, dup.Source, dupFinal);
                 TokenValidator.ValidateFinalTextIntegrity(dup.Source, dupFinal, context: $"id={dup.Id} post-edits");
-                doneUpdates.Add((dup.Id, RestoreSourceEdgeWhitespace(dup.Source, dupFinal), StringEntryStatus.Done, null));
+                doneUpdates.Add((dup.Id, RestoreSourceEdgeSpaces(dup.Source, dupFinal), StringEntryStatus.Done, null));
             }
             catch (OperationCanceledException)
             {

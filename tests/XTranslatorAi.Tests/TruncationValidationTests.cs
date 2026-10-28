@@ -99,6 +99,32 @@ public class TruncationValidationTests
         Assert.Contains("모로윈드 약사", repaired, StringComparison.Ordinal);
     }
 
+    // The repair puts a lost line break back at the end, so a line dropped in the middle left the last slot, a short
+    // byline, empty: judged by the slot, the dropped sentence passed.
+    [Fact]
+    public void RepairOfALineDroppedInTheMiddle_IsRefused()
+    {
+        const string input = "The Book of Dawn and Dusk__XT_PH_0000__An account of the ancient Akaviri and their wars.__XT_PH_0001__by Anonymous";
+
+        var ex = Assert.Throws<InvalidOperationException>(
+            () => TokenSanitizer.EnsureTokensPreservedOrRepair(input, "새벽과 황혼의 서__XT_PH_0000__작자 미상", "id=1"));
+        Assert.Contains("dropped a line", ex.Message, StringComparison.Ordinal);
+    }
+
+    // Plain __XT_PH_ tokens are formatting tags too: a term put back before a tag left the English before the tag an
+    // empty slot in Korean word order, and a complete translation was refused.
+    [Fact]
+    public void RepairOfATermBeforeATag_IsAllowed()
+    {
+        const string input = "Speak to the court wizard in Dragonsreach about __XT_PH_0000____XT_TERM_0000____XT_PH_0001__.";
+        const string output = "__XT_PH_0000__블리크 폴스 바로우__XT_PH_0001__에 대해 드래곤스리치의 궁정 마법사와 이야기하라.";
+        var terms = new Dictionary<string, string>(StringComparer.Ordinal) { ["__XT_TERM_0000__"] = "블리크 폴스 바로우" };
+
+        var repaired = TokenSanitizer.EnsureTokensPreservedOrRepair(input, output, "id=1", terms);
+
+        Assert.StartsWith("__XT_PH_0000____XT_TERM_0000____XT_PH_0001__", repaired, StringComparison.Ordinal);
+    }
+
     // A name or value token follows Korean word order: cut at it, the long English before the name had an empty Korean
     // segment and a complete translation was refused as an omission, on every retry.
     [Fact]
@@ -108,7 +134,9 @@ public class TruncationValidationTests
         var output = "__XT_TERM_0000__, " + Hangul(150) + ".";
 
         TokenValidator.ValidateNotTruncatedOrOmitted(input, output, "id=1");
-        // A long line that really lost most of its text is still refused.
+        // A long line that really lost most of its text is still refused, its tokens' letters not counted as text.
         Assert.Throws<InvalidOperationException>(() => TokenValidator.ValidateNotTruncatedOrOmitted(input, "__XT_TERM_0000__, 짧음.", "id=1"));
+        var names = string.Join(" ", Enumerable.Range(0, 6).Select(i => $"__XT_TERM_{i:0000}__"));
+        Assert.Throws<InvalidOperationException>(() => TokenValidator.ValidateNotTruncatedOrOmitted(Words(300) + " " + names + ".", names + " 짧음.", "id=1"));
     }
 }

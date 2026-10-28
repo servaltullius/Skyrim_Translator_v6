@@ -122,7 +122,7 @@ public sealed partial class TranslationService
         final = KoreanTranslationFixer.Fix(targetLang, final);
         final = PercentSignFixer.FixDuplicatePercents(final, sourceText);
         // The TM is keyed without edge whitespace ("gold:"), so "Gold: " was filled with "골드:".
-        final = RestoreSourceEdgeWhitespace(sourceText, final);
+        final = RestoreSourceEdgeSpaces(sourceText, final);
         try
         {
             TokenValidator.ValidateFinalTextIntegrity(sourceText, final, context: $"id={id} tm post-edits");

@@ -463,27 +463,57 @@ internal static class TokenValidator
     }
 
     /// <summary>
-    /// After <see cref="TryRepairTokens"/>: a model that left out a line together with its line break had the break put
-    /// back by the repair, and the empty slot passed as two title lines joined ("Costs 50 magicka and staggers the
-    /// caster." was gone from a spell's description, saved as Done). A slot that is a sentence in the source (it ends
-    /// in . ! ? or is 20 letters long) must not be empty after a repair; a short title fragment ("of Morrowind") may.
+    /// Before <see cref="TryRepairTokens"/> is taken: a model that left out a line together with its line break had the
+    /// break put back at the end by the repair, and the line passed as two title lines joined ("Costs 50 magicka and
+    /// staggers the caster." was gone from a spell's description, saved as Done). By the layout tokens the answer kept,
+    /// the source lines that came out as one line may be a title and its fragment ("A Short History / of Morrowind"),
+    /// not two sentences (one ends in . ! ? or is 20 letters long), and must keep some of their letters ("작자 미상"
+    /// alone for a sentence and "by Anonymous" was a sentence dropped in the middle). An answer that kept every layout
+    /// token is not judged: a name before a tag empties a slot in Korean word order, and the slots are the source's.
     /// </summary>
-    internal static void ValidateRepairKeptLines(string inputText, string repairedText, string context)
+    internal static void ValidateRepairKeptLines(string inputText, string outputText, string context)
     {
-        var inputSlots = LayoutTokenRegex.Split(inputText);
-        var outputSlots = LayoutTokenRegex.Split(repairedText);
-        if (inputSlots.Length != outputSlots.Length)
+        var inputTokens = LayoutTokenRegex.Matches(inputText).Select(m => m.Value).ToList();
+        var outputTokens = LayoutTokenRegex.Matches(outputText).Select(m => m.Value).ToList();
+        if (outputTokens.Count >= inputTokens.Count)
         {
             return;
         }
 
-        for (var i = 0; i < inputSlots.Length; i++)
+        // Where each kept token is in the source; an answer with its tokens out of the source's order is not judged here.
+        var kept = new List<int>(outputTokens.Count);
+        foreach (var token in outputTokens)
         {
-            if (!HasContent(outputSlots[i]) && IsSentence(inputSlots[i]))
+            var at = inputTokens.IndexOf(token, kept.Count == 0 ? 0 : kept[^1] + 1);
+            if (at < 0)
             {
-                throw new InvalidOperationException($"Translation dropped a line for {context} (slot {i}).");
+                return;
+            }
+
+            kept.Add(at);
+        }
+
+        var inputSlots = LayoutTokenRegex.Split(inputText);
+        var outputSlots = LayoutTokenRegex.Split(outputText);
+        for (var s = 0; s < outputSlots.Length; s++)
+        {
+            // Output line s stands for the source lines from after the kept token before it to the kept token after it.
+            var first = s == 0 ? 0 : kept[s - 1] + 1;
+            var last = s < kept.Count ? kept[s] : inputSlots.Length - 1;
+            if (last <= first)
+            {
+                continue;
+            }
+
+            var lines = inputSlots[first..(last + 1)];
+            var letters = lines.Sum(Letters);
+            if (lines.Count(IsSentence) >= 2 || letters >= 4 && Letters(outputSlots[s]) < Math.Ceiling(letters * 0.15))
+            {
+                throw new InvalidOperationException($"Translation dropped a line for {context} (lines {first}-{last} came out as one).");
             }
         }
+
+        static int Letters(string slot) => CountLettersOrDigits(RawAngleTagRegex.Replace(TranslationConstants.XtTokenRegex.Replace(slot, " "), " "));
 
         static bool IsSentence(string slot)
         {

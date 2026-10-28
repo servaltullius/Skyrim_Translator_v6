@@ -248,7 +248,7 @@ public sealed partial class TranslationService
 	            (rawText, final) = await MaybeApplyQualityEscalationAsync(ctx, batchItem, styleHint, rawText, final);
 	            // The one-row path keeps the source's edge whitespace (RestoreSourceEdgeWhitespace); the batch path, which
 	            // most short rows take, saved "Gold: " as "골드:", the label running into the value the game appends.
-	            final = RestoreSourceEdgeWhitespace(batchItem.Source, final);
+	            final = RestoreSourceEdgeSpaces(batchItem.Source, final);
 	            TryLearnSessionTermMemory(id, batchItem.Source, final);
 	            doneUpdates.Add((id, final, StringEntryStatus.Done, null));
 

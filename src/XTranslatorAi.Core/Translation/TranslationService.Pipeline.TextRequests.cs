@@ -509,6 +509,37 @@ public sealed partial class TranslationService
         return source[..leading] + translated.Trim() + source[trailing..];
     }
 
+    /// <summary>
+    /// <see cref="RestoreSourceEdgeWhitespace"/> for a final text, its tokens put back: a line break at an edge is the
+    /// translation's own (a title joined over "A Short History\nof Morrowind" ends in it), so only spaces and tabs are
+    /// restored and trimmed. Trimmed with the rest, the break was gone from the saved line and a leading one doubled.
+    /// </summary>
+    internal static string RestoreSourceEdgeSpaces(string source, string translated)
+    {
+        static bool IsSpace(char ch) => ch is not ('\r' or '\n') && char.IsWhiteSpace(ch);
+        var leading = 0;
+        while (leading < source.Length && IsSpace(source[leading]))
+        {
+            leading++;
+        }
+        var trailing = source.Length;
+        while (trailing > leading && IsSpace(source[trailing - 1]))
+        {
+            trailing--;
+        }
+        var start = 0;
+        while (start < translated.Length && IsSpace(translated[start]))
+        {
+            start++;
+        }
+        var end = translated.Length;
+        while (end > start && IsSpace(translated[end - 1]))
+        {
+            end--;
+        }
+        return source[..leading] + translated[start..end] + source[trailing..];
+    }
+
     private static string NormalizeTextOnlyOutput(string modelText, string? sourceText)
     {
         var raw = modelText;

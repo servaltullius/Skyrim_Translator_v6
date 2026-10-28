@@ -1,4 +1,5 @@
 using XTranslatorAi.Core.Models;
+using XTranslatorAi.Core.Translation;
 using XTranslatorAi.Tests.TestSupport;
 
 namespace XTranslatorAi.Tests;
@@ -59,4 +60,29 @@ public sealed class TranslationServiceTextOutputTests
         Assert.Equal(("골드: ", StringEntryStatus.Done), (rows[ids[0]].DestText, rows[ids[0]].Status));
         Assert.Equal("  은", rows[ids[1]].DestText);
     }
+
+    // The final text has its line breaks back: one at the edge of a joined title is the translation's own, and
+    // trimming it with the spaces saved the line with no break.
+    [Fact]
+    public async Task Batch_KeepsALineBreakTheTranslationEndsIn()
+    {
+        await using var fixture = await TranslationRunFixture.CreateAsync(("A Short History\nof Morrowind", "MESG:DESC"), ("Gold: ", "MESG:DESC"));
+        var ids = fixture.Ids;
+        fixture.Client.ResponseOverride = (_, _) =>
+            "{\"translations\":[{\"id\":" + ids[0] + ",\"text\":\"모로윈드 약사__XT_PH_0000__\"},{\"id\":" + ids[1] + ",\"text\":\"골드:\"}]}";
+
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { TargetLang = "korean", BatchSize = 2 });
+
+        var rows = await fixture.RowsAsync();
+        Assert.Equal(("모로윈드 약사\n", StringEntryStatus.Done), (rows[ids[0]].DestText, rows[ids[0]].Status));
+    }
+
+    [Theory]
+    [InlineData("Gold: ", "골드:", "골드: ")]
+    [InlineData("  Silver", " 은 ", "  은")]
+    [InlineData("A Short History\nof Morrowind", "모로윈드 약사\n", "모로윈드 약사\n")]
+    [InlineData("\nHello world", "\n안녕\n세상", "\n안녕\n세상")]
+    [InlineData("Line one\n ", "첫 줄\n", "첫 줄\n ")]
+    public void EdgeSpaces_AreRestored_AndLineBreaksKept(string source, string translated, string expected)
+        => Assert.Equal(expected, TranslationService.RestoreSourceEdgeSpaces(source, translated));
 }
