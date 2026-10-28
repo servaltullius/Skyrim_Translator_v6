@@ -25,8 +25,25 @@ public static partial class AgentCli
         ProjectDb db, GlobalProjectDbService globalDb, CancellationToken ct)
     {
         var global = await globalDb.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, ct);
+        if (global == null)
+        {
+            Console.WriteLine("경고: 전체 DB를 열지 못해 전체 용어집·시리즈 TM 없이 검사했습니다(용어·한글패치 이름 표기 결과가 빠질 수 있음).");
+        }
+
         var rows = await ProjectLqaScan.LoadRowsAsync(db, ct);
-        var glossary = ProjectLqaScan.ForceTokenGlossary(await db.GetGlossaryAsync(ct), global == null ? null : await global.GetGlossaryAsync(ct));
+        IReadOnlyList<GlossaryEntry>? globalGlossary = null;
+        try
+        {
+            if (global != null) globalGlossary = await global.GetGlossaryAsync(ct);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            // An unreadable global glossary ended the check with an exception, where the run goes on without it.
+            AppLog.Write($"WARN 품질 검사용 전체 용어집을 읽지 못했습니다: {ex.Message}");
+            Console.WriteLine("경고: 전체 DB의 전체 용어집을 읽지 못해 그 용어 없이 검사했습니다.");
+        }
+
+        var glossary = ProjectLqaScan.ForceTokenGlossary(await db.GetGlossaryAsync(ct), globalGlossary);
         // An unreadable series TM ended the check; the GUI's goes on without the TM name index, and so does this one.
         List<(string, string)>? memory = null;
         try
@@ -206,6 +223,18 @@ public static partial class AgentCli
         catch (IOException ex)
         {
             throw new AgentModeException($"저장하지 못했습니다({output}): {ex.Message}");
+        }
+        catch (InvalidOperationException ex)
+        {
+            // A translation the writer refuses (a tag or token lost, often in a line the Korean release filled) was named
+            // by its field key ("plugin:INFO/00001003/0/NAM1/0"), which the agent cannot edit: the rows' ids are given.
+            var ids = (await db.GetPluginFieldKeysByStringIdAsync(c.Ct)).ToDictionary(pair => pair.Value, pair => pair.Key, StringComparer.Ordinal);
+            var rows = System.Text.RegularExpressions.Regex.Matches(ex.Message, @"plugin:(\S+?)(?=[\s:,;)]|$)")
+                .Select(m => ids.TryGetValue(m.Groups[1].Value, out var id) ? id : (long?)null).OfType<long>().Distinct().ToList();
+            throw new AgentModeException(rows.Count > 0
+                ? $"저장하지 않았습니다. 줄 {string.Join(", ", rows.Select(id => "#" + id))}의 번역이 원문의 태그·토큰과 맞지 않습니다: {ex.Message} "
+                  + $"→ tullius.cmd show {project.Key} --id {string.Join(",", rows)}로 보고 edit로 고친 뒤(check로 확인) 다시 export하세요."
+                : $"저장하지 않았습니다: {ex.Message}");
         }
 
         Console.WriteLine($"저장: {result.PluginPath} (바뀐 필드 {result.ChangedFields})");

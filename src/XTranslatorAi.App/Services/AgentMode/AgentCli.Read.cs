@@ -80,6 +80,12 @@ public static partial class AgentCli
         if (word.Length == 0) throw new AgentModeException("찾을 영어 낱말을 지정하세요. (tullius.cmd lookup <프로젝트> <낱말>)");
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, c.Ct);
         var global = await c.GlobalDb.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, c.Ct);
+        if (global == null)
+        {
+            // Without it "없습니다. 새 이름이면 네가 정하고" had the model invent a name the TM may have.
+            Console.WriteLine("경고: 전체 DB를 열지 못해 전체 용어집·시리즈 TM은 찾지 못했습니다. 이름을 새로 정하기 전에 사용자에게 알리세요.");
+        }
+
         var game = await new GameStringService().TryLoadAsync(c.Ct);
         var found = await AgentLookup.FindAsync(db, global, game, word, 12, c.Ct);
         Console.WriteLine($"찾은 낱말: {word}");

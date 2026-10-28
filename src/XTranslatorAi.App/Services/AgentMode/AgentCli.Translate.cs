@@ -22,7 +22,6 @@ public static partial class AgentCli
         var batch = int.TryParse(c.Option("--batch-size"), out var b) ? b : 30;
         var plugin = c.Arg(0, "플러그인 경로");
         if (!File.Exists(plugin)) throw new AgentModeException($"플러그인이 없습니다: {plugin}");
-        await new BundledFranchiseTmSeedService().EnsureBundledSeedAsync(BethesdaFranchise.ElderScrolls, c.Ct);
         var options = new PluginReadOptions(PluginGame.SkyrimSpecialEdition, c.Settings.PluginSourceLanguage.Trim(), c.Settings.PluginSourceEncoding,
             strings, MetadataEncoding: c.Settings.PluginMetadataEncoding);
         var (project, rows, pending, glossary) = await c.Session.OpenAsync(plugin, options, c.Settings.PluginTargetLanguage.Trim(), c.Settings.PluginTargetEncoding, batch, c.Ct);
@@ -30,6 +29,7 @@ public static partial class AgentCli
         Console.WriteLine($"플러그인: {project.PluginPath}");
         Console.WriteLine($"DB: {project.DbPath}");
         Console.WriteLine($"줄: {rows}, 번역할 줄: {pending}, 묶음 크기: {project.BatchSize}");
+        if (c.Session.SeriesTmNote is { } tmNote) Console.WriteLine(tmNote);
         // The plugin was not UTF-8 (or only partly): it was read another way, and the export writes it all as UTF-8.
         if (!string.Equals(project.ReadOptions.SourceEncoding, options.SourceEncoding, StringComparison.OrdinalIgnoreCase))
         {
@@ -56,7 +56,9 @@ public static partial class AgentCli
     {
         foreach (var p in c.Session.Projects())
         {
-            Console.WriteLine($"{p.Key}\t{p.PluginPath}{(c.Session.Pending(p) != null ? "\t(요청 대기)" : "")}");
+            var lanes = c.Session.LanesWaiting(p);
+            Console.WriteLine($"{p.Key}\t{p.PluginPath}{(c.Session.Pending(p) != null ? "\t(요청 대기)" : "")}"
+                              + (lanes.Count > 0 ? $"\t(갈래 요청 대기: {string.Join(", ", lanes)})" : ""));
         }
     }
 
@@ -68,6 +70,10 @@ public static partial class AgentCli
         Console.WriteLine($"줄: {rows}, 남은 줄: {pending} (오류 {errors}), 직접 수정: {edited}");
         var request = c.Session.Pending(project);
         Console.WriteLine(request == null ? "대기 중인 요청: 없음" : $"대기 중인 요청: {c.Session.RequestPath(project)} ({request.Chars:N0}자)");
+        if (c.Lane == null && c.Session.LanesWaiting(project) is { Count: > 0 } lanes)
+        {
+            Console.WriteLine($"갈래 대기 요청: {string.Join(", ", lanes)} → next·submit·status에 --lane {lanes[0]}처럼 갈래를 붙여 이어 하세요.");
+        }
     }
 
     private static async Task NextAsync(AgentCommand c)

@@ -66,7 +66,7 @@ internal sealed class AgentCommand
         {
             Help = help, Work = work, WorkGiven = givenWork != null, Settings = settings, GlobalDb = globalDb, ProjectsRoot = projectsRoot, Find = find, Rec = rec,
             Ids = ids, After = after, Count = count, All = all, Undo = undo, To = to, Note = note, Clear = clear, Lane = lane,
-            Session = new AgentSession(work, globalDb, new GameStringService(), settings, projectsRoot),
+            Session = new AgentSession(work, globalDb, new GameStringService(), settings, projectsRoot, new BundledFranchiseTmSeedService()),
         };
     }
 

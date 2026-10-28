@@ -119,6 +119,14 @@ public static partial class AgentCli
             Console.WriteLine("실패: " + ex.Message);
             return 2;
         }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            // Anything else (a project file cut short by another process, a DB locked for long) as well: the agent and
+            // the MCP client read "실패:", and the details go to app.log.
+            AppLog.Write($"ERROR agent {command}: {ex}");
+            Console.WriteLine($"실패: {ex.Message} (자세한 내용: {AppLog.PathForUser})");
+            return 2;
+        }
         finally
         {
             // The MCP server runs a command per tool call in one process: a global DB left open by each kept hundreds

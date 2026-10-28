@@ -36,61 +36,8 @@ public partial class MainViewModel
 
         try
         {
-            var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(SelectedFranchise);
-            if (!Directory.Exists(importDir))
-            {
-                return;
-            }
-
-            var files = Directory
-                .GetFiles(importDir, "*.tsv", SearchOption.TopDirectoryOnly)
-                .OrderBy(f => f, StringComparer.OrdinalIgnoreCase)
-                .ToList();
-            if (files.Count == 0)
-            {
-                return;
-            }
-
-            var importedDir = Path.Combine(importDir, "imported");
-            Directory.CreateDirectory(importedDir);
-
-            var totalApplied = 0;
-            string? unreadable = null;
-            foreach (var path in files)
-            {
-                if (!File.Exists(path))
-                {
-                    continue;
-                }
-
-                StatusMessage = $"시리즈 TM 자동 가져오기: {Path.GetFileName(path)}";
-                int applied;
-                try
-                {
-                    var languages = BundledFranchiseTmSeedService.LanguagesOfSeedFile(path) ?? (SourceLang.Trim(), TargetLang.Trim());
-                    applied = await _globalTranslationMemoryService.ImportFromTsvAsync(
-                        languages.Source,
-                        languages.Target,
-                        path,
-                        CancellationToken.None
-                    );
-                }
-                catch (ImportFileEncodingException ex)
-                {
-                    // Left in tm-import for the user to re-save; the other files are still imported.
-                    unreadable ??= ex.Message;
-                    continue;
-                }
-
-                totalApplied += Math.Max(0, applied);
-
-                var stem = Path.GetFileNameWithoutExtension(path);
-                var timestamp = DateTimeOffset.Now.ToString("yyyyMMdd-HHmmss");
-                var destName = $"{stem}.imported.{timestamp}.tsv";
-                var destPath = Path.Combine(importedDir, destName);
-                File.Move(path, destPath, overwrite: false);
-            }
-
+            var (totalApplied, unreadable) = await _globalTranslationMemoryService.ImportPendingFilesAsync(
+                SourceLang, TargetLang, path => StatusMessage = $"시리즈 TM 자동 가져오기: {Path.GetFileName(path)}", CancellationToken.None);
             if (unreadable != null)
             {
                 StatusMessage = $"시리즈 TM 자동 가져오기: {unreadable}";

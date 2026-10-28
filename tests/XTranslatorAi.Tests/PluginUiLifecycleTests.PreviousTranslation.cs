@@ -27,6 +27,31 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Equal("강철 장검", row.PreviousTranslation);
         });
 
+    // A release neither UTF-8 nor CP949 reads was told as "예상치 못한 오류가 발생했습니다"(E999): the earlier-release
+    // tools used the general classifier, not the plugin one.
+    [Fact]
+    public Task PreviousTranslation_ThatCannotBeRead_IsToldAsAPluginError()
+        => RunOnSta(async () =>
+        {
+            static byte[] Sword(byte[] name) => PluginReadWriteTests.Header().Concat(PluginReadWriteTests.Group(PluginReadWriteTests.Record("WEAP", 0x800,
+                PluginReadWriteTests.Sub("EDID", PluginReadWriteTests.Z("TestSword")), PluginReadWriteTests.Sub("FULL", name)))).ToArray();
+            await using var fixture = new Fixture();
+            await fixture.LoadPluginWorkspaceAsync(Sword(PluginReadWriteTests.Z("Iron Sword")));
+            var oldRelease = Path.Combine(fixture.Root, "old", "Test.esp");
+            Directory.CreateDirectory(Path.GetDirectoryName(oldRelease)!);
+            await File.WriteAllBytesAsync(oldRelease, PluginReadWriteTests.Header().Concat(PluginReadWriteTests.Group(
+                PluginReadWriteTests.Record("WEAP", 0x800, PluginReadWriteTests.Sub("FULL",
+                    XTranslatorAi.Core.Plugins.PluginBinary.GetEncoding("ks_c_5601-1987").GetBytes("강철 장검\0"))),
+                PluginReadWriteTests.Record("WEAP", 0x801, PluginReadWriteTests.Sub("FULL", new byte[] { 0x41, 0x81, 0 }))))
+                .ToArray());
+            fixture.Ui.OpenPath = oldRelease;
+
+            await fixture.Vm.ImportPreviousTranslationCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            Assert.Contains("E452", fixture.Vm.StatusMessage);
+            Assert.Contains("CP949", fixture.Vm.StatusMessage);
+        });
+
     [Fact]
     public Task PreviousTranslation_IsLinkedByRecord_AndSentAsReferenceWhenTranslating()
         => RunOnSta(async () =>

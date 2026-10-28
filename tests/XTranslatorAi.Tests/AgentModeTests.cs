@@ -236,6 +236,120 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Contains("에테르의 메아리", (await db.GetPreviousTranslationsByStringIdAsync(CancellationToken.None)).Values);
     }
 
+    // The kit alone never imported the bundled series TM (only the GUI did, when it opened a project), so agent mode
+    // translated with an empty TM: no TM fills, no official names in requests, lookup or check, and no warning.
+    [Fact]
+    public async Task Open_ImportsTheBundledSeriesTm_AsTheGuiDoes_AndOnlyOnce()
+    {
+        var root = Path.Combine(_root, "seed");
+        await using var global = new GlobalProjectDbService(new BuiltInGlossaryService(), root);
+        var seed = new BundledFranchiseTmSeedService(root);
+        var plugin = Path.Combine(_root, "Mod", "Thalmor.esp");
+        var session = new AgentSession(Path.Combine(_root, "work-seed"), global, gameStrings: null, new AppSettings(),
+            projectsRootOverride: Path.Combine(_root, "projects-seed"), tmSeed: seed);
+
+        var (first, _, _, _) = await session.OpenAsync(plugin, new PluginReadOptions(), "korean", "utf-8", batchSize: 2, CancellationToken.None);
+        _extraDbs.Add(first.DbPath);
+        var db = await global.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None);
+        var imported = (await db!.GetTranslationMemoryEntriesAsync("english", "korean", CancellationToken.None)).Count;
+
+        Assert.True(imported > 20000, $"series TM rows: {imported}");
+        Assert.Contains("가져왔습니다", session.SeriesTmNote);
+        await session.OpenAsync(plugin, new PluginReadOptions(), "korean", "utf-8", batchSize: 2, CancellationToken.None);
+        Assert.Null(session.SeriesTmNote);
+        Assert.Equal(imported, (await db.GetTranslationMemoryEntriesAsync("english", "korean", CancellationToken.None)).Count);
+    }
+
+    // A global DB that cannot be opened at all (damaged, locked) went unreported: the GUI asks before a run, while the
+    // agent's step saved its rows without the global glossary, series TM and name index, and said nothing.
+    [Fact]
+    public async Task UnopenableGlobalDb_IsInTheStepReport()
+    {
+        var root = Path.Combine(_root, "broken-global");
+        var path = ProjectPaths.GetGlobalGlossaryDbPath(BethesdaFranchise.ElderScrolls, root);
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        await File.WriteAllBytesAsync(path, Encoding.ASCII.GetBytes(new string('x', 4096)));
+        await using var global = new GlobalProjectDbService(new BuiltInGlossaryService(), root);
+        var session = new AgentSession(Path.Combine(_root, "work"), global, gameStrings: null, new AppSettings(),
+            projectsRootOverride: Path.Combine(_root, "projects"));
+
+        var report = await session.NextAsync(_project, CancellationToken.None);
+
+        Assert.Contains("시리즈 TM", report.MissingGlobalData);
+        Assert.Contains("전체 용어집", report.MissingGlobalData);
+    }
+
+    // A run without a lane covers every lane's rows: with a lane's request waiting it asked the same lines again and the
+    // lane's answer was dropped. A new conversation that saw "대기 중인 요청: 없음" in status went that way.
+    [Fact]
+    public async Task LaneRequestWaiting_RefusesTheRunWithoutALane()
+    {
+        await _session.NextAsync(_project with { Lane = AgentLane.Parse("1/2") }, CancellationToken.None);
+
+        var refused = await Assert.ThrowsAsync<AgentModeException>(() => _session.NextAsync(_project, CancellationToken.None));
+
+        Assert.Contains("갈래 1/2", refused.Message);
+        Assert.Equal(new[] { "1/2" }, _session.LanesWaiting(_project));
+        await Assert.ThrowsAsync<AgentModeException>(() => _session.SubmitAsync(_project, "번역", CancellationToken.None));
+    }
+
+    // A run that failed during submit (a locked DB, a full disk) said "다시 만들지 않아 … 새로 만든 요청에 답하세요",
+    // hiding the error, and deleted the request and the answer with no new request written.
+    [Fact]
+    public async Task SubmitWhoseRunFails_KeepsTheRequestAndTheAnswer_AndSaysWhy()
+    {
+        var first = await _session.NextAsync(_project, CancellationToken.None);
+        var pending = _session.Pending(_project)!;
+        var answer = JsonSerializer.Serialize(new
+        {
+            translations = AgentAnswerCheck.Lines(pending).Where(line => line.Id != null).Select(line => new { id = line.Id, text = "번역문입니다." }),
+        });
+        await using (var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={_project.DbPath};Pooling=False"))
+        {
+            await connection.OpenAsync();
+            await using var trigger = connection.CreateCommand();
+            trigger.CommandText = "CREATE TRIGGER review4_block BEFORE UPDATE ON StringEntry BEGIN SELECT RAISE(ABORT, 'review4 boom'); END;";
+            await trigger.ExecuteNonQueryAsync();
+        }
+
+        var report = await _session.SubmitAsync(_project, answer, CancellationToken.None);
+
+        Assert.True(report.RunFailed);
+        Assert.Contains("review4 boom", report.Problem);
+        Assert.Contains("그대로 두었습니다", report.Problem);
+        Assert.NotNull(_session.Pending(_project));
+        Assert.Equal(first.Next!.Hash, _session.Pending(_project)!.Hash);
+    }
+
+    // A translation the writer refuses (a tag lost, often in a line a Korean release filled) ended export with .NET's
+    // "Unhandled exception" (an MCP protocol error), naming a field key the agent cannot edit.
+    [Fact]
+    public async Task McpExport_WithATagLost_FailsNamingTheRow()
+    {
+        long id;
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            var row = (await db.GetStringsAsync(50, 0, CancellationToken.None)).Single(r => r.SourceText.Contains("<Alias=Player>", StringComparison.Ordinal));
+            id = row.Id;
+            await db.UpdateStringTranslationAsync(id, "말조심해라.", StringEntryStatus.Edited, null, CancellationToken.None);
+        }
+
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") });
+        var call = JsonSerializer.Serialize(new
+        {
+            jsonrpc = "2.0", id = 1, method = "tools/call", @params = new { name = "export", arguments = new { project = "Thalmor" } },
+        });
+        var output = new StringWriter();
+
+        Assert.Equal(0, await AgentMcpServer.ServeAsync(server, new StringReader(call), output));
+
+        var reply = JsonDocument.Parse(output.ToString()).RootElement;
+        Assert.False(reply.TryGetProperty("error", out _), output.ToString());
+        var text = reply.GetProperty("result").GetProperty("content")[0].GetProperty("text").GetString()!;
+        Assert.StartsWith("실패: ", text);
+        Assert.Contains("#" + id, text);
+    }
+
     // Codex ran in a kit folder that was not named agent-kit, its shell failed, and the guide tool answered
     // "없는 안내: translate" for a name that exists, so it stopped. The server now also reads the kit it is started in,
     // and when there is none says where it looked.

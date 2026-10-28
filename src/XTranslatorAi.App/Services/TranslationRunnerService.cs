@@ -381,6 +381,8 @@ public sealed class TranslationRunnerService
         var globalDb = await _globalProjectDbService.GetOrCreateAsync(request.Franchise, request.CancellationToken);
         if (globalDb == null)
         {
+            // Not opened at all (damaged, locked): the GUI asks before a run, the agent's step had no word of it.
+            NoteMissing("전체 용어집");
             return null;
         }
 
@@ -401,6 +403,8 @@ public sealed class TranslationRunnerService
         var globalDb = await _globalProjectDbService.GetOrCreateAsync(request.Franchise, request.CancellationToken);
         if (globalDb == null)
         {
+            // Not opened at all (damaged, locked): the GUI asks before a run, the agent's step had no word of it.
+            NoteMissing("시리즈 TM");
             return null;
         }
 
@@ -426,6 +430,8 @@ public sealed class TranslationRunnerService
         var globalDb = await _globalProjectDbService.GetOrCreateAsync(request.Franchise, request.CancellationToken);
         if (globalDb == null)
         {
+            // Not opened at all (damaged, locked): the GUI asks before a run, the agent's step had no word of it.
+            NoteMissing("TM 이름 색인");
             return null;
         }
 

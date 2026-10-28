@@ -25,6 +25,9 @@ public sealed class GlobalProjectDbService : IAsyncDisposable
 
     public BethesdaFranchise SelectedFranchise { get; set; } = BethesdaFranchise.ElderScrolls;
 
+    /// <summary>The root the global DBs live under when not the user's (tests, agent trials); null for the user's.</summary>
+    public string? GlobalRootOverride => _globalRootOverride;
+
     public ProjectDb? Current
         => _dbByFranchise.TryGetValue(SelectedFranchise, out var db) ? db : null;
 

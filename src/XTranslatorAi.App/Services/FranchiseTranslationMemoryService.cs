@@ -19,6 +19,65 @@ public sealed class FranchiseTranslationMemoryService
     public async Task<ProjectDb?> TryGetDbAsync(CancellationToken cancellationToken)
         => await _globalDbService.GetOrCreateAsync(cancellationToken);
 
+    /// <summary>
+    /// Imports the TSV files waiting in the selected series' tm-import folder (the bundled Korean patch TM the seed
+    /// service writes there, or a file the user put there) and moves each into imported/. Only the GUI did this, when
+    /// it opened a project: agent mode wrote the seed and never read it, so a user of the kit alone translated with an
+    /// empty series TM (no TM fills, no official names in requests, lookup or check) and no warning.
+    /// </summary>
+    /// <param name="sourceLang">Languages of a user file; a bundled seed names its own.</param>
+    /// <returns>Rows applied, and the message of a file left unread (to be saved again), if any.</returns>
+    public async Task<(int Applied, string? Unreadable)> ImportPendingFilesAsync(string sourceLang, string targetLang,
+        Action<string>? onFile, CancellationToken cancellationToken)
+    {
+        var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(_globalDbService.SelectedFranchise, _globalDbService.GlobalRootOverride);
+        if (!Directory.Exists(importDir))
+        {
+            return (0, null);
+        }
+
+        var files = Directory.GetFiles(importDir, "*.tsv", SearchOption.TopDirectoryOnly)
+            .OrderBy(f => f, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        if (files.Count == 0)
+        {
+            return (0, null);
+        }
+
+        var importedDir = Path.Combine(importDir, "imported");
+        Directory.CreateDirectory(importedDir);
+        var totalApplied = 0;
+        string? unreadable = null;
+        foreach (var path in files)
+        {
+            if (!File.Exists(path))
+            {
+                continue;
+            }
+
+            onFile?.Invoke(path);
+            int applied;
+            try
+            {
+                var languages = BundledFranchiseTmSeedService.LanguagesOfSeedFile(path) ?? (sourceLang.Trim(), targetLang.Trim());
+                applied = await ImportFromTsvAsync(languages.Source, languages.Target, path, cancellationToken);
+            }
+            catch (ImportFileEncodingException ex)
+            {
+                // Left in tm-import for the user to re-save; the other files are still imported.
+                unreadable ??= ex.Message;
+                continue;
+            }
+
+            totalApplied += Math.Max(0, applied);
+            var stem = Path.GetFileNameWithoutExtension(path);
+            var timestamp = DateTimeOffset.Now.ToString("yyyyMMdd-HHmmss");
+            File.Move(path, Path.Combine(importedDir, $"{stem}.imported.{timestamp}.tsv"), overwrite: false);
+        }
+
+        return (totalApplied, unreadable);
+    }
+
     public async Task<IReadOnlyDictionary<string, string>> GetDictionaryAsync(
         string sourceLang,
         string targetLang,

@@ -50,7 +50,9 @@ public partial class MainViewModel
     // model list "새로고침" have no other condition, and used to stay enabled and silently do nothing then.
     private bool CanStartProjectOperation() => IsWorkspaceInteractive && !IsTranslating;
 
-    private async Task RunProjectOperationAsync(string name, Func<CancellationToken, Task> action)
+    /// <param name="readsPlugin">The operation reads a plugin (an earlier release): its errors are told as the plugin tools
+    /// tell them (E452 and the like), not as "예상치 못한 오류" (E999).</param>
+    private async Task RunProjectOperationAsync(string name, Func<CancellationToken, Task> action, bool readsPlugin = false)
     {
         if (!CanStartProjectOperation()) return;
         var task = _projectOperations.RunAsync(action);
@@ -60,6 +62,7 @@ public partial class MainViewModel
         {
             if (IsWorkspaceInteractive) StatusMessage = $"{name} 작업을 중지했습니다.";
         }
+        catch (Exception ex) when (readsPlugin) { SetPluginUserFacingError(name, ex); }
         catch (Exception ex) { SetUserFacingError(name, ex); }
         finally { NotifyWorkspaceAvailability(); }
     }

@@ -80,6 +80,9 @@ public sealed record AgentStepReport(AgentProject Project, int PendingBefore, in
     public int Saved => Math.Max(0, PendingBefore - PendingAfter);
     public bool Finished => Next == null && Problem == null && PendingAfter == 0;
     public IReadOnlyList<AgentRejection> Rejected { get; init; } = Array.Empty<AgentRejection>();
+
+    /// <summary>The run itself failed (a locked DB, a full disk): Problem says why.</summary>
+    public bool RunFailed { get; init; }
     public int NextRequestChars { get; init; }
     public IReadOnlySet<string> NewInstructionSections { get; init; } = new HashSet<string>();
 
@@ -106,20 +109,52 @@ public sealed class AgentSession
     private readonly GameStringService? _gameStrings;
     private readonly AppSettings _settings;
     private readonly string? _projectsRootOverride;
+    private readonly BundledFranchiseTmSeedService? _tmSeed;
 
+    /// <param name="tmSeed">Writes the bundled Korean patch TM for import (null: none, as in tests).</param>
     public AgentSession(string workRoot, GlobalProjectDbService globalDb, GameStringService? gameStrings, AppSettings settings,
-        string? projectsRootOverride = null)
+        string? projectsRootOverride = null, BundledFranchiseTmSeedService? tmSeed = null)
     {
         _workRoot = Path.GetFullPath(workRoot);
         _globalDb = globalDb;
         _gameStrings = gameStrings;
         _settings = settings;
         _projectsRootOverride = projectsRootOverride;
+        _tmSeed = tmSeed;
+    }
+
+    /// <summary>What the last <see cref="EnsureSeriesTmAsync"/> imported, for open to say; null when nothing.</summary>
+    public string? SeriesTmNote { get; private set; }
+
+    /// <summary>
+    /// The bundled series TM, written and imported as the GUI does when it opens a project. Agent mode wrote it and never
+    /// imported it, so the kit alone translated with an empty series TM. The global DB is opened first: creating it
+    /// forgets the seed's stamps, which written before would be lost and the seed written again.
+    /// </summary>
+    private async Task EnsureSeriesTmAsync(CancellationToken cancellationToken)
+    {
+        SeriesTmNote = null;
+        try
+        {
+            await _globalDb.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, cancellationToken);
+            if (_tmSeed != null) await _tmSeed.EnsureBundledSeedAsync(BethesdaFranchise.ElderScrolls, cancellationToken);
+            var (applied, unreadable) = await new FranchiseTranslationMemoryService(_globalDb).ImportPendingFilesAsync(
+                _settings.PluginSourceLanguage, _settings.PluginTargetLanguage, onFile: null, cancellationToken);
+            SeriesTmNote = unreadable != null ? $"시리즈 TM 가져오기: {unreadable}"
+                : applied > 0 ? $"시리즈 TM: {applied}개 항목을 가져왔습니다(내장 한글패치 TM 등)."
+                : null;
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            // As in the GUI, the import never stops the work; a global DB that cannot be read is reported by the run.
+            AppLog.Write($"WARN 시리즈 TM 자동 가져오기 실패: {ex.Message}");
+        }
     }
 
     public async Task<(AgentProject Project, int Rows, int Pending, AgentGlossary Glossary)> OpenAsync(string pluginPath, PluginReadOptions readOptions,
         string targetLanguage, string targetEncoding, int batchSize, CancellationToken cancellationToken)
     {
+        await EnsureSeriesTmAsync(cancellationToken);
         var workspace = new ProjectWorkspaceService(_globalDb, _projectsRootOverride, _gameStrings);
         var loaded = await workspace.LoadFromPluginAsync(new ProjectWorkspaceService.LoadFromPluginRequest(
             Path.GetFullPath(pluginPath), readOptions, targetLanguage, targetEncoding, AgentTranslationRun.DefaultModelProfile,
@@ -355,6 +390,29 @@ public sealed class AgentSession
             .ToList();
     }
 
+    /// <summary>The lanes ("2/3") with a request waiting.</summary>
+    public IReadOnlyList<string> LanesWaiting(AgentProject project)
+        => Directory.Exists(ProjectDir(project))
+            ? Directory.GetDirectories(ProjectDir(project), "lane-*")
+                .Where(d => File.Exists(Path.Combine(d, "pending.json")))
+                .Select(d => Path.GetFileName(d)["lane-".Length..].Replace("-of-", "/", StringComparison.Ordinal))
+                .OrderBy(lane => lane, StringComparer.Ordinal).ToList()
+            : Array.Empty<string>();
+
+    /// <summary>
+    /// A run without a lane covers every lane's rows: with a lane's request waiting it asked the same lines again, and
+    /// the lane's answer, saved second, was dropped (twice the usage). A new conversation that saw no waiting request in
+    /// status (it showed only the run's own) went that way, and so did a lane's agent that left out --lane.
+    /// </summary>
+    private void RefuseWhileLanesWait(AgentProject project)
+    {
+        if (project.Lane == null && LanesWaiting(project) is { Count: > 0 } lanes)
+        {
+            throw new AgentModeException($"갈래 {string.Join(", ", lanes)}에 대기 중인 요청이 있습니다. 갈래로 나눠 번역 중이면 next·submit에 "
+                                         + $"--lane {lanes[0]}처럼 갈래를 붙여 그 요청부터 답하세요(갈래를 그만두려면 open으로 다시 열어 대기 요청을 지운 뒤 next).");
+        }
+    }
+
     /// <summary>Starts (or, after a break, restarts) the run and writes its first request.</summary>
     public async Task<AgentStepReport> NextAsync(AgentProject project, CancellationToken cancellationToken)
     {
@@ -362,6 +420,9 @@ public sealed class AgentSession
         {
             throw new AgentModeException($"대기 중인 요청이 있습니다({RequestPath(project)}). 먼저 그 결과를 submit하세요.");
         }
+
+        RefuseWhileLanesWait(project);
+        await EnsureSeriesTmAsync(cancellationToken);
 
         var (report, _) = await StepAsync(project, cancellationToken);
         return await WriteNextAsync(report, Array.Empty<AgentRejection>(), cancellationToken);
@@ -374,7 +435,9 @@ public sealed class AgentSession
     /// </summary>
     public async Task<AgentStepReport> SubmitAsync(AgentProject project, string answer, CancellationToken cancellationToken)
     {
-        var pending = Pending(project) ?? throw new AgentModeException("대기 중인 요청이 없습니다. next로 요청을 만드세요.");
+        RefuseWhileLanesWait(project);
+        var pending = Pending(project) ?? throw new AgentModeException("대기 중인 요청이 없습니다. next로 요청을 만드세요"
+                                                                     + (project.Lane == null ? "(갈래로 나눠 번역 중이면 --lane을 붙이세요)." : "."));
         var json = AgentAnswerCheck.IsJson(pending);
         if (json)
         {
@@ -419,6 +482,13 @@ public sealed class AgentSession
         // The request is cleared once the run has gone through: a run that failed (a lane count typed wrong, lanes.json
         // busy) used to leave no request, and the output said only "실패".
         var (report, used) = await StepAsync(project, cancellationToken);
+        if (report.RunFailed && !used.Contains((pending.Hash, pending.Attempt)))
+        {
+            // The run stopped before it came to the answer: "다시 만들지 않아 … 새로 만든 요청에 답하세요" hid the error,
+            // and the request and the answer were deleted with no new request written.
+            return report with { Problem = report.Problem + " 요청과 답은 그대로 두었습니다. 원인을 해결한 뒤 같은 답 파일로 다시 submit하세요." };
+        }
+
         ClearPending(project);
         if (!used.Contains((pending.Hash, pending.Attempt)))
         {
@@ -516,7 +586,7 @@ public sealed class AgentSession
         }
 
         return (new AgentStepReport(project, outcome.PendingBefore, outcome.PendingAfter, outcome.ErrorRows, outcome.Next,
-            outcome.Next == null ? null : RequestPath(project), problem) { MissingGlobalData = missing }, outcome.Used);
+            outcome.Next == null ? null : RequestPath(project), problem) { MissingGlobalData = missing, RunFailed = outcome.Error != null }, outcome.Used);
     }
 
     /// <summary>Writes the report's next request (pending.json, instructions.md, request.md), if it has one.</summary>

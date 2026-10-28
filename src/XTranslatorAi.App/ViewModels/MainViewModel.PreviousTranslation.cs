@@ -100,7 +100,7 @@ public partial class MainViewModel
                 + $"원문 그대로 {result.SameAsSource}, 번역 안 됨 {result.NotTranslated}. "
                 + "다음 번역부터 참고합니다. 이미 번역된 행에 반영하려면 '다시 번역'을 쓰세요. "
                 + "이전 번역판의 영어 원본도 있으면 '이전 영어판 연결'로 고르세요. 영어가 같은 행은 이전 번역을 그대로 씁니다.";
-        });
+        }, readsPlugin: true);
     }
 
     /// <summary>
@@ -169,7 +169,7 @@ public partial class MainViewModel
                 + $"영어가 바뀐 {result.Changed}행은 이전 번역이 있으면 참고해 새로 번역합니다. "
                 + $"(이전 판에 없음 {result.NotInPreviousRelease}, 레코드 구성이 바뀜 {result.ChangedRecord}) "
                 + "이미 번역된 행에 반영하려면 '다시 번역'을 쓰세요.";
-        });
+        }, readsPlugin: true);
     }
 
     [RelayCommand(CanExecute = nameof(CanClearPreviousTranslation))]
