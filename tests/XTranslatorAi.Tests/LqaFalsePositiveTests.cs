@@ -1017,4 +1017,25 @@ public class LqaFalsePositiveTests
         Assert.Null(SpeakerToneConsistencyRule.StrayFromDeclared("그를 만나거든, 안부를 전해 주세요.", "하오체"));
         Assert.Equal("반말", SpeakerToneConsistencyRule.StrayFromDeclared("난 이미 다 알고 있거든.", "하오체"));
     }
+
+    // Flint9's player choices: "~해 봐" and "~해볼까?" went uncounted, so four 반말 of six left the group below its
+    // majority and the two 존댓말 choices among them went unmarked.
+    [Fact]
+    public async Task DialogueTone_CountsBwaAndLkkaAsCasual()
+    {
+        static LqaScanEntry Choice(long id, string dest)
+            => new(id, (int)id, "TeachB" + id, "DIAL:FULL", StringEntryStatus.Done, "x", dest);
+        var choices = new List<LqaScanEntry>
+        {
+            Choice(1, "아, 뭘 가르쳐 줄지 생각났어!"), Choice(2, "활 쏘는 법을 가르쳐 줄 수도 있어."), Choice(3, "글 읽는 법을 가르쳐 줄 수 있어."),
+            Choice(4, "활을 쓰지 못할 이유도 없잖아."), Choice(5, "나중에 글 읽기 수업을 해볼까?"), Choice(6, "자, 여기. 이제 이걸 읽는 연습을 해 봐."),
+            Choice(7, "글쎄요, 우리가 하는 방식대로 배울 수 있게 낚싯대를 하나 드릴까요?"),
+            Choice(8, "마침 책이 몇 권 있거든요. 한 권 빌려드릴 테니, 읽어보는 것부터 시작해 보시는 게 어때요?"),
+        };
+
+        var marked = (await LqaScanner.ScanAsync(choices, "ko", new List<GlossaryEntry>()))
+            .Where(i => i.Code == "tone_inconsistent").Select(i => i.Id).OrderBy(id => id).ToList();
+
+        Assert.Equal(new long[] { 7, 8 }, marked);
+    }
 }
