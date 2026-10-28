@@ -378,7 +378,7 @@ public sealed partial class PluginUiLifecycleTests
             var project = new ProjectInfo(1, "", "Test.esp", BethesdaFranchise.ElderScrolls, "english", "korean", "", false,
                 "", Vm.SelectedModel, Vm.BasePromptText, "", false, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow);
             var imported = await db.ReplaceImportedPluginStringsAsync(document.Info, document.Fields, project, targetEncoding, CancellationToken.None);
-            State.SetPluginWorkspace(db, document, targetEncoding);
+            State.SetPluginWorkspace(db, document, targetEncoding, new PluginReadOptions().SourceEncoding);
             State.SetEntries(imported.Select(row => new StringEntryViewModel(row.Id, row.OrderIndex)
             {
                 Edid = row.Edid, Rec = row.Rec, SourceText = row.SourceText, DestText = row.DestText, Status = row.Status,

@@ -96,7 +96,7 @@ public partial class MainViewModel
             // before awaiting auxiliary work, so a late cancellation never leaves old rows over a new DB.
             var previousDb = _projectState.Db;
             ResetProjectState();
-            _projectState.SetPluginWorkspace(loaded.Db, loaded.Document, loaded.TargetEncoding);
+            _projectState.SetPluginWorkspace(loaded.Db, loaded.Document, loaded.TargetEncoding, request.Options.SourceEncoding);
             incomingDb = null;
             adopted = true;
             _projectState.SetEntries(entries);

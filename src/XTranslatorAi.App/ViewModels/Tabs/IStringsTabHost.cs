@@ -15,6 +15,8 @@ public interface IStringsTabHost : INotifyPropertyChanged
     bool EntryFilterTagsOnly { get; set; }
     bool EntryFilterTagMismatchOnly { get; set; }
     ICollectionView EntriesView { get; }
+    string VisibleEntrySummary { get; }
+    string DestEditorToolTip { get; }
     StringEntryViewModel? SelectedEntry { get; set; }
     IAsyncRelayCommand SaveSelectedDestCommand { get; }
     IAsyncRelayCommand<System.Collections.IList?> RetranslateSelectedCommand { get; }

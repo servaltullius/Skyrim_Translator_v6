@@ -62,9 +62,10 @@ public partial class MainViewModel
             {
                 await RecheckLqaRowsAsync(rows);
             }
-            else if (LqaIssues.Count > 0 || !mark)
+            else if (_lqaHasFullScan)
             {
-                // An unmarked row has no results in the list, so it is checked whether or not it is listed.
+                // An unmarked row has no results in the list, so it is checked whether or not it is listed. Not without a
+                // whole check: in a project never checked (or cleared) its results alone showed as "전체 N건".
                 await RecheckLqaRowsCoreAsync(rows);
             }
         }

@@ -154,6 +154,37 @@ public sealed partial class PluginUiLifecycleTests
             Assert.DoesNotContain("영어판", fixture.Vm.PreviousTranslationSummary);
         });
 
+    // The earlier English was read with the source encoding now in the settings, which apply to the next ESP opened:
+    // changed to ks_c_5601-1987 for another file, a UTF-8 "Dragon’s Bane" read as Korean and was refused.
+    [Fact]
+    public Task PreviousSource_IsReadWithTheEncodingTheProjectWasOpenedWith()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture(new FakeGeminiHandler { GeneratedText = "용의 재앙" });
+            await fixture.LoadPluginWorkspaceAsync();
+            // Opened as the window opens a plugin, which keeps the encoding chosen then.
+            var current = Path.Combine(fixture.Root, "current", "Test.esp");
+            var oldRelease = Path.Combine(fixture.Root, "old-ko", "Test.esp");
+            var oldEnglish = Path.Combine(fixture.Root, "old-en", "Test.esp");
+            Directory.CreateDirectory(Path.GetDirectoryName(current)!);
+            Directory.CreateDirectory(Path.GetDirectoryName(oldRelease)!);
+            Directory.CreateDirectory(Path.GetDirectoryName(oldEnglish)!);
+            await File.WriteAllBytesAsync(current, PluginProjectIntegrationTests.CreateMinimalPlugin("Dragon’s Bane"));
+            fixture.Ui.OpenPath = current;
+            await fixture.Vm.OpenPluginCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+            Assert.Equal("Dragon’s Bane", Assert.Single(fixture.Vm.Entries).SourceText);
+            await File.WriteAllBytesAsync(oldRelease, PluginProjectIntegrationTests.CreateMinimalPlugin("용의 재앙"));
+            await File.WriteAllBytesAsync(oldEnglish, PluginProjectIntegrationTests.CreateMinimalPlugin("Dragon’s Bane"));
+            fixture.Ui.OpenPath = oldRelease;
+            await fixture.Vm.ImportPreviousTranslationCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            fixture.Vm.PluginSourceEncoding = "ks_c_5601-1987";
+            fixture.Ui.OpenPath = oldEnglish;
+            await fixture.Vm.ImportPreviousSourceCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            Assert.Contains("1행은 다음 번역 때 AI 없이", fixture.Vm.StatusMessage);
+        });
+
     /// <summary>
     /// A text that starts or ends with a line break or a space (a book, an effect description) keeps it: linking trimmed
     /// the earlier translation, so the reused row lost its spaces, or failed the line break check and went to the model.

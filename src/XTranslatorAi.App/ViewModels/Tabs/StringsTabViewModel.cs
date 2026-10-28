@@ -61,6 +61,12 @@ public sealed class StringsTabViewModel : ObservableObject, IDisposable
 
     public ICollectionView EntriesView => _host.EntriesView;
 
+    // The view binds these on this tab, not the window's view model: added to MainViewModel only, "표시 M / 전체 N행" beside
+    // the search box and the editor's tooltip during a run were never shown.
+    public string VisibleEntrySummary => _host.VisibleEntrySummary;
+
+    public string DestEditorToolTip => _host.DestEditorToolTip;
+
     public StringEntryViewModel? SelectedEntry
     {
         get => _host.SelectedEntry;

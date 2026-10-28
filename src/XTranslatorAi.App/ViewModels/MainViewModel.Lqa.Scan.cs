@@ -136,7 +136,8 @@ public partial class MainViewModel
         // With the full scan's TM names: without them a glossary term written as part of a TM name was flagged missing.
         var referenceNames = _lqaReferenceNames;
         var fresh = await Task.Run(() => LqaScanner.ScanAsync(scanEntries, targetLang, glossary, referenceNames: referenceNames, sourceFixIds: sourceFixIds));
-        if (!ReferenceEquals(db, _projectState.Db))
+        // The results cleared meanwhile ("지우기"): these rows' results alone would read as the whole project's.
+        if (!ReferenceEquals(db, _projectState.Db) || !_lqaHasFullScan)
         {
             return;
         }

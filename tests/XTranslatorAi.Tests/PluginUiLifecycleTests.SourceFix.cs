@@ -44,6 +44,35 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Empty(await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None));
         });
 
+    // Unmarking a row in a project never checked (or whose results were cleared) listed that row's results alone, read as
+    // the whole project's ("전체 N건").
+    [Fact]
+    public Task UnmarkingASourceFix_WithoutAWholeCheck_ListsNothing()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            var rows = await LoadXmlWorkspaceAsync(fixture, "Hand Strap Attack", "Iron Sword");
+            var db = fixture.State.Db!;
+            await db.UpdateStringTranslationAsync(rows[0].Id, "Hand Strap 공격", StringEntryStatus.Done, null, CancellationToken.None);
+            (rows[0].DestText, rows[0].Status) = ("Hand Strap 공격", StringEntryStatus.Done);
+            fixture.Vm.SelectedEntry = rows[0];
+
+            await fixture.Vm.ToggleSourceFixCommand.ExecuteAsync(null);
+            await fixture.Vm.ToggleSourceFixCommand.ExecuteAsync(null);
+
+            Assert.False(rows[0].IsSourceFix);
+            Assert.Empty(fixture.Vm.LqaIssues);
+
+            fixture.Vm.SelectedEntry = null;
+            await fixture.Vm.ScanLqaCommand.ExecuteAsync(null);
+            fixture.Vm.ClearLqaCommand.Execute(null);
+            fixture.Vm.SelectedEntry = rows[0];
+            await fixture.Vm.ToggleSourceFixCommand.ExecuteAsync(null);
+            await fixture.Vm.ToggleSourceFixCommand.ExecuteAsync(null);
+
+            Assert.Empty(fixture.Vm.LqaIssues);
+        });
+
     // Retranslating deletes the row's mark in the DB; the row kept it on screen, the next checks still skipped the
     // row, and marking it again took two clicks (the first one "unmarked" it).
     [Fact]

@@ -15,6 +15,12 @@ public sealed class ProjectState
     public string? InputXmlPath { get; private set; }
     public PluginDocument? PluginDocument { get; private set; }
     public string? PluginTargetEncoding { get; private set; }
+
+    /// <summary>
+    /// The source encoding chosen when the plugin was opened. The setting applies to the next ESP opened, so it may have
+    /// been changed for another file since; the earlier English linked to this project is read as this one was.
+    /// </summary>
+    public string? PluginSourceEncoding { get; private set; }
     public string? InputPath => PluginDocument?.Info.InputPath ?? InputXmlPath;
     public string? AddonName => PluginDocument == null ? XmlInfo?.AddonName : Path.GetFileName(PluginDocument.Info.InputPath);
     public bool HasSource => XmlInfo != null || PluginDocument != null;
@@ -46,6 +52,7 @@ public sealed class ProjectState
         InputXmlPath = null;
         PluginDocument = null;
         PluginTargetEncoding = null;
+        PluginSourceEncoding = null;
         Db = null;
     }
 
@@ -66,13 +73,15 @@ public sealed class ProjectState
         InputXmlPath = inputXmlPath;
         PluginDocument = null;
         PluginTargetEncoding = null;
+        PluginSourceEncoding = null;
     }
 
-    public void SetPluginWorkspace(ProjectDb db, PluginDocument document, string targetEncoding)
+    public void SetPluginWorkspace(ProjectDb db, PluginDocument document, string targetEncoding, string? sourceEncoding = null)
     {
         Db = db;
         PluginDocument = document;
         PluginTargetEncoding = targetEncoding;
+        PluginSourceEncoding = sourceEncoding;
         XmlInfo = null;
         InputXmlPath = null;
     }

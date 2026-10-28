@@ -137,8 +137,9 @@ public partial class MainViewModel
 
             StatusMessage = "이전 영어판을 읽는 중...";
             // The earlier English is read as the current English is, with its own Strings or BSA next to it, from the
-            // chosen source encoding (the current one may be its fallback).
-            var options = document.Info.Options.ForOtherRelease(PluginSourceEncoding);
+            // source encoding chosen when this plugin was opened (the current one may be its fallback, and the setting
+            // may have been changed since for another file: a UTF-8 "Dragon’s Bane" then read as Korean and was refused).
+            var options = document.Info.Options.ForOtherRelease(_projectState.PluginSourceEncoding ?? PluginSourceEncoding);
             // A Korean file given here is read too, and refused below as Korean (not with E452's advice to choose CP949).
             var previous = await Task.Run(() => PluginReader.ReadTranslatedReleaseAsync(path, options, cancellationToken), cancellationToken);
             var result = PreviousTranslationMatcher.MatchSources(document.Fields, document.Info.Masters,

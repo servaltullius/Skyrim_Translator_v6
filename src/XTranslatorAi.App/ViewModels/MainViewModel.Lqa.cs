@@ -46,6 +46,7 @@ public partial class MainViewModel
             _lqaReviewedMarks = new Dictionary<(long StringId, string Code), string>(marks);
             ApplyLqaReviewedMarks(issues);
             LqaIssues.ReplaceAll(issues);
+            _lqaHasFullScan = true;
             LqaIssuesView.Refresh();
             await RecheckLqaRowsChangedDuringScanAsync();
 
@@ -90,12 +91,17 @@ public partial class MainViewModel
     private void ClearLqa()
     {
         LqaIssues.Clear();
+        _lqaHasFullScan = false;
         SelectedLqaIssue = null;
         StatusMessage = "품질 검사 결과를 지웠습니다.";
         ClearLqaCommand.NotifyCanExecuteChanged();
     }
 
     private bool CanClearLqa() => IsProjectLoaded && !IsLqaScanning && LqaIssues.Count > 0;
+
+    // The list holds a whole check of this project (it may be empty): a row checked again adds to it. Without one, a
+    // row's results alone would read as the project's.
+    private bool _lqaHasFullScan;
 
     /// <summary>
     /// Quality-check issues and compare outputs describe rows of the project they came from. Row Ids restart at 1
@@ -107,6 +113,7 @@ public partial class MainViewModel
     {
         SelectedLqaIssue = null;
         LqaIssues.Clear();
+        _lqaHasFullScan = false;
         LqaIssuesView.Refresh();
         _lqaReviewedMarks = new Dictionary<(long StringId, string Code), string>();
         // The earlier project's TM name index checked the new project's rows until its first full scan.

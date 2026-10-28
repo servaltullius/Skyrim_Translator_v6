@@ -49,6 +49,28 @@ public sealed partial class PluginUiLifecycleTests
             fixture.Vm.EntryFilterText = "Sword";
             Assert.Equal("표시 2 / 전체 3행", fixture.Vm.VisibleEntrySummary);
         });
+
+    // The strings tab binds on its own view model, which did not have these: the count beside the search box and the
+    // editor's tooltip were never shown in the window.
+    [Fact]
+    public Task StringsTab_ShowsTheRowCountAndTheEditorTooltip()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            await LoadXmlWorkspaceAsync(fixture, "Iron Sword", "Steel Sword", "Elven Bow");
+            var count = new System.Windows.Controls.TextBlock { DataContext = fixture.Vm.StringsTab };
+            count.SetBinding(System.Windows.Controls.TextBlock.TextProperty, new System.Windows.Data.Binding("VisibleEntrySummary") { Mode = System.Windows.Data.BindingMode.OneWay });
+            var editor = new System.Windows.Controls.TextBox { DataContext = fixture.Vm.StringsTab };
+            editor.SetBinding(System.Windows.FrameworkElement.ToolTipProperty, new System.Windows.Data.Binding("DestEditorToolTip"));
+
+            fixture.Vm.EntryFilterText = "Sword";
+
+            Assert.Equal("표시 2 / 전체 3행", count.Text);
+            Assert.Contains("Ctrl+S", (string)editor.ToolTip);
+            fixture.Vm.IsTranslating = true;
+            Assert.Contains("번역 중에는", (string)editor.ToolTip);
+            fixture.Vm.IsTranslating = false;
+        });
 }
 
 public sealed partial class PluginUiLifecycleTests
