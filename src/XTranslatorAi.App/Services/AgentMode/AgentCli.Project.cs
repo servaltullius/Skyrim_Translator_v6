@@ -197,15 +197,44 @@ public static partial class AgentCli
         return (lines, changed);
     }
 
+    /// <summary>
+    /// What remaking the waiting request came to. With no new request (the run failed, or its rows were all done) it said
+    /// nothing, the waiting request gone; nor did it tell the global DB it could not read.
+    /// </summary>
+    internal static string? DescribeRemade(AgentStepReport? remade, string made)
+    {
+        if (remade == null)
+        {
+            return null;
+        }
+
+        var lines = new List<string>
+        {
+            remade.Next != null
+                ? $"대기 중이던 요청을 {made} 다시 만들었습니다: {remade.NextRequestPath}. 이 요청을 읽고 답하세요(앞 요청에 쓴 답은 내지 마세요)."
+                : remade.Problem != null
+                    ? $"알림: 대기 중이던 요청을 {made} 다시 만들지 못했습니다: {remade.Problem} 원인을 해결한 뒤 next로 요청을 만드세요."
+                    : remade.PendingAfter > 0
+                        ? $"알림: 다시 만들 요청이 없습니다(남은 줄 {remade.PendingAfter}, 오류 {remade.ErrorRows}). next로 이어 가세요."
+                        : "대기 중이던 요청의 줄은 모두 번역돼 다시 만들 요청이 없습니다.",
+        };
+        if (remade.MissingGlobalData.Count > 0)
+        {
+            lines.Add($"경고: 전체 DB의 {string.Join("·", remade.MissingGlobalData)}을(를) 읽지 못했습니다(용어 고정·한글패치 이름이 빠졌을 수 있음). 사용자에게 알리세요.");
+        }
+
+        return string.Join(Environment.NewLine, lines);
+    }
+
     /// <summary>A waiting request shows what was there before the change: it is made again, so its answer follows the new one.</summary>
     private static async Task RemakeWaitingAsync(AgentCommand c, AgentProject project, string made, string old)
     {
         var (remade, lanesWaiting, left) = await c.Session.RemakePendingAsync(project, c.Ct);
         // Made again, the request imports the series TM as next does: what it took or could not take.
         if (c.Session.SeriesTmNote is { } tmNote) Console.WriteLine(tmNote);
-        if (remade?.Next != null)
+        if (DescribeRemade(remade, made) is { } note)
         {
-            Console.WriteLine($"대기 중이던 요청을 {made} 다시 만들었습니다: {remade.NextRequestPath}. 이 요청을 읽고 답하세요(앞 요청에 쓴 답은 내지 마세요).");
+            Console.WriteLine(note);
         }
 
         if (left)

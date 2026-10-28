@@ -17,7 +17,7 @@
 - `next`·`submit` 결과 끝의 `----- 다음 요청 -----` 아래가 다음 request.md 내용이다. 파일을 따로 읽지 않는다. 지시는 `instructions` 도구로 읽는다(첫 요청과 새 지시 절이 있을 때만).
 - 셸로 파일을 읽을 수 없으면 안내 파일은 `guide` 도구(`translate`, `review`, `lanes`)로 읽는다.
 - `context`는 `text`에 저장할 문맥 전체를, `terms`는 `terms`에 `[{"source": "Fury", "target": "분노"}]`를(지울 것은 `remove`에) 넣는다.
-- `lookup`은 `words`에 낱말 여러 개를 한 번에 넣는다. 갈래는 `next`·`submit`·`status`의 `lane`에 `2/3`처럼 준다.
+- `lookup`은 `words`에 낱말 여러 개를 한 번에 넣는다. 갈래는 `next`·`submit`·`status`·`request`·`instructions`의 `lane`에 `2/3`처럼 준다(갈래를 맡았으면 빠뜨리지 않는다).
 - 도구가 없으면 아래처럼 `tullius.cmd`를 부른다.
   - 안티그라비티에서 도구 없이 번역했으면, 끝 보고에 한 줄 알린다: "이 폴더의 `안티그라비티 연결.cmd`를 한 번 더블클릭하고 안티그라비티를 다시 켜면, 다음부터는 번역기를 도구로 씁니다(셸 인코딩 걱정이 없음)."
 

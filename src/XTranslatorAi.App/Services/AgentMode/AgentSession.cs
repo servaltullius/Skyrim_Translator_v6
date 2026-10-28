@@ -22,6 +22,12 @@ public sealed record AgentProject(string Key, string PluginPath, string DbPath, 
     [System.Text.Json.Serialization.JsonIgnore]
     public AgentLane? Lane { get; init; }
 
+    /// <summary>
+    /// The source encoding chosen when the plugin was opened (ReadOptions has the one it was read with, which may be a
+    /// fallback). An earlier English linked later is read as this: the setting may have been changed for another file.
+    /// </summary>
+    public string? ChosenSourceEncoding { get; init; }
+
     /// <summary>The project's work folder under the work root, or its lane's ("Key/lane-2-of-3").</summary>
     [System.Text.Json.Serialization.JsonIgnore]
     public string WorkFolder => Lane == null ? Key : Path.Combine(Key, Lane.Folder);
@@ -170,7 +176,10 @@ public sealed class AgentSession
             loaded.InheritedGlossary.Count, loaded.InheritedGlossary.FromPlugins ?? Array.Empty<string>());
         var key = ProjectKey(loaded.Document.Info.InputPath, db.DbPath);
         var project = new AgentProject(key, loaded.Document.Info.InputPath, db.DbPath, loaded.Document.Info.Options, targetEncoding,
-            AgentTranslationRun.DefaultModelProfile, Math.Clamp(batchSize, 1, 100), Math.Clamp(_settings.MaxCharsPerBatch, 1000, 50000));
+            AgentTranslationRun.DefaultModelProfile, Math.Clamp(batchSize, 1, 100), Math.Clamp(_settings.MaxCharsPerBatch, 1000, 50000))
+        {
+            ChosenSourceEncoding = readOptions.SourceEncoding,
+        };
         var existing = TryRead(key);
         if (existing != null)
         {
@@ -221,7 +230,7 @@ public sealed class AgentSession
         // The English original is read and checked first: a wrong --english path, refused after the release was linked,
         // left the release linked without its English, and the next request asked every row.
         var englishSources = englishPath == null ? null
-            : await ReadEnglishSourcesAsync(current, englishPath, _settings.PluginSourceEncoding, cancellationToken);
+            : await ReadEnglishSourcesAsync(current, englishPath, project.ChosenSourceEncoding ?? _settings.PluginSourceEncoding, cancellationToken);
         await db.ReplacePreviousTranslationsAsync(Path.GetFileName(path), match.TextByFieldKey, cancellationToken);
         if (englishSources != null)
         {
@@ -328,7 +337,15 @@ public sealed class AgentSession
         // it was gone and the command ended in 실패. It still shows what was there before (LeftAsItWas).
         if (LaneConflict(project, making: true) != null) return (null, lanes, true);
         ClearPending(project);
-        return (await NextAsync(project, cancellationToken), lanes, false);
+        try
+        {
+            return (await NextAsync(project, cancellationToken), lanes, false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            // The waiting request is gone already: the error alone ("실패: …") left no word of how to go on.
+            throw new AgentModeException($"대기 중이던 요청을 지웠지만 다시 만들지 못했습니다({ex.Message}). 원인을 해결한 뒤 next로 요청을 만드세요.");
+        }
     }
 
     public IReadOnlyList<AgentProject> Projects()
@@ -496,6 +513,17 @@ public sealed class AgentSession
                                              $"{RequestPath(project)}의 글을 옮긴 번역문만 쓰세요.");
             }
 
+            // A one-line or chunk request has no ids to tell an answer to an earlier request by: the lane's last answer given
+            // again (answer.txt not rewritten) was saved into this line. The same answer to the same English (a line asked
+            // in two topics, a repair of the same line) is not refused.
+            if (answer.Trim().Length >= 10 && ReadLastTextAnswer(project) is { } last && last.Hash != pending.Hash
+                && !string.Equals(last.Source, TextSource(pending), StringComparison.Ordinal)
+                && string.Equals(last.Answer.Trim(), answer.Trim(), StringComparison.Ordinal))
+            {
+                throw new AgentModeException("이 답은 앞 요청에 낸 답과 같아 저장하지 않았습니다(앞 요청의 답을 다시 낸 것 같습니다). " +
+                                             $"{RequestPath(project)}의 글을 옮긴 번역문을 쓰세요.");
+            }
+
             // A file ends with a newline; the run would keep it as spaces at the line's end (a repaired line is not trimmed).
             answer = answer.TrimEnd('\r', '\n');
         }
@@ -525,6 +553,11 @@ public sealed class AgentSession
                 Problem = "번역기가 이 답이 맞는 요청을 다시 만들지 않아 답을 쓰지 않았습니다(요청을 만든 뒤 프로젝트가 바뀜). " +
                           "request.md에 새로 만든 요청에 답하세요.",
             }, Array.Empty<AgentRejection>(), cancellationToken);
+        }
+
+        if (!json)
+        {
+            WriteLastTextAnswer(project, new LastTextAnswer(pending.Hash, TextSource(pending), answer));
         }
 
         var rejected = await RejectedAsync(project, pending, report, reasons, textReason, cancellationToken);
@@ -796,6 +829,37 @@ public sealed class AgentSession
     private string LaneDir(AgentProject project) => Path.Combine(_workRoot, project.WorkFolder);
     private string PendingPath(AgentProject project) => Path.Combine(LaneDir(project), "pending.json");
     private string AnswerPath(AgentProject project, string hash, int attempt) => Path.Combine(ProjectDir(project), "responses", $"{hash}.{attempt}.txt");
+
+    /// <summary>The last one-line or chunk answer the lane saved, with its request's English.</summary>
+    private sealed record LastTextAnswer(string Hash, string Source, string Answer);
+
+    private string LastTextAnswerPath(AgentProject project) => Path.Combine(LaneDir(project), "last-text-answer.json");
+
+    private static string TextSource(AgentRequest request) => string.Join("\n", AgentAnswerCheck.Lines(request).Select(line => line.Text));
+
+    private LastTextAnswer? ReadLastTextAnswer(AgentProject project)
+    {
+        try
+        {
+            var path = LastTextAnswerPath(project);
+            return File.Exists(path) ? JsonSerializer.Deserialize<LastTextAnswer>(File.ReadAllText(path)) : null;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
+        {
+            return null; // Only a check: an answer is never refused for a note that cannot be read.
+        }
+    }
+
+    private void WriteLastTextAnswer(AgentProject project, LastTextAnswer answer)
+    {
+        try
+        {
+            File.WriteAllText(LastTextAnswerPath(project), JsonSerializer.Serialize(answer, Json));
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+        }
+    }
 
     private static string ProjectKey(string pluginPath, string dbPath)
     {

@@ -50,6 +50,23 @@ public static partial class AgentCli
         string Resolve(string query, bool listener)
         {
             var q = query.Trim();
+            // Copied from the list as the guide says, with what follows the name: "Alara(01001234, 12줄)", "@Dawnguard.esm|
+            // 01001234 (마스터가 빠져 쓰이지 않음, …)". Taken whole, it was no speaker and clearing failed every time. A name
+            // with its own parentheses ("Alara (Ghost)") stays as it is.
+            if (q.EndsWith(')') && q.LastIndexOf('(') is var open and > 0)
+            {
+                var inside = q[(open + 1)..^1].Split(',')[0].Trim();
+                if (inside.Length == 8 && inside.All(Uri.IsHexDigit))
+                {
+                    return inside.ToUpperInvariant();
+                }
+
+                if (q.StartsWith('@'))
+                {
+                    q = q[..open].TrimEnd();
+                }
+            }
+
             if (q is "player" or "플레이어") return listener ? SpeakerStyles.Player : SpeakerStyles.PlayerSpeaker;
             if (listener && q is "other" or "다른 인물" or "다른인물") return SpeakerStyles.Other;
             if (listener && q is "*" or "anyone" or "누구에게나" or "모두") return SpeakerStyles.Anyone;

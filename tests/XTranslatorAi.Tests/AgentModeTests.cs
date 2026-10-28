@@ -188,8 +188,9 @@ public sealed class AgentModeTests : IAsyncLifetime
             jsonrpc = "2.0", id, method = "tools/call", @params = new { name = "style", arguments },
         });
         var output = new StringWriter();
+        // The first as the list shows it (the guide says to copy it as listed), the note after it included.
         var lines = string.Join("\n",
-            Call(1, new { project = "Thalmor", speaker = "@Dawnguard.esm|01001234", clear = true }),
+            Call(1, new { project = "Thalmor", speaker = "@Dawnguard.esm|01001234 (마스터가 빠져 쓰이지 않음, 돌아오면 다시 쓰임)", clear = true }),
             Call(2, new { project = "Thalmor", speaker = "@Dawnguard.esm|01001234", clear = true }));
 
         Assert.Equal(0, await AgentMcpServer.ServeAsync(server, new StringReader(lines), output));
@@ -398,6 +399,144 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.True((await db!.GetTranslationMemoryEntriesAsync("english", "korean", CancellationToken.None)).Count > 20000);
         Assert.Contains("aaa.tsv", session.SeriesTmNote);
         Assert.True(File.Exists(locked));
+    }
+
+    // A one-line request has no ids to check: the last request's answer given again (answer.txt not rewritten) was saved
+    // into this line.
+    [Fact]
+    public async Task TextRequest_AnsweredWithAnEarlierAnswer_IsRefused()
+    {
+        var session = new AgentSession(Path.Combine(_root, "work-text"), _global, gameStrings: null, new AppSettings(),
+            projectsRootOverride: Path.Combine(_root, "projects-text"));
+        var (project, _, _, _) = await session.OpenAsync(Path.Combine(_root, "Mod", "Thalmor.esp"), new PluginReadOptions(), "korean", "utf-8",
+            batchSize: 1, CancellationToken.None);
+        _extraDbs.Add(project.DbPath);
+        async Task<AgentRequest> NextTextAsync(AgentStepReport report)
+        {
+            while (report.Next is { } json && IsJson(json))
+            {
+                report = await session.SubmitAsync(project, Answer(json), CancellationToken.None);
+            }
+
+            return report.Next!;
+        }
+
+        var first = await NextTextAsync(await session.NextAsync(project, CancellationToken.None));
+        var second = await NextTextAsync(await session.SubmitAsync(project, Answer(first), CancellationToken.None));
+
+        Assert.NotEqual(first.Hash, second.Hash);
+        var refused = await Assert.ThrowsAsync<AgentModeException>(() => session.SubmitAsync(project, Answer(first), CancellationToken.None));
+        Assert.Contains("앞 요청에 낸 답과 같아", refused.Message);
+        Assert.Equal(second.Hash, session.Pending(project)!.Hash);
+    }
+
+    // The earlier English was read with the source encoding now in the settings: changed for another file since open, a
+    // UTF-8 "Dragon’s Bane" read as Korean and was refused.
+    [Fact]
+    public async Task KoreanWithEnglish_ReadsTheEnglishAsTheProjectWasOpened()
+    {
+        static byte[] Bane(string name) => Header().Concat(Group(Record("MISC", 0x2101, Sub("EDID", Z("aaBane")), Sub("FULL", Z(name))))).ToArray();
+        var session = new AgentSession(Path.Combine(_root, "work-bane"), _global, gameStrings: null,
+            new AppSettings() with { PluginSourceEncoding = "ks_c_5601-1987" }, projectsRootOverride: Path.Combine(_root, "projects-bane"));
+        var current = Path.Combine(_root, "Mod", "Bane.esp");
+        var korean = Path.Combine(_root, "Korean", "Bane.esp");
+        var english = Path.Combine(_root, "English", "Bane.esp");
+        foreach (var (path, name) in new[] { (current, "Dragon’s Bane"), (korean, "용의 재앙"), (english, "Dragon’s Bane") })
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+            await File.WriteAllBytesAsync(path, Bane(name));
+        }
+
+        var (project, _, _, _) = await session.OpenAsync(current, new PluginReadOptions(SourceEncoding: "utf-8"), "korean", "utf-8", batchSize: 5, CancellationToken.None);
+        _extraDbs.Add(project.DbPath);
+        var link = await session.LinkKoreanAsync(session.Find(project.Key), korean, null, CancellationToken.None, english);
+
+        Assert.True(link.ComparedWithEnglish);
+        Assert.Equal(1, link.Filled);
+    }
+
+    // Remaking the waiting request said nothing when there was no new request (a run that failed, or nothing left).
+    [Fact]
+    public void RemakingAWaitingRequest_SaysWhenThereIsNone()
+    {
+        Assert.Null(AgentCli.DescribeRemade(null, "정한 말투로"));
+        var failed = new AgentStepReport(_project, 3, 3, 0, null, null, "오류: 잠김") { MissingGlobalData = new[] { "시리즈 TM" } };
+        var note = AgentCli.DescribeRemade(failed, "정한 말투로")!;
+        Assert.Contains("다시 만들지 못했습니다: 오류: 잠김", note);
+        Assert.Contains("경고: 전체 DB의 시리즈 TM", note);
+        Assert.Contains("모두 번역돼", AgentCli.DescribeRemade(new AgentStepReport(_project, 3, 0, 0, null, null, null), "정한 말투로"));
+        // A line left in error is not "모두 번역돼".
+        Assert.Contains("남은 줄 1, 오류 1", AgentCli.DescribeRemade(new AgentStepReport(_project, 3, 1, 1, null, null, null), "정한 말투로"));
+    }
+
+    // The same English asked in two requests (two topics, a repair of the line) takes the same answer: compared with the
+    // other answers alone, it was refused as the last answer given again.
+    [Fact]
+    public async Task TextRequests_OfTheSameEnglish_TakeTheSameAnswer()
+    {
+        var session = new AgentSession(Path.Combine(_root, "work-twice"), _global, gameStrings: null, new AppSettings(),
+            projectsRootOverride: Path.Combine(_root, "projects-twice"));
+        var plugin = Path.Combine(_root, "Mod", "Twice.esp");
+        await File.WriteAllBytesAsync(plugin, Header().Concat(DialogueGroup(
+                TopicChildren(0x1000, Record("INFO", 0x1001, Sub("NAM1", Z("Speak with care, traveler."))),
+                    Record("INFO", 0x1002, Sub("NAM1", Z("The road north is closed.")))),
+                TopicChildren(0x1100, Record("INFO", 0x1101, Sub("NAM1", Z("Speak with care, traveler."))),
+                    Record("INFO", 0x1102, Sub("NAM1", Z("Watch the skies tonight."))))))
+            .ToArray());
+        var (project, _, _, _) = await session.OpenAsync(plugin, new PluginReadOptions(), "korean", "utf-8", batchSize: 1, CancellationToken.None);
+        _extraDbs.Add(project.DbPath);
+
+        var report = await session.NextAsync(project, CancellationToken.None);
+        for (var i = 0; i < 20 && report.Next is { } request; i++)
+        {
+            report = await session.SubmitAsync(project, Answer(request), CancellationToken.None);
+        }
+
+        Assert.Null(report.Next);
+        Assert.Equal(0, report.PendingAfter);
+    }
+
+    // A lane's agent that left out lane was told "next로 요청을 만드세요" and made a laneless request over the lanes' rows.
+    [Fact]
+    public async Task McpRequest_WithoutTheLane_SaysWhichLaneWaits()
+    {
+        await _session.NextAsync(_project with { Lane = AgentLane.Parse("1/2") }, CancellationToken.None);
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") });
+        var call = JsonSerializer.Serialize(new
+        {
+            jsonrpc = "2.0", id = 1, method = "tools/call", @params = new { name = "request", arguments = new { project = "Thalmor" } },
+        });
+        var output = new StringWriter();
+
+        Assert.Equal(0, await AgentMcpServer.ServeAsync(server, new StringReader(call), output));
+
+        var text = JsonDocument.Parse(output.ToString()).RootElement.GetProperty("result").GetProperty("content")[0].GetProperty("text").GetString();
+        Assert.Contains("갈래 1/2에 대기 중인 요청", text);
+    }
+
+    // "korean <키> --english <영어판> <한국어판>" read --english as the release's path: the options came out after it.
+    [Fact]
+    public async Task KoreanCommand_TakesItsOptionsWhereverTheyAre()
+    {
+        var korean = Path.Combine(_root, "Korean-order", "Thalmor.esp");
+        var english = Path.Combine(_root, "English-order", "Thalmor.esp");
+        Directory.CreateDirectory(Path.GetDirectoryName(korean)!);
+        Directory.CreateDirectory(Path.GetDirectoryName(english)!);
+        await File.WriteAllBytesAsync(korean, Header().Concat(DialogueGroup(TopicChildren(0x1000,
+                Record("INFO", 0x1001, Sub("NAM1", Z("도미니언에 대한 충성은 기록해 두었다."))),
+                Record("INFO", 0x1002, Sub("NAM1", Z("그럼 서로 이해한 걸로 하지."))),
+                Record("INFO", 0x1003, Sub("NAM1", Z("말조심해라, <Alias=Player>."))))))
+            .Concat(Group(Record("MISC", 0x2001, Sub("EDID", Z("aaEcho")), Sub("FULL", Z("에테르의 메아리")))))
+            .ToArray());
+        await File.WriteAllBytesAsync(english, Plugin());
+
+        var code = await AgentCli.RunAsync(new[] { "korean", _project.Key, "--english", english, korean,
+            "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") }, argumentFiles: false);
+
+        Assert.Equal(0, code);
+        await using var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None);
+        Assert.NotNull(await db.GetPreviousTranslationSourceAsync(CancellationToken.None));
+        Assert.Equal("Thalmor.esp", await db.GetPreviousSourceFileNameAsync(CancellationToken.None));
     }
 
     // A run that failed during submit (a locked DB, a full disk) said "다시 만들지 않아 … 새로 만든 요청에 답하세요",

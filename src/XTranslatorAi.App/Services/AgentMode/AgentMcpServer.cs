@@ -464,8 +464,21 @@ internal static class AgentMcpServer
                 var session = AgentCommand.Parse(ServerOptions(server)).Session;
                 var found = session.Find(project ?? "") with { Lane = AgentLane.Parse(lane) };
                 var path = name == "request" ? session.RequestPath(found) : session.InstructionsPath(found);
-                return Content(File.Exists(path) ? await File.ReadAllTextAsync(path) : name == "request" ? "대기 중인 요청이 없습니다. next로 요청을 만드세요." : "지시 파일이 아직 없습니다. next로 첫 요청을 만드세요.",
-                    isError: !File.Exists(path));
+                // A lane's agent that left out lane was told "next로 요청을 만드세요" and made a laneless request over the
+                // lanes' rows, or was given the laneless run's instructions left from before, without the lanes' sections.
+                var waiting = found.Lane == null ? session.LanesWaiting(found) : Array.Empty<string>();
+                var laneNote = waiting.Count > 0
+                    ? $"갈래 {string.Join(", ", waiting)}에 대기 중인 요청이 있습니다. 갈래를 맡았으면 lane에 그 갈래(예: {waiting[0]})를 주세요."
+                    : null;
+                if (File.Exists(path))
+                {
+                    return Content((laneNote != null ? "알림: " + laneNote + "\n\n" : "") + await File.ReadAllTextAsync(path), isError: false);
+                }
+
+                var hint = found.Lane is { } own ? $" 갈래 {own.Index}/{own.Count}의 요청은 next에 같은 lane을 주어 만드세요."
+                    : laneNote != null ? " " + laneNote : "";
+                return Content((name == "request" ? "대기 중인 요청이 없습니다. next로 요청을 만드세요." : "지시 파일이 아직 없습니다. next로 첫 요청을 만드세요.") + hint,
+                    isError: true);
             }
             case "lookup":
             {

@@ -133,8 +133,11 @@ public static partial class AgentCli
     private static async Task KoreanAsync(AgentCommand c)
     {
         c.RefuseWhileAppRuns();
+        // The options first: "korean <키> --english <영어판> <한국어판>" read --english as the release's path.
+        var strings = c.Option("--strings");
+        var english = c.Option("--english");
         var project = c.Session.Find(c.Arg(0, "프로젝트"));
-        var link = await c.Session.LinkKoreanAsync(project, c.Arg(1, "한국어판 경로"), c.Option("--strings"), c.Ct, c.Option("--english"));
+        var link = await c.Session.LinkKoreanAsync(project, c.Arg(1, "한국어판 경로"), strings, c.Ct, english);
         var m = link.Match;
         Console.WriteLine($"한국어판 연결: {m.TextByFieldKey.Count}줄 (빠짐: 한국어판에 없음 {m.NotInPreviousRelease}, 레코드 구성이 바뀜 {m.ChangedRecord}, "
                           + $"영어 그대로 {m.SameAsSource}, 한글 없음 {m.NotTranslated})");
