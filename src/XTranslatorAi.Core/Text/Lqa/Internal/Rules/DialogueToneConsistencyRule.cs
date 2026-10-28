@@ -250,9 +250,9 @@ internal static class DialogueToneConsistencyRule
 
     // Spoken 반말 endings the shared classifier leaves unread, since a book or a description ending in one is quoting
     // speech: ~거든, ~네 (a lone 네 is the polite "yes"), ~어/아 after ㅆ or ㅄ (있어, 했어, 겠어) and a few common
-    // verbs, ~봐 ("해 봐") and ~ㄹ까 asked in 반말 ("해볼까?", "갈까?"; ~ㄹ까요 and ~ㅂ니까 are read before), with laughter
-    // at the end set aside ("…것 같아! 하하!"). Without the last two, Flint9's player choices counted four 반말 of six and
-    // the two 존댓말 among them went unmarked.
+    // verbs, ~봐 ("해 봐") and ~ㄹ까 asked in 반말 ("해볼까?", "갈까?"; the last syllable and the ㄹ before 까 keep out
+    // ~ㄹ까요~, 합니까~ and 그러니까), with laughter at the end set aside ("…것 같아! 하하!"). Without ~봐 and ~ㄹ까,
+    // Flint9's player choices counted four 반말 of six and the two 존댓말 among them went unmarked.
     private static bool SpokenCasual(string spoken)
     {
         var cleaned = TrailingLaughter.Replace(LqaScanner.StripUiTokens(spoken).Trim().TrimEnd(' ', '.', '!', '?', '…', '~'), "").TrimEnd(' ', '.', ',', '!', '?', '…', '~', '"', '\'', '”', '’');
@@ -262,12 +262,18 @@ internal static class DialogueToneConsistencyRule
         }
 
         var last = cleaned[(cleaned.LastIndexOfAny(new[] { ' ', '\t', '\n', '.', ',', '!', '?' }) + 1)..];
-        return last.EndsWith("거든", StringComparison.Ordinal)
-               || last.Length >= 2 && last.EndsWith("네", StringComparison.Ordinal)
-               || last is "같아" or "좋아" or "싫어" or "알아" or "몰라" || last.EndsWith("잖아", StringComparison.Ordinal)
-               || last.EndsWith("봐", StringComparison.Ordinal)
-               || last.Length >= 2 && last[^1] == '까' && KoreanSyllables.IsHangulSyllable(last[^2]) && (last[^2] - '가') % 28 == 8
-               || cleaned[^1] is '어' or '아' && KoreanSyllables.IsHangulSyllable(cleaned[^2]) && (cleaned[^2] - '가') % 28 is 18 or 20;
+        if (last.EndsWith("거든", StringComparison.Ordinal)
+            || last.Length >= 2 && last.EndsWith("네", StringComparison.Ordinal)
+            || last is "같아" or "좋아" or "싫어" or "알아" or "몰라" || last.EndsWith("잖아", StringComparison.Ordinal)
+            || cleaned[^1] is '어' or '아' && KoreanSyllables.IsHangulSyllable(cleaned[^2]) && (cleaned[^2] - '가') % 28 is 18 or 20)
+        {
+            return true;
+        }
+
+        // A 존댓말 speaker muses and fears in these too ("고민이에요, 어떻게 해야 할까.", "조심하세요, 다칠까 봐."): after a
+        // 존댓말 sentence of the line's own, they are not counted.
+        return (last.EndsWith("봐", StringComparison.Ordinal) || last.Length >= 2 && last[^1] == '까' && KoreanSyllables.HasFinalRieul(last[^2]))
+               && !SpeakerToneConsistencyRule.HasOwnPolite(spoken);
     }
 
     private static readonly System.Text.RegularExpressions.Regex TrailingLaughter = new(

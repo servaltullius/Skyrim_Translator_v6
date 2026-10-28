@@ -1038,4 +1038,26 @@ public class LqaFalsePositiveTests
 
         Assert.Equal(new long[] { 7, 8 }, marked);
     }
+
+    // The reading above leaves out a 존댓말 speaker's musing or fear after a 존댓말 sentence of the line's own, and ~까 or
+    // ~까요 without ㄹ before it that reach it with a ~ or laughter at the end. Counted as 반말, they left the 해요체
+    // group below its majority and its one 반말 line unmarked.
+    [Fact]
+    public async Task DialogueTone_LeavesPoliteMusingAndOtherKkaUncounted()
+    {
+        static LqaScanEntry Choice(long id, string dest)
+            => new(id, (int)id, "Polite" + id, "DIAL:FULL", StringEntryStatus.Done, "x", dest);
+        var choices = new List<LqaScanEntry>
+        {
+            Choice(1, "정말 고마워요."), Choice(2, "그건 제가 할게요."), Choice(3, "알겠어요, 지금 갈게요."), Choice(4, "괜찮아요, 걱정 마세요."),
+            Choice(5, "고마워요. 이제 갈까?"), Choice(6, "조심하세요, 다칠까 봐."), Choice(7, "정말 그렇게 합니까~"),
+            Choice(8, "같이 갈까요ㅋㅋ"), Choice(9, "다 끝났으니까."),
+            Choice(10, "그냥 가 봐."),
+        };
+
+        var marked = (await LqaScanner.ScanAsync(choices, "ko", new List<GlossaryEntry>()))
+            .Where(i => i.Code == "tone_inconsistent").Select(i => i.Id).OrderBy(id => id).ToList();
+
+        Assert.Equal(new long[] { 10 }, marked);
+    }
 }
