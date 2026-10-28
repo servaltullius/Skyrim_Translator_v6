@@ -293,6 +293,63 @@ public sealed class AgentModeTests : IAsyncLifetime
         await Assert.ThrowsAsync<AgentModeException>(() => _session.SubmitAsync(_project, "번역", CancellationToken.None));
     }
 
+    // The other way round: a lane's first request, made while the laneless one waited, asked that request's lines again.
+    [Fact]
+    public async Task LanelessRequestWaiting_RefusesALanesFirstRequest()
+    {
+        await _session.NextAsync(_project, CancellationToken.None);
+
+        var refused = await Assert.ThrowsAsync<AgentModeException>(
+            () => _session.NextAsync(_project with { Lane = AgentLane.Parse("1/2") }, CancellationToken.None));
+
+        Assert.Contains("갈래 없이 만든 요청", refused.Message);
+        Assert.Empty(_session.LanesWaiting(_project));
+    }
+
+    // Both waiting (made by an earlier version): a decided level remade the laneless request by clearing it and calling
+    // next, which refused, so the request was gone and style ended in 실패.
+    [Fact]
+    public async Task RemakingARequest_ThatNextWouldRefuse_LeavesIt()
+    {
+        await _session.NextAsync(_project, CancellationToken.None);
+        var laneDir = Path.Combine(_root, "work", _project.Key, AgentLane.Parse("1/2")!.Folder);
+        Directory.CreateDirectory(laneDir);
+        File.Copy(Path.Combine(_root, "work", _project.Key, "pending.json"), Path.Combine(laneDir, "pending.json"));
+
+        var (report, lanes) = await _session.RemakePendingAsync(_project, CancellationToken.None);
+
+        Assert.Null(report);
+        Assert.Equal(1, lanes);
+        Assert.NotNull(_session.Pending(_project));
+    }
+
+    // A user's TSV open in Excel (locked) stopped the import loop, and the bundled seed after it in name order was never
+    // imported; agent mode said nothing.
+    [Fact]
+    public async Task SeriesTmImport_WithALockedFile_TakesTheRest_AndSaysWhich()
+    {
+        var root = Path.Combine(_root, "seed-locked");
+        var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.ElderScrolls, root);
+        Directory.CreateDirectory(importDir);
+        var locked = Path.Combine(importDir, "aaa.tsv");
+        await File.WriteAllTextAsync(locked, "Source\tTarget\nHello\t안녕\n");
+        await using var global = new GlobalProjectDbService(new BuiltInGlossaryService(), root);
+        var session = new AgentSession(Path.Combine(_root, "work-locked"), global, gameStrings: null, new AppSettings(),
+            projectsRootOverride: Path.Combine(_root, "projects-locked"), tmSeed: new BundledFranchiseTmSeedService(root));
+
+        using (new FileStream(locked, FileMode.Open, FileAccess.Read, FileShare.None))
+        {
+            var (project, _, _, _) = await session.OpenAsync(Path.Combine(_root, "Mod", "Thalmor.esp"), new PluginReadOptions(), "korean", "utf-8",
+                batchSize: 2, CancellationToken.None);
+            _extraDbs.Add(project.DbPath);
+        }
+
+        var db = await global.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None);
+        Assert.True((await db!.GetTranslationMemoryEntriesAsync("english", "korean", CancellationToken.None)).Count > 20000);
+        Assert.Contains("aaa.tsv", session.SeriesTmNote);
+        Assert.True(File.Exists(locked));
+    }
+
     // A run that failed during submit (a locked DB, a full disk) said "다시 만들지 않아 … 새로 만든 요청에 답하세요",
     // hiding the error, and deleted the request and the answer with no new request written.
     [Fact]

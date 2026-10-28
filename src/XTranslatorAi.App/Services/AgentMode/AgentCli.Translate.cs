@@ -93,6 +93,8 @@ public static partial class AgentCli
 
     private static void Print(AgentCommand c, AgentStepReport report)
     {
+        // next imports the series TM as open does (AgentSession.EnsureSeriesTmAsync): what it took or could not take.
+        if (c.Session.SeriesTmNote is { } tmNote) Console.WriteLine(tmNote);
         Console.WriteLine($"저장한 줄: {report.Saved}, 남은 줄: {report.PendingAfter}" + (report.ErrorRows > 0 ? $" (오류 {report.ErrorRows})" : "")
                           + (report.Rejected.Count > 0 ? $", 다시 물을 줄: {report.Rejected.Count}" : ""));
         foreach (var r in report.Rejected)

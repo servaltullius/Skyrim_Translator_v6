@@ -68,11 +68,25 @@ public sealed class FranchiseTranslationMemoryService
                 unreadable ??= ex.Message;
                 continue;
             }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                // A user's file open in Excel (locked) stopped the loop, and the bundled seed after it in name order was
+                // never imported. It is this file's alone, tried again next time.
+                unreadable ??= $"{Path.GetFileName(path)}을(를) 읽지 못했습니다({ex.Message}). 다른 프로그램에서 닫은 뒤 다시 여세요.";
+                continue;
+            }
 
             totalApplied += Math.Max(0, applied);
             var stem = Path.GetFileNameWithoutExtension(path);
             var timestamp = DateTimeOffset.Now.ToString("yyyyMMdd-HHmmss");
-            File.Move(path, Path.Combine(importedDir, $"{stem}.imported.{timestamp}.tsv"), overwrite: false);
+            try
+            {
+                File.Move(path, Path.Combine(importedDir, $"{stem}.imported.{timestamp}.tsv"), overwrite: false);
+            }
+            catch (IOException) when (!File.Exists(path))
+            {
+                // Another lane's process imported the same file and moved it first: the rows are the same.
+            }
         }
 
         return (totalApplied, unreadable);

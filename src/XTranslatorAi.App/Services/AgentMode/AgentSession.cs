@@ -146,8 +146,10 @@ public sealed class AgentSession
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            // As in the GUI, the import never stops the work; a global DB that cannot be read is reported by the run.
-            AppLog.Write($"WARN 시리즈 TM 자동 가져오기 실패: {ex.Message}");
+            // As in the GUI, the import never stops the work, and is told as the GUI's status line tells it: the run read
+            // the global DB and said nothing, so the kit translated with an empty series TM and no warning.
+            AppLog.Write($"WARN 시리즈 TM 자동 가져오기 실패: {ex}");
+            SeriesTmNote = $"경고: 시리즈 TM 가져오기 실패({ex.Message}). 내장 한글패치 TM 없이 번역합니다(자세한 내용: app.log).";
         }
     }
 
@@ -317,7 +319,9 @@ public sealed class AgentSession
         var lanes = Directory.Exists(ProjectDir(project))
             ? Directory.GetDirectories(ProjectDir(project), "lane-*").Count(d => File.Exists(Path.Combine(d, "pending.json")))
             : 0;
-        if (Pending(project) == null) return (null, lanes);
+        // A request that next would refuse to make (another lane's or the laneless run's request waiting) stays: cleared,
+        // it was gone and the command ended in 실패.
+        if (Pending(project) == null || LaneConflict(project, making: true) != null) return (null, lanes);
         ClearPending(project);
         return (await NextAsync(project, cancellationToken), lanes);
     }
@@ -402,14 +406,32 @@ public sealed class AgentSession
     /// <summary>
     /// A run without a lane covers every lane's rows: with a lane's request waiting it asked the same lines again, and
     /// the lane's answer, saved second, was dropped (twice the usage). A new conversation that saw no waiting request in
-    /// status (it showed only the run's own) went that way, and so did a lane's agent that left out --lane.
+    /// status (it showed only the run's own) went that way, and so did a lane's agent that left out --lane. The other
+    /// way round as well: a lane's first request, made while the laneless one waited, asked that request's lines again.
+    /// A lane may still answer its own request then (<paramref name="making"/> false): made before, it is the older.
     /// </summary>
-    private void RefuseWhileLanesWait(AgentProject project)
+    private string? LaneConflict(AgentProject project, bool making)
     {
         if (project.Lane == null && LanesWaiting(project) is { Count: > 0 } lanes)
         {
-            throw new AgentModeException($"갈래 {string.Join(", ", lanes)}에 대기 중인 요청이 있습니다. 갈래로 나눠 번역 중이면 next·submit에 "
-                                         + $"--lane {lanes[0]}처럼 갈래를 붙여 그 요청부터 답하세요(갈래를 그만두려면 open으로 다시 열어 대기 요청을 지운 뒤 next).");
+            return $"갈래 {string.Join(", ", lanes)}에 대기 중인 요청이 있습니다. 갈래로 나눠 번역 중이면 next·submit에 "
+                   + $"--lane {lanes[0]}처럼 갈래를 붙여 그 요청부터 답하세요(갈래를 그만두려면 open으로 다시 열어 대기 요청을 지운 뒤 next).";
+        }
+
+        if (making && project.Lane != null && File.Exists(PendingPath(project with { Lane = null })))
+        {
+            return $"갈래 없이 만든 요청이 대기 중입니다({RequestPath(project with { Lane = null })}). 그 요청이 모든 갈래의 줄을 묻습니다: "
+                   + "--lane 없이 그 요청에 먼저 답하거나, 갈래로 나누려면 open으로 다시 열어 대기 요청을 지운 뒤 갈래마다 next하세요.";
+        }
+
+        return null;
+    }
+
+    private void RefuseOnLaneConflict(AgentProject project, bool making)
+    {
+        if (LaneConflict(project, making) is { } refusal)
+        {
+            throw new AgentModeException(refusal);
         }
     }
 
@@ -421,7 +443,7 @@ public sealed class AgentSession
             throw new AgentModeException($"대기 중인 요청이 있습니다({RequestPath(project)}). 먼저 그 결과를 submit하세요.");
         }
 
-        RefuseWhileLanesWait(project);
+        RefuseOnLaneConflict(project, making: true);
         await EnsureSeriesTmAsync(cancellationToken);
 
         var (report, _) = await StepAsync(project, cancellationToken);
@@ -435,7 +457,7 @@ public sealed class AgentSession
     /// </summary>
     public async Task<AgentStepReport> SubmitAsync(AgentProject project, string answer, CancellationToken cancellationToken)
     {
-        RefuseWhileLanesWait(project);
+        RefuseOnLaneConflict(project, making: false);
         var pending = Pending(project) ?? throw new AgentModeException("대기 중인 요청이 없습니다. next로 요청을 만드세요"
                                                                      + (project.Lane == null ? "(갈래로 나눠 번역 중이면 --lane을 붙이세요)." : "."));
         var json = AgentAnswerCheck.IsJson(pending);
