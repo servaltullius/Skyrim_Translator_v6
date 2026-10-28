@@ -91,6 +91,26 @@ public sealed class PluginQuestSpeakerTests : IDisposable
         Assert.Null(resolved["A guard's voice."].SpeakerFormId);
     }
 
+    // A dictionary the player built that cannot be read (damaged, an older format) left the run with no game text at all,
+    // and every call read it again.
+    [Fact]
+    public async Task BuiltDictionaryThatCannotBeRead_GivesWayToTheBundledOne()
+    {
+        var bytes = new MemoryStream();
+        GameStringDictionary.Build(Array.Empty<GameStringPlugin>()).Save(bytes);
+        var gameStrings = new GameStringService(Path.Combine(_root, "game-broken"), () => new MemoryStream(bytes.ToArray()));
+        Directory.CreateDirectory(Path.GetDirectoryName(gameStrings.DictionaryPath)!);
+        await File.WriteAllBytesAsync(gameStrings.DictionaryPath, new byte[] { 1, 2, 3, 4 });
+
+        Assert.NotNull(await gameStrings.TryLoadAsync(CancellationToken.None));
+        Assert.Contains("읽지 못해", await gameStrings.DescribeAsync(CancellationToken.None));
+
+        // Made again, it is read again.
+        await File.WriteAllBytesAsync(gameStrings.DictionaryPath, bytes.ToArray());
+        File.SetLastWriteTimeUtc(gameStrings.DictionaryPath, DateTime.UtcNow.AddMinutes(1));
+        Assert.StartsWith("직접 만든 게임 번역 사전:", await gameStrings.DescribeAsync(CancellationToken.None));
+    }
+
     /// <summary>The index travels in the game dictionary: saved and loaded with it, and used when a plugin is opened.</summary>
     [Fact]
     public async Task OpeningAPlugin_UsesTheDictionarysSpeakerIndex()

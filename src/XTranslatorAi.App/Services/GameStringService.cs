@@ -22,6 +22,9 @@ public sealed class GameStringService
     private GameStringDictionary? _cached;
     private DateTime _cachedWriteUtc;
     private GameStringDictionary? _bundled;
+    // The built dictionary of this write time could not be read: not read again (each call re-read it and logged a WARN).
+    private DateTime? _unreadableWriteUtc;
+    private string? _unreadableReason;
 
     /// <param name="openBundled">The dictionary the app ships (built from the community Korean patch); null for none.</param>
     public GameStringService(string? globalRootOverride = null, Func<Stream?>? openBundled = null)
@@ -73,17 +76,36 @@ public sealed class GameStringService
             if (File.Exists(DictionaryPath))
             {
                 var written = File.GetLastWriteTimeUtc(DictionaryPath);
-                if (_cached == null || written != _cachedWriteUtc)
+                if (written != _unreadableWriteUtc)
                 {
-                    _cached = await Task.Run(() =>
+                    try
                     {
-                        using var stream = File.OpenRead(DictionaryPath);
-                        return GameStringDictionary.Load(stream);
-                    }, cancellationToken);
-                    _cachedWriteUtc = written;
-                }
+                        if (_cached == null || written != _cachedWriteUtc)
+                        {
+                            _cached = await Task.Run(() =>
+                            {
+                                using var stream = File.OpenRead(DictionaryPath);
+                                return GameStringDictionary.Load(stream);
+                            }, cancellationToken);
+                            _cachedWriteUtc = written;
+                        }
 
-                return (_cached, true);
+                        return (_cached, true);
+                    }
+                    catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException)
+                    {
+                        // A dictionary the player built that cannot be read (damaged, or made by a build before its format)
+                        // left the run with no game text at all: the one the app ships is used, and the window says so.
+                        AppLog.Write($"WARN 직접 만든 게임 번역 사전을 읽지 못해 기본 사전을 씁니다: {ex.Message}");
+                        _cached = null;
+                        // Only a file that is not a dictionary is kept from: one held a moment (an antivirus, a backup) is
+                        // read again next time.
+                        if (ex is InvalidDataException or EndOfStreamException)
+                        {
+                            (_unreadableWriteUtc, _unreadableReason) = (written, ex.Message);
+                        }
+                    }
+                }
             }
 
             _bundled ??= await Task.Run(() =>
@@ -113,6 +135,11 @@ public sealed class GameStringService
         }
 
         var counts = $"레코드 {dictionary.FieldCount:N0}개 · 문장 {dictionary.TextCount:N0}개";
+        if (!built && _unreadableReason is { } reason && File.Exists(DictionaryPath))
+        {
+            return $"직접 만든 게임 번역 사전을 읽지 못해({reason}) 기본 사전(한글패치)을 씁니다: {counts}. 사전을 다시 만드세요";
+        }
+
         return built
             ? $"직접 만든 게임 번역 사전: {counts} ({File.GetLastWriteTime(DictionaryPath):yyyy-MM-dd} 만듦)"
               + (dictionary.HasBaseBlocks ? "" : ". 1.16.17 전에 만든 사전이라 바닐라 책 사본에 한글패치 문단을 끼워 넣지 못합니다. 사전을 다시 만드세요")

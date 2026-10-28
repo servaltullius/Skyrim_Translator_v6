@@ -81,8 +81,8 @@ public partial class MainViewModel
             .Where(task => task != null && !task.IsCompleted)
             .Cast<Task>()
             .ToArray();
-        // The game dictionary cannot be stopped midway (its file is written as it goes): opening another file or closing
-        // waited for it with no word, the window idle.
+        // The game dictionary's building cannot be stopped midway: opening another file or closing waited for it with no
+        // word, the window idle.
         if (IsBuildingGameStrings && tasks.Length > 0)
         {
             StatusMessage = "게임 번역 사전을 만드는 중입니다. 끝나면 이어서 진행합니다...";

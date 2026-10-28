@@ -20,6 +20,28 @@ public sealed class AppLogTests
         Assert.Contains("after rotation", ReadShared(AppLog.PathForUser));
     }
 
+    // The window and an agent process write the same log: the one that found it held lost its line.
+    [Fact]
+    public async Task Write_WaitsOutAnotherProcessHoldingTheLog()
+    {
+        AppLog.Write("before the hold");
+        var marker = $"held-{Guid.NewGuid():N}";
+        // Another test class may be writing this very moment.
+        FileStream? held = null;
+        for (var attempt = 0; held == null; attempt++)
+        {
+            try { held = new FileStream(AppLog.PathForUser, FileMode.Open, FileAccess.ReadWrite, FileShare.None); }
+            catch (IOException) when (attempt < 100) { Thread.Sleep(10); }
+        }
+
+        var writer = Task.Run(() => AppLog.Write(marker));
+        Thread.Sleep(50);
+        held.Dispose();
+
+        await writer;
+        Assert.Contains(marker, ReadShared(AppLog.PathForUser));
+    }
+
     // Other tests may be appending right now.
     private static string ReadShared(string path)
     {

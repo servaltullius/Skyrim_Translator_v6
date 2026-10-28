@@ -20,6 +20,41 @@ public class BundledFranchiseTmSeedServiceTests
     public void BundledSeeds_AreImportedAsEnglishToKorean(string fileName, bool bundled)
         => Assert.Equal(bundled ? ("english", "korean") : null, BundledFranchiseTmSeedService.LanguagesOfSeedFile(@"C:\tm-import\" + fileName));
 
+    // Stopped while it was written (an open the user stopped), the seed was swallowed half written and imported as it was.
+    [Fact]
+    public async Task EnsureBundledSeedAsync_Stopped_LeavesNoSeedAndSaysSo()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "XTranslatorAi.Tests", Guid.NewGuid().ToString("N"));
+        try
+        {
+            var service = new BundledFranchiseTmSeedService(root, _ => "Source\tTarget\nIron Sword\t철검\n");
+            using var stopped = new CancellationTokenSource();
+            stopped.Cancel();
+
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => service.EnsureBundledSeedAsync(BethesdaFranchise.Fallout, stopped.Token));
+
+            var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.Fallout, root);
+            Assert.True(!Directory.Exists(importDir) || Directory.GetFiles(importDir).Length == 0);
+
+            // A seed that cannot be put in place (held by another program) is left as it was, with nothing half
+            // written beside it, and the failure is not thrown at the open.
+            Directory.CreateDirectory(importDir);
+            var seedPath = Path.Combine(importDir, BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.Fallout)!.FileName);
+            await File.WriteAllTextAsync(seedPath, "old");
+            using (new FileStream(seedPath, FileMode.Open, FileAccess.Read, FileShare.None))
+            {
+                await service.EnsureBundledSeedAsync(BethesdaFranchise.Fallout, CancellationToken.None);
+            }
+
+            Assert.Equal(new[] { seedPath }, Directory.GetFiles(importDir));
+            Assert.Equal("old", await File.ReadAllTextAsync(seedPath));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch (IOException) { }
+        }
+    }
+
     [Fact]
     public void LoadBundledFranchiseTmSeed_Fallout_ReturnsEmbeddedSeedText()
     {

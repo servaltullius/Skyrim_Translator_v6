@@ -76,9 +76,16 @@ public sealed class BundledFranchiseTmSeedService
 
             await RewriteSeedAsync(seedPath, stampPath, metadata, cancellationToken);
         }
-        catch
+        catch (OperationCanceledException)
         {
-            // Best-effort only. Bundled seed copy must never block XML loading.
+            // An open the user stopped stops here too: swallowed, the open went on with the seed half written.
+            throw;
+        }
+        catch (Exception ex)
+        {
+            // Best-effort only. Bundled seed copy must never block XML loading; a stamp that cannot be moved or a full
+            // disk is said in the log, not swallowed on every load.
+            AppLog.Write($"WARN 내장 시리즈 TM을 가져오기 폴더에 쓰지 못했습니다: {ex.Message}");
         }
     }
 
@@ -166,7 +173,7 @@ public sealed class BundledFranchiseTmSeedService
         }
 
         Directory.CreateDirectory(importDir);
-        await File.WriteAllTextAsync(Path.Combine(importDir, changesFileName), changes, cancellationToken);
+        await WriteWholeAsync(Path.Combine(importDir, changesFileName), changes, cancellationToken);
         await WriteStampAsync(stampPath, seedPath, metadata, cancellationToken);
         return true;
     }
@@ -194,8 +201,28 @@ public sealed class BundledFranchiseTmSeedService
         }
 
         Directory.CreateDirectory(Path.GetDirectoryName(seedPath)!);
-        await File.WriteAllTextAsync(seedPath, seedText, cancellationToken);
+        await WriteWholeAsync(seedPath, seedText, cancellationToken);
         await WriteStampAsync(stampPath, seedPath, metadata, cancellationToken);
+    }
+
+    /// <summary>
+    /// Written beside under another name and moved into place: written in place, a seed cut short (an open stopped, a
+    /// full disk; the Starfield seed is 18 MB) was imported as it was and moved to imported/. The other name does not end
+    /// in .tsv, so the import does not take it.
+    /// </summary>
+    private static async Task WriteWholeAsync(string path, string text, CancellationToken cancellationToken)
+    {
+        var partial = Path.ChangeExtension(path, ".partial");
+        try
+        {
+            await File.WriteAllTextAsync(partial, text, cancellationToken);
+            File.Move(partial, path, overwrite: true);
+        }
+        catch
+        {
+            try { File.Delete(partial); } catch (IOException) { } catch (UnauthorizedAccessException) { }
+            throw;
+        }
     }
 
     private static async Task<bool> TryValidateOnDiskSeedAsync(string seedPath, BundledSeedMetadata metadata, CancellationToken cancellationToken)
@@ -255,7 +282,7 @@ public sealed class BundledFranchiseTmSeedService
     }
 
     private static Task WriteStampAsync(string stampPath, string seedPath, BundledSeedMetadata metadata, CancellationToken cancellationToken)
-        => File.WriteAllTextAsync(stampPath, BuildBundledSeedStamp(metadata, File.GetLastWriteTimeUtc(seedPath).Ticks), cancellationToken);
+        => WriteWholeAsync(stampPath, BuildBundledSeedStamp(metadata, File.GetLastWriteTimeUtc(seedPath).Ticks), cancellationToken);
 
     private static string BuildBundledSeedStamp(BundledSeedMetadata metadata, long lastWriteUtcTicks)
         => string.Join("|", metadata.Version, metadata.ExpectedByteLength, metadata.ExpectedSha256, lastWriteUtcTicks);
