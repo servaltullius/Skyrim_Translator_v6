@@ -138,18 +138,20 @@ public static class LqaScanner
         var entries = context.Entries;
         var targetLang = context.TargetLang;
         var forceTokenGlossary = context.ForceTokenGlossary;
+        // A regex term only takes its text from the missing-term check; the other rules read terms as words.
+        var wordTerms = forceTokenGlossary.Where(e => e.MatchMode != GlossaryMatchMode.Regex).ToList();
         var onProgress = context.OnProgress;
         var tmFallbackNotes = context.TmFallbackNotes;
 
         var isKorean = LanguageHelper.IsKoreanLanguage(targetLang);
-        var particleTerms = LqaHeuristics.BuildParticleCheckTerms(forceTokenGlossary);
-        var glossaryLatinWords = BuildGlossaryLatinWords(forceTokenGlossary);
+        var particleTerms = LqaHeuristics.BuildParticleCheckTerms(wordTerms);
+        var glossaryLatinWords = BuildGlossaryLatinWords(wordTerms);
         var strongDialogueMajority = DialogueToneConsistencyRule.BuildDialogueGroupMajorities(entries);
         var speakerLevels = SpeakerToneConsistencyRule.BuildSpeakerMajorities(entries, context.SpeakerStyles);
         var nameFindings = NameConsistencyRule.Build(entries, isKorean);
-        var loanwordIndex = isKorean ? GlossaryLoanwordRule.Build(forceTokenGlossary) : new Dictionary<string, GlossaryLoanwordRule.Term>();
+        var loanwordIndex = isKorean ? GlossaryLoanwordRule.Build(wordTerms) : new Dictionary<string, GlossaryLoanwordRule.Term>();
         var fieldToneMajority = RecToneRule.BuildFieldMajorities(entries);
-        var glossarySources = OfficialNameRule.BuildGlossarySources(forceTokenGlossary);
+        var glossarySources = OfficialNameRule.BuildGlossarySources(wordTerms);
         var sameSourceVariants = SameSourceVariantRule.Build(entries);
         var prefixedNameVariants = PrefixedNameVariantRule.Build(entries);
 
@@ -187,7 +189,7 @@ public static class LqaScanner
                 context.ReferenceNames,
                 issues
             );
-            TmFallbackRule.Apply(entry, source, dest, tmFallbackNotes, context.ReferenceNames, forceTokenGlossary, issues);
+            TmFallbackRule.Apply(entry, source, dest, tmFallbackNotes, context.ReferenceNames, wordTerms, issues);
             OfficialNameRule.Apply(entry, source, dest, isKorean, context.ReferenceNames, glossarySources, issues);
             SameSourceVariantRule.Apply(entry, sameSourceVariants, issues);
             SpeakerToneConsistencyRule.Apply(entry, speakerLevels, issues);

@@ -125,7 +125,7 @@ internal static class DialogueToneConsistencyRule
         // speaker check marks it against a decided 하오체, and so is a line with a 해요체 sentence of its own.
         if (tone == ToneKind.Unknown || tone == majority
             || majority == ToneKind.Hao && tone == ToneKind.Casual && !SpeakerToneConsistencyRule.IsPlainCasual(entry.DestText)
-            || majority == ToneKind.Hao && tone == ToneKind.Haeyo && SpeakerToneConsistencyRule.IsOnlySharedPolite(entry.DestText))
+            || majority == ToneKind.Hao && tone == ToneKind.Haeyo && !SpeakerToneConsistencyRule.HasOwnPolite(entry.DestText))
         {
             return;
         }
@@ -228,8 +228,9 @@ internal static class DialogueToneConsistencyRule
             return ToneKind.Haeyo;
         }
 
-        // "당신은 누구요?" is a 하오체 speaker's as much as a 해요체 one's: such a line is not counted either way.
-        if (tone == ToneKind.Haeyo && mergePolite && SpeakerToneConsistencyRule.IsSharedWithHao(spoken))
+        // "당신은 누구요?" is a 하오체 speaker's as much as a 해요체 one's: such a line is not counted either way. One with a
+        // 해요체 sentence of its own is ("정말 고마워요. 이건 제 열쇠요." was read by its last word and went unmarked).
+        if (tone == ToneKind.Haeyo && mergePolite && !SpeakerToneConsistencyRule.HasOwnPolite(spoken))
         {
             return ToneKind.Unknown;
         }

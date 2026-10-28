@@ -110,14 +110,12 @@ internal static partial class SpeakerToneConsistencyRule
             : HaoReading.Hao;
     }
 
-    /// <summary>A line whose 존댓말 sign 하오체 shares ("누구요", "어디요", "갑시다"; see IsWeakPolite).</summary>
-    internal static bool IsSharedWithHao(string? text) => IsWeakPolite(text);
-
     /// <summary>
-    /// A line that is 존댓말 only by signs 하오체 shares, as <see cref="Level"/> reads the whole line: "그럼 출발합시다!" and
-    /// "자, 갑시다!" are 하오체's "~ㅂ시다", while "고마워요. 갑시다." has a 해요체 sentence of its own.
+    /// Whether the line is 존댓말 by a sentence of its own, as <see cref="Level"/> reads the whole line: "고마워요. 갑시다." and
+    /// "정말 고마워요. 이건 제 열쇠요." are, while "그럼 출발합시다!", "당신은 누구요?" are 존댓말 only by signs 하오체 shares
+    /// (see IsWeakPolite), and "또 오셨나? 이번엔 어디요?" or "준비는 된 거요?" read as 하게체 or 하오체.
     /// </summary>
-    internal static bool IsOnlySharedPolite(string? text) => Level(text) == (Register.Polite, true);
+    internal static bool HasOwnPolite(string? text) => Level(text) == (Register.Polite, false);
 
     /// <summary>The line without its quotations (someone else's words), or the line itself when it is nothing but those.</summary>
     internal static string SpokenPart(string? text)
@@ -398,9 +396,14 @@ internal static partial class SpeakerToneConsistencyRule
     private static bool IsHao(string cleaned)
     {
         var word = LastWord(cleaned);
-        if (cleaned.EndsWith("시오", StringComparison.Ordinal) || cleaned.EndsWith("구려", StringComparison.Ordinal)
-            || cleaned.EndsWith("외다", StringComparison.Ordinal) || cleaned.EndsWith("소이다", StringComparison.Ordinal)
-            || word == "거요")
+        // ~구려 and ~외다 end nouns and 반말 as well: 고구려, 싸구려 and 구리다's "진짜 구려", and 의외다, 예외다 (a noun with
+        // 다). A 반말 group's "네가 여기 있다니 의외다." was marked 하오체. 하오체's own ~외다 follows many stems
+        // ("장사꾼이외다", "영주님이시외다", "기쁘외다"), so the nouns are left out rather than the stems listed.
+        if (cleaned.EndsWith("시오", StringComparison.Ordinal)
+            || cleaned.EndsWith("구려", StringComparison.Ordinal) && word != "구려"
+               && !word.EndsWith("고구려", StringComparison.Ordinal) && !word.EndsWith("싸구려", StringComparison.Ordinal)
+            || cleaned.EndsWith("외다", StringComparison.Ordinal) && !OeNouns.Any(noun => word.EndsWith(noun + "다", StringComparison.Ordinal))
+            || cleaned.EndsWith("소이다", StringComparison.Ordinal) || word == "거요")
         {
             return true;
         }
@@ -428,12 +431,15 @@ internal static partial class SpeakerToneConsistencyRule
         var before = cleaned[^2];
         return cleaned[^1] switch
         {
-            // ㄵ ㄶ ㅄ ㅆ ㅈ ㅊ ㅌ ㅎ: 앉소, 않소, 없소, 있소, 맞소, 찾소, 같소, 그렇소. Not 장소, 미소, 연소.
-            '소' => FinalConsonant(before) is 5 or 6 or 18 or 20 or 22 or 23 or 25 or 27,
+            // ㄵ ㄶ ㅄ ㅆ ㅈ ㅊ ㅌ ㅎ: 앉소, 않소, 없소, 있소, 맞소, 찾소, 같소, 그렇소. Not 장소, 미소, 연소, nor the noun 젖소.
+            '소' => FinalConsonant(before) is 5 or 6 or 18 or 20 or 22 or 23 or 25 or 27 && !word.EndsWith("젖소", StringComparison.Ordinal),
             '오' => before is '하' or '이' or '되' or '마' or '주',
             _ => false,
         };
     }
+
+    // Nouns in 외 that 다 follows as 하오체's ~외다 does: 의외, 예외, 제외, 열외, 야외, 교외, 해외, 실외, 국외, 과외, 내외.
+    private static readonly string[] OeNouns = { "의외", "예외", "제외", "열외", "야외", "교외", "해외", "실외", "국외", "과외", "내외" };
 
     /// <summary>
     /// 하게체: "~네" (하네, 있네, 다네), "~게" after an open syllable (하게, 주게, 보게; not the nouns 가게, 무게, 지게),

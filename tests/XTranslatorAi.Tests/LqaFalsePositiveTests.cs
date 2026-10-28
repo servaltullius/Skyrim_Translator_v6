@@ -929,6 +929,84 @@ public class LqaFalsePositiveTests
         }
     }
 
+    // Nouns that end like 하오체 or 하소서체: 의외다, 예외다, 고구려, 젖소, and 나이 with 다. In a 반말 group they were marked
+    // 하오체 or 존댓말; 하오체's own ~외다, ~구려 and ~소 still are.
+    [Fact]
+    public async Task DialogueTone_NounsEndingLikeHaoOrHasoseo_AreNotThoseLevels()
+    {
+        static LqaScanEntry Line(long id, string dest)
+            => new(id, (int)id, "FriendTalk" + id, "INFO:NAM1", StringEntryStatus.Done, "x", dest);
+        static List<LqaScanEntry> Casual(string last) => new()
+        {
+            Line(1, "그 정도는 문제없어."), Line(2, "그건 네 몫이야."), Line(3, "무슨 뜻이야?"), Line(4, "그건 내 일이야."),
+            Line(5, "거기 서 있어."), Line(6, last),
+        };
+
+        foreach (var noun in new[] { "네가 여기 있다니 의외다.", "그건 규칙의 예외다.", "여기가 바로 고구려.", "저건 우리 집 젖소.", "너도 이제 결혼할 나이다.",
+                     "그 칼은 완전 싸구려.", "이 계획 진짜 구려.", "그건 도시 중 하나이다.", "그분은 내 어머니이다." })
+        {
+            Assert.DoesNotContain(await LqaScanner.ScanAsync(Casual(noun), "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
+        }
+
+        foreach (var (last, label) in new[] { ("그건 내 일이 아니외다.", "하오체"), ("참 좋구려.", "하오체"), ("그건 이미 알고 있소.", "하오체"),
+                     ("그분이 바로 영주님이시외다.", "하오체"), ("다시 보니 기쁘외다.", "하오체"), ("정말 고마워요. 이건 제 열쇠요.", "존댓말") })
+        {
+            var issue = Assert.Single(await LqaScanner.ScanAsync(Casual(last), "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
+            Assert.Equal(6L, issue.Id);
+            Assert.Contains("이 대사 " + label, issue.Message);
+        }
+
+        Assert.Equal(ToneKind.Hamnida, LqaToneClassifier.Classify("굽어살피겠다 맹세하셨나이다."));
+        Assert.Equal(ToneKind.Hamnida, LqaToneClassifier.Classify("신께 감사하나이다."));
+        Assert.Equal(ToneKind.PlainDa, LqaToneClassifier.Classify("너도 이제 결혼할 나이다."));
+        Assert.Equal(ToneKind.PlainDa, LqaToneClassifier.Classify("고대 무기 중 하나이다."));
+    }
+
+    // In a group mostly 하오체, a line 존댓말 only by a sign 하오체 or 하게체 shares beside its own 하오체 or 하게체 sentence
+    // is that voice's, not 존댓말 ("또 오셨나? 이번엔 어디요?", and "~ㄴ 거요" the speaker check reads as 하오체).
+    [Fact]
+    public async Task DialogueTone_HaoMajority_DoesNotMarkLinesPoliteOnlyByWhatHaoShares()
+    {
+        static LqaScanEntry Line(long id, string dest)
+            => new(id, (int)id, "TeldrynTalk" + id, "INFO:NAM1", StringEntryStatus.Done, "x", dest);
+        foreach (var last in new[] { "거래할 준비는 된 거요?", "또 오셨나? 이번엔 어디요?" })
+        {
+            var lines = new List<LqaScanEntry>
+            {
+                Line(1, "내가 앞장서겠소."), Line(2, "그 정도는 문제없소."), Line(3, "기다려 주시오."), Line(4, "무슨 뜻이오?"),
+                Line(5, "그럼 다녀오겠소."), Line(6, "곧 돌아오겠소."), Line(7, last),
+            };
+
+            Assert.DoesNotContain(await LqaScanner.ScanAsync(lines, "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
+        }
+    }
+
+    // A regex term takes its text first in the translation: with "Dragon ?Priest" → 드래곤 프리스트, "Dragon" → 용 was
+    // reported missing from a right "드래곤 프리스트".
+    [Fact]
+    public async Task GlossaryMissing_DoesNotLookInsideARegexTermsText()
+    {
+        var glossary = ProjectLqaScan.ForceTokenGlossary(new[]
+        {
+            new GlossaryEntry(1, null, "Dragon ?Priest", "드래곤 프리스트", true, GlossaryMatchMode.Regex, GlossaryForceMode.ForceToken, 10, null),
+            new GlossaryEntry(2, null, "Dragon", "용", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 0, null),
+        }, null);
+        var lines = new List<LqaScanEntry>
+        {
+            new(1, 1, "Msg1", "MESG:DESC", StringEntryStatus.Done, "The Dragon Priest wakes.", "드래곤 프리스트가 깨어난다."),
+            new(2, 2, "Msg2", "MESG:DESC", StringEntryStatus.Done, "The Dragon wakes.", "드래곤이 깨어난다."),
+        };
+
+        var missing = (await LqaScanner.ScanAsync(lines, "ko", glossary)).Where(i => i.Code == "glossary_missing").Select(i => i.Id).ToList();
+
+        Assert.Equal(new long[] { 2 }, missing);
+        // A pattern that does not compile is left out, as the translation leaves it out.
+        Assert.DoesNotContain(ProjectLqaScan.ForceTokenGlossary(new[]
+        {
+            new GlossaryEntry(3, null, "[Dragon", "드래곤", true, GlossaryMatchMode.Regex, GlossaryForceMode.ForceToken, 10, null),
+        }, null), e => e.Id == 3);
+    }
+
     // ~거든 before a comma is "if" ("그를 만나거든, …"), not 반말's sentence ending; it was 반말 against a decided 하오체.
     [Fact]
     public void Geodeun_EndingASentence_IsPlainCasual_ButNotBeforeAComma()

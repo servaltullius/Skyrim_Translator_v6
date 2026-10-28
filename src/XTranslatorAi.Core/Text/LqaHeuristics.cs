@@ -383,8 +383,9 @@ public static class LqaHeuristics
 
             if (entry.MatchMode == GlossaryMatchMode.Regex)
             {
-                // Regex match can be powerful but is also easy to over-match.
-                // Skip for LQA heuristics to keep false positives low.
+                // Not looked for (a pattern is easy to over-match), but the text it takes is its own, as in the translation:
+                // "Dragon" inside "Dragon Priest" taken by "Dragon ?Priest" is not missing.
+                src = MaskRegexMatches(src, sourceTerm);
                 continue;
             }
 
@@ -496,6 +497,38 @@ public static class LqaHeuristics
         }
 
         return false;
+    }
+
+    // The regex terms, made once (GlossaryApplier's options and time limit). A pattern that ran out of time is not run
+    // again: on every row of a big project it cost 250 ms each, and the translation leaves its text as it is too.
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, Regex?> RegexTerms = new(StringComparer.Ordinal);
+
+    private static string MaskRegexMatches(string text, string pattern)
+    {
+        var regex = RegexTerms.GetOrAdd(pattern, p => GlossaryApplier.IsValidRegexPattern(p)
+            ? new Regex(p, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250))
+            : null);
+        if (regex == null)
+        {
+            return text;
+        }
+
+        try
+        {
+            char[]? masked = null;
+            for (var match = regex.Match(text); match.Success; match = match.NextMatch())
+            {
+                masked ??= text.ToCharArray();
+                Array.Fill(masked, '\u0001', match.Index, match.Length);
+            }
+
+            return masked == null ? text : new string(masked);
+        }
+        catch (RegexMatchTimeoutException)
+        {
+            RegexTerms[pattern] = null;
+            return text;
+        }
     }
 
     private static List<(int Start, int Length)> FindSourceTermSpans(string sourceText, string sourceTerm, GlossaryEntry entry)

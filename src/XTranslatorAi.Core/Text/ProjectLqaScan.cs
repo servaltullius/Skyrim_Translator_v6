@@ -39,10 +39,15 @@ public static class ProjectLqaScan
             ? StringEntryStatus.Done
             : status;
 
-    /// <summary>The forced, non-regex terms the check looks for, the project's over the global ones, longest first.</summary>
+    /// <summary>
+    /// The forced terms the check looks for, the project's over the global ones, in the order the translation applies
+    /// them. A regex term is not looked for (a pattern over-matches easily), but it takes its text first as in the
+    /// translation: with "Dragon ?Priest" → 드래곤 프리스트, "Dragon" → 용 was reported missing from "드래곤 프리스트".
+    /// </summary>
     public static IReadOnlyList<GlossaryEntry> ForceTokenGlossary(IReadOnlyList<GlossaryEntry> project, IReadOnlyList<GlossaryEntry>? global)
         => GlossaryMerger.Merge(project, global is { Count: > 0 } ? global : null)
-            .Where(e => e.Enabled && e.ForceMode == GlossaryForceMode.ForceToken && e.MatchMode != GlossaryMatchMode.Regex)
+            .Where(e => e.Enabled && e.ForceMode == GlossaryForceMode.ForceToken
+                        && (e.MatchMode != GlossaryMatchMode.Regex || GlossaryApplier.IsValidRegexPattern(e.SourceTerm)))
             .Where(e => !string.IsNullOrWhiteSpace(e.SourceTerm) && !string.IsNullOrWhiteSpace(e.TargetTerm))
             .OrderByDescending(e => e.Priority)
             .ThenByDescending(e => e.SourceTerm.Length)

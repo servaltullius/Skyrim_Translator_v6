@@ -71,7 +71,9 @@ internal static class LqaToneClassifier
 
         // The old 하소서체 of scripture ("굽어살피겠다 맹세하셨나이다") is 존댓말, not 해라체. A 소서 is left unread: any
         // speaker cries out "스텐다르이시여, 자비를 베푸소서", and feris's 반말 speaker was marked as 합니다체 for it.
-        if (EndsWithAny(cleaned, "나이다", "니이다"))
+        // A noun in 나 or 니 with 이다 is 해라체: "너도 이제 결혼할 나이다.", "도시 중 하나이다.", "내 누나이다.", "그분은
+        // 내 어머니이다." (a 해라체 item description was read as 합니다체 mixed in).
+        if (EndsWithAny(cleaned, "나이다", "니이다") && !IsNounWithIda(cleaned[(lastSpace + 1)..]))
         {
             return ToneKind.Hamnida;
         }
@@ -95,6 +97,10 @@ internal static class LqaToneClassifier
 
         return ToneKind.Unknown;
     }
+
+    private static bool IsNounWithIda(string word)
+        => word is "나이다" or "하나이다" or "누나이다" or "언니이다" or "니이다"
+           || word.EndsWith("머니이다", StringComparison.Ordinal);
 
     private static readonly string[] PlainImperativeEndings = { "아라", "어라", "여라", "거라", "너라", "해라", "하라" };
 
