@@ -83,25 +83,38 @@ internal static partial class SpeakerToneConsistencyRule
     /// DialogueToneConsistencyRule). A 하오체 speaker closes some sentences with ~지 or ~군 ("…통치하지 않소. 이제는
     /// … 들어갔지."), so one 하오체 sentence makes the line 하오체. A lone 거요 counts after ~ㄹ or ~는 only ("할 거요",
     /// "하는 거요"): "대화거리 같은 거요" is 해요체.
-    /// "~는 거요" and "~ㄴ 게요" are 해요체 as well ("절 곁에 두는 거요. … 찾아야 해요."): when they are the only 하오체 sign
-    /// and another sentence is plainly 존댓말, the line is 존댓말, as <see cref="Level"/> reads it (eight 해요체 lines of the
+    /// "~ㄹ 거요", "~는 거요" and "~ㄴ 게요" are 해요체 as well ("절 곁에 두는 거요. … 찾아야 해요."): when they are the only
+    /// 하오체 sign and another sentence is plainly 존댓말, the line is not 하오체 (<see cref="ReadHao"/>; eight 해요체 lines of the
     /// user's projects were read as 하오체).
     /// </summary>
-    internal static bool HasHaoSentence(string? text)
+    internal static bool HasHaoSentence(string? text) => ReadHao(text) == HaoReading.Hao;
+
+    internal enum HaoReading { None, Hao, PoliteBeside }
+
+    /// <summary>
+    /// <see cref="HasHaoSentence"/>, telling apart a line whose only 하오체 sign is "~ㄹ 거요", "~는 거요" or "~ㄴ 게요" beside
+    /// a plainly polite sentence (<see cref="HaoReading.PoliteBeside"/>): that line is 해요체, whatever the order of its
+    /// sentences ("고마워요. 그건 내가 할 거요." read as nothing, its last word being 거요). Quotations are not the
+    /// speaker's, and a sentence is polite as <see cref="Level"/> reads it (~죠 included).
+    /// </summary>
+    internal static HaoReading ReadHao(string? text)
     {
-        var sentences = (text ?? "").Split(new[] { '.', '!', '?', '…', ',' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(Clean).Where(sentence => sentence.Length > 0).ToList();
-        var hao = sentences.Where(sentence => !sentence.EndsWith("십시오", StringComparison.Ordinal) && IsHao(sentence)
-                                              && !(LastWord(sentence) == "거요" && !AfterModifierOfHao(sentence))).ToList();
+        var spoken = Quoted.Replace(text ?? "", " ");
+        if (!spoken.Any(char.IsLetter)) spoken = text ?? "";
+        var parts = spoken.Split(new[] { '.', '!', '?', '…', ',' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(part => Clean(part).Length > 0).ToList();
+        var hao = parts.Where(part => Clean(part) is var sentence && !sentence.EndsWith("십시오", StringComparison.Ordinal) && IsHao(sentence)
+                                      && !(LastWord(sentence) == "거요" && !AfterModifierOfHao(sentence))).ToList();
         if (hao.Count == 0)
         {
-            return false;
+            return HaoReading.None;
         }
 
-        static bool SharedWithHaeyo(string sentence) => LastWord(sentence) is var word && (word.EndsWith("거요", StringComparison.Ordinal) || word == "게요");
-        return !(hao.All(SharedWithHaeyo)
-                 && sentences.Any(sentence => !hao.Contains(sentence) && !IsWeakPolite(sentence)
-                                              && LqaToneClassifier.Classify(sentence) is ToneKind.Haeyo or ToneKind.Hamnida));
+        static bool SharedWithHaeyo(string part) => LastWord(Clean(part)) is var word && (word.EndsWith("거요", StringComparison.Ordinal) || word == "게요");
+        return hao.All(SharedWithHaeyo)
+               && parts.Any(part => !hao.Contains(part) && SentenceLevel(part, keepShort: false) == Register.Polite && !IsWeakPolite(Clean(part)))
+            ? HaoReading.PoliteBeside
+            : HaoReading.Hao;
     }
 
     /// <summary>A line whose 존댓말 sign 하오체 shares ("누구요", "어디요", "갑시다"; see IsWeakPolite).</summary>
@@ -476,7 +489,9 @@ internal static partial class SpeakerToneConsistencyRule
         var pieces = parts.Where(part => !cries.Contains(part)).Select(part => (Part: Clean(part), Register: SentenceLevel(part, keepShort: false))).ToList();
         var hao = pieces.Any(piece => piece.Register == Register.Hao);
         var hage = HagePronoun.IsMatch(spoken) || pieces.Any(piece => piece.Register == Register.Hage && IsAddressedHage(piece.Part));
-        var plain = PlainPronoun.IsMatch(spoken) || pieces.Any(piece => piece.Register == Register.Casual && PlainEnding.IsMatch(piece.Part));
+        // ~거든 is read by no ending list (a book quoting speech ends in it too), so it is taken here by itself.
+        var plain = PlainPronoun.IsMatch(spoken) || pieces.Any(piece => (piece.Register == Register.Casual || piece.Part.EndsWith("거든", StringComparison.Ordinal))
+                                                                         && PlainEnding.IsMatch(piece.Part));
         // 합쇼체 against 해요체: Vaegra, decided 합쇼체 to Alara, said "…사람일 뿐이에요. …못 써요." A 해요체 piece that is
         // also a 하오체 noun with 요 ("열쇠요") does not count, nor ~지요 and ~군요, which formal speech uses too ("아시겠지요",
         // "모르겠군요" among Velteth's 합쇼체).

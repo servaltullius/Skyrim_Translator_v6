@@ -556,11 +556,12 @@ public class LqaSpeakerToneTests
             Line(1, "그를 잘 지켜봐."), Line(2, "서둘러, 시간이 없어."),
             Line(3, "정말 고맙습니다.", speaker: "00013269>01000801?"),
         };
-        var styles = new[] { new SpeakerStyle("00013269", SpeakerStyles.Anyone, "반말") };
+        var styles = new[] { new SpeakerStyle("00013269", SpeakerStyles.Anyone, "하오체") };
 
         var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>(), speakerStyles: styles);
 
+        // Named by the decided level, which decides the majority (the counted lines are not the pair's).
         var issue = Assert.Single(issues, i => i.Code == "speaker_tone_inconsistent" && i.Id == 3);
-        Assert.Contains("대부분 반말", issue.Message);
+        Assert.Contains("정한 말투 하오체", issue.Message);
     }
 }

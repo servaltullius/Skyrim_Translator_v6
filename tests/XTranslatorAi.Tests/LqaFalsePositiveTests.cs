@@ -880,32 +880,48 @@ public class LqaFalsePositiveTests
             .Where(i => i.Code == "tone_inconsistent").Select(i => i.Id).ToList();
 
         Assert.Equal(new long[] { 9 }, marked);
+
+        // Read as 해요체 whatever the order of the sentences, so marked among 하오체 either way.
+        foreach (var mixed in new[] { "그건 내가 할 거요. 고마워요.", "고마워요. 그건 내가 할 거요." })
+        {
+            var hao = new List<LqaScanEntry>
+            {
+                Choice(1, "내가 앞장서겠소."), Choice(2, "그 정도는 문제없소."), Choice(3, "기다려 주시오."), Choice(4, "무슨 뜻이오?"),
+                Choice(5, "그럼 다녀오겠소."), Choice(6, "곧 돌아오겠소."), Choice(7, mixed),
+            };
+            Assert.Contains(await LqaScanner.ScanAsync(hao, "ko", new List<GlossaryEntry>()), i => i.Id == 7 && i.Code == "tone_inconsistent");
+        }
     }
 
-    // A 하오체 speaker closes sentences with ~지, ~군 and ~다 as well, and says "~ㅂ시다": in a group mostly 하오체 those
-    // were marked 반말 or 존댓말. A 반말 or 존댓말 line among them is not 하오체's, and a 하오체 line among 반말 is still marked.
+    // A 하오체 speaker closes sentences with ~다 and ~네 as well: in a group mostly 하오체 those were marked 반말. A line
+    // plainly 반말 (~야, ~거든) is still marked there, and a 하오체 line or a "~ㅂ시다" among 반말 too.
     [Fact]
-    public async Task DialogueTone_HaoMajority_DoesNotMarkItsOwnJiDaOrBsida()
+    public async Task DialogueTone_HaoMajority_DoesNotMarkItsOwnDaOrNe()
     {
         static LqaScanEntry Line(long id, string dest)
             => new(id, (int)id, "TeldrynTalk" + id, "INFO:NAM1", StringEntryStatus.Done, "x", dest);
-        foreach (var own in new[] { "그건 이미 끝난 일이다.", "오늘은 바람이 차갑네.", "그럼 출발합시다!" })
+        static List<LqaScanEntry> Hao(string last) => new()
         {
-            var lines = new List<LqaScanEntry>
-            {
-                Line(1, "내가 앞장서겠소."), Line(2, "그 정도는 문제없소."), Line(3, "기다려 주시오."), Line(4, "무슨 뜻이오?"),
-                Line(5, "그럼 다녀오겠소."), Line(6, "곧 돌아오겠소."), Line(7, own),
-            };
+            Line(1, "내가 앞장서겠소."), Line(2, "그 정도는 문제없소."), Line(3, "기다려 주시오."), Line(4, "무슨 뜻이오?"),
+            Line(5, "그럼 다녀오겠소."), Line(6, "곧 돌아오겠소."), Line(7, last),
+        };
+        static List<LqaScanEntry> Casual(string last) => new()
+        {
+            Line(1, "그 정도는 문제없어."), Line(2, "그건 네 몫이야."), Line(3, "무슨 뜻이야?"), Line(4, "그건 내 일이야."),
+            Line(5, "거기 서 있어."), Line(6, last),
+        };
 
-            Assert.DoesNotContain(await LqaScanner.ScanAsync(lines, "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
+        foreach (var own in new[] { "그건 이미 끝난 일이다.", "오늘은 바람이 차갑네." })
+        {
+            Assert.DoesNotContain(await LqaScanner.ScanAsync(Hao(own), "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
         }
 
-        var casual = new List<LqaScanEntry>
+        foreach (var (lines, label) in new[] { (Hao("그건 네 몫이야."), "반말"), (Hao("난 이미 다 알고 있거든."), "반말"),
+                     (Casual("그건 내가 하겠소."), "하오체"), (Casual("자, 갑시다!"), "존댓말") })
         {
-            Line(1, "난 괜찮아."), Line(2, "그 정도는 문제없어."), Line(3, "그건 네 몫이야."), Line(4, "무슨 뜻이야?"),
-            Line(5, "조심해서 가."), Line(6, "그건 내가 하겠소."),
-        };
-        var issue = Assert.Single(await LqaScanner.ScanAsync(casual, "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
-        Assert.Equal(6L, issue.Id);
+            var issue = Assert.Single(await LqaScanner.ScanAsync(lines, "ko", new List<GlossaryEntry>()), i => i.Code == "tone_inconsistent");
+            Assert.Equal(lines[^1].Id, issue.Id);
+            Assert.Contains("이 대사 " + label, issue.Message);
+        }
     }
 }

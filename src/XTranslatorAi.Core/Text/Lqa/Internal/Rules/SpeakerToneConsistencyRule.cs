@@ -248,14 +248,13 @@ internal static partial class SpeakerToneConsistencyRule
             return;
         }
 
-        // A level decided for the pair (SpeakerStyles) gives a majority with no line of the pair counted, so the pair has
-        // no name among the counted groups: its decided level names it. Indexing the names stopped the whole check.
-        var most = toListener == ToneKind.Hamnida ? "존댓말"
-            : levels.CasualNames.TryGetValue(listenerKey, out var name) ? name
-            : levels.Declared is { } declared && SpeakerStyles.For(declared, listenerKey) is { } decided ? decided
-            : "반말";
+        // A level decided for the pair (SpeakerStyles) comes first, as in Dominant, and gives a majority with no line of the
+        // pair counted, so the pair may have no name among the counted groups: indexing the names stopped the whole check.
+        var most = levels.Declared is { } declared && SpeakerStyles.For(declared, listenerKey) is { } decided ? "정한 말투 " + decided
+            : toListener == ToneKind.Hamnida ? "대부분 존댓말"
+            : "대부분 " + (levels.CasualNames.TryGetValue(listenerKey, out var name) ? name : "반말");
         issues.Add(Issue(entry, "Warn", Code,
-            $"장면에서 상대를 짐작한 대사인데, 그 상대에게 한 대사와도 플레이어에게 한 대사와도 말투가 다릅니다: 대부분 {most}, 이 대사 {Display(register)}"));
+            $"장면에서 상대를 짐작한 대사인데, 그 상대에게 한 대사와도 플레이어에게 한 대사와도 말투가 다릅니다: {most}, 이 대사 {Display(register)}"));
 
         // The side most of a group is on (a group all on one side has no majority entry, the guessed line not being in it),
         // or the decided level's.
