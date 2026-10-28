@@ -157,7 +157,8 @@ public sealed class TranslationMemoryUpdateTests
 
         var rows = await fixture.RowsAsync();
         Assert.Equal("User edit", rows[fixture.Ids[1]].DestText);
-        Assert.Equal("User edit", rows[fixture.Ids[2]].DestText);
+        // The hit keeps its own row's edge whitespace, as a model translation does ("Gold: " → "골드: ").
+        Assert.Equal(" User edit ", rows[fixture.Ids[2]].DestText);
         Assert.Equal(0, fixture.Client.Calls);
     }
 

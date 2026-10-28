@@ -43,4 +43,20 @@ public sealed class TranslationServiceTextOutputTests
         Assert.Equal(StringEntryStatus.Done, row.Status);
         Assert.Equal(expected, row.DestText);
     }
+
+    // Most short rows go through the batch path, which saved "Gold: " as "골드:" (only the one-row path restored it).
+    [Fact]
+    public async Task Batch_KeepsTheSourceEdgeWhitespace()
+    {
+        await using var fixture = await TranslationRunFixture.CreateAsync(("Gold: ", "MESG:DESC"), ("  Silver", "MESG:DESC"));
+        var ids = fixture.Ids;
+        fixture.Client.ResponseOverride = (_, _) =>
+            "{\"translations\":[{\"id\":" + ids[0] + ",\"text\":\"골드:\"},{\"id\":" + ids[1] + ",\"text\":\"은\"}]}";
+
+        await fixture.Service.TranslateIdsAsync(fixture.Request with { TargetLang = "korean", BatchSize = 2 });
+
+        var rows = await fixture.RowsAsync();
+        Assert.Equal(("골드: ", StringEntryStatus.Done), (rows[ids[0]].DestText, rows[ids[0]].Status));
+        Assert.Equal("  은", rows[ids[1]].DestText);
+    }
 }

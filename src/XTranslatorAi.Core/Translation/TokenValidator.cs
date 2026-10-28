@@ -371,23 +371,27 @@ internal static class TokenValidator
 
         ValidateLinesAligned(inputText, outputText, context);
 
-        SplitByTokens(inputText, out var inputTexts, out _);
-        SplitByTokens(outputText, out var outputTexts, out _);
+        // Between layout tokens only: a name or a value (__XT_TERM_, __XT_PH_VAR_ …) follows Korean word order, and cut
+        // at those a long sentence whose name moved to the front had an empty Korean "segment" and was refused as an
+        // omission, again on every retry (a 5,093-letter book ended at the call limit). The tokens' own letters are not
+        // the text's.
+        var inputTexts = LayoutTokenRegex.Split(inputText);
+        var outputTexts = LayoutTokenRegex.Split(outputText);
 
-        if (inputTexts.Count != outputTexts.Count)
+        if (inputTexts.Length != outputTexts.Length)
         {
             return;
         }
 
-        for (var i = 0; i < inputTexts.Count; i++)
+        for (var i = 0; i < inputTexts.Length; i++)
         {
-            var inLen = CountLettersOrDigits(inputTexts[i]);
+            var inLen = CountLettersOrDigits(TranslationConstants.XtTokenRegex.Replace(inputTexts[i], " "));
             if (inLen < 240)
             {
                 continue;
             }
 
-            var outLen = CountLettersOrDigits(outputTexts[i]);
+            var outLen = CountLettersOrDigits(TranslationConstants.XtTokenRegex.Replace(outputTexts[i], " "));
 
             var minRatio = inLen >= 800 ? 0.20 : 0.16;
             var minAbs = inLen >= 800 ? 120 : 60;
@@ -456,6 +460,37 @@ internal static class TokenValidator
             }
         }
         return false;
+    }
+
+    /// <summary>
+    /// After <see cref="TryRepairTokens"/>: a model that left out a line together with its line break had the break put
+    /// back by the repair, and the empty slot passed as two title lines joined ("Costs 50 magicka and staggers the
+    /// caster." was gone from a spell's description, saved as Done). A slot that is a sentence in the source (it ends
+    /// in . ! ? or is 20 letters long) must not be empty after a repair; a short title fragment ("of Morrowind") may.
+    /// </summary>
+    internal static void ValidateRepairKeptLines(string inputText, string repairedText, string context)
+    {
+        var inputSlots = LayoutTokenRegex.Split(inputText);
+        var outputSlots = LayoutTokenRegex.Split(repairedText);
+        if (inputSlots.Length != outputSlots.Length)
+        {
+            return;
+        }
+
+        for (var i = 0; i < inputSlots.Length; i++)
+        {
+            if (!HasContent(outputSlots[i]) && IsSentence(inputSlots[i]))
+            {
+                throw new InvalidOperationException($"Translation dropped a line for {context} (slot {i}).");
+            }
+        }
+
+        static bool IsSentence(string slot)
+        {
+            var text = RawAngleTagRegex.Replace(TranslationConstants.XtTokenRegex.Replace(slot, " "), " ").Trim();
+            var letters = CountLettersOrDigits(text);
+            return letters >= 20 || letters >= 4 && text.Length > 0 && text[^1] is '.' or '!' or '?' or '。';
+        }
     }
 
     // ── Repair ──

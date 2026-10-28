@@ -74,4 +74,41 @@ public class TruncationValidationTests
 
         TokenValidator.ValidateNotTruncatedOrOmitted(input, output, "id=1");
     }
+
+    // The model left out the last line with its line break; the repair put the break back and the empty slot passed as
+    // joined title lines, so the description was saved without "Costs 50 magicka and staggers the caster."
+    [Fact]
+    public void RepairThatLeavesASentenceSlotEmpty_IsRefused()
+    {
+        const string input = "Fire Storm__XT_PH_0000__A blast of fire hits everyone nearby.__XT_PH_0001__Costs 50 magicka and staggers the caster.";
+        const string output = "화염 폭풍__XT_PH_0000__주변의 모두에게 피해를 주는 화염 폭발.";
+
+        var ex = Assert.Throws<InvalidOperationException>(() => TokenSanitizer.EnsureTokensPreservedOrRepair(input, output, "id=1"));
+        Assert.Contains("dropped a line", ex.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RepairThatJoinsATitleFragment_IsAllowed()
+    {
+        // The model dropped the break of "A Short History / of Morrowind"; a title fragment may still be joined.
+        const string input = "A Short History__XT_PH_0000__of Morrowind__XT_PH_0001__by an Imperial scholar";
+
+        var repaired = TokenSanitizer.EnsureTokensPreservedOrRepair(input, "모로윈드 약사__XT_PH_0001__제국 학자 지음", "id=1");
+
+        Assert.Contains("__XT_PH_0000__", repaired, StringComparison.Ordinal);
+        Assert.Contains("모로윈드 약사", repaired, StringComparison.Ordinal);
+    }
+
+    // A name or value token follows Korean word order: cut at it, the long English before the name had an empty Korean
+    // segment and a complete translation was refused as an omission, on every retry.
+    [Fact]
+    public void LongSentence_WithItsNameMovedToTheFront_IsNotAnOmission()
+    {
+        var input = Words(300) + " __XT_TERM_0000__.";
+        var output = "__XT_TERM_0000__, " + Hangul(150) + ".";
+
+        TokenValidator.ValidateNotTruncatedOrOmitted(input, output, "id=1");
+        // A long line that really lost most of its text is still refused.
+        Assert.Throws<InvalidOperationException>(() => TokenValidator.ValidateNotTruncatedOrOmitted(input, "__XT_TERM_0000__, 짧음.", "id=1"));
+    }
 }
