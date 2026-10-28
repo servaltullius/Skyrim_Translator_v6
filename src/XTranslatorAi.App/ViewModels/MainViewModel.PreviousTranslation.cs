@@ -77,6 +77,7 @@ public partial class MainViewModel
             // An older Korean release saved in CP949 is read as CP949 (it was refused, and had to be saved again as UTF-8).
             var previous = await Task.Run(() => PluginReader.ReadTranslatedReleaseAsync(path, options, cancellationToken), cancellationToken);
             var asCp949 = previous.Info.Diagnostics.Any(item => item.Code == PluginReader.Cp949ReadDiagnostic);
+            var ambiguous = previous.Info.Diagnostics.FirstOrDefault(item => item.Code == PluginReader.Cp949AmbiguousDiagnostic)?.Message;
             // The master lists let a release that added or dropped a master still pair its FormIDs.
             var result = PreviousTranslationMatcher.Match(document.Fields, document.Info.Masters,
                 previous.Fields, previous.Info.Masters, LanguageHelper.IsKoreanLanguage(TargetLang));
@@ -96,6 +97,7 @@ public partial class MainViewModel
             await RefreshPreviousTranslationsAsync(cancellationToken);
             StatusMessage = $"이전 번역 {result.TextByFieldKey.Count}행을 연결했습니다({Path.GetFileName(path)}"
                 + (asCp949 ? ", 옛 한국어판이라 CP949로 읽음" : "") + "). "
+                + (ambiguous != null ? ambiguous + " " : "")
                 + $"제외: 이전 판에 없음 {result.NotInPreviousRelease}, 레코드 구성이 바뀜 {result.ChangedRecord}, "
                 + $"원문 그대로 {result.SameAsSource}, 번역 안 됨 {result.NotTranslated}. "
                 + "다음 번역부터 참고합니다. 이미 번역된 행에 반영하려면 '다시 번역'을 쓰세요. "

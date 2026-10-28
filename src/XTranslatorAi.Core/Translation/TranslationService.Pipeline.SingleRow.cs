@@ -36,6 +36,13 @@ public sealed partial class TranslationService
         }
         catch (Exception ex)
         {
+            // As in ProcessBatchAsync: with the run stopped for its key, the row goes back to Pending.
+            if (Ctx.StoppedForKey)
+            {
+                await RevertBatchToPendingAsync(ctx.OnRowUpdated, new[] { row }, ctx.CancellationToken);
+                return;
+            }
+
             // A one-row batch ends here, not in ProcessBatchAsync, so it counts toward the rate-limit streak here.
             ThrowIfRateLimitStreakReached(ex, ctx.EnableApiKeyFailover);
             await HandleRowErrorAsync(row.Id, ex, ctx.OnRowUpdated, awaitNotifications: true, ctx.CancellationToken);

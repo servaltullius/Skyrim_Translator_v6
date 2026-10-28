@@ -285,8 +285,9 @@ public sealed partial class TranslationService
         {
             var prompt = TranslationPrompt.BuildUserPrompt(request.SourceLang, request.TargetLang, translationItems,
                 Array.Empty<(string Source, string Target)>());
+            // Asked once: a risky subterm among the seed had them all asked for several candidates.
             results = await TranslateBatchOnceAsync(CreateBatchTranslateContext(ctx), batch, prompt,
-                await GetPromptCacheNameAsync(promptCache, request.CancellationToken));
+                await GetPromptCacheNameAsync(promptCache, request.CancellationToken), candidateCount: 1);
         }
         // A timeout (HttpClient.Timeout) is a TaskCanceledException too; only the user's stop ends the run here.
         catch (Exception ex) when ((ex is not OperationCanceledException || !request.CancellationToken.IsCancellationRequested)

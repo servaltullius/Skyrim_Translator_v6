@@ -120,7 +120,10 @@ public sealed partial class TranslationService
                     break;
                 }
 
-                await DelayBeforeTextRetryAsync(ex, attempt, currentRequest.CancellationToken);
+                if (await DelayBeforeTextRetryAsync(ex, attempt, currentRequest.CancellationToken))
+                {
+                    break;
+                }
             }
         }
 
@@ -187,7 +190,10 @@ public sealed partial class TranslationService
                     break;
                 }
 
-                await DelayBeforeTextRetryAsync(ex, attempt, currentRequest.CancellationToken);
+                if (await DelayBeforeTextRetryAsync(ex, attempt, currentRequest.CancellationToken))
+                {
+                    break;
+                }
             }
         }
 
@@ -225,8 +231,14 @@ public sealed partial class TranslationService
         return results;
     }
 
-    private static bool ShouldStopRetryingTextRequest(TextRequestContext request, Exception ex, int attempt)
+    private bool ShouldStopRetryingTextRequest(TextRequestContext request, Exception ex, int attempt)
     {
+        // Another worker stopped the run for its key: waiting out this request's retries only delays the switch.
+        if (Ctx.StoppedForKey)
+        {
+            return true;
+        }
+
         // For long chunks, timeouts are usually size-related; prefer splitting over retrying the same request.
         if (request.Lane == RequestLane.VeryLong && ex is TaskCanceledException && !request.CancellationToken.IsCancellationRequested)
         {
@@ -243,7 +255,8 @@ public sealed partial class TranslationService
         return !ShouldRetry(ex) || attempt >= request.MaxRetries;
     }
 
-    private async Task DelayBeforeTextRetryAsync(Exception ex, int attempt, CancellationToken cancellationToken)
+    /// <returns>Whether the run stopped for its key meanwhile, and the request is not to be sent again.</returns>
+    private async Task<bool> DelayBeforeTextRetryAsync(Exception ex, int attempt, CancellationToken cancellationToken)
     {
         var delay = RetryDelay(ex, attempt);
         if (IsRateLimit(ex))
@@ -251,7 +264,7 @@ public sealed partial class TranslationService
             Ctx.AdaptiveConcurrency.RegisterRateLimit();
             ExtendGlobalThrottle(delay);
         }
-        await Task.Delay(delay, cancellationToken);
+        return await WaitUnlessStoppedForKeyAsync(delay, cancellationToken);
     }
 
     private GeminiGenerateContentRequest BuildTextOnlyGenerateContentRequest(

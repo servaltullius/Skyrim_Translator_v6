@@ -35,6 +35,10 @@ internal sealed class TranslationRunContext : IDisposable
     public int ConsecutiveRateLimitFailures;
     public volatile bool RateLimitAborted;
 
+    // A worker stopped the run for a key error or a key switch (failover): the other workers took new batches and waited
+    // out their 429 retries (up to minutes) with the same key, delaying the switch. They now take none and stop retrying.
+    public volatile bool StoppedForKey;
+
     // Data built during run
     public Dictionary<long, TranslationService.RowContext>? RowContextById { get; set; }
     public IReadOnlyDictionary<long, IReadOnlyList<(long Id, string Source, MaskedText Mask)>>? DuplicateRowsByCanonicalId { get; set; }

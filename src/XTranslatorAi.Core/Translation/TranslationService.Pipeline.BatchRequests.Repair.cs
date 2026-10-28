@@ -302,12 +302,15 @@ public sealed partial class TranslationService
                 }
 
                 last = ex;
-                if (!ShouldRetry(ex) || attempt >= maxRetries)
+                if (!ShouldRetry(ex) || attempt >= maxRetries || Ctx.StoppedForKey)
                 {
                     break;
                 }
 
-                await DelayBeforeRetryAsync(ex, attempt, cancellationToken);
+                if (await DelayBeforeRetryAsync(ex, attempt, cancellationToken))
+                {
+                    break;
+                }
             }
         }
 
@@ -359,7 +362,8 @@ public sealed partial class TranslationService
         return TranslationResultParser.ParseTranslations(text);
     }
 
-    private async Task DelayBeforeRetryAsync(Exception ex, int attempt, CancellationToken cancellationToken)
+    /// <returns>Whether the run stopped for its key meanwhile, and the request is not to be sent again.</returns>
+    private async Task<bool> DelayBeforeRetryAsync(Exception ex, int attempt, CancellationToken cancellationToken)
     {
         var delay = RetryDelay(ex, attempt);
         if (IsRateLimit(ex))
@@ -367,6 +371,6 @@ public sealed partial class TranslationService
             Ctx.AdaptiveConcurrency.RegisterRateLimit();
             ExtendGlobalThrottle(delay);
         }
-        await Task.Delay(delay, cancellationToken);
+        return await WaitUnlessStoppedForKeyAsync(delay, cancellationToken);
     }
 }

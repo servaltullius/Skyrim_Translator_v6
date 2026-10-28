@@ -66,6 +66,9 @@ public sealed record AgentKoreanLink(PreviousTranslationMatcher.Result Match, in
 {
     /// <summary>The release was an older one saved in CP949 and was read as CP949 (PluginReader.ReadTranslatedReleaseAsync).</summary>
     public bool ReadAsCp949 { get; init; }
+
+    /// <summary>How many of its lines read as UTF-8 though CP949 too, and may be missing from the link; null when none.</summary>
+    public string? Cp949Ambiguous { get; init; }
 }
 
 /// <summary>
@@ -261,6 +264,7 @@ public sealed class AgentSession
             changed.OrderBy(id => id).ToList(), englishPath != null)
         {
             ReadAsCp949 = korean.Info.Diagnostics.Any(item => item.Code == PluginReader.Cp949ReadDiagnostic),
+            Cp949Ambiguous = korean.Info.Diagnostics.FirstOrDefault(item => item.Code == PluginReader.Cp949AmbiguousDiagnostic)?.Message,
         };
     }
 

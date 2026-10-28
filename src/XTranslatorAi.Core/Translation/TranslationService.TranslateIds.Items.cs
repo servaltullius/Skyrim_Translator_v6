@@ -40,9 +40,11 @@ public sealed partial class TranslationService
         {
             request.CancellationToken.ThrowIfCancellationRequested();
 
+            // A row deleted since the run was asked for (a project reopened) is not there to translate; it stopped the
+            // whole run, and every run after it.
             if (!rowsById.TryGetValue(id, out var row))
             {
-                throw new InvalidOperationException($"Missing row id={id}");
+                continue;
             }
 
             Ctx.RowContextById[row.Id] = new RowContext(row.Rec, row.Edid);
@@ -116,18 +118,37 @@ public sealed partial class TranslationService
                 continue;
             }
 
-            var sourceForMask = PlaceholderUnitBinder.InjectUnitsForTranslation(request.TargetLang, row.SourceText);
-            var masked = placeholderMasker.Mask(sourceForMask);
-            var fortifyExpanded = FortifyListExpander.Expand(masked.Text);
-            if (!string.Equals(fortifyExpanded, masked.Text, StringComparison.Ordinal))
+            MaskedText masked;
+            GlossaryApplication glossed;
+            string expanded;
+            try
             {
-                masked = masked with { Text = fortifyExpanded };
+                var sourceForMask = PlaceholderUnitBinder.InjectUnitsForTranslation(request.TargetLang, row.SourceText);
+                masked = placeholderMasker.Mask(sourceForMask);
+                var fortifyExpanded = FortifyListExpander.Expand(masked.Text);
+                if (!string.Equals(fortifyExpanded, masked.Text, StringComparison.Ordinal))
+                {
+                    masked = masked with { Text = fortifyExpanded };
+                }
+                glossed = Ctx.ReferenceNames?.ApplyWithGlossary(masked.Text, glossaryApplier) ?? glossaryApplier.Apply(masked.Text);
+                expanded = PairedSlashListExpander.Expand(glossed.Text);
+                if (!string.Equals(expanded, glossed.Text, StringComparison.Ordinal))
+                {
+                    glossed = glossed with { Text = expanded };
+                }
             }
-            var glossed = Ctx.ReferenceNames?.ApplyWithGlossary(masked.Text, glossaryApplier) ?? glossaryApplier.Apply(masked.Text);
-            var expanded = PairedSlashListExpander.Expand(glossed.Text);
-            if (!string.Equals(expanded, glossed.Text, StringComparison.Ordinal))
+            catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                glossed = glossed with { Text = expanded };
+                // One row the preparation cannot take (more than 9,999 protected pieces) stopped the whole run, and every
+                // run after it: it is this row's error now.
+                var message = FormatError(ex);
+                await _db.UpdateStringStatusAsync(row.Id, StringEntryStatus.Error, message, request.CancellationToken);
+                if (request.OnRowUpdated != null)
+                {
+                    NotifyRowUpdated(request.OnRowUpdated, row.Id, StringEntryStatus.Error, message);
+                }
+
+                continue;
             }
 
             var duplicateKey = new DuplicateKey(
@@ -578,7 +599,8 @@ public sealed partial class TranslationService
             return items;
         }
 
-        foreach (var batch in TranslationBatching.ChunkBy(seedItems, it => it.Masked.Length, request.BatchSize, request.MaxChars))
+        foreach (var batch in SeparateRiskyRows(TranslationBatching.ChunkBy(seedItems, it => it.Masked.Length, request.BatchSize, request.MaxChars).ToList(),
+                     request, groups: null))
         {
             request.CancellationToken.ThrowIfCancellationRequested();
             if (request.WaitIfPaused != null)

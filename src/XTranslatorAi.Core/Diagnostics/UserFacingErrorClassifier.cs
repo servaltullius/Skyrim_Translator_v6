@@ -301,6 +301,16 @@ public static class UserFacingErrorClassifier
             );
         }
 
+        // A row the masking cannot take fails the same way every time: "잠시 후 다시 시도하세요" (E999) did not fit it.
+        if (ContainsAny(msgChain, "Too many placeholders"))
+        {
+            return new UserFacingError(
+                "E331",
+                "이 줄은 태그·변수 같은 보호 요소가 너무 많아(9,999개 이상) 번역할 수 없습니다. 줄을 나누거나 직접 번역하세요.",
+                DetailsInApiLogs: false
+            );
+        }
+
         if (ContainsAny(msgChain, "API key is required", "API key"))
         {
             return new UserFacingError(

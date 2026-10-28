@@ -196,6 +196,9 @@ public static class PluginReader
     /// <summary>The diagnostic of a translated release read with CP949 for its lines that are not UTF-8.</summary>
     public const string Cp949ReadDiagnostic = "source_encoding_cp949";
 
+    /// <summary>The diagnostic of a CP949 release's lines that are valid UTF-8 too, read as UTF-8 (see Utf8OrFallbackEncoding).</summary>
+    public const string Cp949AmbiguousDiagnostic = "source_encoding_cp949_ambiguous";
+
     /// <summary>The start of the error for a translated release neither UTF-8 nor CP949 reads.</summary>
     public const string TranslatedReleaseUnreadable = "한국어판을 UTF-8로도 CP949로도 읽지 못했습니다";
 
@@ -217,9 +220,13 @@ public static class PluginReader
         catch (InvalidDataException error) when (error.Data.Contains(Cp949KoreanDataKey) && GetSourceEncodingFallback(options.SourceEncoding) != null)
         {
             PluginDocument korean;
+            var readAsUtf8Too = new System.Collections.Concurrent.ConcurrentDictionary<string, byte>(StringComparer.Ordinal);
             try
             {
-                korean = await ReadAsync(path, options with { SourceEncoding = Utf8OrFallbackEncoding.Cp949Name }, cancellationToken);
+                using (Utf8OrFallbackEncoding.CountReadAsUtf8Too(readAsUtf8Too))
+                {
+                    korean = await ReadAsync(path, options with { SourceEncoding = Utf8OrFallbackEncoding.Cp949Name }, cancellationToken);
+                }
             }
             catch (InvalidDataException again) when (again.InnerException is DecoderFallbackException)
             {
@@ -229,8 +236,16 @@ public static class PluginReader
             }
 
             var notes = korean.Info.Diagnostics.Append(new PluginDiagnostic(Cp949ReadDiagnostic,
-                "옛 한국어판이라 UTF-8이 아닌 줄을 CP949로 읽었습니다.")).ToArray();
-            return new PluginDocument(korean.Info with { Diagnostics = Array.AsReadOnly(notes) }, korean.Fields, korean.Bytes,
+                "옛 한국어판이라 UTF-8이 아닌 줄을 CP949로 읽었습니다."));
+            // A line of CP949 syllables that are valid UTF-8 too reads as UTF-8 with no Hangul ("천" as "õ"), and the earlier
+            // translation left it out without a word. Counted by the bytes read so: a "10°" saved in CP949 is not one.
+            if (readAsUtf8Too.Count > 0)
+            {
+                notes = notes.Append(new PluginDiagnostic(Cp949AmbiguousDiagnostic,
+                    $"UTF-8로도 CP949로도 읽히는 줄 {readAsUtf8Too.Count}개는 UTF-8로 읽혀 한글이 아니게 되었고, 이전 번역으로 쓰이지 않았을 수 있습니다."));
+            }
+
+            return new PluginDocument(korean.Info with { Diagnostics = Array.AsReadOnly(notes.ToArray()) }, korean.Fields, korean.Bytes,
                 korean.Nodes, korean.Records, korean.Tables, korean.DependencyHashes);
         }
     }

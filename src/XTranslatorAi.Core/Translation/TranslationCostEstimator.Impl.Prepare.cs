@@ -38,7 +38,15 @@ public sealed partial class TranslationCostEstimator
         {
             cancellationToken.ThrowIfCancellationRequested();
             var sourceForMask = PlaceholderUnitBinder.InjectUnitsForTranslation(targetLang, sourceText);
-            var masked = placeholderMasker.Mask(sourceForMask);
+            MaskedText masked;
+            try
+            {
+                masked = placeholderMasker.Mask(sourceForMask);
+            }
+            catch (InvalidOperationException)
+            {
+                continue; // A row the run cannot prepare is its error, with no request: the estimate went no further.
+            }
             var glossed = glossaryApplier.Apply(masked.Text);
             var expanded = PairedSlashListExpander.Expand(glossed.Text);
             if (TranslationService.IsOnlyForcedTerms(expanded))

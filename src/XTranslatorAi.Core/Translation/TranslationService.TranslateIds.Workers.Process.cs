@@ -16,8 +16,8 @@ public sealed partial class TranslationService
         {
             ct.ThrowIfCancellationRequested();
 
-            // Another worker stopped the run on a rate-limit streak; the queued rows stay Pending.
-            if (Ctx.RateLimitAborted)
+            // Another worker stopped the run on a rate-limit streak or for its key; the queued rows stay Pending.
+            if (Ctx.RateLimitAborted || Ctx.StoppedForKey)
             {
                 return;
             }
@@ -45,7 +45,7 @@ public sealed partial class TranslationService
             await ctx.Request.WaitIfPaused(ct);
         }
 
-        if (Ctx.RateLimitAborted)
+        if (Ctx.RateLimitAborted || Ctx.StoppedForKey)
         {
             return;
         }
@@ -65,13 +65,23 @@ public sealed partial class TranslationService
             if (IsRunGenerationLimit(ex) || IsRateLimitAbort(ex)) throw;
             if (IsCredentialError(ex))
             {
+                Ctx.StoppedForKey = true;
                 await RevertBatchToPendingAsync(ctx.Request.OnRowUpdated, batch, ct);
                 throw;
             }
 
             if (ctx.Request.EnableApiKeyFailover && IsApiKeyFailoverError(ex, ct))
             {
+                Ctx.StoppedForKey = true;
                 throw;
+            }
+
+            // Another worker stopped the run for its key: this batch's error (a 503 its retries no longer wait out) is not
+            // its own, and its rows go back to Pending with the rest instead of staying 오류.
+            if (Ctx.StoppedForKey)
+            {
+                await RevertBatchToPendingAsync(ctx.Request.OnRowUpdated, batch, ct);
+                return;
             }
 
             ThrowIfRateLimitStreakReached(ex, ctx.Request.EnableApiKeyFailover);

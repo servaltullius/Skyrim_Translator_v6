@@ -32,9 +32,9 @@ public sealed partial class TranslationService
         var longGroups = SortForBatchConsistency(longItems);
         await TryUpdateMaskedTokensPerCharHintAsync(request, veryLongItems);
 
-        var shortBatches = BuildBatches(shortItems, request.BatchSize, request.MaxChars, shortGroups);
+        var shortBatches = SeparateRiskyRows(BuildBatches(shortItems, request.BatchSize, request.MaxChars, shortGroups), request, shortGroups);
         var longBatchSize = Math.Max(1, Math.Min(request.BatchSize, 8));
-        var longBatches = BuildBatches(longItems, longBatchSize, request.MaxChars, longGroups);
+        var longBatches = SeparateRiskyRows(BuildBatches(longItems, longBatchSize, request.MaxChars, longGroups), request, longGroups);
         var veryLongBatches = BuildVeryLongBatches(veryLongItems);
 
         SortBatchesByWeight(shortBatches);
@@ -174,6 +174,44 @@ public sealed partial class TranslationService
             batches.Add(batch);
         }
         return batches;
+    }
+
+    /// <summary>
+    /// A batch with a risky sentence ("protects you from", "against") is asked for several candidates whole
+    /// (GetBatchCandidateCount): one such row among twelve tripled the output of all twelve, and the cost estimate did not
+    /// count it. With a model that gives candidates, the risky rows go in a batch of their own, with the rows of their group
+    /// (<paramref name="groups"/>, kept in one batch by ChunkBy): a skill's description apart from its names had the names
+    /// and the description translated by two requests at once, the split ChunkBy was made to avoid.
+    /// </summary>
+    private List<IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>> SeparateRiskyRows(
+        List<IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>> batches,
+        TranslateIdsRequest request,
+        IReadOnlyDictionary<long, string>? groups
+    )
+    {
+        if (!GeminiModelPolicy.SupportsMultipleCandidates(request.ModelName))
+        {
+            return batches;
+        }
+
+        var separated = new List<IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>>(batches.Count);
+        foreach (var batch in batches)
+        {
+            string GroupOf(long id) => groups?.GetValueOrDefault(id, "") ?? "";
+            var riskyRows = batch.Where(it => GetRiskyCandidateCountForSource(request.TargetLang, it.Source) > 1).ToList();
+            var riskyGroups = riskyRows.Select(it => GroupOf(it.Id)).Where(group => group.Length > 0).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var risky = batch.Where(it => riskyRows.Any(r => r.Id == it.Id) || riskyGroups.Contains(GroupOf(it.Id))).Select(it => it.Id).ToHashSet();
+            if (risky.Count == 0 || risky.Count == batch.Count)
+            {
+                separated.Add(batch);
+                continue;
+            }
+
+            separated.Add(batch.Where(it => !risky.Contains(it.Id)).ToList());
+            separated.Add(batch.Where(it => risky.Contains(it.Id)).ToList());
+        }
+
+        return separated;
     }
 
     private static List<IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>> BuildVeryLongBatches(

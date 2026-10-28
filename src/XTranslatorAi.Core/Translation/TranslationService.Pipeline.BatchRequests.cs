@@ -108,7 +108,7 @@ public sealed partial class TranslationService
                 {
                     break;
                 }
-                if (!ShouldRetry(ex) || attempt >= currentCtx.MaxRetries)
+                if (!ShouldRetry(ex) || attempt >= currentCtx.MaxRetries || Ctx.StoppedForKey)
                 {
                     break;
                 }
@@ -119,7 +119,10 @@ public sealed partial class TranslationService
                     Ctx.AdaptiveConcurrency.RegisterRateLimit();
                     ExtendGlobalThrottle(delay);
                 }
-                await Task.Delay(delay, currentCtx.CancellationToken);
+                if (await WaitUnlessStoppedForKeyAsync(delay, currentCtx.CancellationToken))
+                {
+                    break;
+                }
             }
         }
 
@@ -222,14 +225,15 @@ public sealed partial class TranslationService
         BatchTranslateContext ctx,
         IReadOnlyList<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)> batch,
         string userPrompt,
-        string? cachedContent
+        string? cachedContent,
+        int? candidateCount = null
     )
     {
-        var candidateCount = GetBatchCandidateCount(ctx, batch);
+        candidateCount ??= GetBatchCandidateCount(ctx, batch);
         var sizedContext = ctx with { MaxOutputTokens = TranslationOutputBudget.Compute(
             batch.Sum(row => row.Masked.Length), batch.Sum(row => TranslationConstants.XtTokenRegex.Matches(row.Masked).Count),
             batch.Count, ctx.MaxOutputTokens, Ctx.EnableAdaptiveOutputBudget) };
-        var request = CreateBatchRequest(sizedContext, userPrompt, cachedContent, candidateCount);
+        var request = CreateBatchRequest(sizedContext, userPrompt, cachedContent, candidateCount.Value);
 
         string text;
         if (candidateCount > 1)

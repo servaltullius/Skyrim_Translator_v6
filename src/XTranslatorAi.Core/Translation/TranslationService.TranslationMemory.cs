@@ -147,8 +147,10 @@ public sealed partial class TranslationService
         TryLearnSessionTermMemory(id, sourceText, final);
 
         await _db.UpdateStringTranslationAsync(id, final, StringEntryStatus.Done, null, cancellationToken);
-        await _db.DeleteStringNoteAsync(id, TranslationConstants.TmFallbackNoteKind, cancellationToken);
-        await _db.UpsertStringNoteAsync(id, hitNoteKind, hitNote, cancellationToken);
+        // Once the row is saved its notes follow it: cancelled in between, a filled row was left without its TM note (the
+        // marks that tell a fill from a translation) and with an old fallback note.
+        await _db.DeleteStringNoteAsync(id, TranslationConstants.TmFallbackNoteKind, CancellationToken.None);
+        await _db.UpsertStringNoteAsync(id, hitNoteKind, hitNote, CancellationToken.None);
         if (onRowUpdated != null)
         {
             NotifyRowUpdated(onRowUpdated, id, StringEntryStatus.Done, final);

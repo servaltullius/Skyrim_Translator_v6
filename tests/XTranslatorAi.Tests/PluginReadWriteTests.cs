@@ -501,6 +501,27 @@ public sealed class PluginReadWriteTests
         Assert.DoesNotContain(unchanged.Info.Diagnostics, item => item.Code == PluginReader.Cp949ReadDiagnostic);
     }
 
+    // 217 common CP949 syllables are valid UTF-8 too: a line of only those ("천", "화환") reads as UTF-8 with no Hangul
+    // ("õ", "ȭȯ") and is left out of the earlier translation. It is counted and told.
+    [Fact]
+    public async Task TranslatedRelease_InCp949_TellsTheLinesThatReadAsUtf8Too()
+    {
+        var cp949 = PluginBinary.GetEncoding("ks_c_5601-1987");
+        using var korean = new Fixture(Header().Concat(Group(
+            Record("WEAP", 0x800, Sub("FULL", cp949.GetBytes("강철 장검\0"))),
+            Record("WEAP", 0x801, Sub("FULL", cp949.GetBytes("천\0"))),
+            Record("WEAP", 0x802, Sub("FULL", cp949.GetBytes("화환\0"))),
+            Record("WEAP", 0x803, Sub("FULL", Encoding.UTF8.GetBytes("강철\0"))),
+            Record("WEAP", 0x804, Sub("FULL", cp949.GetBytes("Range 10°\0"))))).ToArray());
+
+        var read = await PluginReader.ReadTranslatedReleaseAsync(korean.Input, new(), default);
+
+        // "10°" saved in CP949 is not valid UTF-8 and was read as CP949: not counted.
+        Assert.Equal(new[] { "강철 장검", "õ", "ȭȯ", "강철", "Range 10°" }, read.Fields.Select(field => field.SourceText));
+        var note = Assert.Single(read.Info.Diagnostics, item => item.Code == PluginReader.Cp949AmbiguousDiagnostic);
+        Assert.Contains("2개", note.Message);
+    }
+
     // A line neither UTF-8 nor CP949 reads: the error no longer says to choose CP949 as the source encoding.
     [Fact]
     public async Task TranslatedRelease_NeitherUtf8NorCp949_SaysSo()
