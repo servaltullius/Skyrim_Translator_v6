@@ -545,4 +545,22 @@ public class LqaSpeakerToneTests
         var warned = issues.Where(i => i.Code == "speaker_tone_inconsistent").Select(i => i.Id).ToList();
         Assert.Equal(flagged ? new long[] { 9 } : Array.Empty<long>(), warned);
     }
+
+    // A level decided for anyone ("*") gives the pair a majority with no line of the pair counted: the pair had no name,
+    // and indexing the names stopped the whole check (GUI and agent) with KeyNotFoundException, every time.
+    [Fact]
+    public async Task GuessedListener_WithOnlyADecidedLevel_IsFlaggedWithoutStoppingTheCheck()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "그를 잘 지켜봐."), Line(2, "서둘러, 시간이 없어."),
+            Line(3, "정말 고맙습니다.", speaker: "00013269>01000801?"),
+        };
+        var styles = new[] { new SpeakerStyle("00013269", SpeakerStyles.Anyone, "반말") };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>(), speakerStyles: styles);
+
+        var issue = Assert.Single(issues, i => i.Code == "speaker_tone_inconsistent" && i.Id == 3);
+        Assert.Contains("대부분 반말", issue.Message);
+    }
 }

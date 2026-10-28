@@ -83,12 +83,26 @@ internal static partial class SpeakerToneConsistencyRule
     /// DialogueToneConsistencyRule). A 하오체 speaker closes some sentences with ~지 or ~군 ("…통치하지 않소. 이제는
     /// … 들어갔지."), so one 하오체 sentence makes the line 하오체. A lone 거요 counts after ~ㄹ or ~는 only ("할 거요",
     /// "하는 거요"): "대화거리 같은 거요" is 해요체.
+    /// "~는 거요" and "~ㄴ 게요" are 해요체 as well ("절 곁에 두는 거요. … 찾아야 해요."): when they are the only 하오체 sign
+    /// and another sentence is plainly 존댓말, the line is 존댓말, as <see cref="Level"/> reads it (eight 해요체 lines of the
+    /// user's projects were read as 하오체).
     /// </summary>
     internal static bool HasHaoSentence(string? text)
-        => (text ?? "").Split(new[] { '.', '!', '?', '…', ',' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(Clean)
-            .Any(sentence => sentence.Length > 0 && !sentence.EndsWith("십시오", StringComparison.Ordinal) && IsHao(sentence)
-                             && !(LastWord(sentence) == "거요" && !AfterModifierOfHao(sentence)));
+    {
+        var sentences = (text ?? "").Split(new[] { '.', '!', '?', '…', ',' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(Clean).Where(sentence => sentence.Length > 0).ToList();
+        var hao = sentences.Where(sentence => !sentence.EndsWith("십시오", StringComparison.Ordinal) && IsHao(sentence)
+                                              && !(LastWord(sentence) == "거요" && !AfterModifierOfHao(sentence))).ToList();
+        if (hao.Count == 0)
+        {
+            return false;
+        }
+
+        static bool SharedWithHaeyo(string sentence) => LastWord(sentence) is var word && (word.EndsWith("거요", StringComparison.Ordinal) || word == "게요");
+        return !(hao.All(SharedWithHaeyo)
+                 && sentences.Any(sentence => !hao.Contains(sentence) && !IsWeakPolite(sentence)
+                                              && LqaToneClassifier.Classify(sentence) is ToneKind.Haeyo or ToneKind.Hamnida));
+    }
 
     /// <summary>A line whose 존댓말 sign 하오체 shares ("누구요", "어디요", "갑시다"; see IsWeakPolite).</summary>
     internal static bool IsSharedWithHao(string? text) => IsWeakPolite(text);

@@ -248,7 +248,12 @@ internal static partial class SpeakerToneConsistencyRule
             return;
         }
 
-        var most = toListener == ToneKind.Hamnida ? "존댓말" : levels.CasualNames[listenerKey];
+        // A level decided for the pair (SpeakerStyles) gives a majority with no line of the pair counted, so the pair has
+        // no name among the counted groups: its decided level names it. Indexing the names stopped the whole check.
+        var most = toListener == ToneKind.Hamnida ? "존댓말"
+            : levels.CasualNames.TryGetValue(listenerKey, out var name) ? name
+            : levels.Declared is { } declared && SpeakerStyles.For(declared, listenerKey) is { } decided ? decided
+            : "반말";
         issues.Add(Issue(entry, "Warn", Code,
             $"장면에서 상대를 짐작한 대사인데, 그 상대에게 한 대사와도 플레이어에게 한 대사와도 말투가 다릅니다: 대부분 {most}, 이 대사 {Display(register)}"));
 

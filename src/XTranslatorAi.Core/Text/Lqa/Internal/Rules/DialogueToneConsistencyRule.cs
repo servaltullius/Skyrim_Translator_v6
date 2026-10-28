@@ -119,7 +119,9 @@ internal static class DialogueToneConsistencyRule
         }
 
         var tone = ClassifySpeech(entry.DestText);
-        if (tone == ToneKind.Unknown || tone == majority)
+        // A 하오체 speaker closes sentences with ~지, ~군, ~다 and ~네 as well ("그건 이미 끝난 일이지."), which read as 반말
+        // line by line: in a group mostly 하오체 they are the same voice. (A 하오체 line among 반말 or 존댓말 is still marked.)
+        if (tone == ToneKind.Unknown || tone == majority || majority == ToneKind.Hao && tone == ToneKind.Casual)
         {
             return;
         }
@@ -210,15 +212,16 @@ internal static class DialogueToneConsistencyRule
         }
 
         var tone = LqaToneClassifier.Classify(spoken);
+        // "당신은 누구요?" and "그럼 출발합시다!" are a 하오체 speaker's as much as a 존댓말 one's: such a line is not counted
+        // either way. (합니다체 was turned into 해요체 first, so "~ㅂ시다" never reached this and was marked among 하오체.)
+        if (tone is ToneKind.Haeyo or ToneKind.Hamnida && mergePolite && SpeakerToneConsistencyRule.IsSharedWithHao(spoken))
+        {
+            return ToneKind.Unknown;
+        }
+
         if (tone == ToneKind.Hamnida && mergePolite)
         {
             return ToneKind.Haeyo;
-        }
-
-        // "당신은 누구요?" is a 하오체 speaker's as much as a 해요체 one's: such a line is not counted either way.
-        if (tone == ToneKind.Haeyo && mergePolite && SpeakerToneConsistencyRule.IsSharedWithHao(spoken))
-        {
-            return ToneKind.Unknown;
         }
 
         if (tone == ToneKind.Unknown && mergePolite)
