@@ -110,7 +110,7 @@ public sealed class AgentModeException(string message) : Exception(message);
 /// to read) and every answer given (<c>responses/&lt;hash&gt;.&lt;attempt&gt;.txt</c>). Answers are kept: a replay starts the
 /// run over and must answer the calls before the pending one again (a batch the run had not saved yet).
 /// </summary>
-public sealed class AgentSession
+public sealed partial class AgentSession
 {
     private static readonly JsonSerializerOptions Json = new() { WriteIndented = true };
     private readonly string _workRoot;

@@ -88,6 +88,9 @@ public static partial class AgentCli
             Console.WriteLine($"  영어: {Flat(i.SourceText)}");
             Console.WriteLine($"  번역: {Flat(i.DestText)}");
         }
+
+        // A held line has no translation to check, nor is it 남은 영어: without a word its English went unseen here.
+        if (await HeldNoteAsync(c, project) is { } held) Console.WriteLine($"{held}. 이 줄들은 검사하지 않았습니다.");
     }
 
     // Marks the rows' quality-check results "확인함" (looked at and left as they are; the GUI's button does the same),
@@ -174,11 +177,15 @@ public static partial class AgentCli
                                          + "[{\"id\": 번호, \"text\": \"새 번역\"}]처럼 text를 쓰세요.");
         }
 
+        // A held line's text is its English: an edit keeping it ("영어 그대로 두자") was passed over as unchanged, and the
+        // line stayed held, listed at every end.
+        var holds = await db.GetStringNotesByKindAsync(TranslationConstants.AgentHoldNoteKind, c.Ct);
         var same = 0;
         foreach (var edit in list)
         {
             var row = Row(edit)!;
-            if (string.Equals(row.DestText, edit.Text, StringComparison.Ordinal))
+            var held = row.Status == StringEntryStatus.Skipped && holds.ContainsKey(row.Id);
+            if (!held && string.Equals(row.DestText, edit.Text, StringComparison.Ordinal))
             {
                 same++;
                 continue;

@@ -53,9 +53,13 @@ public static partial class AgentCli
         // the project DB for it in Meridia's Order.
         var speakers = picked.Count == 0 ? new Dictionary<long, string>()
             : await DialogueSpeakerNames.LoadAsync(db, await new GameStringService().TryLoadAsync(c.Ct), c.Ct);
+        // A held line said only 건너뜀, as any skipped line does.
+        var holds = await db.GetStringNotesByKindAsync(TranslationConstants.AgentHoldNoteKind, c.Ct);
         foreach (var r in picked)
         {
-            Console.WriteLine($"#{r.Id} {r.Rec} [{StatusLabel(r.Status)}]");
+            var held = r.Status == StringEntryStatus.Skipped && holds.TryGetValue(r.Id, out var reason)
+                ? $" ({AgentSession.HeldMark}{(reason == AgentSession.HeldMark ? "" : ": " + Flat(reason))})" : "";
+            Console.WriteLine($"#{r.Id} {r.Rec} [{StatusLabel(r.Status)}]{held}");
             if (speakers.TryGetValue(r.Id, out var speaker))
             {
                 var playerLine = string.Equals(r.Rec, "INFO:RNAM", StringComparison.OrdinalIgnoreCase) || string.Equals(r.Rec, "DIAL:FULL", StringComparison.OrdinalIgnoreCase);

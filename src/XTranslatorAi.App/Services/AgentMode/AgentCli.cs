@@ -88,6 +88,7 @@ public static partial class AgentCli
                 case "review": await ReviewAsync(c); break;
                 case "export": await ExportAsync(c); break;
                 case "edit": await EditAsync(c); break;
+                case "hold": await HoldAsync(c); break;
                 case "show": await ShowAsync(c); break;
                 case "lookup": await LookupAsync(c); break;
                 case "names": await NamesAsync(c); break;
@@ -181,6 +182,7 @@ public static partial class AgentCli
           tullius.cmd context <프로젝트> [<문맥 파일> | --clear]                     프로젝트 문맥(모드 배경·인물 관계·말투) 보기·저장·지우기(모든 요청의 지시에 들어감)
           tullius.cmd terms <프로젝트> [--find 낱말 | <용어.json> | <영어> --clear]   프로젝트 용어집 보기·추가([{"source": "영어", "target": "한국어"}], 한글패치 표기보다 먼저)·지우기
           tullius.cmd edit <프로젝트> <수정.json>                                    줄 고치기([{"id": 번호, "text": "새 번역"}])
+          tullius.cmd hold <프로젝트> [--id 12,40 [--note 이유] [--undo]]           번역할 수 없는 줄 보류(요청에서 빼고 영어 그대로 저장)·목록·풀기
           tullius.cmd export <프로젝트> [출력 폴더]                                  번역된 플러그인 저장(이미 있으면 output\<키>-2처럼 새 폴더)
           tullius.cmd version                                                        번역기 버전
           tullius.cmd mcp-config                                                     이 명령들을 MCP 도구로 쓰는 앱 설정(안티그라비티·Gemini CLI 등)
@@ -190,7 +192,7 @@ public static partial class AgentCli
         작업 파일은 ./work(--work로 바꿈).
         프로젝트 DB는 GUI 번역기와 같은 곳(--projects로 바꿈).
         인자에 & | ^ 가 들어가면 한 줄에 하나씩 파일에 쓰고 @파일로 넘긴다(tullius.cmd @인자.txt).
-        next·submit·status에 --lane 번호/갈래(예: 2/3)를 붙이면 줄을 갈래로 나눠 그 몫만 번역한다(하위 에이전트가 동시에, 대화는 한 갈래에).
+        next·submit·status·hold에 --lane 번호/갈래(예: 2/3)를 붙이면 줄을 갈래로 나눠 그 몫만 번역한다(하위 에이전트가 동시에, 대화는 한 갈래에).
         """);
 
     /// <summary>

@@ -47,6 +47,13 @@ public static class TranslationConstants
     /// <summary>Notes of a row finished from a known translation without a request; the grid colors these rows.</summary>
     public static readonly string[] KnownTranslationNoteKinds = { TmHitNoteKind, GameStringNoteKind, PreviousReleaseNoteKind };
 
+    /// <summary>
+    /// A row the agent app's model would not translate by its own rules, held (건너뜀) with its reason as the message. A
+    /// note, not the row's error message: a reopened plugin keeps the notes of the rows whose translation it keeps, and
+    /// set the message empty, which left the row 건너뜀 with nothing to say it was held.
+    /// </summary>
+    public const string AgentHoldNoteKind = "agent_hold";
+
     /// <summary>A row translated against its English on purpose because the English is wrong ("원문 오류 수정").</summary>
     public const string SourceFixNoteKind = "source_fix";
 

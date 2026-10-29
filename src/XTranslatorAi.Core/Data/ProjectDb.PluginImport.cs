@@ -51,7 +51,9 @@ public sealed partial class ProjectDb
                 query.Transaction = tx;
                 query.CommandText = oldSource == null
                     ? "SELECT COUNT(*) FROM StringEntry;"
-                    : "SELECT b.FieldKey,s.SourceText,s.DestText,s.Status FROM PluginStringBinding b JOIN StringEntry s ON s.Id=b.StringId WHERE s.Status IN ($Done,$Edited,$Skipped);";
+                    : "SELECT b.FieldKey,s.SourceText,s.DestText,s.Status,"
+                      + "EXISTS(SELECT 1 FROM StringNote n WHERE n.StringId=s.Id AND n.Kind=$AgentHold) "
+                      + "FROM PluginStringBinding b JOIN StringEntry s ON s.Id=b.StringId WHERE s.Status IN ($Done,$Edited,$Skipped);";
                 if (oldSource == null)
                 {
                     if (Convert.ToInt64(await query.ExecuteScalarAsync(cancellationToken), System.Globalization.CultureInfo.InvariantCulture) != 0)
@@ -62,14 +64,17 @@ public sealed partial class ProjectDb
                     query.Parameters.AddWithValue("$Done", (int)StringEntryStatus.Done);
                     query.Parameters.AddWithValue("$Edited", (int)StringEntryStatus.Edited);
                     query.Parameters.AddWithValue("$Skipped", (int)StringEntryStatus.Skipped);
+                    query.Parameters.AddWithValue("$AgentHold", TranslationConstants.AgentHoldNoteKind);
                     await using var reader = await query.ExecuteReaderAsync(cancellationToken);
                     while (await reader.ReadAsync(cancellationToken))
                     {
                         var status = (StringEntryStatus)reader.GetInt32(3);
                         var dest = reader.GetString(2);
                         // A row without letters (" ") is finished by keeping its source; it is not an empty translation.
+                        // A held row stays held whatever its text (empty after the GUI's 다시 번역), its note with it.
                         if (status == StringEntryStatus.Edited || !string.IsNullOrWhiteSpace(dest)
-                            || (dest.Length > 0 && string.Equals(dest, reader.GetString(1), StringComparison.Ordinal)))
+                            || (dest.Length > 0 && string.Equals(dest, reader.GetString(1), StringComparison.Ordinal))
+                            || status == StringEntryStatus.Skipped && reader.GetBoolean(4))
                             saved.Add(reader.GetString(0), (reader.GetString(1), dest, status));
                     }
                 }

@@ -1451,6 +1451,225 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Equal(new[] { "Thalmor.esp" }, glossary.From);
     }
 
+    /// <summary>
+    /// A user's Codex refused a whole mod over one character's age, and a line left out of an answer was only asked
+    /// again. A held line is out of the waiting request made again and of every request after; the run finishes without
+    /// it, the export keeps its English, and released it is asked for again.
+    /// </summary>
+    [Fact]
+    public async Task HeldLine_IsLeftOutOfRequests_TheRunFinishesWithoutIt_AndReleasedItIsAskedAgain()
+    {
+        var first = await _session.NextAsync(_project, CancellationToken.None);
+        var held = Ids(first.Next!)[0];
+
+        await _session.HoldAsync(_project, new[] { held }, " 모델 정책상 번역할 수 없음 ", CancellationToken.None);
+        var (remade, _, _) = await _session.RemakePendingAsync(_project, CancellationToken.None);
+
+        var line = Assert.Single(await _session.HeldAsync(_project, CancellationToken.None));
+        Assert.Equal((held, StringEntryStatus.Skipped, "보류: 모델 정책상 번역할 수 없음"), (line.Row.Id, line.Row.Status, line.Label));
+        var report = remade!;
+        for (var i = 0; i < 20 && report.Next != null; i++)
+        {
+            Assert.DoesNotContain(held, Ids(report.Next));
+            report = await _session.SubmitAsync(_project, Answer(report.Next), CancellationToken.None);
+        }
+
+        Assert.Null(report.Next);
+        Assert.Equal(0, report.PendingAfter);
+        var done = (await RowsWithStatusAsync(StringEntryStatus.Done)).First();
+        var document = await PluginReader.ReadAsync(_project.PluginPath, _project.ReadOptions, CancellationToken.None);
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            var keys = await db.GetPluginFieldKeysByStringIdAsync(CancellationToken.None);
+            var exported = await db.GetPluginTranslationsForExportAsync(document.Info.Sha256, CancellationToken.None);
+            Assert.False(exported.ContainsKey(keys[held]));
+            Assert.True(exported.ContainsKey(keys[done]));
+        }
+
+        var released = await _session.ReleaseAsync(_project, new[] { held, done }, CancellationToken.None);
+
+        Assert.Equal(new[] { held }, released.Select(r => r.Row.Id));
+        Assert.Empty(await _session.HeldAsync(_project, CancellationToken.None));
+        Assert.Contains(done, await RowsWithStatusAsync(StringEntryStatus.Done));
+        // The one line left is asked as a text request (no ids, a protected token after it): its English is what it asks for.
+        var again = (await _session.NextAsync(_project, CancellationToken.None)).Next!;
+        Assert.StartsWith(line.Row.SourceText, Assert.Single(AgentAnswerCheck.Lines(again)).Text);
+    }
+
+    /// <summary>
+    /// The hold was the row's error message, which reopening the plugin (open again, the GUI, a mod update) sets empty:
+    /// the line stayed 건너뜀 with nothing to say it was held, and could be neither listed, released nor held again. A
+    /// line held again keeps its reason, one line as the list prints it; the GUI's 다시 번역 takes the hold away.
+    /// </summary>
+    [Fact]
+    public async Task HeldLine_StaysHeldWhenThePluginIsOpenedAgain_KeepsItsReason_AndRetranslateReleasesIt()
+    {
+        var held = (await RowsWithStatusAsync(StringEntryStatus.Pending))[0];
+        await _session.HoldAsync(_project, new[] { held }, "나이를\n 잘못 읽었을 수 있음", CancellationToken.None);
+
+        var (reopened, _, _, _) = await _session.OpenAsync(_project.PluginPath, new PluginReadOptions(), "korean", "utf-8", batchSize: 2, CancellationToken.None);
+        await _session.HoldAsync(reopened, new[] { held }, null, CancellationToken.None);
+
+        var line = Assert.Single(await _session.HeldAsync(reopened, CancellationToken.None));
+        Assert.Equal((held, StringEntryStatus.Skipped, "보류: 나이를 잘못 읽었을 수 있음"), (line.Row.Id, line.Row.Status, line.Label));
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            Assert.Equal(1, await db.ResetForRetranslationAsync(new[] { held }, includeEdited: false, CancellationToken.None));
+            Assert.Empty(await db.GetStringNotesByKindAsync(XTranslatorAi.Core.TranslationConstants.AgentHoldNoteKind, CancellationToken.None));
+        }
+
+        Assert.Empty(await _session.HeldAsync(_project, CancellationToken.None));
+        Assert.Contains(held, await RowsWithStatusAsync(StringEntryStatus.Pending));
+
+        // 다시 번역 empties the row's text, and the reopen kept only rows with text: held again, it came back 대기.
+        await _session.HoldAsync(_project, new[] { held }, "다시", CancellationToken.None);
+        var (again, _, _, _) = await _session.OpenAsync(_project.PluginPath, new PluginReadOptions(), "korean", "utf-8", batchSize: 2, CancellationToken.None);
+        Assert.Equal("보류: 다시", Assert.Single(await _session.HeldAsync(again, CancellationToken.None)).Label);
+
+        // An edit translates the line: it is held no more, and its note does not come back with the next reopen.
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            await db.UpdateStringTranslationAsync(held, "직접 번역함", StringEntryStatus.Edited, null, CancellationToken.None);
+            Assert.Empty(await db.GetStringNotesByKindAsync(XTranslatorAi.Core.TranslationConstants.AgentHoldNoteKind, CancellationToken.None));
+        }
+    }
+
+    /// <summary>
+    /// Holding a line also held every waiting line of its English, though a request asks for some of those apart (another
+    /// scene, another kind of name) and the model may translate them. They are named, not held, and asked for as before.
+    /// </summary>
+    [Fact]
+    public async Task Hold_NamesTheWaitingLinesOfTheSameEnglish_AndLeavesThemToBeAsked()
+    {
+        var project = await OpenAsync("Twins.esp", Header()
+            .Concat(Group(Record("MISC", 0x2001, Sub("EDID", Z("aaEchoA")), Sub("FULL", Z("Aetherial Echo"))),
+                Record("MISC", 0x2002, Sub("EDID", Z("aaEchoB")), Sub("FULL", Z("Aetherial Echo"))),
+                Record("MISC", 0x2003, Sub("EDID", Z("aaOther")), Sub("FULL", Z("Shadow Lantern")))))
+            .ToArray());
+        List<long> echoes;
+        await using (var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, CancellationToken.None))
+        {
+            echoes = (await db.GetStringsAsync(10, 0, CancellationToken.None)).Where(r => r.SourceText == "Aetherial Echo").Select(r => r.Id).OrderBy(id => id).ToList();
+        }
+
+        var result = await _session.HoldAsync(project, new[] { echoes[0] }, "이유", CancellationToken.None);
+
+        Assert.Equal(new[] { echoes[0] }, result.Held.Select(h => h.Row.Id));
+        Assert.Equal(new[] { echoes[1] }, result.SameEnglishWaiting);
+        Assert.Equal(new[] { echoes[0] }, (await _session.HeldAsync(project, CancellationToken.None)).Select(h => h.Row.Id));
+        var request = (await _session.NextAsync(project, CancellationToken.None)).Next!;
+        Assert.Contains(AgentAnswerCheck.Lines(request), line => line.Text.StartsWith("Aetherial Echo", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// A held line's text is its English: an edit keeping it ("영어 그대로 두자") was passed over as unchanged, and the
+    /// line stayed held. Kept as the user said, it is 수정됨 and held no more.
+    /// </summary>
+    [Fact]
+    public async Task Edit_KeepingAHeldLinesEnglish_SavesItAndReleasesIt()
+    {
+        var held = (await RowsWithStatusAsync(StringEntryStatus.Pending))[0];
+        var line = (await _session.HoldAsync(_project, new[] { held }, null, CancellationToken.None)).Held.Single();
+        var edits = Path.Combine(_root, "keep-english.json");
+        await File.WriteAllTextAsync(edits, JsonSerializer.Serialize(new[] { new { id = held, text = line.Row.DestText } }));
+
+        var code = await AgentCli.RunAsync(new[] { "edit", _project.Key, edits, "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") },
+            argumentFiles: false);
+
+        Assert.Equal(0, code);
+        Assert.Empty(await _session.HeldAsync(_project, CancellationToken.None));
+        Assert.Contains(held, await RowsWithStatusAsync(StringEntryStatus.Edited));
+    }
+
+    /// <summary>A line with a translation is not held (the export would keep it), nor a list naming a line that is not there.</summary>
+    [Fact]
+    public async Task Hold_RefusesAFinishedOrMissingLine_AndChangesNothing()
+    {
+        var first = await _session.NextAsync(_project, CancellationToken.None);
+        var second = await _session.SubmitAsync(_project, Answer(first.Next!), CancellationToken.None);
+        var done = Ids(first.Next!)[0];
+        Assert.Contains(done, await RowsWithStatusAsync(StringEntryStatus.Done));
+        var waiting = Ids(second.Next!)[0];
+
+        var finished = await Assert.ThrowsAsync<AgentModeException>(() => _session.HoldAsync(_project, new[] { waiting, done }, null, CancellationToken.None));
+        var missing = await Assert.ThrowsAsync<AgentModeException>(() => _session.HoldAsync(_project, new[] { waiting, 99999L }, null, CancellationToken.None));
+
+        Assert.Contains("#" + done, finished.Message);
+        Assert.Contains("#99999", missing.Message);
+        Assert.Empty(await _session.HeldAsync(_project, CancellationToken.None));
+        Assert.DoesNotContain(waiting, await RowsWithStatusAsync(StringEntryStatus.Skipped));
+    }
+
+    /// <summary>
+    /// A lane holds its own lines only (another lane's waiting request would not be made again, and its answer dropped),
+    /// and lists its own: each line is held by exactly one of the two lanes.
+    /// </summary>
+    [Fact]
+    public async Task Hold_InALane_TakesAndListsOnlyThatLanesLines()
+    {
+        var pending = await RowsWithStatusAsync(StringEntryStatus.Pending);
+        var lanes = new[] { _project with { Lane = AgentLane.Parse("1/2") }, _project with { Lane = AgentLane.Parse("2/2") } };
+        var heldBy = new Dictionary<long, int>();
+        foreach (var id in pending)
+        {
+            for (var k = 0; k < lanes.Length; k++)
+            {
+                try
+                {
+                    await _session.HoldAsync(lanes[k], new[] { id }, null, CancellationToken.None);
+                    heldBy.Add(id, k);
+                }
+                catch (AgentModeException ex)
+                {
+                    Assert.Contains("갈래 ", ex.Message);
+                }
+            }
+        }
+
+        Assert.Equal(pending.OrderBy(id => id), heldBy.Keys.OrderBy(id => id));
+        Assert.Equal(2, heldBy.Values.Distinct().Count());
+        for (var k = 0; k < lanes.Length; k++)
+        {
+            var own = heldBy.Where(pair => pair.Value == k).Select(pair => pair.Key).OrderBy(id => id);
+            Assert.Equal(own, (await _session.HeldAsync(lanes[k], CancellationToken.None)).Select(l => l.Row.Id).OrderBy(id => id));
+        }
+    }
+
+    /// <summary>
+    /// The MCP hold tool holds the lines (no request waits here: making one again would import the series TM into the
+    /// user's own global DB), lists them with their reason without ids, and status counts them. A reason or --undo with
+    /// the ids left out showed the list as if it had done something.
+    /// </summary>
+    [Fact]
+    public async Task McpHold_HoldsListsAndCountsTheLines_AndRefusesANoteWithoutIds()
+    {
+        var held = (await RowsWithStatusAsync(StringEntryStatus.Pending))[0];
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") });
+        string Call(int id, string name, object arguments) => JsonSerializer.Serialize(new
+        {
+            jsonrpc = "2.0", id, method = "tools/call", @params = new { name, arguments },
+        });
+        var output = new StringWriter();
+        var lines = string.Join("\n",
+            Call(1, "hold", new { project = "Thalmor", ids = held.ToString(), note = "나이 설정 확인 필요" }),
+            Call(2, "hold", new { project = "Thalmor" }),
+            Call(3, "status", new { project = "Thalmor" }),
+            Call(4, "hold", new { project = "Thalmor", note = "이유만" }));
+
+        Assert.Equal(0, await AgentMcpServer.ServeAsync(server, new StringReader(lines), output));
+
+        var replies = output.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            .Select(r => JsonDocument.Parse(r).RootElement.GetProperty("result")).ToList();
+        var texts = replies.Select(r => r.GetProperty("content")[0].GetProperty("text").GetString()!).ToList();
+        Assert.Equal(new[] { false, false, false, true }, replies.Select(r => r.GetProperty("isError").GetBoolean()));
+        Assert.Contains("보류한 줄: 1.", texts[0]);
+        Assert.Contains($"- #{held} ", texts[1]);
+        Assert.Contains("보류: 나이 설정 확인 필요", texts[1]);
+        Assert.Contains("보류한 줄: 1 (", texts[2]);
+        Assert.Contains("--id", texts[3]);
+        Assert.Equal("보류: 나이 설정 확인 필요", Assert.Single(await _session.HeldAsync(_project, CancellationToken.None)).Label);
+    }
+
     private async Task<AgentProject> OpenAsync(string name, byte[] plugin)
     {
         var path = Path.Combine(_root, "Mod", name);

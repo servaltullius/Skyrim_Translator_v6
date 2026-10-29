@@ -68,6 +68,7 @@ public static partial class AgentCli
         var (rows, pending, errors, edited) = await c.Session.StatusAsync(project, c.Ct);
         Console.WriteLine($"프로젝트: {project.Key} ({Path.GetFileName(project.PluginPath)})" + (c.Lane != null ? $", 갈래 {c.Lane}" : ""));
         Console.WriteLine($"줄: {rows}, 남은 줄: {pending} (오류 {errors}), 직접 수정: {edited}");
+        if (await HeldNoteAsync(c, project) is { } held) Console.WriteLine(held);
         var request = c.Session.Pending(project);
         Console.WriteLine(request == null ? "대기 중인 요청: 없음" : $"대기 중인 요청: {c.Session.RequestPath(project)} ({request.Chars:N0}자)");
         if (c.Lane == null && c.Session.LanesWaiting(project) is { Count: > 0 } lanes)
@@ -79,7 +80,7 @@ public static partial class AgentCli
     private static async Task NextAsync(AgentCommand c)
     {
         c.RefuseWhileAppRuns();
-        Print(c, await c.Session.NextAsync(c.Session.Find(c.Arg(0, "프로젝트")) with { Lane = c.Lane }, c.Ct));
+        await PrintAsync(c, await c.Session.NextAsync(c.Session.Find(c.Arg(0, "프로젝트")) with { Lane = c.Lane }, c.Ct));
     }
 
     private static async Task SubmitAsync(AgentCommand c)
@@ -88,10 +89,10 @@ public static partial class AgentCli
         var project = c.Session.Find(c.Arg(0, "프로젝트")) with { Lane = c.Lane };
         var file = c.Arg(1, "답 파일");
         if (!File.Exists(file)) throw new AgentModeException($"답 파일이 없습니다: {file}");
-        Print(c, await c.Session.SubmitAsync(project, await ReadAgentFileAsync(file, c.Ct), c.Ct));
+        await PrintAsync(c, await c.Session.SubmitAsync(project, await ReadAgentFileAsync(file, c.Ct), c.Ct));
     }
 
-    private static void Print(AgentCommand c, AgentStepReport report)
+    private static async Task PrintAsync(AgentCommand c, AgentStepReport report)
     {
         // next imports the series TM as open does (AgentSession.EnsureSeriesTmAsync): what it took or could not take.
         if (c.Session.SeriesTmNote is { } tmNote) Console.WriteLine(tmNote);
@@ -124,6 +125,8 @@ public static partial class AgentCli
         else if (report.PendingAfter == 0)
         {
             Console.WriteLine($"번역 완료. 다음: tullius.cmd check {report.Project.Key}, tullius.cmd export {report.Project.Key}");
+            // A held line is not 남은 줄: without this the run said 번역 완료 and nothing of the lines left in English.
+            if (await HeldNoteAsync(c, report.Project) is { } held) Console.WriteLine($"{held}. 끝 보고에 이 목록을 {Whom(report.Project)} 알리세요.");
         }
     }
 

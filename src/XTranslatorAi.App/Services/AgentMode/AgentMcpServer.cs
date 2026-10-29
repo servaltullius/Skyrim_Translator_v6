@@ -115,6 +115,13 @@ internal static class AgentMcpServer
             new[] { "project", "edits" }),
         new("review", "그대로 둘 줄의 품질검사 결과를 확인함으로 표시(말투·남은 영어가 바뀌면 다시 나옴).",
             new JsonObject { ["project"] = Project(), ["ids"] = Str("id 목록(예: 12,40)"), ["undo"] = Bool("표시를 지운다") }, new[] { "project", "ids" }),
+        new("hold", "번역할 수 없는 줄을 보류한다: 요청에서 빼고 export 때 영어 그대로 저장. 대기 중인 요청은 그 줄을 빼고 다시 만든다. ids 없이 부르면 보류한 줄 목록.",
+            new JsonObject
+            {
+                ["project"] = Project(), ["ids"] = Str("보류할 줄 id 목록(예: 12,40)"), ["note"] = Str("보류한 이유(사용자에게 보일 말)"),
+                ["undo"] = Bool("보류를 풀어 다시 번역한다"), ["lane"] = Lane(),
+            },
+            new[] { "project" }),
         new("korean", "기존 한국어판을 연결하고 아직 번역 안 된 줄을 채운다(검수 모드).",
             new JsonObject { ["project"] = Project(), ["korean_plugin"] = Str("한국어판 플러그인 전체 경로"), ["strings"] = Str("한국어판 Strings 폴더"),
                 ["english_plugin"] = Str("한국어판이 번역한 영어 원본 플러그인 전체 경로(있으면 영어가 바뀐 줄만 번역)") },
@@ -589,6 +596,12 @@ internal static class AgentMcpServer
                 Option("--id", Text("ids"));
                 if (Flag("undo")) args.Add("--undo");
                 break;
+            case "hold":
+                args.AddRange(new[] { "hold", project ?? "" });
+                Option("--id", Text("ids"));
+                Option("--note", Text("note"));
+                if (Flag("undo")) args.Add("--undo");
+                break;
             case "status":
             case "next":
             case "names":
@@ -611,7 +624,7 @@ internal static class AgentMcpServer
                 return Content("없는 도구: " + name, isError: true);
         }
 
-        Option("--lane", name is "status" or "next" or "submit" ? lane : null);
+        Option("--lane", name is "status" or "next" or "submit" or "hold" ? lane : null);
         int exit;
         try
         {
@@ -630,8 +643,8 @@ internal static class AgentMcpServer
         failed = exit != 0;
 
         // next and submit end with the next request: its text comes with the result, so no file needs reading. style,
-        // context and terms make a waiting request again; without its text an agent answered from the one it had.
-        var remade = name is "style" or "context" or "terms" && output.Contains("대기 중이던 요청을", StringComparison.Ordinal);
+        // context, terms and hold make a waiting request again; without its text an agent answered from the one it had.
+        var remade = name is "style" or "context" or "terms" or "hold" && output.Contains("대기 중이던 요청을", StringComparison.Ordinal);
         if (!failed && (name is "next" or "submit" && output.Contains("다음 요청:", StringComparison.Ordinal) || remade))
         {
             var session = AgentCommand.Parse(ServerOptions(server)).Session;

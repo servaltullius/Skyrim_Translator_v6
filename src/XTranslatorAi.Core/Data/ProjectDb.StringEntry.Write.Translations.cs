@@ -58,6 +58,17 @@ public sealed partial class ProjectDb
                 await notes.ExecuteNonQueryAsync(cancellationToken);
             }
 
+            if (status != StringEntryStatus.Skipped)
+            {
+                // A held row given a translation (an edit) is held no more: the note stayed and came back with every reopen.
+                await using var hold = _connection.CreateCommand();
+                hold.Transaction = tx;
+                hold.CommandText = "DELETE FROM StringNote WHERE StringId=$Id AND Kind=$AgentHold;";
+                hold.Parameters.AddWithValue("$Id", id);
+                hold.Parameters.AddWithValue("$AgentHold", TranslationConstants.AgentHoldNoteKind);
+                await hold.ExecuteNonQueryAsync(cancellationToken);
+            }
+
             await tx.CommitAsync(cancellationToken);
             if (status == StringEntryStatus.Edited && !string.IsNullOrWhiteSpace(destText))
             {
