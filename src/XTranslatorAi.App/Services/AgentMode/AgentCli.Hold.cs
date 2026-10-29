@@ -18,7 +18,7 @@ public static partial class AgentCli
             var held = await c.Session.HeldAsync(project, c.Ct);
             if (held.Count == 0)
             {
-                Console.WriteLine($"보류한 줄: 없음. 번역할 수 없는 줄은 hold {project.Key} --id 12,40 --note \"이유\"로 보류합니다.");
+                Console.WriteLine($"보류한 줄: 없음. 번역할 수 없는 줄은 hold {project.Key} --id 12,40 --note \"이유\"{LaneOption(project)}로 보류합니다.");
                 return;
             }
 
