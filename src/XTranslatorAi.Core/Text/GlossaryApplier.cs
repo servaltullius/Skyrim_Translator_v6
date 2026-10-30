@@ -616,11 +616,13 @@ public sealed class GlossaryApplier
 
     // Single words keep their exact form ("resists" is a verb, "shores" is not Shor, "masters" is not the rank 달인),
     // except races, creatures and groups, which lines name in the plural all the time: Feris wrote "vampires" as
-    // 뱀파이어 in 10 lines while the built-in Vampire is 흡혈귀.
+    // 뱀파이어 in 10 lines while the built-in Vampire is 흡혈귀. A name ending in i or u takes no plural s: "Aldmeris"
+    // (the Aldmeri homeland) is another name than Aldmeri (알드머), as "Akaviris" would be.
     private static string PluralSuffixFor(GlossaryEntry entry)
     {
         var term = entry.SourceTerm.Trim();
-        return (term.Contains(' ') || NamesBeingsOrGroups(entry)) && term.Length > 0 && char.IsLetter(term[^1]) && !term.EndsWith('s')
+        return (term.Contains(' ') || NamesBeingsOrGroups(entry)) && term.Length > 0 && char.IsLetter(term[^1])
+               && char.ToLowerInvariant(term[^1]) is not ('s' or 'i' or 'u')
             ? "(?:es|s)?"
             : "";
     }
@@ -635,11 +637,19 @@ public sealed class GlossaryApplier
     /// A multi-word term in a regular plural also matches its singular: Elden Rim wrote "Rain of Arrow" in 7 rows, which
     /// escaped the glossary's "Rain of Arrows" (애로우 레인) and came out as 화살비. Only "-s" after a letter other than s,
     /// u or i, so "Glass", "Tullius" and "Aldis" keep their exact form; single words keep it too, as for the plural.
+    /// A translation that sounds the s out ("Summerset Isles" → 서머셋 아일즈) is the plural's own: the singular
+    /// "Summerset Isle" is 서머셋 아일, not that.
     /// </summary>
     private static string? SingularOf(GlossaryEntry entry)
     {
         var term = entry.SourceTerm;
         if (entry.MatchMode != GlossaryMatchMode.WordBoundary || term.Length != term.TrimEnd().Length)
+        {
+            return null;
+        }
+
+        var target = entry.TargetTerm.TrimEnd();
+        if (target.EndsWith('즈') || target.EndsWith('스'))
         {
             return null;
         }

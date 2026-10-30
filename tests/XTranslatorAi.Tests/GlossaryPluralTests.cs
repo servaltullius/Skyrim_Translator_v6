@@ -43,6 +43,16 @@ public class GlossaryPluralTests
     public void MultiWordPluralTerm_MatchesItsSingular(string source, string text, bool matches)
         => Assert.Equal(matches, Applier(source, "용어").Apply(text).TokenToReplacement.Count > 0);
 
+    // LotD's books write "Summerset Isle" (서머셋 아일), which was forced to the built-in "Summerset Isles" (서머셋 아일즈):
+    // a translation that sounds the plural s out is the plural's own.
+    [Theory]
+    [InlineData("Summerset Isles", "서머셋 아일즈", "The Crystal Tower of Summerset Isle.", false)]
+    [InlineData("Summerset Isles", "서머셋 아일즈", "Ships sailed to the Summerset Isles.", true)]
+    [InlineData("Shivering Isles", "쉬버링 아일즈", "A Shivering Isle.", false)]
+    [InlineData("Rain of Arrows", "애로우 레인", "Rain of Arrow", true)]
+    public void PluralTermWhoseTranslationSoundsTheS_LeavesTheSingular(string source, string target, string text, bool matches)
+        => Assert.Equal(matches, Applier(source, target).Apply(text).TokenToReplacement.Count > 0);
+
     [Fact]
     public void PluralTerm_LeavesTheSingularToItsOwnEntry()
     {
@@ -68,6 +78,10 @@ public class GlossaryPluralTests
     [InlineData("진영 및 단체 (Factions/Groups)", "Bandit", "산적", "Bandits ahead.", true)]
     [InlineData("신화 및 주요 존재 (Mythology & Key Beings)", "Shor", "쇼어", "Along the shores.", false)]
     [InlineData("능력치 및 효과 (Attributes & Effects)", "Resist", "저항", "He resists.", false)]
+    // A name ending in i takes no plural s: "the days of Aldmeris" (the Aldmeri homeland) was forced to 알드머.
+    [InlineData("종족 및 생물 (Races/Creatures)", "Aldmeri", "알드머", "We've lived together since the days of Aldmeris.", false)]
+    [InlineData("종족 및 생물 (Races/Creatures)", "Aldmeri", "알드머", "An Aldmeri tribe.", true)]
+    [InlineData("진영 및 단체 (Factions/Groups)", "Akaviri", "아카비르", "The Akaviris came.", false)]
     public void SingleWordTermOfABeingOrGroup_MatchesItsPlural(string category, string source, string target, string text, bool matches)
     {
         var applier = new GlossaryApplier(new[] { new GlossaryEntry(1, category, source, target, true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null) });
