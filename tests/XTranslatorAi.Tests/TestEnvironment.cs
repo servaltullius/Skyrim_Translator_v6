@@ -18,6 +18,19 @@ internal static class TestEnvironment
         Directory.CreateDirectory(dir);
         Environment.SetEnvironmentVariable(AppLog.LogDirectoryVariable, dir);
     }
+
+    /// <summary>
+    /// The agent commands the tests run read the user's settings.json, and refused to write while the user's translator
+    /// window was open: a test passed or failed by the machine. They get default settings (a file that is never written)
+    /// and do not look for the window.
+    /// </summary>
+    [ModuleInitializer]
+    internal static void IsolateAgentCommands()
+    {
+        XTranslatorAi.App.Services.AgentMode.AgentCommand.SettingsPathForTests =
+            Path.Combine(Path.GetTempPath(), "xt-tests-settings", Guid.NewGuid().ToString("N"), "settings.json");
+        XTranslatorAi.App.Services.AgentMode.AgentCommand.IgnoreRunningAppForTests = true;
+    }
 }
 
 public class TestEnvironmentTests

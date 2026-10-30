@@ -58,7 +58,7 @@ internal sealed class AgentCommand
         var help = rest.Contains("--help") || rest.Contains("-h") || rest.Contains("/?");
         var givenWork = c.Option("--work");
         var work = givenWork ?? Path.Combine(Environment.CurrentDirectory, "work");
-        var settings = new AppSettingsStore().Load();
+        var settings = new AppSettingsStore(SettingsPathForTests).Load();
         var globalRoot = GlobalRootOption(c);
         var globalDb = new GlobalProjectDbService(new BuiltInGlossaryService(), globalRoot);
         var gameStrings = new GameStringService(globalRoot);
@@ -127,9 +127,18 @@ internal sealed class AgentCommand
     public string Arg(int index, string what)
         => index < Rest.Count ? Rest[index] : throw new AgentModeException($"{what}을(를) 지정하세요. (tullius.cmd help)");
 
+    /// <summary>
+    /// The test assembly's: its commands read the user's settings.json, and a write command was refused while the user's
+    /// translator window was open, so a test's result depended on the machine it ran on.
+    /// </summary>
+    internal static string? SettingsPathForTests { get; set; }
+
+    /// <inheritdoc cref="SettingsPathForTests"/>
+    internal static bool IgnoreRunningAppForTests { get; set; }
+
     public void RefuseWhileAppRuns()
     {
-        if (AgentCli.AppIsRunning())
+        if (!IgnoreRunningAppForTests && AgentCli.AppIsRunning())
         {
             throw new AgentModeException("번역기 앱(TulliusTranslator)이 켜져 있습니다. 같은 프로젝트를 함께 쓰지 않도록 앱을 닫고 다시 실행하세요.");
         }
