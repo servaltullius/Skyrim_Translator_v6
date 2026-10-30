@@ -10,8 +10,6 @@ namespace XTranslatorAi.Core.Text;
 
 public static class LqaHeuristics
 {
-    private static readonly Regex UiTagTokenRegex = TranslationConstants.UiTagTokenRegex;
-
     // Only pairs that are wrong after any noun. "야를을" (Jarl + 을), "지팡이가", "성과와" and
     // "그대가 이 책" are correct, so 를을/이가/과와/가이 and spaced pairs are checked after known terms only.
     private static readonly Regex DoubledParticleRegex = new(
@@ -59,6 +57,8 @@ public static class LqaHeuristics
 
     public static bool IsLikelyUntranslated(string sourceText, string destText)
     {
+        // Control keys count here: "[Activate] Talk" given back as it is was left untranslated (the translation's quality
+        // escalation and candidate scores read this too). A line of nothing but control keys has nothing to translate.
         var src = NormalizeComparableText(sourceText);
         var dst = NormalizeComparableText(destText);
 
@@ -67,7 +67,7 @@ public static class LqaHeuristics
             return false;
         }
 
-        if (!ContainsAsciiLetter(src) || IsInternalIdentifier(sourceText.Trim()))
+        if (!ContainsAsciiLetter(LqaScanner.StripUiTokens(sourceText)) || IsInternalIdentifier(sourceText.Trim()))
         {
             return false;
         }
@@ -341,6 +341,7 @@ public static class LqaHeuristics
         return Regex.Replace(m.Value, @"\s+", " ", RegexOptions.CultureInvariant).Trim();
     }
 
+    /// <summary>The first of the glossary's forced terms in the source whose target the translation does not have.</summary>
     public static GlossaryEntry? FindMissingForceTokenGlossaryTerm(
         string sourceText,
         string destText,
@@ -352,61 +353,42 @@ public static class LqaHeuristics
             return null;
         }
 
-        var src = StripUiTokens(sourceText);
+        return FindMissingForceTokenGlossaryTerm(sourceText, destText, ForcedTerms(glossaryEntries));
+    }
+
+    /// <summary>
+    /// The glossary's forced terms, as the check finds them in a source (GlossaryApplier.ForcedEntries). The prompt-only
+    /// terms are in it as in the translation's: a singular with a term of its own is not taken by the plural's.
+    /// </summary>
+    public static GlossaryApplier ForcedTerms(IEnumerable<GlossaryEntry> glossaryEntries)
+        => new(glossaryEntries.Where(e => e.Enabled && !string.IsNullOrWhiteSpace(e.SourceTerm) && !string.IsNullOrWhiteSpace(e.TargetTerm)));
+
+    /// <summary>
+    /// The first forced term the translation puts into the source (GlossaryApplier.ForcedEntries: in its order, with a
+    /// plural or singular form and the built-in terms' exceptions, and the text an earlier term took not matched again)
+    /// whose target the translation does not have. A regex term is not looked for (a pattern over-matches easily), but
+    /// the text it takes is its own, as in the translation: "Dragon" inside "Dragon Priest" taken by "Dragon ?Priest".
+    /// </summary>
+    public static GlossaryEntry? FindMissingForceTokenGlossaryTerm(string sourceText, string destText, GlossaryApplier forcedTerms)
+    {
+        var src = LqaScanner.StripUiTokens(sourceText);
         if (string.IsNullOrWhiteSpace(src))
         {
             return null;
         }
 
-        var dst = StripUiTokens(destText);
-
-        // Mirror GlossaryApplier: entries arrive in its order (priority, then longer terms first), and
-        // text an earlier entry replaced is not matched again ("Elder Scroll" before "Scroll").
-        foreach (var entry in glossaryEntries)
+        var dst = LqaScanner.StripUiTokens(destText);
+        foreach (var entry in forcedTerms.ForcedEntries(src))
         {
-            if (!entry.Enabled)
-            {
-                continue;
-            }
-
-            if (entry.ForceMode != GlossaryForceMode.ForceToken)
-            {
-                continue;
-            }
-
-            var sourceTerm = (entry.SourceTerm ?? "").Trim();
-            var targetTerm = (entry.TargetTerm ?? "").Trim();
-            if (string.IsNullOrWhiteSpace(sourceTerm) || string.IsNullOrWhiteSpace(targetTerm))
-            {
-                continue;
-            }
-
             if (entry.MatchMode == GlossaryMatchMode.Regex)
             {
-                // Not looked for (a pattern is easy to over-match), but the text it takes is its own, as in the translation:
-                // "Dragon" inside "Dragon Priest" taken by "Dragon ?Priest" is not missing.
-                src = MaskRegexMatches(src, sourceTerm);
                 continue;
             }
 
-            var spans = FindSourceTermSpans(src, sourceTerm, entry);
-            if (spans.Count == 0)
-            {
-                continue;
-            }
-
-            if (!ContainsIgnoreCase(dst, targetTerm))
+            if (!ContainsIgnoreCase(dst, entry.TargetTerm.Trim()))
             {
                 return entry;
             }
-
-            var masked = src.ToCharArray();
-            foreach (var (start, length) in spans)
-            {
-                Array.Fill(masked, '\u0001', start, length);
-            }
-
-            src = new string(masked);
         }
 
         return null;
@@ -436,16 +418,6 @@ public static class LqaHeuristics
         };
     }
 
-    private static string StripUiTokens(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-        {
-            return "";
-        }
-
-        return UiTagTokenRegex.Replace(text, "");
-    }
-
     private static string NormalizeComparableText(string text)
     {
         if (string.IsNullOrEmpty(text))
@@ -453,7 +425,7 @@ public static class LqaHeuristics
             return "";
         }
 
-        var stripped = StripUiTokens(text);
+        var stripped = TranslationConstants.UiTagTokenRegex.Replace(text, "");
         if (stripped.Length == 0)
         {
             return "";
@@ -498,91 +470,6 @@ public static class LqaHeuristics
 
         return false;
     }
-
-    // The regex terms, made once (GlossaryApplier's options and time limit). A pattern that ran out of time is not run
-    // again: on every row of a big project it cost 250 ms each, and the translation leaves its text as it is too.
-    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, Regex?> RegexTerms = new(StringComparer.Ordinal);
-
-    private static string MaskRegexMatches(string text, string pattern)
-    {
-        var regex = RegexTerms.GetOrAdd(pattern, p => GlossaryApplier.IsValidRegexPattern(p)
-            ? new Regex(p, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250))
-            : null);
-        if (regex == null)
-        {
-            return text;
-        }
-
-        try
-        {
-            char[]? masked = null;
-            for (var match = regex.Match(text); match.Success; match = match.NextMatch())
-            {
-                masked ??= text.ToCharArray();
-                Array.Fill(masked, '\u0001', match.Index, match.Length);
-            }
-
-            return masked == null ? text : new string(masked);
-        }
-        catch (RegexMatchTimeoutException)
-        {
-            RegexTerms[pattern] = null;
-            return text;
-        }
-    }
-
-    private static List<(int Start, int Length)> FindSourceTermSpans(string sourceText, string sourceTerm, GlossaryEntry entry)
-    {
-        var spans = new List<(int Start, int Length)>();
-        if (entry.MatchMode is not (GlossaryMatchMode.Substring or GlossaryMatchMode.WordBoundary))
-        {
-            return spans;
-        }
-
-        var comparison = GlossaryApplier.ForcesOnlyExactCase(entry) ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
-        var idx = 0;
-        while ((idx = sourceText.IndexOf(sourceTerm, idx, comparison)) >= 0)
-        {
-            var end = idx + sourceTerm.Length;
-            var counts = entry.MatchMode == GlossaryMatchMode.Substring || IsWordBoundary(sourceText, idx, sourceTerm.Length);
-
-            // Same exceptions as GlossaryApplier ("Reach level 10", "What in Oblivion", "the Scroll", "Yes, Master.").
-            if (counts && (GlossaryApplier.IsBuiltInTermUsedOtherwise(sourceText, entry, idx, sourceTerm.Length)
-                           || GlossaryApplier.IsCapitalizedOnlyByPosition(sourceText, entry, idx, sourceTerm.Length)))
-            {
-                counts = false;
-            }
-
-            if (counts)
-            {
-                spans.Add((idx, sourceTerm.Length));
-            }
-
-            idx = end;
-        }
-
-        return spans;
-    }
-
-    private static bool IsWordBoundary(string text, int matchIndex, int matchLength)
-    {
-        var before = matchIndex - 1;
-        if (before >= 0 && IsWordChar(text[before]))
-        {
-            return false;
-        }
-
-        var after = matchIndex + matchLength;
-        if (after < text.Length && IsWordChar(text[after]))
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    private static bool IsWordChar(char c)
-        => char.IsLetterOrDigit(c) || c == '_';
 
     private static bool ContainsIgnoreCase(string haystack, string needle)
         => haystack.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0;

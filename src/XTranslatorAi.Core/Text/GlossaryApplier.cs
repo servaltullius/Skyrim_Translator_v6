@@ -108,7 +108,7 @@ public sealed class GlossaryApplier
                 continue;
             }
 
-            working = ReplaceAllMatchesTokenSafe(working, compiled, tokenToReplacement, entryIdToToken, out var skippedCommonWord);
+            working = ReplaceAllMatchesTokenSafe(working, compiled, tokenToReplacement, entryIdToToken, out var skippedCommonWord, out _);
             if (skippedCommonWord)
             {
                 // Not forced, but the model may still need the term if the word is used in that sense.
@@ -123,15 +123,56 @@ public sealed class GlossaryApplier
         );
     }
 
+    /// <summary>
+    /// The forced terms the translation puts into a text, in the order it applies them: what <see cref="Apply"/> turns
+    /// into term tokens, with a plural or singular form, the built-in terms' exceptions, and the text an earlier term took
+    /// not matched again. The quality check looks for their targets in the translation; with its own search it reported
+    /// "Arrow → 화살" missing from "Rain of Arrow" (the glossary's "Rain of Arrows" took it) and skipped "Weapon Arts".
+    /// </summary>
+    public IReadOnlyList<GlossaryEntry> ForcedEntries(string text)
+    {
+        var forced = new List<GlossaryEntry>();
+        var working = text;
+        var tokens = new Dictionary<string, string>();
+        var tokenByEntry = new Dictionary<long, string>();
+        foreach (var compiled in _entries)
+        {
+            if (compiled.Entry.ForceMode == GlossaryForceMode.PromptOnly || _timedOut.ContainsKey(compiled))
+            {
+                continue;
+            }
+
+            var next = ReplaceAllMatchesTokenSafe(working, compiled, tokens, tokenByEntry, out _, out var timedOut);
+            if (timedOut)
+            {
+                // Run on every row of a big project, a pattern that ran out of time cost 250 ms a row: it is not run
+                // again, and the text it would take is left as it is, as on the time-out.
+                _timedOut.TryAdd(compiled, true);
+            }
+
+            if (!string.Equals(next, working, StringComparison.Ordinal))
+            {
+                forced.Add(compiled.Entry);
+                working = next;
+            }
+        }
+
+        return forced;
+    }
+
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<CompiledGlossaryEntry, bool> _timedOut = new();
+
     private static string ReplaceAllMatchesTokenSafe(
         string input,
         CompiledGlossaryEntry entry,
         IDictionary<string, string> tokenToReplacement,
         Dictionary<long, string> entryIdToToken,
-        out bool skippedCommonWord
+        out bool skippedCommonWord,
+        out bool timedOut
     )
     {
         skippedCommonWord = false;
+        timedOut = false;
         if (string.IsNullOrEmpty(input))
         {
             return input;
@@ -157,7 +198,7 @@ public sealed class GlossaryApplier
                 continue;
             }
 
-            sb.Append(ReplaceAllMatchesInPlainText(text, entry, tokenToReplacement, entryIdToToken, ref skippedCommonWord));
+            sb.Append(ReplaceAllMatchesInPlainText(text, entry, tokenToReplacement, entryIdToToken, ref skippedCommonWord, ref timedOut));
         }
 
         return sb.ToString();
@@ -168,7 +209,8 @@ public sealed class GlossaryApplier
         CompiledGlossaryEntry entry,
         IDictionary<string, string> tokenToReplacement,
         Dictionary<long, string> entryIdToToken,
-        ref bool skippedCommonWord
+        ref bool skippedCommonWord,
+        ref bool timedOut
     )
     {
         var matchMode = entry.Entry.MatchMode;
@@ -199,6 +241,7 @@ public sealed class GlossaryApplier
         catch (RegexMatchTimeoutException)
         {
             // A user pattern with catastrophic backtracking: leave this text alone rather than hang the run.
+            timedOut = true;
             return input;
         }
 

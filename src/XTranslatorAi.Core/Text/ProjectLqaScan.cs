@@ -40,14 +40,16 @@ public static class ProjectLqaScan
             : status;
 
     /// <summary>
-    /// The forced terms the check looks for, the project's over the global ones, in the order the translation applies
-    /// them. A regex term is not looked for (a pattern over-matches easily), but it takes its text first as in the
-    /// translation: with "Dragon ?Priest" → 드래곤 프리스트, "Dragon" → 용 was reported missing from "드래곤 프리스트".
+    /// The glossary the check reads, the project's over the global ones, in the order the translation applies it: the
+    /// forced terms it looks for (a regex term is not looked for, a pattern over-matches easily, but it takes its text
+    /// first as in the translation: with "Dragon ?Priest" → 드래곤 프리스트, "Dragon" → 용 was reported missing from
+    /// "드래곤 프리스트"), and the prompt-only word terms, the user's choice of a name for the TM name check.
     /// </summary>
-    public static IReadOnlyList<GlossaryEntry> ForceTokenGlossary(IReadOnlyList<GlossaryEntry> project, IReadOnlyList<GlossaryEntry>? global)
+    public static IReadOnlyList<GlossaryEntry> CheckGlossary(IReadOnlyList<GlossaryEntry> project, IReadOnlyList<GlossaryEntry>? global)
         => GlossaryMerger.Merge(project, global is { Count: > 0 } ? global : null)
-            .Where(e => e.Enabled && e.ForceMode == GlossaryForceMode.ForceToken
-                        && (e.MatchMode != GlossaryMatchMode.Regex || GlossaryApplier.IsValidRegexPattern(e.SourceTerm)))
+            .Where(e => e.Enabled && (e.ForceMode == GlossaryForceMode.ForceToken
+                                      ? e.MatchMode != GlossaryMatchMode.Regex || GlossaryApplier.IsValidRegexPattern(e.SourceTerm)
+                                      : e.MatchMode != GlossaryMatchMode.Regex))
             .Where(e => !string.IsNullOrWhiteSpace(e.SourceTerm) && !string.IsNullOrWhiteSpace(e.TargetTerm))
             .OrderByDescending(e => e.Priority)
             .ThenByDescending(e => e.SourceTerm.Length)
@@ -77,10 +79,10 @@ public static class ProjectLqaScan
 
     public sealed record Result(List<LqaIssue> Issues, ReferenceNameIndex? ReferenceNames);
 
-    /// <param name="forceTokenGlossary">From <see cref="ForceTokenGlossary"/>; empty for a target that is not Korean.</param>
+    /// <param name="glossary">From <see cref="CheckGlossary"/>; empty for a target that is not Korean.</param>
     /// <param name="referenceMemory">The series TM, or null when it could not be read (the check goes on without its names).</param>
     public static async Task<Result> ScanAsync(
-        ProjectDb? db, IReadOnlyList<ProjectLqaRow> rows, string targetLang, IReadOnlyList<GlossaryEntry> forceTokenGlossary,
+        ProjectDb? db, IReadOnlyList<ProjectLqaRow> rows, string targetLang, IReadOnlyList<GlossaryEntry> glossary,
         IReadOnlyList<(string Source, string Target)>? referenceMemory, Action<int>? onProgress, CancellationToken ct)
     {
         var speakers = db == null ? new Dictionary<long, string>() : await DialogueSpeakerNames.LoadCheckGroupsAsync(db, ct);
@@ -90,7 +92,7 @@ public static class ProjectLqaScan
         var hasMemory = referenceMemory is { Count: > 0 };
         var notes = hasMemory ? LqaScanner.DropTmFallbacksMatchingMemory(tmFallbackNotes, entries, referenceMemory!) : tmFallbackNotes;
         var referenceNames = hasMemory ? ReferenceNameIndex.Build(referenceMemory!) : null;
-        var issues = await LqaScanner.ScanAsync(entries, targetLang, forceTokenGlossary, onProgress, notes, referenceNames,
+        var issues = await LqaScanner.ScanAsync(entries, targetLang, glossary, onProgress, notes, referenceNames,
             rows.Where(row => row.IsSourceFix).Select(row => row.Id).ToHashSet(), speakerStyles);
         return new Result(issues, referenceNames);
     }

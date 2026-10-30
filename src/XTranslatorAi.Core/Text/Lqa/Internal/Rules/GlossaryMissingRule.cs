@@ -17,6 +17,7 @@ internal static class GlossaryMissingRule
         string destText,
         bool isKorean,
         IReadOnlyList<GlossaryEntry> forceTokenGlossary,
+        GlossaryApplier forcedTerms,
         ReferenceNameIndex? referenceNames,
         List<LqaIssue> issues
     )
@@ -26,10 +27,10 @@ internal static class GlossaryMissingRule
             return;
         }
 
-        var missing = LqaHeuristics.FindMissingForceTokenGlossaryTerm(sourceText, destText, forceTokenGlossary);
+        var missing = LqaHeuristics.FindMissingForceTokenGlossaryTerm(sourceText, destText, forcedTerms);
         if (missing != null && WithoutTranslatedNames(sourceText, destText, referenceNames, forceTokenGlossary) is { } rest)
         {
-            missing = LqaHeuristics.FindMissingForceTokenGlossaryTerm(rest, destText, forceTokenGlossary);
+            missing = LqaHeuristics.FindMissingForceTokenGlossaryTerm(rest, destText, forcedTerms);
         }
 
         if (missing == null)

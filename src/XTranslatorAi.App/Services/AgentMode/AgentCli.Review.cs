@@ -43,7 +43,7 @@ public static partial class AgentCli
             Console.WriteLine("경고: 전체 DB의 전체 용어집을 읽지 못해 그 용어 없이 검사했습니다.");
         }
 
-        var glossary = ProjectLqaScan.ForceTokenGlossary(await db.GetGlossaryAsync(ct), globalGlossary);
+        var glossary = ProjectLqaScan.CheckGlossary(await db.GetGlossaryAsync(ct), globalGlossary);
         // An unreadable series TM ended the check; the GUI's goes on without the TM name index, and so does this one.
         List<(string, string)>? memory = null;
         try

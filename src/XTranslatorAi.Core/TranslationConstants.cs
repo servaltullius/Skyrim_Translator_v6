@@ -29,6 +29,10 @@ public static class TranslationConstants
         + @"|(?=[^<>]*__XT_)\s*[^\s<>=%""]+(?:\s+[^\s<>=%""]+)+\s*>))"
         + @"(?![^<>]*[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7A3][^<>]*>)";
 
+    /// <summary>
+    /// UI markup (tags, page breaks, protected tokens), control keys ("[Sneak]") kept: the untranslated check reads them
+    /// as text. The other checks leave control keys out too (LqaScanner.StripUiTokens).
+    /// </summary>
     public static readonly Regex UiTagTokenRegex = new(
         pattern: @"[+-]?<" + StageDirectionGuard + @"\s*[^>]+\s*>|\[page ?break\]|__XT_[A-Za-z0-9_]+__",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase

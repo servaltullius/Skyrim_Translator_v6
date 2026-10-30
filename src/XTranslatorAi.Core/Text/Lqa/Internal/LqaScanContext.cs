@@ -8,7 +8,7 @@ internal sealed class LqaScanContext
     public LqaScanContext(
         IReadOnlyList<LqaScanEntry> entries,
         string targetLang,
-        IReadOnlyList<GlossaryEntry> forceTokenGlossary,
+        IReadOnlyList<GlossaryEntry> glossary,
         Action<int>? onProgress,
         IReadOnlyDictionary<long, string>? tmFallbackNotes,
         XTranslatorAi.Core.Translation.ReferenceNameIndex? referenceNames = null,
@@ -18,7 +18,7 @@ internal sealed class LqaScanContext
         SpeakerStyles = speakerStyles ?? Array.Empty<XTranslatorAi.Core.Data.SpeakerStyle>();
         Entries = entries;
         TargetLang = targetLang;
-        ForceTokenGlossary = forceTokenGlossary;
+        Glossary = glossary;
         OnProgress = onProgress;
         TmFallbackNotes = tmFallbackNotes;
         ReferenceNames = referenceNames;
@@ -28,7 +28,8 @@ internal sealed class LqaScanContext
 
     public string TargetLang { get; }
 
-    public IReadOnlyList<GlossaryEntry> ForceTokenGlossary { get; }
+    /// <summary>The check's glossary (ProjectLqaScan.CheckGlossary): the forced terms, and the prompt-only word terms.</summary>
+    public IReadOnlyList<GlossaryEntry> Glossary { get; }
 
     public Action<int>? OnProgress { get; }
 

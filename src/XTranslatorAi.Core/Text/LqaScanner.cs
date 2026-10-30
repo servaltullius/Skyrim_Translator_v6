@@ -67,7 +67,7 @@ public static class LqaScanner
     public static async Task<List<LqaIssue>> ScanAsync(
         IReadOnlyList<LqaScanEntry> entries,
         string targetLang,
-        IReadOnlyList<GlossaryEntry> forceTokenGlossary,
+        IReadOnlyList<GlossaryEntry> glossary,
         Action<int>? onProgress = null,
         IReadOnlyDictionary<long, string>? tmFallbackNotes = null,
         XTranslatorAi.Core.Translation.ReferenceNameIndex? referenceNames = null,
@@ -79,7 +79,7 @@ public static class LqaScanner
         // A row marked "원문 오류 수정" was translated against its English on purpose (the modder pasted another record's
         // text), so it is neither compared with its English nor counted as other rows' wording; its tags are still checked.
         var scanned = sourceFixIds is { Count: > 0 } ? entries.Where(e => !sourceFixIds.Contains(e.Id)).ToList() : entries;
-        var context = new LqaScanContext(scanned, targetLang, forceTokenGlossary, onProgress, tmFallbackNotes, referenceNames, speakerStyles);
+        var context = new LqaScanContext(scanned, targetLang, glossary, onProgress, tmFallbackNotes, referenceNames, speakerStyles);
         await ApplyExtractedRulePipelineAsync(context, issues);
         foreach (var entry in entries.Where(e => sourceFixIds?.Contains(e.Id) == true
                      && e.Status is StringEntryStatus.Done or StringEntryStatus.Edited))
@@ -137,7 +137,9 @@ public static class LqaScanner
     {
         var entries = context.Entries;
         var targetLang = context.TargetLang;
-        var forceTokenGlossary = context.ForceTokenGlossary;
+        var forceTokenGlossary = context.Glossary.Where(e => e.ForceMode == GlossaryForceMode.ForceToken).ToList();
+        // Made once for the scan: the forced terms as the translation finds them in a source.
+        var forcedTerms = LqaHeuristics.ForcedTerms(context.Glossary);
         // A regex term only takes its text from the missing-term check; the other rules read terms as words.
         var wordTerms = forceTokenGlossary.Where(e => e.MatchMode != GlossaryMatchMode.Regex).ToList();
         var onProgress = context.OnProgress;
@@ -151,7 +153,10 @@ public static class LqaScanner
         var nameFindings = NameConsistencyRule.Build(entries, isKorean);
         var loanwordIndex = isKorean ? GlossaryLoanwordRule.Build(wordTerms) : new Dictionary<string, GlossaryLoanwordRule.Term>();
         var fieldToneMajority = RecToneRule.BuildFieldMajorities(entries);
-        var glossarySources = OfficialNameRule.BuildGlossarySources(wordTerms);
+        // The user's terms, prompt-only ones too, are the user's choice of a name, as the translation leaves them
+        // (GlossaryApplier.HasTerm): "시리즈 TM의 이름 표기가 없습니다" was reported on a name a prompt-only term set.
+        var glossarySources = OfficialNameRule.BuildGlossarySources(
+            context.Glossary.Where(e => e.Enabled && e.MatchMode != GlossaryMatchMode.Regex).ToList());
         var sameSourceVariants = SameSourceVariantRule.Build(entries);
         var prefixedNameVariants = PrefixedNameVariantRule.Build(entries);
 
@@ -179,6 +184,7 @@ public static class LqaScanner
                 dest,
                 isKorean,
                 forceTokenGlossary,
+                forcedTerms,
                 particleTerms,
                 glossaryLatinWords,
                 tmFallbackNotes,
@@ -203,6 +209,7 @@ public static class LqaScanner
         string destText,
         bool isKorean,
         IReadOnlyList<GlossaryEntry> forceTokenGlossary,
+        GlossaryApplier forcedTerms,
         IReadOnlyList<string> particleTerms,
         IReadOnlySet<string> glossaryLatinWords,
         IReadOnlyDictionary<long, string>? tmFallbackNotes,
@@ -223,7 +230,7 @@ public static class LqaScanner
             return;
         }
 
-        GlossaryMissingRule.Apply(entry, sourceText, destText, isKorean, forceTokenGlossary, referenceNames, issues);
+        GlossaryMissingRule.Apply(entry, sourceText, destText, isKorean, forceTokenGlossary, forcedTerms, referenceNames, issues);
 
         GlossaryLoanwordRule.Apply(entry, sourceText, destText, isKorean, loanwordIndex, issues);
 

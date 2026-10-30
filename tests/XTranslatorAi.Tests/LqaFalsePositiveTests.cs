@@ -191,7 +191,7 @@ public class LqaFalsePositiveTests
             Row(10, "MESG:DESC", "추가 피해를 준다."),
         };
 
-        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", forceTokenGlossary: new List<GlossaryEntry>());
+        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", glossary: new List<GlossaryEntry>());
 
         var tone = Assert.Single(issues, i => i.Code == "rec_tone");
         Assert.Equal(10, tone.Id);
@@ -986,7 +986,7 @@ public class LqaFalsePositiveTests
     [Fact]
     public async Task GlossaryMissing_DoesNotLookInsideARegexTermsText()
     {
-        var glossary = ProjectLqaScan.ForceTokenGlossary(new[]
+        var glossary = ProjectLqaScan.CheckGlossary(new[]
         {
             new GlossaryEntry(1, null, "Dragon ?Priest", "드래곤 프리스트", true, GlossaryMatchMode.Regex, GlossaryForceMode.ForceToken, 10, null),
             new GlossaryEntry(2, null, "Dragon", "용", true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 0, null),
@@ -1001,7 +1001,7 @@ public class LqaFalsePositiveTests
 
         Assert.Equal(new long[] { 2 }, missing);
         // A pattern that does not compile is left out, as the translation leaves it out.
-        Assert.DoesNotContain(ProjectLqaScan.ForceTokenGlossary(new[]
+        Assert.DoesNotContain(ProjectLqaScan.CheckGlossary(new[]
         {
             new GlossaryEntry(3, null, "[Dragon", "드래곤", true, GlossaryMatchMode.Regex, GlossaryForceMode.ForceToken, 10, null),
         }, null), e => e.Id == 3);

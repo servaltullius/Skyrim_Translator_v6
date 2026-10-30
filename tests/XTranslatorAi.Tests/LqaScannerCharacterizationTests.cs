@@ -54,7 +54,7 @@ public class LqaScannerCharacterizationTests
         IReadOnlyList<LqaIssue> issues = await LqaScanner.ScanAsync(
             LqaScannerCharacterizationFixture.BuildPendingOnlyEntries(),
             targetLang: "ko",
-            forceTokenGlossary: new List<GlossaryEntry>()
+            glossary: new List<GlossaryEntry>()
         );
 
         Assert.Empty(issues);

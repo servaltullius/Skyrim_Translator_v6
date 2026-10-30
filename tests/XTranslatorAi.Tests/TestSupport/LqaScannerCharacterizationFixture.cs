@@ -137,7 +137,7 @@ internal static class LqaScannerCharacterizationFixture
         return await LqaScanner.ScanAsync(
             BuildRepresentativeEntries(),
             targetLang: "ko-KR",
-            forceTokenGlossary: BuildRepresentativeGlossary(),
+            glossary: BuildRepresentativeGlossary(),
             tmFallbackNotes: BuildRepresentativeTmFallbackNotes()
         );
     }

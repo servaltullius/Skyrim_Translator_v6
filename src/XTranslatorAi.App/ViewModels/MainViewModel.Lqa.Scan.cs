@@ -16,7 +16,7 @@ public partial class MainViewModel
         // The rows as the grid holds them; the rest of the input is the agent's check's too (ProjectLqaScan).
         var db = _projectState.Db;
         var rows = Entries.Select(ToLqaRow).ToList();
-        var forceTokenGlossary = LanguageHelper.IsKoreanLanguage(TargetLang) ? BuildLqaForceTokenGlossary() : Array.Empty<GlossaryEntry>();
+        var checkGlossary = LanguageHelper.IsKoreanLanguage(TargetLang) ? BuildLqaGlossary() : Array.Empty<GlossaryEntry>();
 
         // The rules read only this snapshot, so they run on a worker thread. On the UI thread the
         // project-wide rules (name consistency, tone majorities) ran before the first progress report
@@ -26,7 +26,7 @@ public partial class MainViewModel
         var targetLang = TargetLang;
         IProgress<int> progress = new Progress<int>(pct => StatusMessage = $"품질 검사 중... {pct}%");
         var result = await Task.Run(() => ProjectLqaScan.ScanAsync(
-            db, rows, targetLang, forceTokenGlossary, referenceMemory, progress.Report, CancellationToken.None));
+            db, rows, targetLang, checkGlossary, referenceMemory, progress.Report, CancellationToken.None));
         // Only for the project still open: a scan of one the user has left would leave its TM names for the next.
         if (ReferenceEquals(db, _projectState.Db)) _lqaReferenceNames = result.ReferenceNames;
 
@@ -130,7 +130,7 @@ public partial class MainViewModel
 
         var db = _projectState.Db;
         var scanEntries = entries.Select(entry => ProjectLqaScan.ToEntry(ToLqaRow(entry))).ToList();
-        var glossary = LanguageHelper.IsKoreanLanguage(TargetLang) ? BuildLqaForceTokenGlossary() : Array.Empty<GlossaryEntry>();
+        var glossary = LanguageHelper.IsKoreanLanguage(TargetLang) ? BuildLqaGlossary() : Array.Empty<GlossaryEntry>();
         var targetLang = TargetLang;
         var sourceFixIds = entries.Where(entry => entry.IsSourceFix).Select(entry => entry.Id).ToHashSet();
         // With the full scan's TM names: without them a glossary term written as part of a TM name was flagged missing.
@@ -172,7 +172,7 @@ public partial class MainViewModel
             : string.Equals(severity, "Warn", StringComparison.OrdinalIgnoreCase) ? 1
             : 2;
 
-    private IReadOnlyList<GlossaryEntry> BuildLqaForceTokenGlossary()
+    private IReadOnlyList<GlossaryEntry> BuildLqaGlossary()
     {
         var project = Glossary
             .Select(ToCoreGlossaryEntry)
@@ -181,7 +181,7 @@ public partial class MainViewModel
             ? null
             : GlobalGlossary.Select(ToCoreGlossaryEntry).ToList();
 
-        return ProjectLqaScan.ForceTokenGlossary(project, global);
+        return ProjectLqaScan.CheckGlossary(project, global);
     }
 
     private static GlossaryEntry ToCoreGlossaryEntry(GlossaryEntryViewModel vm)

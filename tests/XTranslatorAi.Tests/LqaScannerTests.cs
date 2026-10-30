@@ -24,7 +24,7 @@ public class LqaScannerTests
             ),
         };
 
-        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", forceTokenGlossary: new List<GlossaryEntry>());
+        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", glossary: new List<GlossaryEntry>());
         Assert.Contains(issues, i => i.Code == "untranslated" && i.Id == 1);
     }
 
@@ -59,7 +59,7 @@ public class LqaScannerTests
             ),
         };
 
-        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", forceTokenGlossary: glossary);
+        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", glossary: glossary);
         Assert.Contains(issues, i => i.Code == "glossary_missing" && i.Id == 1);
     }
 
@@ -79,7 +79,7 @@ public class LqaScannerTests
             ),
         };
 
-        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", forceTokenGlossary: new List<GlossaryEntry>());
+        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", glossary: new List<GlossaryEntry>());
         Assert.Contains(issues, i => i.Code == "particle_double" && i.Id == 1);
     }
 
@@ -99,7 +99,7 @@ public class LqaScannerTests
             ),
         };
 
-        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", forceTokenGlossary: new List<GlossaryEntry>());
+        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", glossary: new List<GlossaryEntry>());
         Assert.Contains(issues, i => i.Code == "particle_mismatch" && i.Id == 1);
     }
 
@@ -127,7 +127,7 @@ public class LqaScannerTests
         var issues = await LqaScanner.ScanAsync(
             entries,
             targetLang: "ko",
-            forceTokenGlossary: new List<GlossaryEntry>(),
+            glossary: new List<GlossaryEntry>(),
             tmFallbackNotes: notes
         );
 
@@ -152,7 +152,7 @@ public class LqaScannerTests
             ),
         };
 
-        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", forceTokenGlossary: new List<GlossaryEntry>());
+        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", glossary: new List<GlossaryEntry>());
         Assert.Contains(issues, i => i.Code == "book_pagebreak_mismatch" && i.Id == 1);
     }
 
@@ -168,7 +168,7 @@ public class LqaScannerTests
             new(2, 2, "BookTest2", "BOOK:00000002", StringEntryStatus.Done, $"Page one.{pageBreak}Page two.", $"1페이지.{pageBreak}2페이지."),
         };
 
-        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", forceTokenGlossary: new List<GlossaryEntry>());
+        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", glossary: new List<GlossaryEntry>());
 
         Assert.Contains(issues, i => i.Code == "book_pagebreak_mismatch" && i.Id == 1);
         Assert.DoesNotContain(issues, i => i.Code == "book_pagebreak_mismatch" && i.Id == 2);
@@ -190,7 +190,7 @@ public class LqaScannerTests
             ),
         };
 
-        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", forceTokenGlossary: new List<GlossaryEntry>());
+        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", glossary: new List<GlossaryEntry>());
         Assert.DoesNotContain(issues, i => i.Code == "book_pagebreak_mismatch");
     }
 
@@ -210,7 +210,7 @@ public class LqaScannerTests
             ),
         };
 
-        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", forceTokenGlossary: new List<GlossaryEntry>());
+        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", glossary: new List<GlossaryEntry>());
         Assert.Contains(issues, i => i.Code == "book_html_tag_mismatch" && i.Id == 1);
     }
 
@@ -233,7 +233,7 @@ public class LqaScannerTests
             ),
         };
 
-        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", forceTokenGlossary: new List<GlossaryEntry>());
+        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", glossary: new List<GlossaryEntry>());
         Assert.Contains(issues, i => i.Code == "book_length_ratio" && i.Id == 1);
     }
 
@@ -253,7 +253,7 @@ public class LqaScannerTests
             ),
         };
 
-        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", forceTokenGlossary: new List<GlossaryEntry>());
+        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", glossary: new List<GlossaryEntry>());
         Assert.DoesNotContain(issues, i => i.Code == "book_pagebreak_mismatch");
     }
 
@@ -275,7 +275,7 @@ public class LqaScannerTests
             ),
         };
 
-        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", forceTokenGlossary: new List<GlossaryEntry>());
+        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", glossary: new List<GlossaryEntry>());
         Assert.Contains(issues, i => i.Code == "name_verb_ending" && i.Id == 1);
     }
 
@@ -295,7 +295,7 @@ public class LqaScannerTests
             ),
         };
 
-        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", forceTokenGlossary: new List<GlossaryEntry>());
+        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", glossary: new List<GlossaryEntry>());
         Assert.DoesNotContain(issues, i => i.Code == "name_verb_ending");
     }
 
@@ -315,7 +315,7 @@ public class LqaScannerTests
             ),
         };
 
-        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", forceTokenGlossary: new List<GlossaryEntry>());
+        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", glossary: new List<GlossaryEntry>());
         Assert.DoesNotContain(issues, i => i.Code == "name_verb_ending");
     }
 }
