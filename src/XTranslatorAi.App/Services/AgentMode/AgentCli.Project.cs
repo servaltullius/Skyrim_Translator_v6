@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Text;
+using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.App.Services.AgentMode;
 
@@ -41,6 +42,7 @@ public static partial class AgentCli
 
             Console.WriteLine($"프로젝트 문맥 ({saved!.UpdatedAt.ToLocalTime():yyyy-MM-dd HH:mm} 저장, {current.Length}자):");
             Console.WriteLine(current);
+            WriteContextLint(current);
             return;
         }
 
@@ -66,14 +68,43 @@ public static partial class AgentCli
             if (string.Equals(text, current, StringComparison.Ordinal))
             {
                 Console.WriteLine("프로젝트 문맥이 이미 이 내용입니다.");
+                WriteContextLint(current);
                 return;
+            }
+
+            // The GUI's check of the prompt (PromptConflictLint): a context that tells the model to leave text in English
+            // or to answer in another format stops the GUI's 번역 시작, and was saved here without a word.
+            var lint = ContextLint(text);
+            if (PromptConflictLint.HasBlockingIssues(lint))
+            {
+                throw new AgentModeException("문맥을 저장하지 않았습니다. 번역을 막는 지시가 있습니다(GUI의 번역 시작도 막힘): "
+                                             + string.Join(" / ", lint.Where(i => i.Severity == PromptLintSeverity.Error).Select(LintLine))
+                                             + " 그 문장을 빼거나, 사실을 적은 문장이면 걸린 낱말을 다른 말로 바꿔 쓰세요.");
             }
 
             await db.UpsertProjectContextAsync(text, c.Ct);
             Console.WriteLine($"프로젝트 문맥을 저장했습니다({text.Length}자). 다음 요청부터 지시에 들어갑니다(GUI의 프로젝트 문맥 탭에도 보입니다).");
+            foreach (var issue in lint)
+            {
+                Console.WriteLine("경고: " + LintLine(issue));
+            }
         }
 
         await RemakeWaitingAsync(c, project, "바뀐 문맥으로", "옛 문맥으로");
+    }
+
+    private static IReadOnlyList<PromptLintIssue> ContextLint(string context)
+        => PromptConflictLint.Analyze(useCustomPrompt: false, customPrompt: null, enableProjectContext: true, projectContext: context);
+
+    private static string LintLine(PromptLintIssue issue) => $"\"{issue.Clause}\" ('{issue.MatchedText}'): {issue.Message}";
+
+    // A context saved before this check, or by the GUI (which checks it only at 번역 시작), is shown with what it found.
+    private static void WriteContextLint(string context)
+    {
+        foreach (var issue in ContextLint(context))
+        {
+            Console.WriteLine((issue.Severity == PromptLintSeverity.Error ? "알림(GUI의 번역 시작을 막음): " : "알림: ") + LintLine(issue));
+        }
     }
 
     // terms <프로젝트> [--find 낱말] lists the project glossary; terms <프로젝트> <파일> adds, changes or removes the

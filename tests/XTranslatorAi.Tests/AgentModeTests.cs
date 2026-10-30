@@ -1253,6 +1253,51 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Contains("앞 요청과 같음", await File.ReadAllTextAsync(report.NextRequestPath!));
     }
 
+    /// <summary>
+    /// The GUI checks the prompt before 번역 시작 (PromptConflictLint): a context the agent saved telling the model to leave
+    /// the text in English stopped the GUI's run, and was saved without a word. It is refused; one that keeps only names
+    /// in English is saved with a warning.
+    /// </summary>
+    [Fact]
+    public async Task Context_ThatWouldStopTheRun_IsRefused_AndOneKeepingNamesIsSavedWithAWarning()
+    {
+        const string before = "이 모드는 ESO 시대 배경이다.";
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            await db.UpsertProjectContextAsync(before, CancellationToken.None);
+        }
+
+        async Task<string?> SavedAsync()
+        {
+            await using var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None);
+            return (await db.TryGetProjectContextAsync(CancellationToken.None))?.ContextText;
+        }
+
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects"), "--global", Path.Combine(_root, "global") });
+        async Task<(bool Error, string Text)> ContextAsync(string text)
+        {
+            var call = JsonSerializer.Serialize(new
+            {
+                jsonrpc = "2.0", id = 1, method = "tools/call", @params = new { name = "context", arguments = new { project = "Thalmor", text } },
+            });
+            var output = new StringWriter();
+            Assert.Equal(0, await AgentMcpServer.ServeAsync(server, new StringReader(call), output));
+            var result = JsonDocument.Parse(output.ToString()).RootElement.GetProperty("result");
+            return (result.GetProperty("isError").GetBoolean(), result.GetProperty("content")[0].GetProperty("text").GetString()!);
+        }
+
+        var refused = await ContextAsync(before + " 원문은 번역하지 말 것.");
+        Assert.True(refused.Error);
+        Assert.Contains("문맥을 저장하지 않았습니다", refused.Text);
+        Assert.Contains("\"원문은 번역하지 말 것\"", refused.Text);
+        Assert.Equal(before, await SavedAsync());
+
+        var saved = await ContextAsync(before + " SkyUI 같은 제품명은 번역하지 말 것.");
+        Assert.False(saved.Error, saved.Text);
+        Assert.Contains("경고: \"SkyUI 같은 제품명은 번역하지 말 것\"", saved.Text);
+        Assert.Equal(before + " SkyUI 같은 제품명은 번역하지 말 것.", await SavedAsync());
+    }
+
     // A mod set in ESO's time needs its setting and names before the first request, and both lived only in the GUI,
     // whose "생성한 프로젝트 문맥 사용" box also decided whether agent mode read the context at all.
     [Fact]

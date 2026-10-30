@@ -11,11 +11,13 @@ public enum PromptLintSeverity
     Error = 1,
 }
 
+/// <param name="Clause">The instruction (sentence) the phrase is in: two of them with the same phrase are two issues.</param>
 public sealed record PromptLintIssue(
     PromptLintSeverity Severity,
     string Source,
     string Message,
-    string MatchedText
+    string MatchedText,
+    string Clause = ""
 );
 
 public static class PromptConflictLint
@@ -31,14 +33,13 @@ public static class PromptConflictLint
         bool ScopedIsWarning = false
     );
 
-    private const string ScopedKeepMessage =
-        "This instruction keeps the content it names untranslated; make sure it only covers names or terms.";
+    private const string ScopedKeepMessage = "이 지시가 가리키는 것은 번역하지 않고 남습니다. 이름이나 용어에만 해당하는지 확인하세요.";
 
     private static readonly PhraseRule[] Rules =
     {
         new(
             Severity: PromptLintSeverity.Error,
-            Message: "This instruction can leave content untranslated.",
+            Message: "내용을 번역하지 않고 남기게 할 수 있는 지시입니다.",
             Needles: new[]
             {
                 "원문 유지",
@@ -54,7 +55,7 @@ public static class PromptConflictLint
         ),
         new(
             Severity: PromptLintSeverity.Error,
-            Message: "This instruction can conflict with required output format.",
+            Message: "번역기가 요구하는 출력 형식과 어긋날 수 있는 지시입니다.",
             Needles: new[]
             {
                 "output markdown",
@@ -72,7 +73,7 @@ public static class PromptConflictLint
         ),
         new(
             Severity: PromptLintSeverity.Error,
-            Message: "This instruction can add commentary/explanations to output.",
+            Message: "번역문에 설명이나 해설을 덧붙이게 할 수 있는 지시입니다.",
             Needles: new[]
             {
                 "include explanation",
@@ -85,7 +86,7 @@ public static class PromptConflictLint
         ),
         new(
             Severity: PromptLintSeverity.Warning,
-            Message: "This instruction may bias the model toward source-keep behavior.",
+            Message: "모델이 원문을 그대로 두는 쪽으로 기울 수 있는 지시입니다.",
             Needles: new[]
             {
                 "if not sure, keep original",
@@ -175,12 +176,13 @@ public static class PromptConflictLint
                         message = ScopedKeepMessage;
                     }
 
-                    if (!seen.Add(source + "|" + needle + "|" + severity))
+                    var instruction = clause.Trim();
+                    if (!seen.Add(source + "|" + needle + "|" + severity + "|" + instruction))
                     {
                         continue;
                     }
 
-                    issues.Add(new PromptLintIssue(severity, source, message, needle));
+                    issues.Add(new PromptLintIssue(severity, source, message, needle, instruction));
                 }
             }
         }
