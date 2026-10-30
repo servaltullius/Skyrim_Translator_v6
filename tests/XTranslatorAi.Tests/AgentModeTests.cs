@@ -837,6 +837,84 @@ public sealed class AgentModeTests : IAsyncLifetime
     }
 
     /// <summary>
+    /// The release's lines were written as they were: one whose tags no longer fit the row was 완료 until the check or the
+    /// export refused it, and an old TM fallback note stayed on a filled row, so the check called the release's line "TM
+    /// 대신 새로 번역". They get what the run's fill gives an earlier release: a line without the row's alias tag is left
+    /// to translate (with the fallback note saying why), and a filled row has the release note alone.
+    /// </summary>
+    [Fact]
+    public async Task KoreanRelease_LeavesALineWithoutTheRowsTags_AndAFilledRowHasNoFallbackNote()
+    {
+        var korean = Path.Combine(_root, "Korean-tags", "Thalmor.esp");
+        Directory.CreateDirectory(Path.GetDirectoryName(korean)!);
+        await File.WriteAllBytesAsync(korean, Header().Concat(DialogueGroup(TopicChildren(0x1000,
+                Record("INFO", 0x1001, Sub("NAM1", Z("자치령에 대한 네 충성을(를) 기록해 두었다."))),
+                Record("INFO", 0x1002, Sub("NAM1", Z("그럼 서로 이해한 걸로 하지."))),
+                Record("INFO", 0x1003, Sub("NAM1", Z("말조심해라."))))))
+            .ToArray());
+        long Id(IEnumerable<StringEntry> rows, string english) => rows.Single(r => r.SourceText == english).Id;
+        long tagless, filled;
+        string taglessBefore;
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            var rows = await db.GetStringsAsync(50, 0, CancellationToken.None);
+            (tagless, filled) = (Id(rows, "Speak with care, <Alias=Player>."), Id(rows, "Then we have an understanding."));
+            taglessBefore = rows.Single(r => r.Id == tagless).DestText ?? "";
+            // Left by an earlier run whose TM line did not fit (a stopped run leaves it on a 대기 row).
+            await db.UpsertStringNoteAsync(filled, XTranslatorAi.Core.TranslationConstants.TmFallbackNoteKind, "TM 폴백: 예전 실행", CancellationToken.None);
+        }
+
+        var link = await _session.LinkKoreanAsync(_project, korean, null, CancellationToken.None);
+
+        Assert.Equal(new[] { tagless }, link.TagMismatch);
+        Assert.Equal(2, link.Filled);
+        Assert.Equal(0, link.KeptTranslated);
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            var rows = (await db.GetStringsAsync(50, 0, CancellationToken.None)).ToDictionary(r => r.Id);
+            var fallback = await db.GetStringNotesByKindAsync(XTranslatorAi.Core.TranslationConstants.TmFallbackNoteKind, CancellationToken.None);
+            var release = await db.GetStringNotesByKindAsync(XTranslatorAi.Core.TranslationConstants.PreviousReleaseNoteKind, CancellationToken.None);
+            Assert.Equal((StringEntryStatus.Pending, taglessBefore), (rows[tagless].Status, rows[tagless].DestText ?? ""));
+            Assert.StartsWith("이전 번역 폴백:", fallback[tagless]);
+            Assert.Equal((StringEntryStatus.Done, "그럼 서로 이해한 걸로 하지."), (rows[filled].Status, rows[filled].DestText));
+            Assert.False(fallback.ContainsKey(filled));
+            Assert.Equal("기존 한국어판(Thalmor.esp) 그대로, 검수 전", release[filled]);
+            // The release's "충성을(를)" is filled as a model's answer would be, and its note says the line was changed.
+            var adjusted = Assert.Single(link.Adjusted);
+            Assert.Equal("자치령에 대한 네 충성을 기록해 두었다.", rows[adjusted].DestText);
+            Assert.StartsWith("기존 한국어판(Thalmor.esp)을 조사·형식만 고쳐 넣음", release[adjusted]);
+            Assert.Equal(rows.Values.Count(r => r.Status == StringEntryStatus.Pending), link.Untranslated);
+        }
+    }
+
+    /// <summary>
+    /// A hand edit saved before 1.16.18 kept its TM note, and reopening the plugin brought every note of a kept row back:
+    /// the edited name stayed off the names list. A reopen keeps a hand edit's marks only, as an XML reimport does.
+    /// </summary>
+    [Fact]
+    public async Task Reopen_DropsAHandEditsStaleTmNote_AndKeepsTheUsersMark()
+    {
+        const string english = "Aetherial Echo";
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            var id = (await db.GetStringsAsync(50, 0, CancellationToken.None)).Single(r => r.SourceText == english).Id;
+            await db.UpdateStringTranslationAsync(id, "에테르 메아리", StringEntryStatus.Edited, null, CancellationToken.None);
+            await db.UpsertStringNoteAsync(id, XTranslatorAi.Core.TranslationConstants.TmHitNoteKind, "TM 적용", CancellationToken.None);
+            await db.UpsertStringNoteAsync(id, XTranslatorAi.Core.TranslationConstants.SourceFixNoteKind, "원문 오류 수정", CancellationToken.None);
+        }
+
+        await _session.OpenAsync(_project.PluginPath, new PluginReadOptions(), "korean", "utf-8", batchSize: 2, CancellationToken.None);
+
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            var row = (await db.GetStringsAsync(50, 0, CancellationToken.None)).Single(r => r.SourceText == english);
+            Assert.Equal((StringEntryStatus.Edited, "에테르 메아리"), (row.Status, row.DestText));
+            Assert.False((await db.GetStringNotesByKindAsync(XTranslatorAi.Core.TranslationConstants.TmHitNoteKind, CancellationToken.None)).ContainsKey(row.Id));
+            Assert.True((await db.GetStringNotesByKindAsync(XTranslatorAi.Core.TranslationConstants.SourceFixNoteKind, CancellationToken.None)).ContainsKey(row.Id));
+        }
+    }
+
+    /// <summary>
     /// A Korean release made for an earlier version of the mod: a row whose English changed since was filled with the
     /// old text as 완료. With the release's English original, only rows whose English is the same are filled; without
     /// it, rows whose numbers are not the release's are left to translate (with the release's line as a reference).

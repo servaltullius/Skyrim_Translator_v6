@@ -339,6 +339,10 @@ public class TranslationCostEstimatorTests
         public Task UpdateStringTranslationsAsync(IReadOnlyList<(long Id, string DestText, StringEntryStatus Status, string? ErrorMessage)> rows, CancellationToken cancellationToken)
             => Task.CompletedTask;
 
+        public Task FillKnownTranslationsAsync(string kind, IReadOnlyList<(long Id, string Text, string Note)> filled,
+            IReadOnlyList<(long Id, string Note)> setAside, CancellationToken cancellationToken)
+            => Task.CompletedTask;
+
         public Task UpdateStringStatusAsync(long id, StringEntryStatus status, string? errorMessage, CancellationToken cancellationToken)
             => Task.CompletedTask;
 

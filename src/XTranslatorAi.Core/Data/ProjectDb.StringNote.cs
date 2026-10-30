@@ -9,17 +9,12 @@ public sealed partial class ProjectDb
 {
     public async Task UpsertStringNoteAsync(long stringId, string kind, string message, CancellationToken cancellationToken)
     {
-        if (stringId <= 0 || string.IsNullOrWhiteSpace(kind) || string.IsNullOrWhiteSpace(message))
+        if (stringId <= 0 || string.IsNullOrWhiteSpace(kind) || NoteMessage(message) is not { } trimmedMessage)
         {
             return;
         }
 
         var normalizedKind = kind.Trim().ToLowerInvariant();
-        var trimmedMessage = message.Trim();
-        if (trimmedMessage.Length > 4000)
-        {
-            trimmedMessage = trimmedMessage[..4000] + "…";
-        }
 
         await _gate.WaitAsync(cancellationToken);
         try
@@ -46,6 +41,14 @@ public sealed partial class ProjectDb
         {
             _gate.Release();
         }
+    }
+
+    /// <summary>A note's message as it is kept (trimmed, cut at 4000 characters), or null when there is none to keep.</summary>
+    private static string? NoteMessage(string? message)
+    {
+        if (string.IsNullOrWhiteSpace(message)) return null;
+        var trimmed = message.Trim();
+        return trimmed.Length > 4000 ? trimmed[..4000] + "…" : trimmed;
     }
 
     public async Task DeleteStringNoteAsync(long stringId, string kind, CancellationToken cancellationToken)

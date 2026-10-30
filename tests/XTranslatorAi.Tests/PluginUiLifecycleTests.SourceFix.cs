@@ -156,6 +156,7 @@ public sealed partial class PluginUiLifecycleTests
     /// <summary>
     /// Opening an ESP built the grid's rows from the import without the rows' notes: the mark was in the project DB
     /// but the quality check, which reads it from the rows, flagged the marked rows again. The TM color was lost too.
+    /// (A TM-filled row: a hand edit's TM note is stale and does not come back, AgentModeTests.Reopen_DropsAHandEdits….)
     /// </summary>
     [Fact]
     public Task ReopeningAPlugin_KeepsTheRowsMarks()
@@ -165,7 +166,7 @@ public sealed partial class PluginUiLifecycleTests
             await fixture.LoadPluginWorkspaceAsync();
             var db = fixture.State.Db!;
             var row = Assert.Single(fixture.Vm.Entries);
-            await db.UpdateStringTranslationAsync(row.Id, "일부러 다르게 고친 번역", StringEntryStatus.Edited, null, CancellationToken.None);
+            await db.UpdateStringTranslationAsync(row.Id, "일부러 다르게 고친 번역", StringEntryStatus.Done, null, CancellationToken.None);
             await db.SetSourceFixAsync(row.Id, true, CancellationToken.None);
             await db.UpsertStringNoteAsync(row.Id, TranslationConstants.TmHitNoteKind, "TM 적용", CancellationToken.None);
 
@@ -177,5 +178,28 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Equal("일부러 다르게 고친 번역", reopened.DestText);
             Assert.True(reopened.IsSourceFix);
             Assert.True(reopened.IsTranslationMemoryApplied);
+        });
+
+    /// <summary>A hand edit keeps the user's mark when the plugin is opened again, but not the TM color of the fill it replaced.</summary>
+    [Fact]
+    public Task ReopeningAPlugin_KeepsAHandEditsMark_ButNotItsTmColor()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            await fixture.LoadPluginWorkspaceAsync();
+            var db = fixture.State.Db!;
+            var row = Assert.Single(fixture.Vm.Entries);
+            await db.UpdateStringTranslationAsync(row.Id, "일부러 다르게 고친 번역", StringEntryStatus.Edited, null, CancellationToken.None);
+            await db.SetSourceFixAsync(row.Id, true, CancellationToken.None);
+            // Left by a version that kept a hand edit's TM note.
+            await db.UpsertStringNoteAsync(row.Id, TranslationConstants.TmHitNoteKind, "TM 적용", CancellationToken.None);
+
+            fixture.Ui.OpenPath = fixture.State.PluginDocument!.Info.InputPath;
+            await fixture.Vm.OpenPluginCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            var reopened = Assert.Single(fixture.Vm.Entries);
+            Assert.Equal(("일부러 다르게 고친 번역", StringEntryStatus.Edited), (reopened.DestText, reopened.Status));
+            Assert.True(reopened.IsSourceFix);
+            Assert.False(reopened.IsTranslationMemoryApplied);
         });
 }

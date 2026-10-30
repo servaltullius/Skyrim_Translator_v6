@@ -85,7 +85,7 @@ public static class ProjectLqaScan
     {
         var speakers = db == null ? new Dictionary<long, string>() : await DialogueSpeakerNames.LoadCheckGroupsAsync(db, ct);
         var entries = rows.Select(row => ToEntry(row, speakers.GetValueOrDefault(row.Id))).ToList();
-        var tmFallbackNotes = db == null ? new Dictionary<long, string>() : await db.GetStringNotesByKindAsync("tm_fallback", ct);
+        var tmFallbackNotes = db == null ? new Dictionary<long, string>() : await db.GetStringNotesByKindAsync(TranslationConstants.TmFallbackNoteKind, ct);
         var speakerStyles = db == null ? null : await db.GetSpeakerStylesAsync(ct);
         var hasMemory = referenceMemory is { Count: > 0 };
         var notes = hasMemory ? LqaScanner.DropTmFallbacksMatchingMemory(tmFallbackNotes, entries, referenceMemory!) : tmFallbackNotes;

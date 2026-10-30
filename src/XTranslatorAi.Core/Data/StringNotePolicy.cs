@@ -40,6 +40,9 @@ public static class StringNotePolicy
 
         /// <summary>A held row released to 대기.</summary>
         Released,
+
+        /// <summary>The row finished from a known translation (TM, the game's text, an earlier release); its own note follows.</summary>
+        KnownFill,
     }
 
     /// <summary>The note kinds and their group; the review marks are a prefix (<see cref="TranslationConstants.LqaReviewedNoteKindPrefix"/>).</summary>
@@ -65,7 +68,7 @@ public static class StringNotePolicy
     public static IReadOnlyList<NoteGroup> ClearedBy(RowEvent rowEvent) => rowEvent switch
     {
         RowEvent.Retranslate => new[] { NoteGroup.KnownTranslation, NoteGroup.TmFallback, NoteGroup.UserMark, NoteGroup.AgentState },
-        RowEvent.HandEdit => new[] { NoteGroup.KnownTranslation, NoteGroup.TmFallback, NoteGroup.AgentState },
+        RowEvent.HandEdit or RowEvent.KnownFill => new[] { NoteGroup.KnownTranslation, NoteGroup.TmFallback, NoteGroup.AgentState },
         RowEvent.Translated or RowEvent.Released => new[] { NoteGroup.AgentState },
         _ => throw new ArgumentOutOfRangeException(nameof(rowEvent)),
     };

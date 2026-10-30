@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using XTranslatorAi.Core;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Plugins;
@@ -75,6 +76,12 @@ public sealed record AgentKoreanLink(PreviousTranslationMatcher.Result Match, in
 
     /// <summary>How many of its lines read as UTF-8 though CP949 too, and may be missing from the link; null when none.</summary>
     public string? Cp949Ambiguous { get; init; }
+
+    /// <summary>The rows the release's line was not filled into, its tags and tokens not the row's: they are translated.</summary>
+    public IReadOnlyList<long> TagMismatch { get; init; } = Array.Empty<long>();
+
+    /// <summary>The filled rows the fixes changed (a particle, a unit, line endings, edge spaces), as a model's answer gets them.</summary>
+    public IReadOnlyList<long> Adjusted { get; init; } = Array.Empty<long>();
 }
 
 /// <summary>
@@ -257,23 +264,34 @@ public sealed partial class AgentSession
         var game = _gameStrings == null ? null : await _gameStrings.TryLoadAsync(cancellationToken);
         var gameRows = game == null ? new Dictionary<long, GameStringMatch>()
             : await game.MatchAsync(db, open.ToList(), cancellationToken);
-        var fill = earlier.Where(kv => open.Contains(kv.Key))
-            .Select(kv => (Id: kv.Key, DestText: kv.Value, Status: StringEntryStatus.Done, ErrorMessage: (string?)null))
+        // The release's lines get what the run's fill gives an earlier release (KnownTranslationFill): the fixes, and the
+        // check of tags and tokens. Written as they were, a line whose tags no longer fit was 완료 until the check or the
+        // export refused it; it is left to be translated, the release's line shown as a reference.
+        var targetLang = info?.DestLang ?? "korean";
+        var prepared = earlier.Where(kv => open.Contains(kv.Key))
+            .Select(kv => (Id: kv.Key, Release: kv.Value,
+                Ready: KnownTranslationFill.Prepare(kv.Key, sources.GetValueOrDefault(kv.Key) ?? "", kv.Value, targetLang, _settings.EnableTemplateFixer)))
             .ToList();
-        await db.UpdateStringTranslationsAsync(fill, cancellationToken);
-        var note = $"기존 한국어판({Path.GetFileName(path)}) 그대로, 검수 전";
-        foreach (var row in fill)
-        {
-            await db.UpsertStringNoteAsync(row.Id, XTranslatorAi.Core.TranslationConstants.PreviousReleaseNoteKind, note, cancellationToken);
-        }
+        // A line the fixes changed says so in its note, for the review to tell it from the release's own text.
+        var file = Path.GetFileName(path);
+        var fill = prepared.Where(row => row.Ready.Text != null)
+            .Select(row => (row.Id, Text: row.Ready.Text!, Note: row.Ready.Text == row.Release
+                ? $"기존 한국어판({file}) 그대로, 검수 전" : $"기존 한국어판({file})을 조사·형식만 고쳐 넣음, 검수 전"))
+            .ToList();
+        var tagMismatch = prepared.Where(row => row.Ready.Text == null).ToList();
+        await db.FillKnownTranslationsAsync(TranslationConstants.PreviousReleaseNoteKind, fill,
+            tagMismatch.Select(row => (row.Id, KnownTranslationFill.FallbackNote(TranslationConstants.PreviousReleaseNoteKind, row.Ready.Failure!))).ToList(),
+            cancellationToken);
 
-        var different = fill.Where(row => gameRows.TryGetValue(row.Id, out var g) && g.Text.Trim() != row.DestText.Trim())
+        var different = fill.Where(row => gameRows.TryGetValue(row.Id, out var g) && g.Text.Trim() != row.Text.Trim())
             .Select(row => row.Id).OrderBy(id => id).ToList();
-        return new AgentKoreanLink(match, fill.Count, earlier.Count - fill.Count - changed.Count, open.Count - fill.Count + changed.Count, different,
+        return new AgentKoreanLink(match, fill.Count, earlier.Count - prepared.Count - changed.Count, open.Count - fill.Count + changed.Count, different,
             changed.OrderBy(id => id).ToList(), englishPath != null)
         {
             ReadAsCp949 = korean.Info.Diagnostics.Any(item => item.Code == PluginReader.Cp949ReadDiagnostic),
             Cp949Ambiguous = korean.Info.Diagnostics.FirstOrDefault(item => item.Code == PluginReader.Cp949AmbiguousDiagnostic)?.Message,
+            TagMismatch = tagMismatch.Select(row => row.Id).OrderBy(id => id).ToList(),
+            Adjusted = prepared.Where(row => row.Ready.Text != null && row.Ready.Text != row.Release).Select(row => row.Id).OrderBy(id => id).ToList(),
         };
     }
 

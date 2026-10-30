@@ -183,7 +183,9 @@ public sealed partial class ProjectDb
                 var id = Convert.ToInt64(await binding.ExecuteScalarAsync(cancellationToken), System.Globalization.CultureInfo.InvariantCulture);
                 if (keptTranslation && notesByKey.TryGetValue(field.Key, out var notes) && string.Equals(notes.Source, field.SourceText, StringComparison.Ordinal))
                 {
-                    await RestorePluginStringNotesAsync(tx, id, notes.Notes, cancellationToken);
+                    // A hand edit keeps the user's marks only, as an XML reimport and a set-aside translation do: its TM
+                    // notes, left by edits saved before 1.16.18, came back with every reopen and kept it off the names list.
+                    await RestorePluginStringNotesAsync(tx, id, notes.Notes.Where(n => StringNotePolicy.KeptWith(n.Kind, status)).ToList(), cancellationToken);
                 }
                 else if (restoredMarks is { Count: > 0 })
                 {

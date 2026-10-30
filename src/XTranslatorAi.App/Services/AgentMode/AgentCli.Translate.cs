@@ -147,6 +147,16 @@ public static partial class AgentCli
         if (link.ReadAsCp949) Console.WriteLine("한국어판 인코딩: 옛 방식(CP949)으로 저장된 한국어판이라 UTF-8이 아닌 줄을 CP949로 읽었습니다. 저장하는 번역은 출력 인코딩 그대로입니다.");
         if (link.Cp949Ambiguous is { } ambiguous) Console.WriteLine("알림: " + ambiguous);
         Console.WriteLine($"한국어판으로 채운 줄: {link.Filled}" + (link.KeptTranslated > 0 ? $", 이미 번역돼 그대로 둔 줄: {link.KeptTranslated}" : ""));
+        if (link.Adjusted.Count > 0)
+        {
+            Console.WriteLine($"그중 조사·단위·줄바꿈·공백을 번역 답처럼 고쳐 채운 줄: {link.Adjusted.Count} → 보기: tullius.cmd show {project.Key} --id "
+                              + string.Join(",", link.Adjusted.Take(40)) + (link.Adjusted.Count > 40 ? " …" : ""));
+        }
+        if (link.TagMismatch.Count > 0)
+        {
+            Console.WriteLine($"태그·토큰이 원문과 맞지 않아 채우지 않은 줄: {link.TagMismatch.Count} → next 요청에 한국어판 번역이 참고로 붙습니다. 보기: tullius.cmd show {project.Key} --id "
+                              + string.Join(",", link.TagMismatch.Take(40)) + (link.TagMismatch.Count > 40 ? " …" : ""));
+        }
         if (link.DifferentFromGame.Count > 0)
         {
             Console.WriteLine($"바닐라 대사·이름인데 한글패치와 다르게 옮긴 줄: {link.DifferentFromGame.Count} → "
@@ -168,7 +178,7 @@ public static partial class AgentCli
         }
 
         Console.WriteLine(link.Untranslated > 0
-            ? $"번역할 줄(한국어판에 없거나 바뀜): {link.Untranslated} → tullius.cmd next {project.Key}"
+            ? $"번역할 줄(한국어판에 없거나, 바뀌었거나, 태그가 맞지 않음): {link.Untranslated} → tullius.cmd next {project.Key}"
             : "번역할 줄: 0");
         Console.WriteLine($"검수: tullius.cmd check {project.Key}, 이어서 tullius.cmd show {project.Key} --count 40 으로 차례로 읽기");
     }

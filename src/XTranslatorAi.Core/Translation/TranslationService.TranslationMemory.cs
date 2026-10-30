@@ -112,45 +112,19 @@ public sealed partial class TranslationService
             return false;
         }
 
-        var final = MatchSourceLineEndings(sourceText, tmText);
-        if (Ctx.EnableTemplateFixer)
-        {
-            final = MagDurPlaceholderFixer.Fix(sourceText, final, targetLang);
-        }
-        final = PlaceholderUnitBinder.EnforceUnitsFromSource(targetLang, sourceText, final);
-        final = KoreanProtectFromFixer.Fix(targetLang, sourceText, final);
-        final = KoreanTranslationFixer.Fix(targetLang, final);
-        final = PercentSignFixer.FixDuplicatePercents(final, sourceText);
-        // The TM is keyed without edge whitespace ("gold:"), so "Gold: " was filled with "골드:".
-        final = RestoreSourceEdgeSpaces(sourceText, final);
-        try
-        {
-            TokenValidator.ValidateFinalTextIntegrity(sourceText, final, context: $"id={id} tm post-edits");
-        }
-        catch (OperationCanceledException)
-        {
-            throw;
-        }
-        catch (Exception ex)
+        var prepared = KnownTranslationFill.Prepare(id, sourceText, tmText, targetLang, Ctx.EnableTemplateFixer);
+        if (prepared.Text is not { } final)
         {
             // If a TM entry breaks tag/placeholder integrity, skip it and fall back to LLM translation.
-            var detail = string.IsNullOrWhiteSpace(ex.Message) ? ex.GetType().Name : ex.Message;
-            var origin = hitNoteKind switch
-            {
-                TranslationConstants.GameStringNoteKind => "게임 번역",
-                TranslationConstants.PreviousReleaseNoteKind => "이전 번역",
-                _ => "TM",
-            };
-            await _db.UpsertStringNoteAsync(id, TranslationConstants.TmFallbackNoteKind, $"{origin} 폴백: {detail}", cancellationToken);
+            await _db.UpsertStringNoteAsync(id, TranslationConstants.TmFallbackNoteKind, KnownTranslationFill.FallbackNote(hitNoteKind, prepared.Failure!),
+                cancellationToken);
             return false;
         }
         TryLearnSessionTermMemory(id, sourceText, final);
 
-        await _db.UpdateStringTranslationAsync(id, final, StringEntryStatus.Done, null, cancellationToken);
-        // Once the row is saved its notes follow it: cancelled in between, a filled row was left without its TM note (the
-        // marks that tell a fill from a translation) and with an old fallback note.
-        await _db.DeleteStringNoteAsync(id, TranslationConstants.TmFallbackNoteKind, CancellationToken.None);
-        await _db.UpsertStringNoteAsync(id, hitNoteKind, hitNote, CancellationToken.None);
+        // The row and its notes in one transaction: written apart, a stop between them left a filled row without its TM
+        // note (the mark that tells a fill from a translation), or with an old fallback note.
+        await _db.FillKnownTranslationsAsync(hitNoteKind, new[] { (id, final, hitNote) }, Array.Empty<(long, string)>(), cancellationToken);
         if (onRowUpdated != null)
         {
             NotifyRowUpdated(onRowUpdated, id, StringEntryStatus.Done, final);
@@ -163,7 +137,7 @@ public sealed partial class TranslationService
     // written with another line-ending style. Line breaks are protected text, so the stored translation takes
     // the source's style; otherwise the integrity check rejects the hit and the row goes to the model.
     // A source that mixes styles keeps the stored text as it is.
-    private static string MatchSourceLineEndings(string sourceText, string tmText)
+    internal static string MatchSourceLineEndings(string sourceText, string tmText)
     {
         var lineEnding = GetUniformLineEnding(sourceText);
         if (lineEnding == null || tmText.IndexOfAny(LineBreakChars) < 0)

@@ -74,15 +74,34 @@ public sealed partial class ProjectDb
         {
             await using var tx = (SqliteTransaction)await _connection.BeginTransactionAsync(cancellationToken);
             await using var cmd = CreateUpdateStringTranslationsCommand(_connection, tx, out var p);
+            // The notes follow the rows as one saved alone (StringNotePolicy): this save kept them all, a hand edit's TM
+            // notes and a hold included, while the single save cleared them.
+            var clears = new Dictionary<StringNotePolicy.RowEvent, (SqliteCommand Command, SqliteParameter Id)>();
 
             var now = DateTimeOffset.UtcNow.ToString("O");
-            foreach (var row in rows)
+            try
             {
-                p.BindRow(row, now);
-                await cmd.ExecuteNonQueryAsync(cancellationToken);
-            }
+                foreach (var row in rows)
+                {
+                    p.BindRow(row, now);
+                    await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    if (StringNotePolicy.SavedAs(row.Status) is not { } saved) continue;
+                    if (!clears.TryGetValue(saved, out var clear))
+                    {
+                        clear.Command = CreateClearNotesCommand(tx, saved, out clear.Id);
+                        clears[saved] = clear;
+                    }
 
-            await tx.CommitAsync(cancellationToken);
+                    clear.Id.Value = row.Id;
+                    await clear.Command.ExecuteNonQueryAsync(cancellationToken);
+                }
+
+                await tx.CommitAsync(cancellationToken);
+            }
+            finally
+            {
+                foreach (var clear in clears.Values) await clear.Command.DisposeAsync();
+            }
 
             var editedRows = rows
                 .Where(r => r.Status == StringEntryStatus.Edited && !string.IsNullOrWhiteSpace(r.DestText))

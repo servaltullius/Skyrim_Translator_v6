@@ -54,8 +54,18 @@ public sealed class StringNoteEventTests : IAsyncLifetime
         yield return new object[] { "saved done", StringEntryStatus.Done, Without(TranslationConstants.AgentHoldNoteKind) };
         yield return new object[] { "saved error", StringEntryStatus.Done, Without(TranslationConstants.AgentHoldNoteKind) };
         yield return new object[] { "saved skipped", StringEntryStatus.Done, AllKinds };
-        yield return new object[] { "batch done", StringEntryStatus.Done, AllKinds };
-        yield return new object[] { "batch edited", StringEntryStatus.Done, AllKinds };
+        // The batch save follows the single one (it used to keep every note, a hand edit's TM notes and a hold included).
+        yield return new object[] { "batch done", StringEntryStatus.Done, Without(TranslationConstants.AgentHoldNoteKind) };
+        yield return new object[] { "batch edited", StringEntryStatus.Done, Without(TranslationConstants.TmHitNoteKind, TranslationConstants.GameStringNoteKind,
+            TranslationConstants.PreviousReleaseNoteKind, TranslationConstants.TmFallbackNoteKind, TranslationConstants.AgentHoldNoteKind) };
+        yield return new object[] { "batch skipped", StringEntryStatus.Done, AllKinds };
+        // A fill takes off the other known kinds, the fallback note and a hold, and puts its own note back.
+        yield return new object[] { "known fill", StringEntryStatus.Done,
+            new[] { TranslationConstants.SourceFixNoteKind, Reviewed, TranslationConstants.PreviousReleaseNoteKind } };
+        yield return new object[] { "known fill", StringEntryStatus.Skipped,
+            new[] { TranslationConstants.SourceFixNoteKind, Reviewed, TranslationConstants.PreviousReleaseNoteKind } };
+        // A row the known translation did not fit keeps its notes and gets the fallback note.
+        yield return new object[] { "known set aside", StringEntryStatus.Done, AllKinds };
         yield return new object[] { "status error", StringEntryStatus.Done, AllKinds };
         yield return new object[] { "retranslate", StringEntryStatus.Done, Array.Empty<string>() };
         yield return new object[] { "release", StringEntryStatus.Skipped, Without(TranslationConstants.AgentHoldNoteKind) };
@@ -89,6 +99,15 @@ public sealed class StringNoteEventTests : IAsyncLifetime
             case "saved skipped": await _db.UpdateStringTranslationAsync(id, "번역", StringEntryStatus.Skipped, null, CancellationToken.None); break;
             case "batch done": await _db.UpdateStringTranslationsAsync(new[] { (id, "번역", StringEntryStatus.Done, (string?)null) }, CancellationToken.None); break;
             case "batch edited": await _db.UpdateStringTranslationsAsync(new[] { (id, "번역", StringEntryStatus.Edited, (string?)null) }, CancellationToken.None); break;
+            case "batch skipped": await _db.UpdateStringTranslationsAsync(new[] { (id, "번역", StringEntryStatus.Skipped, (string?)null) }, CancellationToken.None); break;
+            case "known fill":
+                await _db.FillKnownTranslationsAsync(TranslationConstants.PreviousReleaseNoteKind, new[] { (id, "번역", "이전 번역") },
+                    Array.Empty<(long, string)>(), CancellationToken.None);
+                break;
+            case "known set aside":
+                await _db.FillKnownTranslationsAsync(TranslationConstants.PreviousReleaseNoteKind, Array.Empty<(long, string, string)>(),
+                    new[] { (id, "이전 번역 폴백: 태그") }, CancellationToken.None);
+                break;
             case "status error": await _db.UpdateStringStatusesAsync(new[] { id }, StringEntryStatus.Error, "오류", CancellationToken.None); break;
             case "retranslate": await _db.ResetForRetranslationAsync(new[] { id }, includeEdited: false, CancellationToken.None); break;
             case "release": await _db.ReleaseHeldStringsAsync(new[] { id }, CancellationToken.None); break;
@@ -96,6 +115,13 @@ public sealed class StringNoteEventTests : IAsyncLifetime
         }
 
         Assert.Equal(left.OrderBy(k => k), (await KindsAsync(id)).OrderBy(k => k));
+        var row = (await _db.GetStringsAsync(10, 0, CancellationToken.None)).Single(r => r.Id == id);
+        if (happening == "known fill") Assert.Equal((StringEntryStatus.Done, "번역"), (row.Status, row.DestText));
+        if (happening == "known set aside")
+        {
+            Assert.Equal((status, "에테르의 메아리"), (row.Status, row.DestText));
+            Assert.Equal("이전 번역 폴백: 태그", (await _db.GetStringNotesByKindAsync(TranslationConstants.TmFallbackNoteKind, CancellationToken.None))[id]);
+        }
     }
 
     /// <summary>
