@@ -1,7 +1,7 @@
 === request 1
-hash: d7a25fa7031881c40e80cf3928bb75a5 attempt 0
+hash: 027d607bdc7d645afba6b75342255d3d attempt 0
 purpose: translate-text, mime: -
-instructions: e8321cecca209b1e, schema: e3b0c44298fc1c14
+instructions: 5ae16a4739d8eb77, schema: e3b0c44298fc1c14
 --- user
 Translate a game localization string.
 Translate from english to korean.
@@ -38,9 +38,9 @@ Shadow Lantern __XT_PH_9999__
 TEXT>>>
 
 === request 2
-hash: 380cf1210b6605991b2b03a6300251d6 attempt 0
+hash: 85779de60449f37870c2a8e72e96bdb0 attempt 0
 purpose: translate-batch, mime: application/json
-instructions: e8321cecca209b1e, schema: 12122240289432d2
+instructions: 5ae16a4739d8eb77, schema: 12122240289432d2
 --- user
 Translate game localization strings.
 Translate from english to korean.
@@ -89,9 +89,9 @@ Input JSON:
 {"source_language":"english","target_language":"korean","glossary":[],"items":[{"id":5,"text":"I serve no one.","rec":"INFO:RNAM","ctx":"Prev (reference only):\r\n- Your loyalty to the Dominion has been noted.\r\n- Then we have an understanding.","style":"REC=INFO/DIAL (dialogue/subtitles). Use natural spoken Korean. Keep register consistent (do not randomly switch between 존댓말/반말 within this item unless the source clearly switches)."},{"id":1,"text":"What happened on the Ash Road?","rec":"DIAL:FULL","ctx":"Next (reference only):\r\n- Your loyalty to the Dominion has been noted.","style":"REC=DIAL:FULL (dialogue topic label). Translate as a short topic label, not a spoken response.","edid":"aaAshTopic"},{"id":10,"text":"Deals <mag> fire damage and burns the target.","rec":"MGEF:DNAM","style":"REC=*:DESC/DNAM (effect or item description shown in menus). Write every sentence in 합니다체 (-ㅂ니다/-습니다), including short fragments: 'Usable on two-handed weapons.' → '양손 무기에 사용할 수 있습니다.' Do not end a sentence with a bare noun such as '사용 가능.' 'N% of X' is a share, not an increase: '80% of the effect' → '효과의 80%'.","edid":"aaFireBite"},{"id":9,"text":"Fire Bite","rec":"MGEF:FULL","edid":"aaFireBite"}]}
 
 === request 3
-hash: e035412ca51712d37f1a221b0081d89d attempt 0
+hash: 14dd41788d9b4fbc79bf7e6057bea5e1 attempt 0
 purpose: translate-batch, mime: application/json
-instructions: e8321cecca209b1e, schema: 12122240289432d2
+instructions: 5ae16a4739d8eb77, schema: 12122240289432d2
 --- user
 Translate game localization strings.
 Translate from english to korean.
@@ -128,9 +128,9 @@ Input JSON:
 {"source_language":"english","target_language":"korean","glossary":[],"items":[{"id":12,"text":"Day one. The ash fell like snow over the old road.__XT_PH_0000__Day two. We found the shrine, and the shrine found us.","rec":"BOOK:DESC","style":"REC=BOOK (in-game book/lore/guide). Use a consistent written narrative tone in Korean (문어체). Prefer 서술체(…다/…한다) and keep sentence endings consistent. Avoid casual fillers like \"말이지/야/해/지\" except inside quoted dialogue. Avoid adding explanatory parentheses like \"(English term)\" unless they exist in the source; prefer natural in-universe rendering for proper nouns.","edid":"aaJournal"},{"id":11,"text":"Journal of the Ash Road","rec":"BOOK:FULL","style":"REC=BOOK title. Translate as a book title or short noun phrase, not a narrative sentence. Preserve the source meaning and punctuation.","edid":"aaJournal"}]}
 
 === request 4
-hash: 73145214a14581cfa5e253c41c54b725 attempt 0
+hash: 9b13b0dfa84d9b316dddb610fb1b7cc1 attempt 0
 purpose: translate-text, mime: -
-instructions: e8321cecca209b1e, schema: e3b0c44298fc1c14
+instructions: 5ae16a4739d8eb77, schema: e3b0c44298fc1c14
 --- user
 Translate a game localization string.
 Translate from english to korean.
@@ -167,9 +167,9 @@ Day one. The ash fell like snow over the old road.__XT_PH_0000__Day two. We foun
 TEXT>>>
 
 === request 5
-hash: 71b7dab8b006406a4460ccd341510aa4 attempt 0
+hash: 206a3d0485a296f5e8b4dcf9e2238743 attempt 0
 purpose: translate-batch, mime: application/json
-instructions: e8321cecca209b1e, schema: 12122240289432d2
+instructions: 5ae16a4739d8eb77, schema: 12122240289432d2
 --- user
 Translate game localization strings.
 Translate from english to korean.

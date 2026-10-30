@@ -10,6 +10,11 @@ public static class EmbeddedAssets
     public static string LoadMetaPrompt()
         => LoadMetaPrompt(BethesdaFranchise.ElderScrolls);
 
+    /// <summary>
+    /// The meta prompt with CRLF line breaks, whatever the checkout it was built from wrote. The release is built from a
+    /// checkout that writes CRLF and a working copy may hold LF; the prompt is part of every request's hash, so the
+    /// requests of a local build and of the release differed, and the agent's request baseline failed in CI alone.
+    /// </summary>
     public static string LoadMetaPrompt(BethesdaFranchise franchise)
         => LoadTextResource(
             franchise switch
@@ -18,7 +23,7 @@ public static class EmbeddedAssets
                 BethesdaFranchise.Starfield => "XTranslatorAi.App.Assets.메타프롬프트_스타필드.md",
                 _ => "XTranslatorAi.App.Assets.메타프롬프트.md",
             }
-        );
+        ).ReplaceLineEndings("\r\n");
 
     public static string LoadDefaultGlossary()
         => LoadDefaultGlossary(BethesdaFranchise.ElderScrolls);
