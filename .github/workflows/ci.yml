@@ -18,6 +18,9 @@ concurrency:
 jobs:
   build-and-test:
     runs-on: windows-latest
+    # A run takes about 3 minutes (12 on a slow runner). Without a limit a hung test run would go on for 6 hours: a UI
+    # test may run a minute before it fails as hung (TestEnvironment.UiTestLimit).
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
 

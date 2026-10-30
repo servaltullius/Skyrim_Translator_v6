@@ -18,6 +18,9 @@ jobs:
     # A Korean patch release (tag kopatch-...) ships the patch zip only, not the translator.
     if: github.event_name != 'release' || !startsWith(github.event.release.tag_name, 'kopatch-')
     runs-on: windows-latest
+    # A release takes 3 to 5 minutes (tests, the single-file publish, the uploads). Without a limit a hung test run would go on
+    # for 6 hours; this leaves room for a slow runner.
+    timeout-minutes: 45
     steps:
       - name: Resolve release tag
         id: release_tag
