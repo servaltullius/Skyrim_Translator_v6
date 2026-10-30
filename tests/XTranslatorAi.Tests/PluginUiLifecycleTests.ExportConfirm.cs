@@ -126,7 +126,7 @@ public sealed partial class PluginUiLifecycleTests
             await fixture.Vm.ExportPluginCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
 
             Assert.StartsWith("플러그인 저장(E457):", fixture.Vm.StatusMessage);
-            Assert.Contains($"관련 행: #{row.OrderIndex} (Search에 row:{row.OrderIndex})", fixture.Vm.StatusMessage);
+            Assert.Contains($"관련 행: #{row.OrderIndex} (검색 칸에 row:{row.OrderIndex})", fixture.Vm.StatusMessage);
         });
 
     /// <summary>The question reads the held lines' notes: a DB that fails there ended the command with the crash dialog.</summary>
