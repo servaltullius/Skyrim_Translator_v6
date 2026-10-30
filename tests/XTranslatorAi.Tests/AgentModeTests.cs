@@ -957,6 +957,38 @@ public sealed class AgentModeTests : IAsyncLifetime
     }
 
     /// <summary>
+    /// A held row the release translates stays held, and is said apart: it was counted with the rows "이미 번역돼 그대로
+    /// 둔 줄", though it is English.
+    /// </summary>
+    [Fact]
+    public async Task KoreanRelease_LeavesAHeldRowHeld_AndSaysSoApart()
+    {
+        var korean = Path.Combine(_root, "Korean-held", "Thalmor.esp");
+        Directory.CreateDirectory(Path.GetDirectoryName(korean)!);
+        await File.WriteAllBytesAsync(korean, Header().Concat(DialogueGroup(TopicChildren(0x1000,
+                Record("INFO", 0x1001, Sub("NAM1", Z("자치령에 대한 네 충성은 기록해 두었다."))),
+                Record("INFO", 0x1002, Sub("NAM1", Z("그럼 서로 이해한 걸로 하지."))))))
+            .ToArray());
+        long held;
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            held = (await db.GetStringsAsync(50, 0, CancellationToken.None)).Single(r => r.SourceText == "Then we have an understanding.").Id;
+            await db.HoldStringsAsync(new[] { (held, "보류: 시험") }, CancellationToken.None);
+        }
+
+        var link = await _session.LinkKoreanAsync(_project, korean, null, CancellationToken.None);
+
+        Assert.Equal(new[] { held }, link.Held);
+        Assert.Equal(0, link.KeptTranslated);
+        Assert.Equal(1, link.Filled);
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            var row = (await db.GetStringsAsync(50, 0, CancellationToken.None)).Single(r => r.Id == held);
+            Assert.True(ProjectDb.IsHeld(row.Status, held, await db.GetHoldNotesAsync(CancellationToken.None)));
+        }
+    }
+
+    /// <summary>
     /// The release's lines were written as they were: one whose tags no longer fit the row was 완료 until the check or the
     /// export refused it, and an old TM fallback note stayed on a filled row, so the check called the release's line "TM
     /// 대신 새로 번역". They get what the run's fill gives an earlier release: a line without the row's alias tag is left
@@ -1680,6 +1712,11 @@ public sealed class AgentModeTests : IAsyncLifetime
     [InlineData("Greetings, my friend. Auryen Morellus writes from the Dragonborn Gallery to Shalidor's heirs.", "Auryen Morellus|Dragonborn Gallery|Shalidor")]
     [InlineData("<p align=\"center\">The Barber\n\n[pagebreak]In the market district of Cyrodiil, there once was a barber. I am sure.", "Cyrodiil")]
     [InlineData("What is the thinnest book? Redguard Heroes of the War of Betony.", "Redguard Heroes of the War of Betony")]
+    // A word with a capital inside after four small letters, or two capitals inside, is code (LotD's topics
+    // "AltertToIdle", "PlayerInSightsDarnette"); McCarthy, MacDonald, LeBlanc and FitzGerald are names.
+    [InlineData("Then AltertToIdle runs and PlayerInSightsDarnette fires near Sean McCarthy.", "Sean McCarthy")]
+    [InlineData("Ask Ewan MacDonald or Jean LeBlanc.", "Ewan MacDonald|Jean LeBlanc")]
+    [InlineData("When AddToList ran, Edward FitzGerald wrote.", "Edward FitzGerald")]
     public void TextNames_AreTheCapitalizedRunsThatReadAsNames(string text, string expected)
     {
         Assert.Equal(expected.Split('|'), AgentTextNames.Candidates(text));

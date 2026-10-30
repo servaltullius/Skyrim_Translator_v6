@@ -82,6 +82,12 @@ public sealed record AgentKoreanLink(PreviousTranslationMatcher.Result Match, in
 
     /// <summary>The filled rows the fixes changed (a particle, a unit, line endings, edge spaces), as a model's answer gets them.</summary>
     public IReadOnlyList<long> Adjusted { get; init; } = Array.Empty<long>();
+
+    /// <summary>
+    /// Held rows the release has a line for: left held (the hold is the agent's call), and not counted as already
+    /// translated, which they were in KeptTranslated.
+    /// </summary>
+    public IReadOnlyList<long> Held { get; init; } = Array.Empty<long>();
 }
 
 /// <summary>
@@ -295,9 +301,13 @@ public sealed partial class AgentSession
 
         var different = fill.Where(row => gameRows.TryGetValue(row.Id, out var g) && g.Text.Trim() != row.Text.Trim())
             .Select(row => row.Id).OrderBy(id => id).ToList();
-        return new AgentKoreanLink(match, fill.Count, earlier.Count - prepared.Count - changed.Count, open.Count - fill.Count + changed.Count, different,
-            changed.OrderBy(id => id).ToList(), englishPath != null)
+        var holds = await db.GetHoldNotesAsync(cancellationToken);
+        var skipped = (await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Skipped }, cancellationToken)).ToHashSet();
+        var held = earlier.Keys.Where(id => skipped.Contains(id) && ProjectDb.IsHeld(StringEntryStatus.Skipped, id, holds)).OrderBy(id => id).ToList();
+        return new AgentKoreanLink(match, fill.Count, earlier.Count - prepared.Count - changed.Count - held.Count, open.Count - fill.Count + changed.Count,
+            different, changed.OrderBy(id => id).ToList(), englishPath != null)
         {
+            Held = held,
             ReadAsCp949 = korean.Info.Diagnostics.Any(item => item.Code == PluginReader.Cp949ReadDiagnostic),
             Cp949Ambiguous = korean.Info.Diagnostics.FirstOrDefault(item => item.Code == PluginReader.Cp949AmbiguousDiagnostic)?.Message,
             TagMismatch = tagMismatch.Select(row => row.Id).OrderBy(id => id).ToList(),

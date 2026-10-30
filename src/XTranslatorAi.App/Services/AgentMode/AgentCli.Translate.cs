@@ -168,6 +168,11 @@ public static partial class AgentCli
         if (link.ReadAsCp949) Console.WriteLine("한국어판 인코딩: 옛 방식(CP949)으로 저장된 한국어판이라 UTF-8이 아닌 줄을 CP949로 읽었습니다. 저장하는 번역은 출력 인코딩 그대로입니다.");
         if (link.Cp949Ambiguous is { } ambiguous) Console.WriteLine("알림: " + ambiguous);
         Console.WriteLine($"한국어판으로 채운 줄: {link.Filled}" + (link.KeptTranslated > 0 ? $", 이미 번역돼 그대로 둔 줄: {link.KeptTranslated}" : ""));
+        if (link.Held.Count > 0)
+        {
+            Console.WriteLine($"보류해 둔 줄 가운데 한국어판에 번역이 있는 줄: {link.Held.Count} (보류 그대로, 채우지 않음) → 보기: tullius.cmd show {project.Key} --id "
+                              + string.Join(",", link.Held.Take(40)) + (link.Held.Count > 40 ? " …" : ""));
+        }
         if (link.Adjusted.Count > 0)
         {
             Console.WriteLine($"그중 조사·단위·줄바꿈·공백을 번역 답처럼 고쳐 채운 줄: {link.Adjusted.Count} → 보기: tullius.cmd show {project.Key} --id "

@@ -68,7 +68,7 @@ public static class AgentTextNames
             var word = words[i].Value;
             var startsSentence = i == 0 || Gap(plain, words[i - 1], words[i]).IndexOfAny(SentenceBreaks.ToCharArray()) >= 0;
             var joined = i > 0 && run != null && IsSpaceOnly(Gap(plain, words[i - 1], words[i]));
-            if (IsCapitalized(word) && !NotNames.Contains(word))
+            if (IsCapitalized(word) && !NotNames.Contains(word) && !IsCode(word))
             {
                 if (run != null && joined && !EndsPossessive(run[^1]))
                 {
@@ -141,6 +141,12 @@ public static class AgentTextNames
     }
 
     private static bool IsCapitalized(string word) => char.IsUpper(word[0]) && word.Skip(1).Any(char.IsLower);
+
+    // An editor ID or script name a topic or a line shows as it is ("AltertToIdle", "ScopeEffect", "AddToList"): a capital
+    // inside after four small letters, or two capitals inside. A name has one, early (McCarthy, MacDonald, FitzGerald).
+    private static readonly Regex CodeWordRegex = new(@"[a-z]{4}[A-Z]|[A-Z][a-z]+[A-Z][a-z]*[A-Z]", RegexOptions.CultureInvariant);
+
+    private static bool IsCode(string word) => CodeWordRegex.IsMatch(word);
 
     private static bool EndsPossessive(string word) => word.EndsWith("'s", StringComparison.Ordinal) || word.EndsWith("’s", StringComparison.Ordinal);
 
