@@ -14,7 +14,8 @@ public sealed partial class TranslationService
         TranslateIdsRequest request,
         PlaceholderMasker placeholderMasker,
         GlossaryApplier glossaryApplier,
-        IReadOnlyDictionary<string, string> translationMemory
+        IReadOnlyDictionary<string, string> translationMemory,
+        IReadOnlyDictionary<string, string> projectTranslationMemory
     )
     {
         Ctx.RowContextById = new Dictionary<long, RowContext>(capacity: request.Ids.Count);
@@ -28,6 +29,7 @@ public sealed partial class TranslationService
         var reusablePrevious = previousTranslations.Count == 0
             ? new Dictionary<long, string>()
             : await _db.GetReusablePreviousTranslationsByStringIdAsync(request.CancellationToken);
+        var sentBackEdits = await _db.GetStringNotesByKindAsync(TranslationConstants.RetranslatedEditNoteKind, request.CancellationToken);
 
         var items = new List<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>();
         var canonicalIdByMaskedText = new Dictionary<DuplicateKey, long>();
@@ -98,6 +100,12 @@ public sealed partial class TranslationService
             }
 
             var sourceKey = TranslationMemoryKey.NormalizeSource(row.SourceText);
+            // A hand edit sent to be translated again (다시 번역): the project TM learned the edit when it was saved, and
+            // filled it straight back. That entry is left out for this row, the series TM taken alone; the game's text and
+            // an earlier release above still fill it, and the project TM still fills the other rows.
+            var asksForNewText = sentBackEdits.TryGetValue(row.Id, out var oldEdit)
+                                 && projectTranslationMemory.TryGetValue(sourceKey, out var projectText)
+                                 && string.Equals(projectText?.Trim(), oldEdit.Trim(), StringComparison.Ordinal);
             var hasUnscopedDialogueTm = contextRow.DialogueScope != null && translationMemory.ContainsKey(sourceKey);
             if (hasUnscopedDialogueTm || (ambiguousTmSources.Contains(sourceKey) && translationMemory.ContainsKey(sourceKey)))
             {
@@ -110,7 +118,7 @@ public sealed partial class TranslationService
                     row.Id,
                     row.SourceText,
                     request.TargetLang,
-                    translationMemory,
+                    asksForNewText ? request.GlobalTranslationMemory ?? new Dictionary<string, string>() : translationMemory,
                     request.OnRowUpdated,
                     request.CancellationToken
                 ))

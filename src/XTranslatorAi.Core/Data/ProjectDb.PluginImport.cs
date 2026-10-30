@@ -191,6 +191,14 @@ public sealed partial class ProjectDb
                 {
                     await RestorePluginStringNotesAsync(tx, id, restoredMarks, cancellationToken);
                 }
+                // A row still to translate keeps a sent-back edit's note (KeptWith): lost on a reopen, the project TM
+                // filled the edit back into the row the user had asked to translate anew.
+                else if (status == StringEntryStatus.Pending && notesByKey.TryGetValue(field.Key, out var waiting)
+                         && string.Equals(waiting.Source, field.SourceText, StringComparison.Ordinal)
+                         && waiting.Notes.Where(n => StringNotePolicy.KeptWith(n.Kind, status)).ToList() is { Count: > 0 } waitingNotes)
+                {
+                    await RestorePluginStringNotesAsync(tx, id, waitingNotes, cancellationToken);
+                }
                 imported.Add(new StringEntry(id, field.OrderIndex, null, null, null, field.EditorId,
                     field.Rec, field.SourceText, dest, status, null, updatedAt));
             }

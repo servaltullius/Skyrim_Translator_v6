@@ -243,22 +243,28 @@ public partial class MainViewModel
     {
         var errors = 0;
         var pending = 0;
+        // A hand edit left empty is saved empty; it was not counted, so a row emptied by mistake went out blank.
+        var emptied = 0;
         foreach (var entry in Entries)
         {
             if (entry.Status == StringEntryStatus.Error) errors++;
             else if (entry.Status is StringEntryStatus.Pending or StringEntryStatus.InProgress) pending++;
+            else if (entry.Status == StringEntryStatus.Edited && string.IsNullOrWhiteSpace(entry.DestText) && !string.IsNullOrWhiteSpace(entry.SourceText)) emptied++;
         }
 
-        if (errors + pending == 0)
+        if (errors + pending + emptied == 0)
         {
             return true;
         }
 
         var answer = _uiInteractionService.ShowMessage(
-            $"번역이 끝나지 않은 행이 있습니다: 오류 {errors}개, 대기 {pending}개.{Environment.NewLine}{Environment.NewLine}"
-            + (xml
-                ? "XML에는 이 행들의 번역란이 지금 그대로 저장됩니다(비어 있으면 빈 채로). 그래도 저장할까요?"
-                : "플러그인에는 이 행들의 원문이 그대로 남습니다. 그래도 저장할까요?"),
+            (errors + pending > 0 ? $"번역이 끝나지 않은 행이 있습니다: 오류 {errors}개, 대기 {pending}개.{Environment.NewLine}" : "")
+            + (emptied > 0 ? $"번역문을 비워 둔 직접 수정 행이 {emptied}개 있습니다. 이 행들은 빈 글로 저장됩니다.{Environment.NewLine}" : "")
+            + Environment.NewLine
+            + (errors + pending == 0 ? "그래도 저장할까요?"
+                : xml
+                ? "XML에는 끝나지 않은 행의 번역란이 지금 그대로 저장됩니다(비어 있으면 빈 채로). 그래도 저장할까요?"
+                : "플러그인에는 끝나지 않은 행의 원문이 그대로 남습니다. 그래도 저장할까요?"),
             "저장 확인",
             UiMessageBoxButton.YesNo,
             UiMessageBoxImage.Warning,
@@ -269,7 +275,9 @@ public partial class MainViewModel
             return true;
         }
 
-        StatusMessage = "저장하지 않았습니다. 상태 필터에서 '오류'·'대기' 행을 확인하세요.";
+        StatusMessage = emptied > 0
+            ? "저장하지 않았습니다. 상태 필터에서 '오류'·'대기'·'직접 수정' 행을 확인하세요."
+            : "저장하지 않았습니다. 상태 필터에서 '오류'·'대기' 행을 확인하세요.";
         return false;
     }
 
@@ -293,8 +301,12 @@ public partial class MainViewModel
 
         try
         {
-            await CommitDestEditAsync(SelectedEntry, SelectedEntry.DestText);
-            StatusMessage = "번역문 수정을 저장했습니다.";
+            StatusMessage = await CommitDestEditAsync(SelectedEntry, SelectedEntry.DestText) switch
+            {
+                DestEditOutcome.Saved => "번역문 수정을 저장했습니다.",
+                DestEditOutcome.BackToPending => "번역문을 비우고 대기로 돌렸습니다. '번역 시작'을 누르면 번역합니다.",
+                _ => "저장하지 않았습니다. 편집기의 번역문은 그대로입니다.",
+            };
         }
         catch (Exception ex)
         {
@@ -304,20 +316,58 @@ public partial class MainViewModel
 
     private bool CanSaveSelectedDest() => IsProjectLoaded && !IsTranslating && SelectedEntry != null;
 
-    public async Task CommitDestEditAsync(StringEntryViewModel entry, string newDest)
+    public async Task<DestEditOutcome> CommitDestEditAsync(StringEntryViewModel entry, string newDest)
     {
         var db = _projectState.Db;
         if (db == null)
         {
-            return;
+            return DestEditOutcome.NotSaved;
         }
 
-        await CommitDestEditAsync(db, entry, newDest);
+        return await CommitDestEditAsync(db, entry, newDest);
     }
 
-    private async Task CommitDestEditAsync(ProjectDb db, StringEntryViewModel entry, string newDest)
+    /// <summary>What saving the editor's text did with the row.</summary>
+    public enum DestEditOutcome
+    {
+        /// <summary>The user kept the text in the editor (an emptied translation, 취소).</summary>
+        NotSaved,
+
+        /// <summary>Saved as 직접 수정.</summary>
+        Saved,
+
+        /// <summary>The emptied row went back to 대기, to be translated by the next run.</summary>
+        BackToPending,
+    }
+
+    private async Task<DestEditOutcome> CommitDestEditAsync(ProjectDb db, StringEntryViewModel entry, string newDest)
     {
         var savedDest = newDest ?? "";
+        // An emptied translation was saved as a hand edit of nothing: every later run skips it and the export writes it
+        // empty, as an XML's intentionally empty translation. Emptying is as often meant as "translate this again".
+        if (IsEmptiedTranslation(entry, savedDest))
+        {
+            var answer = _uiInteractionService.ShowMessage(
+                $"#{entry.OrderIndex} 행의 번역문을 비웠습니다.{Environment.NewLine}{Environment.NewLine}"
+                + $"예: 빈 채로 저장합니다(직접 수정). ESP·XML에도 빈 글로 저장됩니다.{Environment.NewLine}"
+                + $"아니요: 대기로 돌립니다. 다음 '번역 시작' 때 번역합니다.{Environment.NewLine}"
+                + "취소: 지금은 저장하지 않습니다. 비운 번역문은 저장 전 상태로 남아, 내보내기·닫기 전에 다시 묻습니다.",
+                "빈 번역 저장",
+                UiMessageBoxButton.YesNoCancel,
+                UiMessageBoxImage.Question,
+                UiMessageBoxResult.Cancel
+            );
+            if (answer == UiMessageBoxResult.Cancel)
+            {
+                return DestEditOutcome.NotSaved;
+            }
+
+            if (answer == UiMessageBoxResult.No)
+            {
+                return await ReturnEmptiedRowToPendingAsync(db, entry) ? DestEditOutcome.BackToPending : DestEditOutcome.NotSaved;
+            }
+        }
+
         var shownWhenSaving = entry.DestText;
         await db.UpdateStringTranslationAsync(entry.Id, savedDest, StringEntryStatus.Edited, null, CancellationToken.None);
         // A row saved because the user left it can be reselected and typed into before this write finishes;
@@ -341,6 +391,60 @@ public partial class MainViewModel
                 AppLog.Write($"WARN 저장한 행을 다시 검사하지 못했습니다: {ex.Message}");
             }
         }
+
+        return DestEditOutcome.Saved;
+    }
+
+    /// <summary>A translation emptied of a row that has something to translate: saving it asks first.</summary>
+    private static bool IsEmptiedTranslation(StringEntryViewModel entry, string? newDest)
+        => string.IsNullOrWhiteSpace(newDest) && !string.IsNullOrWhiteSpace(entry.SourceText);
+
+    /// <summary>
+    /// An emptied row put back to 대기 as 다시 번역 does: its marks go, and a hand edit's old text is noted so the project
+    /// TM does not fill it back. False for a row a run is translating now (it is left as it is).
+    /// </summary>
+    private async Task<bool> ReturnEmptiedRowToPendingAsync(ProjectDb db, StringEntryViewModel entry)
+    {
+        var shownWhenSaving = entry.DestText;
+        if (entry.Status == StringEntryStatus.Pending)
+        {
+            // An XML's untranslated row can come with text in its translation field.
+            await db.UpdateStringTranslationAsync(entry.Id, "", StringEntryStatus.Pending, null, CancellationToken.None);
+        }
+        else if (await db.ResetForRetranslationAsync(new[] { entry.Id }, includeEdited: true, CancellationToken.None) == 0)
+        {
+            return false;
+        }
+
+        if (string.Equals(entry.DestText, shownWhenSaving, StringComparison.Ordinal))
+        {
+            entry.DestText = "";
+        }
+        entry.MarkDestTextSaved("");
+        entry.Status = StringEntryStatus.Pending;
+        entry.ErrorMessage = null;
+        entry.IsTranslationMemoryApplied = false;
+        entry.IsSourceFix = false;
+        entry.SourceFixNeedsCheck = false;
+        if (ReferenceEquals(db, _projectState.Db))
+        {
+            foreach (var key in _lqaReviewedMarks.Keys.Where(key => key.StringId == entry.Id).ToList())
+            {
+                _lqaReviewedMarks.Remove(key);
+            }
+
+            RecountProgress();
+            try
+            {
+                await RecheckLqaRowAsync(entry);
+            }
+            catch (Exception ex)
+            {
+                AppLog.Write($"WARN 대기로 돌린 행을 다시 검사하지 못했습니다: {ex.Message}");
+            }
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -369,9 +473,8 @@ public partial class MainViewModel
         TotalCount = total;
 
         var tmHitIds = await GetKnownTranslationIdsAsync(db, CancellationToken.None);
-        var sourceFixIds = new System.Collections.Generic.HashSet<long>(
-            (await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None)).Keys
-        );
+        var sourceFixIds = await db.GetSourceFixIdsForCheckAsync(CancellationToken.None);
+        var sourceFixRecheck = await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixRecheckNoteKind, CancellationToken.None);
 
         const int pageSize = 500;
         var loaded = new List<StringEntryViewModel>(capacity: total);
@@ -391,6 +494,7 @@ public partial class MainViewModel
                     ErrorMessage = row.ErrorMessage,
                     IsTranslationMemoryApplied = tmHitIds.Contains(row.Id),
                     IsSourceFix = sourceFixIds.Contains(row.Id),
+                    SourceFixNeedsCheck = sourceFixRecheck.ContainsKey(row.Id),
                 };
 
                 loaded.Add(vm);

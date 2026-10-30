@@ -22,7 +22,14 @@ public partial class StringEntryViewModel
           + (location.TableKind is { } table && location.StringId is { } id ? $" · {table.ToString().ToUpperInvariant()} StringID {id}" : "");
 
     public string RowToolTip => string.Join("\n",
-        new[] { PluginLocationText, IsSourceFix ? "원문 오류 수정으로 표시됨" : "", UserFacingErrorMessage }.Where(line => line.Length > 0));
+        new[]
+        {
+            PluginLocationText,
+            IsSourceFix ? "원문 오류 수정으로 표시됨"
+            : SourceFixNeedsCheck ? "원문 오류 수정 표시가 있었지만 XML에서 번역이 바뀌어 품질 검사가 다시 검사합니다(이 행의 수정은 아직 TM에 넣지 않습니다). 바뀐 번역도 원문 오류 수정이면 표시를 다시 누르고, 표시를 없애려면 한 번 더 누르세요."
+            : "",
+            UserFacingErrorMessage,
+        }.Where(line => line.Length > 0));
 
     // Explicit selectors use exact identity rather than matching the digits in unrelated source text.
     public bool TryMatchLocationQuery(string query, out bool matches)

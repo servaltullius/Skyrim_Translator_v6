@@ -361,6 +361,9 @@ public class TranslationCostEstimatorTests
         public Task<IReadOnlyDictionary<string, string>> GetTranslationMemoryAsync(string sourceLang, string destLang, CancellationToken cancellationToken)
             => Task.FromResult<IReadOnlyDictionary<string, string>>(new Dictionary<string, string>());
 
+        public Task<IReadOnlyDictionary<long, string>> GetStringNotesByKindAsync(string kind, CancellationToken cancellationToken)
+            => Task.FromResult<IReadOnlyDictionary<long, string>>(new Dictionary<long, string>());
+
         public Task UpsertStringNoteAsync(long stringId, string kind, string message, CancellationToken cancellationToken)
             => Task.CompletedTask;
 

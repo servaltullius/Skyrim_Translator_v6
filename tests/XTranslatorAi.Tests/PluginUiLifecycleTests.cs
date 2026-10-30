@@ -427,6 +427,8 @@ public sealed partial class PluginUiLifecycleTests
             NetworkOrDialogUsed = true;
             Titles.Add(title);
             Messages.Add(message);
+            // An emptied translation has three answers; a test that saves one says which.
+            if (Responses.Count == 0 && title == "빈 번역 저장") throw new InvalidOperationException("빈 번역 저장에 넣은 응답이 없습니다.");
             return Responses.Count > 0 ? Responses.Dequeue() : title == "저장 확인" ? UiMessageBoxResult.Yes : UiMessageBoxResult.Ok;
         }
         public string? ShowOpenFileDialog(OpenFileDialogRequest request) { NetworkOrDialogUsed = true; return OpenPath; }

@@ -59,6 +59,18 @@ public static class TranslationConstants
     public const string SourceFixNoteKind = "source_fix";
 
     /// <summary>
+    /// A marked row whose translation an XML import replaced: the mark stays, but the quality check reads the new text in
+    /// full until the user marks the row again (a mark that judged the old text would have hidden the new one's errors).
+    /// </summary>
+    public const string SourceFixRecheckNoteKind = "source_fix_recheck";
+
+    /// <summary>
+    /// A hand edit sent to be translated again (다시 번역), its text as the message: the project TM learned the edit, and
+    /// filled it straight back into the row the user asked to translate anew.
+    /// </summary>
+    public const string RetranslatedEditNoteKind = "retranslated_edit";
+
+    /// <summary>
     /// A quality-check result the user looked at and left as it is ("확인함"): the note's kind is this prefix and the
     /// result's code, its message the row's translation when it was marked. A changed translation is judged again.
     /// </summary>

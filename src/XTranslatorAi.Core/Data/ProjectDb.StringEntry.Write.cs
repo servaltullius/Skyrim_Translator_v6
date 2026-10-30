@@ -56,9 +56,27 @@ public sealed partial class ProjectDb
             // A "확인함" mark judged the old translation; the new one is checked afresh. A held row asked again is no longer held.
             await using var deleteNotes = CreateClearNotesCommand(tx, StringNotePolicy.RowEvent.Retranslate, out var deleteId);
 
+            // A hand edit asked again keeps its old text in a note: the project TM learned the edit, and the run filled
+            // it straight back (TranslationService skips the project TM's entry when it is that text).
+            await using var oldEdit = _connection.CreateCommand();
+            oldEdit.Transaction = tx;
+            oldEdit.CommandText = "SELECT DestText FROM StringEntry WHERE Id=$Id AND Status=$Edited;";
+            oldEdit.Parameters.AddWithValue("$Edited", (int)StringEntryStatus.Edited);
+            var oldEditId = oldEdit.Parameters.Add("$Id", Microsoft.Data.Sqlite.SqliteType.Integer);
+            await using var sentBack = _connection.CreateCommand();
+            sentBack.Transaction = tx;
+            sentBack.CommandText = "INSERT INTO StringNote (StringId, Kind, Message, UpdatedAt) VALUES ($Id, $Kind, $Text, $UpdatedAt) "
+                                   + "ON CONFLICT(StringId, Kind) DO UPDATE SET Message=excluded.Message, UpdatedAt=excluded.UpdatedAt;";
+            sentBack.Parameters.AddWithValue("$Kind", TranslationConstants.RetranslatedEditNoteKind);
+            sentBack.Parameters.AddWithValue("$UpdatedAt", DateTimeOffset.UtcNow.ToString("O"));
+            var sentBackId = sentBack.Parameters.Add("$Id", Microsoft.Data.Sqlite.SqliteType.Integer);
+            var sentBackText = sentBack.Parameters.Add("$Text", Microsoft.Data.Sqlite.SqliteType.Text);
+
             var reset = 0;
             foreach (var id in ids)
             {
+                oldEditId.Value = id;
+                var editText = includeEdited ? await oldEdit.ExecuteScalarAsync(cancellationToken) as string : null;
                 updateId.Value = id;
                 if (await update.ExecuteNonQueryAsync(cancellationToken) == 0)
                 {
@@ -67,6 +85,13 @@ public sealed partial class ProjectDb
 
                 deleteId.Value = id;
                 await deleteNotes.ExecuteNonQueryAsync(cancellationToken);
+                if (!string.IsNullOrWhiteSpace(editText))
+                {
+                    sentBackId.Value = id;
+                    sentBackText.Value = editText;
+                    await sentBack.ExecuteNonQueryAsync(cancellationToken);
+                }
+
                 reset++;
             }
 

@@ -98,8 +98,12 @@ public sealed class TranslationMemoryUpdateTests
         Assert.Equal(0, fixture.Client.Calls);
     }
 
+    /// <summary>
+    /// The edit stays the TM's translation of its English, and fills the other rows. The edited row asked again (다시
+    /// 번역) is not filled back with it: its own edit came straight back, and the user had asked for a new translation.
+    /// </summary>
     [Fact]
-    public async Task RetranslatingOrRevertingAnEditedRow_KeepsTheEditAsTheTmEntry()
+    public async Task RetranslatingAnEditedRow_AsksForANewTranslation_AndKeepsTheEditAsTheTmEntry()
     {
         await using var fixture = await TranslationRunFixture.CreateAsync(("Iron Sword", "WEAP:FULL"), ("Iron Sword", "WEAP:FULL"));
         var (edited, other) = (fixture.Ids[0], fixture.Ids[1]);
@@ -118,14 +122,38 @@ public sealed class TranslationMemoryUpdateTests
         await fixture.Service.TranslateIdsAsync(fixture.Request with { Ids = new[] { edited, other } });
 
         var rows = await fixture.RowsAsync();
-        Assert.All(new[] { rows[edited], rows[other] }, row =>
-        {
-            Assert.Equal(StringEntryStatus.Done, row.Status);
-            Assert.Equal("User edit", row.DestText);
-        });
-        Assert.Equal(0, fixture.Client.Calls);
-        // Applying a TM hit writes the row as Done, which must not rewrite the entry either.
+        Assert.Equal(("User edit", StringEntryStatus.Done), (rows[other].DestText, rows[other].Status));
+        Assert.Equal(1, fixture.Client.Calls);
+        Assert.Equal(StringEntryStatus.Done, rows[edited].Status);
+        Assert.NotEqual("User edit", rows[edited].DestText);
+        // Its new translation saved, the row no longer waits for one.
+        Assert.Empty(await fixture.Db.GetStringNotesByKindAsync(TranslationConstants.RetranslatedEditNoteKind, CancellationToken.None));
+        // Applying a TM hit, or the model's translation, writes the row as Done, which must not rewrite the entry either.
         Assert.Equal("User edit", Assert.Single(await fixture.Db.GetTranslationMemoryEntriesAsync(Lang, Lang, CancellationToken.None)).DestText);
+    }
+
+    /// <summary>
+    /// The sent-back edit leaves out the project TM's entry only: the series TM's translation of the English still fills
+    /// the row, as it would without the edit.
+    /// </summary>
+    [Fact]
+    public async Task RetranslatingAnEditedRow_StillTakesTheSeriesTm()
+    {
+        await using var fixture = await TranslationRunFixture.CreateAsync(("Iron Sword", "WEAP:FULL"));
+        var edited = fixture.Ids[0];
+        await fixture.Db.UpdateStringTranslationAsync(edited, "쇠칼", StringEntryStatus.Edited, null, CancellationToken.None);
+        await fixture.Db.ResetForRetranslationAsync(new[] { edited }, includeEdited: true, CancellationToken.None);
+        Assert.Equal("쇠칼", Assert.Single(await fixture.Db.GetTranslationMemoryEntriesAsync(Lang, Lang, CancellationToken.None)).DestText);
+
+        await fixture.Service.TranslateIdsAsync(fixture.Request with
+        {
+            Ids = new[] { edited },
+            GlobalTranslationMemory = new Dictionary<string, string> { [TranslationMemoryKey.NormalizeSource("Iron Sword")] = "철검" },
+        });
+
+        var row = (await fixture.RowsAsync())[edited];
+        Assert.Equal(("철검", StringEntryStatus.Done), (row.DestText, row.Status));
+        Assert.Equal(0, fixture.Client.Calls);
     }
 
     [Theory]

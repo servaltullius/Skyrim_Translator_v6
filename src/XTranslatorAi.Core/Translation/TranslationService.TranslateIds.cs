@@ -123,16 +123,15 @@ public sealed partial class TranslationService
         Ctx.EnchantmentNames = request.ReferenceNameMemory is { Count: > 0 } memory && LanguageHelper.IsKoreanLanguage(request.TargetLang)
             ? EnchantmentNameIndex.Build(memory)
             : null;
-        var translationMemory = MergeTranslationMemory(
-            request.GlobalTranslationMemory,
-            await LoadTranslationMemoryAsync(request.SourceLang, request.TargetLang, request.CancellationToken)
-        );
+        var projectTranslationMemory = await LoadTranslationMemoryAsync(request.SourceLang, request.TargetLang, request.CancellationToken);
+        var translationMemory = MergeTranslationMemory(request.GlobalTranslationMemory, projectTranslationMemory);
 
         var items = await BuildTranslationItemsAsync(
             request,
             placeholderMasker,
             glossaryApplier,
-            translationMemory
+            translationMemory,
+            projectTranslationMemory
         );
 
         if (request.EnableRunNameMemory)

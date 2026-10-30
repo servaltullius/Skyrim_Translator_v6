@@ -62,6 +62,8 @@ public interface IProjectDb
         CancellationToken cancellationToken
     );
 
+    Task<IReadOnlyDictionary<long, string>> GetStringNotesByKindAsync(string kind, CancellationToken cancellationToken);
+
     Task UpsertStringNoteAsync(
         long stringId,
         string kind,

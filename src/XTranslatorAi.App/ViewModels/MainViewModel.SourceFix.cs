@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using XTranslatorAi.App.Services;
+using XTranslatorAi.Core.Models;
 
 namespace XTranslatorAi.App.ViewModels;
 
@@ -34,12 +35,25 @@ public partial class MainViewModel
         }
 
         var mark = !rows.All(row => row.IsSourceFix);
+        // Only a translated row is marked (ProjectDb.SetSourceFixAsync): a 대기 row marked kept the mark on the model's
+        // translation, and the check skipped it.
+        var untranslated = mark ? rows.Where(row => !row.IsSourceFix && !CanMarkSourceFix(row)).ToList() : new List<StringEntryViewModel>();
+        rows = rows.Except(untranslated).ToList();
+        if (rows.Count == 0)
+        {
+            StatusMessage = "번역이 없는 행은 원문 오류 수정으로 표시할 수 없습니다. 번역(또는 직접 수정)한 뒤 표시하세요.";
+            return;
+        }
+
+        var changed = new List<StringEntryViewModel>();
         try
         {
             foreach (var row in rows)
             {
-                await db.SetSourceFixAsync(row.Id, mark, CancellationToken.None);
-                row.IsSourceFix = mark;
+                var marked = await db.SetSourceFixAsync(row.Id, mark, CancellationToken.None);
+                row.IsSourceFix = marked;
+                row.SourceFixNeedsCheck = false;
+                if (marked == mark) changed.Add(row);
             }
         }
         catch (Exception ex)
@@ -53,9 +67,16 @@ public partial class MainViewModel
             return;
         }
 
-        StatusMessage = mark
+        var notMarked = untranslated.Count + rows.Count - changed.Count;
+        rows = changed;
+        StatusMessage = (mark
             ? $"{rows.Count}개 행을 원문 오류 수정으로 표시했습니다. 품질 검사는 이 행들의 태그만 확인합니다."
-            : $"{rows.Count}개 행의 원문 오류 수정 표시를 해제했습니다. 다른 행과 비교하는 검사는 다음 검사 때 반영됩니다.";
+            : $"{rows.Count}개 행의 원문 오류 수정 표시를 해제했습니다. 다른 행과 비교하는 검사는 다음 검사 때 반영됩니다.")
+            + (notMarked > 0 ? $" 번역이 없는 {notMarked}개 행은 표시하지 않았습니다." : "");
+        if (rows.Count == 0)
+        {
+            return;
+        }
         try
         {
             if (IsLqaScanning)
@@ -76,4 +97,8 @@ public partial class MainViewModel
     }
 
     private bool CanToggleSourceFix() => IsProjectLoaded && !IsTranslating && IsWorkspaceInteractive;
+
+    /// <summary>A translated row, as the quality check reads it (an XML's row that came with its translation too), not held.</summary>
+    private static bool CanMarkSourceFix(StringEntryViewModel row)
+        => LqaStatus(row) is StringEntryStatus.Done or StringEntryStatus.Edited && !string.IsNullOrEmpty(row.DestText);
 }

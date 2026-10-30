@@ -56,7 +56,7 @@ public sealed partial class ProjectDb
                 var destText = row.DestText;
                 var status = row.Status;
                 SavedTranslation? kept = null;
-                var identity = saved.Count > 0 || retired.Count > 0 ? GetImportIdentity(row.RawStringXml) : null;
+                var identity = saved.Count > 0 || retired.Count > 0 || notes.Count > 0 ? GetImportIdentity(row.RawStringXml) : null;
                 if (identity != null)
                 {
                     present.Add(identity);
@@ -90,17 +90,31 @@ public sealed partial class ProjectDb
                 // reopening used to delete them all. A hand edit's TM notes are stale (saving the edit leaves them), but
                 // the marks the user put on it stay: "원문 오류 수정" and "확인함", which reopening dropped on edited rows.
                 // A translation set aside by an earlier import brings back the notes kept with it.
-                if (kept != null && status != StringEntryStatus.Pending
-                    && string.Equals(destText, kept.DestText, StringComparison.Ordinal)
-                    && (notes.TryGetValue((identity!, kept.OrderIndex), out var keptNotes) || kept.Marks is { Count: > 0 }))
+                // Another translation coming in keeps the "원문 오류 수정" mark only, and the check reads the new text in
+                // full until the user marks the row again (SourceFixRecheckNoteKind): both marks were dropped, and a
+                // deliberate fix came back marked as an error. A "확인함" judged the old text and goes.
+                if (kept != null && status != StringEntryStatus.Pending)
                 {
-                    var restored = keptNotes == null
-                        ? kept.Marks!.ToList()
-                        : keptNotes.Where(note => StringNotePolicy.KeptWith(note.Kind, kept.Status)).ToList();
+                    var keptNotes = notes.GetValueOrDefault((identity!, kept.OrderIndex));
+                    var restored = keptNotes?.Where(note => StringNotePolicy.KeptWith(note.Kind, kept.Status)).ToList()
+                                   ?? kept.Marks?.ToList() ?? new List<(string Kind, string Message, string UpdatedAt)>();
+                    if (!string.Equals(destText, kept.DestText, StringComparison.Ordinal))
+                    {
+                        restored = restored.Where(note => note.Kind == TranslationConstants.SourceFixNoteKind).ToList();
+                        if (restored.Count > 0) restored.Add((TranslationConstants.SourceFixRecheckNoteKind, "XML에서 번역이 바뀜", now));
+                    }
+
                     if (restored.Count > 0)
                     {
                         await RestorePluginStringNotesAsync(tx, await LastInsertedRowIdAsync(tx, cancellationToken), restored, cancellationToken);
                     }
+                }
+                // A row still to translate keeps a sent-back edit's note (KeptWith), as a reopened plugin does.
+                else if (status == StringEntryStatus.Pending && identity != null
+                         && notes.GetValueOrDefault((identity, row.OrderIndex))?.Where(note => StringNotePolicy.KeptWith(note.Kind, status)).ToList()
+                             is { Count: > 0 } waiting)
+                {
+                    await RestorePluginStringNotesAsync(tx, await LastInsertedRowIdAsync(tx, cancellationToken), waiting, cancellationToken);
                 }
             }
 

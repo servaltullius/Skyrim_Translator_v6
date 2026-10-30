@@ -44,6 +44,33 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Empty(await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None));
         });
 
+    /// <summary>
+    /// A 대기 row marked kept the mark on the model's translation, and the check skipped it. Only translated rows are
+    /// marked; with a mixed selection the others are named in the message.
+    /// </summary>
+    [Fact]
+    public Task MarkingRowsWithoutATranslation_LeavesThemUnmarked()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            var rows = await LoadXmlWorkspaceAsync(fixture, "Hand Strap Attack", "Iron Sword");
+            var db = fixture.State.Db!;
+            fixture.Vm.SelectedEntry = rows[1];
+
+            await fixture.Vm.ToggleSourceFixCommand.ExecuteAsync(null);
+
+            Assert.False(rows[1].IsSourceFix);
+            Assert.Contains("번역이 없는 행", fixture.Vm.StatusMessage);
+
+            await db.UpdateStringTranslationAsync(rows[0].Id, "Hand Strap 공격", StringEntryStatus.Done, null, CancellationToken.None);
+            (rows[0].DestText, rows[0].Status) = ("Hand Strap 공격", StringEntryStatus.Done);
+            await fixture.Vm.ToggleSourceFixCommand.ExecuteAsync(new List<object> { rows[0], rows[1] });
+
+            Assert.Equal((true, false), (rows[0].IsSourceFix, rows[1].IsSourceFix));
+            Assert.Contains("번역이 없는 1개 행은 표시하지 않았습니다", fixture.Vm.StatusMessage);
+            Assert.Equal(new[] { rows[0].Id }, (await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None)).Keys);
+        });
+
     // Unmarking a row in a project never checked (or whose results were cleared) listed that row's results alone, read as
     // the whole project's ("전체 N건").
     [Fact]
@@ -93,6 +120,9 @@ public sealed partial class PluginUiLifecycleTests
 
             Assert.Equal(StringEntryStatus.Pending, rows[0].Status);
             Assert.False(rows[0].IsSourceFix);
+            // Translated again, it is marked with one click.
+            await db.UpdateStringTranslationAsync(rows[0].Id, "Hand Strap 공격", StringEntryStatus.Done, null, CancellationToken.None);
+            (rows[0].DestText, rows[0].Status) = ("Hand Strap 공격", StringEntryStatus.Done);
             await fixture.Vm.ToggleSourceFixCommand.ExecuteAsync(null);
             Assert.True(rows[0].IsSourceFix);
             Assert.True((await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None)).ContainsKey(rows[0].Id));
@@ -178,6 +208,26 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Equal("일부러 다르게 고친 번역", reopened.DestText);
             Assert.True(reopened.IsSourceFix);
             Assert.True(reopened.IsTranslationMemoryApplied);
+        });
+
+    /// <summary>A hand edit sent to be translated again keeps its old text across a reopen, or the project TM filled it back.</summary>
+    [Fact]
+    public Task ReopeningAPlugin_KeepsASentBackEditsNote()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            await fixture.LoadPluginWorkspaceAsync();
+            var db = fixture.State.Db!;
+            var row = Assert.Single(fixture.Vm.Entries);
+            await db.UpdateStringTranslationAsync(row.Id, "쇠칼", StringEntryStatus.Edited, null, CancellationToken.None);
+            await db.ResetForRetranslationAsync(new[] { row.Id }, includeEdited: true, CancellationToken.None);
+
+            fixture.Ui.OpenPath = fixture.State.PluginDocument!.Info.InputPath;
+            await fixture.Vm.OpenPluginCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            var reopened = Assert.Single(fixture.Vm.Entries);
+            var notes = await fixture.State.Db!.GetStringNotesByKindAsync(TranslationConstants.RetranslatedEditNoteKind, CancellationToken.None);
+            Assert.Equal("쇠칼", notes[reopened.Id]);
         });
 
     /// <summary>A hand edit keeps the user's mark when the plugin is opened again, but not the TM color of the fill it replaced.</summary>

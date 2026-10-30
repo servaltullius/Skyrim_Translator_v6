@@ -24,6 +24,14 @@ public partial class StringEntryViewModel : ObservableObject
     private bool _isSourceFix;
 
     /// <summary>
+    /// Marked "원문 오류 수정", but an XML import replaced its translation since: the quality check reads it in full (and
+    /// <see cref="IsSourceFix"/> is false) until the user marks it again.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(RowToolTip))]
+    private bool _sourceFixNeedsCheck;
+
+    /// <summary>
     /// True while this is the selected row, whose text the editor shows. The strings grid keeps it visible even when
     /// its text or status stops matching the filter, and filters it again when this turns false.
     /// </summary>

@@ -87,6 +87,7 @@ public partial class MainViewModel
                 row.ErrorMessage = null;
                 row.IsTranslationMemoryApplied = false;
                 row.IsSourceFix = false;
+                row.SourceFixNeedsCheck = false;
             }
 
             RecountProgress();

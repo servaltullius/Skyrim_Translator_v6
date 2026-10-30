@@ -20,11 +20,14 @@ public static class StringNotePolicy
         /// <summary>A known translation was set aside for a request (its tags did not fit).</summary>
         TmFallback,
 
-        /// <summary>What the user marked on the row: "원문 오류 수정" and the quality check's "확인함".</summary>
+        /// <summary>What the user marked on the row: "원문 오류 수정" (and that its text changed since), the quality check's "확인함".</summary>
         UserMark,
 
         /// <summary>What agent mode set on the row: a line held, its model would not translate.</summary>
         AgentState,
+
+        /// <summary>A hand edit sent to be translated again: its old text, which the project TM holds, is not filled back.</summary>
+        SentBackEdit,
     }
 
     public enum RowEvent
@@ -35,8 +38,11 @@ public static class StringNotePolicy
         /// <summary>A hand edit saved (수정됨): the translation is no longer the known one, nor held.</summary>
         HandEdit,
 
-        /// <summary>A translation saved with a status other than 건너뜀 and 수정됨 (완료, 오류, 대기): no longer held.</summary>
+        /// <summary>A translation saved as 완료: no longer held, nor a sent-back edit.</summary>
         Translated,
+
+        /// <summary>A row saved as 오류 or 대기: no longer held, but a sent-back edit still waits for its new translation.</summary>
+        Unfinished,
 
         /// <summary>A held row released to 대기.</summary>
         Released,
@@ -53,7 +59,9 @@ public static class StringNotePolicy
         [TranslationConstants.PreviousReleaseNoteKind] = NoteGroup.KnownTranslation,
         [TranslationConstants.TmFallbackNoteKind] = NoteGroup.TmFallback,
         [TranslationConstants.SourceFixNoteKind] = NoteGroup.UserMark,
+        [TranslationConstants.SourceFixRecheckNoteKind] = NoteGroup.UserMark,
         [TranslationConstants.AgentHoldNoteKind] = NoteGroup.AgentState,
+        [TranslationConstants.RetranslatedEditNoteKind] = NoteGroup.SentBackEdit,
     };
 
     public static NoteGroup? GroupOf(string kind)
@@ -67,9 +75,12 @@ public static class StringNotePolicy
     /// <summary>The groups an event takes off the row.</summary>
     public static IReadOnlyList<NoteGroup> ClearedBy(RowEvent rowEvent) => rowEvent switch
     {
+        // A sent-back edit's note stays: a row asked again before its new translation came (오류, 보류) still waits for
+        // one, and a hand edit's is written anew (ResetForRetranslationAsync).
         RowEvent.Retranslate => new[] { NoteGroup.KnownTranslation, NoteGroup.TmFallback, NoteGroup.UserMark, NoteGroup.AgentState },
-        RowEvent.HandEdit or RowEvent.KnownFill => new[] { NoteGroup.KnownTranslation, NoteGroup.TmFallback, NoteGroup.AgentState },
-        RowEvent.Translated or RowEvent.Released => new[] { NoteGroup.AgentState },
+        RowEvent.HandEdit or RowEvent.KnownFill => new[] { NoteGroup.KnownTranslation, NoteGroup.TmFallback, NoteGroup.AgentState, NoteGroup.SentBackEdit },
+        RowEvent.Translated => new[] { NoteGroup.AgentState, NoteGroup.SentBackEdit },
+        RowEvent.Unfinished or RowEvent.Released => new[] { NoteGroup.AgentState },
         _ => throw new ArgumentOutOfRangeException(nameof(rowEvent)),
     };
 
@@ -78,13 +89,20 @@ public static class StringNotePolicy
     {
         StringEntryStatus.Edited => RowEvent.HandEdit,
         StringEntryStatus.Skipped => null,
-        _ => RowEvent.Translated,
+        StringEntryStatus.Done => RowEvent.Translated,
+        _ => RowEvent.Unfinished,
     };
 
     /// <summary>
-    /// Whether a note comes back with a translation kept when a row goes out and comes back (set aside by an import, an
-    /// XML row kept): all of them, or for a hand edit only the user's marks (its other notes describe a text it no longer has).
+    /// Whether a note comes back with a row when it goes out and comes back (a reopen, set aside by an import, an XML row
+    /// kept): all of a translation kept, or for a hand edit only the user's marks (its other notes describe a text it no
+    /// longer has). A row still to translate (대기, 오류) keeps a sent-back edit's note only: lost on a reopen, the
+    /// project TM filled the edit back.
     /// </summary>
-    public static bool KeptWith(string kind, StringEntryStatus status)
-        => status != StringEntryStatus.Edited || GroupOf(kind) == NoteGroup.UserMark;
+    public static bool KeptWith(string kind, StringEntryStatus status) => status switch
+    {
+        StringEntryStatus.Edited => GroupOf(kind) == NoteGroup.UserMark,
+        StringEntryStatus.Pending or StringEntryStatus.Error or StringEntryStatus.InProgress => GroupOf(kind) == NoteGroup.SentBackEdit,
+        _ => true,
+    };
 }

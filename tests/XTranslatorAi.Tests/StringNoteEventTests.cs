@@ -24,7 +24,8 @@ public sealed class StringNoteEventTests : IAsyncLifetime
     private static readonly string[] AllKinds =
     {
         TranslationConstants.TmHitNoteKind, TranslationConstants.GameStringNoteKind, TranslationConstants.PreviousReleaseNoteKind,
-        TranslationConstants.TmFallbackNoteKind, TranslationConstants.SourceFixNoteKind, TranslationConstants.AgentHoldNoteKind, Reviewed,
+        TranslationConstants.TmFallbackNoteKind, TranslationConstants.SourceFixNoteKind, TranslationConstants.SourceFixRecheckNoteKind,
+        TranslationConstants.AgentHoldNoteKind, TranslationConstants.RetranslatedEditNoteKind, Reviewed,
     };
 
     private readonly string _path = Path.Combine(Path.GetTempPath(), $"xt-note-events-{Guid.NewGuid():N}.sqlite");
@@ -33,7 +34,7 @@ public sealed class StringNoteEventTests : IAsyncLifetime
     public async Task InitializeAsync()
     {
         _db = await ProjectDb.OpenOrCreateAsync(_path, CancellationToken.None);
-        await _db.BulkInsertStringsAsync(new[] { StringEntryStatus.Done, StringEntryStatus.Skipped }.Select((status, index) => (
+        await _db.BulkInsertStringsAsync(new[] { StringEntryStatus.Done, StringEntryStatus.Skipped, StringEntryStatus.Edited }.Select((status, index) => (
             OrderIndex: index, ListAttr: (string?)null, PartialAttr: (string?)null, AttributesJson: (string?)null,
             Edid: (string?)status.ToString(), Rec: (string?)"MISC:FULL", SourceText: "Aetherial Echo", DestText: "에테르의 메아리",
             Status: status, RawStringXml: "<r/>"
@@ -50,24 +51,32 @@ public sealed class StringNoteEventTests : IAsyncLifetime
     {
         string[] Without(params string[] kinds) => AllKinds.Except(kinds).ToArray();
         yield return new object[] { "hand edit", StringEntryStatus.Done, Without(TranslationConstants.TmHitNoteKind, TranslationConstants.GameStringNoteKind,
-            TranslationConstants.PreviousReleaseNoteKind, TranslationConstants.TmFallbackNoteKind, TranslationConstants.AgentHoldNoteKind) };
-        yield return new object[] { "saved done", StringEntryStatus.Done, Without(TranslationConstants.AgentHoldNoteKind) };
+            TranslationConstants.PreviousReleaseNoteKind, TranslationConstants.TmFallbackNoteKind, TranslationConstants.AgentHoldNoteKind,
+            TranslationConstants.RetranslatedEditNoteKind) };
+        yield return new object[] { "saved done", StringEntryStatus.Done, Without(TranslationConstants.AgentHoldNoteKind, TranslationConstants.RetranslatedEditNoteKind) };
+        // A failed row's sent-back edit still waits for its new translation.
         yield return new object[] { "saved error", StringEntryStatus.Done, Without(TranslationConstants.AgentHoldNoteKind) };
         yield return new object[] { "saved skipped", StringEntryStatus.Done, AllKinds };
+        yield return new object[] { "saved pending", StringEntryStatus.Done, Without(TranslationConstants.AgentHoldNoteKind) };
         // The batch save follows the single one (it used to keep every note, a hand edit's TM notes and a hold included).
-        yield return new object[] { "batch done", StringEntryStatus.Done, Without(TranslationConstants.AgentHoldNoteKind) };
+        yield return new object[] { "batch done", StringEntryStatus.Done, Without(TranslationConstants.AgentHoldNoteKind, TranslationConstants.RetranslatedEditNoteKind) };
         yield return new object[] { "batch edited", StringEntryStatus.Done, Without(TranslationConstants.TmHitNoteKind, TranslationConstants.GameStringNoteKind,
-            TranslationConstants.PreviousReleaseNoteKind, TranslationConstants.TmFallbackNoteKind, TranslationConstants.AgentHoldNoteKind) };
+            TranslationConstants.PreviousReleaseNoteKind, TranslationConstants.TmFallbackNoteKind, TranslationConstants.AgentHoldNoteKind,
+            TranslationConstants.RetranslatedEditNoteKind) };
         yield return new object[] { "batch skipped", StringEntryStatus.Done, AllKinds };
         // A fill takes off the other known kinds, the fallback note and a hold, and puts its own note back.
-        yield return new object[] { "known fill", StringEntryStatus.Done,
-            new[] { TranslationConstants.SourceFixNoteKind, Reviewed, TranslationConstants.PreviousReleaseNoteKind } };
-        yield return new object[] { "known fill", StringEntryStatus.Skipped,
-            new[] { TranslationConstants.SourceFixNoteKind, Reviewed, TranslationConstants.PreviousReleaseNoteKind } };
+        yield return new object[] { "known fill", StringEntryStatus.Done, new[] { TranslationConstants.SourceFixNoteKind,
+            TranslationConstants.SourceFixRecheckNoteKind, Reviewed, TranslationConstants.PreviousReleaseNoteKind } };
+        yield return new object[] { "known fill", StringEntryStatus.Skipped, new[] { TranslationConstants.SourceFixNoteKind,
+            TranslationConstants.SourceFixRecheckNoteKind, Reviewed, TranslationConstants.PreviousReleaseNoteKind } };
         // A row the known translation did not fit keeps its notes and gets the fallback note.
         yield return new object[] { "known set aside", StringEntryStatus.Done, AllKinds };
         yield return new object[] { "status error", StringEntryStatus.Done, AllKinds };
-        yield return new object[] { "retranslate", StringEntryStatus.Done, Array.Empty<string>() };
+        // A sent-back edit's note stays: a row asked again before its new translation came (오류, 보류) still waits for one.
+        yield return new object[] { "retranslate", StringEntryStatus.Done, new[] { TranslationConstants.RetranslatedEditNoteKind } };
+        yield return new object[] { "retranslate finished only", StringEntryStatus.Done, new[] { TranslationConstants.RetranslatedEditNoteKind } };
+        // A hand edit asked again keeps its old text, so the project TM does not fill it back.
+        yield return new object[] { "retranslate", StringEntryStatus.Edited, new[] { TranslationConstants.RetranslatedEditNoteKind } };
         yield return new object[] { "release", StringEntryStatus.Skipped, Without(TranslationConstants.AgentHoldNoteKind) };
         // A row finished meanwhile (a lane's submit) is not put back to 대기, but its hold note goes all the same.
         yield return new object[] { "release", StringEntryStatus.Done, Without(TranslationConstants.AgentHoldNoteKind) };
@@ -97,6 +106,7 @@ public sealed class StringNoteEventTests : IAsyncLifetime
             case "saved done": await _db.UpdateStringTranslationAsync(id, "번역", StringEntryStatus.Done, null, CancellationToken.None); break;
             case "saved error": await _db.UpdateStringTranslationAsync(id, "", StringEntryStatus.Error, "오류", CancellationToken.None); break;
             case "saved skipped": await _db.UpdateStringTranslationAsync(id, "번역", StringEntryStatus.Skipped, null, CancellationToken.None); break;
+            case "saved pending": await _db.UpdateStringTranslationAsync(id, "", StringEntryStatus.Pending, null, CancellationToken.None); break;
             case "batch done": await _db.UpdateStringTranslationsAsync(new[] { (id, "번역", StringEntryStatus.Done, (string?)null) }, CancellationToken.None); break;
             case "batch edited": await _db.UpdateStringTranslationsAsync(new[] { (id, "번역", StringEntryStatus.Edited, (string?)null) }, CancellationToken.None); break;
             case "batch skipped": await _db.UpdateStringTranslationsAsync(new[] { (id, "번역", StringEntryStatus.Skipped, (string?)null) }, CancellationToken.None); break;
@@ -109,7 +119,8 @@ public sealed class StringNoteEventTests : IAsyncLifetime
                     new[] { (id, "이전 번역 폴백: 태그") }, CancellationToken.None);
                 break;
             case "status error": await _db.UpdateStringStatusesAsync(new[] { id }, StringEntryStatus.Error, "오류", CancellationToken.None); break;
-            case "retranslate": await _db.ResetForRetranslationAsync(new[] { id }, includeEdited: false, CancellationToken.None); break;
+            case "retranslate": await _db.ResetForRetranslationAsync(new[] { id }, includeEdited: true, CancellationToken.None); break;
+            case "retranslate finished only": await _db.ResetForRetranslationAsync(new[] { id }, includeEdited: false, CancellationToken.None); break;
             case "release": await _db.ReleaseHeldStringsAsync(new[] { id }, CancellationToken.None); break;
             default: throw new ArgumentOutOfRangeException(nameof(happening));
         }
@@ -117,6 +128,10 @@ public sealed class StringNoteEventTests : IAsyncLifetime
         Assert.Equal(left.OrderBy(k => k), (await KindsAsync(id)).OrderBy(k => k));
         var row = (await _db.GetStringsAsync(10, 0, CancellationToken.None)).Single(r => r.Id == id);
         if (happening == "known fill") Assert.Equal((StringEntryStatus.Done, "번역"), (row.Status, row.DestText));
+        if (happening == "retranslate" && status == StringEntryStatus.Edited)
+        {
+            Assert.Equal("에테르의 메아리", (await _db.GetStringNotesByKindAsync(TranslationConstants.RetranslatedEditNoteKind, CancellationToken.None))[id]);
+        }
         if (happening == "known set aside")
         {
             Assert.Equal((status, "에테르의 메아리"), (row.Status, row.DestText));
@@ -148,8 +163,11 @@ public sealed class StringNoteEventTests : IAsyncLifetime
     public void ATranslationComingBack_KeepsItsNotes_OrAHandEditsMarksOnly()
     {
         Assert.All(AllKinds, kind => Assert.True(StringNotePolicy.KeptWith(kind, StringEntryStatus.Done)));
-        Assert.Equal(new[] { TranslationConstants.SourceFixNoteKind, Reviewed }.OrderBy(k => k),
+        Assert.Equal(new[] { TranslationConstants.SourceFixNoteKind, TranslationConstants.SourceFixRecheckNoteKind, Reviewed }.OrderBy(k => k),
             AllKinds.Where(kind => StringNotePolicy.KeptWith(kind, StringEntryStatus.Edited)).OrderBy(k => k));
+        // A row still to translate keeps a sent-back edit's note only (lost on a reopen, the project TM filled the edit back).
+        Assert.All(new[] { StringEntryStatus.Pending, StringEntryStatus.Error }, status =>
+            Assert.Equal(new[] { TranslationConstants.RetranslatedEditNoteKind }, AllKinds.Where(kind => StringNotePolicy.KeptWith(kind, status))));
     }
 
     private async Task<IReadOnlyList<string>> KindsAsync(long id)

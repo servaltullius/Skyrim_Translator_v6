@@ -97,9 +97,12 @@ public partial class MainViewModel
         NotifyWorkspaceAvailability();
         // Closing used to drop an edit that was never saved with "번역문 저장". If the DB refuses the save,
         // let the user decide rather than either losing the edit silently or never being able to close.
-        if (!await TryCommitPendingDestEditsAsync()
+        var committed = await CommitPendingDestEditsAsync();
+        if (committed is not { Saved: true, KeptEmptied: 0 }
             && _uiInteractionService.ShowMessage(
-                "번역문 수정을 저장하지 못했습니다.\n\n저장하지 않고 닫을까요?",
+                committed.Saved
+                    ? $"비운 번역문 {committed.KeptEmptied}개를 저장하지 않았습니다. 닫으면 그 행들은 비우기 전 번역 그대로 남습니다.\n\n그래도 닫을까요?"
+                    : "번역문 수정을 저장하지 못했습니다.\n\n저장하지 않고 닫을까요?",
                 "번역문 저장",
                 UiMessageBoxButton.YesNo,
                 UiMessageBoxImage.Warning,

@@ -60,8 +60,13 @@ public sealed class ProjectDbSourceFixTests
     {
         await using var fixture = await TranslationRunFixture.CreateAsync(("Disabe Perfect Parry", "ARMO:DESC"), ("Rim Scroll - Sudden Tornado", "MGEF:FULL"));
         var (one, two) = (fixture.Ids[0], fixture.Ids[1]);
-        await fixture.Db.SetSourceFixAsync(one, true, CancellationToken.None);
-        await fixture.Db.SetSourceFixAsync(two, true, CancellationToken.None);
+        // Only a translated row is marked (MarkingARowNotTranslated_…).
+        await fixture.Db.UpdateStringTranslationsAsync(new (long, string, StringEntryStatus, string?)[]
+        {
+            (one, "완벽한 패리 비활성화 끔", StringEntryStatus.Done, null), (two, "갑작스러운 회오리", StringEntryStatus.Done, null),
+        }, CancellationToken.None);
+        Assert.True(await fixture.Db.SetSourceFixAsync(one, true, CancellationToken.None));
+        Assert.True(await fixture.Db.SetSourceFixAsync(two, true, CancellationToken.None));
 
         await fixture.Db.UpdateStringTranslationAsync(one, "킬무브 비활성화", StringEntryStatus.Edited, null, CancellationToken.None);
         await fixture.Db.UpdateStringTranslationsAsync(new (long, string, StringEntryStatus, string?)[]
@@ -76,5 +81,35 @@ public sealed class ProjectDbSourceFixTests
 
         Assert.Equal("완벽한 패리 비활성화", Assert.Single(await fixture.Db.GetTranslationMemoryEntriesAsync(Lang, Lang, CancellationToken.None)).DestText);
         Assert.DoesNotContain(one, (await fixture.Db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None)).Keys);
+    }
+
+    /// <summary>
+    /// A 대기 or 오류 row marked kept the mark when the model's translation was saved, and the check skipped a translation
+    /// that follows the English. Only a translated row is marked: 완료, 직접 수정, or an XML's row that came with its
+    /// translation (건너뜀), but not a held one.
+    /// </summary>
+    [Fact]
+    public async Task MarkingARowNotTranslated_IsRefused()
+    {
+        await using var fixture = await TranslationRunFixture.CreateAsync(
+            ("Disabe Perfect Parry", "ARMO:DESC"), ("Iron Sword", "WEAP:FULL"), ("Steel Sword", "WEAP:FULL"), ("Elven Sword", "WEAP:FULL"));
+        var (pending, error, fromXml, held) = (fixture.Ids[0], fixture.Ids[1], fixture.Ids[2], fixture.Ids[3]);
+        await fixture.Db.UpdateStringTranslationAsync(error, "", StringEntryStatus.Error, "오류", CancellationToken.None);
+        await fixture.Db.UpdateStringTranslationAsync(fromXml, "강철 검", StringEntryStatus.Skipped, null, CancellationToken.None);
+        // A held row keeps the text its field had (an XML's untranslated row can have some), and stays in English.
+        await fixture.Db.UpdateStringTranslationAsync(held, "Elven Sword", StringEntryStatus.Pending, null, CancellationToken.None);
+        await fixture.Db.HoldStringsAsync(new[] { (held, "규칙상 번역할 수 없음") }, CancellationToken.None);
+
+        Assert.False(await fixture.Db.SetSourceFixAsync(pending, true, CancellationToken.None));
+        Assert.False(await fixture.Db.SetSourceFixAsync(error, true, CancellationToken.None));
+        Assert.False(await fixture.Db.SetSourceFixAsync(held, true, CancellationToken.None));
+        Assert.True(await fixture.Db.SetSourceFixAsync(fromXml, true, CancellationToken.None));
+
+        Assert.Equal(new[] { fromXml }, (await fixture.Db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None)).Keys);
+
+        // A mark put on a 대기 row before this rule is taken off when the row is marked again.
+        await fixture.Db.UpsertStringNoteAsync(pending, TranslationConstants.SourceFixNoteKind, "원문 오류 수정", CancellationToken.None);
+        Assert.False(await fixture.Db.SetSourceFixAsync(pending, true, CancellationToken.None));
+        Assert.Equal(new[] { fromXml }, (await fixture.Db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None)).Keys);
     }
 }

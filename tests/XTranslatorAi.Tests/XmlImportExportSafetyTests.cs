@@ -150,6 +150,53 @@ public sealed class XmlImportExportSafetyTests : IAsyncLifetime
         Assert.Empty(await _db.GetStringNotesByKindAsync("tm_hit", CancellationToken.None));
     }
 
+    /// <summary>A hand edit sent to be translated again keeps its old text across a reopen, or the project TM filled it back.</summary>
+    [Fact]
+    public async Task Reopen_KeepsASentBackEditsNote()
+    {
+        await ImportAsync(Row("1", "Iron Sword", "") + Row("2", "Steel Sword", ""));
+        await _db.UpdateStringTranslationAsync(1, "쇠칼", StringEntryStatus.Edited, null, CancellationToken.None);
+        await _db.ResetForRetranslationAsync(new[] { 1L }, includeEdited: true, CancellationToken.None);
+
+        await ImportAsync(Row("1", "Iron Sword", "") + Row("2", "Steel Sword", ""), preserve: true);
+
+        var id = (await _db.GetStringsAsync(10, 0, CancellationToken.None)).Single(r => r.SourceText == "Iron Sword").Id;
+        Assert.Equal("쇠칼", (await _db.GetStringNotesByKindAsync(TranslationConstants.RetranslatedEditNoteKind, CancellationToken.None))[id]);
+    }
+
+    /// <summary>
+    /// The file brought another translation of a marked row: both marks were dropped, and a deliberate fix came back
+    /// flagged by the check. The "원문 오류 수정" mark stays, the check reads the new text in full until the user marks
+    /// the row again, and "확인함", which judged the old text, goes.
+    /// </summary>
+    [Fact]
+    public async Task Reopen_WithAnotherTranslationOfAMarkedRow_KeepsTheMark_AndChecksTheRowAgain()
+    {
+        await ImportAsync(Row("1", "Disabe Perfect Parry", "") + Row("2", "Iron Sword", ""));
+        await _db.UpdateStringTranslationAsync(1, "킬무브 비활성화", StringEntryStatus.Done, null, CancellationToken.None);
+        await _db.UpdateStringTranslationAsync(2, "철검", StringEntryStatus.Done, null, CancellationToken.None);
+        await _db.SetSourceFixAsync(1, true, CancellationToken.None);
+        await _db.SetLqaReviewedAsync(new[] { (1L, "english_residue", "킬무브 비활성화"), (2L, "english_residue", "철검") }, true, CancellationToken.None);
+
+        await ImportAsync(Row("1", "Disabe Perfect Parry", "킬무브 끄기") + Row("2", "Iron Sword", "쇠검"), preserve: true);
+
+        var loaded = await _db.GetStringsAsync(10, 0, CancellationToken.None);
+        var fix = loaded.Single(r => r.SourceText == "Disabe Perfect Parry").Id;
+        Assert.Equal("킬무브 끄기", loaded.Single(r => r.Id == fix).DestText);
+        Assert.Equal(new[] { fix }, (await _db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None)).Keys);
+        Assert.Equal(new[] { fix }, (await _db.GetStringNotesByKindAsync(TranslationConstants.SourceFixRecheckNoteKind, CancellationToken.None)).Keys);
+        Assert.Empty(await _db.GetLqaReviewedMarksAsync(CancellationToken.None));
+        Assert.Empty(await _db.GetSourceFixIdsForCheckAsync(CancellationToken.None));
+        Assert.All(await XTranslatorAi.Core.Text.ProjectLqaScan.LoadRowsAsync(_db, CancellationToken.None), row => Assert.False(row.IsSourceFix));
+
+        // Marked again, the row is left out of the check as before; the next reopen keeps it so.
+        Assert.True(await _db.SetSourceFixAsync(fix, true, CancellationToken.None));
+        Assert.Equal(new[] { fix }, await _db.GetSourceFixIdsForCheckAsync(CancellationToken.None));
+        await ImportAsync(Row("1", "Disabe Perfect Parry", "킬무브 끄기") + Row("2", "Iron Sword", "쇠검"), preserve: true);
+        Assert.Single(await _db.GetSourceFixIdsForCheckAsync(CancellationToken.None));
+        Assert.Empty(await _db.GetStringNotesByKindAsync(TranslationConstants.SourceFixRecheckNoteKind, CancellationToken.None));
+    }
+
     // Rows sharing an identity (LotD has 76, mostly repeated objectives such as "Talk to Captain Falx") were matched by
     // position only, so a row added above them dropped their translations without keeping them aside.
     [Fact]

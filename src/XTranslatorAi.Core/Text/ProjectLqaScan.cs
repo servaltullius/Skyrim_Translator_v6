@@ -70,9 +70,9 @@ public static class ProjectLqaScan
         }
 
         var previous = await db.GetPreviousTranslationsByStringIdAsync(ct);
-        var sourceFix = await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, ct);
+        var sourceFix = await db.GetSourceFixIdsForCheckAsync(ct);
         return rows.Select(e => new ProjectLqaRow(e.Id, e.OrderIndex, e.Edid, e.Rec, e.Status, e.SourceText ?? "", e.DestText ?? "",
-            previous.GetValueOrDefault(e.Id), sourceFix.ContainsKey(e.Id))).ToList();
+            previous.GetValueOrDefault(e.Id), sourceFix.Contains(e.Id))).ToList();
     }
 
     public sealed record Result(List<LqaIssue> Issues, ReferenceNameIndex? ReferenceNames);

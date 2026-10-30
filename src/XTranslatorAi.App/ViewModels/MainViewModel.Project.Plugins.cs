@@ -83,7 +83,8 @@ public partial class MainViewModel
             // The rows' notes the import kept: without them the grid lost its TM color and the quality check, which
             // reads the "원문 오류 수정" mark from the rows, flagged the marked rows again.
             var tmHitIds = await GetKnownTranslationIdsAsync(loaded.Db, CancellationToken.None);
-            var sourceFixIds = (await loaded.Db.GetStringNotesByKindAsync(TranslationConstants.SourceFixNoteKind, CancellationToken.None)).Keys.ToHashSet();
+            var sourceFixIds = await loaded.Db.GetSourceFixIdsForCheckAsync(CancellationToken.None);
+            var sourceFixRecheck = await loaded.Db.GetStringNotesByKindAsync(TranslationConstants.SourceFixRecheckNoteKind, CancellationToken.None);
             var entries = loaded.Entries.Select(row => new StringEntryViewModel(row.Id, row.OrderIndex)
             {
                 Edid = row.Edid, Rec = row.Rec, SourceText = row.SourceText, DestText = row.DestText,
@@ -91,6 +92,7 @@ public partial class MainViewModel
                 PluginLocation = loaded.Document.Fields[row.OrderIndex],
                 IsTranslationMemoryApplied = tmHitIds.Contains(row.Id),
                 IsSourceFix = sourceFixIds.Contains(row.Id),
+                SourceFixNeedsCheck = sourceFixRecheck.ContainsKey(row.Id),
             }).ToList();
             // The service's import commit is the point of no cancellation. Adopt its ready snapshot
             // before awaiting auxiliary work, so a late cancellation never leaves old rows over a new DB.
