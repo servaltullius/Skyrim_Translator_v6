@@ -255,7 +255,7 @@ public class TranslationUiLifecycleTests
         thread.SetApartmentState(ApartmentState.STA);
         thread.IsBackground = true;
         thread.Start();
-        return completion.Task.WaitAsync(TimeSpan.FromSeconds(20));
+        return completion.Task.WaitAsync(TestEnvironment.UiTestLimit);
     }
 
     private sealed class StaTestSynchronizationContext : SynchronizationContext, IDisposable

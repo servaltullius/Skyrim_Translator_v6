@@ -8,6 +8,15 @@ namespace XTranslatorAi.Tests;
 internal static class TestEnvironment
 {
     /// <summary>
+    /// How long a UI test (run on its own STA thread) may take before it fails as hung. It was 20 seconds: on a CI runner
+    /// that restored packages about eight times and built about five times slower than usual, twelve UI tests that take
+    /// a tenth of a second here failed at 20 seconds one after another, and passed when the run was repeated. Why they
+    /// took that long is not known (a slow stretch of the machine, or a stall); a slow stretch now passes, and a hang
+    /// still fails, a minute later.
+    /// </summary>
+    internal static readonly TimeSpan UiTestLimit = TimeSpan.FromSeconds(60);
+
+    /// <summary>
     /// Error-path tests log through <see cref="AppLog"/>. Without this, every test run appended
     /// fake plugin and SQLite errors to the user's real %LOCALAPPDATA%\TulliusTranslator\logs\app.log.
     /// </summary>
