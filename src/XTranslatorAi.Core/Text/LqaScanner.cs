@@ -263,7 +263,7 @@ public static class LqaScanner
     {
         issue = default;
 
-        var recBase = GetRecBase(entry.Rec);
+        var recBase = TranslationRowRules.RecordType(entry.Rec);
         if (recBase is not ("QUST" or "MESG"))
         {
             return false;
@@ -465,23 +465,6 @@ public static class LqaScanner
         }
 
         return count;
-    }
-
-    internal static string GetRecBase(string? rec)
-    {
-        if (string.IsNullOrWhiteSpace(rec))
-        {
-            return "";
-        }
-
-        var trimmed = rec.Trim();
-        var idx = trimmed.IndexOf(':', StringComparison.Ordinal);
-        if (idx > 0)
-        {
-            trimmed = trimmed[..idx];
-        }
-
-        return trimmed.ToUpperInvariant();
     }
 
     internal static string NormalizeEdidStem(string? edid)

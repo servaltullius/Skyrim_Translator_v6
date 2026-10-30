@@ -31,7 +31,8 @@ internal static partial class SpeakerToneConsistencyRule
     public const string MixedCode = "speaker_tone_mixed";
     public const string PlayerCode = "player_tone_inconsistent";
 
-    private const string PlayerKeyPrefix = "player>";
+    // The player's level to an NPC, as SpeakerStyles keys it ("player>Gian").
+    private static readonly string PlayerKeyPrefix = SpeakerStyles.PlayerSpeaker + DialogueSpeakerNames.ListenerSeparator;
 
     // A scene line said to a character the plugin does not name (PluginSpeakers.UnknownListener, as "%08X").
     private const string UnknownListener = "00000000";
@@ -283,8 +284,7 @@ internal static partial class SpeakerToneConsistencyRule
     /// </summary>
     private static void ApplyDecidedToSpeechCheck(LqaScanEntry entry, Levels levels, List<LqaIssue> issues)
     {
-        var rec = entry.Rec?.Trim().ToUpperInvariant();
-        if (levels.Declared is not { } decided || rec is not ("INFO:RNAM" or "DIAL:FULL") || string.IsNullOrWhiteSpace(entry.Speaker)
+        if (levels.Declared is not { } decided || !TranslationRowRules.IsPlayerLine(entry.Rec) || string.IsNullOrWhiteSpace(entry.Speaker)
             || entry.Status is not (StringEntryStatus.Done or StringEntryStatus.Edited)
             || !SpeechCheck.IsMatch(entry.SourceText ?? "") || Threat.IsMatch(entry.SourceText ?? "")
             || SpeakerStyles.For(decided, PlayerKeyPrefix + entry.Speaker) is not { } declared)
@@ -335,14 +335,13 @@ internal static partial class SpeakerToneConsistencyRule
             return null;
         }
 
-        var rec = entry.Rec?.Trim().ToUpperInvariant();
-        return rec switch
+        if (TranslationRowRules.IsPlayerLine(entry.Rec))
         {
-            "INFO:NAM1" => entry.Speaker,
             // A speech-check choice ((Intimidate), (Brawl) ...) takes its own attitude, apart from the player's others.
-            "INFO:RNAM" or "DIAL:FULL" when !SpeechCheck.IsMatch(entry.SourceText ?? "") => PlayerKeyPrefix + entry.Speaker,
-            _ => null,
-        };
+            return SpeechCheck.IsMatch(entry.SourceText ?? "") ? null : PlayerKeyPrefix + entry.Speaker;
+        }
+
+        return TranslationRowRules.IsNpcLine(entry.Rec) ? entry.Speaker : null;
     }
 
     private static string Display(Register register) => register switch

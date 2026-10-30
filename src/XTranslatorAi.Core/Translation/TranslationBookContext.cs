@@ -8,7 +8,7 @@ namespace XTranslatorAi.Core.Translation;
 public static class TranslationBookContext
 {
     private static readonly Regex Markers = new(@"__XT_[A-Z0-9_]+__|<[^>]*>|\[pagebreak\]", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-    public static bool IsBody(string? rec) => string.Equals(rec?.Trim(), "BOOK:DESC", StringComparison.OrdinalIgnoreCase);
+    public static bool IsBody(string? rec) => TranslationRowRules.IsBookBody(rec);
 
     public static IReadOnlyDictionary<string, string> CollectTitles(IEnumerable<(string? Rec, string? Edid, string Source)> rows)
     {

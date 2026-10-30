@@ -85,7 +85,7 @@ internal static class TranslationBatchGrouping
     private static string SkillName(string? rec, string sourceText)
     {
         var text = sourceText.Trim();
-        if (NormalizeRecBase(rec)?.ToUpperInvariant() is "INFO" or "DIAL" || text.Length > 80 || text.Contains('\n'))
+        if (TranslationRowRules.IsDialogue(rec) || text.Length > 80 || text.Contains('\n'))
         {
             return "";
         }
@@ -118,7 +118,7 @@ internal static class TranslationBatchGrouping
 
     // Dialogue lines belong with their topic; a shared "Yes (Persuade)" prefix says nothing about them.
     private static string SeriesStem(string? rec, string sourceText)
-        => NormalizeRecBase(rec)?.ToUpperInvariant() is "INFO" or "DIAL" ? "" : NormalizeSourceStem(sourceText);
+        => TranslationRowRules.IsDialogue(rec) ? "" : NormalizeSourceStem(sourceText);
 
     private static string NormalizeEdid(string? edid) => (edid ?? "").Trim().TrimStart('/').Trim();
 
@@ -137,23 +137,6 @@ internal static class TranslationBatchGrouping
         }
 
         return "";
-    }
-
-    public static string? NormalizeRecBase(string? rec)
-    {
-        if (string.IsNullOrWhiteSpace(rec))
-        {
-            return null;
-        }
-
-        var trimmed = rec.Trim();
-        var idx = trimmed.IndexOf(':', StringComparison.Ordinal);
-        if (idx > 0)
-        {
-            trimmed = trimmed[..idx];
-        }
-
-        return trimmed;
     }
 
     public static string NormalizeEdidStem(string? edid)

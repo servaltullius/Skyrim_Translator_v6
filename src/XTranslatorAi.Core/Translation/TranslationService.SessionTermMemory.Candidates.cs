@@ -26,7 +26,7 @@ public sealed partial class TranslationService
         }
 
         // Dialogue text is not a term definition, even when it is short and lacks punctuation.
-        if (IsDialogueRecBase(rec))
+        if (TranslationRowRules.IsDialogue(rec))
         {
             return false;
         }

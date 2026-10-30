@@ -48,5 +48,5 @@ internal static class OfficialNameRule
     }
 
     private static bool IsCheckedRecord(string? rec)
-        => LqaScanner.GetRecBase(rec) is "INFO" or "DIAL" or "BOOK";
+        => TranslationRowRules.RecordType(rec) is "INFO" or "DIAL" or "BOOK";
 }

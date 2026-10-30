@@ -214,9 +214,7 @@ public sealed partial class TranslationService
             GetDialogueContextWindowForId(row.Id) ?? "", row.DialogueScope ?? "");
 
     private static bool KeepsEditorIdInContext(DialogueContextRow row)
-        => IsDialogueRecBase(row.Rec) || row.DialogueScope != null
-           || (row.Rec ?? "").TrimStart().StartsWith("RACE", StringComparison.OrdinalIgnoreCase)
-           || (row.Rec ?? "").TrimStart().StartsWith("NPC_", StringComparison.OrdinalIgnoreCase);
+        => TranslationRowRules.KeepsEditorId(row.Rec) || row.DialogueScope != null;
 
     private HashSet<string> FindAmbiguousTranslationMemorySources(IReadOnlyList<DialogueContextRow> rows)
     {
@@ -276,7 +274,7 @@ public sealed partial class TranslationService
         for (var index = 0; index < orderedRows.Count; index++)
         {
             var row = orderedRows[index];
-            if (!IsDialogueRecBase(row.Rec))
+            if (!TranslationRowRules.IsDialogue(row.Rec))
             {
                 continue;
             }
@@ -293,13 +291,6 @@ public sealed partial class TranslationService
         }
 
         return map;
-    }
-
-    private static bool IsDialogueRecBase(string? rec)
-    {
-        var baseRec = TranslationBatchGrouping.NormalizeRecBase(rec);
-        return string.Equals(baseRec, "DIAL", StringComparison.OrdinalIgnoreCase)
-               || string.Equals(baseRec, "INFO", StringComparison.OrdinalIgnoreCase);
     }
 
     private static string? BuildDialogueContextWindowForIndex(IReadOnlyList<DialogueContextRow> orderedRows, int index)
@@ -367,7 +358,7 @@ public sealed partial class TranslationService
         for (var i = index - 1; i >= Math.Max(0, index - maxLookaround) && prev.Count < 2; i--)
         {
             var candidate = orderedRows[i];
-            if (candidate.DialogueScope != scope || !IsDialogueRecBase(candidate.Rec)) continue;
+            if (candidate.DialogueScope != scope || !TranslationRowRules.IsDialogue(candidate.Rec)) continue;
             var line = TrySanitizeDialogueContextLine(candidate);
             if (line != null) prev.Add(line);
         }
@@ -375,7 +366,7 @@ public sealed partial class TranslationService
         for (var i = index + 1; i < Math.Min(orderedRows.Count, index + maxLookaround + 1) && next.Count < 1; i++)
         {
             var candidate = orderedRows[i];
-            if (candidate.DialogueScope != scope || !IsDialogueRecBase(candidate.Rec)) continue;
+            if (candidate.DialogueScope != scope || !TranslationRowRules.IsDialogue(candidate.Rec)) continue;
             var line = TrySanitizeDialogueContextLine(candidate);
             if (line != null) next.Add(line);
         }
@@ -398,7 +389,7 @@ public sealed partial class TranslationService
             }
 
             var candidate = orderedRows[i];
-            if (!IsDialogueRecBase(candidate.Rec) || candidate.DialogueScope != null)
+            if (!TranslationRowRules.IsDialogue(candidate.Rec) || candidate.DialogueScope != null)
             {
                 continue;
             }
@@ -425,7 +416,7 @@ public sealed partial class TranslationService
             }
 
             var candidate = orderedRows[i];
-            if (!IsDialogueRecBase(candidate.Rec) || candidate.DialogueScope != null)
+            if (!TranslationRowRules.IsDialogue(candidate.Rec) || candidate.DialogueScope != null)
             {
                 continue;
             }
@@ -454,7 +445,7 @@ public sealed partial class TranslationService
         for (var i = index - 1; i >= 0 && prev.Count < 2; i--)
         {
             var candidate = orderedRows[i];
-            if (!IsDialogueRecBase(candidate.Rec) || candidate.DialogueScope != null)
+            if (!TranslationRowRules.IsDialogue(candidate.Rec) || candidate.DialogueScope != null)
             {
                 break;
             }
@@ -475,7 +466,7 @@ public sealed partial class TranslationService
         for (var i = index + 1; i < orderedRows.Count && next.Count < 1; i++)
         {
             var candidate = orderedRows[i];
-            if (!IsDialogueRecBase(candidate.Rec) || candidate.DialogueScope != null)
+            if (!TranslationRowRules.IsDialogue(candidate.Rec) || candidate.DialogueScope != null)
             {
                 break;
             }
@@ -501,7 +492,7 @@ public sealed partial class TranslationService
     /// too, said to the NPC who answers it.
     /// </summary>
     private static string SpeakerOf(string? rec, string npc)
-        => rec?.Trim().ToUpperInvariant() is "INFO:RNAM" or "DIAL:FULL"
+        => TranslationRowRules.IsPlayerLine(rec)
             ? TranslationPrompt.PlayerSpeakerPrefix + npc
             : npc;
 

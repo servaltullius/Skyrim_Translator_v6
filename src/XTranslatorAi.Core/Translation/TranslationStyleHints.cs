@@ -18,13 +18,7 @@ public static class TranslationStyleHints
 
         if (!string.IsNullOrWhiteSpace(rec))
         {
-            var r = rec.Trim();
-            var colon = r.IndexOf(':');
-            if (colon >= 0)
-            {
-                r = r.Substring(0, colon);
-            }
-            r = r.ToUpperInvariant();
+            var r = TranslationRowRules.RecordType(rec);
             recFamily = r;
 
             if (r == "BOOK" && GetRecSubtype(rec) is "FULL" or "NAME" or "TITLE")
@@ -194,21 +188,7 @@ public static class TranslationStyleHints
         return words is > 0 and <= 8;
     }
 
-    private static string? GetRecSubtype(string? rec)
-    {
-        if (string.IsNullOrWhiteSpace(rec))
-        {
-            return null;
-        }
-
-        var colon = rec.IndexOf(':');
-        if (colon < 0 || colon + 1 >= rec.Length)
-        {
-            return null;
-        }
-
-        return rec[(colon + 1)..].Trim().ToUpperInvariant();
-    }
+    private static string? GetRecSubtype(string? rec) => TranslationRowRules.FieldType(rec);
 
     private static bool ContainsMultilineItalicBlock(string text)
     {

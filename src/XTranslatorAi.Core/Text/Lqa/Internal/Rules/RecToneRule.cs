@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text.Lqa.Internal;
+using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 
@@ -108,15 +109,13 @@ internal static class RecToneRule
 
     private static string? GetCheckedField(string? rec)
     {
-        var recBase = LqaScanner.GetRecBase(rec);
+        var recBase = TranslationRowRules.RecordType(rec);
         if (recBase is not ("BOOK" or "QUST" or "MESG"))
         {
             return null;
         }
 
-        var trimmed = (rec ?? "").Trim();
-        var colon = trimmed.IndexOf(':', StringComparison.Ordinal);
-        var subtype = colon >= 0 ? trimmed[(colon + 1)..].Trim().ToUpperInvariant() : "";
+        var subtype = TranslationRowRules.FieldType(rec) ?? "";
         if (subtype is "FULL" or "NAME" or "TITLE" or "ITXT")
         {
             return null;

@@ -62,7 +62,7 @@ public static partial class AgentCli
             Console.WriteLine($"#{r.Id} {r.Rec} [{StatusLabel(r.Status)}]{held}");
             if (speakers.TryGetValue(r.Id, out var speaker))
             {
-                var playerLine = string.Equals(r.Rec, "INFO:RNAM", StringComparison.OrdinalIgnoreCase) || string.Equals(r.Rec, "DIAL:FULL", StringComparison.OrdinalIgnoreCase);
+                var playerLine = TranslationRowRules.IsPlayerLine(r.Rec);
                 Console.WriteLine($"  화자: {(playerLine ? TranslationPrompt.PlayerSpeakerPrefix : "")}{speaker}");
             }
 

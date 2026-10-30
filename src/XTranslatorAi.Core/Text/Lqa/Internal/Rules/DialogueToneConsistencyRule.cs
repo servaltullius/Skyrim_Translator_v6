@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text.Lqa.Internal;
+using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 
@@ -22,7 +23,7 @@ internal static class DialogueToneConsistencyRule
                 continue;
             }
 
-            var recBase = LqaScanner.GetRecBase(entry.Rec);
+            var recBase = TranslationRowRules.RecordType(entry.Rec);
             if (recBase is not ("DIAL" or "INFO"))
             {
                 prevWasSeqDialogue = false;
@@ -95,7 +96,7 @@ internal static class DialogueToneConsistencyRule
             return;
         }
 
-        var recBase = LqaScanner.GetRecBase(entry.Rec);
+        var recBase = TranslationRowRules.RecordType(entry.Rec);
         if (recBase is not ("DIAL" or "INFO"))
         {
             return;
@@ -155,7 +156,7 @@ internal static class DialogueToneConsistencyRule
     // The player's prompts stay out too, as in an EDID group: a prompt with no speaker condition was counted with the
     // NPC lines, and the player's 반말 "그게 뭐지?" was marked against the NPCs' 해요체.
     private static bool IsPluginWideLine(LqaScanEntry entry)
-        => LqaScanner.GetRecBase(entry.Rec) == "INFO" && string.IsNullOrWhiteSpace(LqaScanner.NormalizeEdidStem(entry.Edid))
+        => TranslationRowRules.RecordType(entry.Rec) == "INFO" && string.IsNullOrWhiteSpace(LqaScanner.NormalizeEdidStem(entry.Edid))
            && string.IsNullOrWhiteSpace(entry.Speaker) && !IsPlayerLine(entry);
 
     private static void ApplyPluginWide(LqaScanEntry entry, IReadOnlyDictionary<string, ToneKind> strongDialogueMajority, List<LqaIssue> issues)
@@ -302,7 +303,7 @@ internal static class DialogueToneConsistencyRule
     private static string EdidGroupKey(LqaScanEntry entry, string edidStem)
         => (IsPlayerLine(entry) ? "player-edid:" : "edid:") + edidStem;
 
-    private static bool IsPlayerLine(LqaScanEntry entry) => entry.Rec is "DIAL:FULL" or "INFO:RNAM";
+    private static bool IsPlayerLine(LqaScanEntry entry) => TranslationRowRules.IsPlayerLine(entry.Rec);
 
     // A persuasion, threat or bribe takes its own attitude ("(위협) 당장 비켜."), as the speaker check reads it: compared
     // with the player's other choices it was marked as unlike them.

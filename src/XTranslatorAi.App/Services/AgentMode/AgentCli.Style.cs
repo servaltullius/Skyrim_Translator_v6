@@ -113,7 +113,7 @@ public static partial class AgentCli
             }
 
             var playerRows = (await c.RowsAsync(db))
-                .Where(r => string.Equals(r.Rec, "INFO:RNAM", StringComparison.OrdinalIgnoreCase) || string.Equals(r.Rec, "DIAL:FULL", StringComparison.OrdinalIgnoreCase))
+                .Where(r => TranslationRowRules.IsPlayerLine(r.Rec))
                 .Select(r => values.TryGetValue(r.Id, out var v) ? v.Split(DialogueSpeakerNames.ListenerSeparator)[0] : null)
                 .OfType<string>()
                 .GroupBy(npc => npc)

@@ -103,7 +103,7 @@ public static class DialogueAddressees
         }
 
         var npcLines = lines
-            .Where(line => string.Equals(line.Rec?.Trim(), "INFO:NAM1", StringComparison.OrdinalIgnoreCase)
+            .Where(line => TranslationRowRules.IsNpcLine(line.Rec)
                            && keys.TryGetValue(line.Id, out var key) && SpeakerOf(key) != null)
             .ToList();
         foreach (var group in npcLines.GroupBy(line => (line.Topic, Speaker: SpeakerOf(keys[line.Id])!)))

@@ -77,7 +77,7 @@ public static class DialogueSpeakerNames
         string DecidedStyle(long id, string value)
         {
             var key = fieldKeys.GetValueOrDefault(id) ?? "";
-            if (key.StartsWith("DIAL/", StringComparison.Ordinal) || key.Contains("/RNAM/", StringComparison.Ordinal))
+            if (TranslationRowRules.IsPlayerFieldKey(key))
             {
                 return SpeakerStyles.For(styles, SpeakerStyles.PlayerSpeaker + ListenerSeparator + value) is { } player ? $" (정한 말투: {player})" : "";
             }

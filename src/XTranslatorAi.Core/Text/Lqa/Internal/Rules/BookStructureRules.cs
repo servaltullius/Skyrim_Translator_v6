@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 
@@ -22,7 +23,7 @@ internal static class BookStructureRules
 
     public static void Apply(LqaScanEntry entry, string sourceText, string destText, List<LqaIssue> issues)
     {
-        var recBase = LqaScanner.GetRecBase(entry.Rec);
+        var recBase = TranslationRowRules.RecordType(entry.Rec);
         if (recBase != "BOOK")
         {
             return;

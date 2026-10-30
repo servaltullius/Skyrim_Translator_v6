@@ -159,23 +159,8 @@ public partial class MainViewModel
 
     private static bool IsBookFullRec(string? rec)
     {
-        if (string.IsNullOrWhiteSpace(rec))
-        {
-            return false;
-        }
-
-        var trimmed = rec.Trim();
-        var colon = trimmed.IndexOf(':');
-        if (colon <= 0 || colon >= trimmed.Length - 1)
-        {
-            return false;
-        }
-
-        var head = trimmed.Substring(0, colon).Trim();
-        var tail = trimmed.Substring(colon + 1).Trim();
-
-        return head.Equals("BOOK", StringComparison.OrdinalIgnoreCase)
-               && tail.StartsWith("FULL", StringComparison.OrdinalIgnoreCase);
+        return TranslationRowRules.RecordType(rec) == "BOOK"
+               && TranslationRowRules.FieldType(rec)?.StartsWith("FULL", StringComparison.Ordinal) == true;
     }
 
     private string GetEffectiveBookFullModelName(string primaryModel)

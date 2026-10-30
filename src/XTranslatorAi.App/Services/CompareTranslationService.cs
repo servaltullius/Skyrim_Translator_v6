@@ -186,8 +186,7 @@ public sealed class CompareTranslationService
     // pipeline's rejection of source-only TM with an unknown topic origin.
     private static bool SkipsUnscopedDialogueTm(Request request)
     {
-        var recBase = request.Rec?.Split(':', 2)[0].Trim().ToUpperInvariant();
-        return request.IsDirectPluginSource && (recBase is "INFO" or "DIAL");
+        return request.IsDirectPluginSource && TranslationRowRules.IsDialogue(request.Rec);
     }
 
     private static TranslateIdsRequest BuildTranslateRequest(Request request, CancellationToken cancellationToken)

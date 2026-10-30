@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 
@@ -31,7 +32,7 @@ internal static class PrefixedNameVariantRule
         var candidates = entries
             .Where(e => e.Status is Models.StringEntryStatus.Done or Models.StringEntryStatus.Edited)
             .Where(e => !string.IsNullOrWhiteSpace(e.SourceText) && !string.IsNullOrWhiteSpace(e.DestText))
-            .Where(e => LqaScanner.GetRecBase(e.Rec) is not ("INFO" or "DIAL" or "RACE" or "NPC_"))
+            .Where(e => !TranslationRowRules.KeepsEditorId(e.Rec))
             .ToList();
 
         var prefixed = new List<(LqaScanEntry Entry, string Prefix, string Name, string Translation)>();

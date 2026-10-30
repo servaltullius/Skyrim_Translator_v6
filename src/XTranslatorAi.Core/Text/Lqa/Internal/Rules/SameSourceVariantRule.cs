@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 
@@ -19,7 +20,7 @@ internal static class SameSourceVariantRule
             .Where(e => e.Status is Models.StringEntryStatus.Done or Models.StringEntryStatus.Edited)
             .Where(e => !string.IsNullOrWhiteSpace(e.SourceText) && !string.IsNullOrWhiteSpace(e.DestText))
             // Races and NPCs may share a generic name on purpose (巨人: the Giant and the Lurker).
-            .Where(e => LqaScanner.GetRecBase(e.Rec) is not ("INFO" or "DIAL" or "RACE" or "NPC_"))
+            .Where(e => !TranslationRowRules.KeepsEditorId(e.Rec))
             .GroupBy(e => ((e.Rec ?? "").Trim().ToUpperInvariant(), e.SourceText.Trim()));
 
         foreach (var group in groups)

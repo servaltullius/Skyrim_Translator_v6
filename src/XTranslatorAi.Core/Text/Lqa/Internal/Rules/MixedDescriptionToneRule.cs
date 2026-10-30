@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 
@@ -61,14 +62,7 @@ internal static class MixedDescriptionToneRule
 
     private static bool IsDescription(string? rec)
     {
-        var r = (rec ?? "").Trim().ToUpperInvariant();
-        var colon = r.IndexOf(':');
-        if (colon < 0)
-        {
-            return false;
-        }
-
-        var (family, subtype) = (r[..colon], r[(colon + 1)..]);
-        return subtype is "DESC" or "DNAM" && family is not ("BOOK" or "QUST" or "INFO" or "DIAL" or "MESG");
+        return TranslationRowRules.FieldType(rec) is "DESC" or "DNAM"
+               && TranslationRowRules.RecordType(rec) is not ("BOOK" or "QUST" or "INFO" or "DIAL" or "MESG");
     }
 }

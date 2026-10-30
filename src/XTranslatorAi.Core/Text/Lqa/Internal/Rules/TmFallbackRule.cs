@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 
@@ -23,7 +24,7 @@ internal static class TmFallbackRule
 
         // MEI listed 136 such notes and none needed action. Dialogue is translated on its own on purpose (the
         // official lines use another speaker's tone), so a note on every dialogue line said nothing about the text.
-        if (LqaScanner.GetRecBase(entry.Rec) is "INFO" or "DIAL")
+        if (TranslationRowRules.RecordType(entry.Rec) is "INFO" or "DIAL")
         {
             return;
         }

@@ -30,7 +30,7 @@ public sealed partial class TranslationService
         var rowsBySentence = new Dictionary<string, int>(StringComparer.Ordinal);
         foreach (var (masked, rec) in rows)
         {
-            var family = LqaScanner.GetRecBase(rec);
+            var family = TranslationRowRules.RecordType(rec);
             if (family is "INFO" or "DIAL" or "BOOK" || string.IsNullOrWhiteSpace(masked))
             {
                 continue;

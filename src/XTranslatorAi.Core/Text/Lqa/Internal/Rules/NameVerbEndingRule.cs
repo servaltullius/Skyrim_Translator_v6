@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 
@@ -55,31 +56,8 @@ internal static class NameVerbEndingRule
 
     private static bool IsItemFullOrName(string? rec)
     {
-        if (string.IsNullOrWhiteSpace(rec))
-        {
-            return false;
-        }
-
-        var colon = rec.IndexOf(':');
-        if (colon <= 0)
-        {
-            return false;
-        }
-
-        var family = rec[..colon].Trim();
-        if (!ItemRecFamilies.Contains(family))
-        {
-            return false;
-        }
-
-        // Exclude QUST (quest names can be verb-like)
-        if (string.Equals(family, "QUST", StringComparison.OrdinalIgnoreCase))
-        {
-            return false;
-        }
-
-        var subtype = rec[(colon + 1)..].Trim();
-        return string.Equals(subtype, "FULL", StringComparison.OrdinalIgnoreCase)
-               || string.Equals(subtype, "NAME", StringComparison.OrdinalIgnoreCase);
+        // QUST is not in the list: quest names can be verb-like.
+        return ItemRecFamilies.Contains(TranslationRowRules.RecordType(rec))
+               && TranslationRowRules.FieldType(rec) is "FULL" or "NAME";
     }
 }

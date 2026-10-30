@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using XTranslatorAi.Core.Text;
+using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.Core.Plugins;
 
@@ -473,11 +474,7 @@ public sealed class GameStringDictionary
         return matches;
     }
 
-    private static bool IsDialogue(string? rec)
-    {
-        var recordType = (rec ?? "").Split(':')[0].Trim();
-        return recordType.Equals("INFO", StringComparison.OrdinalIgnoreCase) || recordType.Equals("DIAL", StringComparison.OrdinalIgnoreCase);
-    }
+    private static bool IsDialogue(string? rec) => TranslationRowRules.IsDialogue(rec);
 
     public void Save(Stream stream)
     {
