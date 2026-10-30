@@ -64,17 +64,17 @@ public sealed partial class ProjectDb
             await using var tx = (SqliteTransaction)await _connection.BeginTransactionAsync(cancellationToken);
             await using var update = _connection.CreateCommand();
             update.Transaction = tx;
-            update.CommandText = "UPDATE StringEntry SET Status=$Status, ErrorMessage=NULL, UpdatedAt=$At WHERE Id=$Id AND Status=$Skipped; "
-                                 + "DELETE FROM StringNote WHERE StringId=$Id AND Kind=$Kind;";
+            update.CommandText = "UPDATE StringEntry SET Status=$Status, ErrorMessage=NULL, UpdatedAt=$At WHERE Id=$Id AND Status=$Skipped;";
             update.Parameters.AddWithValue("$Status", (int)StringEntryStatus.Pending);
             update.Parameters.AddWithValue("$Skipped", (int)StringEntryStatus.Skipped);
-            update.Parameters.AddWithValue("$Kind", TranslationConstants.AgentHoldNoteKind);
             update.Parameters.AddWithValue("$At", DateTimeOffset.UtcNow.ToString("O"));
             var updateId = update.Parameters.Add("$Id", SqliteType.Integer);
+            await using var clear = CreateClearNotesCommand(tx, StringNotePolicy.RowEvent.Released, out var clearId);
             foreach (var id in ids)
             {
-                updateId.Value = id;
+                updateId.Value = clearId.Value = id;
                 await update.ExecuteNonQueryAsync(cancellationToken);
+                await clear.ExecuteNonQueryAsync(cancellationToken);
             }
 
             await tx.CommitAsync(cancellationToken);

@@ -96,9 +96,7 @@ public sealed partial class ProjectDb
                 {
                     var restored = keptNotes == null
                         ? kept.Marks!.ToList()
-                        : kept.Status != StringEntryStatus.Edited
-                            ? keptNotes
-                            : keptNotes.Where(note => IsUserMark(note.Kind)).ToList();
+                        : keptNotes.Where(note => StringNotePolicy.KeptWith(note.Kind, kept.Status)).ToList();
                     if (restored.Count > 0)
                     {
                         await RestorePluginStringNotesAsync(tx, await LastInsertedRowIdAsync(tx, cancellationToken), restored, cancellationToken);

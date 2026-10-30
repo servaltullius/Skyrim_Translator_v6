@@ -46,13 +46,15 @@ public sealed partial class ProjectDb
             await using var tx = (SqliteTransaction)await _connection.BeginTransactionAsync(cancellationToken);
             var oldSource = await ReadPluginSourceAsync(tx, cancellationToken);
             var saved = new Dictionary<string, (string Source, string Dest, StringEntryStatus Status)>(StringComparer.Ordinal);
+            // A row agent mode set aside (its group's notes) is kept whatever its text.
+            var agentKinds = StringNotePolicy.KindsOf(StringNotePolicy.NoteGroup.AgentState);
             await using (var query = _connection.CreateCommand())
             {
                 query.Transaction = tx;
                 query.CommandText = oldSource == null
                     ? "SELECT COUNT(*) FROM StringEntry;"
                     : "SELECT b.FieldKey,s.SourceText,s.DestText,s.Status,"
-                      + "EXISTS(SELECT 1 FROM StringNote n WHERE n.StringId=s.Id AND n.Kind=$AgentHold) "
+                      + $"EXISTS(SELECT 1 FROM StringNote n WHERE n.StringId=s.Id AND n.Kind IN ({string.Join(",", agentKinds.Select((_, i) => "$Agent" + i))})) "
                       + "FROM PluginStringBinding b JOIN StringEntry s ON s.Id=b.StringId WHERE s.Status IN ($Done,$Edited,$Skipped);";
                 if (oldSource == null)
                 {
@@ -64,7 +66,7 @@ public sealed partial class ProjectDb
                     query.Parameters.AddWithValue("$Done", (int)StringEntryStatus.Done);
                     query.Parameters.AddWithValue("$Edited", (int)StringEntryStatus.Edited);
                     query.Parameters.AddWithValue("$Skipped", (int)StringEntryStatus.Skipped);
-                    query.Parameters.AddWithValue("$AgentHold", TranslationConstants.AgentHoldNoteKind);
+                    for (var i = 0; i < agentKinds.Count; i++) query.Parameters.AddWithValue("$Agent" + i, agentKinds[i]);
                     await using var reader = await query.ExecuteReaderAsync(cancellationToken);
                     while (await reader.ReadAsync(cancellationToken))
                     {

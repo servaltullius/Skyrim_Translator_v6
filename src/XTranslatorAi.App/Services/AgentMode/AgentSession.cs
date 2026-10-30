@@ -399,7 +399,7 @@ public sealed partial class AgentSession
     public static async Task<IReadOnlyList<StringEntry>> NewNamesAsync(ProjectDb db, IReadOnlyList<StringEntry> rows, CancellationToken cancellationToken)
     {
         var given = new HashSet<long>();
-        foreach (var kind in XTranslatorAi.Core.TranslationConstants.KnownTranslationNoteKinds.Append(XTranslatorAi.Core.TranslationConstants.TmFallbackNoteKind))
+        foreach (var kind in StringNotePolicy.KindsOf(StringNotePolicy.NoteGroup.KnownTranslation, StringNotePolicy.NoteGroup.TmFallback))
         {
             given.UnionWith((await db.GetStringNotesByKindAsync(kind, cancellationToken)).Keys);
         }

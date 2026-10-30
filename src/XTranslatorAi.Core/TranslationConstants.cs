@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace XTranslatorAi.Core;
@@ -45,7 +46,7 @@ public static class TranslationConstants
     public const string PreviousReleaseNoteKind = "previous_release";
 
     /// <summary>Notes of a row finished from a known translation without a request; the grid colors these rows.</summary>
-    public static readonly string[] KnownTranslationNoteKinds = { TmHitNoteKind, GameStringNoteKind, PreviousReleaseNoteKind };
+    public static readonly IReadOnlyList<string> KnownTranslationNoteKinds = Data.StringNotePolicy.KindsOf(Data.StringNotePolicy.NoteGroup.KnownTranslation);
 
     /// <summary>
     /// A row the agent app's model would not translate by its own rules, held (건너뜀) with its reason as the message. A

@@ -20,14 +20,10 @@ public sealed partial class ProjectDb
 {
     private sealed record RetiredMark(string Kind, string Message, string UpdatedAt);
 
-    private static bool IsUserMark(string kind)
-        => kind == TranslationConstants.SourceFixNoteKind
-           || kind.StartsWith(TranslationConstants.LqaReviewedNoteKindPrefix, StringComparison.Ordinal);
-
     /// <summary>A row's notes as stored with its retired translation, or null when none are kept.</summary>
     private static string? SerializeKeptNotes(IEnumerable<(string Kind, string Message, string UpdatedAt)>? notes, StringEntryStatus status)
     {
-        var marks = notes?.Where(note => status != StringEntryStatus.Edited || IsUserMark(note.Kind))
+        var marks = notes?.Where(note => StringNotePolicy.KeptWith(note.Kind, status))
             .Select(note => new RetiredMark(note.Kind, note.Message, note.UpdatedAt)).ToList();
         return marks is { Count: > 0 } ? JsonSerializer.Serialize(marks) : null;
     }

@@ -42,32 +42,10 @@ public sealed partial class ProjectDb
             cmd.Parameters.AddWithValue("$UpdatedAt", DateTimeOffset.UtcNow.ToString("O"));
             await cmd.ExecuteNonQueryAsync(cancellationToken);
 
-            if (status == StringEntryStatus.Edited)
-            {
-                // A hand edit is no longer the TM's, the game's or the earlier release's text: their notes stayed, so the
-                // next run's TM refresh and reopening the project colored the row as a TM hit again, and every scan kept
-                // its "TM 대신 번역" notice.
-                await using var notes = _connection.CreateCommand();
-                notes.Transaction = tx;
-                notes.CommandText = "DELETE FROM StringNote WHERE StringId=$Id AND Kind IN ($TmHit, $GameString, $PreviousRelease, $TmFallback);";
-                notes.Parameters.AddWithValue("$Id", id);
-                notes.Parameters.AddWithValue("$TmHit", TranslationConstants.TmHitNoteKind);
-                notes.Parameters.AddWithValue("$GameString", TranslationConstants.GameStringNoteKind);
-                notes.Parameters.AddWithValue("$PreviousRelease", TranslationConstants.PreviousReleaseNoteKind);
-                notes.Parameters.AddWithValue("$TmFallback", TranslationConstants.TmFallbackNoteKind);
-                await notes.ExecuteNonQueryAsync(cancellationToken);
-            }
-
-            if (status != StringEntryStatus.Skipped)
-            {
-                // A held row given a translation (an edit) is held no more: the note stayed and came back with every reopen.
-                await using var hold = _connection.CreateCommand();
-                hold.Transaction = tx;
-                hold.CommandText = "DELETE FROM StringNote WHERE StringId=$Id AND Kind=$AgentHold;";
-                hold.Parameters.AddWithValue("$Id", id);
-                hold.Parameters.AddWithValue("$AgentHold", TranslationConstants.AgentHoldNoteKind);
-                await hold.ExecuteNonQueryAsync(cancellationToken);
-            }
+            // A hand edit is no longer the TM's, the game's or the earlier release's text: their notes stayed, so the next
+            // run's TM refresh and reopening the project colored the row as a TM hit again, and every scan kept its "TM 대신
+            // 번역" notice. A held row given a translation is held no more: the note stayed and came back with every reopen.
+            if (StringNotePolicy.SavedAs(status) is { } saved) await ClearNotesUnsafeAsync(tx, id, saved, cancellationToken);
 
             await tx.CommitAsync(cancellationToken);
             if (status == StringEntryStatus.Edited && !string.IsNullOrWhiteSpace(destText))

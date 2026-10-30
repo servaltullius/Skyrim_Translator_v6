@@ -157,7 +157,7 @@ public static class AgentTextNames
         IReadOnlyList<StringEntry> rows, CancellationToken cancellationToken)
     {
         var given = new HashSet<long>();
-        foreach (var kind in TranslationConstants.KnownTranslationNoteKinds.Append(TranslationConstants.TmFallbackNoteKind))
+        foreach (var kind in StringNotePolicy.KindsOf(StringNotePolicy.NoteGroup.KnownTranslation, StringNotePolicy.NoteGroup.TmFallback))
         {
             given.UnionWith((await db.GetStringNotesByKindAsync(kind, cancellationToken)).Keys);
         }
