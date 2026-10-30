@@ -280,7 +280,8 @@ internal static class AgentMcpServer
         var server = given.WorkGiven || !Directory.Exists(kit)
             ? given
             : AgentCommand.Parse(new List<string> { "--work", Path.Combine(kit, "work") }
-                .Concat(given.ProjectsRoot is { } root ? new[] { "--projects", root } : Array.Empty<string>()).ToList());
+                .Concat(given.ProjectsRoot is { } root ? new[] { "--projects", root } : Array.Empty<string>())
+                .Concat(given.GlobalRoot is { } global ? new[] { "--global", global } : Array.Empty<string>()).ToList());
         var stdout = new StreamWriter(Console.OpenStandardOutput(), new UTF8Encoding(false)) { AutoFlush = true, NewLine = "\n" };
         // stdout is the protocol's: whatever else writes to the console goes to stderr (a tool's output is captured).
         Console.SetOut(Console.Error);
@@ -680,6 +681,7 @@ internal static class AgentMcpServer
     {
         var options = new List<string> { "--work", server.Work };
         if (server.ProjectsRoot != null) options.AddRange(new[] { "--projects", server.ProjectsRoot });
+        if (server.GlobalRoot != null) options.AddRange(new[] { "--global", server.GlobalRoot });
         return options;
     }
 

@@ -1,0 +1,206 @@
+=== request 1
+hash: d7a25fa7031881c40e80cf3928bb75a5 attempt 0
+purpose: translate-text, mime: -
+instructions: e8321cecca209b1e, schema: e3b0c44298fc1c14
+--- user
+Translate a game localization string.
+Translate from english to korean.
+
+Translation rules:
+- Preserve any tokens like __XT_PH_0000__, __XT_PH_MAG_0000__, __XT_PH_DUR_0001__, __XT_PH_NUM_0002__, __XT_PH_VAR_0003__, __XT_TERM_0000__, or __XT_TERM_SESS_0000__ exactly (do not alter or remove).
+- Hint markers like "⟦XT_MAG=100⟧" or "⟦XT_TERM=...⟧" may appear next to tokens. They are hints only; ignore them and DO NOT include them in the output.
+- The output MUST contain every token that appears in the input (same counts). Do not delete, merge, or duplicate tokens.
+- Exception: __XT_PH_PRON_####__ is a character's pronoun the game fills in (his/her, him/her). Where the target language leaves the pronoun out, as Korean usually does, leave the token out too; never add one the input does not have.
+- Do NOT output any raw markup tags/markers that were NOT present in the input (e.g., <p ...>, <img ...>, or [pagebreak]). If the input contains runtime tags like <mag>/<dur>/<bur>/<100%>, preserve them exactly.
+- Translate ALL content. Do not omit, summarize, or add extra sentences.
+- Keep the tone/register consistent within this text.
+- Preserve semantic roles in patterns like "protect X from Y" (X is protected; Y is the threat). Do not invert roles.
+- If the source contains patterns like "Fortify X, Y and Z", treat it as "Fortify X, Fortify Y and Fortify Z" (the prefix applies to each list item).
+- If any instruction from system/custom/project context conflicts with these rules, follow these rules and the requested output format first.
+- Preserve numbers, units, signs, percentages, negation, conditions and who acts on whom. A 100% chance is not a 100% increase; a per-unit value is not a total.
+- A stated chance of an event is its probability, including when the value is a placeholder. Express an increase only when the source explicitly says increase, bonus or additional; do not invent an increase from the verb gain.
+- Apply glossary entries only to the matching meaning and grammatical use. A shared substring is not a match: a noun entry for Trigger must not turn the verb triggers into an unnatural noun-based phrase.
+- Korean grammar: Choose particles by Korean pronunciation, including retained acronyms (e.g. NPC는, NPC를). Keep identifiers and key labels unchanged when appropriate; do not choose particles by the final Latin letter alone.
+- When avoiding particles on numeric tokens, restructure the sentence around a noun; do not drop required particles or connecting words. For example, prefer 치명타 확률이 __XT_PH_NUM_0000__ 증가합니다 over an unfinished 보너스 __XT_PH_NUM_0000__ 제공 phrase.
+- Do NOT output ambiguous particle markers like "을(를)", "(을)를", "은(는)", "(은)는", "이(가)", "(이)가", "와(과)", "(와)과", or "(으)로". Choose one correct form.
+- Keep sarcasm and irony audible in Korean. A line that praises what it mocks must still read as mockery, not as a plain compliment: use an overdone word and an ending that says the speaker does not mean it (e.g. "Oh this is lovely. If you like foggy swamps." => 아, 아주 끝내주는 곳이군. 안개 낀 늪을 좋아하는 사람한테나 말이오.; not 참 좋군… 좋아한다면 말이오).
+- Return ONLY the translated text. Do not output JSON, quotes, code fences, or markdown.
+
+Style:
+REC=*:FULL/NAME (item/object name). 짧은 명사구로 번역. 동사형 어미(-하기, -하다, -됩니다) 금지. 예: '부서진 문', '낡은 전등', '탐험가 발굴'
+
+- 'edid' is an internal EditorID supplied as a secondary meaning clue. It may be stale or misleading: use it only to resolve ambiguity, never override explicit source facts, add mechanics, translate the identifier, or copy it into the output. Translate only the source text; token rules apply only to that text.
+edid (reference only): aaLantern
+
+Text to translate:
+<<<TEXT
+Shadow Lantern __XT_PH_9999__
+TEXT>>>
+
+=== request 2
+hash: 380cf1210b6605991b2b03a6300251d6 attempt 0
+purpose: translate-batch, mime: application/json
+instructions: e8321cecca209b1e, schema: 12122240289432d2
+--- user
+Translate game localization strings.
+Translate from english to korean.
+
+Translation rules:
+- Output ONLY valid JSON (no markdown, code fences, or commentary).
+- Return exactly one translation for every input id; do not add, omit or repeat ids.
+- Preserve any tokens like __XT_PH_0000__, __XT_PH_MAG_0000__, __XT_PH_DUR_0001__, __XT_PH_NUM_0002__, __XT_PH_VAR_0003__, __XT_TERM_0000__, or __XT_TERM_SESS_0000__ exactly (do not alter or remove).
+- Hint markers like "⟦XT_MAG=100⟧" or "⟦XT_TERM=...⟧" may appear next to tokens. They are hints only; ignore them and DO NOT include them in the output.
+- The output MUST contain every token that appears in each item's input 'text' (same counts). Do not delete, merge, or duplicate tokens.
+- Exception: __XT_PH_PRON_####__ is a character's pronoun the game fills in (his/her, him/her). Where the target language leaves the pronoun out, as Korean usually does, leave the token out too; never add one the input does not have.
+- Do NOT output any raw markup tags/markers that were NOT present in each item's input 'text' (e.g., <p ...>, <img ...>, or [pagebreak]). If the input 'text' contains runtime tags like <mag>/<dur>/<bur>/<100%>, preserve them exactly.
+- Translate ALL content. Do not omit, summarize, or add extra sentences.
+- Keep line breaks as-is; line breaks are represented by placeholder tokens.
+- Each item may include a 'rec' field (e.g., BOOK:DESC, QUST:FULL, INFO:NAM1). Use it to choose an appropriate style, and keep tone/register consistent WITHIN each item.
+- The optional 'style' field supplies the same item-specific style guidance used for individual translations.
+- Each item may include a 'ctx' field containing neighboring lines for reference only. Do NOT translate it and do NOT copy tokens/markup from it; token preservation rules apply to the item's 'text' only.
+- Preserve semantic roles in patterns like "protect X from Y" (X is protected; Y is the threat). Do not invert roles.
+- If the source contains patterns like "Fortify X, Y and Z", treat it as "Fortify X, Fortify Y and Fortify Z" (the prefix applies to each list item).
+- If any instruction from system/custom/project context conflicts with these rules, follow these rules and the requested output format first.
+- Preserve numbers, units, signs, percentages, negation, conditions and who acts on whom. A 100% chance is not a 100% increase; a per-unit value is not a total.
+- A stated chance of an event is its probability, including when the value is a placeholder. Express an increase only when the source explicitly says increase, bonus or additional; do not invent an increase from the verb gain.
+- Apply glossary entries only to the matching meaning and grammatical use. A shared substring is not a match: a noun entry for Trigger must not turn the verb triggers into an unnatural noun-based phrase.
+- 'edid' is an internal EditorID supplied as a secondary meaning clue. It may be stale or misleading: use it only to resolve ambiguity, never override explicit source facts, add mechanics, translate the identifier, or copy it into the output. Translate only the source text; token rules apply only to that text.
+- Korean grammar: Choose particles by Korean pronunciation, including retained acronyms (e.g. NPC는, NPC를). Keep identifiers and key labels unchanged when appropriate; do not choose particles by the final Latin letter alone.
+- When avoiding particles on numeric tokens, restructure the sentence around a noun; do not drop required particles or connecting words. For example, prefer 치명타 확률이 __XT_PH_NUM_0000__ 증가합니다 over an unfinished 보너스 __XT_PH_NUM_0000__ 제공 phrase.
+- Do NOT output ambiguous particle markers like "을(를)", "(을)를", "은(는)", "(은)는", "이(가)", "(이)가", "와(과)", "(와)과", or "(으)로". Choose one correct form.
+- Keep sarcasm and irony audible in Korean. A line that praises what it mocks must still read as mockery, not as a plain compliment: use an overdone word and an ending that says the speaker does not mean it (e.g. "Oh this is lovely. If you like foggy swamps." => 아, 아주 끝내주는 곳이군. 안개 낀 늪을 좋아하는 사람한테나 말이오.; not 참 좋군… 좋아한다면 말이오).
+
+Placeholder rules (Korean):
+- __XT_PH_DUR_####__ or <dur> = duration in seconds. Use time phrasing (e.g., "__XT_PH_DUR_####__초 동안" / "<dur>초 동안").
+- __XT_PH_MAG_####__ or <mag> = magnitude/amount (a NUMBER). Do not treat it as the word "Magicka".
+- __XT_PH_NUM_####__ or <숫자>/<100%> = another numeric value (points/%/amount). It is NOT a duration.
+- Tokens may follow natural Korean word order: numeric tokens (__XT_PH_MAG_####__, __XT_PH_NUM_####__, __XT_PH_DUR_####__) within their line, and term, value and key tokens (__XT_TERM_*, __XT_PH_VAR_####__, __XT_PH_KEY_####__) anywhere. Keep plain layout tokens (__XT_PH_####__: line breaks, page breaks, formatting tags) in their source order and position.
+- Do NOT attach particles directly to numeric tokens (__XT_PH_MAG_####__/__XT_PH_NUM_####__). Avoid forms like "__XT_PH_MAG_0000__을(를)", "__XT_PH_MAG_0000__와(과)", or "__XT_PH_MAG_0000__에게".
+- Only use the word "포인트" when the input contains the English word "point"/"points" (e.g., "__XT_PH_MAG_####__포인트").
+- Hint markers like "⟦XT_MAG=100⟧" may appear next to placeholder tokens. They are hints only; ignore them and DO NOT include them in the output.
+- Examples (keep tokens):
+  - Restore __XT_PH_MAG_0000__ points of Health. => 체력을 __XT_PH_MAG_0000__포인트 회복합니다.
+  - Targets take __XT_PH_MAG_0000__ points of damage for __XT_PH_DUR_0001__ seconds. => __XT_PH_DUR_0001__초 동안 __XT_PH_MAG_0000__포인트의 피해를 입습니다.
+
+Return JSON schema:
+{"translations":[{"id":123,"text":"..."}]}
+
+Input JSON:
+{"source_language":"english","target_language":"korean","glossary":[],"items":[{"id":5,"text":"I serve no one.","rec":"INFO:RNAM","ctx":"Prev (reference only):\r\n- Your loyalty to the Dominion has been noted.\r\n- Then we have an understanding.","style":"REC=INFO/DIAL (dialogue/subtitles). Use natural spoken Korean. Keep register consistent (do not randomly switch between 존댓말/반말 within this item unless the source clearly switches)."},{"id":1,"text":"What happened on the Ash Road?","rec":"DIAL:FULL","ctx":"Next (reference only):\r\n- Your loyalty to the Dominion has been noted.","style":"REC=DIAL:FULL (dialogue topic label). Translate as a short topic label, not a spoken response.","edid":"aaAshTopic"},{"id":10,"text":"Deals <mag> fire damage and burns the target.","rec":"MGEF:DNAM","style":"REC=*:DESC/DNAM (effect or item description shown in menus). Write every sentence in 합니다체 (-ㅂ니다/-습니다), including short fragments: 'Usable on two-handed weapons.' → '양손 무기에 사용할 수 있습니다.' Do not end a sentence with a bare noun such as '사용 가능.' 'N% of X' is a share, not an increase: '80% of the effect' → '효과의 80%'.","edid":"aaFireBite"},{"id":9,"text":"Fire Bite","rec":"MGEF:FULL","edid":"aaFireBite"}]}
+
+=== request 3
+hash: e035412ca51712d37f1a221b0081d89d attempt 0
+purpose: translate-batch, mime: application/json
+instructions: e8321cecca209b1e, schema: 12122240289432d2
+--- user
+Translate game localization strings.
+Translate from english to korean.
+
+Translation rules:
+- Output ONLY valid JSON (no markdown, code fences, or commentary).
+- Return exactly one translation for every input id; do not add, omit or repeat ids.
+- Preserve any tokens like __XT_PH_0000__, __XT_PH_MAG_0000__, __XT_PH_DUR_0001__, __XT_PH_NUM_0002__, __XT_PH_VAR_0003__, __XT_TERM_0000__, or __XT_TERM_SESS_0000__ exactly (do not alter or remove).
+- Hint markers like "⟦XT_MAG=100⟧" or "⟦XT_TERM=...⟧" may appear next to tokens. They are hints only; ignore them and DO NOT include them in the output.
+- The output MUST contain every token that appears in each item's input 'text' (same counts). Do not delete, merge, or duplicate tokens.
+- Exception: __XT_PH_PRON_####__ is a character's pronoun the game fills in (his/her, him/her). Where the target language leaves the pronoun out, as Korean usually does, leave the token out too; never add one the input does not have.
+- Do NOT output any raw markup tags/markers that were NOT present in each item's input 'text' (e.g., <p ...>, <img ...>, or [pagebreak]). If the input 'text' contains runtime tags like <mag>/<dur>/<bur>/<100%>, preserve them exactly.
+- Translate ALL content. Do not omit, summarize, or add extra sentences.
+- Keep line breaks as-is; line breaks are represented by placeholder tokens.
+- Each item may include a 'rec' field (e.g., BOOK:DESC, QUST:FULL, INFO:NAM1). Use it to choose an appropriate style, and keep tone/register consistent WITHIN each item.
+- The optional 'style' field supplies the same item-specific style guidance used for individual translations.
+- Each item may include a 'ctx' field containing neighboring lines for reference only. Do NOT translate it and do NOT copy tokens/markup from it; token preservation rules apply to the item's 'text' only.
+- Preserve semantic roles in patterns like "protect X from Y" (X is protected; Y is the threat). Do not invert roles.
+- If the source contains patterns like "Fortify X, Y and Z", treat it as "Fortify X, Fortify Y and Fortify Z" (the prefix applies to each list item).
+- If any instruction from system/custom/project context conflicts with these rules, follow these rules and the requested output format first.
+- Preserve numbers, units, signs, percentages, negation, conditions and who acts on whom. A 100% chance is not a 100% increase; a per-unit value is not a total.
+- A stated chance of an event is its probability, including when the value is a placeholder. Express an increase only when the source explicitly says increase, bonus or additional; do not invent an increase from the verb gain.
+- Apply glossary entries only to the matching meaning and grammatical use. A shared substring is not a match: a noun entry for Trigger must not turn the verb triggers into an unnatural noun-based phrase.
+- 'edid' is an internal EditorID supplied as a secondary meaning clue. It may be stale or misleading: use it only to resolve ambiguity, never override explicit source facts, add mechanics, translate the identifier, or copy it into the output. Translate only the source text; token rules apply only to that text.
+- Korean grammar: Choose particles by Korean pronunciation, including retained acronyms (e.g. NPC는, NPC를). Keep identifiers and key labels unchanged when appropriate; do not choose particles by the final Latin letter alone.
+- When avoiding particles on numeric tokens, restructure the sentence around a noun; do not drop required particles or connecting words. For example, prefer 치명타 확률이 __XT_PH_NUM_0000__ 증가합니다 over an unfinished 보너스 __XT_PH_NUM_0000__ 제공 phrase.
+- Do NOT output ambiguous particle markers like "을(를)", "(을)를", "은(는)", "(은)는", "이(가)", "(이)가", "와(과)", "(와)과", or "(으)로". Choose one correct form.
+- Keep sarcasm and irony audible in Korean. A line that praises what it mocks must still read as mockery, not as a plain compliment: use an overdone word and an ending that says the speaker does not mean it (e.g. "Oh this is lovely. If you like foggy swamps." => 아, 아주 끝내주는 곳이군. 안개 낀 늪을 좋아하는 사람한테나 말이오.; not 참 좋군… 좋아한다면 말이오).
+
+Return JSON schema:
+{"translations":[{"id":123,"text":"..."}]}
+
+Input JSON:
+{"source_language":"english","target_language":"korean","glossary":[],"items":[{"id":12,"text":"Day one. The ash fell like snow over the old road.__XT_PH_0000__Day two. We found the shrine, and the shrine found us.","rec":"BOOK:DESC","style":"REC=BOOK (in-game book/lore/guide). Use a consistent written narrative tone in Korean (문어체). Prefer 서술체(…다/…한다) and keep sentence endings consistent. Avoid casual fillers like \"말이지/야/해/지\" except inside quoted dialogue. Avoid adding explanatory parentheses like \"(English term)\" unless they exist in the source; prefer natural in-universe rendering for proper nouns.","edid":"aaJournal"},{"id":11,"text":"Journal of the Ash Road","rec":"BOOK:FULL","style":"REC=BOOK title. Translate as a book title or short noun phrase, not a narrative sentence. Preserve the source meaning and punctuation.","edid":"aaJournal"}]}
+
+=== request 4
+hash: 73145214a14581cfa5e253c41c54b725 attempt 0
+purpose: translate-text, mime: -
+instructions: e8321cecca209b1e, schema: e3b0c44298fc1c14
+--- user
+Translate a game localization string.
+Translate from english to korean.
+
+Translation rules:
+- Preserve any tokens like __XT_PH_0000__, __XT_PH_MAG_0000__, __XT_PH_DUR_0001__, __XT_PH_NUM_0002__, __XT_PH_VAR_0003__, __XT_TERM_0000__, or __XT_TERM_SESS_0000__ exactly (do not alter or remove).
+- Hint markers like "⟦XT_MAG=100⟧" or "⟦XT_TERM=...⟧" may appear next to tokens. They are hints only; ignore them and DO NOT include them in the output.
+- The output MUST contain every token that appears in the input (same counts). Do not delete, merge, or duplicate tokens.
+- Exception: __XT_PH_PRON_####__ is a character's pronoun the game fills in (his/her, him/her). Where the target language leaves the pronoun out, as Korean usually does, leave the token out too; never add one the input does not have.
+- Do NOT output any raw markup tags/markers that were NOT present in the input (e.g., <p ...>, <img ...>, or [pagebreak]). If the input contains runtime tags like <mag>/<dur>/<bur>/<100%>, preserve them exactly.
+- Translate ALL content. Do not omit, summarize, or add extra sentences.
+- Keep the tone/register consistent within this text.
+- Preserve semantic roles in patterns like "protect X from Y" (X is protected; Y is the threat). Do not invert roles.
+- If the source contains patterns like "Fortify X, Y and Z", treat it as "Fortify X, Fortify Y and Fortify Z" (the prefix applies to each list item).
+- If any instruction from system/custom/project context conflicts with these rules, follow these rules and the requested output format first.
+- Preserve numbers, units, signs, percentages, negation, conditions and who acts on whom. A 100% chance is not a 100% increase; a per-unit value is not a total.
+- A stated chance of an event is its probability, including when the value is a placeholder. Express an increase only when the source explicitly says increase, bonus or additional; do not invent an increase from the verb gain.
+- Apply glossary entries only to the matching meaning and grammatical use. A shared substring is not a match: a noun entry for Trigger must not turn the verb triggers into an unnatural noun-based phrase.
+- Korean grammar: Choose particles by Korean pronunciation, including retained acronyms (e.g. NPC는, NPC를). Keep identifiers and key labels unchanged when appropriate; do not choose particles by the final Latin letter alone.
+- When avoiding particles on numeric tokens, restructure the sentence around a noun; do not drop required particles or connecting words. For example, prefer 치명타 확률이 __XT_PH_NUM_0000__ 증가합니다 over an unfinished 보너스 __XT_PH_NUM_0000__ 제공 phrase.
+- Do NOT output ambiguous particle markers like "을(를)", "(을)를", "은(는)", "(은)는", "이(가)", "(이)가", "와(과)", "(와)과", or "(으)로". Choose one correct form.
+- Keep sarcasm and irony audible in Korean. A line that praises what it mocks must still read as mockery, not as a plain compliment: use an overdone word and an ending that says the speaker does not mean it (e.g. "Oh this is lovely. If you like foggy swamps." => 아, 아주 끝내주는 곳이군. 안개 낀 늪을 좋아하는 사람한테나 말이오.; not 참 좋군… 좋아한다면 말이오).
+- Return ONLY the translated text. Do not output JSON, quotes, code fences, or markdown.
+
+Style:
+REC=BOOK (in-game book/lore/guide). Use a consistent written narrative tone in Korean (문어체). Prefer 서술체(…다/…한다) and keep sentence endings consistent. Avoid casual fillers like "말이지/야/해/지" except inside quoted dialogue. Avoid adding explanatory parentheses like "(English term)" unless they exist in the source; prefer natural in-universe rendering for proper nouns.
+
+- 'edid' is an internal EditorID supplied as a secondary meaning clue. It may be stale or misleading: use it only to resolve ambiguity, never override explicit source facts, add mechanics, translate the identifier, or copy it into the output. Translate only the source text; token rules apply only to that text.
+edid (reference only): aaJournal
+
+Text to translate:
+<<<TEXT
+Day one. The ash fell like snow over the old road.__XT_PH_0000__Day two. We found the shrine, and the shrine found us. __XT_PH_9999__
+TEXT>>>
+
+=== request 5
+hash: 71b7dab8b006406a4460ccd341510aa4 attempt 0
+purpose: translate-batch, mime: application/json
+instructions: e8321cecca209b1e, schema: 12122240289432d2
+--- user
+Translate game localization strings.
+Translate from english to korean.
+
+Translation rules:
+- Output ONLY valid JSON (no markdown, code fences, or commentary).
+- Return exactly one translation for every input id; do not add, omit or repeat ids.
+- Preserve any tokens like __XT_PH_0000__, __XT_PH_MAG_0000__, __XT_PH_DUR_0001__, __XT_PH_NUM_0002__, __XT_PH_VAR_0003__, __XT_TERM_0000__, or __XT_TERM_SESS_0000__ exactly (do not alter or remove).
+- Hint markers like "⟦XT_MAG=100⟧" or "⟦XT_TERM=...⟧" may appear next to tokens. They are hints only; ignore them and DO NOT include them in the output.
+- The output MUST contain every token that appears in each item's input 'text' (same counts). Do not delete, merge, or duplicate tokens.
+- Exception: __XT_PH_PRON_####__ is a character's pronoun the game fills in (his/her, him/her). Where the target language leaves the pronoun out, as Korean usually does, leave the token out too; never add one the input does not have.
+- Do NOT output any raw markup tags/markers that were NOT present in each item's input 'text' (e.g., <p ...>, <img ...>, or [pagebreak]). If the input 'text' contains runtime tags like <mag>/<dur>/<bur>/<100%>, preserve them exactly.
+- Translate ALL content. Do not omit, summarize, or add extra sentences.
+- Keep line breaks as-is; line breaks are represented by placeholder tokens.
+- Each item may include a 'rec' field (e.g., BOOK:DESC, QUST:FULL, INFO:NAM1). Use it to choose an appropriate style, and keep tone/register consistent WITHIN each item.
+- The optional 'style' field supplies the same item-specific style guidance used for individual translations.
+- Each item may include a 'ctx' field containing neighboring lines for reference only. Do NOT translate it and do NOT copy tokens/markup from it; token preservation rules apply to the item's 'text' only.
+- Preserve semantic roles in patterns like "protect X from Y" (X is protected; Y is the threat). Do not invert roles.
+- If the source contains patterns like "Fortify X, Y and Z", treat it as "Fortify X, Fortify Y and Fortify Z" (the prefix applies to each list item).
+- If any instruction from system/custom/project context conflicts with these rules, follow these rules and the requested output format first.
+- Preserve numbers, units, signs, percentages, negation, conditions and who acts on whom. A 100% chance is not a 100% increase; a per-unit value is not a total.
+- A stated chance of an event is its probability, including when the value is a placeholder. Express an increase only when the source explicitly says increase, bonus or additional; do not invent an increase from the verb gain.
+- Apply glossary entries only to the matching meaning and grammatical use. A shared substring is not a match: a noun entry for Trigger must not turn the verb triggers into an unnatural noun-based phrase.
+- Korean grammar: Choose particles by Korean pronunciation, including retained acronyms (e.g. NPC는, NPC를). Keep identifiers and key labels unchanged when appropriate; do not choose particles by the final Latin letter alone.
+- When avoiding particles on numeric tokens, restructure the sentence around a noun; do not drop required particles or connecting words. For example, prefer 치명타 확률이 __XT_PH_NUM_0000__ 증가합니다 over an unfinished 보너스 __XT_PH_NUM_0000__ 제공 phrase.
+- Do NOT output ambiguous particle markers like "을(를)", "(을)를", "은(는)", "(은)는", "이(가)", "(이)가", "와(과)", "(와)과", or "(으)로". Choose one correct form.
+- Keep sarcasm and irony audible in Korean. A line that praises what it mocks must still read as mockery, not as a plain compliment: use an overdone word and an ending that says the speaker does not mean it (e.g. "Oh this is lovely. If you like foggy swamps." => 아, 아주 끝내주는 곳이군. 안개 낀 늪을 좋아하는 사람한테나 말이오.; not 참 좋군… 좋아한다면 말이오).
+
+Return JSON schema:
+{"translations":[{"id":123,"text":"..."}]}
+
+Input JSON:
+{"source_language":"english","target_language":"korean","glossary":[],"items":[{"id":3,"text":"Then we have an understanding.","rec":"INFO:NAM1","ctx":"Prev (reference only):\r\n- Your loyalty to the Dominion has been noted.","style":"REC=INFO/DIAL (dialogue/subtitles). Use natural spoken Korean. Keep register consistent (do not randomly switch between 존댓말/반말 within this item unless the source clearly switches)."},{"id":4,"text":"Speak with care, __XT_PH_VAR_0000__.","rec":"INFO:NAM1","ctx":"Prev (reference only):\r\n- Your loyalty to the Dominion has been noted.\r\n- Then we have an understanding.","style":"REC=INFO/DIAL (dialogue/subtitles). Use natural spoken Korean. Keep register consistent (do not randomly switch between 존댓말/반말 within this item unless the source clearly switches)."},{"id":6,"text":"Then you will learn, __XT_PH_VAR_0000__.","rec":"INFO:NAM1","ctx":"Prev (reference only):\r\n- Your loyalty to the Dominion has been noted.\r\n- Then we have an understanding.","style":"REC=INFO/DIAL (dialogue/subtitles). Use natural spoken Korean. Keep register consistent (do not randomly switch between 존댓말/반말 within this item unless the source clearly switches)."},{"id":2,"text":"Your loyalty to the Dominion has been noted.","rec":"INFO:NAM1","ctx":"Next (reference only):\r\n- Then we have an understanding.","style":"REC=INFO/DIAL (dialogue/subtitles). Use natural spoken Korean. Keep register consistent (do not randomly switch between 존댓말/반말 within this item unless the source clearly switches)."}]}
+

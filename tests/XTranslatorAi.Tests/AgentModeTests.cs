@@ -117,6 +117,44 @@ public sealed class AgentModeTests : IAsyncLifetime
     }
 
     /// <summary>
+    /// --global puts the global DBs, and the bundled TM written for them, in another folder: a comparison over project
+    /// copies, and these tests, opened the user's own global DB, which an open migrates and tops up.
+    /// </summary>
+    [Fact]
+    public async Task GlobalOption_KeepsTheGlobalDbsInItsFolder()
+    {
+        var global = Path.Combine(_root, "global-option");
+        var command = AgentCommand.Parse(new List<string> { "--global", global, "--work", Path.Combine(_root, "work") });
+        Assert.Equal(Path.GetFullPath(global), command.GlobalRoot);
+        Assert.Equal(Path.GetFullPath(global), command.GlobalDb.GlobalRootOverride);
+        await command.GlobalDb.DisposeAsync();
+
+        var code = await AgentCli.RunAsync(new[] { "next", _project.Key, "--work", Path.Combine(_root, "work"),
+            "--projects", Path.Combine(_root, "projects"), "--global", global }, argumentFiles: false);
+
+        Assert.Equal(0, code);
+        Assert.NotEmpty(Directory.GetFiles(global, "*.sqlite", SearchOption.AllDirectories));
+        // The bundled TM written for that global DB, not into the user's tm-import.
+        Assert.NotEmpty(Directory.GetFiles(global, ".bundled-seed.elderscrolls.*.stamp"));
+
+        // The MCP server hands it to every tool call: a lookup opens the global DB in that folder.
+        var viaMcp = Path.Combine(_root, "global-mcp");
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects"), "--global", viaMcp });
+        var call = JsonSerializer.Serialize(new
+        {
+            jsonrpc = "2.0", id = 1, method = "tools/call", @params = new { name = "lookup", arguments = new { project = "Thalmor", words = new[] { "Dominion" } } },
+        });
+        Assert.Equal(0, await AgentMcpServer.ServeAsync(server, new StringReader(call), new StringWriter()));
+        Assert.NotEmpty(Directory.GetFiles(viaMcp, "*.sqlite", SearchOption.AllDirectories));
+
+        // Its folder left out, or an option in its place, is refused: the command went on with the user's own.
+        foreach (var bad in new[] { new[] { "--global" }, new[] { "--global", "--projects", "P" }, new[] { "--global", "" } })
+        {
+            Assert.Throws<AgentModeException>(() => AgentCommand.Parse(bad.ToList()));
+        }
+    }
+
+    /// <summary>
     /// The MCP server: one JSON-RPC reply per request line and none for a notification, a version the client asked for
     /// when it is known, and errors as replies rather than a stopped server. The request tool reads the waiting request.
     /// </summary>
@@ -124,7 +162,7 @@ public sealed class AgentModeTests : IAsyncLifetime
     public async Task McpServer_AnswersEachRequest_AndItsRequestToolReadsTheWaitingRequest()
     {
         await _session.NextAsync(_project, CancellationToken.None);
-        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") });
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects"), "--global", Path.Combine(_root, "global") });
         var lines = new[]
         {
             """{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{}}}""",
@@ -182,7 +220,7 @@ public sealed class AgentModeTests : IAsyncLifetime
             await db.SetSpeakerStyleAsync(new SpeakerStyle("@Dawnguard.esm|01001234", "", "반말"), CancellationToken.None);
         }
 
-        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") });
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects"), "--global", Path.Combine(_root, "global") });
         string Call(int id, object arguments) => JsonSerializer.Serialize(new
         {
             jsonrpc = "2.0", id, method = "tools/call", @params = new { name = "style", arguments },
@@ -217,7 +255,7 @@ public sealed class AgentModeTests : IAsyncLifetime
         await File.WriteAllBytesAsync(korean, Header().Concat(Group(Record("MISC", 0x2001,
             Sub("FULL", PluginBinary.GetEncoding("ks_c_5601-1987").GetBytes("에테르의 메아리\0"))))).ToArray());
         await File.WriteAllBytesAsync(broken, Header()[..20]);
-        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") });
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects"), "--global", Path.Combine(_root, "global") });
         string Call(int id, string file) => JsonSerializer.Serialize(new
         {
             jsonrpc = "2.0", id, method = "tools/call",
@@ -501,7 +539,7 @@ public sealed class AgentModeTests : IAsyncLifetime
     public async Task McpRequest_WithoutTheLane_SaysWhichLaneWaits()
     {
         await _session.NextAsync(_project with { Lane = AgentLane.Parse("1/2") }, CancellationToken.None);
-        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") });
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects"), "--global", Path.Combine(_root, "global") });
         var call = JsonSerializer.Serialize(new
         {
             jsonrpc = "2.0", id = 1, method = "tools/call", @params = new { name = "request", arguments = new { project = "Thalmor" } },
@@ -531,7 +569,7 @@ public sealed class AgentModeTests : IAsyncLifetime
         await File.WriteAllBytesAsync(english, Plugin());
 
         var code = await AgentCli.RunAsync(new[] { "korean", _project.Key, "--english", english, korean,
-            "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") }, argumentFiles: false);
+            "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects"), "--global", Path.Combine(_root, "global") }, argumentFiles: false);
 
         Assert.Equal(0, code);
         await using var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None);
@@ -580,7 +618,7 @@ public sealed class AgentModeTests : IAsyncLifetime
             await db.UpdateStringTranslationAsync(id, "말조심해라.", StringEntryStatus.Edited, null, CancellationToken.None);
         }
 
-        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") });
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects"), "--global", Path.Combine(_root, "global") });
         var call = JsonSerializer.Serialize(new
         {
             jsonrpc = "2.0", id = 1, method = "tools/call", @params = new { name = "export", arguments = new { project = "Thalmor" } },
@@ -614,7 +652,7 @@ public sealed class AgentModeTests : IAsyncLifetime
         Directory.CreateDirectory(beside);
         Assert.Equal(beside, AgentMcpServer.KitFolder(exeFolder, kit));
 
-        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") });
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects"), "--global", Path.Combine(_root, "global") });
         var call = JsonSerializer.Serialize(new
         {
             jsonrpc = "2.0", id = 1, method = "tools/call",
@@ -1573,7 +1611,7 @@ public sealed class AgentModeTests : IAsyncLifetime
         var edits = Path.Combine(_root, "keep-english.json");
         await File.WriteAllTextAsync(edits, JsonSerializer.Serialize(new[] { new { id = held, text = line.Row.DestText } }));
 
-        var code = await AgentCli.RunAsync(new[] { "edit", _project.Key, edits, "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") },
+        var code = await AgentCli.RunAsync(new[] { "edit", _project.Key, edits, "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects"), "--global", Path.Combine(_root, "global") },
             argumentFiles: false);
 
         Assert.Equal(0, code);
@@ -1636,15 +1674,14 @@ public sealed class AgentModeTests : IAsyncLifetime
     }
 
     /// <summary>
-    /// The MCP hold tool holds the lines (no request waits here: making one again would import the series TM into the
-    /// user's own global DB), lists them with their reason without ids, and status counts them. A reason or --undo with
-    /// the ids left out showed the list as if it had done something.
+    /// The MCP hold tool holds the lines, lists them with their reason without ids, and status counts them. A reason or
+    /// --undo with the ids left out showed the list as if it had done something.
     /// </summary>
     [Fact]
     public async Task McpHold_HoldsListsAndCountsTheLines_AndRefusesANoteWithoutIds()
     {
         var held = (await RowsWithStatusAsync(StringEntryStatus.Pending))[0];
-        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects") });
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects"), "--global", Path.Combine(_root, "global") });
         string Call(int id, string name, object arguments) => JsonSerializer.Serialize(new
         {
             jsonrpc = "2.0", id, method = "tools/call", @params = new { name, arguments },

@@ -27,6 +27,16 @@ internal sealed class AgentCommand
     public bool WorkGiven { get; private init; }
     public AppSettings Settings { get; private init; } = null!;
     public GlobalProjectDbService GlobalDb { get; private init; } = null!;
+
+    /// <summary>
+    /// The folder of the global DBs (--global) when not the user's: a comparison over project copies, and the tests,
+    /// opened the user's own global DB, which an open migrates and tops up, and which the user may change between runs.
+    /// </summary>
+    public string? GlobalRoot { get; private init; }
+
+    /// <summary>The game-string dictionary, from the global folder: a dictionary built by the user lives there.</summary>
+    public GameStringService GameStrings { get; private init; } = null!;
+
     public string? ProjectsRoot { get; private init; }
     public string? Find { get; private init; }
     public string? Rec { get; private init; }
@@ -49,7 +59,9 @@ internal sealed class AgentCommand
         var givenWork = c.Option("--work");
         var work = givenWork ?? Path.Combine(Environment.CurrentDirectory, "work");
         var settings = new AppSettingsStore().Load();
-        var globalDb = new GlobalProjectDbService(new BuiltInGlossaryService());
+        var globalRoot = GlobalRootOption(c);
+        var globalDb = new GlobalProjectDbService(new BuiltInGlossaryService(), globalRoot);
+        var gameStrings = new GameStringService(globalRoot);
         var projectsRoot = c.Option("--projects");
         var find = c.Option("--find");
         var rec = c.Option("--rec");
@@ -64,10 +76,25 @@ internal sealed class AgentCommand
         var lane = AgentLane.Parse(c.Option("--lane"));
         return new AgentCommand(rest)
         {
-            Help = help, Work = work, WorkGiven = givenWork != null, Settings = settings, GlobalDb = globalDb, ProjectsRoot = projectsRoot, Find = find, Rec = rec,
+            Help = help, Work = work, WorkGiven = givenWork != null, Settings = settings, GlobalDb = globalDb, GlobalRoot = globalRoot,
+            GameStrings = gameStrings, ProjectsRoot = projectsRoot, Find = find, Rec = rec,
             Ids = ids, After = after, Count = count, All = all, Undo = undo, To = to, Note = note, Clear = clear, Lane = lane,
-            Session = new AgentSession(work, globalDb, new GameStringService(), settings, projectsRoot, new BundledFranchiseTmSeedService()),
+            Session = new AgentSession(work, globalDb, gameStrings, settings, projectsRoot, new BundledFranchiseTmSeedService(globalRoot)),
         };
+    }
+
+    // --global with its folder left out was ignored (the last argument) or took the next option as the folder
+    // ("--global --projects P"), and the command went on with the user's own global DB, or projects; "" ended it.
+    private static string? GlobalRootOption(AgentCommand c)
+    {
+        if (!c.Rest.Contains("--global")) return null;
+        var value = c.Option("--global");
+        if (string.IsNullOrWhiteSpace(value) || value.StartsWith("--", StringComparison.Ordinal))
+        {
+            throw new AgentModeException("--global 뒤에 전역 DB 폴더를 쓰세요(예: --global D:\\시험\\global).");
+        }
+
+        return Path.GetFullPath(value);
     }
 
     /// <summary>The value after an option, taken out of the arguments; null when it is not given.</summary>

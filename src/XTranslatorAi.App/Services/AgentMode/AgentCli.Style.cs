@@ -23,7 +23,7 @@ public static partial class AgentCli
         var project = c.Session.Find(c.Arg(0, "프로젝트"));
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, c.Ct);
         var values = await DialogueSpeakerNames.LoadFormIdsAsync(db, c.Ct);
-        var game = await new GameStringService().TryLoadAsync(c.Ct);
+        var game = await c.GameStrings.TryLoadAsync(c.Ct);
         var labels = await DialogueSpeakerNames.LoadAsync(db, game, c.Ct);
         var masters = await db.GetPluginMastersAsync(c.Ct);
         static string Bare(string label)

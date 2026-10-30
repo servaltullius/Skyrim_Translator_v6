@@ -52,7 +52,7 @@ public static partial class AgentCli
         // Who says each line, as the requests name it: the review needs it to judge a speech level, and had to read
         // the project DB for it in Meridia's Order.
         var speakers = picked.Count == 0 ? new Dictionary<long, string>()
-            : await DialogueSpeakerNames.LoadAsync(db, await new GameStringService().TryLoadAsync(c.Ct), c.Ct);
+            : await DialogueSpeakerNames.LoadAsync(db, await c.GameStrings.TryLoadAsync(c.Ct), c.Ct);
         // A held line said only 건너뜀, as any skipped line does.
         var holds = await db.GetStringNotesByKindAsync(TranslationConstants.AgentHoldNoteKind, c.Ct);
         foreach (var r in picked)
@@ -90,7 +90,7 @@ public static partial class AgentCli
             Console.WriteLine("경고: 전체 DB를 열지 못해 전체 용어집·시리즈 TM은 찾지 못했습니다. 이름을 새로 정하기 전에 사용자에게 알리세요.");
         }
 
-        var game = await new GameStringService().TryLoadAsync(c.Ct);
+        var game = await c.GameStrings.TryLoadAsync(c.Ct);
         var found = await AgentLookup.FindAsync(db, global, game, word, 12, c.Ct);
         Console.WriteLine($"찾은 낱말: {word}");
         if (found.Glossary.Count == 0 && found.Game == null && found.Memory.Count == 0 && found.ModTotal == 0)
@@ -126,7 +126,7 @@ public static partial class AgentCli
 
         // Names inside books and dialogue, which have no row of their own: the agent says how it wrote each.
         var global = await c.GlobalDb.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, c.Ct);
-        var inText = await AgentTextNames.FindAsync(db, global, await new GameStringService().TryLoadAsync(c.Ct), rows, c.Ct);
+        var inText = await AgentTextNames.FindAsync(db, global, await c.GameStrings.TryLoadAsync(c.Ct), rows, c.Ct);
         if (inText.Count == 0) return;
         const int max = 80;
         Console.WriteLine($"본문 속 새 이름 후보: {inText.Count}개 (책·대사 같은 줄에 나온 영어 이름 가운데 용어집·TM·게임 사전·이 모드의 이름 줄에 없는 것. 각각 어떻게 옮겼는지 함께 보고한다)");
@@ -145,7 +145,7 @@ public static partial class AgentCli
         var project = c.Session.Find(c.Arg(0, "프로젝트"));
         var query = string.Join(" ", c.Rest.Skip(1)).Trim();
         if (query.Length == 0) throw new AgentModeException("찾을 인물을 지정하세요. (tullius.cmd voice <프로젝트> <이름 또는 FormID>)");
-        var game = await new GameStringService().TryLoadAsync(c.Ct);
+        var game = await c.GameStrings.TryLoadAsync(c.Ct);
         if (game?.Speakers is not { } index) throw new AgentModeException("게임 번역 사전에 화자 색인이 없습니다.");
         string FieldOf(string npc) => "NPC_/" + npc[..(npc.LastIndexOf(':') + 1)] + npc[(npc.LastIndexOf(':') + 1)..].ToUpperInvariant() + "/0/FULL/0";
         string? Korean(string npc) => game.FindRecord(FieldOf(npc), "")?.Korean;

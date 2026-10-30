@@ -190,7 +190,7 @@ public static partial class AgentCli
 
         <프로젝트>는 키, 플러그인 파일 이름(확장자 없이도), 플러그인 경로 중 하나. 번호는 요청·check·show의 id로 같다.
         작업 파일은 ./work(--work로 바꿈).
-        프로젝트 DB는 GUI 번역기와 같은 곳(--projects로 바꿈).
+        프로젝트 DB는 GUI 번역기와 같은 곳(--projects로 바꿈). 전역 DB(전체 용어집·한글패치 TM)도 GUI와 같은 곳(--global로 바꿈, 시험·비교용).
         인자에 & | ^ 가 들어가면 한 줄에 하나씩 파일에 쓰고 @파일로 넘긴다(tullius.cmd @인자.txt).
         next·submit·status·hold에 --lane 번호/갈래(예: 2/3)를 붙이면 줄을 갈래로 나눠 그 몫만 번역한다(하위 에이전트가 동시에, 대화는 한 갈래에).
         """);
