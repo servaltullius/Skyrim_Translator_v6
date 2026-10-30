@@ -378,6 +378,7 @@ public static class LqaHeuristics
         }
 
         var dst = LqaScanner.StripUiTokens(destText);
+        var compactDst = WithoutSpacesAndHyphens(dst);
         foreach (var entry in forcedTerms.ForcedEntries(src))
         {
             if (entry.MatchMode == GlossaryMatchMode.Regex)
@@ -385,7 +386,12 @@ public static class LqaHeuristics
                 continue;
             }
 
-            if (!ContainsIgnoreCase(dst, entry.TargetTerm.Trim()))
+            // Spacing and hyphens are a writer's choice ("특급 소울 젬" for 특급 소울젬, "블랙브라이어" for 블랙-브라이어).
+            // Not for a target of two letters: across a space it is two other words' ends ("마지막 기회다" has no 막기,
+            // "거기 산 적은" no 산적).
+            var target = entry.TargetTerm.Trim();
+            var compactTarget = WithoutSpacesAndHyphens(target);
+            if (!ContainsIgnoreCase(dst, target) && !(compactTarget.Length >= 3 && ContainsIgnoreCase(compactDst, compactTarget)))
             {
                 return entry;
             }
@@ -473,4 +479,7 @@ public static class LqaHeuristics
 
     private static bool ContainsIgnoreCase(string haystack, string needle)
         => haystack.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0;
+
+    private static string WithoutSpacesAndHyphens(string text)
+        => new(text.Where(c => !char.IsWhiteSpace(c) && c != '-').ToArray());
 }

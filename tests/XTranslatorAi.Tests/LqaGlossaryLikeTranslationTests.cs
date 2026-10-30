@@ -105,4 +105,26 @@ public sealed class LqaGlossaryLikeTranslationTests
         Assert.True(LqaHeuristics.IsLikelyUntranslated("[Activate] Talk", "[Activate] Talk"));
         Assert.False(LqaHeuristics.IsLikelyUntranslated("[Sneak] [Sprint]", "[Sneak] [Sprint]"));
     }
+
+    /// <summary>Spacing and hyphens are the writer's: "특급 소울 젬" has 특급 소울젬, "블랙브라이어" has 블랙-브라이어.</summary>
+    [Theory]
+    [InlineData("Grand Soul Gem", "특급 소울 젬", "Grand Soul Gems", "특급 소울젬")]
+    [InlineData("the Black-Briars", "블랙브라이어 가문", "Black-Briar", "블랙-브라이어")]
+    [InlineData("Black-Briar Meadery", "블랙 브라이어 양조장", "Black-Briar", "블랙-브라이어")]
+    [InlineData("Black-Briar Meadery", "블랙-브라이어 양조장", "Black-Briar", "블랙 브라이어")]
+    public void SpacingAndHyphens_DoNotMakeATermMissing(string source, string dest, string term, string target)
+    {
+        var entry = Term(1, term, target, category: "Factions/Groups");
+        Assert.Null(LqaHeuristics.FindMissingForceTokenGlossaryTerm(source, dest, new[] { entry }));
+        Assert.NotNull(LqaHeuristics.FindMissingForceTokenGlossaryTerm(source, "전혀 다른 말", new[] { entry }));
+    }
+
+    /// <summary>A target of two letters is not found across a space in two other words, nor a target of a dash anywhere.</summary>
+    [Theory]
+    [InlineData("Block the blow.", "마지막 기회다.", "Block", "막기")]
+    [InlineData("Bandits live here.", "거기 산 적은 없어.", "Bandit", "산적")]
+    [InlineData("A Greatsword.", "그건 - 칼이다.", "Greatsword", "-")]
+    public void AShortTargetAcrossASpace_IsStillMissing(string source, string dest, string term, string target)
+        => Assert.NotNull(LqaHeuristics.FindMissingForceTokenGlossaryTerm(source, dest.Replace("-", "~"),
+            new[] { Term(1, term, target, category: "Factions/Groups") }));
 }
