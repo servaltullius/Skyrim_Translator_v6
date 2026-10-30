@@ -153,7 +153,7 @@ public sealed partial class TranslationCostEstimator
         var longItems = new List<PreparedRow>();
         var veryLongItems = new List<PreparedRow>();
 
-        var shortMax = Math.Clamp(maxChars / 3, min: 1500, max: 6000);
+        var shortMax = TranslationLimits.ShortRowMaxChars(maxChars);
         foreach (var it in prepared.Items)
         {
             if (it.Masked.Length > maxChars)
@@ -235,7 +235,7 @@ public sealed partial class TranslationCostEstimator
         }
 
         var shortBatches = TranslationBatching.ChunkBy(shortItems, it => it.Masked.Length, batchSize, maxChars, it => groupById.GetValueOrDefault(it.Id, "")).ToList();
-        var longBatchSize = Math.Max(1, Math.Min(batchSize, 8));
+        var longBatchSize = TranslationLimits.LongBatchSize(batchSize);
         var longBatches = TranslationBatching.ChunkBy(longItems, it => it.Masked.Length, longBatchSize, maxChars, it => groupById.GetValueOrDefault(it.Id, "")).ToList();
 
         var batchPrompts = new List<string>(capacity: shortBatches.Count + longBatches.Count);

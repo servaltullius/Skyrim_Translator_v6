@@ -112,7 +112,7 @@ public sealed class GameStringDictionary
     private const double MinSharedShare = 0.6;
     private const int MinParagraphChars = 40;
     private static readonly Regex ParagraphMarkup = new(@"<[^>]*>", RegexOptions.CultureInvariant);
-    private static readonly Regex PageBreak = new(@"\[page ?break\]", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+    private static readonly Regex PageBreak = new(XTranslatorAi.Core.Text.ProtectedTextKinds.BracketPageBreakPattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
     private static readonly Regex Spaces = new(@"\s+", RegexOptions.CultureInvariant);
 
     /// <summary>
@@ -217,7 +217,7 @@ public sealed class GameStringDictionary
     private static readonly Regex BlankLines = new(@"(\r?\n[ \t]*\r?\n(?:[ \t]*\r?\n)*)", RegexOptions.CultureInvariant);
 
     // Tags and page breaks, kept by Regex.Split as the odd entries.
-    private static readonly Regex TagPieces = new(@"(<[^>]*>|\[page ?break\])", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+    private static readonly Regex TagPieces = new(@"(<[^>]*>|" + XTranslatorAi.Core.Text.ProtectedTextKinds.BracketPageBreakPattern + ")", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
     /// <summary>
     /// The Korean laid out as the source is: the same tags in the same order, the Korean's words between them, and the

@@ -38,7 +38,7 @@ public sealed partial class TranslationService
         foreach (var row in rows)
         {
             var source = (row.Source ?? "").Trim();
-            if (!IsSessionTermRec(row.Rec))
+            if (!SessionTermRules.IsTermRec(row.Rec))
             {
                 continue;
             }
@@ -48,10 +48,10 @@ public sealed partial class TranslationService
 
             foreach (var part in source.Split(NamePartSeparators, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
             {
-                foreach (var phrase in EnglishPhraseRegex.Matches(part).Select(m => m.Value)
-                             .Concat(EnglishTitleWordRegex.Matches(part).Select(m => m.Value)))
+                foreach (var phrase in SessionTermRules.EnglishPhrase.Matches(part).Select(m => m.Value)
+                             .Concat(SessionTermRules.EnglishTitleWord.Matches(part).Select(m => m.Value)))
                 {
-                    var key = NormalizeSessionTermKey(phrase);
+                    var key = SessionTermRules.NormalizeKey(phrase);
                     if (key.Length >= 4 && IsAutomaticSessionTermCandidate(key))
                     {
                         parts.Add(key);
@@ -301,7 +301,7 @@ public sealed partial class TranslationService
         {
             var index = (int)(-id - 1);
             var target = (translated ?? "").Trim();
-            if (index >= 0 && index < terms.Count && IsSessionTermTranslationText(target))
+            if (index >= 0 && index < terms.Count && SessionTermRules.IsTranslationText(target))
             {
                 memory.TryLearn(terms[index], target, allowForce: false);
             }

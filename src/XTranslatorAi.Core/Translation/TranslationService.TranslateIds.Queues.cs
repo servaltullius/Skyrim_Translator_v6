@@ -33,7 +33,7 @@ public sealed partial class TranslationService
         await TryUpdateMaskedTokensPerCharHintAsync(request, veryLongItems);
 
         var shortBatches = SeparateRiskyRows(BuildBatches(shortItems, request.BatchSize, request.MaxChars, shortGroups), request, shortGroups);
-        var longBatchSize = Math.Max(1, Math.Min(request.BatchSize, 8));
+        var longBatchSize = TranslationLimits.LongBatchSize(request.BatchSize);
         var longBatches = SeparateRiskyRows(BuildBatches(longItems, longBatchSize, request.MaxChars, longGroups), request, longGroups);
         var veryLongBatches = BuildVeryLongBatches(veryLongItems);
 
@@ -64,7 +64,7 @@ public sealed partial class TranslationService
         var longItems = new List<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>();
         var veryLongItems = new List<(long Id, string Source, string Masked, MaskedText Mask, GlossaryApplication Glossary)>();
 
-        var shortMax = Math.Clamp(request.MaxChars / 3, min: 1500, max: 6000);
+        var shortMax = TranslationLimits.ShortRowMaxChars(request.MaxChars);
         foreach (var it in items)
         {
             if (it.Masked.Length > request.MaxChars)

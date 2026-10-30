@@ -60,13 +60,7 @@ public static class AgentTranslationRun
 
         var project = await db.TryGetProjectAsync(cancellationToken)
                       ?? throw new InvalidOperationException("프로젝트 정보가 없습니다. open을 다시 실행하세요.");
-        var recById = new Dictionary<long, string?>();
-        for (var offset = 0; ; offset += 1000)
-        {
-            var page = await db.GetStringsAsync(1000, offset, cancellationToken);
-            foreach (var row in page) recById[row.Id] = row.Rec;
-            if (page.Count < 1000) break;
-        }
+        var recById = (await db.GetAllStringsAsync(cancellationToken)).ToDictionary(row => row.Id, row => row.Rec);
 
         // The agent saves the project's context itself (context): a saved one is used whatever the GUI's
         // "생성한 프로젝트 문맥 사용" box says, and context --clear is how it stops.

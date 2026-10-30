@@ -144,16 +144,8 @@ public static partial class AgentCli
         return flat.Length <= max ? flat : flat[..max] + "…";
     }
 
-    private static string StatusLabel(StringEntryStatus status) => status switch
-    {
-        StringEntryStatus.Pending => "대기",
-        StringEntryStatus.InProgress => "번역 중",
-        StringEntryStatus.Done => "완료",
-        StringEntryStatus.Edited => "수정됨",
-        StringEntryStatus.Error => "오류",
-        StringEntryStatus.Skipped => "건너뜀",
-        _ => status.ToString(),
-    };
+    // The GUI's names: show said 수정됨 for the GUI's 직접 수정.
+    private static string StatusLabel(StringEntryStatus status) => XTranslatorAi.App.ViewModels.StringEntryStatusLabels.ToLabel(status);
 
     // The build the kit runs, as the window's title shows it ("1.15-preview19+<commit>").
     internal static string VersionText() => Version();

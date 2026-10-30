@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text;
+using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.Core.Text.ProjectContext;
 
@@ -33,19 +34,8 @@ public sealed class ProjectContextScanner
     );
 
     private static readonly Regex PagebreakRegex = new(
-        pattern: @"\[pagebreak\]",
+        pattern: ProtectedTextKinds.BracketPageBreakPattern,
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
-    );
-
-    private static readonly Regex EnglishPhraseRegex = new(
-        pattern:
-            @"\b(?:[A-Z][A-Za-z0-9'’\-]*)(?:\s+(?:[A-Z][A-Za-z0-9'’\-]*|of|the|and|or|to|a|an|in|on|for|with|from|at|by|de|la|le|du|van|von))+\b",
-        options: RegexOptions.CultureInvariant
-    );
-
-    private static readonly Regex EnglishTitleWordRegex = new(
-        pattern: @"\b[A-Z][A-Za-z0-9'’\-]{2,}\b",
-        options: RegexOptions.CultureInvariant
     );
 
     public async Task<ProjectContextScanReport> ScanAsync(
@@ -110,7 +100,7 @@ public sealed class ProjectContextScanner
                 continue;
             }
 
-            var key = NormalizeSessionTermKey(g.SourceTerm);
+            var key = SessionTermRules.NormalizeKey(g.SourceTerm);
             if (string.IsNullOrWhiteSpace(key) || glossaryByKey.ContainsKey(key))
             {
                 continue;
@@ -263,14 +253,14 @@ public sealed class ProjectContextScanner
     private static void AccumulateEditedSessionTerm(Dictionary<string, string> editedByKey, StringEntry row)
     {
         if (row.Status != StringEntryStatus.Edited
-            || !IsSessionTermRec(row.Rec)
-            || !IsSessionTermDefinitionText(row.SourceText ?? "")
+            || !SessionTermRules.IsTermRec(row.Rec)
+            || !SessionTermRules.IsDefinitionText(row.SourceText ?? "")
             || string.IsNullOrWhiteSpace(row.DestText))
         {
             return;
         }
 
-        var key = NormalizeSessionTermKey(row.SourceText ?? "");
+        var key = SessionTermRules.NormalizeKey(row.SourceText ?? "");
         if (string.IsNullOrWhiteSpace(key) || editedByKey.ContainsKey(key))
         {
             return;
@@ -284,7 +274,7 @@ public sealed class ProjectContextScanner
         var uniqueTerms = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var term in ExtractTitleCaseCandidates(source))
         {
-            var key = NormalizeSessionTermKey(term);
+            var key = SessionTermRules.NormalizeKey(term);
             if (key.Length is < 3 or > 80)
             {
                 continue;
@@ -393,7 +383,7 @@ public sealed class ProjectContextScanner
             yield break;
         }
 
-        foreach (Match m in EnglishPhraseRegex.Matches(sourceText))
+        foreach (Match m in SessionTermRules.EnglishPhrase.Matches(sourceText))
         {
             if (m.Success && !string.IsNullOrWhiteSpace(m.Value))
             {
@@ -401,131 +391,13 @@ public sealed class ProjectContextScanner
             }
         }
 
-        foreach (Match m in EnglishTitleWordRegex.Matches(sourceText))
+        foreach (Match m in SessionTermRules.EnglishTitleWord.Matches(sourceText))
         {
             if (m.Success && !string.IsNullOrWhiteSpace(m.Value))
             {
                 yield return m.Value;
             }
         }
-    }
-
-    private static bool IsSessionTermRec(string? rec)
-    {
-        if (string.IsNullOrWhiteSpace(rec))
-        {
-            return false;
-        }
-
-        return rec.IndexOf(":FULL", StringComparison.OrdinalIgnoreCase) >= 0
-            || rec.IndexOf(":NAME", StringComparison.OrdinalIgnoreCase) >= 0
-            || rec.IndexOf(":NAM", StringComparison.OrdinalIgnoreCase) >= 0
-            || rec.IndexOf(":TITLE", StringComparison.OrdinalIgnoreCase) >= 0;
-    }
-
-    private static bool IsSessionTermDefinitionText(string sourceText)
-    {
-        if (string.IsNullOrWhiteSpace(sourceText))
-        {
-            return false;
-        }
-
-        var s = sourceText.Trim();
-        if (s.Length is < 3 or > 60)
-        {
-            return false;
-        }
-
-        if (s.IndexOf('\r') >= 0 || s.IndexOf('\n') >= 0)
-        {
-            return false;
-        }
-
-        if (TranslationConstants.XtTokenRegex.IsMatch(s))
-        {
-            return false;
-        }
-
-        if (s.IndexOf(' ') < 0 && !IsSessionTermSingleWordCandidate(s))
-        {
-            return false;
-        }
-
-        // Avoid obvious sentences.
-        if (s.IndexOfAny(new[] { '.', '!', '?', ':', ';' }) >= 0)
-        {
-            return false;
-        }
-
-        // Keep conservative: allow letters/digits/spaces plus common name punctuation.
-        foreach (var ch in s)
-        {
-            if (char.IsLetterOrDigit(ch) || ch is ' ' or '-' or '\'' or '’')
-            {
-                continue;
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-
-    private static bool IsSessionTermSingleWordCandidate(string term)
-    {
-        if (string.IsNullOrWhiteSpace(term))
-        {
-            return false;
-        }
-
-        var s = term.Trim();
-        if (s.Length is < 3 or > 40)
-        {
-            return false;
-        }
-
-        // Require TitleCase-ish to avoid learning generic words.
-        if (s[0] is < 'A' or > 'Z')
-        {
-            return false;
-        }
-
-        var hasLower = false;
-        for (var i = 0; i < s.Length; i++)
-        {
-            var ch = s[i];
-            if (ch is >= 'a' and <= 'z')
-            {
-                hasLower = true;
-                break;
-            }
-        }
-
-        return hasLower;
-    }
-
-    private static string NormalizeSessionTermKey(string term)
-    {
-        var s = (term ?? "").Trim();
-        if (string.IsNullOrWhiteSpace(s))
-        {
-            return "";
-        }
-
-        if (s.StartsWith("The ", StringComparison.OrdinalIgnoreCase))
-        {
-            s = s.Substring(4).TrimStart();
-        }
-        else if (s.StartsWith("An ", StringComparison.OrdinalIgnoreCase))
-        {
-            s = s.Substring(3).TrimStart();
-        }
-        else if (s.StartsWith("A ", StringComparison.OrdinalIgnoreCase))
-        {
-            s = s.Substring(2).TrimStart();
-        }
-
-        return s.Trim();
     }
 
     private static string TruncateExample(string text, int maxChars)

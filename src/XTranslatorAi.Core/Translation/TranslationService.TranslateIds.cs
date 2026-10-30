@@ -82,7 +82,7 @@ public sealed partial class TranslationService
             ThinkingConfigOverride = request.ThinkingConfigOverride,
             EnableSessionTermMemory = request.EnableSessionTermMemory,
             SessionTermMemory = request.EnableSessionTermMemory ? new SessionTermMemory(DefaultSessionTermMemoryMaxTerms) : null,
-            SemanticRepairMode = request.EnableRepairPass ? request.SemanticRepairMode : PlaceholderSemanticRepairMode.Off,
+            SemanticRepairMode = PlaceholderSemanticRepair.Effective(request.EnableRepairPass, request.SemanticRepairMode),
             EnableTemplateFixer = request.EnableTemplateFixer,
             UseRecStyleHints = request.UseRecStyleHints,
             EnableDialogueContextWindow = request.EnableDialogueContextWindow,
@@ -204,7 +204,7 @@ public sealed partial class TranslationService
         Ctx.SessionAutoGlossaryKnownKeys = new ConcurrentDictionary<string, byte>(StringComparer.OrdinalIgnoreCase);
         foreach (var g in glossary)
         {
-            var key = NormalizeSessionTermKey(g.SourceTerm);
+            var key = SessionTermRules.NormalizeKey(g.SourceTerm);
             if (!string.IsNullOrWhiteSpace(key))
             {
                 Ctx.SessionAutoGlossaryKnownKeys.TryAdd(key, 0);

@@ -9,6 +9,8 @@ using XTranslatorAi.Core;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Plugins;
+using XTranslatorAi.Core.Text;
+using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.App.Services.AgentMode;
 
@@ -24,7 +26,7 @@ public sealed record AgentTextName(string Name, IReadOnlyList<long> Ids);
 public static class AgentTextNames
 {
     private static readonly Regex WordRegex = new(@"[A-Za-z]+(?:['’][A-Za-z]+)*(?:-[A-Za-z]+(?:['’][A-Za-z]+)*)*", RegexOptions.CultureInvariant);
-    private static readonly Regex MarkupRegex = new(@"<[^>]*>|\[pagebreak\]", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+    private static readonly Regex MarkupRegex = new(@"<[^>]*>|" + ProtectedTextKinds.BracketPageBreakPattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
     // Between two words, any of these starts a sentence (or a quoted one) at the second.
     private const string SentenceBreaks = ".!?;:\n\"“…";
@@ -222,8 +224,7 @@ public static class AgentTextNames
                || (name.EndsWith('s') && name.Length > 4 && (ContainsWord(knownText, name[..^1]) || game?.Find(null, null, name[..^1]) != null));
     }
 
-    private static bool IsNameField(string? rec)
-        => rec != null && (rec.EndsWith(":FULL", StringComparison.OrdinalIgnoreCase) || rec.EndsWith(":SHRT", StringComparison.OrdinalIgnoreCase));
+    private static bool IsNameField(string? rec) => TranslationRowRules.IsNameField(rec);
 
     private static bool ContainsWord(string text, string word)
     {

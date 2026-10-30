@@ -7,7 +7,7 @@ namespace XTranslatorAi.Core.Translation;
 
 public static class TranslationBookContext
 {
-    private static readonly Regex Markers = new(@"__XT_[A-Z0-9_]+__|<[^>]*>|\[pagebreak\]", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    private static readonly Regex Markers = new(@"__XT_[A-Z0-9_]+__|<[^>]*>|" + XTranslatorAi.Core.Text.ProtectedTextKinds.BracketPageBreakPattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     public static bool IsBody(string? rec) => TranslationRowRules.IsBookBody(rec);
 
     public static IReadOnlyDictionary<string, string> CollectTitles(IEnumerable<(string? Rec, string? Edid, string Source)> rows)

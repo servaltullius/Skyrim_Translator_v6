@@ -58,4 +58,16 @@ public static class TranslationRowRules
     /// and the quality check reports the same English translated two ways.
     /// </summary>
     public static bool KeepsEditorId(string? rec) => RecordType(rec) is "INFO" or "DIAL" or "RACE" or "NPC_";
+
+    /// <summary>
+    /// An EDID as the run reads it: a leading "//" is how some modders mark a record unused, and the identifier after it
+    /// still names the record. The quality check's EDID groups kept it, so "//ES_debuff5" was not of "ES_debuff".
+    /// </summary>
+    public static string EditorId(string? edid) => (edid ?? "").Trim().TrimStart('/').Trim();
+
+    /// <summary>
+    /// A name field (FULL, SHRT) of a thing the mod names. A topic's text (DIAL:FULL) is the player's line, a sentence:
+    /// the agent's names list counted 9,898 of them in 19 projects as names the run had decided.
+    /// </summary>
+    public static bool IsNameField(string? rec) => FieldType(rec) is "FULL" or "SHRT" && !IsDialogue(rec);
 }

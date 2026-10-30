@@ -13,7 +13,7 @@ public static class TranslationPreviousReference
 
     // Same rule as the book reference: strip protected tokens and raw markup so the reference cannot add output tokens.
     private static readonly Regex Markers = new(
-        @"__XT_[A-Z0-9_]+__|<[^>]*>|\[page ?break\]",
+        @"__XT_[A-Z0-9_]+__|<[^>]*>|" + XTranslatorAi.Core.Text.ProtectedTextKinds.BracketPageBreakPattern,
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant
     );
 

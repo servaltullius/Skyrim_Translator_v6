@@ -168,7 +168,7 @@ public static class KoreanPatchStrings
         return new KoreanPatchApplyResult(applied, skipped);
     }
 
-    private static readonly System.Text.RegularExpressions.Regex RawTag = new(@"<[^<>]+>|\[pagebreak\]",
+    private static readonly System.Text.RegularExpressions.Regex RawTag = new(@"<[^<>]+>|" + XTranslatorAi.Core.Text.ProtectedTextKinds.BracketPageBreakPattern,
         System.Text.RegularExpressions.RegexOptions.CultureInvariant | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
     private static readonly System.Text.RegularExpressions.Regex FormattingTag = new(@"^</?(?:p|font|b|i|u|div|br|img|span)\b",

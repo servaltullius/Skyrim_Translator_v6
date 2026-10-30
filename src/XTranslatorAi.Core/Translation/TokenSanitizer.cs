@@ -17,7 +17,7 @@ internal static class TokenSanitizer
     );
 
     internal static readonly Regex RawPagebreakRegex = new(
-        pattern: @"\[page ?break\]",
+        pattern: ProtectedTextKinds.BracketPageBreakPattern,
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 

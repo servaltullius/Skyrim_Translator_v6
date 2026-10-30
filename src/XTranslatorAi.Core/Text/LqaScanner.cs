@@ -40,7 +40,7 @@ public static class LqaScanner
 {
     // Control keys ("[Sprint]") stay in English on purpose, so they are not English left in a translation.
     private static readonly Regex UiTagTokenRegex = new(
-        pattern: @"[+-]?<" + TranslationConstants.StageDirectionGuard + @"\s*[^>]+\s*>|\[page ?break\]|__XT_[A-Za-z0-9_]+__|" + PlaceholderMasker.ControlKeyPattern,
+        pattern: @"[+-]?<" + TranslationConstants.StageDirectionGuard + @"\s*[^>]+\s*>|" + ProtectedTextKinds.BracketPageBreakPattern + @"|__XT_[A-Za-z0-9_]+__|" + PlaceholderMasker.ControlKeyPattern,
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
@@ -474,29 +474,8 @@ public static class LqaScanner
         return count;
     }
 
-    internal static string NormalizeEdidStem(string? edid)
-    {
-        if (string.IsNullOrWhiteSpace(edid))
-        {
-            return "";
-        }
-
-        var value = edid.Trim();
-
-        var end = value.Length;
-        while (end > 0 && char.IsDigit(value[end - 1]))
-        {
-            end--;
-        }
-
-        if (end <= 0)
-        {
-            return "";
-        }
-
-        value = value[..end].TrimEnd('_', '-', ' ');
-        return value;
-    }
+    // As the run groups them: its copy kept "//", so "//ES_debuff5" was not of "ES_debuff".
+    internal static string NormalizeEdidStem(string? edid) => TranslationBatchGrouping.NormalizeEdidStem(edid);
 
     /// <summary>Uses the same protected-text contract as translation and plugin export.</summary>
     public static bool HasTokenMismatch(string sourceText, string destText)

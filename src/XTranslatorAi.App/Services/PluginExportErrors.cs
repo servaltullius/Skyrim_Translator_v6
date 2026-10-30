@@ -54,7 +54,7 @@ public static class PluginExportErrors
             var ids = (await db.GetPluginFieldKeysByStringIdAsync(ct))
                 .Where(pair => pair.Value.Split('/') is [var t, var f, _, var s, _] && t == type && s == sub && string.Equals(f, formId, StringComparison.OrdinalIgnoreCase))
                 .Select(pair => pair.Key).ToHashSet();
-            var written = (await RowsAsync(db, ct)).Where(row => ids.Contains(row.Id)).ToList();
+            var written = (await db.GetAllStringsAsync(ct)).Where(row => ids.Contains(row.Id)).ToList();
             bool Written(StringEntry row) => row.Status is StringEntryStatus.Done or StringEntryStatus.Edited;
             if (!field.Groups["ch"].Success)
             {
@@ -70,7 +70,7 @@ public static class PluginExportErrors
         if (SharedString.Match(message) is { Success: true } shared)
         {
             var orders = shared.Groups["rows"].Value.Split(", ").Select(n => int.Parse(n[1..])).ToList();
-            var byOrder = (await RowsAsync(db, ct)).ToDictionary(row => row.OrderIndex, row => row.Id);
+            var byOrder = (await db.GetAllStringsAsync(ct)).ToDictionary(row => row.OrderIndex, row => row.Id);
             return orders.Select(order => byOrder.TryGetValue(order, out var id) ? id : (long?)null).OfType<long>().ToList();
         }
 
@@ -85,17 +85,4 @@ public static class PluginExportErrors
         => SharedString.Match(message) is { Success: true } shared
             ? $"플러그인의 같은 문자열({shared.Groups["table"].Value} StringID {shared.Groups["id"].Value})을 함께 쓰는 줄인데 번역이 다릅니다. 같은 번역으로 맞추세요."
             : message;
-
-    private static async Task<List<StringEntry>> RowsAsync(ProjectDb db, CancellationToken ct)
-    {
-        var rows = new List<StringEntry>();
-        for (var offset = 0; ; offset += 1000)
-        {
-            var page = await db.GetStringsAsync(1000, offset, ct);
-            rows.AddRange(page);
-            if (page.Count < 1000) break;
-        }
-
-        return rows;
-    }
 }

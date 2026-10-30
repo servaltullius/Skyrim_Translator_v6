@@ -19,8 +19,8 @@ public sealed partial class TranslationService
 
     private static bool IsAutomaticSessionTermCandidate(string source)
     {
-        if (!IsSessionTermDefinitionText(source)) return false;
-        var key = NormalizeSessionTermKey(source);
+        if (!SessionTermRules.IsDefinitionText(source)) return false;
+        var key = SessionTermRules.NormalizeKey(source);
         if (GenericSessionTerms.Contains(key)
             || (key.EndsWith('s') && GenericSessionTerms.Contains(key[..^1]))) return false;
         foreach (var prefix in new[] { "Enable ", "Disable ", "Activate ", "Deactivate ", "Toggle ", "Set ", "Reset " })

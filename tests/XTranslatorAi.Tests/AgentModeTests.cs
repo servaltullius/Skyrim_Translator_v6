@@ -1176,7 +1176,7 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Equal(new[] { otherLane }, await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.InProgress }, CancellationToken.None));
     }
 
-    // A misnamed key ({"id": 12, "translation": ".."}) read as no text, and the row was saved empty as 수정됨.
+    // A misnamed key ({"id": 12, "translation": ".."}) read as no text, and the row was saved empty as 직접 수정.
     [Fact]
     public void EditWithoutText_IsRefused()
     {
@@ -1713,6 +1713,32 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Equal(new[] { letter.Id }, names[0].Ids);
     }
 
+    /// <summary>
+    /// A topic's text (DIAL:FULL) is the player's line, not a name: the names list counted 9,898 of them in 19 projects,
+    /// and as "known" text it hid the names it said from the body names. It is read for names as a body is now.
+    /// </summary>
+    [Fact]
+    public async Task ATopicsText_IsNoName_ButIsReadForNames()
+    {
+        var project = await OpenAsync("Topics.esp", Header()
+            .Concat(DialogueGroup(
+                Record("DIAL", 0x5000, Sub("EDID", Z("aaAskTopic")), Sub("FULL", Z("Tell me about Auryen Morellus"))),
+                TopicChildren(0x5000, Record("INFO", 0x5001, Sub("NAM1", Z("He keeps the gallery."))))))
+            .Concat(Group(Record("MISC", 0x5101, Sub("EDID", Z("aaLamp")), Sub("FULL", Z("Shadow Lantern")))))
+            .ToArray());
+        await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, CancellationToken.None);
+        var rows = await db.GetAllStringsAsync(CancellationToken.None);
+        await db.UpdateStringTranslationsAsync(new[]
+        {
+            (rows.Single(r => r.SourceText.StartsWith("Tell me", StringComparison.Ordinal)).Id, "오리엔 모렐루스에 대해 말해 줘", StringEntryStatus.Done, (string?)null),
+            (rows.Single(r => r.SourceText == "Shadow Lantern").Id, "그림자 등불", StringEntryStatus.Done, (string?)null),
+        }, CancellationToken.None);
+        rows = await db.GetAllStringsAsync(CancellationToken.None);
+
+        Assert.Equal(new[] { "Shadow Lantern" }, (await AgentSession.NewNamesAsync(db, rows, CancellationToken.None)).Select(n => n.SourceText));
+        Assert.Equal(new[] { "Auryen Morellus" }, (await AgentTextNames.FindAsync(db, null, null, rows, CancellationToken.None)).Select(n => n.Name));
+    }
+
     /// <summary>A new plugin of the same mod takes the glossary of the mod's other projects, and open says how many.</summary>
     [Fact]
     public async Task Open_SaysHowManyGlossaryTermsANewProjectTookFromTheSameMod()
@@ -1911,7 +1937,7 @@ public sealed class AgentModeTests : IAsyncLifetime
 
     /// <summary>
     /// A held line's text is its English: an edit keeping it ("영어 그대로 두자") was passed over as unchanged, and the
-    /// line stayed held. Kept as the user said, it is 수정됨 and held no more.
+    /// line stayed held. Kept as the user said, it is 직접 수정 and held no more.
     /// </summary>
     [Fact]
     public async Task Edit_KeepingAHeldLinesEnglish_SavesItAndReleasesIt()

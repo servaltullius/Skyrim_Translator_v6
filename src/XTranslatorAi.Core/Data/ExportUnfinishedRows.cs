@@ -22,14 +22,14 @@ public sealed record ExportUnfinishedRows(int Errors, int Pending, int Emptied, 
     public static async Task<ExportUnfinishedRows> CountAsync(
         ProjectDb db, IEnumerable<(long Id, StringEntryStatus Status, string SourceText, string DestText)> rows, CancellationToken ct)
     {
-        var holds = await db.GetStringNotesByKindAsync(TranslationConstants.AgentHoldNoteKind, ct);
+        var holds = await db.GetHoldNotesAsync(ct);
         int errors = 0, pending = 0, emptied = 0, held = 0;
         foreach (var (id, status, source, dest) in rows)
         {
             if (status == StringEntryStatus.Error) errors++;
             else if (status.IsUnfinished()) pending++;
             else if (status == StringEntryStatus.Edited && string.IsNullOrWhiteSpace(dest) && !string.IsNullOrWhiteSpace(source)) emptied++;
-            else if (status == StringEntryStatus.Skipped && holds.ContainsKey(id)) held++;
+            else if (ProjectDb.IsHeld(status, id, holds)) held++;
         }
 
         return new ExportUnfinishedRows(errors, pending, emptied, held);

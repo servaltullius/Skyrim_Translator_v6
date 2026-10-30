@@ -135,16 +135,5 @@ internal sealed class AgentCommand
         }
     }
 
-    public async Task<List<StringEntry>> RowsAsync(ProjectDb db)
-    {
-        var rows = new List<StringEntry>();
-        for (var offset = 0; ; offset += 1000)
-        {
-            var page = await db.GetStringsAsync(1000, offset, Ct);
-            rows.AddRange(page);
-            if (page.Count < 1000) break;
-        }
-
-        return rows;
-    }
+    public Task<List<StringEntry>> RowsAsync(ProjectDb db) => db.GetAllStringsAsync(Ct);
 }

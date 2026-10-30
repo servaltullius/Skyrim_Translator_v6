@@ -13,7 +13,7 @@ namespace XTranslatorAi.Core.Translation;
 public sealed partial class TranslationService
 {
     private static readonly Regex NonTextMarkupRegex = new(
-        @"<" + TranslationConstants.StageDirectionGuard + @"[^<>]*>|\[pagebreak\]|%[-+0-9.]*[a-zA-Z]|\{[^{}]*\}",
+        @"<" + TranslationConstants.StageDirectionGuard + @"[^<>]*>|" + XTranslatorAi.Core.Text.ProtectedTextKinds.BracketPageBreakPattern + @"|%[-+0-9.]*[a-zA-Z]|\{[^{}]*\}",
         RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
     // <mag>, <dur>, numbers and variables: their particles and word order may still need the model.

@@ -1,3 +1,4 @@
+using XTranslatorAi.Core.Text;
 using XTranslatorAi.Core.Translation;
 
 namespace XTranslatorAi.Tests;
@@ -70,4 +71,45 @@ public sealed class TranslationRowRulesTests
     [InlineData("BOOK:FULL", false)]
     [InlineData("MISC:DESC", false)]
     public void BookBody(string rec, bool body) => Assert.Equal(body, TranslationRowRules.IsBookBody(rec));
+
+    /// <summary>A topic's text is the player's line, no name: the agent's names list counted DIAL:FULL as names.</summary>
+    [Theory]
+    [InlineData("WEAP:FULL", true)]
+    [InlineData("npc_:shrt", true)]
+    [InlineData("DIAL:FULL", false)]
+    [InlineData("INFO:NAM1", false)]
+    [InlineData("BOOK:DESC", false)]
+    [InlineData(null, false)]
+    public void NameField(string? rec, bool name) => Assert.Equal(name, TranslationRowRules.IsNameField(rec));
+
+    /// <summary>The quality check's EDID groups kept "//", so "//ES_debuff5" was not of "ES_debuff" as in the run.</summary>
+    [Fact]
+    public void AnUnusedRecordsEditorId_IsReadWithoutItsSlashes()
+    {
+        Assert.Equal("ES_debuff5", TranslationRowRules.EditorId(" // ES_debuff5 "));
+        Assert.Equal("", TranslationRowRules.EditorId(null));
+        Assert.Equal(LqaScanner.NormalizeEdidStem("ES_debuff2"), LqaScanner.NormalizeEdidStem("//ES_debuff5"));
+        Assert.Equal("", LqaScanner.NormalizeEdidStem("//"));
+    }
+
+    /// <summary>The context scan's copy of the term rules took a short dialogue line a person edited for a term.</summary>
+    [Theory]
+    [InlineData("INFO:NAM1", false)]
+    [InlineData("DIAL:FULL", false)]
+    [InlineData("WEAP:FULL", true)]
+    [InlineData("LCTN:FULL", true)]
+    public void ATermIsDefinedByANameField_NotByDialogue(string rec, bool term) => Assert.Equal(term, SessionTermRules.IsTermRec(rec));
+
+    /// <summary>Legacy of the Dragonborn writes "[page break]": the book hint and the book context read only "[pagebreak]".</summary>
+    [Fact]
+    public void APageBreakWithASpace_IsAPageBreak()
+    {
+        const string text = "The first page of a long account of the war.[page break]The second page.";
+        // No record to go by: the page break alone tells a book's text.
+        Assert.Equal(TranslationStyleHints.Get(text.Replace("[page break]", "[pagebreak]"), null), TranslationStyleHints.Get(text, null));
+        Assert.NotNull(TranslationStyleHints.Get(text, null));
+        Assert.DoesNotContain("[page break]", TranslationBookContext.Build(previous: text), StringComparison.Ordinal);
+        Assert.False(TranslationService.HasLettersToTranslate("[page break]"));
+        Assert.Equal(new[] { "Auryen Morellus" }, XTranslatorAi.App.Services.AgentMode.AgentTextNames.Candidates("[page break]Auryen Morellus wrote this."));
+    }
 }

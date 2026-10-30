@@ -311,8 +311,8 @@ public partial class MainViewModel
     )
     {
         var systemPrompt = BuildSystemPrompt();
-        var batchSize = Math.Clamp(BatchSize, 1, 100);
-        var maxChars = Math.Clamp(MaxCharsPerBatch, 1000, 50000);
+        var batchSize = TranslationLimits.BatchSize(BatchSize);
+        var maxChars = TranslationLimits.MaxChars(MaxCharsPerBatch);
 
         var selectedModel = SelectedModel.Trim();
         var maxOut = ComputeMaxOutputTokens(selectedModel);

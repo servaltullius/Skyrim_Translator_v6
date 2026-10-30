@@ -122,7 +122,7 @@ internal static class TokenValidator
             return;
         }
 
-        if (inputText.IndexOf('<') < 0 && inputText.IndexOf("[pagebreak]", StringComparison.OrdinalIgnoreCase) < 0)
+        if (inputText.IndexOf('<') < 0 && !TokenSanitizer.RawPagebreakRegex.IsMatch(inputText))
         {
             return;
         }

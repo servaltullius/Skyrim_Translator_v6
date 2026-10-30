@@ -192,7 +192,7 @@ public sealed partial class AgentSession
             loaded.InheritedGlossary.Count, loaded.InheritedGlossary.FromPlugins ?? Array.Empty<string>());
         var key = ProjectKey(loaded.Document.Info.InputPath, db.DbPath);
         var project = new AgentProject(key, loaded.Document.Info.InputPath, db.DbPath, loaded.Document.Info.Options, targetEncoding,
-            AgentTranslationRun.DefaultModelProfile, Math.Clamp(batchSize, 1, 100), Math.Clamp(_settings.MaxCharsPerBatch, 1000, 50000))
+            AgentTranslationRun.DefaultModelProfile, TranslationLimits.BatchSize(batchSize), TranslationLimits.MaxChars(_settings.MaxCharsPerBatch))
         {
             ChosenSourceEncoding = readOptions.SourceEncoding,
         };
@@ -439,7 +439,7 @@ public sealed partial class AgentSession
         var seen = new HashSet<(string, string)>();
         return rows
             .Where(r => r.Status is StringEntryStatus.Done or StringEntryStatus.Edited && !string.IsNullOrWhiteSpace(r.DestText))
-            .Where(r => r.Rec is { } rec && (rec.EndsWith(":FULL", StringComparison.OrdinalIgnoreCase) || rec.EndsWith(":SHRT", StringComparison.OrdinalIgnoreCase)))
+            .Where(r => TranslationRowRules.IsNameField(r.Rec))
             .Where(r => !given.Contains(r.Id) && !terms.Contains(r.SourceText.Trim()) && seen.Add((Tail(r.SourceText), Tail(r.DestText))))
             .ToList();
     }
@@ -647,7 +647,7 @@ public sealed partial class AgentSession
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, cancellationToken);
         var info = await db.TryGetProjectAsync(cancellationToken);
         // The batch result check runs the placeholder check only with the repair pass on (as the run is set up).
-        return (info?.DestLang ?? "korean", _settings.EnableRepairPass ? _settings.SemanticRepairMode : PlaceholderSemanticRepairMode.Off);
+        return (info?.DestLang ?? "korean", PlaceholderSemanticRepair.Effective(_settings.EnableRepairPass, _settings.SemanticRepairMode));
     }
 
     private async Task<(AgentStepReport Report, IReadOnlySet<(string Hash, int Attempt)> Used)> StepAsync(AgentProject project,
@@ -796,14 +796,7 @@ public sealed partial class AgentSession
                 return true;
             });
         }
-        var rows = new List<StringEntry>();
-        for (var offset = 0; ; offset += 1000)
-        {
-            var page = await db.GetStringsAsync(1000, offset, cancellationToken);
-            rows.AddRange(page);
-            if (page.Count < 1000) break;
-        }
-
+        var rows = await db.GetAllStringsAsync(cancellationToken);
         var scopes = await db.GetStringTranslationContextsByIdsAsync(rows.Select(r => r.Id).ToList(), cancellationToken);
         // A dialogue, and every other row with the same English: a saved row (edited, so in the project TM) fills
         // the rows with its English, which in another lane would change that lane's request under its pending answer.

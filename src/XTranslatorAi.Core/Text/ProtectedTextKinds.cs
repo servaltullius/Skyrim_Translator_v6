@@ -9,7 +9,7 @@ namespace XTranslatorAi.Core.Text;
 /// formatting tags) from runtime values that may move with target-language word order
 /// (&lt;Alias=…&gt;, %s, {name}, $VAR$, custom value tags).
 /// </summary>
-internal static class ProtectedTextKinds
+public static class ProtectedTextKinds
 {
     private static readonly Regex MarkupTagNameRegex = new(
         pattern: @"^[+-]?<\s*(?<closing>/)?\s*(?<name>[A-Za-z][A-Za-z0-9:_-]*)(?=[\s=/>])",
@@ -42,7 +42,14 @@ internal static class ProtectedTextKinds
     /// "&lt;page break&gt;" and "&lt;pagebreak&gt;" (Druadach too). "&lt;page break&gt;" was masked as a value that may
     /// move anywhere, and "[page break]" was not masked at all, though the quality check counts both.
     /// </summary>
-    internal const string PageBreakPattern = @"\[page ?break\]|<\s*page\s*break\s*>";
+    internal const string PageBreakPattern = BracketPageBreakPattern + @"|<\s*page\s*break\s*>";
+
+    /// <summary>
+    /// The page break in brackets, for the checks that read tags apart ("&lt;page break&gt;" is a tag). The style hints,
+    /// the book context, the letterless check, the context scan, the Korean patch's tags, the validator's shortcut and
+    /// the agent's names read "[pagebreak]" alone, and took a Legacy of the Dragonborn book's "[page break]" for words.
+    /// </summary>
+    public const string BracketPageBreakPattern = @"\[page ?break\]";
 
     private static readonly Regex PageBreakRegex = new(
         pattern: @"^(?:" + PageBreakPattern + @")$",

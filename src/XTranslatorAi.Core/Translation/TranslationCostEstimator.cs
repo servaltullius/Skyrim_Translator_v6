@@ -170,8 +170,8 @@ public sealed partial class TranslationCostEstimator
     private static (int BatchSize, int MaxChars) NormalizeBatchAndCharLimits(TranslationCostEstimateRequest request)
     {
         return (
-            BatchSize: Math.Clamp(request.BatchSize, 1, 100),
-            MaxChars: Math.Clamp(request.MaxChars, 1000, 50000)
+            BatchSize: TranslationLimits.BatchSize(request.BatchSize),
+            MaxChars: TranslationLimits.MaxChars(request.MaxChars)
         );
     }
 

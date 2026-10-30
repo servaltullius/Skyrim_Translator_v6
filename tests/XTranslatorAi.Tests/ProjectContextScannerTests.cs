@@ -149,6 +149,38 @@ public class ProjectContextScannerTests
         }
     }
 
+    /// <summary>
+    /// A short line of dialogue a person edited is no term's definition: the scan's copy of the rule let INFO:NAM1 in (as
+    /// ":NAM"), and the term table showed the edited line as the term's translation.
+    /// </summary>
+    [Fact]
+    public async Task AnEditedLineOfDialogue_DoesNotTranslateATerm()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"xt-test-{Guid.NewGuid():N}.sqlite");
+        try
+        {
+            await using var db = await ProjectDb.OpenOrCreateAsync(path, CancellationToken.None);
+            await SeedProjectAsync(db);
+            await db.BulkInsertStringsAsync(new[]
+            {
+                CreateRow(0, "INFO:NAM1", "Sudden Tornado"),
+                CreateRow(1, "MGEF:FULL", "Sudden Tornado"),
+                CreateRow(2, "SPEL:FULL", "Sudden Tornado"),
+                CreateRow(3, "SCRL:FULL", "Sudden Tornado"),
+            }, CancellationToken.None);
+            var line = (await db.GetStringsAsync(1, 0, CancellationToken.None)).Single();
+            await db.UpdateStringTranslationAsync(line.Id, "갑작스러운 회오리라니, 조심해", StringEntryStatus.Edited, null, CancellationToken.None);
+
+            var report = await new ProjectContextScanner().ScanAsync(db, null, new ProjectContextScanOptions("Rim.esp", "Rim.esp", "english", "korean"), CancellationToken.None);
+
+            Assert.Null(Assert.Single(report.TopTerms, t => t.Source == "Sudden Tornado").Target);
+        }
+        finally
+        {
+            TestDbHelper.ReleaseProjectPoolAndDeleteDbFiles(path);
+        }
+    }
+
     private static (int OrderIndex, string? ListAttr, string? PartialAttr, string? AttributesJson, string? Edid, string? Rec, string SourceText, string DestText, StringEntryStatus Status, string RawStringXml) CreateRow(
         int orderIndex,
         string rec,

@@ -340,9 +340,9 @@ public sealed class TranslationRunnerService
     {
         var service = new TranslationService(request.Db, request.GeminiClient);
 
-        var batchSize = Math.Clamp(request.BatchSize, 1, 100);
-        var maxChars = Math.Clamp(request.MaxChars, 1000, 50000);
-        var parallel = Math.Clamp(request.Parallel, 1, 8);
+        var batchSize = TranslationLimits.BatchSize(request.BatchSize);
+        var maxChars = TranslationLimits.MaxChars(request.MaxChars);
+        var parallel = TranslationLimits.Parallel(request.Parallel);
 
         var selectedModel = modelName.Trim();
         var maxOut = request.ComputeMaxOutputTokens(selectedModel);

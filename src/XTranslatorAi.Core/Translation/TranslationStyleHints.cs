@@ -92,7 +92,7 @@ public static class TranslationStyleHints
         // Heuristic: xTranslator book exports often include [pagebreak] and book UI image tags.
         // When chunking, each chunk is translated independently; a small explicit style anchor
         // helps keep register consistent across chunks.
-        if (sourceText.IndexOf("[pagebreak]", StringComparison.OrdinalIgnoreCase) >= 0
+        if (TokenSanitizer.RawPagebreakRegex.IsMatch(sourceText)
             || sourceText.IndexOf("img://Textures/Interface/Books", StringComparison.OrdinalIgnoreCase) >= 0)
         {
             styleHint ??= "This is an in-game book/lore/guide text. Use a neutral written narrative tone in Korean and keep sentence endings consistent. Avoid chatty fillers like \"말이지/야/해\" outside of quoted dialogue. Avoid adding explanatory parentheses like \"(English term)\" unless they exist in the source; prefer natural in-universe rendering for proper nouns.";
@@ -104,7 +104,7 @@ public static class TranslationStyleHints
         }
 
         var isBookLike = string.Equals(recFamily, "BOOK", StringComparison.OrdinalIgnoreCase)
-                         || sourceText.IndexOf("[pagebreak]", StringComparison.OrdinalIgnoreCase) >= 0
+                         || TokenSanitizer.RawPagebreakRegex.IsMatch(sourceText)
                          || sourceText.IndexOf("img://Textures/Interface/Books", StringComparison.OrdinalIgnoreCase) >= 0;
 
         if (isBookLike && ContainsMultilineItalicBlock(sourceText))

@@ -24,7 +24,7 @@ public sealed partial class TranslationService
 
         public bool IsEmpty => _termToEntry.IsEmpty;
 
-        public bool Knows(string term) => _termToEntry.ContainsKey(NormalizeSessionTermKey(term));
+        public bool Knows(string term) => _termToEntry.ContainsKey(SessionTermRules.NormalizeKey(term));
 
         public bool TryLearn(string sourceTerm, string targetTranslation, bool allowForce = true)
         {
@@ -33,7 +33,7 @@ public sealed partial class TranslationService
                 return false;
             }
 
-            var key = NormalizeSessionTermKey(sourceTerm);
+            var key = SessionTermRules.NormalizeKey(sourceTerm);
             if (string.IsNullOrWhiteSpace(key))
             {
                 return false;
@@ -71,7 +71,7 @@ public sealed partial class TranslationService
         }
 
         public bool IsConflicted(string source)
-            => _termToEntry.TryGetValue(NormalizeSessionTermKey(source), out var entry) && entry.Conflicted;
+            => _termToEntry.TryGetValue(SessionTermRules.NormalizeKey(source), out var entry) && entry.Conflicted;
 
         public IReadOnlyList<(string Source, string Target)> MergeForText(
             string text,
@@ -118,7 +118,7 @@ public sealed partial class TranslationService
             var excluded = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var (source, _) in basePromptOnlyGlossary)
             {
-                var normalized = NormalizeSessionTermKey(source);
+                var normalized = SessionTermRules.NormalizeKey(source);
                 if (!string.IsNullOrWhiteSpace(normalized))
                 {
                     excluded.Add(normalized);

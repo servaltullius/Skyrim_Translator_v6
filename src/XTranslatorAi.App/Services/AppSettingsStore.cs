@@ -398,9 +398,9 @@ public sealed class AppSettingsStore
     private static AppSettings NormalizeTranslationPreferences(AppSettings settings) => settings with
     {
         SelectedModel = string.IsNullOrWhiteSpace(settings.SelectedModel) ? null : settings.SelectedModel.Trim(),
-        BatchSize = Math.Clamp(settings.BatchSize, 1, 100),
-        MaxCharsPerBatch = Math.Clamp(settings.MaxCharsPerBatch, 1000, 50000),
-        MaxParallelRequests = Math.Clamp(settings.MaxParallelRequests, 1, 8),
+        BatchSize = TranslationLimits.BatchSize(settings.BatchSize),
+        MaxCharsPerBatch = TranslationLimits.MaxChars(settings.MaxCharsPerBatch),
+        MaxParallelRequests = TranslationLimits.Parallel(settings.MaxParallelRequests),
         MaxOutputTokensOverride = settings.MaxOutputTokensOverride <= 0 ? 0 : Math.Clamp(settings.MaxOutputTokensOverride, 256, 65536),
         RiskyCandidateCount = Math.Clamp(settings.RiskyCandidateCount, 2, 8),
         SemanticRepairMode = Enum.IsDefined(settings.SemanticRepairMode) ? settings.SemanticRepairMode : PlaceholderSemanticRepairMode.Soft,

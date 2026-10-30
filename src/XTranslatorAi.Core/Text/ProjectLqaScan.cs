@@ -79,14 +79,7 @@ public static class ProjectLqaScan
     /// <summary>Every row of the project as stored, with its earlier release's text and its 원문 오류 수정 mark.</summary>
     public static async Task<List<ProjectLqaRow>> LoadRowsAsync(ProjectDb db, CancellationToken ct)
     {
-        var rows = new List<StringEntry>();
-        for (var offset = 0; ; offset += 1000)
-        {
-            var page = await db.GetStringsAsync(1000, offset, ct);
-            rows.AddRange(page);
-            if (page.Count < 1000) break;
-        }
-
+        var rows = await db.GetAllStringsAsync(ct);
         var previous = await db.GetPreviousTranslationsByStringIdAsync(ct);
         var sourceFix = await db.GetSourceFixIdsForCheckAsync(ct);
         return rows.Select(e => new ProjectLqaRow(e.Id, e.OrderIndex, e.Edid, e.Rec, e.Status, e.SourceText ?? "", e.DestText ?? "",

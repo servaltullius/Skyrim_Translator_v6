@@ -7,166 +7,6 @@ namespace XTranslatorAi.Core.Translation;
 
 public sealed partial class TranslationService
 {
-    private static readonly Regex EnglishPhraseRegex = new(
-        pattern:
-            @"\b(?:[A-Z][A-Za-z0-9'’\-]*)(?:\s+(?:[A-Z][A-Za-z0-9'’\-]*|of|the|and|or|to|a|an|in|on|for|with|from|at|by|de|la|le|du|van|von))+\b",
-        options: RegexOptions.CultureInvariant
-    );
-
-    private static readonly Regex EnglishTitleWordRegex = new(
-        pattern: @"\b[A-Z][A-Za-z0-9'’\-]{2,}\b",
-        options: RegexOptions.CultureInvariant
-    );
-
-    private static bool IsSessionTermRec(string? rec)
-    {
-        if (string.IsNullOrWhiteSpace(rec))
-        {
-            return false;
-        }
-
-        // Dialogue text is not a term definition, even when it is short and lacks punctuation.
-        if (TranslationRowRules.IsDialogue(rec))
-        {
-            return false;
-        }
-
-        return rec.IndexOf(":FULL", StringComparison.OrdinalIgnoreCase) >= 0
-            || rec.IndexOf(":NAME", StringComparison.OrdinalIgnoreCase) >= 0
-            || rec.IndexOf(":NAM", StringComparison.OrdinalIgnoreCase) >= 0
-            || rec.IndexOf(":TITLE", StringComparison.OrdinalIgnoreCase) >= 0;
-    }
-
-    private static bool IsSessionTermDefinitionText(string sourceText)
-    {
-        if (string.IsNullOrWhiteSpace(sourceText))
-        {
-            return false;
-        }
-
-        var s = sourceText.Trim();
-        if (s.Length is < 3 or > 60)
-        {
-            return false;
-        }
-
-        if (s.IndexOf('\r') >= 0 || s.IndexOf('\n') >= 0)
-        {
-            return false;
-        }
-
-        if (TranslationConstants.XtTokenRegex.IsMatch(s))
-        {
-            return false;
-        }
-
-        if (s.IndexOf(' ') < 0 && !IsSessionTermSingleWordCandidate(s))
-        {
-            return false;
-        }
-
-        // Avoid obvious sentences.
-        if (s.IndexOfAny(new[] { '.', '!', '?', ':', ';' }) >= 0)
-        {
-            return false;
-        }
-
-        // Keep conservative: allow letters/digits/spaces plus common name punctuation.
-        foreach (var ch in s)
-        {
-            if (char.IsLetterOrDigit(ch) || ch is ' ' or '-' or '\'' or '’')
-            {
-                continue;
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    private static bool IsSessionTermSingleWordCandidate(string term)
-    {
-        if (string.IsNullOrWhiteSpace(term))
-        {
-            return false;
-        }
-
-        var s = term.Trim();
-        if (s.Length is < 3 or > 40)
-        {
-            return false;
-        }
-
-        // Require TitleCase-ish; automatic learning also filters common UI/mechanics words.
-        if (s[0] is < 'A' or > 'Z')
-        {
-            return false;
-        }
-
-        var hasLower = false;
-        for (var i = 0; i < s.Length; i++)
-        {
-            var ch = s[i];
-            if (ch is >= 'a' and <= 'z')
-            {
-                hasLower = true;
-                break;
-            }
-        }
-
-        return hasLower;
-    }
-
-    private static bool IsSessionTermTranslationText(string translatedText)
-    {
-        if (string.IsNullOrWhiteSpace(translatedText))
-        {
-            return false;
-        }
-
-        var s = translatedText.Trim();
-        if (s.Length is < 1 or > 80)
-        {
-            return false;
-        }
-
-        if (s.IndexOf('\r') >= 0 || s.IndexOf('\n') >= 0)
-        {
-            return false;
-        }
-
-        if (TranslationConstants.XtTokenRegex.IsMatch(s))
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    private static string NormalizeSessionTermKey(string term)
-    {
-        var s = (term ?? "").Trim();
-        if (string.IsNullOrWhiteSpace(s))
-        {
-            return "";
-        }
-
-        if (s.StartsWith("The ", StringComparison.OrdinalIgnoreCase))
-        {
-            s = s.Substring(4).TrimStart();
-        }
-        else if (s.StartsWith("An ", StringComparison.OrdinalIgnoreCase))
-        {
-            s = s.Substring(3).TrimStart();
-        }
-        else if (s.StartsWith("A ", StringComparison.OrdinalIgnoreCase))
-        {
-            s = s.Substring(2).TrimStart();
-        }
-
-        return s.Trim();
-    }
-
     private IReadOnlyList<(string Source, string Target)> MergeSessionPromptOnlyGlossaryForText(
         string text,
         IReadOnlyList<(string Source, string Target)> basePromptOnlyGlossary
@@ -210,7 +50,7 @@ public sealed partial class TranslationService
             );
         foreach (var it in items)
         {
-            if (!IsSessionTermRec(GetRecForId(it.Id)))
+            if (!SessionTermRules.IsTermRec(GetRecForId(it.Id)))
             {
                 continue;
             }
@@ -226,7 +66,7 @@ public sealed partial class TranslationService
                 continue;
             }
 
-            var key = NormalizeSessionTermKey(it.Source);
+            var key = SessionTermRules.NormalizeKey(it.Source);
             if (!definitionByKey.ContainsKey(key))
             {
                 definitionByKey[key] = it;
@@ -249,9 +89,9 @@ public sealed partial class TranslationService
                 continue;
             }
 
-            foreach (Match m in EnglishPhraseRegex.Matches(it.Source))
+            foreach (Match m in SessionTermRules.EnglishPhrase.Matches(it.Source))
             {
-                var key = NormalizeSessionTermKey(m.Value);
+                var key = SessionTermRules.NormalizeKey(m.Value);
                 if (key.Length is < 3 or > 60 || !definitionKeys.Contains(key))
                 {
                     continue;
@@ -267,9 +107,9 @@ public sealed partial class TranslationService
                 }
             }
 
-            foreach (Match m in EnglishTitleWordRegex.Matches(it.Source))
+            foreach (Match m in SessionTermRules.EnglishTitleWord.Matches(it.Source))
             {
-                var key = NormalizeSessionTermKey(m.Value);
+                var key = SessionTermRules.NormalizeKey(m.Value);
                 if (key.Length is < 3 or > 60 || !definitionKeys.Contains(key))
                 {
                     continue;

@@ -120,7 +120,7 @@ internal static class TranslationBatchGrouping
     private static string SeriesStem(string? rec, string sourceText)
         => TranslationRowRules.IsDialogue(rec) ? "" : NormalizeSourceStem(sourceText);
 
-    private static string NormalizeEdid(string? edid) => (edid ?? "").Trim().TrimStart('/').Trim();
+    private static string NormalizeEdid(string? edid) => TranslationRowRules.EditorId(edid);
 
     public static string ComputeGroupKey(string? rec, string? edid, string sourceText)
     {

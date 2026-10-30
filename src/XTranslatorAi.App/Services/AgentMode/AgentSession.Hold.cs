@@ -15,7 +15,7 @@ namespace XTranslatorAi.App.Services.AgentMode;
 /// Held lines: lines the agent app's model will not translate by its own rules, set aside so the rest goes on. A line it
 /// left out of an answer was asked again ("답에 이 id가 없습니다"), and the run stood at that request; a user's Codex
 /// refused a whole mod over one character's age. A held line is 건너뜀 with an agent_hold note (its reason): no request
-/// asks for it until it is released, the export keeps its English (only 완료 and 수정됨 are written), a reopened
+/// asks for it until it is released, the export keeps its English (only 완료 and 직접 수정 are written), a reopened
 /// plugin keeps it with its note, and an edit, or the GUI's 다시 번역, takes it back.
 /// </summary>
 public sealed partial class AgentSession
@@ -41,8 +41,8 @@ public sealed partial class AgentSession
     {
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, cancellationToken);
         var lane = await LaneIdsAsync(db, project, cancellationToken);
-        var holds = await db.GetStringNotesByKindAsync(TranslationConstants.AgentHoldNoteKind, cancellationToken);
-        return (await AllRowsAsync(db, cancellationToken))
+        var holds = await db.GetHoldNotesAsync(cancellationToken);
+        return (await db.GetAllStringsAsync(cancellationToken))
             .Where(r => IsHeld(r, holds) && (lane == null || lane.Contains(r.Id)))
             .Select(r => new HeldLine(r, Reason(holds[r.Id]))).ToList();
     }
@@ -59,10 +59,10 @@ public sealed partial class AgentSession
         CancellationToken cancellationToken)
     {
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, cancellationToken);
-        var all = await AllRowsAsync(db, cancellationToken);
+        var all = await db.GetAllStringsAsync(cancellationToken);
         var lane = await LaneIdsAsync(db, project, cancellationToken);
         var rows = RowsById(all, project, lane, ids);
-        var holds = await db.GetStringNotesByKindAsync(TranslationConstants.AgentHoldNoteKind, cancellationToken);
+        var holds = await db.GetHoldNotesAsync(cancellationToken);
         var finished = rows.Where(r => r.Status is StringEntryStatus.Done or StringEntryStatus.Edited
                                        || r.Status == StringEntryStatus.Skipped && !IsHeld(r, holds)).ToList();
         if (finished.Count > 0)
@@ -162,10 +162,10 @@ public sealed partial class AgentSession
     public async Task<IReadOnlyList<HeldLine>> ReleaseAsync(AgentProject project, IReadOnlyCollection<long> ids, CancellationToken cancellationToken)
     {
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, cancellationToken);
-        var all = await AllRowsAsync(db, cancellationToken);
+        var all = await db.GetAllStringsAsync(cancellationToken);
         var lane = await LaneIdsAsync(db, project, cancellationToken);
         var rows = RowsById(all, project, lane, ids);
-        var holds = await db.GetStringNotesByKindAsync(TranslationConstants.AgentHoldNoteKind, cancellationToken);
+        var holds = await db.GetHoldNotesAsync(cancellationToken);
         var heldWith = all.Where(r => IsHeld(r, holds) && (lane == null || lane.Contains(r.Id)) && !rows.Contains(r)
                                       && rows.Any(named => HeldWith(holds[r.Id], named.Id)));
         var held = rows.Concat(heldWith).Where(r => IsHeld(r, holds)).Select(r => new HeldLine(r, Reason(holds[r.Id]))).ToList();
@@ -173,8 +173,7 @@ public sealed partial class AgentSession
         return held;
     }
 
-    private static bool IsHeld(StringEntry row, IReadOnlyDictionary<long, string> holds)
-        => row.Status == StringEntryStatus.Skipped && holds.ContainsKey(row.Id);
+    private static bool IsHeld(StringEntry row, IReadOnlyDictionary<long, string> holds) => ProjectDb.IsHeld(row.Status, row.Id, holds);
 
     // A hold given no reason is saved as the mark itself (a note needs a message).
     private static string Reason(string note) => note == HeldMark ? "" : note;
@@ -193,16 +192,4 @@ public sealed partial class AgentSession
         return ids.Distinct().Select(id => byId[id]).ToList();
     }
 
-    private static async Task<List<StringEntry>> AllRowsAsync(ProjectDb db, CancellationToken cancellationToken)
-    {
-        var rows = new List<StringEntry>();
-        for (var offset = 0; ; offset += 1000)
-        {
-            var page = await db.GetStringsAsync(1000, offset, cancellationToken);
-            rows.AddRange(page);
-            if (page.Count < 1000) break;
-        }
-
-        return rows;
-    }
 }

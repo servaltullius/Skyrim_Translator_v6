@@ -35,7 +35,7 @@ public static class StringNotePolicy
         /// <summary>The row made 대기 again to be translated anew (다시 번역).</summary>
         Retranslate,
 
-        /// <summary>A hand edit saved (수정됨): the translation is no longer the known one, nor held.</summary>
+        /// <summary>A hand edit saved (직접 수정): the translation is no longer the known one, nor held.</summary>
         HandEdit,
 
         /// <summary>A translation saved as 완료: no longer held, nor a sent-back edit.</summary>

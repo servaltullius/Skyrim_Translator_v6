@@ -338,6 +338,39 @@
   - **키트:** guide-translate.md 1과 6을 고쳤다.
   - **확인:** 테스트 2,444개. 키 끝 마침표 테스트가 옛 정규식에서 실패하는 것을 확인했다.
 
+- **덩이 8 (2026-10-31, 끝, L3·L4·L8·Q5)**
+  - **공용으로 모은 것(동작 같음):**
+    - 모든 줄 읽기: `ProjectDb.GetAllStringsAsync`(1000줄씩 읽던 반복 7곳)
+    - 보류 판정: `ProjectDb.IsHeld`·`GetHoldNotesAsync`(건너뜀 + agent_hold, 5곳)
+    - 배치 한도: `TranslationLimits`(배치 크기·글자 수·병렬, 짧은 줄 최대 글자·긴 줄 배치 크기, 9곳)
+    - 수리 모드: `PlaceholderSemanticRepair.Effective`(2곳)
+    - 품질 검사의 EDID 묶음 이름은 번역 쪽 `TranslationBatchGrouping.NormalizeEdidStem`을 그대로 부른다.
+  - **L3:** `TranslationRowRules.EditorId`가 앞의 `//`를 뗀다. 번역 쪽 두 곳과 품질 검사가 쓴다.
+  - **L4:** `SessionTermRules` 한 벌을 세션 용어와 문맥 스캔이 함께 쓴다.
+    - 문맥 스캔 사본은 대사를 빼지 않아, 직접 수정한 짧은 대사 줄이 용어의 번역으로 나왔다.
+    - 사본 기준 SeranaDialogAddon 두 개에서 9줄이다.
+  - **L8:** `TranslationRowRules.IsNameField`(FULL·SHRT, 대사 아님)를 names 목록과 본문 이름 찾기가 쓴다.
+    - LotD 사본: 새로 정한 이름 1,943 → 1,617(빠진 326개는 모두 DIAL:FULL 문장). 본문 속 후보 381 → 406.
+    - 주제 문장 속 이름(Marcus Flynn 등)이 새로 잡히지만, "AltertToIdle" 같은 코드 식별자도 몇 개 섞인다(남은 것).
+  - **쪽 나눔:** `ProtectedTextKinds.BracketPageBreakPattern`(`[page ?break]`) 하나를 13곳이 쓴다.
+    - "[pagebreak]"만 읽던 곳은 이제 LotD의 "[page break]"도 읽는다: 문체 힌트, 책 앞뒤 발췌, 글자 없는 원문 판정, 문맥 스캔, 에이전트 본문 이름.
+    - 검증기 지름길과 한글패치 태그 비교는 결과가 같다(다른 검사가 이미 읽음).
+    - 사본에 해당 줄은 LotD BOOK 1줄이다. 요청 기준 테스트는 그대로다.
+  - **Q5:** 에이전트의 상태 이름 "수정됨"을 GUI의 "직접 수정"으로 바꿨다(`StringEntryStatusLabels`). 키트 AGENTS.md도 맞췄다.
+  - **하지 않음(이유):**
+    - 조사 목록 다섯 벌: 쓰임마다 내용과 순서가 다르고, 순서가 어간을 정하는 곳도 있다. 합치면 결과가 바뀐다.
+    - 용어 저장을 `ProjectGlossaryService`로: 그 서비스는 ProjectDb로 넘기기만 한다. 에이전트의 바꿔 넣기는 에이전트에만 있는 처리다.
+    - GUI 비교 요청: 비교는 일부러 모델에게 묻는다(게임 번역·상향을 끔). 배치 한도만 공용으로 썼다.
+  - **검수(다른 에이전트):** 높음·중간은 없었다. 낮음을 고쳤다.
+    - 빈 검사 테스트
+    - L4·L8 실제 경로 테스트
+    - EDID 묶음 이름 사본
+    - edit의 보류 판정
+    - 남은 쪽 나눔·한도 사본
+  - **확인:**
+    - 테스트 2,458개. 새 테스트 여섯 개는 옛 규칙으로 되돌리면 실패하는 것을 확인했다.
+    - 56개 사본 결과는 덩이 5 뒤와 같다(diff-chunk8 = diff-chunk5d).
+
 ## 이 계획에서 하지 않는 것
 
 - 번역 파이프라인, 토큰 검증, 프롬프트 규칙의 내용 변경

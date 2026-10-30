@@ -13,6 +13,17 @@ namespace XTranslatorAi.Core.Data;
 /// </summary>
 public sealed partial class ProjectDb
 {
+    /// <summary>The held rows' reasons by id (agent_hold notes; a row released keeps none).</summary>
+    public Task<IReadOnlyDictionary<long, string>> GetHoldNotesAsync(CancellationToken cancellationToken)
+        => GetStringNotesByKindAsync(TranslationConstants.AgentHoldNoteKind, cancellationToken);
+
+    /// <summary>
+    /// A held row: 건너뜀 with an agent_hold note. An XML's rows that came with a translation are 건너뜀 too, and a note
+    /// left on a row another way changed is no hold: the export count, the list, show and edit each wrote this apart.
+    /// </summary>
+    public static bool IsHeld(StringEntryStatus status, long id, IReadOnlyDictionary<long, string> holdNotes)
+        => status == StringEntryStatus.Skipped && holdNotes.ContainsKey(id);
+
     public async Task HoldStringsAsync(IReadOnlyList<(long Id, string Note)> rows, CancellationToken cancellationToken)
     {
         if (rows.Count == 0) return;

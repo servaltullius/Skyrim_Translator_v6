@@ -139,14 +139,14 @@ public static partial class AgentCli
 
     /// <summary>
     /// Items with no new translation: a missing or misnamed key ({"id": 12, "translation": ".."}) read as no text, and
-    /// the row was saved empty as 수정됨, which the export writes, blanking the name in game.
+    /// the row was saved empty as 직접 수정, which the export writes, blanking the name in game.
     /// </summary>
     internal static IReadOnlyList<string> WithoutText(IEnumerable<EditLine> edits)
         => edits.Where(e => string.IsNullOrWhiteSpace(e.Text))
             .Select(e => e.Id is { } id ? $"id {id}" : e.Order is { } o ? $"순번 {o}" : "번호 없음").ToList();
 
     // Fixes after the quality check: [{"id": 12, "text": "..."}] (the id of requests, check and show; "order" is the
-    // row's 순번, as before), saved as the GUI saves a hand edit (수정됨).
+    // row's 순번, as before), saved as the GUI saves a hand edit (직접 수정).
     private static async Task EditAsync(AgentCommand c)
     {
         c.RefuseWhileAppRuns();
@@ -180,12 +180,12 @@ public static partial class AgentCli
 
         // A held line's text is its English: an edit keeping it ("영어 그대로 두자") was passed over as unchanged, and the
         // line stayed held, listed at every end.
-        var holds = await db.GetStringNotesByKindAsync(TranslationConstants.AgentHoldNoteKind, c.Ct);
+        var holds = await db.GetHoldNotesAsync(c.Ct);
         var same = 0;
         foreach (var edit in list)
         {
             var row = Row(edit)!;
-            var held = row.Status == StringEntryStatus.Skipped && holds.ContainsKey(row.Id);
+            var held = ProjectDb.IsHeld(row.Status, row.Id, holds);
             if (!held && string.Equals(row.DestText, edit.Text, StringComparison.Ordinal))
             {
                 same++;
@@ -199,8 +199,10 @@ public static partial class AgentCli
         Console.WriteLine($"고친 줄: {list.Count - same}" + (same > 0 ? $" (이미 같은 줄 {same}은 그대로)" : "") + $". 다시 확인: tullius.cmd check {project.Key}");
         // A line held with an edited one stays held (and English in the export): the edit is the line named's.
         var edited = list.Select(edit => Row(edit)!.Id).ToHashSet();
-        var heldWith = (await db.GetStringNotesByKindAsync(TranslationConstants.AgentHoldNoteKind, c.Ct))
-            .Where(pair => !edited.Contains(pair.Key) && edited.Any(id => AgentSession.HeldWith(pair.Value, id)))
+        var notes = await db.GetHoldNotesAsync(c.Ct);
+        var heldWith = notes
+            .Where(pair => !edited.Contains(pair.Key) && byId.TryGetValue(pair.Key, out var other) && ProjectDb.IsHeld(other.Status, other.Id, notes)
+                           && edited.Any(id => AgentSession.HeldWith(pair.Value, id)))
             .Select(pair => "#" + pair.Key).OrderBy(id => id, StringComparer.Ordinal).ToList();
         if (heldWith.Count > 0)
         {

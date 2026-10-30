@@ -21,7 +21,7 @@ public sealed partial class ProjectDb
         await _gate.WaitAsync(cancellationToken);
         try
         {
-            // The row and its notes change together: an edit cancelled between them left the TM's note on a 수정됨 row.
+            // The row and its notes change together: an edit cancelled between them left the TM's note on a 직접 수정 row.
             await using var tx = (SqliteTransaction)await _connection.BeginTransactionAsync(cancellationToken);
             await using var cmd = _connection.CreateCommand();
             cmd.Transaction = tx;

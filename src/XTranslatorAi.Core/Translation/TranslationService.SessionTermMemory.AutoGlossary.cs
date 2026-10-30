@@ -20,17 +20,17 @@ public sealed partial class TranslationService
         }
 
         var rec = GetRecForId(id);
-        if (!IsSessionTermRec(rec))
+        if (!SessionTermRules.IsTermRec(rec))
         {
             return;
         }
 
-        if (!IsSessionTermDefinitionText(sourceText) || !IsSessionTermTranslationText(translatedText))
+        if (!SessionTermRules.IsDefinitionText(sourceText) || !SessionTermRules.IsTranslationText(translatedText))
         {
             return;
         }
 
-        var key = NormalizeSessionTermKey(sourceText);
+        var key = SessionTermRules.NormalizeKey(sourceText);
         if (string.IsNullOrWhiteSpace(key))
         {
             return;

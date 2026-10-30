@@ -48,6 +48,19 @@ public sealed partial class ProjectDb
         }
     }
 
+    /// <summary>Every row, a page at a time: the check, the agent's commands and the export's refusal each paged it alike.</summary>
+    public async Task<List<StringEntry>> GetAllStringsAsync(CancellationToken cancellationToken)
+    {
+        const int Page = 1000;
+        var rows = new List<StringEntry>();
+        for (var offset = 0; ; offset += Page)
+        {
+            var page = await GetStringsAsync(Page, offset, cancellationToken);
+            rows.AddRange(page);
+            if (page.Count < Page) return rows;
+        }
+    }
+
     public async Task<IReadOnlyList<StringEntry>> GetStringsAsync(int limit, int offset, CancellationToken cancellationToken)
     {
         await _gate.WaitAsync(cancellationToken);

@@ -34,7 +34,7 @@ public static class TranslationConstants
     /// as text. The other checks leave control keys out too (LqaScanner.StripUiTokens).
     /// </summary>
     public static readonly Regex UiTagTokenRegex = new(
-        pattern: @"[+-]?<" + StageDirectionGuard + @"\s*[^>]+\s*>|\[page ?break\]|__XT_[A-Za-z0-9_]+__",
+        pattern: @"[+-]?<" + StageDirectionGuard + @"\s*[^>]+\s*>|" + Text.ProtectedTextKinds.BracketPageBreakPattern + @"|__XT_[A-Za-z0-9_]+__",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 
