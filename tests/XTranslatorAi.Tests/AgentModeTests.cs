@@ -1717,6 +1717,7 @@ public sealed class AgentModeTests : IAsyncLifetime
     [InlineData("Then AltertToIdle runs and PlayerInSightsDarnette fires near Sean McCarthy.", "Sean McCarthy")]
     [InlineData("Ask Ewan MacDonald or Jean LeBlanc.", "Ewan MacDonald|Jean LeBlanc")]
     [InlineData("When AddToList ran, Edward FitzGerald wrote.", "Edward FitzGerald")]
+    [InlineData("Then GetStage and OnHit ran for Isabelle Ondolemar.", "Isabelle Ondolemar")]
     public void TextNames_AreTheCapitalizedRunsThatReadAsNames(string text, string expected)
     {
         Assert.Equal(expected.Split('|'), AgentTextNames.Candidates(text));

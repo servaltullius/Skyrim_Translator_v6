@@ -49,7 +49,10 @@ public class GlossaryPluralTests
     [InlineData("Summerset Isles", "서머셋 아일즈", "The Crystal Tower of Summerset Isle.", false)]
     [InlineData("Summerset Isles", "서머셋 아일즈", "Ships sailed to the Summerset Isles.", true)]
     [InlineData("Shivering Isles", "쉬버링 아일즈", "A Shivering Isle.", false)]
+    [InlineData("Atom Cats", "아톰 캣츠", "An Atom Cat.", false)]
     [InlineData("Rain of Arrows", "애로우 레인", "Rain of Arrow", true)]
+    // The singular sounds the s too: 팰리스 is the Imperial Palace's as well.
+    [InlineData("Imperial Palaces", "임페리얼 팰리스", "The Imperial Palace.", true)]
     public void PluralTermWhoseTranslationSoundsTheS_LeavesTheSingular(string source, string target, string text, bool matches)
         => Assert.Equal(matches, Applier(source, target).Apply(text).TokenToReplacement.Count > 0);
 
@@ -82,7 +85,10 @@ public class GlossaryPluralTests
     [InlineData("종족 및 생물 (Races/Creatures)", "Aldmeri", "알드머", "We've lived together since the days of Aldmeris.", false)]
     [InlineData("종족 및 생물 (Races/Creatures)", "Aldmeri", "알드머", "An Aldmeri tribe.", true)]
     [InlineData("진영 및 단체 (Factions/Groups)", "Akaviri", "아카비르", "The Akaviris came.", false)]
-    public void SingleWordTermOfABeingOrGroup_MatchesItsPlural(string category, string source, string target, string text, bool matches)
+    // Only a race or group of one word in -i: a term of more words, or one in -u, keeps its plural.
+    [InlineData(null, "Combat AI", "전투 AI", "Two Combat AIs fight.", true)]
+    [InlineData("종족 및 생물 (Races/Creatures)", "Wamasu", "와마수", "A herd of Wamasus.", true)]
+    public void SingleWordTermOfABeingOrGroup_MatchesItsPlural(string? category, string source, string target, string text, bool matches)
     {
         var applier = new GlossaryApplier(new[] { new GlossaryEntry(1, category, source, target, true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null) });
 

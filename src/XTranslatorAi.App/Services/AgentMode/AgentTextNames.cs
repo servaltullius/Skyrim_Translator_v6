@@ -143,8 +143,11 @@ public static class AgentTextNames
     private static bool IsCapitalized(string word) => char.IsUpper(word[0]) && word.Skip(1).Any(char.IsLower);
 
     // An editor ID or script name a topic or a line shows as it is ("AltertToIdle", "ScopeEffect", "AddToList"): a capital
-    // inside after four small letters, or two capitals inside. A name has one, early (McCarthy, MacDonald, FitzGerald).
-    private static readonly Regex CodeWordRegex = new(@"[a-z]{4}[A-Z]|[A-Z][a-z]+[A-Z][a-z]*[A-Z]", RegexOptions.CultureInvariant);
+    // inside after four small letters, two capitals inside, or a script verb before a capital ("GetStage", "OnHit"). A
+    // name has one, early (McCarthy, MacDonald, FitzGerald).
+    private static readonly Regex CodeWordRegex = new(
+        @"[a-z]{4}[A-Z]|[A-Z][a-z]+[A-Z][a-z]*[A-Z]|^(?:Get|Set|Is|Has|On|Play|Move|Add|Remove|Start|Stop)[A-Z]",
+        RegexOptions.CultureInvariant);
 
     private static bool IsCode(string word) => CodeWordRegex.IsMatch(word);
 

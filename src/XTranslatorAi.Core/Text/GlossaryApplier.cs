@@ -616,13 +616,15 @@ public sealed class GlossaryApplier
 
     // Single words keep their exact form ("resists" is a verb, "shores" is not Shor, "masters" is not the rank 달인),
     // except races, creatures and groups, which lines name in the plural all the time: Feris wrote "vampires" as
-    // 뱀파이어 in 10 lines while the built-in Vampire is 흡혈귀. A name ending in i or u takes no plural s: "Aldmeris"
-    // (the Aldmeri homeland) is another name than Aldmeri (알드머), as "Akaviris" would be.
+    // 뱀파이어 in 10 lines while the built-in Vampire is 흡혈귀. A race or group named by one word in -i takes no plural
+    // s: "Aldmeris" (the Aldmeri homeland) is another name than Aldmeri (알드머), as "Akaviris" would be. A term of more
+    // words keeps it ("Combat AIs").
     private static string PluralSuffixFor(GlossaryEntry entry)
     {
         var term = entry.SourceTerm.Trim();
-        return (term.Contains(' ') || NamesBeingsOrGroups(entry)) && term.Length > 0 && char.IsLetter(term[^1])
-               && char.ToLowerInvariant(term[^1]) is not ('s' or 'i' or 'u')
+        var single = !term.Contains(' ');
+        return (!single || NamesBeingsOrGroups(entry)) && term.Length > 0 && char.IsLetter(term[^1]) && !term.EndsWith('s')
+               && !(single && term[^1] == 'i')
             ? "(?:es|s)?"
             : "";
     }
@@ -637,19 +639,14 @@ public sealed class GlossaryApplier
     /// A multi-word term in a regular plural also matches its singular: Elden Rim wrote "Rain of Arrow" in 7 rows, which
     /// escaped the glossary's "Rain of Arrows" (애로우 레인) and came out as 화살비. Only "-s" after a letter other than s,
     /// u or i, so "Glass", "Tullius" and "Aldis" keep their exact form; single words keep it too, as for the plural.
-    /// A translation that sounds the s out ("Summerset Isles" → 서머셋 아일즈) is the plural's own: the singular
-    /// "Summerset Isle" is 서머셋 아일, not that.
+    /// A translation that sounds the s out ("Summerset Isles" → 서머셋 아일즈, "Atom Cats" → 아톰 캣츠) is the plural's
+    /// own: the singular "Summerset Isle" is 서머셋 아일, not that. Not where the singular ends in that sound too
+    /// ("Imperial Palaces" → 임페리얼 팰리스 is the Imperial Palace's as well).
     /// </summary>
     private static string? SingularOf(GlossaryEntry entry)
     {
         var term = entry.SourceTerm;
         if (entry.MatchMode != GlossaryMatchMode.WordBoundary || term.Length != term.TrimEnd().Length)
-        {
-            return null;
-        }
-
-        var target = entry.TargetTerm.TrimEnd();
-        if (target.EndsWith('즈') || target.EndsWith('스'))
         {
             return null;
         }
@@ -661,6 +658,14 @@ public sealed class GlossaryApplier
             || !char.IsAsciiLetterLower(lastWord[^2])
             || lastWord[^2] is 's' or 'u' or 'i'
             || PluralOnlyWords.Contains(lastWord))
+        {
+            return null;
+        }
+
+        var target = entry.TargetTerm.TrimEnd();
+        var soundsTheS = target.EndsWith('즈') || target.EndsWith('스') || target.EndsWith('츠');
+        var singularEndsInS = lastWord.EndsWith("ces", StringComparison.OrdinalIgnoreCase) || lastWord.EndsWith("ses", StringComparison.OrdinalIgnoreCase);
+        if (soundsTheS && !singularEndsInS)
         {
             return null;
         }
