@@ -23,26 +23,13 @@ internal static class LqaToneClassifier
             return ToneKind.Unknown;
         }
 
-        var cleaned = LqaScanner.StripUiTokens(text).Trim();
-        cleaned = cleaned.TrimEnd(
-            ' ',
-            '\t',
-            '\r',
-            '\n',
-            '.',
-            ',',
-            '!',
-            '?',
-            '…',
-            '"',
-            '\'',
-            '”',
-            '’',
-            ')',
-            ']',
-            '」',
-            '』'
-        );
+        var line = LqaScanner.StripUiTokens(text).Trim();
+        if (SpeechReading.IsHeading(line))
+        {
+            return ToneKind.Unknown;
+        }
+
+        var cleaned = SpeechReading.TrimEnd(line);
 
         if (cleaned.Length == 0)
         {
@@ -90,7 +77,8 @@ internal static class LqaToneClassifier
             return ToneKind.PlainDa;
         }
 
-        if (EndsWithAny(cleaned, "해", "야", "지", "냐"))
+        // Not the 지 of a clause left open ("어떻게 해야 할지", "제가 잘 할 수 있을지--").
+        if (EndsWithAny(cleaned, "해", "야", "지", "냐") && !SpeechReading.EndsInOpenClause(cleaned))
         {
             return ToneKind.Casual;
         }
@@ -109,7 +97,7 @@ internal static class LqaToneClassifier
     {
         "필요", "중요", "주요", "수요", "개요", "요요",
         "피해", "방해", "손해", "재해", "이해", "오해", "견해", "동해", "서해", "남해",
-        "메시지", "이미지", "페이지", "지지", "의지", "부지", "토지", "휴지",
+        "메시지", "이미지", "페이지", "지지", "의지", "부지", "토지", "휴지", "영지",
         "바다", "시다",
     };
 

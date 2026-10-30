@@ -13,8 +13,10 @@ namespace XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 /// </summary>
 internal static partial class SpeakerToneConsistencyRule
 {
-    private static readonly System.Text.RegularExpressions.Regex FormalEnding = new(@"(니다|니까)[\s.!?…""']*$",
-        System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+    // 합쇼체: the speaker's own words end in ~니다 or ~니까, read as the level is ("감사합니다~", "…합니다. (고개를 숙인다)").
+    private static bool IsFormal(string line)
+        => Clean(SpeechReading.OwnWords(line)) is var own
+           && (own.EndsWith("니다", StringComparison.Ordinal) || own.EndsWith("니까", StringComparison.Ordinal));
 
     /// <summary>
     /// The speech level a base game NPC speaks in the Korean patch, read from its lines there; null when they are too
@@ -38,7 +40,7 @@ internal static partial class SpeakerToneConsistencyRule
             {
                 case Register.Polite:
                     polite++;
-                    if (FormalEnding.IsMatch(line)) formal++;
+                    if (IsFormal(line)) formal++;
                     break;
                 case Register.Hao: hao++; break;
                 case Register.Hage: hage++; break;
@@ -93,7 +95,7 @@ internal static partial class SpeakerToneConsistencyRule
     /// </summary>
     internal static HaoReading ReadHao(string? text)
     {
-        var spoken = SpokenPart(text);
+        var spoken = SpeechReading.OwnWords(text);
         var parts = spoken.Split(new[] { '.', '!', '?', '…', ',' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             .Where(part => Clean(part).Length > 0).ToList();
         var hao = parts.Where(part => Clean(part) is var sentence && !sentence.EndsWith("십시오", StringComparison.Ordinal) && IsHao(sentence)
@@ -117,13 +119,6 @@ internal static partial class SpeakerToneConsistencyRule
     /// </summary>
     internal static bool HasOwnPolite(string? text) => Level(text) == (Register.Polite, false);
 
-    /// <summary>The line without its quotations (someone else's words), or the line itself when it is nothing but those.</summary>
-    internal static string SpokenPart(string? text)
-    {
-        var spoken = Quoted.Replace(text ?? "", " ");
-        return spoken.Any(char.IsLetter) ? spoken : text ?? "";
-    }
-
     private static bool AfterModifierOfHao(string sentence)
     {
         var before = sentence[..^2].TrimEnd();
@@ -136,16 +131,16 @@ internal static partial class SpeakerToneConsistencyRule
     /// </summary>
     private static (Register Register, bool Weak) Level(string? text)
     {
-        // Quotations and stage directions are not the speaker's own words; a line that is nothing but those is judged
-        // as it is.
+        // Quotations and stage directions are not the speaker's own words (SpeechReading.OwnWords).
         var original = text ?? "";
-        var spoken = Quoted.Replace(StageDirection.Replace(original, " "), " ").Trim();
-        var stripped = false;
-        if (spoken.Any(char.IsLetter))
+        var spoken = SpeechReading.OwnWords(original);
+        if (spoken.Length == 0)
         {
-            stripped = !string.Equals(spoken, original.Trim(), StringComparison.Ordinal);
-            text = spoken;
+            return (Register.Unknown, false);
         }
+
+        var stripped = !string.Equals(spoken, original.Trim(), StringComparison.Ordinal);
+        text = spoken;
 
         var parts = (text ?? "").Split(new[] { '.', '!', '?', '…', ',' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         var cries = Cries(parts);
@@ -385,8 +380,7 @@ internal static partial class SpeakerToneConsistencyRule
         }
     }
 
-    private static string Clean(string? text)
-        => LqaScanner.StripUiTokens(text ?? "").Trim().TrimEnd(' ', '.', ',', '!', '?', '…', '"', '\'', '”', '’', ')', '~', '-');
+    private static string Clean(string? text) => SpeechReading.TrimEnd(LqaScanner.StripUiTokens(text ?? "").Trim());
 
     /// <summary>
     /// 하오체: "~시오" (not "~십시오"), "~소" after a stem that ends in a consonant 하오체 takes (있소, 없소, 했소, 겠소,
@@ -538,7 +532,7 @@ internal static partial class SpeakerToneConsistencyRule
     /// <summary>The line's own sentences (stage directions, quotations and repeated cries left out), each with its level.</summary>
     private static (string Spoken, List<(string Part, Register Register)> Pieces) OwnPieces(string? text)
     {
-        var spoken = Quoted.Replace(StageDirection.Replace(text ?? "", " "), " ");
+        var spoken = SpeechReading.OwnWords(text);
         var parts = spoken.Split(new[] { '.', '!', '?', '…', ',' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         var cries = Cries(parts);
         return (spoken, parts.Where(part => !cries.Contains(part)).Select(part => (Clean(part), SentenceLevel(part, keepShort: false))).ToList());
@@ -572,17 +566,7 @@ internal static partial class SpeakerToneConsistencyRule
         return cleaned[(space + 1)..];
     }
 
-    // The final consonant's index (0 none, 8 ㄹ, 18 ㅄ, 20 ㅆ, 27 ㅎ ...), or -1 for a character that is not a syllable.
-    private static int FinalConsonant(char c) => KoreanSyllables.IsHangulSyllable(c) ? (c - '가') % 28 : -1;
-
-    // "야를님, 이걸 어떻게 말씀드려야 할지...", "어떻게 될지", "왜 그런지": this 지 asks "whether" in a clause left open,
-    // and is not 반말's 지. A polite line that trails off so was counted as 반말 among Serana's lines to the Jarl.
-    private static readonly string[] OpenClauseEndings =
-    {
-        "할지", "될지", "을지", "는지", "은지", "인지", "던지", "런지", "올지", "갈지", "볼지", "낼지", "릴지",
-        // "황량한 땅의 구석구석까지, 그대가 ... 전해주기를.": the particle 까지, not 반말's 지.
-        "까지",
-    };
+    private static int FinalConsonant(char c) => KoreanSyllables.FinalConsonant(c);
 
     private static readonly string[] CasualClauseEndings = { "텐데", "테니", "테니까", "는데", "은데", "던데", "건데", "니까", "안 가", "못 가" };
 
@@ -607,8 +591,7 @@ internal static partial class SpeakerToneConsistencyRule
 
     private static bool EndsInOpenClause(string? text)
     {
-        var cleaned = LqaScanner.StripUiTokens(text ?? "").Trim().TrimEnd(' ', '.', ',', '!', '?', '…', '"', '\'', '”', '’', ')', '~', '-');
-        return OpenClauseEndings.Any(ending => cleaned.EndsWith(ending, StringComparison.Ordinal));
+        return SpeechReading.EndsInOpenClause(Clean(text));
     }
 
     // The shared classifier knows 반말 only by 해/야/지/냐, so "훌륭했어!", "다시 와.", "덤벼 봐." and "물론이죠." had no
@@ -620,26 +603,14 @@ internal static partial class SpeakerToneConsistencyRule
         "는군", "었군", "았군", "겠군", "했군", "하군", "이군", "로군", "더군", "없군", "있군", "다고", "라고", "냐고",
     };
 
-    // A quotation is someone else's words: "\"살려 주세요!\" 하고 울부짖더군." is said in 반말, and Serana's "아, 속편이네.
-    // '내 창을 좀 닦아 주시겠어요, 내 사랑?'" reads a book's line. Single quotes mark a quotation only around a
-    // sentence (with its own . ! ? or …) and where no letter is before the first, so neither the apostrophe in a name
-    // (J'zargo, 지'자르고) nor an echoed word in the speaker's own sentence ("문학의 '학자가 아니다'?") is taken for one.
-    private static readonly System.Text.RegularExpressions.Regex Quoted = new(
-        "\"[^\"]*\"|“[^”]*”|‘[^’]*’|「[^」]*」|『[^』]*』|(?<![\\p{L}\\p{N}])'[^'\\n]*[.!?…][^'\\n]*'",
-        System.Text.RegularExpressions.RegexOptions.CultureInvariant);
-
     // A bare cry ("와아...", "아!", "으아") is no reply: when a quotation or stage direction is taken away, it is still
     // not 반말 for ending in 아 or 어.
     private static readonly System.Text.RegularExpressions.Regex Interjection = new(
         "^[아어오와우으에하허흐후휴음흠헉윽악앗엇]+$", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 
-    // A stage direction between asterisks ("*웃음*", "*그 모드에 나오는 버섯*") is narration, not speech.
-    private static readonly System.Text.RegularExpressions.Regex StageDirection = new(
-        "\\*[^*\\n]+\\*", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
-
     private static Register SpokenLevel(string? text, bool keepShort)
     {
-        var cleaned = LqaScanner.StripUiTokens(text ?? "").Trim().TrimEnd(' ', '.', ',', '!', '?', '…', '"', '\'', '”', '’', ')', '~', '-');
+        var cleaned = Clean(text);
         // A closing vocative is no ending: "무슨 일로 오셨습니까, 친구여" is judged by "오셨습니까".
         var comma = cleaned.LastIndexOf(',');
         if (comma > 0 && !cleaned[(comma + 1)..].Trim().Contains(' '))
@@ -684,5 +655,5 @@ internal static partial class SpeakerToneConsistencyRule
         => word.Length >= 2
            && (CasualVerbEndings.Contains(word[^2..])
                || word is "버리자" or "내리자"
-               || word[^1] == '까' && FinalConsonant(word[^2]) == 8);
+               || SpeechReading.IsCasualKka(word));
 }

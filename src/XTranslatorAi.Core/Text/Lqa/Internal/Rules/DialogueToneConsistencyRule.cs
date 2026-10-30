@@ -206,7 +206,7 @@ internal static class DialogueToneConsistencyRule
     {
         // A stage direction is not speech: "[양초를 제작하는 방법을 설명한다]" and "…있네요. (서류철을 보여준다)" read as 반말.
         // Nor is a quotation, for every reading below: …이렇게 말했어. "조심하시오." took the quoted 존댓말 for its own.
-        var spoken = SpeakerToneConsistencyRule.SpokenPart(StageDirection.Replace(text ?? "", " ")).Trim();
+        var spoken = SpeechReading.OwnWords(text);
         if (!spoken.Any(char.IsLetter))
         {
             return ToneKind.Unknown;
@@ -224,6 +224,14 @@ internal static class DialogueToneConsistencyRule
         }
 
         var tone = LqaToneClassifier.Classify(spoken);
+        // A last sentence left open ("…알고 싶어. 무엇이 널 지금의 여자로 만들어 줬는지.") trails the one before it, as
+        // the speaker check reads it.
+        if (tone == ToneKind.Unknown && SpeechReading.EndsInOpenClause(SpeechReading.TrimEnd(spoken))
+            && SpeechReading.WithoutLastSentence(spoken) is { Length: > 0 } before)
+        {
+            return ClassifySpeech(before, mergePolite);
+        }
+
         if (tone == ToneKind.Hamnida && mergePolite)
         {
             return ToneKind.Haeyo;
@@ -256,7 +264,7 @@ internal static class DialogueToneConsistencyRule
     // Flint9's player choices counted four 반말 of six and the two 존댓말 among them went unmarked.
     private static bool SpokenCasual(string spoken)
     {
-        var cleaned = TrailingLaughter.Replace(LqaScanner.StripUiTokens(spoken).Trim().TrimEnd(' ', '.', '!', '?', '…', '~'), "").TrimEnd(' ', '.', ',', '!', '?', '…', '~', '"', '\'', '”', '’');
+        var cleaned = SpeechReading.TrimEnd(TrailingLaughter.Replace(SpeechReading.TrimEnd(LqaScanner.StripUiTokens(spoken).Trim()), ""));
         if (cleaned.Length < 2)
         {
             return false;
@@ -266,22 +274,19 @@ internal static class DialogueToneConsistencyRule
         if (last.EndsWith("거든", StringComparison.Ordinal)
             || last.Length >= 2 && last.EndsWith("네", StringComparison.Ordinal)
             || last is "같아" or "좋아" or "싫어" or "알아" or "몰라" || last.EndsWith("잖아", StringComparison.Ordinal)
-            || cleaned[^1] is '어' or '아' && KoreanSyllables.IsHangulSyllable(cleaned[^2]) && (cleaned[^2] - '가') % 28 is 18 or 20)
+            || cleaned[^1] is '어' or '아' && KoreanSyllables.FinalConsonant(cleaned[^2]) is 18 or 20)
         {
             return true;
         }
 
         // A 존댓말 speaker muses and fears in these too ("고민이에요, 어떻게 해야 할까.", "조심하세요, 다칠까 봐."): after a
         // 존댓말 sentence of the line's own, they are not counted.
-        return (last.EndsWith("봐", StringComparison.Ordinal) || last.Length >= 2 && last[^1] == '까' && KoreanSyllables.HasFinalRieul(last[^2]))
+        return (last.EndsWith("봐", StringComparison.Ordinal) || SpeechReading.IsCasualKka(last))
                && !SpeakerToneConsistencyRule.HasOwnPolite(spoken);
     }
 
     private static readonly System.Text.RegularExpressions.Regex TrailingLaughter = new(
         @"[\s.,!?…~]*(?:하하|호호|후후|흐흐|헤헤|히히|크크|껄껄|ㅎㅎ|ㅋㅋ)[하호후흐헤히크껄ㅎㅋ]*$",
-        System.Text.RegularExpressions.RegexOptions.CultureInvariant);
-
-    private static readonly System.Text.RegularExpressions.Regex StageDirection = new(@"\[[^\]]*\]|\([^)]*\)",
         System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 
     private static string ComputeDialogueGroupKeyForIssue(LqaScanEntry entry)

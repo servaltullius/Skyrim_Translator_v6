@@ -14,6 +14,9 @@ internal static class KoreanSyllables
     /// <summary>True when the final consonant is ㄹ, which takes "로" rather than "으로".</summary>
     public static bool HasFinalRieul(char c) => IsHangulSyllable(c) && (c - First) % 28 == 8;
 
+    /// <summary>The final consonant's index (0 none, 8 ㄹ, 17 ㅂ, 18 ㅄ, 20 ㅆ, 27 ㅎ ...), or -1 for a character that is not a syllable.</summary>
+    public static int FinalConsonant(char c) => IsHangulSyllable(c) ? (c - First) % 28 : -1;
+
     /// <summary>True when the final consonant is ㅂ, as in the polite endings 합니다, 됩니다, 갑시다.</summary>
     public static bool HasFinalBieup(char c) => IsHangulSyllable(c) && (c - First) % 28 == 17;
 
