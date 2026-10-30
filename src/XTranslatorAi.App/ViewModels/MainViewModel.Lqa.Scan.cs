@@ -16,7 +16,7 @@ public partial class MainViewModel
         // The rows as the grid holds them; the rest of the input is the agent's check's too (ProjectLqaScan).
         var db = _projectState.Db;
         var rows = Entries.Select(ToLqaRow).ToList();
-        var checkGlossary = LanguageHelper.IsKoreanLanguage(TargetLang) ? BuildLqaGlossary() : Array.Empty<GlossaryEntry>();
+        var checkGlossary = BuildLqaGlossary();
 
         // The rules read only this snapshot, so they run on a worker thread. On the UI thread the
         // project-wide rules (name consistency, tone majorities) ran before the first progress report
@@ -40,21 +40,10 @@ public partial class MainViewModel
     /// <summary>The series TM the translation's official-name index is built from; null when it cannot be read.</summary>
     private async Task<IReadOnlyList<(string Source, string Target)>?> TryLoadLqaReferenceMemoryAsync()
     {
-        if (!LanguageHelper.IsKoreanLanguage(TargetLang))
-        {
-            return null;
-        }
-
         try
         {
-            var globalDb = await _globalProjectDbService.GetOrCreateAsync(CancellationToken.None);
-            if (globalDb == null)
-            {
-                return null;
-            }
-
-            var entries = await globalDb.GetTranslationMemoryEntriesAsync(SourceLang.Trim(), TargetLang.Trim(), CancellationToken.None);
-            return entries.Select(e => (e.SourceText, e.DestText)).ToList();
+            return await ProjectLqaScan.LoadReferenceMemoryAsync(await _globalProjectDbService.GetOrCreateAsync(CancellationToken.None),
+                SourceLang, TargetLang, CancellationToken.None);
         }
         catch (Exception ex)
         {
@@ -130,7 +119,7 @@ public partial class MainViewModel
 
         var db = _projectState.Db;
         var scanEntries = entries.Select(entry => ProjectLqaScan.ToEntry(ToLqaRow(entry))).ToList();
-        var glossary = LanguageHelper.IsKoreanLanguage(TargetLang) ? BuildLqaGlossary() : Array.Empty<GlossaryEntry>();
+        var glossary = BuildLqaGlossary();
         var targetLang = TargetLang;
         var sourceFixIds = entries.Where(entry => entry.IsSourceFix).Select(entry => entry.Id).ToHashSet();
         // With the full scan's TM names: without them a glossary term written as part of a TM name was flagged missing.
@@ -172,6 +161,7 @@ public partial class MainViewModel
             : string.Equals(severity, "Warn", StringComparison.OrdinalIgnoreCase) ? 1
             : 2;
 
+    // The agent's check reads the same (ProjectLqaScan.CheckGlossary for the project's target).
     private IReadOnlyList<GlossaryEntry> BuildLqaGlossary()
     {
         var project = Glossary
@@ -181,7 +171,7 @@ public partial class MainViewModel
             ? null
             : GlobalGlossary.Select(ToCoreGlossaryEntry).ToList();
 
-        return ProjectLqaScan.CheckGlossary(project, global);
+        return ProjectLqaScan.CheckGlossary(TargetLang, project, global);
     }
 
     private static GlossaryEntry ToCoreGlossaryEntry(GlossaryEntryViewModel vm)

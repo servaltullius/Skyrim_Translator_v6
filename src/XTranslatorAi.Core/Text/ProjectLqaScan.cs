@@ -55,6 +55,22 @@ public static class ProjectLqaScan
             .ThenByDescending(e => e.SourceTerm.Length)
             .ToList();
 
+    /// <summary>The check's glossary for the project's target: the term checks are Korean ones, and read none for another.</summary>
+    public static IReadOnlyList<GlossaryEntry> CheckGlossary(string targetLang, IReadOnlyList<GlossaryEntry> project, IReadOnlyList<GlossaryEntry>? global)
+        => LanguageHelper.IsKoreanLanguage(targetLang) ? CheckGlossary(project, global) : Array.Empty<GlossaryEntry>();
+
+    /// <summary>
+    /// The series TM the TM name index is built from, in the project's languages (the agent's check read english → korean
+    /// whatever the project's were); null for a target that is not Korean or without a global DB. A read that fails throws:
+    /// each caller goes on without it and says so its own way.
+    /// </summary>
+    public static async Task<IReadOnlyList<(string Source, string Target)>?> LoadReferenceMemoryAsync(
+        ProjectDb? global, string sourceLang, string targetLang, CancellationToken ct)
+    {
+        if (global == null || !LanguageHelper.IsKoreanLanguage(targetLang)) return null;
+        return (await global.GetTranslationMemoryEntriesAsync(sourceLang.Trim(), targetLang.Trim(), ct)).Select(e => (e.SourceText, e.DestText)).ToList();
+    }
+
     /// <summary>A row of the check for a single re-checked row, without the project's speakers.</summary>
     public static LqaScanEntry ToEntry(ProjectLqaRow row, string? speaker = null)
         => new(row.Id, row.OrderIndex, row.Edid, row.Rec, CheckStatus(row.Status, row.SourceText, row.DestText), row.SourceText,

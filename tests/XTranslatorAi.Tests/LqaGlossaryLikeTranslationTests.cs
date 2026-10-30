@@ -64,6 +64,15 @@ public sealed class LqaGlossaryLikeTranslationTests
             i => i.Code == "glossary_missing");
     }
 
+    /// <summary>The term checks are Korean ones: the GUI's check read no glossary for another target, the agent's did.</summary>
+    [Fact]
+    public void TheCheckGlossary_IsNoneForATargetThatIsNotKorean()
+    {
+        var glossary = new[] { Term(1, "Whiterun", "화이트런") };
+        Assert.Single(ProjectLqaScan.CheckGlossary("korean", glossary, null));
+        Assert.Empty(ProjectLqaScan.CheckGlossary("japanese", glossary, null));
+    }
+
     /// <summary>A singular with a prompt-only term of its own is not the plural's, as in the translation.</summary>
     [Fact]
     public void ASingularWithAPromptOnlyTerm_IsNotThePlurals()

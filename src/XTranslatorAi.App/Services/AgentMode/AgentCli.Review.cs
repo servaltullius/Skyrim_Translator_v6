@@ -43,13 +43,14 @@ public static partial class AgentCli
             Console.WriteLine("경고: 전체 DB의 전체 용어집을 읽지 못해 그 용어 없이 검사했습니다.");
         }
 
-        var glossary = ProjectLqaScan.CheckGlossary(await db.GetGlossaryAsync(ct), globalGlossary);
+        // In the project's languages, as the GUI's check reads them (it read english → korean whatever they were).
+        var (sourceLang, targetLang) = await AgentSession.LanguagesAsync(db, ct);
+        var glossary = ProjectLqaScan.CheckGlossary(targetLang, await db.GetGlossaryAsync(ct), globalGlossary);
         // An unreadable series TM ended the check; the GUI's goes on without the TM name index, and so does this one.
-        List<(string, string)>? memory = null;
+        IReadOnlyList<(string, string)>? memory = null;
         try
         {
-            if (global != null)
-                memory = (await global.GetTranslationMemoryEntriesAsync("english", "korean", ct)).Select(e => (e.SourceText, e.DestText)).ToList();
+            memory = await ProjectLqaScan.LoadReferenceMemoryAsync(global, sourceLang, targetLang, ct);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
@@ -57,7 +58,7 @@ public static partial class AgentCli
             Console.WriteLine("경고: 전체 DB의 시리즈 TM을 읽지 못해 TM 이름 색인 없이 검사했습니다(한글패치 이름 표기 결과가 빠질 수 있음).");
         }
 
-        var result = await ProjectLqaScan.ScanAsync(db, rows, "korean", glossary, memory, onProgress: null, ct);
+        var result = await ProjectLqaScan.ScanAsync(db, rows, targetLang, glossary, memory, onProgress: null, ct);
         return (result.Issues, rows.ToDictionary(row => row.Id, row => row.DestText));
     }
 
@@ -232,6 +233,9 @@ public static partial class AgentCli
 
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, c.Ct);
         var document = await PluginReader.ReadAsync(project.PluginPath, project.ReadOptions, c.Ct);
+        // The rows written without a translation of their own, counted as the GUI's 저장 확인 counts them: this export
+        // said nothing of them, and a run stopped halfway went out half English with only the path printed.
+        var unfinished = await ExportUnfinishedRows.CountAsync(db, (await c.RowsAsync(db)).Select(r => (r.Id, r.Status, r.SourceText, r.DestText)), c.Ct);
         PluginExportResult result;
         try
         {
@@ -241,21 +245,45 @@ public static partial class AgentCli
         {
             throw new AgentModeException($"저장하지 못했습니다({output}): {ex.Message}");
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex) when (ex is InvalidOperationException or InvalidDataException)
         {
-            // A translation the writer refuses (a tag or token lost, often in a line the Korean release filled) was named
-            // by its field key ("plugin:INFO/00001003/0/NAM1/0"), which the agent cannot edit: the rows' ids are given.
-            var ids = (await db.GetPluginFieldKeysByStringIdAsync(c.Ct)).ToDictionary(pair => pair.Value, pair => pair.Key, StringComparer.Ordinal);
-            var rows = System.Text.RegularExpressions.Regex.Matches(ex.Message, @"plugin:(\S+?)(?=[\s:,;)]|$)")
-                .Select(m => ids.TryGetValue(m.Groups[1].Value, out var id) ? id : (long?)null).OfType<long>().Distinct().ToList();
+            // A translation the writer refuses (a tag or token lost, often in a line the Korean release filled; an empty
+            // name; a character the output encoding lacks; lines sharing a string) is named by its field or its 순번,
+            // which the agent cannot edit by: the rows' ids are given (PluginExportErrors, as the GUI's save names its rows).
+            IReadOnlyList<long> rows;
+            try
+            {
+                rows = await PluginExportErrors.RowIdsAsync(db, document, ex.Message, c.Ct);
+            }
+            catch (Exception lookup) when (lookup is not OperationCanceledException)
+            {
+                AppLog.Write($"WARN 저장을 막은 줄을 찾지 못했습니다: {lookup.Message}");
+                rows = Array.Empty<long>();
+            }
+
+            var reason = PluginExportErrors.Reason(ex.Message);
+            var tags = ex is InvalidOperationException;
             throw new AgentModeException(rows.Count > 0
-                ? $"저장하지 않았습니다. 줄 {string.Join(", ", rows.Select(id => "#" + id))}의 번역이 원문의 태그·토큰과 맞지 않습니다: {ex.Message} "
-                  + $"→ tullius.cmd show {project.Key} --id {string.Join(",", rows)}로 보고 edit로 고친 뒤(check로 확인) 다시 export하세요."
-                : $"저장하지 않았습니다: {ex.Message}");
+                ? $"저장하지 않았습니다. 줄 {string.Join(", ", rows.Take(40).Select(id => "#" + id))}{(rows.Count > 40 ? " …" : "")}"
+                  + (tags ? "의 번역이 원문의 태그·토큰과 맞지 않습니다" : "") + (tags && rows.Count > 1 ? $"(첫 줄의 사유: {reason})" : $": {reason}")
+                  + $" → tullius.cmd show {project.Key} --id {string.Join(",", rows.Take(40))}로 보고 edit로 고친 뒤(check로 확인) 다시 export하세요."
+                : $"저장하지 않았습니다: {reason}");
         }
 
         Console.WriteLine($"저장: {result.PluginPath} (바뀐 필드 {result.ChangedFields})");
         foreach (var file in result.Files.Where(f => f != result.PluginPath)) Console.WriteLine($"  {file}");
+        if (unfinished.Unfinished > 0)
+        {
+            Console.WriteLine($"알림: 번역이 끝나지 않은 줄 {unfinished.Unfinished}(오류 {unfinished.Errors}, 대기 {unfinished.Pending})은 영어 그대로 저장했습니다. "
+                              + $"tullius.cmd next {project.Key}로 마저 번역한 뒤 다시 export하세요.");
+        }
+
+        if (unfinished.Held > 0)
+        {
+            Console.WriteLine($"알림: 보류한 줄 {unfinished.Held}은 영어 그대로 저장했습니다. 목록: tullius.cmd hold {project.Key}. 끝 보고에 알리세요.");
+        }
+
+        if (unfinished.Emptied > 0) Console.WriteLine($"알림: 번역문을 비워 둔 직접 수정 줄 {unfinished.Emptied}은 빈 글로 저장했습니다.");
         var earlier = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(c.Work)) ?? Environment.CurrentDirectory, "output", project.Key);
         if (c.Rest.Count <= 1 && !string.Equals(output, earlier, StringComparison.OrdinalIgnoreCase))
         {

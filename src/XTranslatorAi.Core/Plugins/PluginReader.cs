@@ -165,14 +165,14 @@ public static class PluginReader
                 }
 
                 var notes = mixed.Info.Diagnostics.Append(new PluginDiagnostic("source_encoding_mixed",
-                    $"원문에 UTF-8과 windows-1252 문자열이 섞여 있어 문자열마다 판별해 읽었습니다(windows-1252로 읽은 줄 {asWindows1252}개). "
+                    $"원문 인코딩: UTF-8과 windows-1252 문자열이 섞여 있어 문자열마다 판별해 읽었습니다(windows-1252로 읽은 줄 {asWindows1252}개). "
                     + "저장하면 모든 문자열이 출력 인코딩으로 통일됩니다.")).ToArray();
                 return new PluginDocument(mixed.Info with { Diagnostics = Array.AsReadOnly(notes) }, mixed.Fields,
                     mixed.Bytes, mixed.Nodes, mixed.Records, mixed.Tables, mixed.DependencyHashes);
             }
 
             var diagnostics = fallback.Info.Diagnostics.Append(new PluginDiagnostic("source_encoding_fallback",
-                "원문이 UTF-8이 아니어서 windows-1252로 읽었습니다.")).ToArray();
+                "원문 인코딩: UTF-8이 아니어서 windows-1252로 읽었습니다. 저장하면 출력 인코딩으로 바뀝니다.")).ToArray();
             return new PluginDocument(fallback.Info with { Diagnostics = Array.AsReadOnly(diagnostics) }, fallback.Fields,
                 fallback.Bytes, fallback.Nodes, fallback.Records, fallback.Tables, fallback.DependencyHashes);
         }

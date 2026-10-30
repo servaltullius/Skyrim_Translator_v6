@@ -120,16 +120,9 @@ public partial class MainViewModel
             await ReloadGlobalGlossaryAsync();
             await ReloadFranchiseTranslationMemoryAsync();
             await RefreshPreviousTranslationsAsync(CancellationToken.None);
-            var diagnostics = string.Join(" / ", loaded.Document.Info.Diagnostics.Select(item => item.Message));
+            // The agent's open says the same (PluginOpenNotes).
             StatusMessage = $"플러그인 읽기 완료: {Path.GetFileName(path)} · {TotalCount}개 문자열"
-                + (loaded.MovedFromPath == null ? "" : $" · 옮기기 전 위치({loaded.MovedFromPath})의 프로젝트를 이어서 엽니다")
-                + (loaded.ContinuedFromTargetEncoding == null ? "" : $" · 출력 인코딩 {loaded.ContinuedFromTargetEncoding}로 작업하던 프로젝트를 이어서 엽니다")
-                + (loaded.ContinuedAfterReadSettingsChange ? " · Strings 폴더나 메타데이터 인코딩을 바꾸기 전의 프로젝트를 이어서 엽니다" : "")
-                + (loaded.InheritedGlossary.Count == 0 ? ""
-                    : $" · 같은 모드의 다른 프로젝트({string.Join(", ", loaded.InheritedGlossary.FromPlugins.Take(3))})에서 용어 {loaded.InheritedGlossary.Count}개를 가져왔습니다")
-                + (loaded.RetiredTranslations == 0 ? ""
-                    : $" · 원문이 바뀌었거나 없어진 행의 번역 {loaded.RetiredTranslations}개를 보관해 두었습니다(같은 원문이 다시 나오면 되살립니다)")
-                + (diagnostics.Length == 0 ? "" : " · " + diagnostics)
+                + string.Concat(PluginOpenNotes.Describe(loaded).Select(note => " · " + note.Text))
                 + DescribeUnavailableGlobalDb();
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
@@ -150,6 +143,38 @@ public partial class MainViewModel
             if (!_isClosing) _projectOperations.Resume();
             NotifyWorkspaceAvailability();
         }
+    }
+
+    /// <summary>
+    /// A translation the writer refuses is named by its rows (PluginExportErrors, as the agent's export names them): a
+    /// lost tag was told as a model's answer breaking a token rule ("자동 복구를 켜고 다시 시도하세요"), naming no row,
+    /// and an empty or unencodable translation by its record alone. The shared-string refusal names its rows itself.
+    /// </summary>
+    private async Task<bool> TryDescribeRefusedRowsAsync(ProjectDb db, PluginDocument document, Exception ex)
+    {
+        var classified = ex is InvalidDataException ? PluginUserFacingErrorClassifier.Classify(ex) : null;
+        if (ex is not InvalidOperationException && (classified is not { } found || found.Message.Contains("관련 행", StringComparison.Ordinal))) return false;
+        IReadOnlyList<long> ids;
+        try
+        {
+            ids = await PluginExportErrors.RowIdsAsync(db, document, ex.Message, CancellationToken.None);
+        }
+        catch (Exception lookup) when (lookup is not OperationCanceledException)
+        {
+            AppLog.Write($"WARN 저장을 막은 행을 찾지 못했습니다: {lookup.Message}");
+            return false;
+        }
+
+        var rows = ids.Select(id => _projectState.TryGetById(id, out var entry) ? entry.OrderIndex : (int?)null).OfType<int>().ToList();
+        if (rows.Count == 0) return false;
+        var named = string.Join(", ", rows.Take(12).Select(row => "#" + row)) + (rows.Count > 12 ? " …" : "");
+        var code = classified?.Code ?? "E330";
+        AppLog.WriteError(code, "플러그인 저장", ex);
+        StatusMessage = classified is { } error
+            ? $"플러그인 저장({code}): {error.Message} 관련 행: {named} (Search에 row:{rows[0]})"
+            : $"플러그인 저장({code}): {named} 행의 번역이 원문의 태그·토큰과 맞지 않아 저장하지 않았습니다. "
+              + $"Search에 row:{rows[0]}를 입력하고 Status를 (All)로 설정해 행을 찾아 고친 뒤 다시 저장하세요.";
+        return true;
     }
 
     internal static string FindFreeOutputDirectory(string path)
@@ -182,7 +207,7 @@ public partial class MainViewModel
         if (db == null || document == null) return;
         // The plugin writer reads the DB; an edit still only in the editor would be missing from the ESP.
         if (!await TryCommitPendingDestEditsAsync()) return;
-        if (!ConfirmExportWithUnfinishedRows(xml: false)) return;
+        if (!await ConfirmExportWithUnfinishedRowsAsync(db, xml: false)) return;
         var outputDirectory = _uiInteractionService.ShowSaveFileDialog(new SaveFileDialogRequest(
             "새 출력 폴더 이름|*.*", "새 출력 폴더 이름을 지정하세요 (폴더 안에 원본 파일명으로 저장)",
             Path.GetFileNameWithoutExtension(document.Info.InputPath) + ".translated"));
@@ -206,7 +231,7 @@ public partial class MainViewModel
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                SetPluginUserFacingError("플러그인 저장", ex);
+                if (!await TryDescribeRefusedRowsAsync(db, document, ex)) SetPluginUserFacingError("플러그인 저장", ex);
             }
             finally
             {

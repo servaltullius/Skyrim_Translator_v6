@@ -145,6 +145,9 @@ public sealed partial class AgentSession
     /// <summary>What the last <see cref="EnsureSeriesTmAsync"/> imported, for open to say; null when nothing.</summary>
     public string? SeriesTmNote { get; private set; }
 
+    /// <summary>What the last <see cref="OpenAsync"/> found, as the GUI's status line says it (PluginOpenNotes).</summary>
+    public IReadOnlyList<PluginOpenNotes.Note> OpenNotes { get; private set; } = Array.Empty<PluginOpenNotes.Note>();
+
     /// <summary>
     /// The bundled series TM, written and imported as the GUI does when it opens a project. Agent mode wrote it and never
     /// imported it, so the kit alone translated with an empty series TM. The global DB is opened first: creating it
@@ -176,12 +179,15 @@ public sealed partial class AgentSession
         string targetLanguage, string targetEncoding, int batchSize, CancellationToken cancellationToken)
     {
         await EnsureSeriesTmAsync(cancellationToken);
+        OpenNotes = Array.Empty<PluginOpenNotes.Note>();
         var workspace = new ProjectWorkspaceService(_globalDb, _projectsRootOverride, _gameStrings);
         var loaded = await workspace.LoadFromPluginAsync(new ProjectWorkspaceService.LoadFromPluginRequest(
             Path.GetFullPath(pluginPath), readOptions, targetLanguage, targetEncoding, AgentTranslationRun.DefaultModelProfile,
             _settings.CustomPromptText ?? "", _settings.UseCustomPrompt), cancellationToken);
         await using var db = loaded.Db;
-        var pending = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending, StringEntryStatus.Error }, cancellationToken);
+        OpenNotes = PluginOpenNotes.Describe(loaded);
+        // The import puts every row not finished back to 대기; counted as status counts 남은 줄 all the same.
+        var pending = await db.GetStringIdsByStatusAsync(StringEntryStatuses.Unfinished, cancellationToken);
         var glossary = new AgentGlossary((await db.GetGlossaryAsync(cancellationToken)).Count(g => g.Enabled),
             loaded.InheritedGlossary.Count, loaded.InheritedGlossary.FromPlugins ?? Array.Empty<string>());
         var key = ProjectKey(loaded.Document.Info.InputPath, db.DbPath);
@@ -402,7 +408,7 @@ public sealed partial class AgentSession
     {
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, cancellationToken);
         var all = await db.GetStringIdsByStatusAsync(Enum.GetValues<StringEntryStatus>(), cancellationToken);
-        var pending = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Pending, StringEntryStatus.Error, StringEntryStatus.InProgress }, cancellationToken);
+        var pending = await db.GetStringIdsByStatusAsync(StringEntryStatuses.Unfinished, cancellationToken);
         var errors = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Error }, cancellationToken);
         var edited = await db.GetStringIdsByStatusAsync(new[] { StringEntryStatus.Edited }, cancellationToken);
         if (await LaneIdsAsync(db, project, cancellationToken) is { } lane)
@@ -623,6 +629,17 @@ public sealed partial class AgentSession
 
     private static string Plain(string requestText)
         => System.Text.RegularExpressions.Regex.Replace(requestText.Replace(" __XT_PH_9999__", ""), "⟦XT_[^⟧]*⟧", "");
+
+    /// <summary>
+    /// The project's languages, as the GUI reads them for its check (english → korean for a project without its row):
+    /// check, lookup and names read the series TM english → korean whatever the project's were.
+    /// </summary>
+    public static async Task<(string Source, string Target)> LanguagesAsync(ProjectDb db, CancellationToken cancellationToken)
+    {
+        var info = await db.TryGetProjectAsync(cancellationToken);
+        return (info?.SourceLang is { } source && !string.IsNullOrWhiteSpace(source) ? source.Trim() : "english",
+            info?.DestLang is { } target && !string.IsNullOrWhiteSpace(target) ? target.Trim() : "korean");
+    }
 
     private async Task<(string TargetLang, PlaceholderSemanticRepairMode Mode)> CheckSettingsAsync(AgentProject project,
         CancellationToken cancellationToken)

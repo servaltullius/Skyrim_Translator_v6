@@ -610,12 +610,16 @@ public sealed class AgentModeTests : IAsyncLifetime
     [Fact]
     public async Task McpExport_WithATagLost_FailsNamingTheRow()
     {
-        long id;
+        long id, other;
         await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
         {
-            var row = (await db.GetStringsAsync(50, 0, CancellationToken.None)).Single(r => r.SourceText.Contains("<Alias=Player>", StringComparison.Ordinal));
+            var rows = await db.GetStringsAsync(50, 0, CancellationToken.None);
+            var row = rows.Single(r => r.SourceText.Contains("<Alias=Player>", StringComparison.Ordinal));
             id = row.Id;
             await db.UpdateStringTranslationAsync(id, "말조심해라.", StringEntryStatus.Edited, null, CancellationToken.None);
+            // A second line refused: the writer stops at the first, and the agent fixed one per export.
+            other = rows.Single(r => r.SourceText.StartsWith("Your loyalty", StringComparison.Ordinal)).Id;
+            await db.UpdateStringTranslationAsync(other, "<Alias=Player>, 네 충성은 기록되었다.", StringEntryStatus.Edited, null, CancellationToken.None);
         }
 
         var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects"), "--global", Path.Combine(_root, "global") });
@@ -632,6 +636,122 @@ public sealed class AgentModeTests : IAsyncLifetime
         var text = reply.GetProperty("result").GetProperty("content")[0].GetProperty("text").GetString()!;
         Assert.StartsWith("실패: ", text);
         Assert.Contains("#" + id, text);
+        Assert.Contains("#" + other, text);
+        Assert.Contains("첫 줄의 사유", text);
+    }
+
+    private async Task<string> McpTextAsync(string tool, object arguments)
+    {
+        var server = AgentCommand.Parse(new List<string> { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects"), "--global", Path.Combine(_root, "global") });
+        var call = JsonSerializer.Serialize(new { jsonrpc = "2.0", id = 1, method = "tools/call", @params = new { name = tool, arguments } });
+        var output = new StringWriter();
+        Assert.Equal(0, await AgentMcpServer.ServeAsync(server, new StringReader(call), output));
+        return JsonDocument.Parse(output.ToString()).RootElement.GetProperty("result").GetProperty("content")[0].GetProperty("text").GetString()!;
+    }
+
+    // The export said only where it saved: a run stopped halfway, and the lines held, went out in English without a word.
+    [Fact]
+    public async Task Export_SaysTheLinesItWroteInEnglish_AsTheGuiAsks()
+    {
+        long held;
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            var rows = await db.GetStringsAsync(50, 0, CancellationToken.None);
+            await db.UpdateStringTranslationAsync(rows.Single(r => r.SourceText.StartsWith("Your loyalty", StringComparison.Ordinal)).Id,
+                "도미니언에 대한 네 충성은 기록되었다.", StringEntryStatus.Done, null, CancellationToken.None);
+            await db.UpdateStringTranslationAsync(rows.Single(r => r.SourceText.StartsWith("Then we", StringComparison.Ordinal)).Id,
+                "", StringEntryStatus.Error, "boom", CancellationToken.None);
+            held = rows.Single(r => r.SourceText == "Aetherial Echo").Id;
+        }
+
+        await _session.HoldAsync(_project, new[] { held }, "시험", CancellationToken.None);
+
+        var text = await McpTextAsync("export", new { project = "Thalmor" });
+
+        Assert.Contains("저장: ", text);
+        Assert.Contains("알림: 번역이 끝나지 않은 줄 2(오류 1, 대기 1)은 영어 그대로 저장했습니다", text);
+        Assert.Contains("알림: 보류한 줄 1은 영어 그대로 저장했습니다", text);
+    }
+
+    // The writer names a field by its key, by its record or by its 순번, by which the agent finds no row (nor the GUI's
+    // user). A key at a sentence's end took its period ("…/NAM1/0."); a record named every row of it; "관련 행: #1" is
+    // the 순번, not the id the agent edits by.
+    [Fact]
+    public async Task ExportErrors_NameTheRows_ByFieldKeyRecordOrOrder()
+    {
+        await using var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None);
+        var document = await PluginReader.ReadAsync(_project.PluginPath, _project.ReadOptions, CancellationToken.None);
+        var keys = await db.GetPluginFieldKeysByStringIdAsync(CancellationToken.None);
+        var line = keys.Single(pair => pair.Value.StartsWith("INFO/00001003/", StringComparison.Ordinal));
+        var name = keys.Single(pair => pair.Value.StartsWith("MISC/", StringComparison.Ordinal));
+        Task<IReadOnlyList<long>> Rows(string message) => PluginExportErrors.RowIdsAsync(db, document, message, CancellationToken.None);
+
+        Assert.Equal(new[] { line.Key }, await Rows($"Token count mismatch (plugin:{line.Value}): 1 != 0"));
+        Assert.Equal(new[] { line.Key }, await Rows($"Protected formatting order mismatch for plugin:{line.Value}."));
+
+        // Of the record's rows, the one whose written translation is the refusal's.
+        const string empty = "비어 있는 번역을 저장할 수 없습니다: MISC:FULL/00002001";
+        const string unencodable = "출력 인코딩으로 표현할 수 없는 문자가 있습니다: MISC:FULL/00002001 U+AC00";
+        Assert.Empty(await Rows(empty));
+        Assert.Empty(await Rows(unencodable));
+        await db.UpdateStringTranslationAsync(name.Key, "", StringEntryStatus.Edited, null, CancellationToken.None);
+        Assert.Equal(new[] { name.Key }, await Rows(empty));
+        await db.UpdateStringTranslationAsync(name.Key, "가상의 메아리", StringEntryStatus.Edited, null, CancellationToken.None);
+        Assert.Equal(new[] { name.Key }, await Rows(unencodable));
+        Assert.Empty(await Rows(empty));
+
+        var byOrder = (await db.GetStringsAsync(50, 0, CancellationToken.None)).ToDictionary(r => r.OrderIndex, r => r.Id);
+        const string shared = "여러 필드가 같은 Strings StringID 5를 공유하지만 번역이 다릅니다. Search에 string:STRINGS/5 입력 후 Status를 All로 설정하고 "
+                              + "공유 행의 번역을 일치시켜 주세요. 관련 행: #1, #2";
+        Assert.Equal(new[] { byOrder[1], byOrder[2] }, await Rows(shared));
+        Assert.DoesNotContain("관련 행", PluginExportErrors.Reason(shared));
+        Assert.Contains("Strings StringID 5", PluginExportErrors.Reason(shared));
+
+        Assert.Empty(await Rows("비번역 데이터가 변경되었습니다: INFO:CTDA/00001001"));
+        Assert.Empty(await Rows("불러온 뒤 원본이 변경되었습니다. 다시 열어주세요: Thalmor.esp"));
+    }
+
+    // A diagnostic given for each of many fields filled the open's output; one that stops the export is a warning.
+    [Fact]
+    public void OpenNotes_AreCutShortByKind_AndAnExportStopIsAWarning()
+    {
+        var notes = new List<PluginOpenNotes.Note> { new("번역 2개를 보관해 두었습니다"), new("지원 정의에 없는 레코드 ZZZZ가 있습니다.", true, "unknown_record") };
+        notes.AddRange(Enumerable.Range(1, 5).Select(n => new PluginOpenNotes.Note($"QUST:NNAM/0000100{n}는 도구별 필드 정의가 달라 직접 번역하지 않습니다.", false, "ambiguous_field")));
+
+        var lines = AgentCli.OpenNoteLines(notes).ToList();
+
+        Assert.Equal("알림: 번역 2개를 보관해 두었습니다", lines[0]);
+        Assert.StartsWith("경고: 이 플러그인은 번역해도 export할 수 없습니다: 지원 정의에 없는 레코드 ZZZZ", lines[1]);
+        Assert.Equal(3, lines.Count(l => l.Contains("QUST:NNAM", StringComparison.Ordinal)));
+        Assert.Equal("알림: 같은 종류의 알림 2개를 더 생략했습니다(ambiguous_field).", lines[^1]);
+    }
+
+    // The agent's open said only the glossary it inherited and the encoding; the GUI's status line says what the open
+    // found. A line a stopped run left 번역 중 is 대기 again after the open, and counted.
+    [Fact]
+    public async Task Reopen_SaysWhatTheGuiSays_AndCountsALineAStoppedRunLeft()
+    {
+        await using (var db = await ProjectDb.OpenOrCreateAsync(_project.DbPath, CancellationToken.None))
+        {
+            var rows = await db.GetStringsAsync(50, 0, CancellationToken.None);
+            await db.UpdateStringTranslationAsync(rows.Single(r => r.SourceText.StartsWith("Then we", StringComparison.Ordinal)).Id,
+                "그럼 이야기가 된 거군.", StringEntryStatus.Done, null, CancellationToken.None);
+            await db.UpdateStringTranslationAsync(rows.Single(r => r.SourceText == "Aetherial Echo").Id, "", StringEntryStatus.InProgress, null, CancellationToken.None);
+        }
+
+        // The mod updated: the line translated reads otherwise now.
+        await File.WriteAllBytesAsync(_project.PluginPath, Header().Concat(DialogueGroup(TopicChildren(0x1000,
+                Record("INFO", 0x1001, Sub("NAM1", Z("Your loyalty to the Dominion has been noted."))),
+                Record("INFO", 0x1002, Sub("NAM1", Z("Then we have a deal."))),
+                Record("INFO", 0x1003, Sub("NAM1", Z("Speak with care, <Alias=Player>."))))))
+            .Concat(Group(Record("MISC", 0x2001, Sub("EDID", Z("aaEcho")), Sub("FULL", Z("Aetherial Echo")))))
+            .ToArray());
+
+        var (project, _, pending, _) = await _session.OpenAsync(_project.PluginPath, new PluginReadOptions(), "korean", "utf-8", batchSize: 2, CancellationToken.None);
+
+        Assert.Contains(_session.OpenNotes, note => note.Text.Contains("번역 1개를 보관해 두었습니다", StringComparison.Ordinal));
+        Assert.Equal(4, pending);
+        Assert.Equal(4, (await _session.StatusAsync(project, CancellationToken.None)).Pending);
     }
 
     // Codex ran in a kit folder that was not named agent-kit, its shell failed, and the guide tool answered

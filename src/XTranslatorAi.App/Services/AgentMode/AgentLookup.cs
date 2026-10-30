@@ -41,9 +41,10 @@ public static class AgentLookup
                 .Select(e => new AgentLookupHit(where, e.SourceTerm, e.TargetTerm)));
         }
 
+        var (sourceLang, targetLang) = await AgentSession.LanguagesAsync(project, cancellationToken);
         var memory = global == null
             ? new List<AgentLookupHit>()
-            : (await global.GetTranslationMemoryEntriesAsync("english", "korean", cancellationToken))
+            : (await global.GetTranslationMemoryEntriesAsync(sourceLang, targetLang, cancellationToken))
                 .Where(e => !string.IsNullOrWhiteSpace(e.DestText) && pattern.IsMatch(e.SourceText))
                 .Select(e => new AgentLookupHit("TM", e.SourceText, e.DestText))
                 .ToList();

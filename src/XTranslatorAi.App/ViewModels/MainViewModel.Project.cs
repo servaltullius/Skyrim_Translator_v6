@@ -205,7 +205,7 @@ public partial class MainViewModel
             return;
         }
 
-        if (!ConfirmExportWithUnfinishedRows(xml: true))
+        if (!await ConfirmExportWithUnfinishedRowsAsync(db, xml: true))
         {
             return;
         }
@@ -237,29 +237,36 @@ public partial class MainViewModel
     /// <summary>
     /// Saving with rows still in error or pending used to finish silently, so a half-translated file went out
     /// looking complete. A plugin keeps the source text of an unfinished row; an XML keeps its translation field as it
-    /// is, empty or as the opened XML had it (the question used to say "source" for both).
+    /// is, empty or as the opened XML had it (the question used to say "source" for both). A hand edit left empty is
+    /// saved empty, and a line agent mode held keeps its English: both went out without a word. The agent's export
+    /// counts the same rows (ExportUnfinishedRows).
     /// </summary>
-    private bool ConfirmExportWithUnfinishedRows(bool xml)
+    private async Task<bool> ConfirmExportWithUnfinishedRowsAsync(ProjectDb db, bool xml)
     {
-        var errors = 0;
-        var pending = 0;
-        // A hand edit left empty is saved empty; it was not counted, so a row emptied by mistake went out blank.
-        var emptied = 0;
-        foreach (var entry in Entries)
+        ExportUnfinishedRows counts;
+        try
         {
-            if (entry.Status == StringEntryStatus.Error) errors++;
-            else if (entry.Status is StringEntryStatus.Pending or StringEntryStatus.InProgress) pending++;
-            else if (entry.Status == StringEntryStatus.Edited && string.IsNullOrWhiteSpace(entry.DestText) && !string.IsNullOrWhiteSpace(entry.SourceText)) emptied++;
+            counts = await ExportUnfinishedRows.CountAsync(db,
+                Entries.Select(entry => (entry.Id, entry.Status, entry.SourceText, entry.DestText)).ToList(), CancellationToken.None);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            // It reads the held lines' notes from the DB: a failure there ended the command with the app's crash dialog.
+            SetUserFacingError("저장 확인", ex);
+            return false;
         }
 
-        if (errors + pending + emptied == 0)
+        if (!counts.Any)
         {
             return true;
         }
 
+        var (errors, pending, emptied, held) = counts;
+
         var answer = _uiInteractionService.ShowMessage(
             (errors + pending > 0 ? $"번역이 끝나지 않은 행이 있습니다: 오류 {errors}개, 대기 {pending}개.{Environment.NewLine}" : "")
             + (emptied > 0 ? $"번역문을 비워 둔 직접 수정 행이 {emptied}개 있습니다. 이 행들은 빈 글로 저장됩니다.{Environment.NewLine}" : "")
+            + (held > 0 ? $"에이전트 모드에서 보류한(번역하지 않기로 한) 건너뜀 행이 {held}개 있습니다. 이 행들은 영어 그대로 저장됩니다.{Environment.NewLine}" : "")
             + Environment.NewLine
             + (errors + pending == 0 ? "그래도 저장할까요?"
                 : xml
@@ -275,9 +282,8 @@ public partial class MainViewModel
             return true;
         }
 
-        StatusMessage = emptied > 0
-            ? "저장하지 않았습니다. 상태 필터에서 '오류'·'대기'·'직접 수정' 행을 확인하세요."
-            : "저장하지 않았습니다. 상태 필터에서 '오류'·'대기' 행을 확인하세요.";
+        var filters = new[] { errors + pending > 0 ? "'오류'·'대기'" : null, emptied > 0 ? "'직접 수정'" : null, held > 0 ? "'건너뜀'" : null };
+        StatusMessage = $"저장하지 않았습니다. 상태 필터에서 {string.Join("·", filters.OfType<string>())} 행을 확인하세요.";
         return false;
     }
 
@@ -458,7 +464,7 @@ public partial class MainViewModel
         // An XML's rows that already had a translation come in as Skipped; they are finished too (the quality check's
         // rule), or a fully translated XML showed 0%.
         DoneCount = Entries.Count(row => LqaStatus(row) is StringEntryStatus.Done or StringEntryStatus.Edited);
-        PendingCount = Entries.Count(row => row.Status is StringEntryStatus.Pending or StringEntryStatus.Error or StringEntryStatus.InProgress);
+        PendingCount = Entries.Count(row => row.Status.IsUnfinished());
     }
 
     private async Task LoadEntriesAsync()

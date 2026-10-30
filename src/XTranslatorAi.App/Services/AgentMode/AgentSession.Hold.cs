@@ -108,7 +108,7 @@ public sealed partial class AgentSession
     /// <summary>Whether a held line's note says it was held with that line.</summary>
     internal static bool HeldWith(string note, long id) => note.EndsWith(TogetherMark(id), StringComparison.Ordinal) || note == TogetherMark(id).TrimStart();
 
-    private static bool Waiting(StringEntry row) => row.Status is StringEntryStatus.Pending or StringEntryStatus.Error or StringEntryStatus.InProgress;
+    private static bool Waiting(StringEntry row) => row.Status.IsUnfinished();
 
     /// <summary>The other rows the waiting request asks once for with this one, whichever of them it asks.</summary>
     private static IReadOnlyList<long> AskedWith(IReadOnlyDictionary<long, List<long>> grouped, long id)

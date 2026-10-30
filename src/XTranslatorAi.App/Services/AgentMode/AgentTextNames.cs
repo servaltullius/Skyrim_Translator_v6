@@ -181,7 +181,8 @@ public static class AgentTextNames
 
         if (global != null)
         {
-            foreach (var e in await global.GetTranslationMemoryEntriesAsync("english", "korean", cancellationToken)) known.Append(e.SourceText).Append('\n');
+            var (sourceLang, targetLang) = await AgentSession.LanguagesAsync(db, cancellationToken);
+            foreach (var e in await global.GetTranslationMemoryEntriesAsync(sourceLang, targetLang, cancellationToken)) known.Append(e.SourceText).Append('\n');
         }
 
         // Only translated name fields: an untranslated one says nothing of how the name is written.

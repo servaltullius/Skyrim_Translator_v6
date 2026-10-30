@@ -30,16 +30,8 @@ public static partial class AgentCli
         Console.WriteLine($"DB: {project.DbPath}");
         Console.WriteLine($"줄: {rows}, 번역할 줄: {pending}, 묶음 크기: {project.BatchSize}");
         if (c.Session.SeriesTmNote is { } tmNote) Console.WriteLine(tmNote);
-        // The plugin was not UTF-8 (or only partly): it was read another way, and the export writes it all as UTF-8.
-        if (!string.Equals(project.ReadOptions.SourceEncoding, options.SourceEncoding, StringComparison.OrdinalIgnoreCase))
-        {
-            Console.WriteLine(project.ReadOptions.SourceEncoding == "windows-1252"
-                ? "원문 인코딩: windows-1252로 읽었습니다(UTF-8이 아님). 저장하면 출력 인코딩으로 바뀝니다."
-                : $"원문 인코딩: UTF-8과 windows-1252 문자열이 섞여 있어 문자열마다 판별해 읽었습니다({project.ReadOptions.SourceEncoding}). 저장하면 모두 출력 인코딩으로 통일됩니다.");
-        }
-        Console.WriteLine($"용어집: 이 프로젝트 {glossary.Count}개"
-                          + (glossary.Inherited > 0 ? $" (같은 모드의 다른 프로젝트 {string.Join(", ", glossary.From.Take(3))}에서 {glossary.Inherited}개를 가져옴)" : "")
-                          + (glossary.Count > 0 ? ". 요청이 이 용어를 따르고, lookup으로 찾을 수 있다." : ""));
+        foreach (var line in OpenNoteLines(c.Session.OpenNotes)) Console.WriteLine(line);
+        Console.WriteLine($"용어집: 이 프로젝트 {glossary.Count}개" + (glossary.Count > 0 ? ". 요청이 이 용어를 따르고, lookup으로 찾을 수 있다." : ""));
         // Agent mode uses a saved context whatever the GUI's box says: one generated in the GUI long ago is named here.
         await using (var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, c.Ct))
         {
@@ -50,6 +42,35 @@ public static partial class AgentCli
         }
 
         Console.WriteLine($"다음: tullius.cmd next {project.Key}");
+    }
+
+    /// <summary>
+    /// What the GUI's status line says of the open (PluginOpenNotes): the encoding the plugin was read in, a project
+    /// continued, a glossary inherited, translations kept, and a record that stops the export, said only at the export.
+    /// A diagnostic given for each of many fields (a field read otherwise by other tools) is cut short: the agent needs
+    /// the kind, not every record.
+    /// </summary>
+    internal static IEnumerable<string> OpenNoteLines(IReadOnlyList<PluginOpenNotes.Note> notes)
+    {
+        const int PerKind = 3;
+        var shown = new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (var note in notes)
+        {
+            if (note.BlocksExport)
+            {
+                yield return $"경고: 이 플러그인은 번역해도 export할 수 없습니다: {note.Text} 번역하기 전에 사용자에게 알리세요.";
+                continue;
+            }
+
+            var seen = note.Code == null ? 0 : shown.GetValueOrDefault(note.Code);
+            if (note.Code != null) shown[note.Code] = seen + 1;
+            if (seen < PerKind) yield return "알림: " + note.Text;
+        }
+
+        foreach (var (code, count) in shown.Where(pair => pair.Value > PerKind))
+        {
+            yield return $"알림: 같은 종류의 알림 {count - PerKind}개를 더 생략했습니다({code}).";
+        }
     }
 
     private static void Projects(AgentCommand c)
