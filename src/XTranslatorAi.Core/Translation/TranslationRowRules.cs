@@ -47,6 +47,12 @@ public static class TranslationRowRules
     /// <summary>A book's text (BOOK:DESC), as opposed to its title.</summary>
     public static bool IsBookBody(string? rec) => (RecordType(rec), FieldType(rec)) is ("BOOK", "DESC");
 
+    /// <summary>
+    /// A book's title (BOOK:FULL). The book context and its DB read matched the whole Rec, trimmed, and the GUI's title
+    /// model a field starting with FULL: a Rec with a space before the colon was a title to one and not the other.
+    /// </summary>
+    public static bool IsBookTitle(string? rec) => (RecordType(rec), FieldType(rec)) is ("BOOK", "FULL");
+
     /// <summary>The player's line by a plugin row's field key ("DIAL/…", "INFO/…/RNAM/…"), where the Rec is not at hand.</summary>
     public static bool IsPlayerFieldKey(string? fieldKey)
         => fieldKey != null && (fieldKey.StartsWith("DIAL/", StringComparison.Ordinal) || fieldKey.Contains("/RNAM/", StringComparison.Ordinal));

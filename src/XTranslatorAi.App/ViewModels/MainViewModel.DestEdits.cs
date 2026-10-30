@@ -82,14 +82,17 @@ public partial class MainViewModel
     /// Saves every edit still only in the editor and the context box. Saved is false when one could not be saved;
     /// KeptEmptied counts the emptied translations the user chose not to save (취소), which stop the caller too. The
     /// other rows are saved all the same: stopping at the first one dropped the edits after it when the window closed.
+    /// SavedEmpty are the rows the user just chose to keep empty (예), which an XML's save confirmation need not ask of
+    /// again.
     /// </summary>
-    private async Task<(bool Saved, int KeptEmptied)> CommitPendingDestEditsAsync()
+    private async Task<(bool Saved, int KeptEmptied, IReadOnlySet<long> SavedEmpty)> CommitPendingDestEditsAsync()
     {
         await _leftRowCommits;
+        var savedEmpty = new HashSet<long>();
         var db = _projectState.Db;
         if (db == null)
         {
-            return (true, 0);
+            return (true, 0, savedEmpty);
         }
 
         var keptEmptied = new List<StringEntryViewModel>();
@@ -97,15 +100,21 @@ public partial class MainViewModel
         {
             try
             {
-                if (await CommitDestEditAsync(db, entry, entry.DestText) == DestEditOutcome.NotSaved)
+                var emptied = IsEmptiedTranslation(entry, entry.DestText);
+                var outcome = await CommitDestEditAsync(db, entry, entry.DestText);
+                if (outcome == DestEditOutcome.NotSaved)
                 {
                     keptEmptied.Add(entry);
+                }
+                else if (outcome == DestEditOutcome.Saved && emptied)
+                {
+                    savedEmpty.Add(entry.Id);
                 }
             }
             catch (Exception ex)
             {
                 SetUserFacingError("번역문 저장", ex);
-                return (false, keptEmptied.Count);
+                return (false, keptEmptied.Count, savedEmpty);
             }
         }
 
@@ -125,7 +134,7 @@ public partial class MainViewModel
             catch (Exception ex)
             {
                 SetUserFacingError("프로젝트 문맥 저장", ex);
-                return (false, keptEmptied.Count);
+                return (false, keptEmptied.Count, savedEmpty);
             }
         }
 
@@ -135,7 +144,7 @@ public partial class MainViewModel
                             + "번역문을 채우거나 다시 저장하세요.";
         }
 
-        return (true, keptEmptied.Count);
+        return (true, keptEmptied.Count, savedEmpty);
     }
 
     private bool TryGetOwningDb(StringEntryViewModel entry, out ProjectDb db)

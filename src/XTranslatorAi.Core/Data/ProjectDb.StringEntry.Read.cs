@@ -249,12 +249,17 @@ public sealed partial class ProjectDb
         try
         {
             await using var cmd = _connection.CreateCommand();
-            cmd.CommandText = "SELECT REC, EDID, SourceText FROM StringEntry WHERE UPPER(TRIM(REC)) = 'BOOK:FULL' ORDER BY OrderIndex;";
+            // The SQL only narrows; the title is read as everywhere else (a space around the colon, any case).
+            cmd.CommandText = "SELECT REC, EDID, SourceText FROM StringEntry WHERE UPPER(REC) LIKE '%BOOK%FULL%' ORDER BY OrderIndex;";
             var list = new List<(string?, string?, string)>();
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             while (await reader.ReadAsync(cancellationToken))
             {
-                list.Add((reader.IsDBNull(0) ? null : reader.GetString(0), reader.IsDBNull(1) ? null : reader.GetString(1), reader.GetString(2)));
+                var rec = reader.IsDBNull(0) ? null : reader.GetString(0);
+                if (XTranslatorAi.Core.Translation.TranslationRowRules.IsBookTitle(rec))
+                {
+                    list.Add((rec, reader.IsDBNull(1) ? null : reader.GetString(1), reader.GetString(2)));
+                }
             }
 
             return list;

@@ -140,7 +140,7 @@ public interface IProjectDb
     async Task<IReadOnlyList<(string? Rec, string? Edid, string SourceText)>> GetBookTitleRowsAsync(CancellationToken cancellationToken)
     {
         var rows = await GetStringSourceContextsByStatusAsync(Enum.GetValues<StringEntryStatus>(), cancellationToken);
-        return rows.Where(row => string.Equals(row.Rec?.Trim(), "BOOK:FULL", StringComparison.OrdinalIgnoreCase))
+        return rows.Where(row => XTranslatorAi.Core.Translation.TranslationRowRules.IsBookTitle(row.Rec))
             .Select(row => (row.Rec, row.Edid, row.SourceText))
             .ToList();
     }

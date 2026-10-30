@@ -60,7 +60,11 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Equal((StringEntryStatus.Edited, ""), (saved[1].Status, saved[1].DestText));
         });
 
-    /// <summary>Saving before export does not go on past an emptied translation the user kept in the editor.</summary>
+    /// <summary>
+    /// Saving before export does not go on past an emptied translation the user kept in the editor. One the user just
+    /// chose to keep empty is not asked of again (the question said the XML gets it empty); one kept empty earlier is
+    /// counted by the save confirmation.
+    /// </summary>
     [Fact]
     public Task ExportingXml_StopsAtAnEmptiedTranslationNotSaved_AndCountsEmptyHandEdits()
         => RunOnSta(async () =>
@@ -79,6 +83,11 @@ public sealed partial class PluginUiLifecycleTests
             Assert.DoesNotContain("저장 확인", fixture.Ui.Titles);
 
             fixture.Ui.Responses.Enqueue(UiMessageBoxResult.Yes);
+            await fixture.Vm.ExportXmlCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+            Assert.DoesNotContain("저장 확인", fixture.Ui.Titles);
+            Assert.True(File.Exists(exportPath));
+
+            File.Delete(exportPath);
             fixture.Ui.Responses.Enqueue(UiMessageBoxResult.No);
             await fixture.Vm.ExportXmlCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
             Assert.Contains(fixture.Ui.Messages, m => m.Contains("번역문을 비워 둔 직접 수정 행이 1개") && !m.Contains("오류 0개"));

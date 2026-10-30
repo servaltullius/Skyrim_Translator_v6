@@ -123,11 +123,7 @@ public partial class MainViewModel
     private bool CanStartTranslation() => IsProjectLoaded && !IsTranslating && IsWorkspaceInteractive
         && !_projectOperations.IsRunning && !HasPromptLintBlockingIssues && !IsLqaScanning;
 
-    private static bool IsBookFullRec(string? rec)
-    {
-        return TranslationRowRules.RecordType(rec) == "BOOK"
-               && TranslationRowRules.FieldType(rec)?.StartsWith("FULL", StringComparison.Ordinal) == true;
-    }
+    private static bool IsBookFullRec(string? rec) => TranslationRowRules.IsBookTitle(rec);
 
     private string GetEffectiveBookFullModelName(string primaryModel)
     {

@@ -72,6 +72,22 @@ public sealed class TranslationRowRulesTests
     [InlineData("MISC:DESC", false)]
     public void BookBody(string rec, bool body) => Assert.Equal(body, TranslationRowRules.IsBookBody(rec));
 
+    /// <summary>
+    /// The book context took " BOOK : FULL" for no title, the GUI's title model for one: both read it as a title now,
+    /// and only a FULL field is.
+    /// </summary>
+    [Theory]
+    [InlineData("BOOK:FULL", true)]
+    [InlineData(" book : full ", true)]
+    [InlineData("BOOK:DESC", false)]
+    [InlineData("BOOK:FULLX", false)]
+    [InlineData("MISC:FULL", false)]
+    public void BookTitle(string rec, bool title)
+    {
+        Assert.Equal(title, TranslationRowRules.IsBookTitle(rec));
+        Assert.Equal(title, TranslationBookContext.CollectTitles(new[] { ((string?)rec, (string?)"aaBook", "Old Tales") }).Count == 1);
+    }
+
     /// <summary>A topic's text is the player's line, no name: the agent's names list counted DIAL:FULL as names.</summary>
     [Theory]
     [InlineData("WEAP:FULL", true)]

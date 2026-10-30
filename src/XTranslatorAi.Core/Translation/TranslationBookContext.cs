@@ -13,7 +13,7 @@ public static class TranslationBookContext
     public static IReadOnlyDictionary<string, string> CollectTitles(IEnumerable<(string? Rec, string? Edid, string Source)> rows)
     {
         var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var group in rows.Where(r => string.Equals(r.Rec?.Trim(), "BOOK:FULL", StringComparison.OrdinalIgnoreCase)
+        foreach (var group in rows.Where(r => TranslationRowRules.IsBookTitle(r.Rec)
                      && !string.IsNullOrWhiteSpace(r.Edid)).GroupBy(r => r.Edid!.Trim(), StringComparer.OrdinalIgnoreCase))
         {
             var titles = group.Select(r => r.Source.Trim()).Where(s => s.Length > 0).Distinct(StringComparer.Ordinal).ToArray();

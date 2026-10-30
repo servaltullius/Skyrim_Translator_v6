@@ -200,12 +200,15 @@ public partial class MainViewModel
         }
 
         // The exporter reads the DB; an edit still only in the editor would be missing from the XML.
-        if (!await TryCommitPendingDestEditsAsync())
+        var committed = await CommitPendingDestEditsAsync();
+        if (committed is not { Saved: true, KeptEmptied: 0 })
         {
             return;
         }
 
-        if (!await ConfirmExportWithUnfinishedRowsAsync(db, xml: true))
+        // A row the user just chose to keep empty was asked of twice: the save question said the XML gets it empty, and
+        // the confirmation counted it again.
+        if (!await ConfirmExportWithUnfinishedRowsAsync(db, xml: true, committed.SavedEmpty))
         {
             return;
         }
@@ -241,13 +244,14 @@ public partial class MainViewModel
     /// out empty in an XML and stops a plugin's save (its writer takes no empty text), and a line agent mode held keeps
     /// its English: each went out, or failed, without a word. The agent's export counts the same rows (ExportUnfinishedRows).
     /// </summary>
-    private async Task<bool> ConfirmExportWithUnfinishedRowsAsync(ProjectDb db, bool xml)
+    private async Task<bool> ConfirmExportWithUnfinishedRowsAsync(ProjectDb db, bool xml, IReadOnlySet<long>? keptEmptyJustNow = null)
     {
         ExportUnfinishedRows counts;
         try
         {
             counts = await ExportUnfinishedRows.CountAsync(db,
-                Entries.Select(entry => (entry.Id, entry.Status, entry.SourceText, entry.DestText)).ToList(), CancellationToken.None);
+                Entries.Where(entry => keptEmptyJustNow?.Contains(entry.Id) != true)
+                    .Select(entry => (entry.Id, entry.Status, entry.SourceText, entry.DestText)).ToList(), CancellationToken.None);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
