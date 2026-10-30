@@ -32,7 +32,7 @@ internal static class PromptEvaluationCommand
             Directory.CreateDirectory(root);
             using var stream = typeof(SystemPromptBuilder).Assembly.GetManifestResourceStream("SkyrimPrompt")!;
             using var reader = new StreamReader(stream, Encoding.UTF8);
-            var systemPrompt = new SystemPromptBuilder().Build(await reader.ReadToEndAsync(ct), false, null, false, null);
+            var systemPrompt = new SystemPromptBuilder().Build((await reader.ReadToEndAsync(ct)).ReplaceLineEndings("\r\n"), false, null, false, null);
             var userPrompts = batches.Select(b => TranslationPrompt.BuildUserPrompt("english", "korean", b.Items,
                 b.Glossary.Select(g => (g.Source, g.Target)).ToArray())).ToArray();
             await File.WriteAllTextAsync(Path.Combine(root, "system-prompt.txt"), systemPrompt, ct);

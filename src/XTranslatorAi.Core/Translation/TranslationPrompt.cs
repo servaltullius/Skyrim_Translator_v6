@@ -176,7 +176,9 @@ public static partial class TranslationPrompt
 
     public static JsonElement BuildResponseSchema()
     {
-        using var doc = JsonDocument.Parse(ResponseSchemaJson);
+        // The raw string has its source file's line breaks, and the schema's text is part of a request's hash (agent
+        // mode): CRLF as the release's checkout writes it, whatever a working copy holds.
+        using var doc = JsonDocument.Parse(ResponseSchemaJson.ReplaceLineEndings("\r\n"));
         return doc.RootElement.Clone();
     }
 

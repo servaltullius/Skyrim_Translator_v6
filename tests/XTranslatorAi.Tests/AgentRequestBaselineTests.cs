@@ -89,6 +89,21 @@ public sealed class AgentRequestBaselineTests : IAsyncLifetime
         Assert.True(expected == actual, FirstDifference(expected, actual));
     }
 
+    /// <summary>
+    /// The text a request's hash takes from the build has one form of line break, CRLF as the release's checkout writes
+    /// it: the meta prompt was LF in a working copy and CRLF in CI, and the baseline above failed in CI alone.
+    /// </summary>
+    [Theory]
+    [InlineData(XTranslatorAi.Core.Models.BethesdaFranchise.ElderScrolls)]
+    [InlineData(XTranslatorAi.Core.Models.BethesdaFranchise.Fallout)]
+    [InlineData(XTranslatorAi.Core.Models.BethesdaFranchise.Starfield)]
+    public void TheHashedTextOfTheBuild_HasCrlfLineBreaksWhateverTheCheckout(XTranslatorAi.Core.Models.BethesdaFranchise franchise)
+    {
+        static bool OnlyCrlf(string text) => !text.Replace("\r\n", "").Contains('\n') && !text.Replace("\r\n", "").Contains('\r');
+        Assert.True(OnlyCrlf(EmbeddedAssets.LoadMetaPrompt(franchise)));
+        Assert.True(OnlyCrlf(TranslationPrompt.BuildResponseSchema().GetRawText()));
+    }
+
     private static void Describe(StringBuilder written, int n, AgentRequest request)
     {
         written.Append("=== request ").Append(n).Append('\n')

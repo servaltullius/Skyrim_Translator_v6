@@ -75,7 +75,7 @@ internal static class EvalRunCommand
         var logger = new BudgetLogger(Path.Combine(root, "usage.jsonl"), budget - spentBefore, cancellation);
         using var promptStream = typeof(SystemPromptBuilder).Assembly.GetManifestResourceStream("SkyrimPrompt")!;
         using var promptReader = new StreamReader(promptStream, Encoding.UTF8);
-        var basePrompt = await promptReader.ReadToEndAsync();
+        var basePrompt = (await promptReader.ReadToEndAsync()).ReplaceLineEndings("\r\n");
         var systemPrompt = new SystemPromptBuilder().Build(basePrompt, false, null, false, null);
 
         var provenancePath = Path.Combine(root, "provenance.json");

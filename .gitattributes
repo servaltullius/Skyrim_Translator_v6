@@ -2,3 +2,6 @@
 # Never convert their line endings on checkout.
 src/XTranslatorAi.App/Assets/TmSeeds/*.tsv -text
 src/XTranslatorAi.App/Assets/GameStrings/*.gz binary
+
+# The kit's batch files are run by cmd, which misreads labels and goto in a file of LF line breaks.
+*.cmd text eol=crlf

@@ -57,7 +57,8 @@ try
         throw new InvalidDataException("Source has blocking plugin diagnostics.");
     using var promptStream = typeof(SystemPromptBuilder).Assembly.GetManifestResourceStream("SkyrimPrompt")!;
     using var promptReader = new StreamReader(promptStream, Encoding.UTF8);
-    var basePrompt = await promptReader.ReadToEndAsync(ct);
+    // As the app reads it (EmbeddedAssets.LoadMetaPrompt): one form of line break whatever the checkout wrote.
+    var basePrompt = (await promptReader.ReadToEndAsync(ct)).ReplaceLineEndings("\r\n");
     var prompt = new SystemPromptBuilder().Build(basePrompt, false, null, false, null);
     var promptHash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(prompt)));
     var hasExperiment = File.Exists(manifestPath);
