@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using XTranslatorAi.App.Services;
 using XTranslatorAi.Core.Text;
 
 namespace XTranslatorAi.App.ViewModels;
@@ -11,13 +12,9 @@ public partial class MainViewModel
 {
     private string BuildSystemPrompt()
     {
-        return _systemPromptBuilder.Build(
-            basePrompt: BasePromptText,
-            useCustomPrompt: UseCustomPrompt,
-            customPromptText: CustomPromptText,
-            enableProjectContext: EnableProjectContext,
-            projectContext: ProjectContextPreview
-        );
+        // The custom prompt as agent mode reads it (SystemPromptBuilder), from the settings the window shows.
+        return _systemPromptBuilder.Build(BasePromptText, WithTranslationPreferences(new AppSettings()),
+            EnableProjectContext ? ProjectContextPreview : null);
     }
 
     private async Task<IReadOnlyList<GlossaryEntry>?> TryLoadGlobalGlossaryAsync(CancellationToken cancellationToken = default)

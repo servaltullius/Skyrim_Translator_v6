@@ -53,11 +53,13 @@ public sealed class TranslationRunnerService
         bool EnablePromptCache,
         bool EnableRiskyCandidateRerank,
         int RiskyCandidateCount,
-        bool EnableBookBodyModelOverride = false,
-        int MaxRetryGenerations = 8,
-        int MaxTotalGenerations = 0,
-        bool EnableAdaptiveOutputBudget = false,
-        bool EnableBookContext = false,
+        // No defaults for the settings: TranslationRunRequests is where a run is built, and a setting it left out was run
+        // with a default without a word.
+        bool EnableBookBodyModelOverride,
+        int MaxRetryGenerations,
+        int MaxTotalGenerations,
+        bool EnableAdaptiveOutputBudget,
+        bool EnableBookContext,
         IReadOnlyDictionary<string, string>? BookTitlesByEdid = null,
         // The player's game translation; rows it covers are finished without a request (see GameStringDictionary).
         XTranslatorAi.Core.Plugins.GameStringDictionary? GameStrings = null,

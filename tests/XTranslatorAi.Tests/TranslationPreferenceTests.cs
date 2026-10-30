@@ -111,6 +111,16 @@ public sealed class TranslationPreferenceTests
             vm.EnableBookContext = true;
             vm.MaxRetryGenerations = 17;
             vm.MaxTotalGenerations = 123;
+            // The run takes these from the same settings (TranslationRunRequests); one left out of them went unnoticed.
+            vm.EnablePromptCache = false;
+            vm.EnableRiskyCandidateRerank = false;
+            vm.RiskyCandidateCount = 5;
+            vm.EnableQualityEscalation = true;
+            vm.QualityEscalationModel = "gemini-2.5-pro";
+            vm.EnableBookFullModelOverride = true;
+            vm.EnableBookBodyModelOverride = true;
+            vm.UseCustomPrompt = true;
+            vm.CustomPromptText = "사용자 지시";
 
             using var restored = new ViewModelFixture(fixture);
             var copy = restored.ViewModel;
@@ -131,6 +141,10 @@ public sealed class TranslationPreferenceTests
             Assert.True(copy.EnableBookContext);
             Assert.Equal(17, copy.MaxRetryGenerations);
             Assert.Equal(123, copy.MaxTotalGenerations);
+            Assert.Equal((false, false, 5, true, "gemini-2.5-pro", true, true, true, "사용자 지시"),
+                (copy.EnablePromptCache, copy.EnableRiskyCandidateRerank, copy.RiskyCandidateCount, copy.EnableQualityEscalation,
+                    copy.QualityEscalationModel, copy.EnableBookFullModelOverride, copy.EnableBookBodyModelOverride, copy.UseCustomPrompt,
+                    copy.CustomPromptText));
         });
 
     // The custom prompt was never saved: after a restart the box was empty and the next project was translated without it.

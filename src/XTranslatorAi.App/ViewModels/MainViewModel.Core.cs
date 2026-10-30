@@ -437,51 +437,54 @@ public partial class MainViewModel : ObservableObject, ITranslationRunnerStatusP
     // wrote those defaults over it and kept only keys added in this session, so nothing is saved until a restart.
     private bool _settingsUnreadAtStart;
 
+    /// <summary>
+    /// The settings as the window shows them now: what is saved, and what 번역 시작 runs with (TranslationRunRequests), so
+    /// the run and the next start of the app see the same values.
+    /// </summary>
+    private AppSettings WithTranslationPreferences(AppSettings settings) => settings with
+    {
+        EnableApiKeyFailover = EnableApiKeyFailover,
+        EnableBookFullModelOverride = EnableBookFullModelOverride,
+        EnableBookBodyModelOverride = EnableBookBodyModelOverride,
+        BookFullModel = string.IsNullOrWhiteSpace(BookFullModel) ? null : BookFullModel.Trim(),
+        EnablePromptCache = EnablePromptCache,
+        EnableQualityEscalation = EnableQualityEscalation,
+        QualityEscalationModel = string.IsNullOrWhiteSpace(QualityEscalationModel) ? null : QualityEscalationModel.Trim(),
+        EnableRiskyCandidateRerank = EnableRiskyCandidateRerank,
+        RiskyCandidateCount = Math.Clamp(RiskyCandidateCount, 2, 8),
+        SelectedModel = SelectedModel,
+        BatchSize = BatchSize,
+        MaxCharsPerBatch = MaxCharsPerBatch,
+        MaxParallelRequests = MaxParallelRequests,
+        MaxOutputTokensOverride = MaxOutputTokensOverride,
+        EnableRepairPass = EnableRepairPass,
+        SemanticRepairMode = SemanticRepairMode,
+        KeepSkyrimTagsRaw = KeepSkyrimTagsRaw,
+        EnableDialogueContextWindow = EnableDialogueContextWindow,
+        EnableSessionTermMemory = EnableSessionTermMemory,
+        UseRecStyleHints = UseRecStyleHints,
+        EnableTemplateFixer = EnableTemplateFixer,
+        EnableProjectContext = EnableProjectContext,
+        EnableAdaptiveOutputBudget = EnableAdaptiveOutputBudget,
+        EnableBookContext = EnableBookContext,
+        MaxRetryGenerations = MaxRetryGenerations,
+        MaxTotalGenerations = MaxTotalGenerations,
+        PluginSourceLanguage = PluginSourceLanguage,
+        PluginTargetLanguage = PluginTargetLanguage,
+        PluginSourceEncoding = PluginSourceEncoding,
+        PluginMetadataEncoding = PluginMetadataEncoding,
+        PluginTargetEncoding = PluginTargetEncoding,
+        PluginStringsDirectory = PluginStringsDirectory,
+        UseCustomPrompt = UseCustomPrompt,
+        CustomPromptText = CustomPromptText,
+    };
+
     private void SaveTranslationPreferences()
     {
         if (_isUpdatingTranslationPreferences || _settingsUnreadAtStart) return;
         try
         {
-            var current = _appSettings.Load();
-            _appSettings.Save(
-                current with
-                {
-                    EnableApiKeyFailover = EnableApiKeyFailover,
-                    EnableBookFullModelOverride = EnableBookFullModelOverride,
-                    EnableBookBodyModelOverride = EnableBookBodyModelOverride,
-                    BookFullModel = string.IsNullOrWhiteSpace(BookFullModel) ? null : BookFullModel.Trim(),
-                    EnablePromptCache = EnablePromptCache,
-                    EnableQualityEscalation = EnableQualityEscalation,
-                    QualityEscalationModel = string.IsNullOrWhiteSpace(QualityEscalationModel) ? null : QualityEscalationModel.Trim(),
-                    EnableRiskyCandidateRerank = EnableRiskyCandidateRerank,
-                    RiskyCandidateCount = Math.Clamp(RiskyCandidateCount, 2, 8),
-                    SelectedModel = SelectedModel,
-                    BatchSize = BatchSize,
-                    MaxCharsPerBatch = MaxCharsPerBatch,
-                    MaxParallelRequests = MaxParallelRequests,
-                    MaxOutputTokensOverride = MaxOutputTokensOverride,
-                    EnableRepairPass = EnableRepairPass,
-                    SemanticRepairMode = SemanticRepairMode,
-                    KeepSkyrimTagsRaw = KeepSkyrimTagsRaw,
-                    EnableDialogueContextWindow = EnableDialogueContextWindow,
-                    EnableSessionTermMemory = EnableSessionTermMemory,
-                    UseRecStyleHints = UseRecStyleHints,
-                    EnableTemplateFixer = EnableTemplateFixer,
-                    EnableProjectContext = EnableProjectContext,
-                    EnableAdaptiveOutputBudget = EnableAdaptiveOutputBudget,
-                    EnableBookContext = EnableBookContext,
-                    MaxRetryGenerations = MaxRetryGenerations,
-                    MaxTotalGenerations = MaxTotalGenerations,
-                    PluginSourceLanguage = PluginSourceLanguage,
-                    PluginTargetLanguage = PluginTargetLanguage,
-                    PluginSourceEncoding = PluginSourceEncoding,
-                    PluginMetadataEncoding = PluginMetadataEncoding,
-                    PluginTargetEncoding = PluginTargetEncoding,
-                    PluginStringsDirectory = PluginStringsDirectory,
-                    UseCustomPrompt = UseCustomPrompt,
-                    CustomPromptText = CustomPromptText,
-                }
-            );
+            _appSettings.Save(WithTranslationPreferences(_appSettings.Load()));
         }
         catch
         {

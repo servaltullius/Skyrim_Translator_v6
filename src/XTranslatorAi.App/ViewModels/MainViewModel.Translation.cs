@@ -71,46 +71,12 @@ public partial class MainViewModel
                 var systemPrompt = BuildSystemPrompt();
                 var recById = Entries.ToDictionary(entry => entry.Id, entry => entry.Rec);
                 var primaryModel = (SelectedModel ?? "").Trim();
-                var request = new TranslationRunnerService.Request(
-                    Db: db,
-                    GeminiClient: _geminiClient,
-                    StatusPort: this,
-                    FlowControlPort: new RunFlowControlPort(this, generation),
-                    FailoverPort: this,
-                    CancellationToken: cancellationToken,
-                    Ids: ids,
-                    GetRecById: id => recById.GetValueOrDefault(id),
-                    IsBookFullRec: IsBookFullRec,
-                    GetEffectiveBookFullModelName: GetEffectiveBookFullModelName,
-                    ComputeMaxOutputTokens: ComputeMaxOutputTokens,
-                    SystemPrompt: systemPrompt,
-                    PrimaryModel: primaryModel,
-                    EnableBookFullModelOverride: EnableBookFullModelOverride,
-                    EnableBookBodyModelOverride: EnableBookBodyModelOverride,
-                    EnableQualityEscalation: EnableQualityEscalation,
-                    QualityEscalationModelName: QualityEscalationModel,
-                    BatchSize: BatchSize,
-                    MaxChars: MaxCharsPerBatch,
-                    Parallel: MaxParallelRequests,
-                    Franchise: SelectedFranchise,
-                    SourceLang: SourceLang,
-                    TargetLang: TargetLang,
-                    UseRecStyleHints: UseRecStyleHints,
-                    EnableRepairPass: EnableRepairPass,
-                    EnableSessionTermMemory: EnableSessionTermMemory,
-                    SemanticRepairMode: SemanticRepairMode,
-                    EnableTemplateFixer: EnableTemplateFixer,
-                    KeepSkyrimTagsRaw: KeepSkyrimTagsRaw,
-                    EnableDialogueContextWindow: EnableDialogueContextWindow,
-                    EnablePromptCache: EnablePromptCache,
-                    EnableRiskyCandidateRerank: EnableRiskyCandidateRerank,
-                    RiskyCandidateCount: RiskyCandidateCount,
-                    MaxRetryGenerations: MaxRetryGenerations,
-                    MaxTotalGenerations: MaxTotalGenerations,
-                    EnableAdaptiveOutputBudget: EnableAdaptiveOutputBudget,
-                    EnableBookContext: EnableBookContext,
-                    GameStrings: await TryLoadGameStringsAsync(cancellationToken)
-                );
+                var request = TranslationRunRequests.Create(
+                    new TranslationRunRequests.Ports(db, _geminiClient, this, new RunFlowControlPort(this, generation), this, cancellationToken),
+                    WithTranslationPreferences(new AppSettings()),
+                    new TranslationRunRequests.Model(primaryModel, IsBookFullRec, GetEffectiveBookFullModelName, ComputeMaxOutputTokens),
+                    ids, id => recById.GetValueOrDefault(id), systemPrompt, SelectedFranchise, SourceLang, TargetLang,
+                    await TryLoadGameStringsAsync(cancellationToken));
 
                 var result = await Task.Run(() => _translationRunnerService.RunAsync(request), cancellationToken);
                 canceled = result.Canceled;

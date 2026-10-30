@@ -65,51 +65,17 @@ public static class AgentTranslationRun
         // The agent saves the project's context itself (context): a saved one is used whatever the GUI's
         // "생성한 프로젝트 문맥 사용" box says, and context --clear is how it stops.
         var context = (await db.TryGetProjectContextAsync(cancellationToken))?.ContextText;
-        var systemPrompt = new SystemPromptBuilder().Build(EmbeddedAssets.LoadMetaPrompt(BethesdaFranchise.ElderScrolls),
-            settings.UseCustomPrompt, settings.CustomPromptText, !string.IsNullOrWhiteSpace(context), context);
+        var systemPrompt = new SystemPromptBuilder().Build(EmbeddedAssets.LoadMetaPrompt(BethesdaFranchise.ElderScrolls), settings, context);
         using var stop = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         var client = new AgentRelayClient(answer, stop);
         var host = new QuietHost();
-        var request = new TranslationRunnerService.Request(
-            Db: db,
-            GeminiClient: client,
-            StatusPort: host,
-            FlowControlPort: host,
-            FailoverPort: host,
-            CancellationToken: stop.Token,
-            Ids: pending,
-            GetRecById: id => recById.GetValueOrDefault(id),
-            IsBookFullRec: _ => false,
-            GetEffectiveBookFullModelName: model => model,
-            ComputeMaxOutputTokens: _ => options.MaxOutputTokens,
-            SystemPrompt: systemPrompt,
-            PrimaryModel: options.ModelProfile,
-            EnableBookFullModelOverride: false,
-            EnableQualityEscalation: false,
-            QualityEscalationModelName: null,
-            BatchSize: options.BatchSize,
-            MaxChars: options.MaxChars,
-            Parallel: 1,
-            Franchise: BethesdaFranchise.ElderScrolls,
-            SourceLang: project.SourceLang,
-            TargetLang: project.DestLang,
-            UseRecStyleHints: settings.UseRecStyleHints,
-            EnableRepairPass: settings.EnableRepairPass,
-            EnableSessionTermMemory: false,
-            SemanticRepairMode: settings.SemanticRepairMode,
-            EnableTemplateFixer: settings.EnableTemplateFixer,
-            KeepSkyrimTagsRaw: settings.KeepSkyrimTagsRaw,
-            EnableDialogueContextWindow: settings.EnableDialogueContextWindow,
-            EnablePromptCache: false,
-            EnableRiskyCandidateRerank: false,
-            RiskyCandidateCount: 1,
-            EnableBookBodyModelOverride: false,
-            MaxRetryGenerations: settings.MaxRetryGenerations,
-            MaxTotalGenerations: settings.MaxTotalGenerations,
-            EnableAdaptiveOutputBudget: settings.EnableAdaptiveOutputBudget,
-            EnableBookContext: settings.EnableBookContext,
-            GameStrings: gameStrings,
-            NameMemoryRows: options.Lane);
+        var request = TranslationRunRequests.Create(
+            new TranslationRunRequests.Ports(db, client, host, host, host, stop.Token),
+            TranslationRunRequests.ForAgent(settings, options.BatchSize, options.MaxChars),
+            new TranslationRunRequests.Model(options.ModelProfile, IsBookFullRec: _ => false, BookFullModelName: model => model,
+                MaxOutputTokens: _ => options.MaxOutputTokens),
+            pending, id => recById.GetValueOrDefault(id), systemPrompt, BethesdaFranchise.ElderScrolls, project.SourceLang, project.DestLang,
+            gameStrings, nameMemoryRows: options.Lane);
 
         var result = await new TranslationRunnerService(globalDb).RunAsync(request);
         // A recording stops the run mid-batch; its rows are 대기 again, as after the GUI's stop button.
