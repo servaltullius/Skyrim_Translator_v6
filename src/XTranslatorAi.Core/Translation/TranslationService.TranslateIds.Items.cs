@@ -195,6 +195,8 @@ public sealed partial class TranslationService
             Ctx.DuplicateRowsByCanonicalId = frozen;
         }
 
+        request.OnDuplicateRows?.Invoke(duplicateRowsByCanonicalId.ToDictionary(
+            pair => pair.Key, pair => (IReadOnlyList<long>)pair.Value.Select(row => row.Id).ToList()));
         return items;
     }
 

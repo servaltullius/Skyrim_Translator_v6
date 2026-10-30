@@ -34,6 +34,12 @@ public static class AgentTranslationRun
     {
         /// <summary>What of the global DB the run could not read and went without (TranslationRunnerService.Result).</summary>
         public IReadOnlyList<string> MissingGlobalData { get; init; } = Array.Empty<string>();
+
+        /// <summary>
+        /// The rows the run's requests ask once for: each row a request asks, and the rows given its translation (the same
+        /// text and context; TranslateIdsRequest.OnDuplicateRows). A hold takes them together.
+        /// </summary>
+        public IReadOnlyDictionary<long, IReadOnlyList<long>> Grouped { get; init; } = new Dictionary<long, IReadOnlyList<long>>();
     }
 
     public static async Task<Outcome> RunAsync(ProjectDb db, AppSettings settings, Options options,
@@ -69,13 +75,15 @@ public static class AgentTranslationRun
         using var stop = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         var client = new AgentRelayClient(answer, stop);
         var host = new QuietHost();
+        var grouped = new Dictionary<long, IReadOnlyList<long>>();
         var request = TranslationRunRequests.Create(
             new TranslationRunRequests.Ports(db, client, host, host, host, stop.Token),
             TranslationRunRequests.ForAgent(settings, options.BatchSize, options.MaxChars),
             new TranslationRunRequests.Model(options.ModelProfile, IsBookFullRec: _ => false, BookFullModelName: model => model,
                 MaxOutputTokens: _ => options.MaxOutputTokens),
             pending, id => recById.GetValueOrDefault(id), systemPrompt, BethesdaFranchise.ElderScrolls, project.SourceLang, project.DestLang,
-            gameStrings, nameMemoryRows: options.Lane);
+            gameStrings, nameMemoryRows: options.Lane,
+            onDuplicateRows: rows => { foreach (var (asked, given) in rows) grouped[asked] = given; });
 
         var result = await new TranslationRunnerService(globalDb).RunAsync(request);
         // A recording stops the run mid-batch; its rows are 대기 again, as after the GUI's stop button.
@@ -89,7 +97,7 @@ public static class AgentTranslationRun
         }
 
         return new Outcome(client.Recorded, client.Used, pending.Count, after.Count, errors.Count, client.GenerationCalls,
-            result.Error ?? host.Error) { MissingGlobalData = result.MissingGlobalData ?? Array.Empty<string>() };
+            result.Error ?? host.Error) { MissingGlobalData = result.MissingGlobalData ?? Array.Empty<string>(), Grouped = grouped };
     }
 
     /// <summary>

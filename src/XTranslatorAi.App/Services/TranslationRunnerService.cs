@@ -64,7 +64,9 @@ public sealed class TranslationRunnerService
         // The player's game translation; rows it covers are finished without a request (see GameStringDictionary).
         XTranslatorAi.Core.Plugins.GameStringDictionary? GameStrings = null,
         // The rows whose translations the name memory reads (an agent lane's); null for all.
-        IReadOnlySet<long>? NameMemoryRows = null
+        IReadOnlySet<long>? NameMemoryRows = null,
+        // The rows each request asks once for (TranslateIdsRequest.OnDuplicateRows).
+        Action<IReadOnlyDictionary<long, IReadOnlyList<long>>>? OnDuplicateRows = null
     );
 
     /// <param name="MissingGlobalData">What of the global DB could not be read, so the run went without it (the
@@ -492,7 +494,8 @@ public sealed class TranslationRunnerService
             EnableAdaptiveOutputBudget: request.EnableAdaptiveOutputBudget,
             EnableBookContext: request.EnableBookContext,
             BookTitlesByEdid: request.BookTitlesByEdid,
-            NameMemoryRows: request.NameMemoryRows
+            NameMemoryRows: request.NameMemoryRows,
+            OnDuplicateRows: request.OnDuplicateRows
         );
     }
 

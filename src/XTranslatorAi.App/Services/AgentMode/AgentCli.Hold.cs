@@ -34,7 +34,10 @@ public static partial class AgentCli
         if (c.Undo)
         {
             var released = await c.Session.ReleaseAsync(project, ids, c.Ct);
-            Console.WriteLine($"보류를 풀었습니다: {released.Count}줄" + (released.Count < ids.Count ? $" (보류가 아니던 줄 {ids.Count - released.Count}은 그대로)" : "") + ".");
+            var named = released.Count(line => ids.Contains(line.Row.Id));
+            var alongside = released.Where(line => !ids.Contains(line.Row.Id)).Select(line => "#" + line.Row.Id).ToList();
+            Console.WriteLine($"보류를 풀었습니다: {named}줄" + (named < ids.Count ? $" (보류가 아니던 줄 {ids.Count - named}은 그대로)" : "")
+                              + (alongside.Count > 0 ? $", 함께 보류했던 줄 {string.Join(", ", alongside)}도 풀었습니다" : "") + ".");
             if (released.Count > 0) await RemakeAfterHoldAsync(c, project, "보류를 푼 대로");
             return;
         }
@@ -43,6 +46,12 @@ public static partial class AgentCli
         foreach (var line in result.Held) Console.WriteLine($"#{line.Row.Id} {Short(line.Row.SourceText)}: {Flat(line.Label)}");
         Console.WriteLine($"보류한 줄: {result.Held.Count}. 번역하지 않고 export 때 영어 그대로 저장합니다. "
                           + $"끝 보고에 hold {project.Key}{LaneOption(project)}의 목록을 {Whom(project)} 알리세요.");
+        if (result.Together.Count > 0)
+        {
+            Console.WriteLine($"그중 함께 보류한 줄: {string.Join(", ", result.Together.Select(id => "#" + id))}. 요청이 같은 글·같은 맥락이라 "
+                              + "한 번에 묻던 줄입니다(같은 번역이 들어감). 지정한 줄의 보류를 --undo로 풀면 함께 풀립니다.");
+        }
+
         if (result.SameEnglishWaiting.Count > 0)
         {
             Console.WriteLine($"같은 영어의 남은 줄: {string.Join(", ", result.SameEnglishWaiting.Select(id => "#" + id))}. 보류하지 않았습니다. "

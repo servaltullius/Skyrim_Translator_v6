@@ -30,7 +30,8 @@ public static class TranslationRunRequests
 
     public static TranslationRunnerService.Request Create(Ports ports, AppSettings settings, Model model, IReadOnlyList<long> ids,
         Func<long, string?> getRecById, string systemPrompt, BethesdaFranchise franchise, string sourceLang, string targetLang,
-        GameStringDictionary? gameStrings, IReadOnlySet<long>? nameMemoryRows = null)
+        GameStringDictionary? gameStrings, IReadOnlySet<long>? nameMemoryRows = null,
+        Action<IReadOnlyDictionary<long, IReadOnlyList<long>>>? onDuplicateRows = null)
         => new(
             Db: ports.Db,
             GeminiClient: ports.Client,
@@ -70,7 +71,8 @@ public static class TranslationRunRequests
             EnableAdaptiveOutputBudget: settings.EnableAdaptiveOutputBudget,
             EnableBookContext: settings.EnableBookContext,
             GameStrings: gameStrings,
-            NameMemoryRows: nameMemoryRows);
+            NameMemoryRows: nameMemoryRows,
+            OnDuplicateRows: onDuplicateRows);
 
     /// <summary>
     /// The user's settings as agent mode runs them: what would make a recording and its replay differ is fixed or off.

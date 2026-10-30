@@ -1655,26 +1655,93 @@ public sealed class AgentModeTests : IAsyncLifetime
     /// scene, another kind of name) and the model may translate them. They are named, not held, and asked for as before.
     /// </summary>
     [Fact]
-    public async Task Hold_NamesTheWaitingLinesOfTheSameEnglish_AndLeavesThemToBeAsked()
+    public async Task Hold_NamesTheWaitingLinesOfTheSameEnglishAskedApart_AndLeavesThemToBeAsked()
+    {
+        var project = await OpenAsync("Twins.esp", Header()
+            .Concat(Group(Record("MISC", 0x2001, Sub("EDID", Z("aaEchoA")), Sub("FULL", Z("Aetherial Echo"))),
+                Record("MISC", 0x2003, Sub("EDID", Z("aaOther")), Sub("FULL", Z("Shadow Lantern")))))
+            .Concat(Group(Record("WEAP", 0x2002, Sub("EDID", Z("aaEchoB")), Sub("FULL", Z("Aetherial Echo")))))
+            .ToArray());
+        var echoes = await IdsOfAsync(project, "Aetherial Echo");
+        await _session.NextAsync(project, CancellationToken.None);
+
+        var result = await _session.HoldAsync(project, new[] { echoes[0] }, "이유", CancellationToken.None);
+
+        Assert.Equal(new[] { echoes[0] }, result.Held.Select(h => h.Row.Id));
+        Assert.Empty(result.Together);
+        Assert.Equal(new[] { echoes[1] }, result.SameEnglishWaiting);
+        Assert.Equal(new[] { echoes[0] }, (await _session.HeldAsync(project, CancellationToken.None)).Select(h => h.Row.Id));
+        var request = (await _session.RemakePendingAsync(project, CancellationToken.None)).Report!.Next!;
+        Assert.Contains(AgentAnswerCheck.Lines(request), line => line.Text.StartsWith("Aetherial Echo", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// A request asks once for the lines of the same text and context, and gives the others its translation. Holding the
+    /// one it asked left the others waiting: the next request asked for the same text again, and the agent held it again.
+    /// They are held together, their reason naming the line held, and released with it.
+    /// </summary>
+    [Fact]
+    public async Task Hold_TakesTheLinesTheRequestAskedOnceFor_AndReleasesThemWithIt()
     {
         var project = await OpenAsync("Twins.esp", Header()
             .Concat(Group(Record("MISC", 0x2001, Sub("EDID", Z("aaEchoA")), Sub("FULL", Z("Aetherial Echo"))),
                 Record("MISC", 0x2002, Sub("EDID", Z("aaEchoB")), Sub("FULL", Z("Aetherial Echo"))),
                 Record("MISC", 0x2003, Sub("EDID", Z("aaOther")), Sub("FULL", Z("Shadow Lantern")))))
             .ToArray());
-        List<long> echoes;
-        await using (var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, CancellationToken.None))
+        var echoes = await IdsOfAsync(project, "Aetherial Echo");
+        var first = (await _session.NextAsync(project, CancellationToken.None)).Next!;
+        Assert.Single(AgentAnswerCheck.Lines(first), line => line.Text.StartsWith("Aetherial Echo", StringComparison.Ordinal));
+
+        // Either of them may be named: the one the request asked, or the one given its translation.
+        var result = await _session.HoldAsync(project, new[] { echoes[1] }, "이유", CancellationToken.None);
+
+        Assert.Equal(echoes, result.Held.Select(h => h.Row.Id).OrderBy(id => id));
+        Assert.Equal(new[] { echoes[0] }, result.Together);
+        Assert.Empty(result.SameEnglishWaiting);
+        var held = await _session.HeldAsync(project, CancellationToken.None);
+        Assert.Equal($"보류: 이유 (#{echoes[1]} 줄과 함께)", held.Single(h => h.Row.Id == echoes[0]).Label);
+        var next = (await _session.RemakePendingAsync(project, CancellationToken.None)).Report!.Next!;
+        Assert.DoesNotContain(AgentAnswerCheck.Lines(next), line => line.Text.StartsWith("Aetherial Echo", StringComparison.Ordinal));
+
+        var released = await _session.ReleaseAsync(project, new[] { echoes[1] }, CancellationToken.None);
+
+        Assert.Equal(echoes, released.Select(h => h.Row.Id).OrderBy(id => id));
+        Assert.Empty(await _session.HeldAsync(project, CancellationToken.None));
+
+        // Held with no reason, the line held with it is released with it too (its whole reason is the mark).
+        await _session.RemakePendingAsync(project, CancellationToken.None);
+        await _session.HoldAsync(project, new[] { echoes[0] }, null, CancellationToken.None);
+        Assert.Equal($"보류: (#{echoes[0]} 줄과 함께)", (await _session.HeldAsync(project, CancellationToken.None)).Single(h => h.Row.Id == echoes[1]).Label);
+        Assert.Equal(echoes, (await _session.ReleaseAsync(project, new[] { echoes[0] }, CancellationToken.None)).Select(h => h.Row.Id).OrderBy(id => id));
+    }
+
+    /// <summary>A lane's folder is made with its first request: a lane with nothing to ask finished without one.</summary>
+    [Fact]
+    public async Task Next_InALaneWithNothingToAsk_FinishesWithoutItsFolder()
+    {
+        var lane = _project with { Lane = AgentLane.Parse("1/2") };
+        foreach (var id in await RowsWithStatusAsync(StringEntryStatus.Pending))
         {
-            echoes = (await db.GetStringsAsync(10, 0, CancellationToken.None)).Where(r => r.SourceText == "Aetherial Echo").Select(r => r.Id).OrderBy(id => id).ToList();
+            try
+            {
+                await _session.HoldAsync(lane, new[] { id }, null, CancellationToken.None);
+            }
+            catch (AgentModeException)
+            {
+                // The other lane's line.
+            }
         }
 
-        var result = await _session.HoldAsync(project, new[] { echoes[0] }, "이유", CancellationToken.None);
+        var report = await _session.NextAsync(lane, CancellationToken.None);
 
-        Assert.Equal(new[] { echoes[0] }, result.Held.Select(h => h.Row.Id));
-        Assert.Equal(new[] { echoes[1] }, result.SameEnglishWaiting);
-        Assert.Equal(new[] { echoes[0] }, (await _session.HeldAsync(project, CancellationToken.None)).Select(h => h.Row.Id));
-        var request = (await _session.NextAsync(project, CancellationToken.None)).Next!;
-        Assert.Contains(AgentAnswerCheck.Lines(request), line => line.Text.StartsWith("Aetherial Echo", StringComparison.Ordinal));
+        Assert.Null(report.Next);
+        Assert.Null(report.Problem);
+    }
+
+    private static async Task<List<long>> IdsOfAsync(AgentProject project, string english)
+    {
+        await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, CancellationToken.None);
+        return (await db.GetStringsAsync(10, 0, CancellationToken.None)).Where(r => r.SourceText == english).Select(r => r.Id).OrderBy(id => id).ToList();
     }
 
     /// <summary>

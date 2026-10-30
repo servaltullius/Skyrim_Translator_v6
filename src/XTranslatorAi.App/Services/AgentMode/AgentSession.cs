@@ -107,6 +107,9 @@ public sealed record AgentStepReport(AgentProject Project, int PendingBefore, in
     /// The GUI says so; the agent's step used to report 번역 완료 with only a WARN line in app.log.
     /// </summary>
     public IReadOnlyList<string> MissingGlobalData { get; init; } = Array.Empty<string>();
+
+    /// <summary>The rows the run's requests ask once for (AgentTranslationRun.Outcome.Grouped), kept with the request for a hold.</summary>
+    public IReadOnlyDictionary<long, IReadOnlyList<long>> Grouped { get; init; } = new Dictionary<long, IReadOnlyList<long>>();
 }
 
 public sealed class AgentModeException(string message) : Exception(message);
@@ -196,6 +199,7 @@ public sealed partial class AgentSession
             {
                 File.Delete(Path.Combine(lane, "pending.json"));
                 File.Delete(Path.Combine(lane, "request.md"));
+                File.Delete(Path.Combine(lane, "grouped.json"));
             }
         }
 
@@ -675,7 +679,10 @@ public sealed partial class AgentSession
         }
 
         return (new AgentStepReport(project, outcome.PendingBefore, outcome.PendingAfter, outcome.ErrorRows, outcome.Next,
-            outcome.Next == null ? null : RequestPath(project), problem) { MissingGlobalData = missing, RunFailed = outcome.Error != null }, outcome.Used);
+            outcome.Next == null ? null : RequestPath(project), problem)
+            {
+                MissingGlobalData = missing, RunFailed = outcome.Error != null, Grouped = outcome.Grouped,
+            }, outcome.Used);
     }
 
     /// <summary>Writes the report's next request (pending.json, instructions.md, request.md), if it has one.</summary>
@@ -683,10 +690,17 @@ public sealed partial class AgentSession
         CancellationToken cancellationToken)
     {
         var carried = CarryRejections(LaneDir(report.Project), rejected, report.Next);
-        if (report.Next is not { } request) return report;
+        if (report.Next is not { } request)
+        {
+            // A lane's folder is made with its first request: a lane with nothing to ask has none.
+            if (Directory.Exists(LaneDir(report.Project))) File.Delete(GroupedPath(report.Project));
+            return report;
+        }
+
         var dir = LaneDir(report.Project);
         Directory.CreateDirectory(dir);
         await File.WriteAllTextAsync(PendingPath(report.Project), JsonSerializer.Serialize(request, Json), cancellationToken);
+        await File.WriteAllTextAsync(GroupedPath(report.Project), JsonSerializer.Serialize(report.Grouped), cancellationToken);
         var added = AgentRequestRenderer.WriteInstructions(dir, AgentRequestRenderer.Split(request).Sections);
         var text = AgentRequestRenderer.Render(report.Project, request, added, carried, InstructionsPath(report.Project));
         await File.WriteAllTextAsync(RequestPath(report.Project), text, cancellationToken);
@@ -839,13 +853,18 @@ public sealed partial class AgentSession
 
     private void ClearPending(AgentProject project)
     {
+        if (!Directory.Exists(LaneDir(project))) return;
         File.Delete(PendingPath(project));
         File.Delete(RequestPath(project));
+        File.Delete(GroupedPath(project));
     }
 
     private string ProjectDir(AgentProject project) => Path.Combine(_workRoot, project.Key);
     private string LaneDir(AgentProject project) => Path.Combine(_workRoot, project.WorkFolder);
     private string PendingPath(AgentProject project) => Path.Combine(LaneDir(project), "pending.json");
+
+    /// <summary>The rows the waiting request asks once for, by the row it asks (AgentStepReport.Grouped).</summary>
+    private string GroupedPath(AgentProject project) => Path.Combine(LaneDir(project), "grouped.json");
     private string AnswerPath(AgentProject project, string hash, int attempt) => Path.Combine(ProjectDir(project), "responses", $"{hash}.{attempt}.txt");
 
     /// <summary>The last one-line or chunk answer the lane saved, with its request's English.</summary>

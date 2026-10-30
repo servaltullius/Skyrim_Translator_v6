@@ -58,5 +58,8 @@ public sealed record TranslateIdsRequest(
     IReadOnlyDictionary<long, string>? SpeakerNamesById = null,
     // The rows whose translations the run's name memory reads; null for all. An agent lane reads only its own, so
     // another lane saving a row with a name in it does not change this lane's request under its pending answer.
-    IReadOnlySet<long>? NameMemoryRows = null
+    IReadOnlySet<long>? NameMemoryRows = null,
+    // Told which rows a request asks once for: each row it asks, and the rows given its translation (the same text and
+    // context). Agent mode holds them together; held one at a time, the others came back in the next request.
+    Action<IReadOnlyDictionary<long, IReadOnlyList<long>>>? OnDuplicateRows = null
 );

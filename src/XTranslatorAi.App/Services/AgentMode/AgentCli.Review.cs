@@ -196,6 +196,16 @@ public static partial class AgentCli
         }
 
         Console.WriteLine($"고친 줄: {list.Count - same}" + (same > 0 ? $" (이미 같은 줄 {same}은 그대로)" : "") + $". 다시 확인: tullius.cmd check {project.Key}");
+        // A line held with an edited one stays held (and English in the export): the edit is the line named's.
+        var edited = list.Select(edit => Row(edit)!.Id).ToHashSet();
+        var heldWith = (await db.GetStringNotesByKindAsync(TranslationConstants.AgentHoldNoteKind, c.Ct))
+            .Where(pair => !edited.Contains(pair.Key) && edited.Any(id => AgentSession.HeldWith(pair.Value, id)))
+            .Select(pair => "#" + pair.Key).OrderBy(id => id, StringComparer.Ordinal).ToList();
+        if (heldWith.Count > 0)
+        {
+            Console.WriteLine($"알림: 함께 보류했던 줄 {string.Join(", ", heldWith)}은 아직 보류입니다(export 때 영어 그대로). "
+                              + "같은 번역을 넣으려면 그 줄도 edit에 넣으세요.");
+        }
     }
 
     private static async Task ExportAsync(AgentCommand c)
