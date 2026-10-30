@@ -85,9 +85,12 @@ public sealed partial class PluginUiLifecycleTests
             Assert.False(Directory.Exists(fixture.Ui.SavePath));
         });
 
-    /// <summary>An empty name the writer refuses was named by its record alone.</summary>
+    /// <summary>
+    /// A plugin takes no empty translation: the save asked to go on ("이 행들은 빈 글로 저장됩니다"), had a folder chosen,
+    /// and then failed. It stops before the folder, saying why.
+    /// </summary>
     [Fact]
-    public Task ExportingPlugin_WithAnEmptyName_NamesTheRow()
+    public Task ExportingPlugin_WithAnEmptiedRow_StopsBeforeTheFolder()
         => RunOnSta(async () =>
         {
             await using var fixture = new Fixture();
@@ -98,10 +101,31 @@ public sealed partial class PluginUiLifecycleTests
             row.Status = StringEntryStatus.Edited;
             fixture.Ui.SavePath = Path.Combine(fixture.Root, "translated");
 
-            fixture.Ui.Responses.Enqueue(UiMessageBoxResult.Yes);
             await fixture.Vm.ExportPluginCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
 
-            Assert.StartsWith("플러그인 저장(E454):", fixture.Vm.StatusMessage);
+            Assert.Contains(fixture.Ui.Messages, m => m.Contains("ESP에는 빈 번역을 저장할 수 없습니다") && m.Contains($"#{row.OrderIndex}")
+                                                      && !m.Contains("빈 글로 저장됩니다"));
+            Assert.Contains($"row:{row.OrderIndex}", fixture.Vm.StatusMessage);
+            Assert.Equal(0, fixture.Ui.SaveDialogs);
+            Assert.False(Directory.Exists(fixture.Ui.SavePath));
+        });
+
+    /// <summary>A character the output encoding lacks was named by its record alone.</summary>
+    [Fact]
+    public Task ExportingPlugin_WithACharacterTheEncodingLacks_NamesTheRow()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            await fixture.LoadPluginWorkspaceAsync(targetEncoding: "windows-1252");
+            var row = Assert.Single(fixture.Vm.Entries);
+            await fixture.State.Db!.UpdateStringTranslationAsync(row.Id, "철검", StringEntryStatus.Edited, null, CancellationToken.None);
+            row.DestText = "철검";
+            row.Status = StringEntryStatus.Edited;
+            fixture.Ui.SavePath = Path.Combine(fixture.Root, "translated");
+
+            await fixture.Vm.ExportPluginCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(10));
+
+            Assert.StartsWith("플러그인 저장(E457):", fixture.Vm.StatusMessage);
             Assert.Contains($"관련 행: #{row.OrderIndex} (Search에 row:{row.OrderIndex})", fixture.Vm.StatusMessage);
         });
 

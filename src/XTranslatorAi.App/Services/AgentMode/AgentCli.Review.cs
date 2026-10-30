@@ -285,7 +285,6 @@ public static partial class AgentCli
             Console.WriteLine($"알림: 보류한 줄 {unfinished.Held}은 영어 그대로 저장했습니다. 목록: tullius.cmd hold {project.Key}. 끝 보고에 알리세요.");
         }
 
-        if (unfinished.Emptied > 0) Console.WriteLine($"알림: 번역문을 비워 둔 직접 수정 줄 {unfinished.Emptied}은 빈 글로 저장했습니다.");
         var earlier = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(c.Work)) ?? Environment.CurrentDirectory, "output", project.Key);
         if (c.Rest.Count <= 1 && !string.Equals(output, earlier, StringComparison.OrdinalIgnoreCase))
         {

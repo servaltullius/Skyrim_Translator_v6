@@ -173,7 +173,7 @@ public partial class MainViewModel
         StatusMessage = classified is { } error
             ? $"플러그인 저장({code}): {error.Message} 관련 행: {named} (Search에 row:{rows[0]})"
             : $"플러그인 저장({code}): {named} 행의 번역이 원문의 태그·토큰과 맞지 않아 저장하지 않았습니다. "
-              + $"Search에 row:{rows[0]}를 입력하고 Status를 (All)로 설정해 행을 찾아 고친 뒤 다시 저장하세요.";
+              + $"검색 칸에 row:{rows[0]}를 넣고 상태를 (전체)로 두어 행을 찾아 고친 뒤 다시 저장하세요.";
         return true;
     }
 

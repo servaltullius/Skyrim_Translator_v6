@@ -237,9 +237,9 @@ public partial class MainViewModel
     /// <summary>
     /// Saving with rows still in error or pending used to finish silently, so a half-translated file went out
     /// looking complete. A plugin keeps the source text of an unfinished row; an XML keeps its translation field as it
-    /// is, empty or as the opened XML had it (the question used to say "source" for both). A hand edit left empty is
-    /// saved empty, and a line agent mode held keeps its English: both went out without a word. The agent's export
-    /// counts the same rows (ExportUnfinishedRows).
+    /// is, empty or as the opened XML had it (the question used to say "source" for both). A hand edit left empty goes
+    /// out empty in an XML and stops a plugin's save (its writer takes no empty text), and a line agent mode held keeps
+    /// its English: each went out, or failed, without a word. The agent's export counts the same rows (ExportUnfinishedRows).
     /// </summary>
     private async Task<bool> ConfirmExportWithUnfinishedRowsAsync(ProjectDb db, bool xml)
     {
@@ -262,6 +262,25 @@ public partial class MainViewModel
         }
 
         var (errors, pending, emptied, held) = counts;
+        // A plugin's writer takes no empty translation (every field needs text): the save went on to the folder dialog
+        // and then failed, after telling the user the rows would be written empty.
+        if (!xml && emptied > 0)
+        {
+            var rows = Entries.Where(entry => entry.Status == StringEntryStatus.Edited && string.IsNullOrWhiteSpace(entry.DestText)
+                                              && !string.IsNullOrWhiteSpace(entry.SourceText))
+                .Select(entry => entry.OrderIndex).Order().ToList();
+            var named = string.Join(", ", rows.Take(12).Select(row => "#" + row)) + (rows.Count > 12 ? " …" : "");
+            _uiInteractionService.ShowMessage(
+                $"번역문을 비워 둔 직접 수정 행이 {emptied}개 있습니다({named}). ESP에는 빈 번역을 저장할 수 없습니다.{Environment.NewLine}{Environment.NewLine}"
+                + "그 행에 번역을 넣거나, 행을 골라 '선택 행 다시 번역'으로 대기로 돌린 뒤 다시 저장하세요.",
+                "저장 확인",
+                UiMessageBoxButton.Ok,
+                UiMessageBoxImage.Warning,
+                UiMessageBoxResult.Ok
+            );
+            StatusMessage = $"저장하지 않았습니다. 번역문이 빈 행: {named}. 검색 칸에 row:{rows.FirstOrDefault()}를 넣고 상태를 (전체)로 두면 찾을 수 있습니다.";
+            return false;
+        }
 
         var answer = _uiInteractionService.ShowMessage(
             (errors + pending > 0 ? $"번역이 끝나지 않은 행이 있습니다: 오류 {errors}개, 대기 {pending}개.{Environment.NewLine}" : "")
@@ -349,13 +368,15 @@ public partial class MainViewModel
     private async Task<DestEditOutcome> CommitDestEditAsync(ProjectDb db, StringEntryViewModel entry, string newDest)
     {
         var savedDest = newDest ?? "";
-        // An emptied translation was saved as a hand edit of nothing: every later run skips it and the export writes it
-        // empty, as an XML's intentionally empty translation. Emptying is as often meant as "translate this again".
+        // An emptied translation was saved as a hand edit of nothing: every later run skips it, an XML's export writes it
+        // empty and a plugin's refuses it. Emptying is as often meant as "translate this again".
         if (IsEmptiedTranslation(entry, savedDest))
         {
             var answer = _uiInteractionService.ShowMessage(
                 $"#{entry.OrderIndex} 행의 번역문을 비웠습니다.{Environment.NewLine}{Environment.NewLine}"
-                + $"예: 빈 채로 저장합니다(직접 수정). ESP·XML에도 빈 글로 저장됩니다.{Environment.NewLine}"
+                + (_projectState.PluginDocument != null
+                    ? $"예: 빈 채로 저장합니다(직접 수정). ESP에는 빈 번역을 저장할 수 없어, 'ESP 저장' 전에 번역을 넣거나 '선택 행 다시 번역'으로 대기로 돌려야 합니다.{Environment.NewLine}"
+                    : $"예: 빈 채로 저장합니다(직접 수정). XML에도 빈 글로 저장됩니다.{Environment.NewLine}")
                 + $"아니요: 대기로 돌립니다. 다음 '번역 시작' 때 번역합니다.{Environment.NewLine}"
                 + "취소: 지금은 저장하지 않습니다. 비운 번역문은 저장 전 상태로 남아, 내보내기·닫기 전에 다시 묻습니다.",
                 "빈 번역 저장",

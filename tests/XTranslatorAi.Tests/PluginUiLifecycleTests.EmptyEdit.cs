@@ -6,8 +6,9 @@ using XTranslatorAi.Core.Models;
 namespace XTranslatorAi.Tests;
 
 /// <summary>
-/// An emptied translation was saved as a hand edit of nothing: later runs skip it and the export writes it empty, and
-/// the save confirmation did not count it. Saving one asks whether to keep it empty or put the row back to 대기.
+/// An emptied translation was saved as a hand edit of nothing: later runs skip it, an XML's export writes it empty and a
+/// plugin's refuses it, and the save confirmation did not count it. Saving one asks whether to keep it empty or put the
+/// row back to 대기.
 /// </summary>
 public sealed partial class PluginUiLifecycleTests
 {
@@ -28,6 +29,7 @@ public sealed partial class PluginUiLifecycleTests
             rows[0].EditableDestText = "";
             Assert.Equal(MainViewModel.DestEditOutcome.NotSaved, await fixture.Vm.CommitDestEditAsync(rows[0], rows[0].DestText));
             Assert.Contains(fixture.Ui.Titles, title => title == "빈 번역 저장");
+            Assert.Contains(fixture.Ui.Messages, m => m.Contains("XML에도 빈 글로 저장됩니다") && !m.Contains("ESP"));
             Assert.True(rows[0].HasUnsavedDestEdit);
             var saved = await db.GetStringsAsync(10, 0, CancellationToken.None);
             Assert.Equal((StringEntryStatus.Edited, "내가 고친 철검"), (saved[0].Status, saved[0].DestText));
@@ -82,5 +84,21 @@ public sealed partial class PluginUiLifecycleTests
             Assert.Contains(fixture.Ui.Messages, m => m.Contains("번역문을 비워 둔 직접 수정 행이 1개") && !m.Contains("오류 0개"));
             Assert.False(File.Exists(exportPath));
             Assert.Contains("'직접 수정'", fixture.Vm.StatusMessage);
+        });
+
+    /// <summary>In a plugin's project the question said "ESP·XML에도 빈 글로 저장됩니다", where the ESP save refuses it.</summary>
+    [Fact]
+    public Task EmptyingATranslationOfAPlugin_SaysTheEspTakesNoEmptyText()
+        => RunOnSta(async () =>
+        {
+            await using var fixture = new Fixture();
+            await fixture.LoadPluginWorkspaceAsync();
+            var row = Assert.Single(fixture.Vm.Entries);
+            Assert.Equal(MainViewModel.DestEditOutcome.Saved, await fixture.Vm.CommitDestEditAsync(row, "철검"));
+
+            fixture.Ui.Responses.Enqueue(UiMessageBoxResult.Cancel);
+            Assert.Equal(MainViewModel.DestEditOutcome.NotSaved, await fixture.Vm.CommitDestEditAsync(row, ""));
+
+            Assert.Contains(fixture.Ui.Messages, m => m.Contains("ESP에는 빈 번역을 저장할 수 없어") && !m.Contains("ESP·XML에도"));
         });
 }

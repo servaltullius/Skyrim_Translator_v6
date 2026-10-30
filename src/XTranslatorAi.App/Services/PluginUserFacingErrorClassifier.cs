@@ -33,7 +33,7 @@ public static class PluginUserFacingErrorClassifier
                 var id = shared.Groups["id"].Value;
                 var rows = Match(message, @" 관련 행: (?<ids>#[0-9]{1,10}(?:, #[0-9]{1,10}){0,11})$");
                 var rowHint = rows.Success ? " 관련 행: " + rows.Groups["ids"].Value : "";
-                return Error("E453", $"{table} StringID {id}를 공유하는 행의 번역이 다릅니다. Search에 string:{table.ToUpperInvariant()}/{id}를 입력하고 Status를 (All)로 설정한 뒤, 공유 행의 번역을 모두 일치시켜 저장하세요.{rowHint}");
+                return Error("E453", $"{table} StringID {id}를 공유하는 행의 번역이 다릅니다. 검색 칸에 string:{table.ToUpperInvariant()}/{id}를 넣고 상태를 (전체)로 둔 뒤, 공유 행의 번역을 모두 일치시켜 저장하세요.{rowHint}");
             }
             // An earlier translation read neither as UTF-8 nor as CP949: choosing a source encoding would not help.
             if (message.StartsWith(XTranslatorAi.Core.Plugins.PluginReader.TranslatedReleaseUnreadable, StringComparison.Ordinal))

@@ -432,7 +432,8 @@ public sealed partial class PluginUiLifecycleTests
             return Responses.Count > 0 ? Responses.Dequeue() : title == "저장 확인" ? UiMessageBoxResult.Yes : UiMessageBoxResult.Ok;
         }
         public string? ShowOpenFileDialog(OpenFileDialogRequest request) { NetworkOrDialogUsed = true; return OpenPath; }
-        public string? ShowSaveFileDialog(SaveFileDialogRequest request) { NetworkOrDialogUsed = true; return SavePath; }
+        public int SaveDialogs { get; private set; }
+        public string? ShowSaveFileDialog(SaveFileDialogRequest request) { NetworkOrDialogUsed = true; SaveDialogs++; return SavePath; }
         public bool TryOpenFolder(string path) { NetworkOrDialogUsed = true; return false; }
     }
 

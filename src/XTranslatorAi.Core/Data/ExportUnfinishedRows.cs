@@ -12,7 +12,7 @@ namespace XTranslatorAi.Core.Data;
 /// the lines agent mode held, which went out in English without a word. A held row is 건너뜀 with an agent_hold note,
 /// counted by the note: an XML's rows that came in with a translation are 건너뜀 too, and finished.
 /// </summary>
-/// <param name="Emptied">Hand edits left empty: they are written empty.</param>
+/// <param name="Emptied">Hand edits left empty: an XML writes them empty, a plugin's writer refuses them (every field needs text).</param>
 public sealed record ExportUnfinishedRows(int Errors, int Pending, int Emptied, int Held)
 {
     public int Unfinished => Errors + Pending;
