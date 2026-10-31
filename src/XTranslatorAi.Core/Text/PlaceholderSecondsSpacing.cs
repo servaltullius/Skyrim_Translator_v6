@@ -5,7 +5,7 @@ namespace XTranslatorAi.Core.Text;
 
 /// <summary>
 /// Seconds after a value placeholder stand apart, as the Korean patch writes them: "&lt;dur&gt; 초 동안", "&lt;30&gt; 초"
-/// (410 of its 439 places, and its review guide). The translator glued them ("&lt;dur&gt;초"), so a mod's effects read
+/// (all 340 places in the five masters, and its review guide). The translator glued them ("&lt;dur&gt;초"), so a mod's effects read
 /// differently from the game's and every patch line it filled was changed. A plain number keeps its unit ("30초"), and
 /// "초당" before a token is a rate, not these seconds.
 /// </summary>
