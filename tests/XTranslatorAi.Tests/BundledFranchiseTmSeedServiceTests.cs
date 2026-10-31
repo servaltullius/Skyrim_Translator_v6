@@ -578,6 +578,9 @@ public class BundledFranchiseTmSeedServiceTests
             Assert.Contains("\nUnbound Dremora\t속박되지 않은 드레모라\t", changes, StringComparison.Ordinal);
             Assert.Contains("\nBecome Guild Master for the Thieves Guild\t도둑 길드의 길드 마스터가 되기\t", changes, StringComparison.Ordinal);
             Assert.Contains("\nWhat are the Ancestral Tombs?\t조상의 무덤들이란게 뭐요?\t", changes, StringComparison.Ordinal);
+            // The decisions after it: Jiub, a stranger, hears 하오체; a confirmation box asks ~하겠습니까?.
+            Assert.Contains("\nWhat ended up happening?\t마지막에는 어떻게 되었소?\t", changes, StringComparison.Ordinal);
+            Assert.Contains("\nDo you want to improve this item?\t이 물품을 강화하겠습니까?\t", changes, StringComparison.Ordinal);
             Assert.Contains("\nI want you to leave Omluag alone.\t옴러그를 내버려두시오.\t", changes, StringComparison.Ordinal);
             Assert.DoesNotContain('\u00A0', changes.Split('\n').Where(line => line.Length > 0).Select(line => line.Split('\t')[1]).SelectMany(target => target));
             // Sea Squall is new: no earlier seed had it, and the ship took the 스퀄 of Strident Squall.

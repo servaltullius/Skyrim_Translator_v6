@@ -19,7 +19,7 @@ Source	Target	Previous
 [Optional] Find <Alias=Jarl> and escape with <Alias.PronounObj=Jarl> through the city.	(선택) <Alias=Jarl>을(를) 찾고 <Alias.PronounObj=Jarl>와 함께 도시를 통하여 탈출하기	(선택) <Alias=Jarl>을 찾고 <Alias.PronounObj=Jarl>과 함께 도시를 통하여 탈출하기
 A dragon attacked Helgen and destroyed it. Ralof and I escaped together.	드래곤이 헬겐을 공격해서 파괴했고, 나는 레일로프와 함께 탈출했소.	드래곤이 헬겐을 공격했고 파괴했습니다. 나는 레일로프와 함께 탈출했소.
 A dragon destroyed Helgen. <Alias=RiverwoodFriend> is afraid Riverwood is next.	드래곤이 헬겐을 파괴했습니다. <Alias=RiverwoodFriend>은(는) 다음 목표가 리버우드라고 걱정하고 있습니다.	드래곤이 헬겐을 파괴했습니다. <Alias=RiverwoodFriend> 는 다음 목표가 리버우드라고 걱정하고 있습니다.
-A dremora captured you?	드레모라가 당신을 가두었다고요?	드레모라가 당신을 가두었다고?
+A dremora captured you?	드레모라가 당신을 가두었단 말이오?	드레모라가 당신을 가두었다고?
 A Grand Soul gem filled with a Grand Soul is required to build the Arcane Enchanter.	마법부여대를 제작하기 위해서는 특급 소울젬(특급)이 필요합니다.	마법 부여대를 제작하기 위해서는 특급 소울젬(특급)이 필요합니다.
 A tidy, one-room house.	깔끔한 방 하나짜리 집.	자그마한, 방 하나짜리 집.
 Accept Jarl <Alias=Jarl>'s surrender	<Alias=Jarl>의 항복을 받기	<Alias=Jarl> 의 항복을 받기
@@ -88,6 +88,7 @@ Buy the Book off Lod	로드에게서 그 책을 구입하기	로드에게 그 �
 Cage	우리	벽장
 Call of the Wild	야생의 외침	아생의 외침
 Can you share anything about the Thieves Guild?	도둑 길드에 대한 정보를 알려주시오.	도둑길드에 대한 정보를 알려주시오.
+Change preset and lose your changes?	변경사항을 버리고 사전설정으로 바꾸겠습니까?	변경사항을 버리고 사전설정으로 바꿀까요?
 Changed Ones	변화한 자들	변절한 자들
 Charm - Master of the Mind	매료 - 정신의 지배자	매료 - 정신마법의 달인
 Chasing Echoes	메아리를 쫓아서	따라오는 메아리
@@ -100,6 +101,7 @@ Complaint Letter	항의 편지	고소 편지
 CONJURATION	소환마법	소환
 Conjure Spectral Dragon	유령 드래곤 소환	영체 드래곤 소환
 CONTAINERS	보관함	상자
+Could I help?	내가 도와줄 수 있겠소?	도와드릴까요?
 Cow Hand	목동	카우 핸드
 Darkfall Grotto	다크폴 암굴	다크폴 동굴
 Darling, Brynjolf sent me. We both know what that means.	여보, 브린욜프가 보내서 왔어. 그게 무슨 뜻인지 잘 알고 있겠지.	이봐, 브린욜프가 보내서 왔어. 그게 무슨 뜻인지 잘 알고 있겠지.
@@ -118,9 +120,14 @@ Demonstrate your "Whirlwind Sprint" Shout	"회오리 질주" 함성을 사용하
 Desecrated Corpse	훼손된 시체	바짝마른 시체
 Destroy the barricade blocking the Jarl's house.	야를의 집을 막고 있는 바리케이드를 파괴하기	야를의 집을 지키고있는 장벽을 파괴하기
 Did you send that guard to threaten me?	날 위협하려고 그 경비병을 보낸건가?	날 위협하려고 그 경비병들을 보낸건가?
+Didn't work out that way I assume.	제대로 되지 않았나 보오.	제대로 되지 않았을 거라고 생각되는군요.
 Discerning the Transmundane	다른 차원의 것을 인식	다른 차원의 것을 알아내기
 Discreetly kill <Alias=Target>	은밀하게 <Alias=Target> 죽이기	신중하게 <Alias=Target> 죽이기
 Do I need to read the scrolls in any particular order?	엘더스크롤을 뭔가 특별한 순서대로 읽어야 하는 거요?	엘더스크롤을 뭔가 특별한 순서대로 읽어야 하는 겁니까?
+Do you just want to serve your time?	감옥에서 형기를 보내겠습니까?	감옥에서 형기를 보낼까요?
+Do you want to create this item?	이 물품을 제작하겠습니까?	이 물품을 제작할까요?
+Do you want to improve this item?	이 물품을 강화하겠습니까?	이 물품을 강화할까요?
+Do you want to move your marker or remove it?	표시를 옮기거나 삭제하겠습니까?	표시를 옮기거나 삭제할까요?
 Does <mag> damage over <dur> seconds. Additional opponents in melee range have a chance to be infected.	<dur> 초 동안 <mag> 의 피해를 입힙니다. 일정한 확률로 주변 적도 감염시킵니다.	<dur> 초 동안 <mag> 의 피해를 입힙니다. 일정한 확률로 주변 적에게 피해를 줍니다.
 Does the war mean good business for you?	전쟁 덕분에 장사가 잘되나?	전쟁덕분에 장사가 잘 된다는 소린가?
 Don't worry. I have a plan. I'm going to trap a dragon in Dragonsreach.	걱정마시오. 계획이 있소. 드래곤스리치에 드래곤을 가둘 생각이오.	걱정마시오. 계획이 있소. 드래곤스리치에서 함정으로 잡을 생각이오.
@@ -154,6 +161,7 @@ Explore Vahlok's Tomb	발록의 묘지를 탐색하기	발록의 묘지을 탐�
 Explore Yngol's Barrow	잉골 고분을 탐색하기	잉골의 무덤을 탐색하기
 Faded Diary	빛바랜 일기	빛 바랜 일기
 Fall from Glory	영광에서의 몰락	영광에서 몰락
+Fast travel to %s?	%s까지 빠른 이동을 사용하겠습니까?	%s까지 빠른 이동을 사용할까요?
 Find <Alias=QuestItem> for <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>을(를) 위해 <Alias=QuestItem> 찾기	<Alias.ShortName=QuestGiver>를 위해 <Alias=QuestItem> 찾기
 Find the <Alias=QuestItem> inside <Alias=Dungeon>	<Alias=Dungeon>안에서 <Alias=QuestItem>을 찾기	<Alias=Dungeon>안에서 <Alias=QuestItem>를 찾기
 First Letter from EEC	동제국 회사의 첫 번째 편지	동제국 회사의 첫번째 편지
@@ -196,8 +204,11 @@ Hey, take it easy.	이봐, 쉽게 좀 가자구.	이봐, 진정하라구.
 Honed Draugr War Axe	연마된 고대 노드 도끼	연마된 드로거 도끼
 Horker and Ash Yam Stew	호커와 화산 참마 스튜	호커와 화산참마 스튜
 How did you become allied with the Thieves Guild?	어떻게 도둑 길드와 동맹을 맺게 된 거지?	어떻게 도둑길드와 동맹을 맺게 된 거지?
+How did you earn your nicknames?	어떻게 그런 별명을 얻게 된 거요?	어떻게 그런 별명을 얻게 된 겁니까?
 How has Raven Rock needed your help?	레이븐 락에 당신들의 도움이 왜 필요했지?	레이븐 락이 어떤 도움을 필요로 하지?
+How is your work going so far?	당신의 책은 어디까지 진행되었소?	당신의 책은 어디까지 진행되었습니까?
 How long have you been First Hunter?	얼마나 오랫동안 최고 사냥꾼이었소?	얼마나 오랫동안 1급 사냥꾼이었소?
+How many pages did you lose?	잃어버린 쪽지가 몇 장이나 되오?	잃어버린 쪽지가 몇장이나 됩니까?
 I agree. The Empire should turn over <Alias=ImperialMinorHold2>.	동의하오. 제국은 <Alias=ImperialMinorHold2>을(를) 넘겨주어야 합니다.	동의하오. 제국은 <Alias=ImperialMinorHold2>을/를 넘겨주어야 합니다.
 I agree. Ulfric should turn over <Alias=SonsMinorHold2>.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을(를) 넘겨야하오.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을/를 넘겨야하오.
 I assure you it wasn't anyone from the Guild.	장담하는데 우리 길드원 소행은 아니야.	우리 길드원 소행은 확실히 아니군.
@@ -206,11 +217,12 @@ I bring an offer from the Thieves Guild.	도둑 길드의 제안을 가져왔다
 I can break some of your bones if that's what it's going to take... (Brawl)	그래야 한다면 네 뼈를 부러뜨려주마. (싸움)	만약 그럴 작정이라면 네 뼈를 부러뜨려주마. (싸움)
 I convinced <Alias.ShortName=Target> to ease up a bit.	부담을 조금 줄여달라고 <Alias.ShortName=Target>을(를) 설득했다.	부담을 조금 줄여달라고 <Alias.ShortName=Target>를 설득했다.
 I discovered this note on one of the ash spawn.	화산재 스폰의 잔해들 중에서 이 쪽지를 발견했는데.	화산재 스폰의 잔해들 중에서 이 노트를 발견했는데.
-I do, but you can't leave that way.	알고 있습니다. 하지만 당신은 그 방법으로는 나갈 수 없습니다.	그렇소, 하지만 당신은 그 방법으로는 나갈 수 없는데.
+I do, but you can't leave that way.	알고 있소. 하지만 당신은 그 방법으로는 나갈 수 없소.	그렇소, 하지만 당신은 그 방법으로는 나갈 수 없는데.
 I do. My hand is yours.	그래. 내 손은 당신 거야.	그래. 나의 팔은 당신 거야.
 I don't have time for this. Do you?	이렇게 낭비할 시간따위는 없어. 당신은 있나?	이렇게 낭비할 시간따위는 없어.
 I don't have time for this... I can get rough with you if I have to.	이럴 시간이 없는데... 거칠게 다룰 수도 있어.	이럴 시간이 없는데... 거칠게 다룰 수도 있어.
 I don't really know. Paarthurnax told me it would work.	전혀 모르겠군. 파써낙스는 그게 통할 거라고 하던데.	전혀 모르겠군. 파써낙스는 그걸로 알 수 있을거라고 하던데.
+I don't suppose there's a way to free you.	당신을 풀어줄 방법은 없을 것 같소.	당신을 풀어줄 방법은 없는 것 같은데.
 I found the same marking at Honningbrew Meadery.	허닝브루 양조장에서 같은 문양을 발견했지.	허닝브루 양조장에서 같은 상징을 발견했지.
 I got the fragment.	조각을 가져왔습니다.	조각들을 가져왔습니다.
 I have Kodlak's fragment.	코들락이 가지고 있던 조각을 가져왔습니다.	코들락이 가지고 있던 조각들을 가져왔습니다.
@@ -251,6 +263,7 @@ Increase the damage and decrease the cost of Destruction spells for <dur> second
 Increase the duration and decrease the cost of Conjuration spells for <dur> seconds.	<dur> 초 동안 소환마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 소환마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Increase the duration and decrease the cost of Illusion spells for <dur> seconds.	<dur> 초 동안 환영마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 환영마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Iron Door	철문	강철 문
+Is that where you were attacked?	거기가 당신이 공격받은 곳이오?	거기가 당신이 공격받은 장소입니까?
 Is there anything I should be aware of?	미리 알아두면 좋은 게 있습니까?	미리 알아두면 좋은게 있습니까?
 Is this the tomb?	이게 무덤인가?	이 무덤인가?
 It is done. <Alias=Spouse> has been welcomed into the family.	끝났습니다. <Alias=Spouse>이(가) 우리의 가족이 되었습니다.	끝났습니다. <Alias=Spouse>가 우리의 가족이 되었습니다.
@@ -281,6 +294,7 @@ Malign Aversion to Magic	독 - 마법 약점 최상급	독 - 마법 저항 최�
 Malign Aversion to Shock	독 - 전격 약점 최상급	독 - 전격 최상급
 Mara is the goddess of love and compassion. She has a temple in Riften.	마라는 사랑과 자비의 여신입니다. 그녀의 신전은 리프튼에 있습니다.	마라는 사랑과 자비의 여신입니다. 그녀의 신전은 리프튼 에 있습니다.
 Maurice said that renewal is more important than maintenance.	모리스는 유지하는 것보다 재탄생이 더 중요하다고 했소.	모리스는 유지하는 것보다 개선이 더 중요하다고 했소.
+Maybe a shorter title is in order?	책의 제목은 조금 더 짧은 편이 좋지 않겠소?	책의 제목은 조금 더 짧은 편이 좋지 않습니까?
 Meet Bujold at Hrothmund's Barrow	흐로스문드의 무덤에서 부졸드를 만나기	흐로스문드 무덤에서 부졸드를 만나기
 Meet Karliah at the standing stone	선돌 앞에서 칼라이아와 만나기	비석앞에서 칼라이아와 만나기
 Meet with <Alias=General>	<Alias=General>와(과) 만나기	<Alias=General>와 만나기
@@ -293,11 +307,13 @@ Mounted Elk Head	큰뿔사슴 머리 박제	큰 뿔 사슴 머리 박제
 Mudcrab Boss (Old Salty)	거대 진흙게 (올드 살티)	거대 진흙 게 (올드 살티)
 Mystic Dagger	신비한 단검	신비한 마법 단검
 Nchardak Great Chamber	느챠닥 대석실	느챠닥 대매장묘실
+Neither side is making much headway. What's the harm in talking to Ulfric?	어느 쪽도 큰 진전이 없으니, 울프릭과 이야기한다고 해서 나쁠 건 없지 않습니까?	어느 쪽이든 큰 진전이 없으니 울프릭에게 이야기 한다고 해서 나쁠건 없겠지?
 Nirya wanted me to steal your notes.	니리야가 당신의 메모를 훔쳐달라더군.	니리야가 당신의 쪽지를 훔쳐달라더군.
 Noble Clothes	야를의 기품있는 의상	귀족의 의상
 Nobody hears from them much anymore.	더 이상 소식 들을 일은 없을 거야.	더이상 소식들을 일은 없을 거야.
 Nocturnal is the daedric mistress of stealth and shadow, and a patron to thieves.	녹터널은 잠행과 그림자의 데이드릭 프린스이며, 도둑들의 후원자입니다.	녹터널은 잠행과 그림자의 데이드라 프린스이며, 도둑들의 후원자입니다.
 Note to the Authorities	당국에 보내는 메모	당국의 메모
+Now, what were you saying?	음, 뭐라고 했소?	음, 뭐라고 했습니까?
 Obtain some Vampire Dust	흡혈귀 가루를 구하기	몇 개의 흡혈귀 가루를 구하기
 Oglub	오글럽	오글로프
 Olda wanted me to steal this <Alias=QuestItem>.	올다가 이 <Alias=QuestItem>을 훔쳐달라고 했는데.	올다가 이 <Alias=QuestItem>를 훔쳐달라고 했는데.
@@ -321,6 +337,7 @@ Potent Aversion to Frost	독 - 냉기 약점 상급	독 - 냉기 상급
 Potent Aversion to Magic	독 - 마법 약점 상급	독 - 마법 저항 상급
 Potent Aversion to Shock	독 - 전격 약점 상급	독 - 전격 상급
 Predator's Grace	포식자의 가호	약탈자의 가호
+Prison? You mean the Soul Cairn?	감옥? 소울 케언을 말하는 거요?	감옥? 소울 케언을 뜻하는 겁니까?
 Promissory Note	약속어음	약속 메모
 Purchase a house in Windhelm	윈드헬름에서 집을 구입하기	윈드헬름의 집을 구입하기
 QuickShot	신속 사격	속사
@@ -392,6 +409,8 @@ Speak to the Steward of Morthal about the land for sale	판매 중인 토지에 
 Speak with <Alias=CurrentQuestGiver> for an assignment	임무에 관해서 <Alias=CurrentQuestGiver>와(과) 대화하기	임무에 관해서 <Alias=CurrentQuestGiver>와 대화하기
 Spell Tome: Detect Undead	마법책: 시체 탐지	마법책: 사체 탐지
 Stallion's Potion	종마의 물약	스탈리온의 물약
+Start a new game? Creations are currently loaded. Note: Trophies are disabled.	현재 모드를 사용하고 있습니다. 새 게임을 시작하시겠습니까? 주의: 업적 달성을 할 수 없습니다.	현재 모드를 사용하고 있습니다. 새 게임을 시작할까요? 주의: 업적 달성을 할 수 없습니다.
+Start game as %s?	%s 로 게임을 시작하겠습니까?	%s 로 게임을 시작할까요?
 Steady Hand (1)	안정된 활시위	안정된 활 시위
 Steady Hand (2)	안정된 활시위	안정된 활 시위
 Steal <Global=TGRNGold> gold in goods from <Alias=City>	<Alias=City>에서 <Global=TGRNGold> 골드만큼의 물품을 훔치기	<Alias=City>에서 <Global=TGRNGold> 골드 만큼의 물품을 훔치기
@@ -426,13 +445,14 @@ Tell <Alias.ShortName=Questgiver> the vampire is dead	<Alias.ShortName=Questgive
 Tell <Alias.ShortName=Questgiver> what <Alias.ShortName=Target> said about the outfit.	<Alias.ShortName=Target>가 복장에 관해 한 말을 <Alias.ShortName=Questgiver>에게 전하기	<Alias.ShortName=Target> 이 복장에 관해 한 말을 <Alias.ShortName=Questgiver>에게 전하기
 Tell me about this temple.	이 신전에 대해 말해주시오.	이 사원에 대해 말해주시오.
 Temple Ancestral Tomb	신전 선조의 무덤	사원 선조의 무덤
-That was... a bit before my time.	그건... 내가 태어나기 한참 전의 일인데.	그것은... 몇시대 전에 일어났던 일인데.
+That was... a bit before my time.	그건... 내가 태어나기 한참 전의 일이오.	그것은... 몇시대 전에 일어났던 일인데.
 The <Alias=Beast> is dead.	<Alias=Beast>은(는) 죽었다.	<Alias=Beast>는 죽었다.
 The <Alias=Boss> at <Alias=Dungeon> has been dealt with.	<Alias=Dungeon>에 있던 <Alias=Boss>은(는) 처리되었소.	<Alias=Dungeon>에 있던 <Alias=Boss>는 처리되었소.
 The <Alias=Boss> at <Alias=Dungeon> has been destroyed.	<Alias=Dungeon>의 <Alias=Boss>은(는) 죽었습니다.	<Alias=Dungeon>의 <Alias=Boss>는 죽었습니다.
 The Alchemy skill determines the creation and potency of potions and poisons.	연금술 기술은 물약과 독을 만들고, 그것을 얼마나 강력하게 만들 수 있는지를 결정합니다.	연금술 기술은 물약과 독을 만들고, 그것을 얼마나 강력하게 만들 수 있는지를 결정합니다.
 The Apprentice Stone ability doubles your Magicka and regeneration speed, but makes you twice as susceptible to spells.	'수습생의 선돌'은 당신의 매지카와 재생 속도를 2배로 향상시킵니다. 그러나 상대의 마법공격에 2배 더 약해집니다.	'수습생의 선돌'은 당신의 매지카와 회복속도를 2배로 향상시킵니다. 그러나 상대의 마법공격에 2배 더 약해집니다.
 The bandit leader at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>의 산적 두목은 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 의 산적 두목은 죽었습니다. 현상금을 받으러 왔습니다.
+The best time to negotiate is from a position of strength.	유리한 위치에 있을 때 협상하기에 가장 좋습니다.	유리한 위치에 있을때 협상하기에 가장 좋습니다.
 The dragon at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>에 있던 드래곤은 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 에 있던 드래곤은 죽었습니다. 현상금을 받으러 왔습니다.
 The Five Far Stars	멀리 떨어진 다섯 개의 별	다섯개의 별
 The Fourth Era began 200 years ago when Martin Septim sacrificed himself to save the world from the Oblivion Crisis.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대 위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.
@@ -449,6 +469,7 @@ The Stormcloaks kept control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을
 The Stormcloaks lost control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 잃었습니다.	스톰클록군이 <Alias=Hold> 를 잃었습니다.
 The Temple's tomb has been cleansed.	신전의 무덤은 정화되었소.	사원의 무덤은 정화되었소.
 The Thieves Guild has a problem out here?	도둑 길드는 이 지역에서 뭔가 문제라도 있소?	도둑길드는 이 지역에서 뭔가 문제라도 있소?
+The war is stalemated. What's the harm in talking to Ulfric?	전쟁은 교착 상태인데, 울프릭과 이야기한다고 해서 무슨 해가 되겠습니까?	전쟁은 교착상태인데 울프릭에게 말한다고 해가 될게 뭐가 있겠어?
 The wooden mask hums with an unfamiliar energy.	나무 가면에서 이상한 기운이 흘러넘치고 있습니다.	나무 가면에서 이상한 기운이 흘러 넘치고 있습니다.
 The Woodsman's Friend	나무꾼의 친구	나무꾼의 전투 도끼
 The World-Eater's Eyrie	세상을 삼키는 자의 둥지	세계를 삼키는 자의 둥지
@@ -487,25 +508,32 @@ Weak Aversion to Fire	독 - 화염 약점 하급	독 - 화염 하급
 Weak Aversion to Frost	독 - 냉기 약점 하급	독 - 냉기 하급
 Weak Aversion to Magic	독 - 마법 약점 하급	독 - 마법 저항 하급
 Weak Aversion to Shock	독 - 전격 약점 하급	독 - 전격 하급
+Were you successful?	성공했소?	성공했습니까?
 What are the Ancestral Tombs?	조상의 무덤들이란게 뭐요?	조상의 무덤들이란게 뭡니까?
 What are the duties of a Keeper?	키퍼의 역할은 뭐지?	관리자의 역할은 뭐지?
 What did you do?	무슨 일을 한 겁니까?	무슨 일로?
 What do you have against the Greybeards?	그레이비어드한테 무슨 불만이라도 있나?	그레이비어드에게 무슨 문제라도 있나?
 What do you mean "supposed"?	'이른바'라니, 무슨 뜻이지?	'그랬어야 한다'는건 무슨 뜻이지?
+What ended up happening?	마지막에는 어떻게 되었소?	마지막에는 어떻게 되었습니까?
 What evil do you mean?	어떤 악마를 말하는 거지?	어떤 악을 말하는 거지?
 What happened during the Night of Green Fire?	녹색 화염의 밤에 무슨 일이 일어났습니까?	녹색 불의 밤에 무슨 일이 일어났습니까?
 What happened to the dragon?	그 드래곤에게 무슨 일이 있었던 거요?	그 드래곤에게 무슨 일이 있었던 겁니까?
+What was your campaign against them?	그들에 대비해서 어떤 작전을 세웠소?	그들에 대비해서 어떤 작전을 세웠습니까?
 What would you like?	뭘 갖고 싶니?	어떤 걸 좋아하니?
 What's at Fort Hraggstad?	흐라그스타드 요새에는 뭐가 있습니까?	흐라그스타드 요새에 무슨 일이 있었습니까?
 What's been sending you to Darkwater Crossing?	무슨 일로 다크워터 갈림길에 다니는 거지?	왜 다크워터 갈림길로 뭘 보내는 거지?
 What's expected of me here?	여기서 제게 기대하는 건 뭡니까?	여기서 제가 할 일은 뭡니까?
 When will you return to Tamriel?	언제 탐리엘로 돌아갈 거요?	언제 탐리엘로 돌아갈 겁니까?
 Where is this shrine?	그 성소는 어디에 있습니까?	그 성지는 어디에 있습니까?
+Where were you captured?	어디에서 납치되었소?	어디에서 납치되었습니까?
 Who cares, we're the Thieves Guild.	알게 뭐야, 우리는 도둑 길드인데.	알게 뭐야, 우리는 도둑길드인데.
 Who did this?	누구 짓이오?	누구 짓이요?
+Who threw you in here?	누가 당신을 여기에 던져 넣었소?	누가 당신을 여기에 던져넣었습니까?
 Why did you join the Guild and not the Brotherhood?	왜 다크 브라더후드가 아니라 도둑 길드에 가입한거지?	왜 다크 브라더후드가 아니라 도둑길드에 가입한거지?
 Why did you work for him then?	그렇다면 어째서 그 사람 밑에서 일했지?	그렇다면 어째서 그를 위해서 일하는거지?
 Why not level the entire estate?	왜 농장 전체를 싹 갈아버리면 안 되는 거지?	왜 지구 전체를 싹 갈아버리면 안 되는 거지?
+Why was Dagon able to do this?	어째서 데이건이 그렇게 할 수 있었소?	어째서 데이건이 그렇게 할 수 있었습니까?
+Why would a dremora attack you?	어째서 드레모라가 당신을 공격했소?	어째서 드레모라가 당신을 공격했습니까?
 Word of Power	힘의 단어	힘의 언어
 Would you believe I was given a vision?	내가 계시를 받았다고 하면 믿겠소?	내가 예언을 받았다는 것을 믿소?
 Yes, I've got a house in Hjaalmarch.	그래, 나는 히얄마치에 집이 있단다.	히얄마치에 있는 집.
@@ -519,7 +547,9 @@ You did try to trick me into letting you go.	풀려나려고 날 속이려 했�
 You have no faith in the Guild?	도둑 길드를 믿지 않나 보지?	도둑길드를 믿지 않나 보지?
 You have.... But I don't care.	잘 알아들었어... 하지만 상관없어.	당신은 그렇겠지... 하지만 상관없어.
 You mentioned trading caravans?	카짓 행상인들이라 했소?	캐러밴이라 했소?
+You must be crazy.	미친 게 분명하오.	미쳐버린 것 같은데.
 You said something about a bad deal?	손해 본 거래에 대해 뭔가 말했지?	부당거래에 대해 뭔가 말했지?
+You said you were in prison?	감옥에 있었다고 했소?	감옥에 있었다니?
 You think she'll get over it?	당신 딸이 그 마음을 접을 거라고 생각하시오?	당신 딸이 견딜 수 있을거라고 생각하시오?
 You wanted to speak with me?	나와 이야기하고 싶었소?	저와 대화를 하기 원하십니까?
 You wanted to thank me for killing <Alias=Victim>?	<Alias=Victim>을(를) 죽인 것에 대한 감사표시?	<Alias=Victim>을/를 죽인 것에 대한 감사표시?
@@ -529,5 +559,5 @@ You're not going to kill her, are you?	설마 저 군단장을 죽이실 생각�
 You're right. <Alias=ImperialMajorHoldCapital> is a fair trade for Riften.	당신 말이 맞소. <Alias=ImperialMajorHoldCapital>은(는) 리프튼에 대한 공정한 거래라오.	당신 말이 맞소. <Alias=ImperialMajorHoldCapital>은 리프튼을 위한 공정한 거래라오.
 You're right. <Alias=SonsMajorHoldCapital> is a fair trade for Markarth.	당신이 맞아요. <Alias=SonsMajorHoldCapital>은(는) 마르카스에 대한 공정한 거래입니다.	당신이 맞아요. <Alias=SonsMajorHoldCapital>은 마르카스에 대한 공정한 거래입니다.
 You're right. I shouldn't have brought it up.	당신의 말이 맞아. 그 이야기는 꺼내지 말았어야 했어.	당신의 말이 맞아. 그 이야기를 꺼내지 않도록 하지.
-Your soul was trapped.	당신의 영혼이 갇혀버린 겁니다.	당신의 영혼이 갇혀버린 거요.
+You're talking about a book?	책에 관해서 이야기하고 있는 거요?	책에 관해서 이야기하고 있는 겁니까?
 Zenithar is the god of work and commerce. He has a shrine in the Temple of the Divines in Solitude.	제니타르는 일과 상업의 신입니다. 그의 성소는 솔리튜드의 디바인 신전에 있습니다.	제니타르는 일과 상업의 신입니다. 그의 성소는 솔리튜드의 디바인 신전에 있습니다.

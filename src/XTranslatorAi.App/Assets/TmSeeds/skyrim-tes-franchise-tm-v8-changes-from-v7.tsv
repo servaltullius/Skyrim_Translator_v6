@@ -1,35 +1,52 @@
 Source	Target	Previous
 (Optional) Visit the College of Winterhold to ask about the Moth Priest	(선택) 윈터홀드 대학을 방문하여 나방 사제에 관해 물어보기	(선택) 윈터홀드의 마법대학을 방문하여 나방 사제에 관해 물어보기
-A dremora captured you?	드레모라가 당신을 가두었다고요?	드레모라가 당신을 가두었다고?
+A dremora captured you?	드레모라가 당신을 가두었단 말이오?	드레모라가 당신을 가두었다고?
 Agrius's Journal	아그리우스의 일기	아그리어스의 일기
 ALTERATION	변화마법	변화
 Barter	거래	흥정
 Become Guild Master for the Thieves Guild	도둑 길드의 길드 마스터가 되기	도둑 길드의 지도자가 되기
 Break through the First Barricade	첫 번째 바리케이드를 파괴하기	첫 번째 바리케이드 파괴하기
 Call of the Wild	야생의 외침	아생의 외침
+Change preset and lose your changes?	변경사항을 버리고 사전설정으로 바꾸겠습니까?	변경사항을 버리고 사전설정으로 바꿀까요?
 Claim Mehrunes' Razor	메이룬스 데이건의 단검을 가지기	메이룬스의 면도칼을 가지기
 CONJURATION	소환마법	소환
 CONTAINERS	보관함	상자
+Could I help?	내가 도와줄 수 있겠소?	도와드릴까요?
 Demonstrate your "Unrelenting Force" Shout	"거침없는 힘" 함성을 보여주기	'거침없는 힘' 함성을 보여주기
 Demonstrate your "Unrelenting Force" Shout (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	"거침없는 힘" 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	'거침없는 힘' 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)
 Demonstrate your "Whirlwind Sprint" Shout	"회오리 질주" 함성을 사용하기	'회오리 질주' 함성을 사용하기
+Didn't work out that way I assume.	제대로 되지 않았나 보오.	제대로 되지 않았을 거라고 생각되는군요.
 Discerning the Transmundane	다른 차원의 것을 인식	다른 차원의 것을 알아내기
 Do I need to read the scrolls in any particular order?	엘더스크롤을 뭔가 특별한 순서대로 읽어야 하는 거요?	엘더스크롤을 뭔가 특별한 순서대로 읽어야 하는 겁니까?
+Do you just want to serve your time?	감옥에서 형기를 보내겠습니까?	감옥에서 형기를 보낼까요?
+Do you want to create this item?	이 물품을 제작하겠습니까?	이 물품을 제작할까요?
+Do you want to improve this item?	이 물품을 강화하겠습니까?	이 물품을 강화할까요?
+Do you want to move your marker or remove it?	표시를 옮기거나 삭제하겠습니까?	표시를 옮기거나 삭제할까요?
+Fast travel to %s?	%s까지 빠른 이동을 사용하겠습니까?	%s까지 빠른 이동을 사용할까요?
 For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	불꽃의 망토를 둘러 <dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 Fur-Trimmed Cloak	야를의 털가죽 망토로 장식된 의상	털가죽 망토
 Ganna Uriel	간나 유리엘	간나 우리엘
 Gemma Uriel	겜마 유리엘	겜마 우리엘
 Goodbye	잘 가시오.	잘 가.
 Have we angered the Ideal Masters?	아이디얼 마스터들을 화나게 한 거요?	아이디얼 마스터들을 화나게 한겁니까?
-I do, but you can't leave that way.	알고 있습니다. 하지만 당신은 그 방법으로는 나갈 수 없습니다.	그렇소, 하지만 당신은 그 방법으로는 나갈 수 없는데.
+How did you earn your nicknames?	어떻게 그런 별명을 얻게 된 거요?	어떻게 그런 별명을 얻게 된 겁니까?
+How is your work going so far?	당신의 책은 어디까지 진행되었소?	당신의 책은 어디까지 진행되었습니까?
+How many pages did you lose?	잃어버린 쪽지가 몇 장이나 되오?	잃어버린 쪽지가 몇장이나 됩니까?
+I do, but you can't leave that way.	알고 있소. 하지만 당신은 그 방법으로는 나갈 수 없소.	그렇소, 하지만 당신은 그 방법으로는 나갈 수 없는데.
 I don't have time for this... I can get rough with you if I have to.	이럴 시간이 없는데... 거칠게 다룰 수도 있어.	이럴 시간이 없는데... 거칠게 다룰 수도 있어.
+I don't suppose there's a way to free you.	당신을 풀어줄 방법은 없을 것 같소.	당신을 풀어줄 방법은 없는 것 같은데.
 I want to unravel the mysteries of Aetherius.	에테리우스의 신비를 풀고 싶습니다.	에테리어스의 신비를 풀고 싶습니다.
 I want you to leave Omluag alone.	옴러그를 내버려두시오.	옴러그를 내버려두시오.
 I'm married. (Lie)	나는 결혼했어. (거짓)	나는 결혼했어. (거짓말)
+Is that where you were attacked?	거기가 당신이 공격받은 곳이오?	거기가 당신이 공격받은 장소입니까?
 Letter to Beem-Ja	빔자에게 주는 편지	빔-자에게 주는 편지
 Lisbet	리스벳	리즈벳
+Maybe a shorter title is in order?	책의 제목은 조금 더 짧은 편이 좋지 않겠소?	책의 제목은 조금 더 짧은 편이 좋지 않습니까?
 Morthal is said to be named after the great Nord hero Morihaus, though none alive today are sure of the connection.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하우스의 이름을 따서 지어졌다고 합니다.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하스의 이름을 따서 지어졌다고 합니다.
+Neither side is making much headway. What's the harm in talking to Ulfric?	어느 쪽도 큰 진전이 없으니, 울프릭과 이야기한다고 해서 나쁠 건 없지 않습니까?	어느 쪽이든 큰 진전이 없으니 울프릭에게 이야기 한다고 해서 나쁠건 없겠지?
 Noble Clothes	야를의 기품있는 의상	귀족의 의상
+Now, what were you saying?	음, 뭐라고 했소?	음, 뭐라고 했습니까?
+Prison? You mean the Soul Cairn?	감옥? 소울 케언을 말하는 거요?	감옥? 소울 케언을 뜻하는 겁니까?
 Refined Tunic	야를의 세련된 의상	세련된 의상
 Replace the beacon	표식을 교체하기	등불을 교체하기
 Return <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias=QuestItem>을(를) <Alias.ShortName=QuestGiver>에게 돌려주기	<Alias=QuestItem>을 <Alias.ShortName=QuestGiver> 에게 돌려주기
@@ -41,16 +58,30 @@ Slay the other cultists	다른 광신도들을 죽이기	다른 광신자들을 
 So what's the story behind the Rueful Axe.	그래서 그 회한의 도끼에 얽힌 이야기란게 뭐지?	그래서 그 회한의 도끼에 얽힌 이야기란게 뭐지?
 Speak to Brynjolf about becoming the Guild Master	브린욜프와 길드 마스터가 되는 것에 관해 대화하기	브린욜프와 길드 지도자가 되는 것에 관해 대화하기
 Speak to Brynjolf about being Guild Master	길드 마스터의 역할에 관해서 브린욜프와 대화하기	길드 지도자의 역할에 관해서 브린욜프와 대화하기
+Start a new game? Creations are currently loaded. Note: Trophies are disabled.	현재 모드를 사용하고 있습니다. 새 게임을 시작하시겠습니까? 주의: 업적 달성을 할 수 없습니다.	현재 모드를 사용하고 있습니다. 새 게임을 시작할까요? 주의: 업적 달성을 할 수 없습니다.
+Start game as %s?	%s 로 게임을 시작하겠습니까?	%s 로 게임을 시작할까요?
 Summon and subdue an Unbound Dremora	속박되지 않은 드레모라를 소환하고 복종시키기	계약없는 드레모라를 소환하고 복종시키기
 Summons an unbound Dremora for <dur> seconds.	<dur> 초 동안 속박되지 않은 드레모라를 소환합니다.	<dur> 초 동안 계약없는 드레모라를 소환합니다.
 Target moves at 50% speed for <dur> seconds.	<dur> 초 동안 이동 속도를 50% 감소시킵니다.	<dur> 초 동안 이동 속도를 50% 감소시킵니다.
+That was... a bit before my time.	그건... 내가 태어나기 한참 전의 일이오.	그건... 내가 태어나기 한참 전의 일인데.
 The Alchemy skill determines the creation and potency of potions and poisons.	연금술 기술은 물약과 독을 만들고, 그것을 얼마나 강력하게 만들 수 있는지를 결정합니다.	연금술 기술은 물약과 독을 만들고, 그것을 얼마나 강력하게 만들 수 있는지를 결정합니다.
 The Apprentice Stone ability doubles your Magicka and regeneration speed, but makes you twice as susceptible to spells.	'수습생의 선돌'은 당신의 매지카와 재생 속도를 2배로 향상시킵니다. 그러나 상대의 마법공격에 2배 더 약해집니다.	'수습생의 선돌'은 당신의 매지카와 회복속도를 2배로 향상시킵니다. 그러나 상대의 마법공격에 2배 더 약해집니다.
+The best time to negotiate is from a position of strength.	유리한 위치에 있을 때 협상하기에 가장 좋습니다.	유리한 위치에 있을때 협상하기에 가장 좋습니다.
+The war is stalemated. What's the harm in talking to Ulfric?	전쟁은 교착 상태인데, 울프릭과 이야기한다고 해서 무슨 해가 되겠습니까?	전쟁은 교착상태인데 울프릭에게 말한다고 해가 될게 뭐가 있겠어?
 Unbound Dremora	속박되지 않은 드레모라	계약없는 드레모라
 We're called the Dawnguard. We're fighting a vampire conspiracy.	우리는 '던가드'요. 흡혈귀의 계략에 맞서 싸우고 있소.	우리는 '던가드'입니다. 흡혈귀의 계략에 맞서 싸우고 있습니다.
+Were you successful?	성공했소?	성공했습니까?
 What are the Ancestral Tombs?	조상의 무덤들이란게 뭐요?	조상의 무덤들이란게 뭡니까?
+What ended up happening?	마지막에는 어떻게 되었소?	마지막에는 어떻게 되었습니까?
 What happened to the dragon?	그 드래곤에게 무슨 일이 있었던 거요?	그 드래곤에게 무슨 일이 있었던 겁니까?
+What was your campaign against them?	그들에 대비해서 어떤 작전을 세웠소?	그들에 대비해서 어떤 작전을 세웠습니까?
 When will you return to Tamriel?	언제 탐리엘로 돌아갈 거요?	언제 탐리엘로 돌아갈 겁니까?
+Where were you captured?	어디에서 납치되었소?	어디에서 납치되었습니까?
+Who threw you in here?	누가 당신을 여기에 던져 넣었소?	누가 당신을 여기에 던져넣었습니까?
+Why was Dagon able to do this?	어째서 데이건이 그렇게 할 수 있었소?	어째서 데이건이 그렇게 할 수 있었습니까?
+Why would a dremora attack you?	어째서 드레모라가 당신을 공격했소?	어째서 드레모라가 당신을 공격했습니까?
+You must be crazy.	미친 게 분명하오.	미쳐버린 것 같은데.
+You said you were in prison?	감옥에 있었다고 했소?	감옥에 있었다니?
 You wanted to speak with me?	나와 이야기하고 싶었소?	저와 대화를 하기 원하십니까?
-Your soul was trapped.	당신의 영혼이 갇혀버린 겁니다.	당신의 영혼이 갇혀버린 거요.
+You're talking about a book?	책에 관해서 이야기하고 있는 거요?	책에 관해서 이야기하고 있는 겁니까?
 Zenithar is the god of work and commerce. He has a shrine in the Temple of the Divines in Solitude.	제니타르는 일과 상업의 신입니다. 그의 성소는 솔리튜드의 디바인 신전에 있습니다.	제니타르는 일과 상업의 신입니다. 그의 성소는 솔리튜드의 디바인 신전에 있습니다.

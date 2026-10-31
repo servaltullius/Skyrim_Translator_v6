@@ -147,10 +147,12 @@ public sealed class BundledFranchiseTmSeedService
             // terms as the game and the Korean wiki spell them (Barter 거래, Unbound Dremora 속박되지 않은 드레모라, Uriel 유리엘,
             // the Thieves Guild's Guild Master 길드 마스터), the player's choices in the voice of their conversation, and
             // no-break spaces the Korean font mods lack; Sea Squall is new, so the ship is no longer named with the 스퀄 of
-            // Strident Squall (스트라이던트 스퀄 호); 38 rows changed (1.16.40). It also drops the CR 18 rows had ended in
-            // since v3: in a changes file the CR broke the line and the import dropped the row, so those who came from v1
-            // or v2 never got them (Lisbet 리스벳), and every upgrade now offers them against the v1/v2 text.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v8", "bundled-skyrim-tes-franchise-tm.tsv", 1528793, "07eb20570a99843a6c734b29385c7e6a442eab8b9071dabe29d4e73872655196",
+            // Strident Squall (스트라이던트 스퀄 호). And the decisions after it: the player speaks to Jiub, a stranger met in
+            // the Soul Cairn, in the 하오체 the patch gives strangers (무슨 일을 한 거요?), and a confirmation box asks
+            // ~하겠습니까? as most of them do (이 물품을 강화하겠습니까?); 69 rows changed (1.16.40). It also drops the CR 18
+            // rows had ended in since v3: in a changes file the CR broke the line and the import dropped the row, so those
+            // who came from v1 or v2 never got them (Lisbet 리스벳), and every upgrade now offers them against the v1/v2 text.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v8", "bundled-skyrim-tes-franchise-tm.tsv", 1528768, "d0d41051ca994348a3674641e3f2200bda721133cbb0b37c5aca3284c5425ef8",
                 PreviousVersions: new[] { "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v8-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
