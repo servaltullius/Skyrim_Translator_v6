@@ -147,7 +147,7 @@ public static partial class TranslationPrompt
     {
         sb.AppendLine();
         sb.AppendLine("Placeholder rules (Korean):");
-        sb.AppendLine("- __XT_PH_DUR_####__ or <dur> = duration in seconds. Use time phrasing (e.g., \"__XT_PH_DUR_####__초 동안\" / \"<dur>초 동안\").");
+        sb.AppendLine("- __XT_PH_DUR_####__ or <dur> = duration in seconds. Use time phrasing (e.g., \"__XT_PH_DUR_####__ 초 동안\" / \"<dur> 초 동안\").");
         sb.AppendLine("- __XT_PH_MAG_####__ or <mag> = magnitude/amount (a NUMBER). Do not treat it as the word \"Magicka\".");
         sb.AppendLine("- __XT_PH_NUM_####__ or <숫자>/<100%> = another numeric value (points/%/amount). It is NOT a duration.");
         // Same contract as the system prompt and TokenValidator. This rule used to forbid moving anything but
@@ -161,7 +161,7 @@ public static partial class TranslationPrompt
         sb.AppendLine("- Hint markers like \"⟦XT_MAG=100⟧\" may appear next to placeholder tokens. They are hints only; ignore them and DO NOT include them in the output.");
         sb.AppendLine("- Examples (keep tokens):");
         sb.AppendLine("  - Restore __XT_PH_MAG_0000__ points of Health. => 체력을 __XT_PH_MAG_0000__포인트 회복합니다.");
-        sb.AppendLine("  - Targets take __XT_PH_MAG_0000__ points of damage for __XT_PH_DUR_0001__ seconds. => __XT_PH_DUR_0001__초 동안 __XT_PH_MAG_0000__포인트의 피해를 입습니다.");
+        sb.AppendLine("  - Targets take __XT_PH_MAG_0000__ points of damage for __XT_PH_DUR_0001__ seconds. => __XT_PH_DUR_0001__ 초 동안 __XT_PH_MAG_0000__포인트의 피해를 입습니다.");
     }
 
     private static void AppendJsonPayload(StringBuilder sb, object payload)

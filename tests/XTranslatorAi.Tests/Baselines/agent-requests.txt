@@ -38,7 +38,7 @@ Shadow Lantern __XT_PH_9999__
 TEXT>>>
 
 === request 2
-hash: 85779de60449f37870c2a8e72e96bdb0 attempt 0
+hash: 4d4270840a1c9f3a874a268812c7702c attempt 0
 purpose: translate-batch, mime: application/json
 instructions: 5ae16a4739d8eb77, schema: 12122240289432d2
 --- user
@@ -71,7 +71,7 @@ Translation rules:
 - Keep sarcasm and irony audible in Korean. A line that praises what it mocks must still read as mockery, not as a plain compliment: use an overdone word and an ending that says the speaker does not mean it (e.g. "Oh this is lovely. If you like foggy swamps." => 아, 아주 끝내주는 곳이군. 안개 낀 늪을 좋아하는 사람한테나 말이오.; not 참 좋군… 좋아한다면 말이오).
 
 Placeholder rules (Korean):
-- __XT_PH_DUR_####__ or <dur> = duration in seconds. Use time phrasing (e.g., "__XT_PH_DUR_####__초 동안" / "<dur>초 동안").
+- __XT_PH_DUR_####__ or <dur> = duration in seconds. Use time phrasing (e.g., "__XT_PH_DUR_####__ 초 동안" / "<dur> 초 동안").
 - __XT_PH_MAG_####__ or <mag> = magnitude/amount (a NUMBER). Do not treat it as the word "Magicka".
 - __XT_PH_NUM_####__ or <숫자>/<100%> = another numeric value (points/%/amount). It is NOT a duration.
 - Tokens may follow natural Korean word order: numeric tokens (__XT_PH_MAG_####__, __XT_PH_NUM_####__, __XT_PH_DUR_####__) within their line, and term, value and key tokens (__XT_TERM_*, __XT_PH_VAR_####__, __XT_PH_KEY_####__) anywhere. Keep plain layout tokens (__XT_PH_####__: line breaks, page breaks, formatting tags) in their source order and position.
@@ -80,7 +80,7 @@ Placeholder rules (Korean):
 - Hint markers like "⟦XT_MAG=100⟧" may appear next to placeholder tokens. They are hints only; ignore them and DO NOT include them in the output.
 - Examples (keep tokens):
   - Restore __XT_PH_MAG_0000__ points of Health. => 체력을 __XT_PH_MAG_0000__포인트 회복합니다.
-  - Targets take __XT_PH_MAG_0000__ points of damage for __XT_PH_DUR_0001__ seconds. => __XT_PH_DUR_0001__초 동안 __XT_PH_MAG_0000__포인트의 피해를 입습니다.
+  - Targets take __XT_PH_MAG_0000__ points of damage for __XT_PH_DUR_0001__ seconds. => __XT_PH_DUR_0001__ 초 동안 __XT_PH_MAG_0000__포인트의 피해를 입습니다.
 
 Return JSON schema:
 {"translations":[{"id":123,"text":"..."}]}

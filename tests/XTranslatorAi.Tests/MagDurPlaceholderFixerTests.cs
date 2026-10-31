@@ -6,6 +6,25 @@ namespace XTranslatorAi.Tests;
 
 public sealed class MagDurPlaceholderFixerTests
 {
+    // The tag-fix button runs the templates alone: a line already right must stay as it is, seconds apart.
+    [Fact]
+    public void Fix_LeavesARightLine_WithItsSecondsApart()
+    {
+        const string source = "Weakens the target's armor rating by <mag> for <dur> seconds.";
+        const string dest = "<dur> 초 동안 대상의 방어력이 <mag>만큼 감소합니다.";
+
+        Assert.Equal(dest, MagDurPlaceholderFixer.Fix(source, dest, "korean"));
+    }
+
+    [Fact]
+    public void Fix_WritesARewrite_WithItsSecondsApart()
+    {
+        var fixedText = MagDurPlaceholderFixer.Fix("Weakens the target's armor rating by <mag> for <dur> seconds.", "대상의 방어력이 <dur>만큼 <mag>초 동안 감소합니다.", "korean");
+
+        Assert.DoesNotContain("<dur>초", fixedText);
+        Assert.Contains("<dur> 초 동안", fixedText);
+    }
+
     /// <summary>
     /// "<dur>초 동안 <mag>포인트" is the usual Korean order. The swap check took a time word before <mag> as <mag> read
     /// as a time and swapped the two, and the "태그 교정" tool saved that for every finished row.
@@ -27,8 +46,8 @@ public sealed class MagDurPlaceholderFixerTests
 
         var fixedText = MagDurPlaceholderFixer.Fix(source, dest, targetLang: "ko-KR");
 
-        Assert.Contains("<dur>초", fixedText, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("<mag>초", fixedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("<dur> 초", fixedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("<mag> 초", fixedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("<mag>", fixedText, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -40,7 +59,7 @@ public sealed class MagDurPlaceholderFixerTests
 
         var fixedText = MagDurPlaceholderFixer.Fix(source, dest, targetLang: "ko-KR");
 
-        Assert.Equal("<dur>초 동안 매지카 재생 속도가 <mag>% 느려집니다.", fixedText);
+        Assert.Equal("<dur> 초 동안 매지카 재생 속도가 <mag>% 느려집니다.", fixedText);
     }
 
     [Fact]
@@ -76,9 +95,9 @@ public sealed class MagDurPlaceholderFixerTests
 
         var fixedText = MagDurPlaceholderFixer.Fix(source, dest, targetLang: "ko-KR");
 
-        Assert.Contains("<dur>초", fixedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("<dur> 초", fixedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("<mag>포인트", fixedText, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("<mag>초", fixedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("<mag> 초", fixedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("<dur>만큼", fixedText, StringComparison.OrdinalIgnoreCase);
     }
 

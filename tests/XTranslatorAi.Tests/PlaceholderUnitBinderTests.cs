@@ -4,6 +4,36 @@ namespace XTranslatorAi.Tests;
 
 public sealed class PlaceholderUnitBinderTests
 {
+    [Theory]
+    // A placeholder's seconds stand apart, as the Korean patch writes them.
+    [InlineData("<dur>초 동안 마비시킵니다.", "<dur> 초 동안 마비시킵니다.")]
+    [InlineData("-<30>초 동안", "-<30> 초 동안")]
+    [InlineData("<dur>  초 동안", "<dur> 초 동안")]
+    [InlineData("<dur>\t초 동안", "<dur> 초 동안")]
+    [InlineData("<dur> 초 동안", "<dur> 초 동안")]
+    [InlineData("<dur>　초 동안", "<dur> 초 동안")]
+    [InlineData("<DUR>초", "<DUR> 초")]
+    // Already apart, a plain number, a rate before the token, a percent and a points unit stay as they are.
+    [InlineData("<dur> 초 동안", "<dur> 초 동안")]
+    [InlineData("30초 동안", "30초 동안")]
+    [InlineData("<mag>초당", "<mag>초당")]
+    [InlineData("초당 <mag>의 피해", "초당 <mag>의 피해")]
+    [InlineData("<mag>% 증가", "<mag>% 증가")]
+    [InlineData("<mag>포인트의 피해", "<mag>포인트의 피해")]
+    public void PlaceholderSeconds_StandApart(string text, string expected)
+    {
+        Assert.Equal(expected, PlaceholderSecondsSpacing.Apply(text));
+        Assert.Equal(expected, KoreanTranslationFixer.Fix("korean", text));
+    }
+
+    [Fact]
+    public void EnforceUnitsFromSource_KeepsThePatchsSecondsApart()
+    {
+        var enforced = PlaceholderUnitBinder.EnforceUnitsFromSource("korean", "For <dur> seconds you automatically become invisible while sneaking.", "<dur> 초 동안 은신 시 투명화합니다.");
+
+        Assert.Equal("<dur> 초 동안 은신 시 투명화합니다.", enforced);
+    }
+
     [Fact]
     public void InjectUnitsForTranslation_ReturnsSourceUnchanged_ForKorean()
     {
@@ -21,7 +51,7 @@ public sealed class PlaceholderUnitBinderTests
     {
         var text = "for <dur> <XT_SEC> and <mag> <XT_PT> <XT_PER_SEC>";
         var replaced = PlaceholderUnitBinder.ReplaceUnitsAfterUnmask("ko-KR", text);
-        Assert.Equal("for <dur>초 and <mag>포인트 초당", replaced);
+        Assert.Equal("for <dur> 초 and <mag>포인트 초당", replaced);
     }
 
     [Fact]
@@ -32,7 +62,7 @@ public sealed class PlaceholderUnitBinderTests
 
         var enforced = PlaceholderUnitBinder.EnforceUnitsFromSource("ko-KR", source, dest);
 
-        Assert.Equal("<mag> <dur>초 동안 피해를 입힙니다.", enforced);
+        Assert.Equal("<mag> <dur> 초 동안 피해를 입힙니다.", enforced);
     }
 
     [Fact]
@@ -44,7 +74,7 @@ public sealed class PlaceholderUnitBinderTests
 
         var enforced = PlaceholderUnitBinder.EnforceUnitsFromSource("ko-KR", source, dest);
 
-        Assert.Equal("<15> 의 냉기 피해와 <30> 의 지구력 피해를 입힙니다. 약한 생물과 사람은 <30>초 동안 도망칩니다.", enforced);
+        Assert.Equal("<15> 의 냉기 피해와 <30> 의 지구력 피해를 입힙니다. 약한 생물과 사람은 <30> 초 동안 도망칩니다.", enforced);
     }
 
     [Fact]
@@ -55,7 +85,7 @@ public sealed class PlaceholderUnitBinderTests
 
         var enforced = PlaceholderUnitBinder.EnforceUnitsFromSource("ko-KR", source, dest);
 
-        Assert.Equal("<30> 의 지구력 피해를 입고 <30>초 동안 도망칩니다.", enforced);
+        Assert.Equal("<30> 의 지구력 피해를 입고 <30> 초 동안 도망칩니다.", enforced);
     }
 
     [Fact]
@@ -66,7 +96,7 @@ public sealed class PlaceholderUnitBinderTests
 
         var enforced = PlaceholderUnitBinder.EnforceUnitsFromSource("ko-KR", source, dest);
 
-        Assert.Equal("<15> 의 피해를 입고 <30>초 동안 도망칩니다.", enforced);
+        Assert.Equal("<15> 의 피해를 입고 <30> 초 동안 도망칩니다.", enforced);
     }
 
     [Fact]
@@ -77,7 +107,7 @@ public sealed class PlaceholderUnitBinderTests
 
         var enforced = PlaceholderUnitBinder.EnforceUnitsFromSource("korean", source, dest);
 
-        Assert.Equal("<40> <15>초 동안 지구력을 회복합니다.", enforced);
+        Assert.Equal("<40> <15> 초 동안 지구력을 회복합니다.", enforced);
     }
 
     [Fact]
@@ -110,7 +140,7 @@ public sealed class PlaceholderUnitBinderTests
 
         var enforced = PlaceholderUnitBinder.EnforceUnitsFromSource("ko-KR", source, dest);
 
-        Assert.Equal("<dur>초 동안 마비시킵니다.", enforced);
+        Assert.Equal("<dur> 초 동안 마비시킵니다.", enforced);
     }
 
     [Fact]
@@ -132,7 +162,7 @@ public sealed class PlaceholderUnitBinderTests
 
         var enforced = PlaceholderUnitBinder.EnforceUnitsFromSource("ko", source, dest);
 
-        Assert.Equal("<150>초 동안 근접한 적에게 초당 <8>의 피해를 줍니다.", enforced);
+        Assert.Equal("<150> 초 동안 근접한 적에게 초당 <8>의 피해를 줍니다.", enforced);
     }
 
     [Fact]

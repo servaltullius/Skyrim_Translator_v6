@@ -16,9 +16,11 @@ public class KnownTranslationFillPatchLineTests
     [InlineData("<Alias.ShortName=QuestGiver> gave me this ring. I think it's yours.",
         "<Alias.ShortName=QuestGiver>이(가) 이 반지를 주었는데, 당신 것 같군.")]
     [InlineData("Targets take <15> points of frost damage and <30> points of Stamina damage. Weaker creatures and people flee for <30> seconds.",
-        "<15> 의 냉기 피해와 <30> 의 지구력 피해를 입힙니다. 약한 생물과 사람은 <30>초 동안 도망칩니다.")]
+        "<15> 의 냉기 피해와 <30> 의 지구력 피해를 입힙니다. 약한 생물과 사람은 <30> 초 동안 도망칩니다.")]
     [InlineData("+<mag> Speechcraft.", "화술이 <mag> 증가합니다.")]
     [InlineData("Resist Frost +<mag>% and Resist Fire -<mag>%.", "냉기 저항이 <mag>% 증가하고 화염 저항이 <mag>% 감소합니다.")]
+    // The patch writes a placeholder's seconds apart; 322 of its lines were filled glued ("<dur>초 동안").
+    [InlineData("For <dur> seconds you automatically become invisible while sneaking.", "<dur> 초 동안 은신 시 투명화합니다.")]
     public void PatchLine_IsFilledAsItIs(string source, string patch)
     {
         var prepared = KnownTranslationFill.Prepare(1, source, patch, "korean", enableTemplateFixer: true);

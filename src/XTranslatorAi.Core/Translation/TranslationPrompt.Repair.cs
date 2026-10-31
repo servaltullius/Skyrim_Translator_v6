@@ -60,7 +60,7 @@ public static partial class TranslationPrompt
         sb.AppendLine(PronounTokenRule);
         sb.AppendLine("- Do NOT output any raw markup tags/markers that were NOT present in the SOURCE (e.g., <p ...>, <img ...>, or [pagebreak]). If the SOURCE contains runtime tags like <mag>/<dur>/<bur>/<100%>, preserve them exactly.");
         sb.AppendLine("- Token semantics:");
-        sb.AppendLine("  - __XT_PH_DUR_####__ = duration in seconds. Place it as time (e.g., \"__XT_PH_DUR_####__초 동안\").");
+        sb.AppendLine("  - __XT_PH_DUR_####__ = duration in seconds. Place it as time (e.g., \"__XT_PH_DUR_####__ 초 동안\").");
         sb.AppendLine("  - __XT_PH_MAG_####__ = magnitude/amount (a NUMBER). Do not treat it as the word \"Magicka\".");
         sb.AppendLine("  - __XT_PH_NUM_####__ = another numeric value (points/%/amount). It is NOT a duration.");
         sb.AppendLine(
@@ -132,7 +132,7 @@ public static partial class TranslationPrompt
             + PronounTokenRule + "\n"
             + "- Do NOT output any raw markup tags/markers that were NOT present in SOURCE (e.g., <p ...>, <img ...>, or [pagebreak]). If SOURCE contains runtime tags like <mag>/<dur>/<bur>/<100%>, preserve them exactly.\n"
             + "- Token semantics:\n"
-            + "  - __XT_PH_DUR_####__ = duration in seconds. Place it as time (e.g., \"__XT_PH_DUR_####__초 동안\").\n"
+            + "  - __XT_PH_DUR_####__ = duration in seconds. Place it as time (e.g., \"__XT_PH_DUR_####__ 초 동안\").\n"
             + "  - __XT_PH_MAG_####__ = magnitude/amount (a NUMBER). Do not treat it as the word \"Magicka\".\n"
             + "  - __XT_PH_NUM_####__ = another numeric value (points/%/amount). It is NOT a duration.\n"
             + "- Only DUR tokens should be used with time words (\"초/동안/분/시간\"). Do NOT attach time words to MAG/NUM or other tokens.\n"

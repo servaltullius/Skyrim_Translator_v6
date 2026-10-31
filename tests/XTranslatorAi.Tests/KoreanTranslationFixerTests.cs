@@ -245,7 +245,7 @@ public class KoreanTranslationFixerTests
 
     [Theory]
     [InlineData("체력 가 <mag>포인트 회복됩니다.", "체력이 <mag>포인트 회복됩니다.")]
-    [InlineData("매지카 이 <dur>초 동안 재생되지 않습니다.", "매지카가 <dur>초 동안 재생되지 않습니다.")]
+    [InlineData("매지카 이 <dur>초 동안 재생되지 않습니다.", "매지카가 <dur> 초 동안 재생되지 않습니다.")]
     [InlineData("회복마법 가 <25%> 강화됩니다.", "회복마법이 <25%> 강화됩니다.")]
     [InlineData("한손무기 가 +<mag> 증가합니다.", "한손무기가 +<mag> 증가합니다.")]
     [InlineData("지구력 가 15 증가합니다.", "지구력이 15 증가합니다.")]
@@ -257,7 +257,7 @@ public class KoreanTranslationFixerTests
     {
         var input = "늑대인간초 동안 <150>초 의 형상을 취합니다.";
         var output = KoreanTranslationFixer.Fix("korean", input);
-        Assert.Equal("<150>초 동안 늑대인간의 형상을 취합니다.", output);
+        Assert.Equal("<150> 초 동안 늑대인간의 형상을 취합니다.", output);
     }
 
     /// <summary>
@@ -309,11 +309,11 @@ public class KoreanTranslationFixerTests
     {
         var cases = new (string Input, string Expected)[]
         {
-            ("피해를 입으면 <25%> <5>초 동안 확률로 투명화하기 상태가 됩니다.", "피해를 입으면 <25%> 확률로 <5>초 동안 투명화 상태가 됩니다."),
-            ("피해를 입을 시 <25%> 확률로 <5>초 동안 투명화하기 합니다.", "피해를 입을 시 <25%> 확률로 <5>초 동안 투명화합니다."),
+            ("피해를 입으면 <25%> <5>초 동안 확률로 투명화하기 상태가 됩니다.", "피해를 입으면 <25%> 확률로 <5> 초 동안 투명화 상태가 됩니다."),
+            ("피해를 입을 시 <25%> 확률로 <5>초 동안 투명화하기 합니다.", "피해를 입을 시 <25%> 확률로 <5> 초 동안 투명화합니다."),
             ("습격이다! 무기를 물건 전달!", "습격이다! 무기를 내려!"),
-            ("<15>포인트 체력포인트를 흡수하고 <7><3>초 동안 포인트초포인트의 출혈 피해를 입힙니다.", "<15>포인트 체력을 흡수하고 <3>초 동안 <7>포인트의 출혈 피해를 입힙니다."),
-            ("늑대인간초 동안 <150>초 의 형상을 취합니다.", "<150>초 동안 늑대인간의 형상을 취합니다."),
+            ("<15>포인트 체력포인트를 흡수하고 <7><3>초 동안 포인트초포인트의 출혈 피해를 입힙니다.", "<15>포인트 체력을 흡수하고 <3> 초 동안 <7>포인트의 출혈 피해를 입힙니다."),
+            ("늑대인간초 동안 <150>초 의 형상을 취합니다.", "<150> 초 동안 늑대인간의 형상을 취합니다."),
         };
 
         foreach (var item in cases)
@@ -328,7 +328,7 @@ public class KoreanTranslationFixerTests
     {
         var input = "<15>포인트 체력포인트를 흡수하고 <7><3>초 동안 포인트초포인트의 출혈 피해를 입힙니다.";
         var output = KoreanTranslationFixer.Fix("korean", input);
-        Assert.Equal("<15>포인트 체력을 흡수하고 <3>초 동안 <7>포인트의 출혈 피해를 입힙니다.", output);
+        Assert.Equal("<15>포인트 체력을 흡수하고 <3> 초 동안 <7>포인트의 출혈 피해를 입힙니다.", output);
     }
 
     [Fact]
@@ -362,7 +362,7 @@ public class KoreanTranslationFixerTests
     {
         var input = "피해를 입으면 <25%> <5>초 동안 확률로 투명화 상태가 됩니다.";
         var output = KoreanTranslationFixer.Fix("korean", input);
-        Assert.Equal("피해를 입으면 <25%> 확률로 <5>초 동안 투명화 상태가 됩니다.", output);
+        Assert.Equal("피해를 입으면 <25%> 확률로 <5> 초 동안 투명화 상태가 됩니다.", output);
     }
 
     [Fact]
@@ -370,7 +370,7 @@ public class KoreanTranslationFixerTests
     {
         var input = "피해를 입었을 때 <25%> 확률로 <5>초 동안 투명화하기 상태가 됩니다.";
         var output = KoreanTranslationFixer.Fix("korean", input);
-        Assert.Equal("피해를 입었을 때 <25%> 확률로 <5>초 동안 투명화 상태가 됩니다.", output);
+        Assert.Equal("피해를 입었을 때 <25%> 확률로 <5> 초 동안 투명화 상태가 됩니다.", output);
     }
 
     [Fact]
@@ -378,7 +378,7 @@ public class KoreanTranslationFixerTests
     {
         var input = "피해를 입을 시 <25%> 확률로 <5>초 동안 투명화하기 합니다.";
         var output = KoreanTranslationFixer.Fix("korean", input);
-        Assert.Equal("피해를 입을 시 <25%> 확률로 <5>초 동안 투명화합니다.", output);
+        Assert.Equal("피해를 입을 시 <25%> 확률로 <5> 초 동안 투명화합니다.", output);
     }
 
     [Fact]

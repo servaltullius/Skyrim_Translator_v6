@@ -47,8 +47,8 @@ public class KoreanTranslationFixerCharacterizationTests
         yield return new object[] { "Rune을 새겼다.", "Rune을 새겼다." };
         yield return new object[] { "NPC을(를) 고용합니다.", "NPC를 고용합니다." };
         yield return new object[] { "매지카\u200B을 흡수합니다.", "매지카를 흡수합니다." };
-        yield return new object[] { "피해를 입으면 <25%> <5>초 동안 확률로 투명화하기 상태가 됩니다.", "피해를 입으면 <25%> 확률로 <5>초 동안 투명화 상태가 됩니다." };
-        yield return new object[] { "<15>포인트 체력포인트를 흡수하고 <7><3>초 동안 포인트초포인트의 출혈 피해를 입힙니다.", "<15>포인트 체력을 흡수하고 <3>초 동안 <7>포인트의 출혈 피해를 입힙니다." };
+        yield return new object[] { "피해를 입으면 <25%> <5>초 동안 확률로 투명화하기 상태가 됩니다.", "피해를 입으면 <25%> 확률로 <5> 초 동안 투명화 상태가 됩니다." };
+        yield return new object[] { "<15>포인트 체력포인트를 흡수하고 <7><3>초 동안 포인트초포인트의 출혈 피해를 입힙니다.", "<15>포인트 체력을 흡수하고 <3> 초 동안 <7>포인트의 출혈 피해를 입힙니다." };
         yield return new object[] { "습격이다! 무기를 물건 전달!", "습격이다! 무기를 내려!" };
         yield return new object[] { "아니요. 저는은 솔리튜드에서 삽니다.", "아니요. 저는 솔리튜드에서 삽니다." };
         yield return new object[] { "달이 떠있는 동안 <mag> 의 피해를 입힙니다.", "달이 떠있는 동안 <mag> 의 피해를 입힙니다." };

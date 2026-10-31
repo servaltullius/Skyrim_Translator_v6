@@ -76,14 +76,14 @@ public static partial class TranslationPrompt
 
     private static void AppendTextOnlyKoreanPlaceholderRules(StringBuilder sb)
     {
-        sb.AppendLine("- __XT_PH_DUR_####__ or <dur> = duration in seconds (\"__XT_PH_DUR_####__초 동안\" / \"<dur>초 동안\").");
+        sb.AppendLine("- __XT_PH_DUR_####__ or <dur> = duration in seconds (\"__XT_PH_DUR_####__ 초 동안\" / \"<dur> 초 동안\").");
         sb.AppendLine("- __XT_PH_MAG_####__/__XT_PH_NUM_####__ or <mag>/<숫자> = numeric magnitudes. Do not attach time words (\"초/동안\").");
         sb.AppendLine(
             "- Do NOT attach particles directly to numeric tokens (__XT_PH_MAG_####__/__XT_PH_NUM_####__). Avoid forms like \"__XT_PH_MAG_0000__을(를)\" or \"__XT_PH_MAG_0000__와(과)\"."
         );
         sb.AppendLine("- Only use the word \"포인트\" when the input contains the English word \"point\"/\"points\".");
         sb.AppendLine("- Hint markers like \"⟦XT_MAG=100⟧\" may appear next to placeholder tokens. Ignore them and do NOT include them in the output.");
-        sb.AppendLine("- Example: Targets take __XT_PH_MAG_0000__ points of damage for __XT_PH_DUR_0001__ seconds. => __XT_PH_DUR_0001__초 동안 __XT_PH_MAG_0000__포인트의 피해를 입습니다.");
+        sb.AppendLine("- Example: Targets take __XT_PH_MAG_0000__ points of damage for __XT_PH_DUR_0001__ seconds. => __XT_PH_DUR_0001__ 초 동안 __XT_PH_MAG_0000__포인트의 피해를 입습니다.");
     }
 
     private static void AppendTextOnlyBody(StringBuilder sb, string text)

@@ -38,7 +38,7 @@ public class LqaScannerCharacterizationTests
 
         var fixerInput = "피해를 입으면 <25%> <5>초 동안 확률로 투명화하기 상태가 됩니다.";
         var fixerOutput = KoreanTranslationFixer.Fix("ko-KR", fixerInput);
-        Assert.Equal("피해를 입으면 <25%> 확률로 <5>초 동안 투명화 상태가 됩니다.", fixerOutput);
+        Assert.Equal("피해를 입으면 <25%> 확률로 <5> 초 동안 투명화 상태가 됩니다.", fixerOutput);
     }
 
     [Fact]

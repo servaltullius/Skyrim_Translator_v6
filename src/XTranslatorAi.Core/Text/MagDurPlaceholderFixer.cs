@@ -314,7 +314,18 @@ public static partial class MagDurPlaceholderFixer
         ["Alchemy"] = "연금술",
     };
 
+    /// <summary>
+    /// The templates write a duration glued ("{dur}초 동안"); a rewrite comes out with the seconds apart, as the Korean
+    /// patch and the rest of the pipeline write them. The tag-fix button runs this alone, and a line already right
+    /// went back to "&lt;dur&gt;초", lost its reviewed mark, and the next post-edit spaced it again.
+    /// </summary>
     public static string Fix(string source, string dest, string targetLang)
+    {
+        var fixedText = FixTemplates(source, dest, targetLang);
+        return string.Equals(fixedText, dest, StringComparison.Ordinal) ? dest : PlaceholderSecondsSpacing.Apply(fixedText);
+    }
+
+    private static string FixTemplates(string source, string dest, string targetLang)
     {
         if (!LanguageHelper.IsKoreanLanguage(targetLang))
         {

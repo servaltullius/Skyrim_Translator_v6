@@ -274,12 +274,12 @@ internal static class TokenSanitizer
 
             if (!IsDurationInTimeContext(outputText, dur))
             {
-                return $"`{dur}`(지속시간) 바로 뒤에 시간 표현이 없습니다. `{dur}초 동안`처럼 쓰세요.";
+                return $"`{dur}`(지속시간) 바로 뒤에 시간 표현이 없습니다. `{dur} 초 동안`처럼 쓰세요.";
             }
 
             if (IsTokenInAmountContext(outputText, dur))
             {
-                return $"`{dur}`(지속시간)가 수량처럼 쓰였습니다(뒤에 '{Following(outputText, dur)}'). `{dur}초 동안`처럼 쓰세요.";
+                return $"`{dur}`(지속시간)가 수량처럼 쓰였습니다(뒤에 '{Following(outputText, dur)}'). `{dur} 초 동안`처럼 쓰세요.";
             }
         }
 
@@ -386,7 +386,7 @@ internal static class TokenSanitizer
         var replaced = Regex.Replace(
             outputText,
             patternA,
-            m => $"{durToken}초 동안 {m.Groups["subject"].Value.Trim()}의",
+            m => $"{durToken} 초 동안 {m.Groups["subject"].Value.Trim()}의",
             RegexOptions.CultureInvariant
         );
 
@@ -394,7 +394,7 @@ internal static class TokenSanitizer
         replaced = Regex.Replace(
             replaced,
             patternB,
-            m => $"{durToken}초 동안 {m.Groups["subject"].Value.Trim()}",
+            m => $"{durToken} 초 동안 {m.Groups["subject"].Value.Trim()}",
             RegexOptions.CultureInvariant
         );
 
@@ -579,7 +579,7 @@ internal static class TokenSanitizer
 
     /// <summary>
     /// Whether a number token reads as a time: a unit right after it, read strictly ("피해를 &lt;mag&gt; 주고" is no
-    /// week), or a time word right before it unless an amount follows: "&lt;dur&gt;초 동안 &lt;mag&gt;포인트의 피해", the
+    /// week), or a time word right before it unless an amount follows: "&lt;dur&gt; 초 동안 &lt;mag&gt;포인트의 피해", the
     /// prompt's own example, and "매초 &lt;mag&gt;의 피해" are amounts after a time.
     /// </summary>
     private static bool IsNumberInTimeContext(string text, string token)

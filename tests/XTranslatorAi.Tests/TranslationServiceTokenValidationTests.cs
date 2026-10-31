@@ -67,7 +67,7 @@ public class TranslationServiceTokenValidationTests
         var output = "늑대인간초 동안 __XT_PH_DUR_0000__의 형상을 취합니다.";
 
         var repaired = TokenSanitizer.EnsureTokensPreservedOrRepair(input, output, "test");
-        Assert.Contains("__XT_PH_DUR_0000__초 동안", repaired, StringComparison.Ordinal);
+        Assert.Contains("__XT_PH_DUR_0000__ 초 동안", repaired, StringComparison.Ordinal);
         Assert.Contains("늑대인간의", repaired, StringComparison.Ordinal);
     }
 
@@ -78,7 +78,7 @@ public class TranslationServiceTokenValidationTests
         var output = "늑대인간초 동안 __XT_PH_DUR_0000__초 의 형상을 취합니다.";
 
         var repaired = TokenSanitizer.EnsureTokensPreservedOrRepair(input, output, "test");
-        Assert.Contains("__XT_PH_DUR_0000__초 동안", repaired, StringComparison.Ordinal);
+        Assert.Contains("__XT_PH_DUR_0000__ 초 동안", repaired, StringComparison.Ordinal);
         Assert.Contains("늑대인간의", repaired, StringComparison.Ordinal);
         Assert.DoesNotContain("늑대인간초 동안", repaired, StringComparison.Ordinal);
     }
@@ -90,7 +90,7 @@ public class TranslationServiceTokenValidationTests
         var output = "시전자가 가리키는 곳에 노드초 동안 __XT_PH_DUR_0000__ 유령을 소환합니다.";
 
         var repaired = TokenSanitizer.EnsureTokensPreservedOrRepair(input, output, "test");
-        Assert.Contains("__XT_PH_DUR_0000__초 동안", repaired, StringComparison.Ordinal);
+        Assert.Contains("__XT_PH_DUR_0000__ 초 동안", repaired, StringComparison.Ordinal);
         Assert.DoesNotContain("노드초", repaired, StringComparison.Ordinal);
     }
 

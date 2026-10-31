@@ -27,6 +27,7 @@ internal static class KoreanTranslationFixer
         new DurationProbabilityStep(),
         new ArtifactCleanupStep(),
         new SpellingFixStep(),
+        new PlaceholderSecondsSpacingStep(),
     };
 
     internal static string Fix(string targetLang, string text)

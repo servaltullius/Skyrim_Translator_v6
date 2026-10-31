@@ -243,17 +243,15 @@ internal static class PlaceholderUnitBinder
 
     private static string TightenUnitSpacing(string text)
     {
-        // Tighten: "<dur> 초" => "<dur>초", "<mag> 포인트" => "<mag>포인트"
-        if (text.IndexOf(' ') < 0)
-        {
-            return text;
-        }
-
-        return TightenValueUnitSpacingRegex.Replace(
-            text,
-            m => m.Groups["v"].Value + m.Groups["unit"].Value
-        );
+        // Tighten: "30 초" => "30초", "<mag> 포인트" => "<mag>포인트"; a placeholder's seconds stand apart: "<dur> 초".
+        var working = text.IndexOf(' ') < 0 ? text : TightenValueUnitSpacingRegex.Replace(text, TightenOrSpace);
+        return PlaceholderSecondsSpacing.Apply(working);
     }
+
+    private static string TightenOrSpace(Match m)
+        => m.Groups["unit"].Value == "초" && m.Groups["v"].Value.Contains('<')
+            ? m.Groups["v"].Value + " 초"
+            : m.Groups["v"].Value + m.Groups["unit"].Value;
 
     private readonly record struct UnitEnforcementPlan(
         bool NeedsSecondsFromSource,
@@ -416,16 +414,7 @@ internal static class PlaceholderUnitBinder
             working = working.Replace(UnitSecondsTag, "초", StringComparison.Ordinal);
         }
 
-        // Tighten: "<dur> 초" => "<dur>초", "<mag> 포인트" => "<mag>포인트"
-        if (working.IndexOf(' ') >= 0)
-        {
-            working = TightenValueUnitSpacingRegex.Replace(
-                working,
-                m => m.Groups["v"].Value + m.Groups["unit"].Value
-            );
-        }
-
-        return working;
+        return TightenUnitSpacing(working);
     }
 
 }

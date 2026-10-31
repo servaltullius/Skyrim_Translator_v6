@@ -13,7 +13,7 @@ public sealed class TranslationPostEditsProbabilityFixerTests
 
         var fixedText = TranslationPostEdits.Apply(targetLang: "korean", sourceText: source, translatedText: dest, enableTemplateFixer: false);
 
-        Assert.Equal("피해를 입을 시 <25%> 확률로 <5>초 동안 투명화 상태가 됩니다.", fixedText);
+        Assert.Equal("피해를 입을 시 <25%> 확률로 <5> 초 동안 투명화 상태가 됩니다.", fixedText);
     }
 }
 

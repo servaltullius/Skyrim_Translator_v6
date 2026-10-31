@@ -199,7 +199,7 @@ public static class AgentRequestRenderer
             sb.AppendLine();
             sb.AppendLine("수치 자리표시자: `<mag>`·`__XT_PH_MAG_…__`·`__XT_PH_NUM_…__`는 수량 명사 앞에 둔다(`<mag>의 마법 피해를 줍니다`, `<mag>포인트`, `<mag>% 감소합니다`).");
             sb.AppendLine("바로 뒤에 시간 단위(초·분·시간·일·주·년·동안)나 그 글자로 시작하는 말(`피해를 <mag> 주고`의 '주고', '줍니다', '일격')이 오면 지속시간으로 읽혀 다시 요청된다.");
-            sb.AppendLine("`<dur>`·`__XT_PH_DUR_…__`는 `<dur>초 동안`처럼 쓴다. 수치 토큰 바로 뒤에 을/를/에게 같은 조사를 붙이지 않는다.");
+            sb.AppendLine("`<dur>`·`__XT_PH_DUR_…__`는 `<dur> 초 동안`처럼 쓴다. 수치 토큰 바로 뒤에 을/를/에게 같은 조사를 붙이지 않는다.");
         }
 
         sb.AppendLine();
