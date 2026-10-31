@@ -10,6 +10,7 @@ Source	Target	Previous
 (Optional) Show Skorm Snow-Strider's journal to Valmir	(선택) 발머에게 스콤의 일기를 보여주기	(선택) 발머에게 스콤의 일지를 보여주기
 (Optional) Speak to Vex about Goldenglow Estate	(선택) 골든글로우 농장에 관해 벡스와 대화하기	(선택) 골든글로우 지구에 관해 벡스와 대화하기
 (Optional) Travel to Riverwood with <Alias=FactionFriend>	(선택) <Alias=FactionFriend>와(과) 함께 리버우드로 가기	(선택) <Alias=FactionFriend>와 함께 리버우드로 가기
+(Optional) Visit the College of Winterhold to ask about the Moth Priest	(선택) 윈터홀드 대학을 방문하여 나방 사제에 관해 물어보기	(선택) 윈터홀드의 마법대학을 방문하여 나방 사제에 관해 물어보기
 +<mag> carrying capacity, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.	무게한계 <mag> 증가, 무거운 방어구를 착용해도 이동에 영향을 받지 않게 됩니다.
 50% chance for each attribute to absorb <mag> points of Health, Stamina and/or Magicka.	체력, 지구력, 매지카 각각에 대해 50% 확률로 <mag> 흡수합니다.	50% 확률로 체력, 지구력, 매지카 중 하나를 <mag> 흡수합니다.
 50% chance for each element of fire, frost and shock to do <mag> points of damage.	화염, 냉기, 전격 각각에 대해 50% 확률로 <mag> 의 피해를 입힙니다.	50% 확률로 <mag> 의 화염, 냉기, 전격 중 하나의 피해를 입힙니다.
@@ -32,6 +33,7 @@ A blast of cold that does <mag> points of damage per second to Health and Stamin
 A blast of flame that sets the target on fire, doing <mag> damage per second for <15> seconds.	불꽃의 화살을 날려 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	불꽃의 화살을 날려 <15> 초 동안 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 A dragon attacked Helgen and destroyed it. Ralof and I escaped together.	드래곤이 헬겐을 공격해서 파괴했고, 나는 레일로프와 함께 탈출했소.	드래곤이 헬겐을 공격했고 파괴했습니다. 나는 레일로프와 함께 탈출했소.
 A dragon destroyed Helgen. <Alias=RiverwoodFriend> is afraid Riverwood is next.	드래곤이 헬겐을 파괴했습니다. <Alias=RiverwoodFriend>은(는) 다음 목표가 리버우드라고 걱정하고 있습니다.	드래곤이 헬겐을 파괴했습니다. <Alias=RiverwoodFriend> 는 다음 목표가 리버우드라고 걱정하고 있습니다.
+A dremora captured you?	드레모라가 당신을 가두었다고요?	드레모라가 당신을 가두었다고?
 A freezing whirlwind that does <mag> points of damage per second, and twice as much Stamina damage.	얼어붙은 회오리바람을 날려 매 초마다 <mag> 의 냉기 피해와 2배의 지구력 피해를 입힙니다.	얼어붙은 회오리바람을 날려 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
 A Grand Soul gem filled with a Grand Soul is required to build the Arcane Enchanter.	마법부여대를 제작하기 위해서는 특급 소울젬(특급)이 필요합니다.	마법 부여대를 제작하기 위해서는 특급 소울젬(특급)이 필요합니다.
 A price for what?	뭐에 대한 대가 말이오?	뭐에 대한 대가 말이요?
@@ -58,6 +60,7 @@ Advances in Lockpicking	잠금해제의 발전	상급 잠금해제
 AETHERIUM	에테리움	아테리움
 Affable Gent	상냥한 신사	정중한 겐트
 Agent of Dibella added	디벨라의 사도가 추가되었습니다	디벨라의 대행자가 추가되었습니다
+Agrius's Journal	아그리우스의 일기	아그리어스의 일기
 Ah yes, High Rock. Home of exquisite Breton cuisine...	아 그렇지, 하이 락 지방. 절묘한 브레튼 요리의 고향이지...	아 그렇지, 하이 락 지방. 이국적인 브레튼 요리의 고향이지...
 Ahzidal's Gauntlets of Warding	아지달 장갑 - 방어막	아지달 장갑 - 보호
 Ahzidal's Helm of Vision	아지달 투구 - 시야	아지달 투구 - 시각
@@ -70,7 +73,7 @@ All right, you've swayed me. So what can I do?	좋소, 설득당했군. 내가 �
 Allegiance	충성	명령을 내려주십시오.
 Alright then. Where did you learn these secrets?	그렇다면, 어디에서 그 비밀들을 배웠소?	그렇다면, 어디에서 그 비법들을 배웠소?
 Altar of Thrond Cave	쓰론드 제단 동굴	쓰론드 동굴 제단
-ALTERATION	변화마법	변화
+ALTERATION	변화마법	변화
 Ambarys	엠바리스	앰바리스
 Amulet of Mara (Possessed)	아뮬렛 - 마라 (소유)	마라의 아뮬렛 (소유)
 Amulet of Supernatural Reflexes	아뮬렛 - 초자연적 반사신경	아뮬렛 - 초자연적인 반응
@@ -122,9 +125,11 @@ Aversion to Shock	독 - 전격 약점 중급	독 - 전격 중급
 Backstab	백스탭	백스텝
 Balbus's Fork	발부스의 포크	발부스의 집게
 Baldor Iron-Shaper	발도어 아이언-셰이퍼	발도어
+Barter	거래	흥정
 Bashnag is dead.	배쉬나그는 죽었다.	배쉬나그은 죽었다.
 Bats	박쥐 떼	박쥐
 Beast Form	야수의 형상	짐승의 형상
+Become Guild Master for the Thieves Guild	도둑 길드의 길드 마스터가 되기	도둑 길드의 지도자가 되기
 Begin the hunt	사냥 시작하기	사냥 시작
 Black Robes	검은색 로브	검은 로브
 Blacksmith's Forge	대장간의 화로	대장간 모루
@@ -137,6 +142,7 @@ Bone Hawk Skull	해골 독수리 두개골	해골 독수리 뼈
 Bonemold Pauldron Armor	뼈다귀 견갑 방어구	뼈다귀 방어구
 Bound Axe	마법 전투 도끼	마법 전투 도끼 소환
 Braided Bread	땋은 빵	바게트 빵
+Break through the First Barricade	첫 번째 바리케이드를 파괴하기	첫 번째 바리케이드 파괴하기
 Break through the Second Barricade	두 번째 바리케이드를 파괴하기	두 번째 바리케이트를 파괴하기
 Breath of Nchuak	느츄악의 숨결	느챠닥의 숨결
 Bring 10 fire salts to Balimund (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개를 가져다 주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개을 가져다 주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)
@@ -169,7 +175,7 @@ Buy back the Elder Scroll (Dragon) from Urag gro-Shub	우라그에게 팔았던 
 Buy the Book off Lod	로드에게서 그 책을 구입하기	로드에게 그 책을 구입하기
 Bye.	그럼 이만.	안녕히 가시오.
 Cage	우리	벽장
-Call of the Wild	야생의 외침	아생의 외침
+Call of the Wild	야생의 외침	아생의 외침
 Can you repair and refit the Dawnstar Sanctuary?	던스타 성역을 보수하고 개선할 수 있겠소?	던스타의 성지를 보수하고 개선할 수 있겠소?
 Can you share anything about the Thieves Guild?	도둑 길드에 대한 정보를 알려주시오.	도둑길드에 대한 정보를 알려주시오.
 Can you tell me more about the Augur of Dunlain?	던레인의 예언자에 관해 더 알려주시오.	'던레인의 예언'에 관해 더 알려주시오.
@@ -180,7 +186,7 @@ Castor the Puzzlemaker's Corpse	퍼즐 제작자 캐스터의 시체	캐스터�
 Changed Ones	변화한 자들	변절한 자들
 Charm - Master of the Mind	매료 - 정신의 지배자	매료 - 정신마법의 달인
 Chasing Echoes	메아리를 쫓아서	따라오는 메아리
-Claim Mehrunes' Razor	메이룬스 데이건의 단검을 가지기	메이룬스의 면도칼을 가지기
+Claim Mehrunes' Razor	메이룬스 데이건의 단검을 가지기	메이룬스의 면도칼을 가지기
 Clay. (<Global=BYOHHPAmountClay> for <Global=BYOHHPCostClay> gold)	점토. (<Global=BYOHHPAmountClay>개에 <Global=BYOHHPCostClay> 골드)	점토. (<Global=BYOHHPAmountClay> for <Global=BYOHHPCostClay> 골드)
 Cleanse the focal points for magical energies around the College	대학 주변의 마법 에너지 중심점을 정화하기	대학주변의 마법 에너지 중심점을 정화하기
 Clear <Alias=WealthyHome> in <Alias=City> of valuables (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)	<Alias=City> 도시의 <Alias=WealthyHome>에서 귀중품들을 싹쓸이하기 (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)	<Alias=City> 도시의 <Alias=WealthyHome> 에서 귀중품들을 싹쓸이하기 (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)
@@ -189,10 +195,10 @@ Collect the reward from <Alias=Enemy> for killing <Alias=Victim>	<Alias=Enemy>(�
 Come on. Let's go.	어서. 가자.	여기서 나가자.
 Commune with Hrothmund's Spirit	흐로스문드의 유령과 대화하기	흐로스문드의 영혼과 대화하기
 Complaint Letter	항의 편지	고소 편지
-CONJURATION	소환마법	소환
+CONJURATION	소환마법	소환
 Conjure Spectral Dragon	유령 드래곤 소환	영체 드래곤 소환
 Consider it done.	곧바로 처리하겠습니다.	곧바로 처리하지.
-CONTAINERS	보관함	상자
+CONTAINERS	보관함	상자
 Cow Hand	목동	카우 핸드
 Creates a wall of frost that does <mag> damage per second.	지면에 얼음의 장벽을 만들어 매 초마다 <mag> 의 냉기 피해를 입힙니다.	지면에 얼음의 장벽을 만들어 매 초마다 <50> 의 냉기 피해를 입힙니다.
 Creation Club Cell	Creation Club Cell	던가드 흡혈귀 사냥꾼
@@ -219,9 +225,9 @@ Deliver <Alias=QuestItem> to <Alias.ShortName=Target>	<Alias.ShortName=Target>�
 Deliver Mead to Wilhelm	윌헴에게 벌꿀술을 배달하기	윌헴에게 벌꿀주를 배달하기
 Deliver the stone to Phinis	시질 스톤을 피니스에게 전달하기	시질스톤을 피니스에게 전달하기
 Deliver the sword to Proventus Avenicci	프로벤투스 아베니치에게 검을 배달하기	프로벤투스 아베니치 에게 검을 배달하기
-Demonstrate your "Unrelenting Force" Shout	"거침없는 힘" 함성을 보여주기	'거침없는 힘' 함성을 보여주기
-Demonstrate your "Unrelenting Force" Shout (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	"거침없는 힘" 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	'거침없는 힘' 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)
-Demonstrate your "Whirlwind Sprint" Shout	"회오리 질주" 함성을 사용하기	'회오리 질주' 함성을 사용하기
+Demonstrate your "Unrelenting Force" Shout	"거침없는 힘" 함성을 보여주기	'거침없는 힘' 함성을 보여주기
+Demonstrate your "Unrelenting Force" Shout (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	"거침없는 힘" 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	'거침없는 힘' 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)
+Demonstrate your "Whirlwind Sprint" Shout	"회오리 질주" 함성을 사용하기	'회오리 질주' 함성을 사용하기
 Deor Woodcutter's House	디오어 우드커터의 집	나무꾼 디오어의 집
 Depends. Who's asking?	그런 질문을 하는 당신은 누구지?	그런 질문은 하는 당신은 누구지?
 Desecrated Corpse	훼손된 시체	바짝마른 시체
@@ -231,12 +237,13 @@ Did he say what it was about?	그게 뭔지 말하던가?	그게 뭔지 말 하�
 Did you say something about money?	지금 뭔가 돈이 되는 일에 관해서 말한 것 같은데?	지금 뭔가 돈에 되는 일에 관해서 말한 것 같은데?
 Did you send that guard to threaten me?	날 위협하려고 그 경비병을 보낸건가?	날 위협하려고 그 경비병들을 보낸건가?
 Dining room decorations. (<Global=HDWhiterunDining> gold)	식당 장식들. (<Global=HDWhiterunDining> 골드)	응접실 장식들.(<Global=HDWhiterunDining> 골드)
-Discerning the Transmundane	다른 차원의 것을 인식	다른 차원의 것을 알아내기
+Discerning the Transmundane	다른 차원의 것을 인식	다른 차원의 것을 알아내기
 Discover the location of the Elder Scroll (Dragon)	'엘더스크롤 - 드래곤'이 있는 장소를 찾기	엘더스크롤이 있는 장소를 찾기
 Discreetly kill <Alias=Target>	은밀하게 <Alias=Target> 죽이기	신중하게 <Alias=Target> 죽이기
 Distribute %d Point	분배하세요 - %d 포인트	분배하세요- %d Point
 Ditched it for this. Easier to sneak past the enemy.	이걸 입으려고 버렸습니다. 적에게 들키지 않고 지나가기가 더 쉽거든요.	이 임무를 위해 파기했습니다. 적군 속에 숨어 빠져나오기 쉽기 때문입니다.
 Do I have to beat it out of you? (Brawl)	두들겨 패야 털어놓겠나? (싸움)	너를 죽도록 패줄까? (싸움)
+Do I need to read the scrolls in any particular order?	엘더스크롤을 뭔가 특별한 순서대로 읽어야 하는 거요?	엘더스크롤을 뭔가 특별한 순서대로 읽어야 하는 겁니까?
 Do they keep you busy?	일이 바쁜가?	일이 빠쁜가?
 Do you have any numbers jobs?	장부 조작 일거리가 있나?	장부 위조 일거리가 있나?
 Do you know why he was after her?	왜 이 자가 마그레트를 노렸는지 아시오?	왜 이 자가 마그레트를 노린지 아시오?
@@ -327,7 +334,6 @@ Find the Augur of Dunlain	던레인의 예언자를 찾기	던레인의 예언�
 Find The Elder Scroll (Blood)	'엘더스크롤 - 피'를 찾기	엘더스크롤 찾기
 Find The Elder Scroll (Dragon)	'엘더스크롤 - 드래곤'을 찾기	엘더스크롤 찾기
 Find the skooma dealers in Cragslane Cavern	크래그슬레인 대동굴에서 스쿠마 상인들을 찾기	크래그슬레인 동굴에서 스쿠마 상인들을 찾기
-Finished?	완료?	완료?
 First Letter from EEC	동제국 회사의 첫 번째 편지	동제국 회사의 첫번째 편지
 Fletcher	화살 공방	화살깃털 상점
 Follow <Alias=Friend> and ambush enemy scout	<Alias=Friend>을(를) 따라가서 매복하고 적의 정찰병을 습격하기	<Alias=Friend>를 따라가서 매복하고 적의 정찰병을 습격하기
@@ -338,7 +344,7 @@ Follow the <Alias=General>	<Alias=General>을(를) 따라가기	<Alias=General> 
 Footwraps	죄수의 발싸개	발싸개
 For <dur> seconds nearby opponents take <8> points of shock damage and half magicka damage.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 전격 피해와 절반의 매지카 피해를 입힙니다.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 전격 피해와 매지카 피해를 입힙니다.
 For <dur> seconds, opponents in melee range have a chance to be infected.	<dur> 초 동안 일정한 확률로 주변 적을 감염시킵니다.	<dur> 초 동안 일정한 확률로 주변 적에게 피해를 줍니다.
-For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	불꽃의 망토를 둘러 <dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
+For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	불꽃의 망토를 둘러 <dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 For <dur> seconds, opponents that get too close take <8> points per second of fire damage.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 화염 피해를 입힙니다.	<dur> 초 동안 주변 적에게 <8> 의 화염 피해를 입힙니다.
 For <dur> seconds, undead in melee range take <10> points sun damage per second.	<dur> 초 동안 주변 언데드에게 매 초마다 <10> 의 태양 피해를 입힙니다.	<dur> 초 동안 주변 언데드에게 매 초마다 <mag> 의 태양 피해를 입힙니다.
 For the Dark Brotherhood, that can be easily arranged. (Intimidate)	다크 브라더후드에게 그 정도는 쉬운 일이지. (위협)	다크 브라더후드 앞에서 그런건 중요하지 않을텐데. (위협)
@@ -358,14 +364,16 @@ Frenzy	광분	광역 분노
 Frightened Woman	겁에 질린 여성	겁에질린 여성
 Frost Breath	서리 숨결	냉기 숨결
 Fultheim the Fearless	두려움 없는 풀트하임	두려움없는 풀트하임
-Fur-Trimmed Cloak	야를의 털가죽 망토로 장식된 의상	털가죽 망토
+Fur-Trimmed Cloak	야를의 털가죽 망토로 장식된 의상	털가죽 망토
 Fury	분노	광분
 Gadnor's Staff of Charming	개드너의 매혹 지팡이	개드너의 지팡이
 Gain access to the Pelagius Wing of the Blue Palace	푸른 궁전에 있는 펠라지우스 구역에 접근할 방법을 찾기	파란 궁전에 있는 펠라지우스 구역에 접근할 방법을 찾기
 Gaius Maro's Schedule	가이우스 마로의 일정	가이우스 마로의 예정
 Gallows Hall	교수대 회관	교수대 바위
 Gallows Hall.	교수대 회관.	교수대 바위.
+Ganna Uriel	간나 유리엘	간나 우리엘
 Gate Barred	빗장 걸린 관문	빗장걸린 관문
+Gemma Uriel	겜마 유리엘	겜마 우리엘
 General Falx Carius	팔크스 카리우스 장군	폭스 카리우스 장군
 Get the staff	지팡이를 손에 넣기	지팡이를 가지기
 Gharol's Message	가롤의 메시지	가롤의 메세지
@@ -385,7 +393,7 @@ Goldenglow Estate Basement	골든글로우 농장 지하실	골든글로우 지�
 Goldenglow Estate Second Floor	골든글로우 농장 2층	골든글로우 지구 2층
 Goldenglow Estate Sewer	골든글로우 농장 하수구	골든글로우 지구 하수구
 Good luck with that.	잘 해보게.	잘 해보시오.
-Goodbye	잘 가시오.	잘 가.
+Goodbye	잘 가시오.	잘 가.
 Grand Staff of Charming	지팡이 - 광역 진정	지팡이 - 진정
 Grate	창살문	강판
 Greater Magic Resistance	상급 마법 저항력	상급 마법 저항
@@ -396,6 +404,7 @@ Gunjar	건냐르	건쟈
 Hallowed Dead	신성한 시신	신성한 사체
 Hard to be sure. He put up a strong fight.	확신할 수는 없군. 상당히 거세게 저항했거든.	확신할 수는 없군. 그는 상당히 강력한 것 같던데.
 Have Need of Cynric	신릭의 도움 요청	마지막 제안
+Have we angered the Ideal Masters?	아이디얼 마스터들을 화나게 한 거요?	아이디얼 마스터들을 화나게 한겁니까?
 Have you heard from Thorald?	쏘럴드에게서 소식은 있었소?	쏘럴드에게 이야기를 들었소?
 Have you thought about getting cured of vampirism?	흡혈귀 증상을 치료하는 것에 관하여 생각해 본 적은 없나?	흡혈귀 증상을 치료하는 것에 관해여 생각해 본 적은 없나?
 Having an outsider do your bidding might seem powerful...	외부인을 부하처럼 부리는 건 강해 보일 수도 있을 텐데...	외부인에게 부탁하는 게 강해 보일지는...
@@ -456,11 +465,13 @@ I could find those frost salts for you.	내가 그 냉기 소금을 찾아 줄 �
 I could use a hand.	도와주면 좋겠소.	도와줄 수 있는데.
 I didn't agree to anything. Talk. (Intimidate)	나랑은 합의된 거 없는데. 말해. (위협)	나랑은 합의된 거 없는데. 말 해. (위협)
 I discovered this note on one of the ash spawn.	화산재 스폰의 잔해들 중에서 이 쪽지를 발견했는데.	화산재 스폰의 잔해들 중에서 이 노트를 발견했는데.
+I do, but you can't leave that way.	알고 있습니다. 하지만 당신은 그 방법으로는 나갈 수 없습니다.	그렇소, 하지만 당신은 그 방법으로는 나갈 수 없는데.
 I do. My hand is yours.	그래. 내 손은 당신 거야.	그래. 나의 팔은 당신 거야.
 I don't care about the ring! Tell me what else I said! (Intimidate)	반지는 아무래도 좋다! 그냥 내가 뭐라고 말했는지 알려 줘! (위협)	반지는 아무래도 좋다! 그냥 내가 뭐라 말했느지 알려주시지! (위협)
 I don't have 10,000 gold.	10,000 골드씩이나 가지고 있진 않아.	10.000 골드씩이나 가지고 있진 않아.
 I don't have time for this.	이런 일에 낭비할 시간은 없군.	그럴 시간이 없군요.
 I don't have time for this. Do you?	이렇게 낭비할 시간따위는 없어. 당신은 있나?	이렇게 낭비할 시간따위는 없어.
+I don't have time for this... I can get rough with you if I have to.	이럴 시간이 없는데... 거칠게 다룰 수도 있어.	이럴 시간이 없는데... 거칠게 다룰 수도 있어.
 I don't know about you, but I'm going in there.	당신은 어떨지 모르겠지만, 난 저기 들어갈 건데.	당신이 누군지는 모르겠지만, 난 저기 들어 갈 건데.
 I don't know what happened to her. (Lie)	그녀에게 무슨 일이 있었는지 모르오. (거짓)	그녀에게 무슨 일이 있었느지 모르오. (거짓)
 I don't know what you're talking about.	무슨 말 하는 건지 모르겠는데.	무슨 말을 하는 것인지 모르겠군.
@@ -516,6 +527,8 @@ I understand. I'll talk to Storn.	알았소. 스토언과 얘기를 해 보지.	
 I want to get out here.	여기서 내리겠소.	여기서 벗어나고 싶소.
 I want to stop at Kynesgrove. (<Global=CarriageCost> gold)	카인즈그로브까지. (<Global=CarriageCost> 골드)	카인즈그로브까지.(<Global=CarriageCost> 골드)
 I want to stop at Stonehills. (<Global=CarriageCost> gold)	스톤힐스까지. (<Global=CarriageCost> 골드)	돌 언덕까지.(<Global=CarriageCost> 골드)
+I want to unravel the mysteries of Aetherius.	에테리우스의 신비를 풀고 싶습니다.	에테리어스의 신비를 풀고 싶습니다.
+I want you to leave Omluag alone.	옴러그를 내버려두시오.	옴러그를 내버려두시오.
 I was given strict instructions. For the Jarl's eyes only.	엄격한 지시를 받았소. 야를께서만 보셔야 하오.	나는 엄격한 지시를 받았소. 직접 야를의 눈으로 보시오.
 I was hired to kill you, and that's what I intend to do.	너를 죽이라고 고용됐고, 그럴 생각이다.	너를 죽이기 위해 고용되었다, 그리고 내가 할 일이지.
 I was hoping you might want to talk about it.	너도 그 이야기를 하고 싶어 하길 바랐는데.	너도 이 말을 듣고 싶어하길 바랬는데.
@@ -542,6 +555,7 @@ I'm going to put it on Olaf's Effigy.	올라프 왕의 모형에 입힐 것입�
 I'm Harbinger of the Companions.	난 컴패니언의 인도자다.	난 컴페니언의 선도자다.
 I'm here about Goldenglow Estate.	골든글로우 농장 일로 왔다.	골든글로우 지구 일로 왔다.
 I'm looking for a courier.	전령을 찾고 있소.	배달부를 찾고 있소.
+I'm married. (Lie)	나는 결혼했어. (거짓)	나는 결혼했어. (거짓말)
 I'm not doing anything yet.	아직 아무것도 하겠다고 한 적 없는데.	나는 아직 아무것도 하지 않았는데.
 I'm not.	관심 없어.	아직은.
 I'm ready.	준비 되었소.	준비완료.
@@ -632,10 +646,11 @@ Let's go!	그러면, 가자!	해보지!
 Let's go. Let me worry about the guards.	가자. 경비병들은 내가 신경 쓰지.	가자. 경비병들이나 신경쓰자구.
 Let's never speak of this again.	이 일은 다시는 입에 올리지 말자.	다시는 그런 부탁 하지 마.
 Letter from the Steward of <Alias=HoldCity>	<Alias=HoldCity> 행정관의 편지	행정관 <Alias=HoldCity>의 편지
+Letter to Beem-Ja	빔자에게 주는 편지	빔-자에게 주는 편지
 Library, Doors	도서실, 문	도서실,문들
 Lightning Apparatus	번개 장치	빛나는 장치
 Lightning Attractor	번개 유도장치	빛나는 끌개
-Lisbet	리스벳	리즈벳
+Lisbet	리스벳	리즈벳
 Listen to Mercer Frey	머서 프레이의 말을 듣기	머서 프레이와 대화하기
 Living room furnishings. (<Global=HDWhiterunLiving> gold)	거실 가구들. (<Global=HDWhiterunLiving> 골드)	거실 가구 (<Global=HDWhiterunLiving> 골드)
 Llewellyn the Nightingale	나이팅게일 르웰린	르웰린
@@ -675,6 +690,7 @@ Message from General Tullius	툴리우스 장군의 메시지	툴리우스 장�
 Molag Bal created the first vampire.	몰락 발이 첫 흡혈귀를 만들었소.	몰락-발이 첫 흡혈귀를 만들었소.
 Money's not going to do you much good after I've killed you.	널 죽이고 나면 돈 따위는 아무 소용 없을 거다.	그냥 죽여주마.
 Mora's Grasp	모라의 손아귀	모라의 이해
+Morthal is said to be named after the great Nord hero Morihaus, though none alive today are sure of the connection.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하우스의 이름을 따서 지어졌다고 합니다.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하스의 이름을 따서 지어졌다고 합니다.
 Most of Winterhold was lost to the sea in the Great Collapse of 4E 122, but the College was left mysteriously unharmed.	윈터홀드의 대부분은 제 4시대 122년의 대붕괴 때 바닷속으로 가라앉아 버렸지만, 불가사의하게도 대학만은 무사했습니다.	윈터홀드의 대부분은 4시대 122년의 대붕괴 때 바닷속으로 가라앉아 버렸지만, 불가사의하게도 대학만은 무사했습니다.
 Mounted Elk Antlers	큰뿔사슴 뿔 박제	큰 뿔 박제
 Mounted Elk Head	큰뿔사슴 머리 박제	큰 뿔 사슴 머리 박제
@@ -694,7 +710,7 @@ No, not yet.	아직은.	아니, 아직은.
 No. Dragons like mountains, right?	아니요. 드래곤이 산을 좋아해서 그런 겁니까?	그게. 드래곤이 산을 좋아해서 그런 겁니까?
 No. No pets. Ever.	안 된다. 애완동물은 안 돼. 절대로.	난 동물이 싫다.
 No. We expected some kind of artifact.	아니오. 우리는 어떤 유물이 있을 거라 생각했소.	우리는 어떤 종류의 유물이라고 생각하고 있소.
-Noble Clothes	야를의 기품있는 의상	귀족의 의상
+Noble Clothes	야를의 기품있는 의상	귀족의 의상
 Nobody hears from them much anymore.	더 이상 소식 들을 일은 없을 거야.	더이상 소식들을 일은 없을 거야.
 Nocturnal is the daedric mistress of stealth and shadow, and a patron to thieves.	녹터널은 잠행과 그림자의 데이드릭 프린스이며, 도둑들의 후원자입니다.	녹터널은 잠행과 그림자의 데이드라 프린스이며, 도둑들의 후원자입니다.
 North Skybound Watch	북부 스카이바운드 감시대	스카이바운드 감시대
@@ -779,13 +795,13 @@ Recipe - Mind Control Spider	제조법 : 정신 조종 거미	제조법 : 정신
 Recipe - Oil Spider	제조법 : 기름 거미	제조법 : 기름분사 거미
 Recognize this? (Show <Alias.PronounObj=Steward> <Alias=Evidence>)	이게 뭔지 알겠나? (<Alias.PronounObj=Steward>에게 <Alias=Evidence>을(를) 보여준다)	이게 뭔지 알겠나? (<Alias.PronounObj=Steward>에게 <Alias=Evidence>를 보여준다)
 Recover the Bonemold Formula for Glover Mallory	글로버 말로리를 위하여 뼈다귀 물품 제조법을 찾아내기	글로버 말로리를 위하여 뼈다귀 물품 제작법을 찾아내기
-Refined Tunic	야를의 세련된 의상	세련된 의상
+Refined Tunic	야를의 세련된 의상	세련된 의상
 Remove all furniture from entryway and remodel it to match the main hall.	현관에 배치된 모든 가구를 제거하고 대청에 맞게 개조합니다.	현관에 배치된 모든 가구를 제거하고 대청에 맞게 재배치하기.
 Remove the workbench from the Enchanter's Tower.	마법부여 연구탑에서 작업선반을 제거합니다.	마법부가 연구탑에서 작업선반을 제거합니다.
 Remove the workbench from the Storage Room.	저장고에서 작업선반을 제거합니다.	창고에서 작업선반을 제거합니다.
 Remove Tree	나무의 바위 효과 제거	나무의 바위효과 제거
 Replace my Enchanting Lab with a Child's Room. (<Global=HDRiftenChildRoom> gold)	마법부여 연구실을 아이의 방으로 개조하고 싶다. (<Global=HDRiftenChildRoom> 골드)	마법 부가 연구실을 아이의 방으로 개조라고 싶다. (<Global=HDRiftenChildRoom> 골드)
-Replace the beacon	표식을 교체하기	등불을 교체하기
+Replace the beacon	표식을 교체하기	등불을 교체하기
 Report failure to <Alias=FactionLeader>.	<Alias=FactionLeader>에게 작전실패를 보고하기	<Alias=FactionLeader> 에게 작전실패를 보고하기
 Report success to <Alias=FactionLeader>.	<Alias=FactionLeader>에게 작전성공을 보고하기	<Alias=FactionLeader> 에게 작전성공을 보고하기
 Report to <Alias=CWFieldCOSonsWhiterunCamp>	<Alias=CWFieldCOSonsWhiterunCamp>에게 보고하기	<Alias=CWFieldCOSonsWhiterunCamp> 에게 보고하기
@@ -798,8 +814,10 @@ Retrieve the Aetherium Crest	에테리움 문장을 회수하기	에테리움 �
 Retrieve the Soul Essence Gem	영혼 정수의 보석 회수하기	영혼의 정수 회수하기
 Retrieve the Stalhrim Source Map	스탈림 원천 지도를 회수하기	스탈림 근원의 지도를 회수하기
 Retrieve the Unmelting Snow	'녹지 않는 눈'을 회수하기	'녹지않는 눈'을 회수하기
-Return the East Empire Shipping Map to Delvin	델빈에게 동 제국 해상운송 지도를 가져가기	델빈에게 동제국 해상운송 지도를 가져가기
+Return <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias=QuestItem>을(를) <Alias.ShortName=QuestGiver>에게 돌려주기	<Alias=QuestItem>을 <Alias.ShortName=QuestGiver> 에게 돌려주기
+Return the East Empire Shipping Map to Delvin	델빈에게 동 제국 해상운송 지도를 가져가기	델빈에게 동제국 해상운송 지도를 가져가기
 Return to the Sanctuary	성역으로 돌아가기	성지로 돌아가기
+Revenge, Hired Thugs	복수, 고용된 폭력배	복수, 고용된 불량배
 Reverent Nordic Battleaxe	노드제 전투 도끼 - 중급 신성	노드제 전투 도끼 - 상급 신성
 Riften is home to the Black-Briar Meadery, one of the largest and most successful businesses of its kind.	리프튼에는 동종 업체중 가장 크고 성공한 사업체인 블랙-브라이어 양조장이 있습니다.	리프튼에는 동종 업체중 가장 크고 성공한 사업체인 블랙-브라이어 양조의 본사가 있습니다.
 Riften Military Camp	리프튼 군영지	리프튼 군용 주둔지
@@ -815,6 +833,7 @@ Saerek's Skull Key	세렉의 두개골 열쇠	세이렉의 두개골 열쇠
 Saint Jiub's Kiss	성자 지웁의 키스	성인 지웁의 키스
 Samuel	사무엘	사뮤엘
 Scourge of the Gray Quarter	잿빛 지구의 골칫거리	골칫거리 잿빛 지구
+Sea Squall	바다 소나기 호	
 Sealed Scroll	봉인된 두루마리	봉인된 마법 주문서
 Search for the Aetherium Shards (<Global=DLC1LD_ShardsFound>/<Global=DLC1LD_ShardsTotal>)	에테리움 파편을 찾기 (<Global=DLC1LD_ShardsFound>/<Global=DLC1LD_ShardsTotal>)	에테리움 조각을 찾기 (<Global=DLC1LD_ShardsFound>/<Global=DLC1LD_ShardsTotal>)
 Seared Slaughterfish	구운 식인물고기	말린 식인물고기
@@ -842,8 +861,10 @@ Shrouded Grove Cave	장막덮인 숲 동굴	장막덮힌 숲 동굴
 Sibbi's Stash Key	열쇠 - 시비의 은닉처	열쇠 - 시비의 비밀 열쇠
 Sightless Pit	보이지 않는 구덩이	보이지않는 구덩이
 Sing me a song, bard. A song of fear, and death!	노래를 불러 주게, 바드여. 공포와 죽음의 노래를!	노래를 불러 주게, 바드여. 공포의 죽음의 노래를!
+Skein of Magnus	매그너스의 실타래	마그누스의 실타래
 Skjor has fallen to the Silver Hand.	스키욜이 실버 핸드들에게 죽임을 당했소.	스키욜이 실버핸드들에게 죽임을 당했소.
 Skyrim is home to more than just Nords.	스카이림은 노드만의 집이 아닙니다.	스카이림의 노드만의 집은 아닙니다.
+Slay the other cultists	다른 광신도들을 죽이기	다른 광신자들을 죽이기
 Smelter	용광로	도가니
 Smithing	제련	뼈다귀 제련
 Snow Bear	설원곰	설원 곰
@@ -852,6 +873,7 @@ Snowy Ice Vine	눈덮인 얼음 포도덩굴	눈덮힌 얼음 포도덩굴
 So do you remember anything I said when I got here?	내가 여기 왔을 때 무슨 말을 했는지 기억나는 게 있소?	내가 여기 와서 무슨말을 했는지 기억하나는 게 있소?
 So how do I get him to talk?	그래서 그놈 입을 열게 하려면 어떻게 하지?	그래서 그놈이랑 대화하려면 어떻게 하지?
 So what's the specialty of the house?	그래서 이 집의 대표 메뉴는 뭐요?	이 곳의 특별한 점은 뭐가 있소?
+So what's the story behind the Rueful Axe.	그래서 그 회한의 도끼에 얽힌 이야기란게 뭐지?	그래서 그 회한의 도끼에 얽힌 이야기란게 뭐지?
 So you always got along?	그래서 항상 사이가 좋았고?	그래서 항상 같이 있었고?
 So you're the Augur of Dunlain?	그래서 당신이 던레인의 예언자입니까?	그래서 당신이 '던레인의 예언'입니까?
 So, what did you think about the deed?	그래서, 그 증서는 어떻게 생각하지?	그래서, 거래에 관해서는 어떻게 생각하지?
@@ -870,7 +892,8 @@ Sounds like you've seen you far share of hardship.	고생을 꽤나 겪은 것 �
 Spawns a glowing spider that will follow you around.  Only one can be spawned at a time.	주위를 따라오는 발광 거미를 소환합니다. 한 번에 하나만 소환할 수 있습니다.	주위를 따라오는 발광 거미를 소환합니다.
 Spawns a spider that can be used to haul items.  Only one can be spawned at once.	물품을 운반하는 거미를 소환합니다. 한 번에 하나만 소환할 수 있습니다.	물품을 운반하는 거미를 소환합니다.
 Speak to <Alias.ShortName=Target> about going to the Temple of Divines.	디바인 신전에 가는 것에 관해 <Alias.ShortName=Target>와 대화하기	디바인 신전에 가는 것에 관해 <Alias.ShortName=Target>과 대화하기
-Speak to Brynjolf about being Guild Master	길드 지도자의 역할에 관해서 브린욜프와 대화하기	브린욜프에게 길드 지도자로 살아가는 것에 관해서 대화하기
+Speak to Brynjolf about becoming the Guild Master	브린욜프와 길드 마스터가 되는 것에 관해 대화하기	브린욜프와 길드 지도자가 되는 것에 관해 대화하기
+Speak to Brynjolf about being Guild Master	길드 마스터의 역할에 관해서 브린욜프와 대화하기	브린욜프에게 길드 지도자로 살아가는 것에 관해서 대화하기
 Speak to Degaine	디게인과 대화하기	디게인과와 대화하기
 Speak to From Deepest Fathoms	프롬-디피스트-페덤스와 대화하기	프롬-디프스트-파돔과 대화하기
 Speak to Mercer Frey	머서 프레이와 대화하기	머서 프레이와와 대화하기
@@ -908,13 +931,13 @@ Storage Room - Workbench	저장고 - 작업선반	창고 - 작업선반
 Storage Room, Doors	저장고, 문	저장고,문들
 Storn didn't die for nothing. Miraak will never threaten Solstheim again.	스토언의 죽음은 헛되지 않았어. 미락이 다시는 솔스트하임을 위협하지 못할 테니까.	스토언의 죽음은 헛되지 않았어. 미락이 다시는 솔스트하임으로 돌아올 수 없을테니까.
 Strengthened by the infamy of its bearer	소유자의 악명으로 강화됩니다.	소유자의 악명으로 강화합니다.
+Summon and subdue an Unbound Dremora	속박되지 않은 드레모라를 소환하고 복종시키기	계약없는 드레모라를 소환하고 복종시키기
 Summon Ice Wolves 1	설원늑대 소환 1	설원 늑대소환 1
 Summon Ice Wolves 2	설원늑대 소환 2	설원 늑대소환 2
 Summon Ice Wolves 3	설원늑대 소환 3	설원 늑대소환 3
 Summon Spectral Dragon	유령 드래곤 소환	영체 드래곤 소환
 Summons a High Seeker for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 시커 군주를 소환합니다.	<dur> 초 동안 고위 시커를 소환합니다.
 Summons a Spectral Dragon for <dur> seconds.	<dur> 초 동안 유령 드래곤을 소환합니다.	<dur> 초 동안 영체 드래곤을 소환합니다.
-Summons an unbound Dremora for <dur> seconds.	<dur> 초 동안 계약없는 드레모라를 소환합니다.	<dur> 초 동안 속박되지 않은 드레모라를 소환합니다.
 Summons Arvak in the Soul Cairn or Tamriel wilderness to act as your steed.	소울 케언이나 탐리엘의 야외에서 나의 말이 되어줄 아바크를 소환합니다.	소울 케언으로부터 나의 말이 되어줄 아바크를 소환합니다.
 Summons the ghost of the legendary assassin Lucien Lachance to fight by your side, until he's defeated.	전설적인 암살자 루시엔 러찬스의 영혼을 소환하여, 쓰러질 때까지 내 곁에서 싸우게 합니다.	전설적인 암살자 루시엔 러찬스의 영혼을 소환합니다.
 Sunlight explosion that does <mag> points of damage in a 15 foot radius to undead, and half that to living targets	15 피트 범위의 태양빛 폭발을 일으켜 언데드에게 <mag> 의 피해를 입히고 생명체에게는 절반의 피해를 입힙니다.	15 피트 범위의 태양빛 폭발을 일으키는 화염구를 날려 언데드에게 <mag> 의 피해를 입히고 생명체에게는 절반의 피해를 입힙니다.
@@ -936,6 +959,7 @@ Talk to Legate Rikke	리카 군단장과 대화하기	리카 군단장와 대화
 Talk to Lucan about the robbery	도난 사건에 관해서 루칸과 이야기하기	도둑에 관해서 루칸과 이야기하기
 Talk with <Alias=FactionLeader>.	<Alias=FactionLeader>와(과) 대화하기	<Alias=FactionLeader> 와 대화하기
 Target is paralyzed for <dur> and takes 25 points of damage over <dur> seconds.	목표를 <dur> 초 동안 마비시키고, <dur> 초에 걸쳐 25 의 피해를 입힙니다.	<dur> 초 동안 <mag> 의 피해를 입히고 마비시킵니다.
+Target moves at 50% speed for <dur> seconds.	<dur> 초 동안 이동 속도를 50% 감소시킵니다.	<dur> 초 동안 이동 속도를 50% 감소시킵니다.
 Targets that fail to resist are immobilized in hardened ash for <dur> seconds.	화산재의 마법을 날려 저항에 실패한 목표를 <dur> 초 동안 석화시킵니다.	<화산재>의 마법을 날려 저항에 실패한 목표를 <dur> 초 동안 석화시킵니다.
 Taron Dreth's Robes	타론 드레스의 로브	타론의 로브
 Tel Mithryn Steward's House	텔 미스린 행정관의 집	텔 미스린 집사의 집
@@ -962,7 +986,9 @@ That's why we're headed there?	그래서 거기로 가는 거야?	그럼 왜 거
 The <Alias=Beast> is dead.	<Alias=Beast>은(는) 죽었다.	<Alias=Beast>는 죽었다.
 The <Alias=Boss> at <Alias=Dungeon> has been dealt with.	<Alias=Dungeon>에 있던 <Alias=Boss>은(는) 처리되었소.	<Alias=Dungeon>에 있던 <Alias=Boss>는 처리되었소.
 The <Alias=Boss> at <Alias=Dungeon> has been destroyed.	<Alias=Dungeon>의 <Alias=Boss>은(는) 죽었습니다.	<Alias=Dungeon>의 <Alias=Boss>는 죽었습니다.
+The Alchemy skill determines the creation and potency of potions and poisons.	연금술 기술은 물약과 독을 만들고, 그것을 얼마나 강력하게 만들 수 있는지를 결정합니다.	연금술 기술은 물약과 독을 만들고, 그것을 얼마나 강력하게 만들 수 있는지를 결정합니다.
 The Alik'r won't trouble you anymore.	알리키어 걱정은 이제 안 해도 되오.	알리키어는 걱정은 이제 안 해도 되오.
+The Apprentice Stone ability doubles your Magicka and regeneration speed, but makes you twice as susceptible to spells.	'수습생의 선돌'은 당신의 매지카와 재생 속도를 2배로 향상시킵니다. 그러나 상대의 마법공격에 2배 더 약해집니다.	'수습생의 선돌'은 당신의 매지카와 회복속도를 2배로 향상시킵니다. 그러나 상대의 마법공격에 2배 더 약해집니다.
 The Apprentice's Assistant	수습생의 조수	수습생
 The Augur referred to it as the Eye of Magnus, not me.	그걸 '매그너스의 눈'이라고 부른 건 예언자지, 내가 아니오.	예언은 '매그너스의 눈'과 관련이 있다고 했지, 내가 아니오.
 The bandit leader at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>의 산적 두목은 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 의 산적 두목은 죽었습니다. 현상금을 받으러 왔습니다.
@@ -1031,6 +1057,7 @@ Turn <Alias=Candidate> into a vampire	<Alias=Candidate>을(를) 흡혈귀로 바
 Turn into Vampire	흡혈귀로 만들기	바꾸기
 Turn off 360 Controller in the Controls section of the Settings menu to switch back to Keyboard/Mouse.	키보드/마우스로 전환하려면 설정메뉴에서 360컨트롤러 항목을 해제해야 합니다.	키보드/마우스 로 전환하려면 설정메뉴에서 360컨트롤러 항목을 해제해야합니다.
 Um... The one where you saw a lady in half?	음... 여자를 톱으로 반토막 내는 거?	음... 두동강이 난 여자를 보았던 곳?
+Unbound Dremora	속박되지 않은 드레모라	계약없는 드레모라
 Undead targets takes <mag> points of sun damage,	언데드에게 <mag> 의 태양 피해를 입힙니다.	언데드에게 <mag>의 태양 피해를 입힙니다.
 Understandable. Be on your way.	알 만하군. 가 보라고.	알만 한군. 가 보라고.
 Unknown Book, Vol. II	알 수 없는 책, 제 2권	알 수 없는 책, 2 권
@@ -1067,6 +1094,7 @@ We could use your help in Tamriel.	탐리엘에서 당신의 도움이 필요하
 We didn't really get along. Best that I haven't seen them in a while.	잘 지내진 못했지. 안 보게 돼서 기쁘군.	잘 지내진 못했지. 안 보게 되서 기쁘군.
 We might have something, yes.	뭔가 있을지도 모르지, 그래.	확실히 뭔가 있기는 한데.
 We should keep moving.	계속 이동하지.	계속 가지.
+We're called the Dawnguard. We're fighting a vampire conspiracy.	우리는 '던가드'요. 흡혈귀의 계략에 맞서 싸우고 있소.	우리는 '던가드'입니다. 흡혈귀의 계략에 맞서 싸우고 있습니다.
 We're very close. I can't wait to see them again.	아주 친하지. 어서 다시 보고 싶군.	아주 가까웠지. 다시 보고 싶군.
 Weak Aversion to Fire	독 - 화염 약점 하급	독 - 화염 하급
 Weak Aversion to Frost	독 - 냉기 약점 하급	독 - 냉기 하급
@@ -1075,6 +1103,7 @@ Weak Aversion to Shock	독 - 전격 약점 하급	독 - 전격 하급
 What about the information on Goldenglow Estate?	골든글로우 농장에 대한 정보는?	골든글로우 지구에 대한 정보는?
 What about them?	걔네가 왜?	조금 더 알려줄 수 있나?
 What about you?	당신께선 어떻습니까?	당신에 대한 이야기?
+What are the Ancestral Tombs?	조상의 무덤들이란게 뭐요?	조상의 무덤들이란게 뭡니까?
 What are the duties of a Keeper?	키퍼의 역할은 뭐지?	관리자의 역할은 뭐지?
 What are you doing?	뭐하는 거지?	뭘 하고 있소?
 What are you talking about?	무슨 말을 하고 있는 거지?	무슨 말을 하고 있는거요?
@@ -1104,6 +1133,7 @@ What exactly is "ash-grown food?"	'화산재에서 키운'이라니 정확히 �
 What happened during the Night of Green Fire?	녹색 화염의 밤에 무슨 일이 일어났습니까?	녹색 불의 밤에 무슨 일이 일어났습니까?
 What happened on the 30th of Frostfall?	10월 30일에 무슨 일이 일어났던 겁니까?	10월 30일에 무슨 일이 있어났던 겁니까?
 What happened to capturing Mercer alive?	머서를 생포한다더니 어떻게 된 거지?	머서를 생포하려다 어떤 일이 생긴거지?
+What happened to the dragon?	그 드래곤에게 무슨 일이 있었던 거요?	그 드래곤에게 무슨 일이 있었던 겁니까?
 What happened with Gleda again? I'm a little fuzzy on that.	글레다한테 무슨 일이 생긴 거였지? 기억이 좀 흐릿해서.	글레다한테 무슨 일이 생긴거지? 기억이 좀 흐트려져서.
 What happens? I'm curious.	무슨 일이 생기는데? 궁금하군.	무슨 일이지? 궁금하군.
 What if I do?	만약 그렇다면?	만약 내가 한다면?
@@ -1127,6 +1157,7 @@ What's in your head?	머릿속에 뭐가 있다는 거요?	뭔가 좋은 생각�
 What's on your mind?	뭔데? 말해 봐.	뭐지?
 What's stopping you?	무엇이 가로막고 있지?	못 돌아 가는 건가?
 What's the problem?	문제라도 있소?	문제라도 있나?
+When will you return to Tamriel?	언제 탐리엘로 돌아갈 거요?	언제 탐리엘로 돌아갈 겁니까?
 Where can I find a heart stone?	하트스톤은 어디에서 찾을 수 있지?	허트스톤은 어디에서 찾을 수 있지?
 Where can I find him?	어디에서 찾을 수 있습니까?	어디에서 찾으면 되요?
 Where did you find this Black Book?	이 검은 책을 어디에서 찾은거요?	이 검은책을 어디에서 찾은거요?
@@ -1215,6 +1246,7 @@ You think someone is out to get you?	누군가가 당신을 노리고 있다고 
 You want me to murder someone else? Who?	또 다른 사람을 죽이라는 말인가? 누구를?	사람을 죽이라는 말인가? 누구를?
 You want to be shipped off to Honorhall Orphanage?	명예전당 고아원으로 보내 버릴까?	널 고아원에 보내는 배에다 실어버릴까?
 You want to help me kill the vampire?	흡혈귀를 죽이는 걸 도와주겠다고?	흡혈귀를 죽이는 일에 도움이 필요한가?
+You wanted to speak with me?	나와 이야기하고 싶었소?	저와 대화를 하기 원하십니까?
 You wanted to thank me for killing <Alias=Victim>?	<Alias=Victim>을(를) 죽인 것에 대한 감사표시?	<Alias=Victim>을/를 죽인 것에 대한 감사표시?
 You were going to tell me a story.	뭔가 이야기를 해 주려던 것 같은데.	뭔가 이야기가 있을 것 같은데.
 You were the one presiding over the execution.	당신이 그 처형을 주관한 사람이었는데.	당신이 그 처형을 주관한 사람이였는데.
@@ -1233,5 +1265,7 @@ You're talking about a book?	책에 관해서 이야기하고 있는 겁니까?	
 You've killed the High King. Why make war on your own people?	당신은 하이킹을 죽였군. 왜 당신 민족을 상대로 전쟁을 벌이는 거지?	당신은 하이킹을 죽였군. 왜 당신 민족을 전쟁에 끌어들인 거지?
 You... must not see many Orcs around here.	당신은... 이 근처에서 오크를 별로 못 봤나 보군.	당신은... 이 주변의 많은 오크들을 보지 않았군.
 Your Frost Breath Shout encases foes in ice for <15> seconds.	서리 숨결이 <15> 초 동안 적을 빙결시킵니다.	냉기 숨결이 <15> 초 동안 적을 빙결시킵니다.
+Your soul was trapped.	당신의 영혼이 갇혀버린 겁니다.	당신의 영혼이 갇혀버린 거요.
 Your Wards are <25>% less effective, but absorb <50>% of the magicka from incoming spells.	방어막 마법의 위력이 <25>% 감소하지만 적의 마법으로부터 <50>%의 매지카를 흡수합니다.	방어막 마법의 위력이 <25>% 감소하지만 매지카 흡수량이 <50>% 증가합니다.
 Ysolda's Message	이솔다의 메시지	이솔다의 메세지
+Zenithar is the god of work and commerce. He has a shrine in the Temple of the Divines in Solitude.	제니타르는 일과 상업의 신입니다. 그의 성소는 솔리튜드의 디바인 신전에 있습니다.	제니타르는 일과 상업의 신입니다. 그의 성소는 솔리튜드의 디바인 신전에 있습니다.

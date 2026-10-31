@@ -532,24 +532,25 @@ public class BundledFranchiseTmSeedServiceTests
     }
 
     // v1 kept a minority spelling where the Korean patch translates one source several ways ("Ice Storm" is 얼음 폭풍
-    // in 27 strings and 얼음의 형상 in 2); v3 to v7 fix patch errors reviews found ("머서 프레이와와 대화하기", "화살 -
-    // 강철 화살", "빛나는 끌개", "강철 문", "도둑길드"). Users who already imported an earlier seed get only the rows
-    // changed since their version, so other rows they edited in the global memory stay; a new install imports the whole
-    // seed. The v6 stamp is 1.15's.
+    // in 27 strings and 얼음의 형상 in 2); v3 to v8 fix patch errors reviews found ("머서 프레이와와 대화하기", "화살 -
+    // 강철 화살", "빛나는 끌개", "강철 문", "도둑길드", "계약없는 드레모라"). Users who already imported an earlier seed get
+    // only the rows changed since their version, so other rows they edited in the global memory stay; a new install
+    // imports the whole seed. The v6 stamp is 1.15's, the v7 one 1.16's to 1.16.39's.
     [Theory]
-    [InlineData("v6|1528761|ed933491d5eafaf99142407ca1a159f92fdeee2ea7d2af625e13ccadd7d8bccc|0", false, false, false, false, false)]
-    [InlineData("v5|1528360|1aa05d8bb8f743812f7870aea4a5b444028fc07647b2cdb71ecedbde3371477d|0", true, false, false, false, false)]
-    [InlineData("v4|1527387|20d5bd50e2d722876bc0066bb627d446bc6abda67a88760f03ec6a91e490f426|0", true, true, false, false, false)]
-    [InlineData("v3|1527327|e66600f3aff94bd6a9f7bf2f006279580d8b52aa74734640b3bec9b4a809d2eb|0", true, true, true, false, false)]
-    [InlineData("v2|1527256|3a72a1830ab346b43fa3fb97251738d00480224ba014c3ff59005c47b5efb0fd|0", true, true, true, true, false)]
-    [InlineData("v1|1527384|8fd8931be7c1e7da90d99cbaaeac001ec4809c170fd18feb4274ceac83e69a44|0", true, true, true, true, true)]
-    public async Task ElderScrollsSeed_V7_ImportsOnlyTheChangesSinceTheImportedVersion(string stamp, bool beforeV6, bool beforeV5, bool beforeV4, bool beforeV3, bool fromV1)
+    [InlineData("v7|1528774|a020a55d45ed0c1a8331294f057c005b8a35fe091fb890c4b676564883ea5db7|0", false, false, false, false, false, false)]
+    [InlineData("v6|1528761|ed933491d5eafaf99142407ca1a159f92fdeee2ea7d2af625e13ccadd7d8bccc|0", true, false, false, false, false, false)]
+    [InlineData("v5|1528360|1aa05d8bb8f743812f7870aea4a5b444028fc07647b2cdb71ecedbde3371477d|0", true, true, false, false, false, false)]
+    [InlineData("v4|1527387|20d5bd50e2d722876bc0066bb627d446bc6abda67a88760f03ec6a91e490f426|0", true, true, true, false, false, false)]
+    [InlineData("v3|1527327|e66600f3aff94bd6a9f7bf2f006279580d8b52aa74734640b3bec9b4a809d2eb|0", true, true, true, true, false, false)]
+    [InlineData("v2|1527256|3a72a1830ab346b43fa3fb97251738d00480224ba014c3ff59005c47b5efb0fd|0", true, true, true, true, true, false)]
+    [InlineData("v1|1527384|8fd8931be7c1e7da90d99cbaaeac001ec4809c170fd18feb4274ceac83e69a44|0", true, true, true, true, true, true)]
+    public async Task ElderScrollsSeed_V8_ImportsOnlyTheChangesSinceTheImportedVersion(string stamp, bool beforeV7, bool beforeV6, bool beforeV5, bool beforeV4, bool beforeV3, bool fromV1)
     {
         var root = CreateTempRoot();
         try
         {
             var metadata = BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.ElderScrolls)!;
-            Assert.Equal("v7", metadata.Version);
+            Assert.Equal("v8", metadata.Version);
             var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.ElderScrolls, root);
             Directory.CreateDirectory(importDir);
             var previousStamp = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, stamp[..2], root);
@@ -568,9 +569,29 @@ public class BundledFranchiseTmSeedServiceTests
             var changesPath = Path.Combine(importDir, metadata.ChangesFileName!);
             var changes = await File.ReadAllTextAsync(changesPath, CancellationToken.None);
             Assert.StartsWith("Source\tTarget\tPrevious\n", changes, StringComparison.Ordinal);
-            // The gallery's reports the first match missed are in every upgrade: 도둑 길드, as most of the patch spells it.
-            Assert.Contains("\nThieves Guild Fence Chest\t도둑 길드의 장물 보관함\t", changes, StringComparison.Ordinal);
-            Assert.Contains("\nMudcrab Boss (Old Salty)\t거대 진흙게 (올드 살티)\t", changes, StringComparison.Ordinal);
+            // The import reads every row of it, a row new to the seed (no Previous) too.
+            var parsed = TranslationMemoryFileService.ParseTsvChanges(await ImportTextFileReader.ReadAllLinesAsync(changesPath, CancellationToken.None));
+            Assert.Equal(changes.Count(c => c == '\n') - 1, parsed!.Count);
+            // The patch's third review round is in every upgrade: names and terms as the game spells them, the player's
+            // choices in the voice of their conversation, a space the Korean fonts have where a no-break space was.
+            Assert.Contains("\nBarter\t거래\t", changes, StringComparison.Ordinal);
+            Assert.Contains("\nUnbound Dremora\t속박되지 않은 드레모라\t", changes, StringComparison.Ordinal);
+            Assert.Contains("\nBecome Guild Master for the Thieves Guild\t도둑 길드의 길드 마스터가 되기\t", changes, StringComparison.Ordinal);
+            Assert.Contains("\nWhat are the Ancestral Tombs?\t조상의 무덤들이란게 뭐요?\t", changes, StringComparison.Ordinal);
+            Assert.Contains("\nI want you to leave Omluag alone.\t옴러그를 내버려두시오.\t", changes, StringComparison.Ordinal);
+            Assert.DoesNotContain('\u00A0', changes.Split('\n').Where(line => line.Length > 0).Select(line => line.Split('\t')[1]).SelectMany(target => target));
+            // Sea Squall is new: no earlier seed had it, and the ship took the 스퀄 of Strident Squall.
+            Assert.Contains("\nSea Squall\t바다 소나기 호\t\n", changes, StringComparison.Ordinal);
+            // From v3 to v7, 18 rows ended in a CR that broke a changes file's line, and the import dropped them: those
+            // who came from v1 or v2 still have the v2 text, which every upgrade now replaces.
+            Assert.DoesNotContain('\r', changes);
+            Assert.Contains("\nLisbet\t리스벳\t리즈벳\n", changes, StringComparison.Ordinal);
+            Assert.Contains("\nALTERATION\t변화마법\t변화\n", changes, StringComparison.Ordinal);
+            Assert.DoesNotContain("\nFinished?\t", changes, StringComparison.Ordinal);
+            // The gallery's reports the first match missed reach those who imported a seed older than v7: 도둑 길드, as
+            // most of the patch spells it.
+            Assert.Equal(beforeV7, changes.Contains("\nThieves Guild Fence Chest\t도둑 길드의 장물 보관함\t", StringComparison.Ordinal));
+            Assert.Equal(beforeV7, changes.Contains("\nMudcrab Boss (Old Salty)\t거대 진흙게 (올드 살티)\t", StringComparison.Ordinal));
             // The second review, of names and descriptions (1.15's v6), reaches those who imported a seed older than it:
             // Iron is 철, not the 강철 of Steel; a weakness poison takes the effect's 약점; Vignar is 비그나 as his lines say.
             Assert.Equal(beforeV6, changes.Contains("\nIron Door\t철문\t강철 문\n", StringComparison.Ordinal));
@@ -639,6 +660,10 @@ public class BundledFranchiseTmSeedServiceTests
             Assert.Contains("\nSpeak to Mercer Frey\t머서 프레이와 대화하기\n", seed, StringComparison.Ordinal);
             Assert.Contains("\nSteel Arrow\t화살 - 강철\n", seed, StringComparison.Ordinal);
             Assert.Contains("\nLightning Attractor\t번개 유도장치\n", seed, StringComparison.Ordinal);
+            Assert.Contains("\nBarter\t거래\n", seed, StringComparison.Ordinal);
+            Assert.Contains("\nSea Cave\t바다 동굴\nSea Squall\t바다 소나기 호\n", seed, StringComparison.Ordinal);
+            // No Korean of the seed has a no-break space: the Korean font mods have none, and the game shows a box.
+            Assert.DoesNotContain(seed.Split('\n').Where(line => line.Length > 0).Select(line => line.Split('\t')[1]), target => target.Contains('\u00A0'));
             Assert.False(File.Exists(Path.Combine(importDir, metadata.ChangesFileName!)));
         }
         finally

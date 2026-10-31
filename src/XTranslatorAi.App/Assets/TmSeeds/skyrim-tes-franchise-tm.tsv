@@ -87,7 +87,7 @@ Source	Target
 (Optional) Travel to Riverwood with <Alias=FactionFriend>	(선택) <Alias=FactionFriend>와(과) 함께 리버우드로 가기
 (Optional) Use Talen-Jei to get to Keerava	(선택) 탈렌-제이를 이용하여 키라바에게 접근하기
 (Optional) Use your new Shout power	(선택) 새로운 능력 - 함성을 사용하기
-(Optional) Visit the College of Winterhold to ask about the Moth Priest	(선택) 윈터홀드의 마법대학을 방문하여 나방 사제에 관해 물어보기
+(Optional) Visit the College of Winterhold to ask about the Moth Priest	(선택) 윈터홀드 대학을 방문하여 나방 사제에 관해 물어보기
 (Optional) Wipe out the Glenmoril Witches	(선택) 글렌모릴 마녀들을 섬멸하기
 (Optional) Wipe out the Silver Hand	(선택) 실버핸드를 전멸시키기
 (Remain silent)	(아무말도 하지 않는다)
@@ -213,7 +213,7 @@ A dragon destroyed Helgen. <Alias=RiverwoodFriend> is afraid Riverwood is next.	
 A dragon has destroyed Helgen.	드래곤이 헬겐을 파괴했습니다.
 A dragon is attacking Kynesgrove?	드래곤이 카인즈그로브를 공격하고 있습니까?
 A Dream of Sovngarde	소븐가드의 꿈
-A dremora captured you?	드레모라가 당신을 가두었다고?
+A dremora captured you?	드레모라가 당신을 가두었다고요?
 A drinking contest? You don't stand a chance!	술 마시기 대결? 상대가 안 될 텐데!
 A False Front	위장 전술
 A Few Words with You	몇 마디의 대화
@@ -492,7 +492,7 @@ Agni	아그니
 Agnis	애그니스
 Agnis is dead.	애그니스는 죽었다.
 Agrius	아그리우스
-Agrius's Journal	아그리어스의 일기
+Agrius's Journal	아그리우스의 일기
 Ah yes, High Rock. Home of exquisite Breton cuisine...	아 그렇지, 하이 락 지방. 절묘한 브레튼 요리의 고향이지...
 Ahjisi	아지시
 Ahkari	아카리
@@ -1499,7 +1499,7 @@ Barleydark Farm	발리다크 농장
 Barracks	병영
 Barrel	통
 Barrels	통
-Barter	흥정
+Barter	거래
 BarterExit	흥정 종료
 Bash	밀어치기
 Bash Disarm	밀어치기 무장해제
@@ -1539,7 +1539,7 @@ Become a full member of the Thieves Guild	도둑 길드의 정식 일원이 되�
 Become a vampire	흡혈귀가 되기
 Become Ethereal	에테르 형상
 Become friends with someone, and they may allow you to take certain items from their home.	누군가와 친구가 된다면 그들은 당신이 자신들의 집에서 몇 가지 물건을 가져가는 것을 허락할 것입니다.
-Become Guild Master for the Thieves Guild	도둑 길드의 지도자가 되기
+Become Guild Master for the Thieves Guild	도둑 길드의 길드 마스터가 되기
 Become partially soul trapped	일부분만 소울 트랩 마법에 갇히기
 Bed	침대
 Bed and Chairs	침대와 의자들
@@ -2039,7 +2039,7 @@ Break the law? Are you kidding?	법을 어기자니? 농담이겠지?
 Break through the Enemy Barricade	적의 바리케이드를 파괴하기
 Break through the Enemy Barricades	적의 바리케이드를 파괴하기
 Break through the Final Barricade	마지막 바리케이드를 파괴하기
-Break through the First Barricade	첫 번째 바리케이드 파괴하기
+Break through the First Barricade	첫 번째 바리케이드를 파괴하기
 Break through the Second Barricade	두 번째 바리케이드를 파괴하기
 Breath of Nchuak	느츄악의 숨결
 Breathing Water	수중 호흡
@@ -4098,7 +4098,7 @@ Do I look like a courier to you?	내가 배달부처럼 보이나?
 Do I look like I have any money? (Persuade)	내가 돈이 있어 보이나? (설득)
 Do I need to beat some sense into you? (Brawl)	너에게 상식을 가르쳐줄까? (싸움)
 Do I need to beat some sense into you? (Intimidate)	너에게 상식을 가르쳐줄까? (위협)
-Do I need to read the scrolls in any particular order?	엘더스크롤을 뭔가 특별한 순서대로 읽어야 하는 겁니까?
+Do I need to read the scrolls in any particular order?	엘더스크롤을 뭔가 특별한 순서대로 읽어야 하는 거요?
 Do it, or things get ugly. (Brawl)	빨리 하지 않으면 고생을 좀 하게 될걸. (싸움)
 Do it, or things get ugly. (Intimidate)	빨리 하지 않으면 고생을 좀 하게 될걸. (위협)
 Do me a favor and drop the debt.	나를 봐서라도 빚을 좀 없애달라고.
@@ -7254,7 +7254,7 @@ Galmar never mentioned a mission here...	갈마가 이 장소의 임무에 관�
 Galmar Stone-Fist	갈마 스톤-피스트
 Gambler	도박꾼
 Ganna	간나
-Ganna Uriel	간나 우리엘
+Ganna Uriel	간나 유리엘
 Gar-shutan	가르-슈탄
 Garakh	개러크
 Garan	가란
@@ -7305,7 +7305,7 @@ Gelebor	겔레보어
 Gelebros	겔레브로스
 Gem Pedestal	보석 받침대
 Gemma	겜마
-Gemma Uriel	겜마 우리엘
+Gemma Uriel	겜마 유리엘
 General Carius' Armor	카리우스 장군의 방어구
 General Falx Carius	팔크스 카리우스 장군
 General Subtitles	일반 자막
@@ -8265,7 +8265,7 @@ Have the Stormcloaks caused you any trouble?	스톰클록 때문에 무슨 문�
 Have the Stormcloaks treated you roughly?	스톰클록이 당신을 거칠게 대하오?
 Have things changed much with the Empire in charge?	제국이 통치하게 된 후에 바뀐 게 많소?
 Have things changed much with the Stormcloaks in charge?	스톰클록이 점령한 뒤에 달라진 점이 많소?
-Have we angered the Ideal Masters?	아이디얼 마스터들을 화나게 한겁니까?
+Have we angered the Ideal Masters?	아이디얼 마스터들을 화나게 한 거요?
 Have we reached Japhet's Folly?	자펫의 어리석음 섬에 도착했나?
 Have you always lived in Skyrim?	계속 스카이림에서 살았소?
 Have you always served as a ferryman?	쭉 연락선 일을 해온 거요?
@@ -9397,7 +9397,7 @@ I didn't want to risk you not coming.	그러면 안 따라 왔을 거잖아.
 I discovered this note on one of the ash spawn.	화산재 스폰의 잔해들 중에서 이 쪽지를 발견했는데.
 I dislike the daedra looking into my future.	내 미래를 들여다 보는 데이드라라니, 싫은데.
 I do understand. In fact, I'm willing to help you get started.	무슨 말인지 알겠군. 사실은 당신을 도와줄까 하고 생각하고 있었는데.
-I do, but you can't leave that way.	그렇소, 하지만 당신은 그 방법으로는 나갈 수 없는데.
+I do, but you can't leave that way.	알고 있습니다. 하지만 당신은 그 방법으로는 나갈 수 없습니다.
 I do. My hand is yours.	그래. 내 손은 당신 거야.
 I do. Now and forever.	맹세합니다. 지금부터 영원히.
 I do. The question is, what have you got?	돈이야 있지. 문제는, 네가 뭘 가지고 있느냐지.
@@ -9431,7 +9431,7 @@ I don't have time for this.	이런 일에 낭비할 시간은 없군.
 I don't have time for this. Do you?	이렇게 낭비할 시간따위는 없어. 당신은 있나?
 I don't have time for this. I can get rough with you if I have to. (Brawl)	이렇게 낭비할 시간은 없어. 필요하다면 패주지. (싸움)
 I don't have time for this. I can get rough with you if I have to. (Intimidate)	이렇게 낭비할 시간은 없어. 필요하다면 패주지. (위협)
-I don't have time for this... I can get rough with you if I have to.	이럴 시간이 없는데... 거칠게 다룰 수도 있어.
+I don't have time for this... I can get rough with you if I have to.	이럴 시간이 없는데... 거칠게 다룰 수도 있어.
 I don't have time right now.	지금은 여유가 없군.
 I don't have time.	시간이 없군.
 I don't have time. Sorry.	좀 바빠서, 미안하군.
@@ -10107,10 +10107,10 @@ I want to talk to you about <Alias.ShortName=QuestGiver>.	<Alias.ShortName=Quest
 I want to talk to you about Calcelmo.	칼셀모에 관해 이야기를 하고 싶은데.
 I want to train in Destruction Magic.	파괴마법을 배우고 싶은데.
 I want to try again.	한번 더 해보지.
-I want to unravel the mysteries of Aetherius.	에테리어스의 신비를 풀고 싶습니다.
+I want to unravel the mysteries of Aetherius.	에테리우스의 신비를 풀고 싶습니다.
 I want to use the power of ice and fire to destroy any who oppose me.	적을 파괴하는 얼음과 불의 힘을 사용하고 싶습니다.
 I want you and your men to leave.	부하들을 데리고 나가길 바란다.
-I want you to leave Omluag alone.	옴러그를 내버려두시오.
+I want you to leave Omluag alone.	옴러그를 내버려두시오.
 I want you to read my fortune.	내 운명을 한번 봐 주시오.
 I want you to turn me into a vampire.	나를 흡혈귀로 만들어 줘.
 I wanted to ask you about Shadr's debt.	샤드르의 빚에 대해 알고 싶은데.
@@ -10523,7 +10523,7 @@ I'm looking into the market attack.	시장에서 일어난 사건에 관해서 �
 I'm looking to apply to the college.	바드 대학에 입학하고 싶은데.
 I'm loyal to the Empire and don't care who knows it.	난 제국에 충성하며 누가 그것을 알게되든 상관없습니다.
 I'm lucky I made it out alive.	살아 나온 것만 해도 기적이오.
-I'm married. (Lie)	나는 결혼했어. (거짓말)
+I'm married. (Lie)	나는 결혼했어. (거짓)
 I'm no friend of the Imperials.	난 제국 편이 아니오.
 I'm no thief.	난 도둑이 아니야.
 I'm not a cannibal. What are you trying to do to me?	나는 식인종이 아니다. 무슨 수작이냐?
@@ -12636,7 +12636,7 @@ Letter from the Steward of <Alias=HoldCity>	<Alias=HoldCity> 행정관의 편지
 Letter from the Vampire	흡혈귀의 편지
 Letter of Credit	신용장
 Letter of Inheritance	유산상속 편지
-Letter to Beem-Ja	빔-자에게 주는 편지
+Letter to Beem-Ja	빔자에게 주는 편지
 Letter to Golldir	골디어에게
 Letter to Imperial City	임페리얼 시티에 보내는 편지
 Letter to Salma	살마에게 보내는 편지
@@ -13395,7 +13395,7 @@ Morokei	모로케이
 Morokei's Bust	모로케이의 흉상
 Morthal	모탈
 Morthal Guard	모탈 경비병
-Morthal is said to be named after the great Nord hero Morihaus, though none alive today are sure of the connection.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하스의 이름을 따서 지어졌다고 합니다.
+Morthal is said to be named after the great Nord hero Morihaus, though none alive today are sure of the connection.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하우스의 이름을 따서 지어졌다고 합니다.
 Morthal Jail	모탈 감옥
 Morthal seems like a quiet little town.	모탈은 작고 조용한 마을이군요.
 Morthal.	모탈.
@@ -16141,7 +16141,7 @@ Retrieve your Thieves Guild Armor from Tonilia	토닐리아로부터 도둑 길�
 Retry	재시도
 Return	돌아가기
 Return <Alias.ShortName=Item> to <Alias.ShortName=Target>.	<Alias.ShortName=Target>에게 <Alias.ShortName=Item> 돌려주기
-Return <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias=QuestItem>을 <Alias.ShortName=QuestGiver> 에게 돌려주기
+Return <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias=QuestItem>을(를) <Alias.ShortName=QuestGiver>에게 돌려주기
 Return Ancient Nordic Pickaxe to Glover Mallory	글로버 말로리에게 고대 노드 곡괭이를 돌려주기
 Return Arvak's skull	아바크의 해골을 돌려주기
 Return Bilgemuck to Thirsk	빌그먹을 터스크에 돌려놓기
@@ -16246,7 +16246,7 @@ Reunification of Skyrim	스카이림의 재통합
 Revealing the Unseen	보이지 않는 것을 드러내기
 Reveler	술잔치꾼
 Revenant	상급 강령술
-Revenge, Hired Thugs	복수, 고용된 불량배
+Revenge, Hired Thugs	복수, 고용된 폭력배
 Revered Dragon	존경받는 드래곤
 Reverent Crossbow	쇠뇌 - 중급 신성
 Reverent Dwarven Battleaxe	드워프제 전투 도끼 - 중급 신성
@@ -17046,6 +17046,7 @@ Scroll Scouting	스크롤 탐색
 SCROLLS	마법 주문서
 Scrye	촉수 주술장치
 Sea Cave	바다 동굴
+Sea Squall	바다 소나기 호
 Sealed away like you were?	당신처럼 봉인당해 있을까?
 Sealed Door	봉인된 문
 Sealed Letter	봉인된 편지
@@ -17450,7 +17451,7 @@ Skeever Nest	스키버 둥지
 Skeever Polymorph	스키버로 변형
 Skeever Tail	스키버 꼬리
 Skeggr	스케거
-Skein of Magnus	마그누스의 실타래
+Skein of Magnus	매그너스의 실타래
 Skeletal Dragon	해골 드래곤
 Skeleton	해골
 Skeleton Horse Leg	해골마 다리
@@ -17512,7 +17513,7 @@ Slay everyone at <Alias=Dungeon> stealthily	<Alias=Dungeon>에 있는 모든 사
 Slay Harkon	하콘을 죽이기
 Slay Mercer Frey	머서 프레이를 죽이기
 Slay the Jarl of Solitude	솔리튜드의 야를을 처치하기
-Slay the other cultists	다른 광신자들을 죽이기
+Slay the other cultists	다른 광신도들을 죽이기
 Slay the Seeker in Bloodskal Barrow	블러드스칼 무덤에 있는 시커를 죽이기
 Sleep	잠자기
 Sleep now, old woman. Embrace the Void.	잠들어라, 늙은 여인이여. 공허를 받아들이라.
@@ -17668,7 +17669,7 @@ So what's the part you're not telling me?	그래서 내게 말하지 않은 부�
 So what's the plan?	그래서 계획이 뭔가?
 So what's the problem? I'm sure he'll pay you...	뭐가 문제지? 그가 돈을 낼텐데...
 So what's the specialty of the house?	그래서 이 집의 대표 메뉴는 뭐요?
-So what's the story behind the Rueful Axe.	그래서 그 회한의 도끼에 얽힌 이야기란게 뭐지?
+So what's the story behind the Rueful Axe.	그래서 그 회한의 도끼에 얽힌 이야기란게 뭐지?
 So what's this dragon's name?	그럼, 그 드래곤의 이름은 뭡니까?
 So what's this treasure you were after?	당신이 찾는 보물이 뭡니까?
 So what's your job here, Melaran?	멜라란, 당신은 여기서 어떤 일을 합니까?
@@ -17983,8 +17984,8 @@ Speak to Azura	아주라와 대화하기
 Speak to Boethiah's Conduit	보에디아의 대리인과 대화하기
 Speak to Brelyna	브렐리나와 대화하기
 Speak to Brynjolf	브린욜프와 대화하기
-Speak to Brynjolf about becoming the Guild Master	브린욜프와 길드 지도자가 되는 것에 관해 대화하기
-Speak to Brynjolf about being Guild Master	길드 지도자의 역할에 관해서 브린욜프와 대화하기
+Speak to Brynjolf about becoming the Guild Master	브린욜프와 길드 마스터가 되는 것에 관해 대화하기
+Speak to Brynjolf about being Guild Master	길드 마스터의 역할에 관해서 브린욜프와 대화하기
 Speak to Brynjolf.	브린욜프와 대화하기
 Speak to Bujold	부졸드와 대화하기
 Speak to Captain Veleth	벨레스 대장과 대화하기
@@ -19312,7 +19313,7 @@ Summon a dragon from the Soul Cairn to fight for you.	소울 케언으로부터 
 Summon a Dwarven Spider or Sphere for <60> seconds wherever the caster is pointing.	<60> 초 동안 드워프 거미 또는 드워프 구체를 소환합니다.
 Summon a Flame Atronach	화염 아트로나크 소환하기
 Summon Ancients	고대의 존재 소환
-Summon and subdue an Unbound Dremora	계약없는 드레모라를 소환하고 복종시키기
+Summon and subdue an Unbound Dremora	속박되지 않은 드레모라를 소환하고 복종시키기
 Summon Arniel's Shade	아니얼의 유령 소환
 Summon Arvak	아바크 소환
 Summon Dremora	드레모라 소환
@@ -19370,7 +19371,7 @@ Summons a Wrathman from the Soul Cairn for <dur> seconds wherever the caster is 
 Summons an Ash Guardian for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 화산재 수호자를 소환합니다.
 Summons an Ash Spawn for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 화산재 스폰을 소환합니다.
 Summons an Ice Wraith for <dur> seconds wherever the caster is pointing.	<dur> 초 동안 얼음 망령을 소환합니다.
-Summons an unbound Dremora for <dur> seconds.	<dur> 초 동안 계약없는 드레모라를 소환합니다.
+Summons an unbound Dremora for <dur> seconds.	<dur> 초 동안 속박되지 않은 드레모라를 소환합니다.
 Summons Arvak in the Soul Cairn or Tamriel wilderness to act as your steed.	소울 케언이나 탐리엘의 야외에서 나의 말이 되어줄 아바크를 소환합니다.
 Summons Karstaag to fight for you for <dur> seconds.	<dur> 초 동안 나를 위해 싸울 카스태그를 소환합니다.
 Summons spectral instruments that play for you for <dur> seconds.	<dur> 초 동안 음악을 연주하여 아군의 지구력 재생을 증가시키는 영체 악기를 소환합니다.
@@ -19629,7 +19630,7 @@ Target is paralyzed for <dur> seconds.	<dur> 초 동안 마비시킵니다.
 Target Level	목표 레벨
 Target Location	목표 위치
 Target Lock	목표 고정
-Target moves at 50% speed for <dur> seconds.	<dur> 초 동안 이동 속도를 50% 감소시킵니다.
+Target moves at 50% speed for <dur> seconds.	<dur> 초 동안 이동 속도를 50% 감소시킵니다.
 Target moves in complete silence for <dur> seconds, with a side effect of shrinking the target.	<dur> 초 동안 완벽하게 조용히 움직이게 됩니다. 대신 크기가 감소합니다.
 Target moves more quietly for <dur> seconds.	<dur> 초 동안 더 조용히 움직이게 됩니다.
 Target takes <mag> damage per second for <dur> seconds.	<dur> 초 동안 매 초마다 <mag> 의 피해를 입힙니다.
@@ -19978,14 +19979,14 @@ The Adabal-a	아다발-아
 The Aetherium Forge	에테리움 대장간
 The Aetherium Wars	에테리움 전쟁
 The Affairs of Hagravens	해그레이븐의 행위
-The Alchemy skill determines the creation and potency of potions and poisons.	연금술 기술은 물약과 독을 만들고, 그것을 얼마나 강력하게 만들 수 있는지를 결정합니다.
+The Alchemy skill determines the creation and potency of potions and poisons.	연금술 기술은 물약과 독을 만들고, 그것을 얼마나 강력하게 만들 수 있는지를 결정합니다.
 The Alduin/Akatosh Dichotomy	알두인 / 아카토쉬 이분법
 The Alik'r won't trouble you anymore.	알리키어 걱정은 이제 안 해도 되오.
 The Amulet of Kings	왕의 아뮬렛
 The Anticipations	여망들
 The Apprentice Doomstone	수습생의 선돌
 The Apprentice Stone	수습생의 선돌
-The Apprentice Stone ability doubles your Magicka and regeneration speed, but makes you twice as susceptible to spells.	'수습생의 선돌'은 당신의 매지카와 회복속도를 2배로 향상시킵니다. 그러나 상대의 마법공격에 2배 더 약해집니다.
+The Apprentice Stone ability doubles your Magicka and regeneration speed, but makes you twice as susceptible to spells.	'수습생의 선돌'은 당신의 매지카와 재생 속도를 2배로 향상시킵니다. 그러나 상대의 마법공격에 2배 더 약해집니다.
 The Apprentice's Assistant	수습생의 조수
 The Arcanaeum	아케이니움
 The Arch-Mage asked me to see you about class.	대마법사가 수업에 관해서 당신을 만나보라고 했습니다.
@@ -21020,7 +21021,7 @@ Unable to load settings. Defaults will be used.	설정을 불러올 수 없습�
 Unable to remove the worn item.	장비하고 있는 물품을 벗을 수 없습니다.
 Unarmed strikes do <mag> additional damage.	맨손의 공격력이 <mag> 증가합니다.
 Unbound	해방과 자유
-Unbound Dremora	계약없는 드레모라
+Unbound Dremora	속박되지 않은 드레모라
 Unbreakable	부절
 Unceasing Magicka Poison	독 - 지속 매지카 피해 특급
 Unceasing Stamina Poison	독 - 지속 지구력 피해 특급
@@ -21605,7 +21606,7 @@ We'll save her together.	같이 그 애를 구하지.
 We're back. Now fulfill your end of the bargain.	돌아왔소. 이제 당신 쪽이 약속을 지킬 차례요.
 We're beneath Winterhold College. The Midden.	윈터홀드 대학의 지하. 미든이오.
 We're called the Dawnguard, and we need you to read an Elder Scroll.	우리는 '던가드'요. 그리고 당신이 엘더스크롤을 읽어주었으면 하오.
-We're called the Dawnguard. We're fighting a vampire conspiracy.	우리는 '던가드'입니다. 흡혈귀의 계략에 맞서 싸우고 있습니다.
+We're called the Dawnguard. We're fighting a vampire conspiracy.	우리는 '던가드'요. 흡혈귀의 계략에 맞서 싸우고 있소.
 We're done. Let us serve... the Potage le Magnifique!	완성 되었군. 이게 그 유명한... 환상의 포타지다!
 We're going to fight his ghost?	그의 유령과 싸우게 되는 건가?
 We're here to rescue you.	당신을 구하러 왔소.
@@ -21728,7 +21729,7 @@ What am I looking for?	무엇을 찾으면 되오?
 What am I supposed to tell Christer?	크리스터에게는 뭐라고 해야하지?
 What are my new orders, sir?	새로운 명령은 무엇입니까?
 What are the "secrets of the Skaal"?	'스칼의 비밀'이라는 것은 뭡니까?
-What are the Ancestral Tombs?	조상의 무덤들이란게 뭡니까?
+What are the Ancestral Tombs?	조상의 무덤들이란게 뭐요?
 What are the duties of a court wizard?	궁정 마법사의 직무가 무엇이오?
 What are the duties of a Keeper?	키퍼의 역할은 뭐지?
 What are the Eyes of the Falmer?	팔머의 눈이라는게 뭐지?
@@ -22025,7 +22026,7 @@ What happened to Nurelion?	뉴렐리온은 어떻게 된 거지?
 What happened to that burned down house?	저 불타버린 집에 무슨 일이 있었던 겁니까?
 What happened to the Blades? Why are you on the run?	블레이드는 어떻게 된 거지? 당신은 왜 도망치는 거고?
 What happened to the castle courtyard?	성의 안뜰에 무슨 일이 있었지?
-What happened to the dragon?	그 드래곤에게 무슨 일이 있었던 겁니까?
+What happened to the dragon?	그 드래곤에게 무슨 일이 있었던 거요?
 What happened to the mine?	광산에 무슨 일이 있습니까?
 What happened to the salts?	소금에 무슨 문제라도 생겼나?
 What happened to the shrine of Talos?	탈로스의 성소에 무슨 일이 생겼습니까?
@@ -22416,7 +22417,7 @@ When low on health, has a chance to heal wearer and damage nearby enemies, or su
 When sneaking, if the eye is partially open, someone is searching for you. If it is fully open, they have found you.	은신 도중, 눈이 약간 뜨여 있는 마크로 표시되면, 누군가가 당신을 찾고 있다는 뜻입니다. 만약 완전히 뜬 눈 표식이라면, 당신을 발견한 것입니다.
 When the dragon died, I absorbed some kind of power from it.	드래곤이 죽었을 때, 어떤 힘 같은 것을 흡수했소.
 When the High King dies, the Jarls of Skyrim convene a Moot to elect a new High King.	하이킹이 죽으면, 스카이림의 야를들은 새로 선출하기 위해 야를 회의를 소집합니다.
-When will you return to Tamriel?	언제 탐리엘로 돌아갈 겁니까?
+When will you return to Tamriel?	언제 탐리엘로 돌아갈 거요?
 When you enter Beast Form, the world around you seems to slow for <20> seconds.	늑대인간으로 변신 시 <20> 초 동안 시간이 느리게 흘러갑니다.
 When you greeted Serana, it sounded like you hadn't seen her in a long time.	당신이 세라나를 맞이했을때, 마치 아주 오랫동안 만나지 않았던 것 같았는데.
 When you obtain a spell book, you need to read it to learn the spell, which destroys the book in the process.	마법책을 얻었을때, 그 마법을 배우기 위해서는 책을 읽어야하고, 그 과정에서 해당 마법책은 사라지게 됩니다.
@@ -23707,7 +23708,7 @@ You wanted to see me about something?	나에게 부탁할 일이 있소?
 You wanted to see me?	나를 보자고 했소?
 You wanted to speak to me, councilor?	나를 보자고 했습니까, 의원?
 You wanted to speak to me?	나에게 할 이야기가 있다고?
-You wanted to speak with me?	저와 대화를 하기 원하십니까?
+You wanted to speak with me?	나와 이야기하고 싶었소?
 You wanted to thank me for killing <Alias=Victim>?	<Alias=Victim>을(를) 죽인 것에 대한 감사표시?
 You were able to get the forge working again?	대장간을 다시 가동시킬 수 있었나?
 You were an adventurer?	당신도 모험가였나?
@@ -23952,7 +23953,7 @@ Your rule is at an end! Sithis commands it!	네 통치도 여기서 끝이다! �
 Your secret is safe with me.	비밀을 꼭 지키겠습니다.
 Your shop has a most unusual name.	당신 가게는 정말 특이한 이름을 가지고 있군.
 Your skin... Are you ill?	당신 피부가... 병에 걸린 건가?
-Your soul was trapped.	당신의 영혼이 갇혀버린 거요.
+Your soul was trapped.	당신의 영혼이 갇혀버린 겁니다.
 Your spell finally wore off.	마침내 마법이 풀렸군.
 Your spell made me weaker once I got wet!	그 주문에 걸리니, 물에 젖으니까 몸이 약해지던데!
 Your teammate already owns that armor.	당신의 동료는 이미 그 방어구를 가지고 있습니다.
@@ -23981,6 +23982,6 @@ Zahkriisos	자크리조스
 Zahkriisos' Ire	자크리조스의 분노
 Zaria	자리아
 Zaynabi	제이나비
-Zenithar is the god of work and commerce. He has a shrine in the Temple of the Divines in Solitude.	제니타르는 일과 상업의 신입니다. 그의 성소는 솔리튜드의 디바인 신전에 있습니다.
+Zenithar is the god of work and commerce. He has a shrine in the Temple of the Divines in Solitude.	제니타르는 일과 상업의 신입니다. 그의 성소는 솔리튜드의 디바인 신전에 있습니다.
 Zephyr	서풍
 Zombie by Spider	거미의 좀비

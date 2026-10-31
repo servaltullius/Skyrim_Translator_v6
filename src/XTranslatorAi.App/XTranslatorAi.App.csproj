@@ -36,12 +36,13 @@
     <EmbeddedResource Include="Assets\기본용어집_스타필드.md" />
     <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm.tsv" />
     <EmbeddedResource Include="Assets\GameStrings\game-strings-skyrim.gz" />
-    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v7-changes-from-v6.tsv" />
-    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v7-changes-from-v5.tsv" />
-    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v7-changes-from-v4.tsv" />
-    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v7-changes-from-v3.tsv" />
-    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v7-changes-from-v2.tsv" />
-    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v7-changes-from-v1.tsv" />
+    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v8-changes-from-v7.tsv" />
+    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v8-changes-from-v6.tsv" />
+    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v8-changes-from-v5.tsv" />
+    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v8-changes-from-v4.tsv" />
+    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v8-changes-from-v3.tsv" />
+    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v8-changes-from-v2.tsv" />
+    <EmbeddedResource Include="Assets\TmSeeds\skyrim-tes-franchise-tm-v8-changes-from-v1.tsv" />
     <EmbeddedResource Include="Assets\TmSeeds\fallout4-franchise-tm.tsv" />
     <EmbeddedResource Include="Assets\TmSeeds\starfield-franchise-tm.tsv" />
   </ItemGroup>
