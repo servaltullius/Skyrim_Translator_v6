@@ -61,6 +61,19 @@ public sealed class BuiltInGlossaryService
         // The speech-check tags of dialogue choices, as the game translation writes them: the GUI's Fists of Fury run
         // wrote (Brawl) as 난투 and 맨손 격투 besides 싸움, and an agent run wrote (Lie) as 거짓말.
         new("2026-10-18.2", new[] { "(Persuade)", "(Intimidate)", "(Bribe)", "(Lie)", "(Brawl)" }, Array.Empty<(string, string)>()),
+        // The third review of the game translation (2026-10-31): names the list forced where the game text, the built-in TM
+        // and its screen names say otherwise (보에디아, 챠루스, 방어, 소리의 길, 오블리비언 대위기, 부푼 사내의 암굴), and
+        // Akaviri, the people, as 아카비리 beside the continent Akavir (아카비르), as the Korean wiki writes them; the continent
+        // and Aldmeris, the old continent and tongue (알드메리스), get entries so 아카비리 and 알드머 are not forced on them.
+        new("2026-10-31", new[] { "Akavir", "Aldmeris" }, new[]
+        {
+            ("Akaviri", "아카비르"), ("Chaurus", "차루스"), ("Ebony Warrior", "에보니 워리어"), ("Captain Aldis", "대장 알디스"),
+            ("Boethiah", "보에시아"), ("Boethiah's Calling", "보에시아가 부르는 소리"), ("Bloated Man's Grotto", "부풀은 사내의 암굴"),
+            ("The Code of Malacath", "말라카스의 규율"), ("Oblivion Crisis", "오블리비언 위기"), ("Block", "막기"), ("Blocking", "막기"),
+            ("Fortify Blocking", "막기 강화"), ("Spell Absorption", "주문 흡수"), ("Dual cast", "이중시전"),
+            ("Discerning the Transmundane", "다른 차원의 것을 알아내기"), ("The Horn of Jurgen Windcaller", "유르겐 윈드콜러의 뿔"),
+            ("Way of the Voice", "목소리의 길"),
+        }),
     };
 
     /// <summary>
@@ -293,12 +306,8 @@ public sealed class BuiltInGlossaryService
             return true;
         }
 
-        if (string.Equals(sourceTerm, "Block", StringComparison.OrdinalIgnoreCase)
-            && string.Equals(targetTerm, "방어", StringComparison.Ordinal))
-        {
-            migratedTarget = "막기";
-            return true;
-        }
+        // Block went from 방어 to 막기 here once; the game text names the skill 방어, and the 2026-10-31 batch takes it back.
+        // Kept, this pass would turn it into 막기 again on a glossary whose stamp of this pass was lost.
 
         return false;
     }

@@ -193,9 +193,10 @@ public class BuiltInGlossaryLaterAdditionsTests : IAsyncLifetime
         Assert.Equal(expected, Assert.Single(await GlossaryAsync(), e => e.SourceTerm == source).TargetTerm);
     }
 
-    // Decided 2026-10-05 from the Feris review: the game (built-in TM) names the cave 부풀은 사내의 암굴.
+    // Decided 2026-10-05 from the Feris review: the game (built-in TM) names the cave 부풀은 사내의 암굴; the patch has
+    // since spelled it 부푼 사내의 암굴, and a glossary from before either batch goes straight to that.
     [Theory]
-    [InlineData("Built-in default glossary", "부풀은 사내의 암굴")]
+    [InlineData("Built-in default glossary", "부푼 사내의 암굴")]
     [InlineData(null, "부풀은 사내 암굴")]
     public async Task BloatedMansGrotto_IsCorrected_OnlyWhereTheUserKeptTheOldOne(string? note, string expected)
     {
@@ -213,7 +214,40 @@ public class BuiltInGlossaryLaterAdditionsTests : IAsyncLifetime
     {
         await new BuiltInGlossaryService().EnsureBuiltInGlossaryAsync(_db, CancellationToken.None);
 
-        Assert.Equal("부풀은 사내의 암굴", Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Bloated Man's Grotto").TargetTerm);
+        Assert.Equal("부푼 사내의 암굴", Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Bloated Man's Grotto").TargetTerm);
+    }
+
+    // The third review of the game translation (2026-10-31): the list's names that the game text spells otherwise.
+    [Theory]
+    [InlineData("Boethiah", "보에시아", "Built-in default glossary", "보에디아")]
+    [InlineData("Chaurus", "차루스", "Built-in default glossary", "챠루스")]
+    [InlineData("Block", "막기", "Built-in default glossary (prompt-only default)", "방어")]
+    [InlineData("Akaviri", "아카비르", "Built-in default glossary", "아카비리")]
+    [InlineData("Bloated Man's Grotto", "부풀은 사내의 암굴", "Built-in default glossary", "부푼 사내의 암굴")]
+    [InlineData("Boethiah", "보에시아", null, "보에시아")]
+    [InlineData("Boethiah", "보에씨아", "Built-in default glossary", "보에씨아")]
+    public async Task GameTextNames_AreCorrected_OnlyWhereTheUserKeptTheOldOne(string source, string target, string? note, string expected)
+        => await CorrectedAsync(source, target, note, expected);
+
+    // The continent and the old tongue get their own entries beside the people's 아카비리 and 알드머.
+    [Fact]
+    public async Task AkavirAndAldmeris_AreAddedToExistingGlossaries()
+    {
+        await AddAllBatchesAsync();
+        var existing = await GlossaryAsync();
+        Assert.Equal("아카비르", Assert.Single(existing, e => e.SourceTerm == "Akavir").TargetTerm);
+        Assert.Equal("알드메리스", Assert.Single(existing, e => e.SourceTerm == "Aldmeris").TargetTerm);
+    }
+
+    private async Task CorrectedAsync(string source, string target, string? note, string expected)
+    {
+        await _db.BulkInsertGlossaryAsync(
+            new[] { ((string?)null, source, target, true, 10, (int)GlossaryMatchMode.WordBoundary, (int)GlossaryForceMode.ForceToken, note) },
+            CancellationToken.None);
+
+        await AddAllBatchesAsync();
+
+        Assert.Equal(expected, Assert.Single(await GlossaryAsync(), e => e.SourceTerm == source).TargetTerm);
     }
 
     // Decided 2026-10-05 from the Elden Rim review: [Activate Button] 활성화 버튼 (8 rows), [Sprint Button] 질주 버튼.
