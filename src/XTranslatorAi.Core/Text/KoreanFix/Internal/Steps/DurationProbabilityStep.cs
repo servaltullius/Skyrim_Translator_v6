@@ -37,12 +37,20 @@ internal sealed class DurationProbabilityStep : IKoreanFixStep
         matchTimeout: RegexTimeout
     );
 
+    // What the misplaced duration always has, found in one pass: the two patterns above try each of 41 subject lengths
+    // at every letter, and a long book with a tag and "동안" anywhere ran past their timeout. The value token itself, so
+    // a book's "몇 초 동안<br>" or "초 동안 <Alias=...>" does not send them over the whole book.
+    private static readonly Regex DurationBeforeTokenRegex = new(
+        pattern: @"초\s*동안\s*[+-]?<\s*(?:dur|[0-9]+)\s*>",
+        options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
+    );
+
     public string Apply(KoreanFixContext context, string text)
     {
         var working = text;
 
         // Fix: "늑대인간초 동안 <150>초 의 ..." => "<150>초 동안 늑대인간의 ..."
-        if (working.IndexOf('<') >= 0 && working.IndexOf("동안", StringComparison.Ordinal) >= 0)
+        if (DurationBeforeTokenRegex.IsMatch(working))
         {
             working = RawDurationMisplacementWithEuiRegex.Replace(
                 working,

@@ -76,7 +76,21 @@ internal static class KoreanProtectFromFixer
 
     private static readonly string[] AttackNounsKo = { "공격", "습격", "공세", "기습" };
 
+    // A pattern that times out on a long text (a book whose English says "protect ... from ... attack") stopped whatever
+    // fixed it: the reapply of the post-edits as a whole, korean linking a release. The text is left as it was.
     internal static string Fix(string targetLang, string sourceText, string destText)
+    {
+        try
+        {
+            return FixCore(targetLang, sourceText, destText);
+        }
+        catch (RegexMatchTimeoutException)
+        {
+            return destText;
+        }
+    }
+
+    private static string FixCore(string targetLang, string sourceText, string destText)
     {
         if (!LanguageHelper.IsKoreanLanguage(targetLang))
         {

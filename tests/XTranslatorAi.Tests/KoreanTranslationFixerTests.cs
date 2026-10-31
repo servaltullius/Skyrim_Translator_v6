@@ -260,6 +260,34 @@ public class KoreanTranslationFixerTests
         Assert.Equal("<150>초 동안 늑대인간의 형상을 취합니다.", output);
     }
 
+    /// <summary>
+    /// The misplaced-duration patterns ran over any text with a tag and "동안", trying 41 subject lengths at every
+    /// letter: on a long book they timed out, and korean linking Update.esm's and Dragonborn.esm's Korean patch stopped
+    /// at that line. A text without "초 동안 &lt;" is not searched; the fill of a known translation keeps going.
+    /// </summary>
+    [Fact]
+    public void Fix_ALongBookWithATagAndADuration_IsNotStoppedByATimeout()
+    {
+        // About 270,000 characters: the old patterns timed out on it every time (at 81,000 they finished once in 415 ms).
+        var book = "<Alias=Player> " + string.Concat(Enumerable.Repeat("그 사내는 오랫동안 기다렸다 그리고 다시 걸었다 ", 10000));
+
+        Assert.Equal(book, KoreanTranslationFixer.Fix("korean", book));
+        var english = "<Alias=Player> " + string.Concat(Enumerable.Repeat("The man waited a long time and walked again ", 10000));
+        Assert.Equal(book, XTranslatorAi.Core.Translation.KnownTranslationFill.Prepare(1, english, book, "korean", enableTemplateFixer: true).Text);
+    }
+
+    /// <summary>
+    /// The "protect ... from ... attack" fix times out on a long book too: the reapply of the post-edits stopped as a whole
+    /// at it. The text is left as it was.
+    /// </summary>
+    [Fact]
+    public void ProtectFromFix_ALongBook_IsLeftAsItWasInsteadOfTimingOut()
+    {
+        var book = "<Alias=Player> " + string.Concat(Enumerable.Repeat("그 사내는 오랫동안 기다렸다 그리고 다시 걸었다 ", 10000));
+
+        Assert.Equal(book, KoreanProtectFromFixer.Fix("korean", "Protect the village from the bandit attack", book));
+    }
+
     [Theory]
     [InlineData("모든 적은 3초 동안 <25>포인트의 피해를 입습니다.")]
     [InlineData("모든 적은 3 초 동안 <25>포인트의 피해를 입습니다.")]

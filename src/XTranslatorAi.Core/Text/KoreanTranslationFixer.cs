@@ -52,7 +52,16 @@ internal static class KoreanTranslationFixer
 
         foreach (var step in StepPipeline)
         {
-            working = step.Apply(context, working);
+            // A step whose pattern times out on a long text (a book) stopped the whole command that fixed it: korean
+            // linking Update.esm's and Dragonborn.esm's Korean patch failed at one line. That step's edit is left out
+            // for the text; the other steps still apply.
+            try
+            {
+                working = step.Apply(context, working);
+            }
+            catch (RegexMatchTimeoutException)
+            {
+            }
         }
 
         return working;
