@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using XTranslatorAi.Core.Text;
 using Xunit;
 
@@ -30,6 +31,16 @@ public class PlaceholderMaskerTests
 
         var bad = masked.Text.Replace("__XT_PH_VAR_0000__", "MISSING", StringComparison.Ordinal);
         Assert.Throws<InvalidOperationException>(() => masker.Unmask(bad, masked.TokenToOriginal));
+    }
+
+    [Fact]
+    public void Mask_LeavesADash_BeforeAClosingTag()
+    {
+        // The patch's "<b>2 -</b>": the dash is text, and </b> counts with the source's.
+        var masked = new PlaceholderMasker().Mask("<b>2 -</b>");
+
+        Assert.Equal(new[] { "<b>", "</b>" }, masked.TokenToOriginal.Values.OrderBy(v => v.Length).ToArray());
+        Assert.Contains("2 -", masked.Text, StringComparison.Ordinal);
     }
 
     [Fact]

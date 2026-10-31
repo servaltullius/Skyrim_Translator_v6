@@ -17,6 +17,15 @@ internal static class KoreanSyllables
     /// <summary>The final consonant's index (0 none, 8 ㄹ, 17 ㅂ, 18 ㅄ, 20 ㅆ, 27 ㅎ ...), or -1 for a character that is not a syllable.</summary>
     public static int FinalConsonant(char c) => IsHangulSyllable(c) ? (c - First) % 28 : -1;
 
+    /// <summary>The initial consonant's index of a Hangul syllable (11 ㅇ), or -1 for any other character.</summary>
+    public static int InitialConsonant(char c) => IsHangulSyllable(c) ? (c - First) / 588 : -1;
+
+    /// <summary>The index of ㅇ, the initial consonant of a syllable that starts with its vowel (오, 아, 으).</summary>
+    public const int SilentInitial = 11;
+
+    /// <summary>The vowel's index of a Hangul syllable (8 ㅗ), or -1 for any other character.</summary>
+    public static int Vowel(char c) => IsHangulSyllable(c) ? (c - First) % 588 / 28 : -1;
+
     /// <summary>True when the final consonant is ㅂ, as in the polite endings 합니다, 됩니다, 갑시다.</summary>
     public static bool HasFinalBieup(char c) => IsHangulSyllable(c) && (c - First) % 28 == 17;
 

@@ -496,6 +496,35 @@ public class KoreanTranslationFixerTests
         Assert.Equal(input, output);
     }
 
+    [Theory]
+    // A word drawn out for effect: the 은/을 is 좋은's and 그를's, not a particle chosen by the 오 or 으 before it.
+    [InlineData("노래 부르기 조오오오오오오오은 날이군!")]
+    [InlineData("그으으을 찾아!")]
+    public void Fix_KeepsTheEnding_OfAWordDrawnOut(string input)
+        => Assert.Equal(input, KoreanTranslationFixer.Fix("korean", input));
+
+    [Theory]
+    // A noun ending in one more vowel syllable is still a noun: 언어, 상아, 생애, 드워머어.
+    [InlineData("고아은 잔다.", "고아는 잔다.")]
+    [InlineData("언어을 배웠다.", "언어를 배웠다.")]
+    [InlineData("드워머어을 읽는다.", "드워머어를 읽는다.")]
+    public void Fix_StillFixes_AParticle_AfterANounEndingInAVowelSyllable(string input, string expected)
+        => Assert.Equal(expected, KoreanTranslationFixer.Fix("korean", input));
+
+    [Theory]
+    // The word after an alias's marker stays: "(가) 이" was read as a spaced marker of the noun 이, "(는) 은화" of 은.
+    [InlineData("<Alias.ShortName=QuestGiver>이(가) 이 반지를 주었는데, 당신 것 같군.")]
+    [InlineData("<Alias=Item>은(는) 은화를 줬다.")]
+    [InlineData("<Alias=Item>와(과) 와인을 샀다.")]
+    public void Fix_KeepsTheWord_AfterAnAliasMarker(string input)
+        => Assert.Equal(input, KoreanTranslationFixer.Fix("korean", input));
+
+    [Theory]
+    [InlineData("검(을)를 든다.", "검을 든다.")]
+    [InlineData("도끼(이)가 무겁다.", "도끼가 무겁다.")]
+    public void Fix_StillChooses_AMarkerWrittenAsOneWord(string input, string expected)
+        => Assert.Equal(expected, KoreanTranslationFixer.Fix("korean", input));
+
     [Fact]
     public void Fix_DoesNotChange_되다_Standalone()
     {

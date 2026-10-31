@@ -130,12 +130,22 @@ internal static class KoreanParticleSelector
 
     /// <summary>
     /// True when the 을/은 after <paramref name="word"/> ends a word such as 마을, 뒤이은 or 끌어모을
-    /// rather than being a particle. The fixer and the quality check share this list so they agree.
+    /// rather than being a particle. The fixer and the quality check share this test so they agree.
     /// </summary>
     public static bool EndsWithEulEunWord(string word, string particle)
         => word.Length > 0 && VowelThenEulEunWords.Contains(word[^1] + particle)
            // 들를 is 들르다 ("여관에 들를 거야"), not 들 + 를.
-           || word == "들" && particle == "를";
+           || word == "들" && particle == "를"
+           // A word drawn out for effect repeats its vowel: "조오오오은 날" is 좋은 날, and the 오 before 은 says
+           // nothing of the final consonant (the patch's line became 조오오오는).
+           || particle is "은" or "을" && IsDrawnOut(word);
+
+    // The vowel said twice more at least ("조오오", "그으으"): one more syllable is a noun as often (언어, 상아, 생애,
+    // 폭풍우, 드워머어), and "언어을" was no longer fixed or reported.
+    private static bool IsDrawnOut(string word)
+        => word.Length >= 3 && word[^1] == word[^2] && IsHangulSyllable(word[^1]) && IsHangulSyllable(word[^3])
+           && InitialConsonant(word[^1]) == SilentInitial && !HasFinalConsonant(word[^1])
+           && Vowel(word[^1]) == Vowel(word[^3]);
 
     public static string FixObjectParticleSafely(string noun, string particle)
     {

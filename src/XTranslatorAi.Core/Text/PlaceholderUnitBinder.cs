@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace XTranslatorAi.Core.Text;
@@ -144,13 +145,53 @@ internal static class PlaceholderUnitBinder
             }
         }
 
+        // A number the source also uses for something else ("<30> points of Stamina damage … flee for <30> seconds") is
+        // only taken for time where the translation says 동안 after it: every <30> got 초, and the damage read
+        // "<30>초 의 지구력 피해".
+        var sharedSeconds = numericSeconds?.Where(n => CountNumericToken(sourceText, n) > CountNumericSeconds(sourceText, n)).ToHashSet();
+        if (sharedSeconds is { Count: > 0 })
+        {
+            numericSeconds!.ExceptWith(sharedSeconds);
+        }
+
         return new UnitEnforcementPlan(
             NeedsSecondsFromSource: needsSecondsFromSource,
             NeedsDurSeconds: needsDurSeconds,
             NumericSeconds: numericSeconds,
+            SharedNumericSeconds: sharedSeconds,
             NeedsPerSecond: PerSecondRegex.IsMatch(sourceText),
             ShouldStripPointsAfterPlaceholder: shouldStripPointsAfterPlaceholder
         );
+    }
+
+    private static int CountNumericToken(string sourceText, string n)
+    {
+        var count = 0;
+        foreach (Match m in AnyPlaceholderRegex.Matches(sourceText))
+        {
+            var numeric = NumericAngleRegex.Match(m.Value);
+            if (numeric.Success && numeric.Groups["n"].Value == n)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private static int CountNumericSeconds(string sourceText, string n)
+    {
+        var count = 0;
+        foreach (Match m in PlaceholderSecondsRegex.Matches(sourceText))
+        {
+            var numeric = NumericAngleRegex.Match(m.Groups["ph"].Value);
+            if (numeric.Success && numeric.Groups["n"].Value == n)
+            {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     private static string ApplyUnitEnforcementPlan(string sourceText, string text, UnitEnforcementPlan plan)
@@ -173,6 +214,11 @@ internal static class PlaceholderUnitBinder
 
                 working = EnsureTimeUnitAfterToken(working, tokenPattern: @"[+-]?<\s*" + Regex.Escape(n) + @"\s*>", unitWord: "초");
             }
+        }
+
+        foreach (var n in plan.SharedNumericSeconds ?? new HashSet<string>())
+        {
+            working = EnsureTimeUnitAfterToken(working, tokenPattern: @"[+-]?<\s*" + Regex.Escape(n) + @"\s*>", unitWord: "초", onlyBefore: "동안");
         }
 
         if (plan.NeedsPerSecond)
@@ -213,6 +259,7 @@ internal static class PlaceholderUnitBinder
         bool NeedsSecondsFromSource,
         bool NeedsDurSeconds,
         HashSet<string>? NumericSeconds,
+        HashSet<string>? SharedNumericSeconds,
         bool NeedsPerSecond,
         bool ShouldStripPointsAfterPlaceholder
     );
@@ -316,7 +363,7 @@ internal static class PlaceholderUnitBinder
         return working;
     }
 
-    private static string EnsureTimeUnitAfterToken(string text, string tokenPattern, string unitWord)
+    private static string EnsureTimeUnitAfterToken(string text, string tokenPattern, string unitWord, string? onlyBefore = null)
     {
         if (string.IsNullOrWhiteSpace(text) || string.IsNullOrWhiteSpace(tokenPattern) || string.IsNullOrWhiteSpace(unitWord))
         {
@@ -327,7 +374,8 @@ internal static class PlaceholderUnitBinder
         var pattern =
             @"(?<tok>"
             + tokenPattern
-            + @")(?<ws>(?>\s*))(?!(초간|초|분|시간|일|주|개월|년))";
+            + @")(?<ws>(?>\s*))(?!(초간|초|분|시간|일|주|개월|년))"
+            + (onlyBefore == null ? "" : "(?=" + Regex.Escape(onlyBefore) + ")");
 
         return Regex.Replace(
             text,

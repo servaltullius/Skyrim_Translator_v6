@@ -221,10 +221,11 @@ public sealed class GameStringDictionary
 
     /// <summary>
     /// The Korean laid out as the source is: the same tags in the same order, the Korean's words between them, and the
-    /// source's spacing and line breaks around them (between blank-line blocks too, when the blocks pair up). The
-    /// patch's Japhet's Journal breaks the line after its font tag where the English does not. Null when the tags differ.
+    /// source's line breaks around them (between blank-line blocks too, when the blocks pair up); a space beside a tag
+    /// stays the Korean's. The patch's Japhet's Journal breaks the line after its font tag where the English does not.
+    /// Null when the tags differ.
     /// </summary>
-    private static string? Relayout(string source, string korean)
+    internal static string? Relayout(string source, string korean)
     {
         var s = TagPieces.Split(source);
         var k = TagPieces.Split(korean);
@@ -241,8 +242,8 @@ public sealed class GameStringDictionary
 
             var core = k[i].Trim();
             if (core.Length == 0 != (s[i].Trim().Length == 0)) return null;
-            var lead = s[i][..(s[i].Length - s[i].TrimStart().Length)];
-            var trail = s[i].Length == lead.Length ? "" : s[i][s[i].TrimEnd().Length..];
+            var lead = EdgeLayout(s[i], k[i], leading: true);
+            var trail = s[i].Trim().Length == 0 ? "" : EdgeLayout(s[i], k[i], leading: false);
             var sourceBlocks = BlankLines.Split(s[i].Trim());
             var koreanBlocks = BlankLines.Split(core);
             if (sourceBlocks.Length == koreanBlocks.Length)
@@ -254,6 +255,18 @@ public sealed class GameStringDictionary
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// The whitespace at one edge of a piece between tags: the source's where either side breaks the line there (the
+    /// layout), otherwise the Korean's own. A space is word spacing: "+&lt;mag&gt; Speechcraft" has nothing before the tag
+    /// and its patch line "화술이 &lt;mag&gt; 증가합니다" does, and the source's edge made it "화술이&lt;mag&gt;".
+    /// </summary>
+    private static string EdgeLayout(string source, string korean, bool leading)
+    {
+        var sourceEdge = leading ? source[..(source.Length - source.TrimStart().Length)] : source[source.TrimEnd().Length..];
+        var koreanEdge = leading ? korean[..(korean.Length - korean.TrimStart().Length)] : korean[korean.TrimEnd().Length..];
+        return sourceEdge.Contains('\n') || koreanEdge.Contains('\n') ? sourceEdge : koreanEdge;
     }
 
     /// <summary>

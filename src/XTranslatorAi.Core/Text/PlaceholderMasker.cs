@@ -30,8 +30,12 @@ public sealed class PlaceholderMasker
     internal static readonly string ControlKeyPattern =
         @"\[(?-i:" + string.Join("|", ControlKeyNames.OrderByDescending(name => name.Length).Select(Regex.Escape)) + @")\]";
 
+    // A sign goes with the tag after it ("+<mag>", "-<25>"), but never with a closing tag: the patch's "<b>2 -</b>"
+    // read "-</b>" as one token, and its </b> no longer counted with the source's.
+    private const string Sign = @"(?:[+-](?!</))?";
+
     private static readonly Regex PlaceholderRegex = new(
-        pattern: @"(\r\n|\r|\n|[+-]?<" + TranslationConstants.StageDirectionGuard + @"[^>]+>[\t ]*%|[+-]?<" + TranslationConstants.StageDirectionGuard + @"[^>]+>|" + ProtectedTextKinds.BracketPageBreakPattern + @"|" + ControlKeyPattern + @"|%[A-Za-z0-9_]+%|%(?:[0-9]+\$)?[-+0-9.]*[A-Za-z]|\$[A-Za-z0-9_]+\$|\{\{[A-Za-z0-9_.,:+-]{1,40}\}\}|\{[A-Za-z0-9_.,:+-]{1,40}\}|[+-]?\d+(?:\.\d+)?[\t ]*%|%)",
+        pattern: @"(\r\n|\r|\n|" + Sign + "<" + TranslationConstants.StageDirectionGuard + @"[^>]+>[\t ]*%|" + Sign + "<" + TranslationConstants.StageDirectionGuard + @"[^>]+>|" + ProtectedTextKinds.BracketPageBreakPattern + @"|" + ControlKeyPattern + @"|%[A-Za-z0-9_]+%|%(?:[0-9]+\$)?[-+0-9.]*[A-Za-z]|\$[A-Za-z0-9_]+\$|\{\{[A-Za-z0-9_.,:+-]{1,40}\}\}|\{[A-Za-z0-9_.,:+-]{1,40}\}|[+-]?\d+(?:\.\d+)?[\t ]*%|%)",
         options: RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 

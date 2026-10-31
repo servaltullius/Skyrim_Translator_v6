@@ -436,6 +436,17 @@ public sealed class GameStringDictionaryTests
         Assert.Equal(english.Count(c => c == '\n'), same.Text.Count(c => c == '\n'));
     }
 
+    /// <summary>
+    /// A space at a tag is the Korean's word spacing, not the layout: "+&lt;mag&gt; Speechcraft" has nothing before the tag,
+    /// and the patch's "화술이 &lt;mag&gt; 증가합니다" came back as "화술이&lt;mag&gt;" once the fill took it (2026-10-31).
+    /// </summary>
+    [Theory]
+    [InlineData("+<mag> Speechcraft.", "화술이 <mag> 증가합니다.", "화술이 <mag> 증가합니다.")]
+    [InlineData("<font face=\"$HandwrittenFont\">Dear sister,</font>", "<font face=\"$HandwrittenFont\">\r\n누이에게,</font>", "<font face=\"$HandwrittenFont\">누이에게,</font>")]
+    [InlineData("Day one.\r\n<p>Day two.", "첫째 날. <p>둘째 날.", "첫째 날.\r\n<p>둘째 날.")]
+    public void Relayout_TakesTheSourcesLineBreaks_AndKeepsTheKoreanSpaces(string source, string korean, string expected)
+        => Assert.Equal(expected, GameStringDictionary.Relayout(source, korean));
+
     [Fact]
     public void ParagraphFingerprints_SurviveSaveAndLoad_AndCanBeAddedToAnOlderDictionary()
     {

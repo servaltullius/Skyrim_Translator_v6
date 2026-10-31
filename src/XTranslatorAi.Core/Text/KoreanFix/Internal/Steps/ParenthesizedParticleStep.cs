@@ -7,42 +7,44 @@ internal sealed class ParenthesizedParticleStep : IKoreanFixStep
 {
     // A closing bracket or quote may stand between the word and the marker: "[엘든 패리]을(를)". Parentheses after a
     // word qualify it ("도끼(양손)을(를)"), so the marker follows 도끼, not 양손; they are matched as "paren".
+    // A marker written "(가)이" is one word: with a space after it, "<Alias>이(가) 이 반지를" read the 이 of 이(가) as
+    // the noun and "(가) 이" as its marker, and the demonstrative was lost ("<Alias>이가 반지를").
     private const string Close = @"(?<close>[\]""\'’”」』]{0,2})";
 
     private const string LatinNoun = @"(?<noun>[A-Z][A-Za-z0-9 \-'\u2019]{1,40})";
 
     private static readonly Regex ParenthesizedObjectParticleRegex = new(
-        pattern: @"(?<noun>[가-힣]{1,30})(?<paren>\([^()]{1,20}\))?(?<close>[\]""\'’”」』]{0,2})\s*(?:을\(를\)|를\(을\)|\(\s*을\s*\)\s*를|\(\s*를\s*\)\s*을|을/를|를/을)",
+        pattern: @"(?<noun>[가-힣]{1,30})(?<paren>\([^()]{1,20}\))?(?<close>[\]""\'’”」』]{0,2})\s*(?:을\(를\)|를\(을\)|\(\s*을\s*\)를|\(\s*를\s*\)을|을/를|를/을)",
         options: RegexOptions.CultureInvariant
     );
 
     private static readonly Regex ParenthesizedObjectParticleLatinRegex = new(
-        pattern: LatinNoun + Close + @"\s*(?:을\(를\)|를\(을\)|\(\s*을\s*\)\s*를|\(\s*를\s*\)\s*을|을/를|를/을)",
+        pattern: LatinNoun + Close + @"\s*(?:을\(를\)|를\(을\)|\(\s*을\s*\)를|\(\s*를\s*\)을|을/를|를/을)",
         options: RegexOptions.CultureInvariant
     );
 
     private static readonly Regex ParenthesizedTopicParticleRegex = new(
-        pattern: @"(?<noun>[가-힣]{1,30})(?<paren>\([^()]{1,20}\))?(?<close>[\]""\'’”」』]{0,2})\s*(?:은\(는\)|는\(은\)|\(\s*은\s*\)\s*는|\(\s*는\s*\)\s*은|은/는|는/은)",
+        pattern: @"(?<noun>[가-힣]{1,30})(?<paren>\([^()]{1,20}\))?(?<close>[\]""\'’”」』]{0,2})\s*(?:은\(는\)|는\(은\)|\(\s*은\s*\)는|\(\s*는\s*\)은|은/는|는/은)",
         options: RegexOptions.CultureInvariant
     );
 
     private static readonly Regex ParenthesizedTopicParticleLatinRegex = new(
-        pattern: LatinNoun + Close + @"\s*(?:은\(는\)|는\(은\)|\(\s*은\s*\)\s*는|\(\s*는\s*\)\s*은|은/는|는/은)",
+        pattern: LatinNoun + Close + @"\s*(?:은\(는\)|는\(은\)|\(\s*은\s*\)는|\(\s*는\s*\)은|은/는|는/은)",
         options: RegexOptions.CultureInvariant
     );
 
     private static readonly Regex ParenthesizedSubjectParticleRegex = new(
-        pattern: @"(?<noun>[가-힣]{1,30})(?<paren>\([^()]{1,20}\))?(?<close>[\]""\'’”」』]{0,2})\s*(?:이\(가\)|가\(이\)|\(\s*이\s*\)\s*가|\(\s*가\s*\)\s*이|이/가|가/이)",
+        pattern: @"(?<noun>[가-힣]{1,30})(?<paren>\([^()]{1,20}\))?(?<close>[\]""\'’”」』]{0,2})\s*(?:이\(가\)|가\(이\)|\(\s*이\s*\)가|\(\s*가\s*\)이|이/가|가/이)",
         options: RegexOptions.CultureInvariant
     );
 
     private static readonly Regex ParenthesizedConjunctionParticleRegex = new(
-        pattern: @"(?<noun>[가-힣]{1,30})(?<paren>\([^()]{1,20}\))?(?<close>[\]""\'’”」』]{0,2})\s*(?:과\(와\)|와\(과\)|\(\s*와\s*\)\s*과|\(\s*과\s*\)\s*와|과/와|와/과)",
+        pattern: @"(?<noun>[가-힣]{1,30})(?<paren>\([^()]{1,20}\))?(?<close>[\]""\'’”」』]{0,2})\s*(?:과\(와\)|와\(과\)|\(\s*와\s*\)과|\(\s*과\s*\)와|과/와|와/과)",
         options: RegexOptions.CultureInvariant
     );
 
     private static readonly Regex ParenthesizedDirectionalParticleRegex = new(
-        pattern: @"(?<noun>[가-힣]{1,30})(?<paren>\([^()]{1,20}\))?(?<close>[\]""\'’”」』]{0,2})\s*(?:\(\s*으\s*\)\s*로|으로\(로\)|로\(으로\)|으로/로|로/으로)",
+        pattern: @"(?<noun>[가-힣]{1,30})(?<paren>\([^()]{1,20}\))?(?<close>[\]""\'’”」』]{0,2})\s*(?:\(\s*으\s*\)로|으로\(로\)|로\(으로\)|으로/로|로/으로)",
         options: RegexOptions.CultureInvariant
     );
 

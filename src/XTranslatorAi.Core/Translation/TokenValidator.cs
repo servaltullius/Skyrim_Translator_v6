@@ -211,6 +211,7 @@ internal static class TokenValidator
         var finalProtected = masker.Mask(finalText).TokenToOriginal.Values;
         var expected = CountTokens(sourceProtected);
         var actual = CountTokens(finalProtected);
+        CountSpokenSigns(expected, actual, finalText);
         ValidatePlainPercentValues(sourceText, finalText, expected, actual, context);
         foreach (var (placeholder, count) in expected)
         {
@@ -639,6 +640,7 @@ internal static class TokenValidator
         }
 
         var actual = CountRawSkyrimSemanticPlaceholders(outputText);
+        CountSpokenSigns(expected, actual, outputText);
 
         foreach (var (key, expectedCount) in expected)
         {
@@ -648,6 +650,45 @@ internal static class TokenValidator
                 throw new InvalidOperationException(
                     $"Skyrim placeholder mismatch for {context}: {key} (expected {expectedCount}, got {actualCount})."
                 );
+            }
+        }
+    }
+
+    // How a translation says "less" in place of a minus sign: "shout timer -<20>%" is "함성의 재사용 대기시간이 <20>% 감소합니다".
+    private static readonly Regex SaysLessRegex = new(
+        pattern: @"감소|줄어|줄이|줄입|줄여|낮아|낮추|낮춥|약화|약해|덜|잃",
+        options: RegexOptions.CultureInvariant
+    );
+
+    /// <summary>
+    /// Counts a value the translation wrote without the source's sign as the signed one: the Korean patch has
+    /// "+&lt;mag&gt; Speechcraft" as "화술이 &lt;mag&gt; 증가합니다", the sign said in words, and both checks refused it as a lost
+    /// +&lt;mag&gt;, so the patch's line went to the model again. A minus is taken as said only where the translation says
+    /// "less" somewhere: "-&lt;mag&gt; Speechcraft" written "화술 &lt;mag&gt;" reads as a gain. A sign the source does not have
+    /// still fails ("+&lt;mag&gt;" written as "-&lt;mag&gt;"), and so does a value written fewer times.
+    /// </summary>
+    private static void CountSpokenSigns(Dictionary<string, int> expected, Dictionary<string, int> actual, string translated)
+    {
+        var saysLess = SaysLessRegex.IsMatch(translated);
+        foreach (var (key, expectedCount) in expected)
+        {
+            if (key.Length < 2 || key[0] is not ('+' or '-') || key[1] != '<' || key[0] == '-' && !saysLess)
+            {
+                continue;
+            }
+
+            var value = key[1..];
+            var missing = expectedCount - actual.GetValueOrDefault(key);
+            var spare = actual.GetValueOrDefault(value) - expected.GetValueOrDefault(value);
+            var spoken = Math.Min(missing, spare);
+            if (spoken > 0)
+            {
+                actual[key] = actual.GetValueOrDefault(key) + spoken;
+                // The checks read a key as text the translation has, so a value all taken as signed leaves no key.
+                if ((actual[value] -= spoken) == 0)
+                {
+                    actual.Remove(value);
+                }
             }
         }
     }
