@@ -7,7 +7,7 @@ public static partial class MagDurPlaceholderFixer
     private static string? TryFixBadMagDurUsageTemplates(string trimmedSource, string dest)
     {
         return TryFixBadMagDurUsageTemplates_Common(trimmedSource, dest)
-            ?? TryFixBadMagDurUsageTemplates_SignedAmount(trimmedSource);
+            ?? TryFixBadMagDurUsageTemplates_SignedAmount(trimmedSource, dest);
     }
 
     private static string? TryFixBadMagDurUsageTemplates_Common(string trimmedSource, string dest)
@@ -67,14 +67,16 @@ public static partial class MagDurPlaceholderFixer
             var skill = pts.Groups["skill"].Value.Trim();
             var magToken = pts.Groups["mag"].Value.Trim();
             var durToken = pts.Groups["dur"].Value.Trim();
-            var skillKo = KnownSubjectsKo.TryGetValue(skill, out var ko) ? ko : skill;
-            return $"{durToken}초 동안 {skillKo}이(가) {magToken}포인트 더 강해집니다.";
+            // A skill the table does not know stays the translation's: the template wrote its English name into the line.
+            return KnownSubjectsKo.TryGetValue(skill, out var skillKo)
+                ? $"{durToken}초 동안 {skillKo}이(가) {magToken}포인트 더 강해집니다."
+                : dest;
         }
 
         return null;
     }
 
-    private static string? TryFixBadMagDurUsageTemplates_SignedAmount(string trimmedSource)
+    private static string? TryFixBadMagDurUsageTemplates_SignedAmount(string trimmedSource, string dest)
     {
         var signed = SignedAmountForDurationRegex.Match(trimmedSource);
         if (!signed.Success)
@@ -85,7 +87,8 @@ public static partial class MagDurPlaceholderFixer
         var mag = signed.Groups["mag"].Value.Trim();
         var subject = signed.Groups["subject"].Value.Trim();
         var dur = signed.Groups["dur"].Value.Trim();
-        var subjectKo = KnownSubjectsKo.TryGetValue(subject, out var ko) ? ko : subject;
-        return $"{dur}초 동안 {subjectKo} {mag}.";
+        // Only a subject the table knows: "+<mag> per second for <dur> seconds" became "<dur>초 동안 per second <mag>.",
+        // its English in the Korean line.
+        return KnownSubjectsKo.TryGetValue(subject, out var subjectKo) ? $"{dur}초 동안 {subjectKo} {mag}." : dest;
     }
 }

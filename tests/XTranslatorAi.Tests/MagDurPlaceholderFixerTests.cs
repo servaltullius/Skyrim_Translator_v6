@@ -16,6 +16,40 @@ public sealed class MagDurPlaceholderFixerTests
         Assert.Equal(dest, MagDurPlaceholderFixer.Fix(source, dest, "korean"));
     }
 
+    // The signed-amount and stronger-skill templates wrote a subject the table does not know in English
+    // ("<dur>초 동안 per second <mag>."). Such a line keeps its translation; a known subject still takes the template.
+    [Fact]
+    public void Fix_KeepsTheTranslation_WhenTheSignedAmountTemplateDoesNotKnowTheSubject()
+    {
+        const string dest = "<dur> 초 동안 초당 +<mag>.";
+
+        Assert.Equal(dest, MagDurPlaceholderFixer.Fix("+<mag> per second for <dur> seconds.", dest, "korean"));
+    }
+
+    [Fact]
+    public void Fix_SwapsInsteadOfWritingAnEnglishSkill_WhenTheStrongerTemplateDoesNotKnowIt()
+    {
+        var fixedText = MagDurPlaceholderFixer.Fix("Unarmed is <mag> points stronger for <dur> seconds.",
+            "<mag> 초 동안 맨손 격투가 <dur>포인트 더 강해집니다.", "korean");
+
+        Assert.DoesNotContain("Unarmed", fixedText, StringComparison.Ordinal);
+        Assert.Equal("<dur> 초 동안 맨손 격투가 <mag>포인트 더 강해집니다.", fixedText);
+    }
+
+    // With such a line left to the swap check, a 주, 일 or 분 that begins a word after <mag> read as a time unit and swapped
+    // the two tags ("+<mag> 주문 위력" became "+<mag> 초 동안 <dur> 주문 위력").
+    [Theory]
+    [InlineData("+<mag> Spell Power for <dur> seconds.", "<dur>초 동안 +<mag> 주문 위력.")]
+    [InlineData("+<mag> Fury for <dur> seconds.", "<dur>초 동안 +<mag> 분노.")]
+    public void Fix_DoesNotReadAWordAfterMagAsATimeUnit(string source, string dest)
+        => Assert.Equal(dest, MagDurPlaceholderFixer.Fix(source, dest, "korean"));
+
+    [Fact]
+    public void Fix_StillWritesTheSignedAmountTemplate_ForAKnownSubject()
+    {
+        Assert.Equal("<dur> 초 동안 체력 +<mag>.", MagDurPlaceholderFixer.Fix("+<mag> Health for <dur> seconds.", "체력 +<mag> <dur>초", "korean"));
+    }
+
     [Fact]
     public void Fix_WritesARewrite_WithItsSecondsApart()
     {
