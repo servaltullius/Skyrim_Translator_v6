@@ -1,20 +1,27 @@
 Source	Target	Previous
 (Optional) Visit the College of Winterhold to ask about the Moth Priest	(선택) 윈터홀드 대학을 방문하여 나방 사제에 관해 물어보기	(선택) 윈터홀드의 마법대학을 방문하여 나방 사제에 관해 물어보기
+<Alias=PlayerIsIt> is it. Hide from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt>이(가) 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요	<Alias=PlayerIsIt> 이/가 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요
+<Alias=PlayerIsIt> is it. Keep away from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt>이(가) 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요
 A dremora captured you?	드레모라가 당신을 가두었단 말이오?	드레모라가 당신을 가두었다고?
 Agrius's Journal	아그리우스의 일기	아그리어스의 일기
+ALL	모두 보기	모두보기
 ALTERATION	변화마법	변화
+And now that Potema has returned?	그럼 포테마가 돌아온 지금은 어떻습니까?	그래서 포테마가 부활한 것입니까?
 Barter	거래	흥정
 Become Guild Master for the Thieves Guild	도둑 길드의 길드 마스터가 되기	도둑 길드의 지도자가 되기
 Break through the First Barricade	첫 번째 바리케이드를 파괴하기	첫 번째 바리케이드 파괴하기
 Call of the Wild	야생의 외침	아생의 외침
+Can you share anything about the Thieves Guild?	도둑 길드에 대한 정보를 알려주시오.	도둑길드에 대한 정보를 알려주시오.
 Change preset and lose your changes?	변경사항을 버리고 사전설정으로 바꾸겠습니까?	변경사항을 버리고 사전설정으로 바꿀까요?
 Claim Mehrunes' Razor	메이룬스의 면도칼을 가지기	메이룬스 데이건의 단검을 가지기
+Clean up that murderer's mess. (<Global=HDWindhelmKiller> gold)	살인자가 저지른 일의 뒤처리. (<Global=HDWindhelmKiller> 골드)	살인자가 저지른 일의 뒷처리. (<Global=HDWindhelmKiller> 골드)
 CONJURATION	소환마법	소환
 CONTAINERS	보관함	상자
 Could I help?	내가 도와줄 수 있겠소?	도와드릴까요?
 Demonstrate your "Unrelenting Force" Shout	'거침없는 힘' 함성을 보여주기	"거침없는 힘" 함성을 보여주기
 Demonstrate your "Unrelenting Force" Shout (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	'거침없는 힘' 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	"거침없는 힘" 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)
 Demonstrate your "Whirlwind Sprint" Shout	'회오리 질주' 함성을 사용하기	"회오리 질주" 함성을 사용하기
+Did you see that?	방금 그거 보셨습니까?	이거 보이십니까?
 Didn't work out that way I assume.	제대로 되지 않았나 보오.	제대로 되지 않았을 거라고 생각되는군요.
 Discerning the Transmundane	다른 차원의 것을 인식	다른 차원의 것을 알아내기
 Do I need to read the scrolls in any particular order?	엘더스크롤을 뭔가 특별한 순서대로 읽어야 하는 거요?	엘더스크롤을 뭔가 특별한 순서대로 읽어야 하는 겁니까?
@@ -22,66 +29,107 @@ Do you just want to serve your time?	감옥에서 형기를 보내겠습니까?	
 Do you want to create this item?	이 물품을 제작하겠습니까?	이 물품을 제작할까요?
 Do you want to improve this item?	이 물품을 강화하겠습니까?	이 물품을 강화할까요?
 Do you want to move your marker or remove it?	표시를 옮기거나 삭제하겠습니까?	표시를 옮기거나 삭제할까요?
+Enter Snow Veil Sanctum	스노우 베일 성역에 들어가기	스노우 베일성역에 들어가기
+Escort <Alias=Victim> back to <Alias=VictimHome>	<Alias=Victim>을(를) <Alias=VictimHome>까지 데려다주기	<Alias=Victim>를 <Alias=VictimHome>까지 데려다주기
 Fast travel to %s?	%s까지 빠른 이동을 사용하겠습니까?	%s까지 빠른 이동을 사용할까요?
+Find the shrine of Boethiah	보에디아의 성소를 찾기	보에디아의 성지를 찾기
+Find the source of power in <Alias=Dungeon>	<Alias=Dungeon>에서 힘의 원천을 찾기	<Alias=Dungeon> 에서 힘의 원천을 찾기
+Follow <Alias=Questgiver>	<Alias=Questgiver>을(를) 따라가기	<Alias=Questgiver>를 따라가기
 For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	불꽃의 망토를 둘러 <dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 Fur-Trimmed Cloak	야를의 털가죽 망토로 장식된 의상	털가죽 망토
 Ganna Uriel	간나 유리엘	간나 우리엘
 Gemma Uriel	겜마 유리엘	겜마 우리엘
+Get Greybeards' help in negotiating a truce	휴전 협상을 위해 그레이비어드의 도움을 받기	그레이비어드 도움을 받아 휴전협상을 맺기
+Give the final fragment to Eorlund	에올룬드에게 마지막 조각을 주기	에올룬드에게 마지막 파편조각을 주기
 Goodbye	잘 가시오.	잘 가.
 Have we angered the Ideal Masters?	아이디얼 마스터들을 화나게 한 거요?	아이디얼 마스터들을 화나게 한겁니까?
+How did you become allied with the Thieves Guild?	어떻게 도둑 길드와 동맹을 맺게 된 거지?	어떻게 도둑길드와 동맹을 맺게 된 거지?
 How did you earn your nicknames?	어떻게 그런 별명을 얻게 된 거요?	어떻게 그런 별명을 얻게 된 겁니까?
 How is your work going so far?	당신의 책은 어디까지 진행되었소?	당신의 책은 어디까지 진행되었습니까?
 How many pages did you lose?	잃어버린 쪽지가 몇 장이나 되오?	잃어버린 쪽지가 몇장이나 됩니까?
+I bring an offer from the Thieves Guild.	도둑 길드의 제안을 가져왔다.	도둑길드의 제안을 가져왔다.
 I do, but you can't leave that way.	알고 있소. 하지만 당신은 그 방법으로는 나갈 수 없소.	그렇소, 하지만 당신은 그 방법으로는 나갈 수 없는데.
 I don't have time for this... I can get rough with you if I have to.	이럴 시간이 없는데... 거칠게 다룰 수도 있어.	이럴 시간이 없는데... 거칠게 다룰 수도 있어.
 I don't suppose there's a way to free you.	당신을 풀어줄 방법은 없을 것 같소.	당신을 풀어줄 방법은 없는 것 같은데.
+I have slain <Alias=DeadFriend> to gain your favor.	당신의 호의를 얻기 위해 <Alias=DeadFriend>을(를) 죽였습니다.	당신의 호의를 얻기 위해 <Alias=DeadFriend>를 죽였습니다.
 I want to unravel the mysteries of Aetherius.	에테리우스의 신비를 풀고 싶습니다.	에테리어스의 신비를 풀고 싶습니다.
 I want you to leave Omluag alone.	옴러그를 내버려두시오.	옴러그를 내버려두시오.
 I'm married. (Lie)	나는 결혼했어. (거짓)	나는 결혼했어. (거짓말)
+Intimidate <Alias=Brute> in <Alias=BruteTown>	<Alias=BruteTown>에 있는 <Alias=Brute>을(를) 위협하기	<Alias=BruteTown>에 있는 <Alias=Brute>를 위협하기
 Is that where you were attacked?	거기가 당신이 공격받은 곳이오?	거기가 당신이 공격받은 장소입니까?
+Is there anything I should be aware of?	미리 알아두면 좋은 게 있습니까?	미리 알아두면 좋은게 있습니까?
+Know anything about the Thieves Guild?	도둑 길드에 대해 조금이라도 아는게 있소?	도둑길드에 대해 조금이라도 아는게 있소?
+Learn more about the Thieves Guild from Delvin	델빈에게 도둑 길드에 관하여 좀 더 알아보기	델빈에게 도둑길드에 관하여 좀 더 알아보기
+Learn more about the Thieves Guild from Vex	벡스에게 도둑 길드에 관해서 더 알아보기	벡스에게 도둑길드에 관해서 더 알아보기
+Learn the Word of Power from Borri	보리 사범에게 힘의 단어를 배우기	마스터 보리에게 힘의 단어를 배우기
 Letter to Beem-Ja	빔자에게 주는 편지	빔-자에게 주는 편지
 Lisbet	리즈벳	리스벳
+Making a skill Legendary will set it to 15 and return its perks. Are you sure?	기술을 전설화하면 해당 기술은 15로 설정되며 퍽을 돌려받게 됩니다. 바꾸시겠습니까?	기술을 전설화 하면 해당 기술은 15로 설정되며 특성 수치를 돌려받게 됩니다. 바꾸시겠습니까?
+Malacath is the daedric prince of curses and the spurned. Many orcs worship him as their god-king.	말라카스는 저주와 버림받은 자들의 데이드릭 프린스입니다. 오크들에게는 신이자 왕으로 숭배받고 있습니다.	말라카스는 저주와 경멸의 데이드릭 프린스입니다. 오크들에게는 신이자 왕으로 숭배받고 있습니다.
 Maybe a shorter title is in order?	책의 제목은 조금 더 짧은 편이 좋지 않겠소?	책의 제목은 조금 더 짧은 편이 좋지 않습니까?
+Meet Mercer Frey outside Snow Veil Sanctum	스노우 베일 성역 바깥에서 머서 프레이와 만나기	스노우 베일성역 바깥에서 머서 프레이와 만나기
 Morthal is said to be named after the great Nord hero Morihaus, though none alive today are sure of the connection.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하우스의 이름을 따서 지어졌다고 합니다.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하스의 이름을 따서 지어졌다고 합니다.
+Mudcrab Boss (Old Salty)	거대 진흙게 (올드 살티)	거대 진흙 게 (올드 살티)
 Neither side is making much headway. What's the harm in talking to Ulfric?	어느 쪽도 큰 진전이 없으니, 울프릭과 이야기한다고 해서 나쁠 건 없지 않습니까?	어느 쪽이든 큰 진전이 없으니 울프릭에게 이야기 한다고 해서 나쁠건 없겠지?
 Noble Clothes	야를의 기품 있는 의상	야를의 기품있는 의상
 Noble Clothes	야를의 기품 있는 의상	귀족의 의상
 Now, what were you saying?	음, 뭐라고 했소?	음, 뭐라고 했습니까?
+On second thought, perhaps I'll invest another time.	다시 생각해 봤는데, 투자는 다음에 해야 할 것 같습니다.	흐음, 다음 기회에.
 Prison? You mean the Soul Cairn?	감옥? 소울 케언을 말하는 거요?	감옥? 소울 케언을 뜻하는 겁니까?
+Read Madanach's note	매더낙의 메모를 읽기	매더낙의 쪽지를 읽기
+Recover the Crown of Barenziah	바렌자이아의 왕관을 회수하기	바렌자이아의 왕관을 복구하기
 Refined Tunic	야를의 세련된 의상	세련된 의상
 Replace the beacon	등불을 제자리에 놓기	표식을 교체하기
 Replace the beacon	등불을 제자리에 놓기	등불을 교체하기
+Rescue <Alias=Victim> from <Alias=Lair>	<Alias=Lair>에서 <Alias=Victim>을(를) 구출하기	<Alias=Lair>에서 <Alias=Victim>를 구출하기
+Retrieve the fragment	조각을 회수하기	파편조각을 회수하기
+Retrieve the fragments of Wuuthrad	우쓰라드의 조각들을 회수하기	우쓰라드의 파편 조각을 회수하기
 Return <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias=QuestItem>을(를) <Alias.ShortName=QuestGiver>에게 돌려주기	<Alias=QuestItem>을 <Alias.ShortName=QuestGiver> 에게 돌려주기
+Return the Bust of the Gray Fox to Delvin	델빈에게 그레이 폭스 흉상을 가져가기	델빈에게 그레이폭스의 흉상을 가져가기
 Return the East Empire Shipping Map to Delvin	델빈에게 동제국 해상운송 지도를 가져가기	델빈에게 동 제국 해상운송 지도를 가져가기
 Revenge, Hired Thugs	복수, 고용된 폭력배	복수, 고용된 불량배
 Sea Squall	바다 소나기 호	
 Skein of Magnus	매그너스의 실타래	마그누스의 실타래
 Slay the other cultists	다른 광신도들을 죽이기	다른 광신자들을 죽이기
 So what's the story behind the Rueful Axe.	그래서 그 회한의 도끼에 얽힌 이야기란게 뭐지?	그래서 그 회한의 도끼에 얽힌 이야기란게 뭐지?
+Speak to <Alias=Observer>	<Alias=Observer>와(과) 대화하기	<Alias=Observer>와 대화하기
+Speak to <Alias=Questgiver>	<Alias=Questgiver>와(과) 대화하기	<Alias=Questgiver>와 대화하기
 Speak to Brynjolf about becoming the Guild Master	브린욜프와 길드 마스터가 되는 것에 관해 대화하기	브린욜프와 길드 지도자가 되는 것에 관해 대화하기
 Speak to Brynjolf about being Guild Master	길드 마스터의 역할에 관해서 브린욜프와 대화하기	길드 지도자의 역할에 관해서 브린욜프와 대화하기
 Start a new game? Creations are currently loaded. Note: Trophies are disabled.	현재 모드를 사용하고 있습니다. 새 게임을 시작하시겠습니까? 주의: 업적 달성을 할 수 없습니다.	현재 모드를 사용하고 있습니다. 새 게임을 시작할까요? 주의: 업적 달성을 할 수 없습니다.
 Start game as %s?	%s 로 게임을 시작하겠습니까?	%s 로 게임을 시작할까요?
 Summon and subdue an Unbound Dremora	속박되지 않은 드레모라를 소환하고 복종시키기	계약없는 드레모라를 소환하고 복종시키기
 Summons an unbound Dremora for <dur> seconds.	<dur> 초 동안 속박되지 않은 드레모라를 소환합니다.	<dur> 초 동안 계약없는 드레모라를 소환합니다.
+Talk to <Alias=AuthorityFigure>	<Alias=AuthorityFigure>와(과) 대화하기	<Alias=AuthorityFigure>와 대화하기
+Talk to <Alias=Victim>	<Alias=Victim>와(과) 대화하기	<Alias=Victim>와 대화하기
+Talk to Brynjolf about joining the Thieves Guild	도둑 길드에 가입하는 것에 관하여 브린욜프와 대화하기	도둑길드에 가입하는 것에 관하여 브린욜프와 대화하기
 Target moves at 50% speed for <dur> seconds.	<dur> 초 동안 이동 속도를 50% 감소시킵니다.	<dur> 초 동안 이동 속도를 50% 감소시킵니다.
 That was... a bit before my time.	그건... 내가 태어나기 한참 전의 일이오.	그건... 내가 태어나기 한참 전의 일인데.
 The Alchemy skill determines the creation and potency of potions and poisons.	연금술 기술은 물약과 독을 만들고, 그것을 얼마나 강력하게 만들 수 있는지를 결정합니다.	연금술 기술은 물약과 독을 만들고, 그것을 얼마나 강력하게 만들 수 있는지를 결정합니다.
 The Apprentice Stone ability doubles your Magicka and regeneration speed, but makes you twice as susceptible to spells.	'수습생의 선돌'은 당신의 매지카와 재생 속도를 2배로 향상시킵니다. 그러나 상대의 마법공격에 2배 더 약해집니다.	'수습생의 선돌'은 당신의 매지카와 회복속도를 2배로 향상시킵니다. 그러나 상대의 마법공격에 2배 더 약해집니다.
 The best time to negotiate is from a position of strength.	유리한 위치에 있을 때 협상하기에 가장 좋습니다.	유리한 위치에 있을때 협상하기에 가장 좋습니다.
+The Thieves Guild has a problem out here?	도둑 길드는 이 지역에서 뭔가 문제라도 있소?	도둑길드는 이 지역에서 뭔가 문제라도 있소?
 The war is stalemated. What's the harm in talking to Ulfric?	전쟁은 교착 상태인데, 울프릭과 이야기한다고 해서 무슨 해가 되겠습니까?	전쟁은 교착상태인데 울프릭에게 말한다고 해가 될게 뭐가 있겠어?
+There are those who believe that when night descends upon Skyrim, werewolves descend upon the unwary...	어떤 사람들은 스카이림에 어둠이 내리면 늑대인간이 방심하고 있는 인간을 덮친다고 믿고 있습니다...	어떤사람들은 스카이림에 어둠이 내리면 늑대인간이 방심하고 있는 인간을 덮친다고 믿고 있습니다...
+Thieves Guild Fence Chest	도둑 길드의 장물 보관함	도둑길드의 장물 보관함
 Unbound Dremora	속박되지 않은 드레모라	계약없는 드레모라
+Visit your spouse's house	배우자의 집을 방문하기	부부의 집을 방문하기
+Wait for Erandur to dispel the barrier	에란더가 장벽을 제거할 때까지 기다리기	장벽을 제거하기 위해 에란더를 기다리기
 We're called the Dawnguard. We're fighting a vampire conspiracy.	우리는 '던가드'요. 흡혈귀의 계략에 맞서 싸우고 있소.	우리는 '던가드'입니다. 흡혈귀의 계략에 맞서 싸우고 있습니다.
 Were you successful?	성공했소?	성공했습니까?
 What are the Ancestral Tombs?	조상의 무덤들이란게 뭐요?	조상의 무덤들이란게 뭡니까?
+What brings you to this remote place?	이렇게 먼 곳까지 무슨 일로 온 거요?	이렇게 먼 곳까지 무슨일로 온 거지?
 What ended up happening?	마지막에는 어떻게 되었소?	마지막에는 어떻게 되었습니까?
 What happened to the dragon?	그 드래곤에게 무슨 일이 있었던 거요?	그 드래곤에게 무슨 일이 있었던 겁니까?
 What was your campaign against them?	그들에 대비해서 어떤 작전을 세웠소?	그들에 대비해서 어떤 작전을 세웠습니까?
 When will you return to Tamriel?	언제 탐리엘로 돌아갈 거요?	언제 탐리엘로 돌아갈 겁니까?
 Where were you captured?	어디에서 납치되었소?	어디에서 납치되었습니까?
+Who cares, we're the Thieves Guild.	알게 뭐야, 우리는 도둑 길드인데.	알게 뭐야, 우리는 도둑길드인데.
 Who threw you in here?	누가 당신을 여기에 던져 넣었소?	누가 당신을 여기에 던져넣었습니까?
+Why did you join the Guild and not the Brotherhood?	왜 다크 브라더후드가 아니라 도둑 길드에 가입한거지?	왜 다크 브라더후드가 아니라 도둑길드에 가입한거지?
 Why was Dagon able to do this?	어째서 데이건이 그렇게 할 수 있었소?	어째서 데이건이 그렇게 할 수 있었습니까?
 Why would a dremora attack you?	어째서 드레모라가 당신을 공격했소?	어째서 드레모라가 당신을 공격했습니까?
+You have no faith in the Guild?	도둑 길드를 믿지 않나 보지?	도둑길드를 믿지 않나 보지?
 You must be crazy.	미친 게 분명하오.	미쳐버린 것 같은데.
 You said you were in prison?	감옥에 있었다고 했소?	감옥에 있었다니?
 You wanted to speak with me?	나와 이야기하고 싶었소?	저와 대화를 하기 원하십니까?

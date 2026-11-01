@@ -17,6 +17,7 @@ public class BundledFranchiseTmSeedServiceTests
     [InlineData("bundled-skyrim-tes-franchise-tm.tsv", true)]
     [InlineData("bundled-starfield-franchise-tm.tsv", true)]
     // Any version's changes file: an earlier one left in tm-import when the next version wrote its own.
+    [InlineData("bundled-skyrim-tes-franchise-tm-v9-changes.tsv", true)]
     [InlineData("bundled-skyrim-tes-franchise-tm-v8-changes.tsv", true)]
     [InlineData("bundled-skyrim-tes-franchise-tm-v7-changes.tsv", true)]
     [InlineData("bundled-skyrim-tes-franchise-tm-v-changes.tsv", false)]
@@ -538,24 +539,26 @@ public class BundledFranchiseTmSeedServiceTests
 
     // v1 kept a minority spelling where the Korean patch translates one source several ways ("Ice Storm" is 얼음 폭풍
     // in 27 strings and 얼음의 형상 in 2); v3 to v8 fix patch errors reviews found ("머서 프레이와와 대화하기", "화살 -
-    // 강철 화살", "빛나는 끌개", "강철 문", "도둑길드", "계약없는 드레모라"). Users who already imported an earlier seed get
-    // only the rows changed since their version, so other rows they edited in the global memory stay; a new install
-    // imports the whole seed. The v6 stamp is 1.15's, the v7 one 1.16's to 1.16.39's.
+    // 강철 화살", "빛나는 끌개", "강철 문", "도둑길드", "계약없는 드레모라"), and v9 takes the text the game shows where
+    // an Update or DLC override replaced the Skyrim.esm one. Users who already imported an earlier seed get only the rows
+    // changed since their version, so other rows they edited in the global memory stay; a new install imports the whole
+    // seed. The v6 stamp is 1.15's, the v7 one 1.16's to 1.16.39's, the v8 one 1.16.40's.
     [Theory]
-    [InlineData("v7|1528774|a020a55d45ed0c1a8331294f057c005b8a35fe091fb890c4b676564883ea5db7|0", false, false, false, false, false, false)]
-    [InlineData("v6|1528761|ed933491d5eafaf99142407ca1a159f92fdeee2ea7d2af625e13ccadd7d8bccc|0", true, false, false, false, false, false)]
-    [InlineData("v5|1528360|1aa05d8bb8f743812f7870aea4a5b444028fc07647b2cdb71ecedbde3371477d|0", true, true, false, false, false, false)]
-    [InlineData("v4|1527387|20d5bd50e2d722876bc0066bb627d446bc6abda67a88760f03ec6a91e490f426|0", true, true, true, false, false, false)]
-    [InlineData("v3|1527327|e66600f3aff94bd6a9f7bf2f006279580d8b52aa74734640b3bec9b4a809d2eb|0", true, true, true, true, false, false)]
-    [InlineData("v2|1527256|3a72a1830ab346b43fa3fb97251738d00480224ba014c3ff59005c47b5efb0fd|0", true, true, true, true, true, false)]
-    [InlineData("v1|1527384|8fd8931be7c1e7da90d99cbaaeac001ec4809c170fd18feb4274ceac83e69a44|0", true, true, true, true, true, true)]
-    public async Task ElderScrollsSeed_V8_ImportsOnlyTheChangesSinceTheImportedVersion(string stamp, bool beforeV7, bool beforeV6, bool beforeV5, bool beforeV4, bool beforeV3, bool fromV1)
+    [InlineData("v8|1528768|0b4a21c8a7a09d5f10ff09d2f50ac2001446e9fea713d4279b87ac666cd30a42|0", false, false, false, false, false, false, false)]
+    [InlineData("v7|1528774|a020a55d45ed0c1a8331294f057c005b8a35fe091fb890c4b676564883ea5db7|0", true, false, false, false, false, false, false)]
+    [InlineData("v6|1528761|ed933491d5eafaf99142407ca1a159f92fdeee2ea7d2af625e13ccadd7d8bccc|0", true, true, false, false, false, false, false)]
+    [InlineData("v5|1528360|1aa05d8bb8f743812f7870aea4a5b444028fc07647b2cdb71ecedbde3371477d|0", true, true, true, false, false, false, false)]
+    [InlineData("v4|1527387|20d5bd50e2d722876bc0066bb627d446bc6abda67a88760f03ec6a91e490f426|0", true, true, true, true, false, false, false)]
+    [InlineData("v3|1527327|e66600f3aff94bd6a9f7bf2f006279580d8b52aa74734640b3bec9b4a809d2eb|0", true, true, true, true, true, false, false)]
+    [InlineData("v2|1527256|3a72a1830ab346b43fa3fb97251738d00480224ba014c3ff59005c47b5efb0fd|0", true, true, true, true, true, true, false)]
+    [InlineData("v1|1527384|8fd8931be7c1e7da90d99cbaaeac001ec4809c170fd18feb4274ceac83e69a44|0", true, true, true, true, true, true, true)]
+    public async Task ElderScrollsSeed_V9_ImportsOnlyTheChangesSinceTheImportedVersion(string stamp, bool beforeV8, bool beforeV7, bool beforeV6, bool beforeV5, bool beforeV4, bool beforeV3, bool fromV1)
     {
         var root = CreateTempRoot();
         try
         {
             var metadata = BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.ElderScrolls)!;
-            Assert.Equal("v8", metadata.Version);
+            Assert.Equal("v9", metadata.Version);
             var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.ElderScrolls, root);
             Directory.CreateDirectory(importDir);
             var previousStamp = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, stamp[..2], root);
@@ -577,30 +580,36 @@ public class BundledFranchiseTmSeedServiceTests
             // The import reads every row of it, a row new to the seed (no Previous) too.
             var parsed = TranslationMemoryFileService.ParseTsvChanges(await ImportTextFileReader.ReadAllLinesAsync(changesPath, CancellationToken.None));
             Assert.Equal(changes.Count(c => c == '\n') - 1, parsed!.Count);
-            // The patch's third review round is in every upgrade: names and terms as the game spells them, the player's
-            // choices in the voice of their conversation, a space the Korean fonts have where a no-break space was.
-            Assert.Contains("\nBarter\t거래\t", changes, StringComparison.Ordinal);
-            Assert.Contains("\nUnbound Dremora\t속박되지 않은 드레모라\t", changes, StringComparison.Ordinal);
-            Assert.Contains("\nBecome Guild Master for the Thieves Guild\t도둑 길드의 길드 마스터가 되기\t", changes, StringComparison.Ordinal);
-            Assert.Contains("\nWhat are the Ancestral Tombs?\t조상의 무덤들이란게 뭐요?\t", changes, StringComparison.Ordinal);
+            // v9 is in every upgrade: the text the game shows where an Update or DLC override replaced the Skyrim.esm
+            // string, and the particle form the decision gives an <Alias> that takes any name. From v8 that is all.
+            Assert.Contains("\nFind the shrine of Boethiah\t보에디아의 성소를 찾기\t보에디아의 성지를 찾기\n", changes, StringComparison.Ordinal);
+            Assert.Contains("\nRescue <Alias=Victim> from <Alias=Lair>\t<Alias=Lair>에서 <Alias=Victim>을(를) 구출하기\t<Alias=Lair>에서 <Alias=Victim>를 구출하기\n", changes, StringComparison.Ordinal);
+            Assert.True(beforeV8 || parsed.Count == 33, $"{parsed.Count} rows from v8");
+            // The patch's third review round (1.16.40's v8) reaches those who imported a seed older than it: names and
+            // terms as the game spells them, the player's choices in the voice of their conversation, a space the Korean
+            // fonts have where a no-break space was.
+            Assert.Equal(beforeV8, changes.Contains("\nBarter\t거래\t", StringComparison.Ordinal));
+            Assert.Equal(beforeV8, changes.Contains("\nUnbound Dremora\t속박되지 않은 드레모라\t", StringComparison.Ordinal));
+            Assert.Equal(beforeV8, changes.Contains("\nBecome Guild Master for the Thieves Guild\t도둑 길드의 길드 마스터가 되기\t", StringComparison.Ordinal));
+            Assert.Equal(beforeV8, changes.Contains("\nWhat are the Ancestral Tombs?\t조상의 무덤들이란게 뭐요?\t", StringComparison.Ordinal));
             // The decisions after it: Jiub, a stranger, hears 하오체; a confirmation box asks ~하겠습니까?.
-            Assert.Contains("\nWhat ended up happening?\t마지막에는 어떻게 되었소?\t", changes, StringComparison.Ordinal);
-            Assert.Contains("\nDo you want to improve this item?\t이 물품을 강화하겠습니까?\t", changes, StringComparison.Ordinal);
-            Assert.Contains("\nI want you to leave Omluag alone.\t옴러그를 내버려두시오.\t", changes, StringComparison.Ordinal);
+            Assert.Equal(beforeV8, changes.Contains("\nWhat ended up happening?\t마지막에는 어떻게 되었소?\t", StringComparison.Ordinal));
+            Assert.Equal(beforeV8, changes.Contains("\nDo you want to improve this item?\t이 물품을 강화하겠습니까?\t", StringComparison.Ordinal));
+            Assert.Equal(beforeV8, changes.Contains("\nI want you to leave Omluag alone.\t옴러그를 내버려두시오.\t", StringComparison.Ordinal));
             Assert.DoesNotContain('\u00A0', changes.Split('\n').Where(line => line.Length > 0).Select(line => line.Split('\t')[1]).SelectMany(target => target));
-            // Sea Squall is new: no earlier seed had it, and the ship took the 스퀄 of Strident Squall.
-            Assert.Contains("\nSea Squall\t바다 소나기 호\t\n", changes, StringComparison.Ordinal);
+            // Sea Squall is new in v8: no earlier seed had it, and the ship took the 스퀄 of Strident Squall.
+            Assert.Equal(beforeV8, changes.Contains("\nSea Squall\t바다 소나기 호\t\n", StringComparison.Ordinal));
             // From v3 to v7, 18 rows ended in a CR that broke a changes file's line, and the import dropped them: those
-            // who came from v1 or v2 still have the v2 text, which every upgrade now replaces.
+            // who came from v1 or v2 still have the v2 text, which every upgrade from before v8 replaces (v8's did).
             Assert.DoesNotContain('\r', changes);
-            Assert.Contains("\nALTERATION\t변화마법\t변화\n", changes, StringComparison.Ordinal);
+            Assert.Equal(beforeV8, changes.Contains("\nALTERATION\t변화마법\t변화\n", StringComparison.Ordinal));
             Assert.DoesNotContain("\nFinished?\t", changes, StringComparison.Ordinal);
             // Eight of them took in v3 a text the patch no longer has. v8 takes the patch's: where that is the v2 text
             // (Lisbet 리즈벳), only a v3 or later memory changes; where it is neither, both older texts are offered.
-            Assert.Equal(!beforeV3, changes.Contains("\nLisbet\t리즈벳\t리스벳\n", StringComparison.Ordinal));
+            Assert.Equal(beforeV8 && !beforeV3, changes.Contains("\nLisbet\t리즈벳\t리스벳\n", StringComparison.Ordinal));
             Assert.DoesNotContain("\nLisbet\t리즈벳\t리즈벳\n", changes, StringComparison.Ordinal);
-            Assert.Equal(!beforeV3, changes.Contains("\nReplace the beacon\t등불을 제자리에 놓기\t표식을 교체하기\n", StringComparison.Ordinal));
-            Assert.Contains("\nReplace the beacon\t등불을 제자리에 놓기\t등불을 교체하기\n", changes, StringComparison.Ordinal);
+            Assert.Equal(beforeV8 && !beforeV3, changes.Contains("\nReplace the beacon\t등불을 제자리에 놓기\t표식을 교체하기\n", StringComparison.Ordinal));
+            Assert.Equal(beforeV8, changes.Contains("\nReplace the beacon\t등불을 제자리에 놓기\t등불을 교체하기\n", StringComparison.Ordinal));
             // The gallery's reports the first match missed reach those who imported a seed older than v7: 도둑 길드, as
             // most of the patch spells it.
             Assert.Equal(beforeV7, changes.Contains("\nThieves Guild Fence Chest\t도둑 길드의 장물 보관함\t", StringComparison.Ordinal));
@@ -674,6 +683,7 @@ public class BundledFranchiseTmSeedServiceTests
             Assert.Contains("\nSteel Arrow\t화살 - 강철\n", seed, StringComparison.Ordinal);
             Assert.Contains("\nLightning Attractor\t번개 유도장치\n", seed, StringComparison.Ordinal);
             Assert.Contains("\nBarter\t거래\n", seed, StringComparison.Ordinal);
+            Assert.Contains("\nFind the shrine of Boethiah\t보에디아의 성소를 찾기\n", seed, StringComparison.Ordinal);
             Assert.Contains("\nSea Cave\t바다 동굴\nSea Squall\t바다 소나기 호\n", seed, StringComparison.Ordinal);
             // No Korean of the seed has a no-break space: the Korean font mods have none, and the game shows a box.
             Assert.DoesNotContain(seed.Split('\n').Where(line => line.Length > 0).Select(line => line.Split('\t')[1]), target => target.Contains('\u00A0'));
@@ -683,6 +693,48 @@ public class BundledFranchiseTmSeedServiceTests
         {
             TryDeleteDirectory(root);
         }
+    }
+
+    // The seed says what the game shows: where every record with an English shows one text, the seed has that text.
+    // v1 took 31 rows from Skyrim.esm strings that an Update or DLC override replaces with its own copy, and the reviews
+    // fixed the copy the game shows (보에디아의 성소), not the string nobody sees (성지), until v9. A patch fix that
+    // changes a seed row's text puts the row in skyrim-tes-franchise-tm-pending.tsv, with the game's new text, in the
+    // same commit; the next seed version takes the list in, and a release with rows still waiting stops (the release
+    // workflow checks it). A source the game shows several ways is the seed's own choice, as decided (Exploding Spider
+    // 폭발 거미 names the kind, where the game's two texts name a poison spider of each kind), and is not checked.
+    [Fact]
+    public void ElderScrollsSeed_HasTheTextTheGameShows()
+    {
+        using var stream = EmbeddedAssets.OpenBundledGameStrings()!;
+        var shown = XTranslatorAi.Core.Plugins.GameStringDictionary.Load(stream).TextsEveryRecordShows();
+        var seed = EmbeddedAssets.LoadBundledFranchiseTmSeed(BethesdaFranchise.ElderScrolls)!;
+        var lines = File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "TestData", "skyrim-tes-franchise-tm-pending.tsv"));
+        Assert.Equal("Source\tTarget", lines.FirstOrDefault()?.TrimStart('\uFEFF'));
+        var pending = new Dictionary<string, string>(StringComparer.Ordinal);
+        for (var i = 1; i < lines.Length; i++)
+        {
+            if (string.IsNullOrWhiteSpace(lines[i])) continue;
+            var row = lines[i].Split('\t');
+            Assert.True(row.Length == 2 && row[0].Length > 0 && row[1].Trim().Length > 0, $"pending line {i + 1}: {lines[i]}");
+            Assert.True(pending.TryAdd(row[0], row[1]), $"pending line {i + 1} repeats {row[0]}");
+        }
+
+        string? Shown(string source)
+            => XTranslatorAi.Core.Plugins.GameStringDictionary.EnglishKey(source) is { } key && shown.TryGetValue(key, out var game) ? game.Trim() : null;
+
+        var differ = seed.Split('\n').Skip(1).Where(line => line.Length > 0).Select(line => line.Split('\t'))
+            .Where(row => Shown(row[0]) is { } game && !string.Equals(game, row[1].Trim(), StringComparison.Ordinal)
+                && !(pending.TryGetValue(row[0], out var next) && string.Equals(game, next.Trim(), StringComparison.Ordinal)))
+            .Select(row => $"{row[0]} → {row[1]}")
+            .ToList();
+        // A waiting row has the text the game shows now, so the next version does not take an outdated one.
+        var stale = pending.Where(row => Shown(row.Key) is { } game && !string.Equals(game, row.Value.Trim(), StringComparison.Ordinal))
+            .Select(row => $"{row.Key} → {row.Value}")
+            .ToList();
+
+        Assert.True(shown.Count > 20000, $"{shown.Count} texts");
+        Assert.Empty(differ);
+        Assert.Empty(stale);
     }
 
     private static string CreateTempRoot()

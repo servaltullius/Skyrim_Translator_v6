@@ -10,6 +10,8 @@ Source	Target	Previous
 <Alias=Brute> was killed.	<Alias=Brute>은(는) 죽어버렸소.	<Alias=Brute> 는 죽어버렸소.
 <Alias=ImperialMinorHoldCapital> seems like a fair trade.	<Alias=ImperialMinorHoldCapital>(이)라면 공정한 거래같이 보이는군.	<Alias=ImperialMinorHoldCapital>라면 공정한 거래같이 보이는군.
 <Alias=Player>'s Wolf Spirit	<Alias=Player>의 늑대 영혼	<Alias=Player>의 늑대 정령
+<Alias=PlayerIsIt> is it. Hide from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt>이(가) 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요	<Alias=PlayerIsIt> 이/가 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요
+<Alias=PlayerIsIt> is it. Keep away from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt>이(가) 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요
 <Alias=RiverwoodFriend> sent me. Riverwood is in danger.	<Alias=RiverwoodFriend>이(가) 부탁해서 왔습니다. 리버우드가 위험합니다.	<Alias=RiverwoodFriend>가 부탁해서 왔습니다. 리버우드가 위험합니다.
 <Alias=Steward> says there's a shipment of coin traveling to Solitude...	<Alias=Steward>이(가) 말하길 솔리튜드로 가는 현금수송이 있다고 합니다...	<Alias=Steward>가 말하길 솔리튜드로 가는 현금수송이 있다고 합니다...
 <Alias=Steward> says there's a shipment of coin traveling to Windhelm...	<Alias=Steward>이(가) 말하길 윈드헬름으로 가는 현금수송이 있다고 합니다...	<Alias=Steward>가 말하길 윈드헬름으로 가는 현금수송이 있다고 합니다...
@@ -42,6 +44,7 @@ ALTERATION	변화마법	변화
 Amulet of Supernatural Reflexes	아뮬렛 - 초자연적 반사신경	아뮬렛 - 초자연적인 반응
 An infestation of what?	침략이라니, 무엇한테?	침입이라니, 무엇이?
 And if Harkon were slain?	하콘이 죽는다면?	하콘이 이미 죽었다면?
+And now that Potema has returned?	그럼 포테마가 돌아온 지금은 어떻습니까?	그래서 포테마가 부활한 것입니까?
 And that won't work?	그걸로는 안 되는 거요?	제대로 작동하지 않은 게요?
 Animals take <mag> points of extra damage.	동물을 상대로 <mag> 의 추가 피해를 입힙니다.	동물을 상대로 <mag>의 추가 피해를 입힙니다.
 Arcane Enchanter	마법부여대	마법 부여대
@@ -93,6 +96,7 @@ Changed Ones	변화한 자들	변절한 자들
 Charm - Master of the Mind	매료 - 정신의 지배자	매료 - 정신마법의 달인
 Chasing Echoes	메아리를 쫓아서	따라오는 메아리
 Claim Mehrunes' Razor	메이룬스의 면도칼을 가지기	메이룬스 데이건의 단검을 가지기
+Clean up that murderer's mess. (<Global=HDWindhelmKiller> gold)	살인자가 저지른 일의 뒤처리. (<Global=HDWindhelmKiller> 골드)	살인자가 저지른 일의 뒷처리. (<Global=HDWindhelmKiller> 골드)
 Cleanse the focal points for magical energies around the College	대학 주변의 마법 에너지 중심점을 정화하기	대학주변의 마법 에너지 중심점을 정화하기
 Clear <Alias=WealthyHome> in <Alias=City> of valuables (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)	<Alias=City> 도시의 <Alias=WealthyHome>에서 귀중품들을 싹쓸이하기 (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)	<Alias=City> 도시의 <Alias=WealthyHome> 에서 귀중품들을 싹쓸이하기 (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)
 Collect <Alias=SamplePelt>s (<Global=CR03PeltsGotten>/<Global=CR03TotalPeltsNeeded>)	<Alias=SamplePelt>을(를) 모으기 (<Global=CR03PeltsGotten>/<Global=CR03TotalPeltsNeeded>)	<Alias=SamplePelt>를 모으기 (<Global=CR03PeltsGotten>/<Global=CR03TotalPeltsNeeded>)
@@ -119,6 +123,7 @@ Demonstrate your "Unrelenting Force" Shout (<Global=MQ105TargetsHit>/<Global=MQ1
 Demonstrate your "Whirlwind Sprint" Shout	'회오리 질주' 함성을 사용하기	"회오리 질주" 함성을 사용하기
 Desecrated Corpse	훼손된 시체	바짝마른 시체
 Destroy the barricade blocking the Jarl's house.	야를의 집을 막고 있는 바리케이드를 파괴하기	야를의 집을 지키고있는 장벽을 파괴하기
+Did you see that?	방금 그거 보셨습니까?	이거 보이십니까?
 Did you send that guard to threaten me?	날 위협하려고 그 경비병을 보낸건가?	날 위협하려고 그 경비병들을 보낸건가?
 Didn't work out that way I assume.	제대로 되지 않았나 보오.	제대로 되지 않았을 거라고 생각되는군요.
 Discerning the Transmundane	다른 차원의 것을 인식	다른 차원의 것을 알아내기
@@ -150,11 +155,13 @@ Dwarven Bracers of Smithing	드워프제 장갑 - 하급 제련	드워프제 손
 Dwarven Bracers of Sure Grip	드워프제 장갑 - 하급 양손무기	드워프제 손목 보호대 - 하급 양손무기
 Dwarven Bracers of Wielding	드워프제 장갑 - 하급 한손무기	드워프제 손목 보호대 - 하급 한손무기
 End the threat to Councilor Morvayn	모베인 의원에 대한 위협을 끝내기	모베인 의원의 위협을 끝내기
+Enter Snow Veil Sanctum	스노우 베일 성역에 들어가기	스노우 베일성역에 들어가기
 Enter the Keep with Hadvar or Ralof	해드버 또는 레일로프를 따라서 요새 안으로 들어가기	해드버 또는 레일로프를 따라서 요새안으로 들어가기
 Equip and cast to Learn Raise Zombie	장비하고 사용 시 하급 강령술 마법을 배웁니다.	장비하고 사용 시 하급 강령술 마법을 배웁니다
 Equip and cast to learn the Bound Sword Spell	장비하고 사용 시 마법 검 소환 마법을 배웁니다.	장비하고 사용 시 마법 검 소환 마법을 배웁니다
 Equip and cast to learn the Oakflesh spell	장비하고 사용 시 참나무 피부 마법을 배웁니다.	장비하고 사용 시 참나무 피부 마법을 배웁니다
 Escape Yngol's Barrow	잉골 고분을 탈출하기	잉골의 무덤을 탈출하기
+Escort <Alias=Victim> back to <Alias=VictimHome>	<Alias=Victim>을(를) <Alias=VictimHome>까지 데려다주기	<Alias=Victim>를 <Alias=VictimHome>까지 데려다주기
 Execute Ulfric Stormcloak	울프릭 스톰클록을 처형하기	울프릭 처형하기
 Experimental Subject	실험 대상	실험 과제
 Explore Vahlok's Tomb	발록의 묘지를 탐색하기	발록의 묘지을 탐색하기
@@ -164,8 +171,11 @@ Fall from Glory	영광에서의 몰락	영광에서 몰락
 Fast travel to %s?	%s까지 빠른 이동을 사용하겠습니까?	%s까지 빠른 이동을 사용할까요?
 Find <Alias=QuestItem> for <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>을(를) 위해 <Alias=QuestItem> 찾기	<Alias.ShortName=QuestGiver>를 위해 <Alias=QuestItem> 찾기
 Find the <Alias=QuestItem> inside <Alias=Dungeon>	<Alias=Dungeon>안에서 <Alias=QuestItem>을 찾기	<Alias=Dungeon>안에서 <Alias=QuestItem>를 찾기
+Find the shrine of Boethiah	보에디아의 성소를 찾기	보에디아의 성지를 찾기
+Find the source of power in <Alias=Dungeon>	<Alias=Dungeon>에서 힘의 원천을 찾기	<Alias=Dungeon> 에서 힘의 원천을 찾기
 First Letter from EEC	동제국 회사의 첫 번째 편지	동제국 회사의 첫번째 편지
 Follow <Alias=Friend> and ambush enemy scout	<Alias=Friend>을(를) 따라가서 매복하고 적의 정찰병을 습격하기	<Alias=Friend>를 따라가서 매복하고 적의 정찰병을 습격하기
+Follow <Alias=Questgiver>	<Alias=Questgiver>을(를) 따라가기	<Alias=Questgiver>를 따라가기
 Follow the <Alias=General>	<Alias=General>을(를) 따라가기	<Alias=General> 를 따라가기
 For <dur> seconds, opponents in melee range have a chance to be infected.	<dur> 초 동안 일정한 확률로 주변 적을 감염시킵니다.	<dur> 초 동안 일정한 확률로 주변 적에게 피해를 줍니다.
 For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	불꽃의 망토를 둘러 <dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
@@ -184,8 +194,10 @@ Ganna Uriel	간나 유리엘	간나 우리엘
 Gate Barred	빗장 걸린 관문	빗장걸린 관문
 Gemma Uriel	겜마 유리엘	겜마 우리엘
 General Falx Carius	팔크스 카리우스 장군	폭스 카리우스 장군
+Get Greybeards' help in negotiating a truce	휴전 협상을 위해 그레이비어드의 도움을 받기	그레이비어드 도움을 받아 휴전협상을 맺기
 Get the staff	지팡이를 손에 넣기	지팡이를 가지기
 Ghosts in the Storm	폭풍 속의 유령들	폭풍속의 유령들
+Give the final fragment to Eorlund	에올룬드에게 마지막 조각을 주기	에올룬드에게 마지막 파편조각을 주기
 Give the note to Captain Veleth	벨레스 대장에게 쪽지를 주기	벨레스 대장에게 노트를 주기
 Go to the Shrine of Talos	탈로스의 성소로 가기	탈로스의 성지로 가기
 Goodbye	잘 가시오.	잘 가.
@@ -227,6 +239,7 @@ I found the same marking at Honningbrew Meadery.	허닝브루 양조장에서 �
 I got the fragment.	조각을 가져왔습니다.	조각들을 가져왔습니다.
 I have Kodlak's fragment.	코들락이 가지고 있던 조각을 가져왔습니다.	코들락이 가지고 있던 조각들을 가져왔습니다.
 I have returned from <Alias=Dungeon> with the <Alias=Remains>.	<Alias=Dungeon>에 있던 <Alias=Remains>을(를) 가지고 돌아왔소.	<Alias=Dungeon>에 있던 <Alias=Remains>을 가지고 돌아왔소.
+I have slain <Alias=DeadFriend> to gain your favor.	당신의 호의를 얻기 위해 <Alias=DeadFriend>을(를) 죽였습니다.	당신의 호의를 얻기 위해 <Alias=DeadFriend>를 죽였습니다.
 I have your amulet.	아뮬렛을 가져왔소.	목걸이를 가져왔소.
 I made a mistake. I want to go ahead with the ceremony.	제가 실수했습니다. 결혼식을 열고 싶습니다.	실수했군. 결혼식을 열고 싶습니다.
 I presume this <Alias=Loot> belongs to you?	이 <Alias=Loot>은(는) 당신 거라고 생각되는데?	이 <Alias=Loot>는 당신 거라고 생각되는데?
@@ -262,6 +275,7 @@ In 3E 389 Emperor Uriel VII was imprisoned by his Imperial Battlemage, Jagar Tha
 Increase the damage and decrease the cost of Destruction spells for <dur> seconds.	<dur> 초 동안 파괴마법의 위력이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 파괴마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Increase the duration and decrease the cost of Conjuration spells for <dur> seconds.	<dur> 초 동안 소환마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 소환마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Increase the duration and decrease the cost of Illusion spells for <dur> seconds.	<dur> 초 동안 환영마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 환영마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
+Intimidate <Alias=Brute> in <Alias=BruteTown>	<Alias=BruteTown>에 있는 <Alias=Brute>을(를) 위협하기	<Alias=BruteTown>에 있는 <Alias=Brute>를 위협하기
 Iron Door	철문	강철 문
 Is that where you were attacked?	거기가 당신이 공격받은 곳이오?	거기가 당신이 공격받은 장소입니까?
 Is there anything I should be aware of?	미리 알아두면 좋은 게 있습니까?	미리 알아두면 좋은게 있습니까?
@@ -277,6 +291,7 @@ Know anything about the Thieves Guild?	도둑 길드에 대해 조금이라도 �
 Kust	쿠스트	커스트
 Learn more about the Thieves Guild from Delvin	델빈에게 도둑 길드에 관하여 좀 더 알아보기	델빈에게 도둑길드에 관하여 좀 더 알아보기
 Learn more about the Thieves Guild from Vex	벡스에게 도둑 길드에 관해서 더 알아보기	벡스에게 도둑길드에 관해서 더 알아보기
+Learn the Word of Power from Borri	보리 사범에게 힘의 단어를 배우기	마스터 보리에게 힘의 단어를 배우기
 Lesser Magic Resistance	하급 마법 저항력	하급 마법 저항
 Letter to Beem-Ja	빔자에게 주는 편지	빔-자에게 주는 편지
 Lightning Apparatus	번개 장치	빛나는 장치
@@ -288,6 +303,8 @@ Look. I'll give you a fair price. (<BribeCost> gold)	자, 내가 값을 후하�
 Lowers the cost and increases the duration of Alteration spells for <dur> seconds.	<dur> 초 동안 변화마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 변화마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Lowers the cost and increases the potency of Restoration spells for <dur> seconds.	<dur> 초 동안 회복마법의 위력이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 회복마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Lurker Vindicator	러커 응징자	러커 지원병
+Making a skill Legendary will set it to 15 and return its perks. Are you sure?	기술을 전설화하면 해당 기술은 15로 설정되며 퍽을 돌려받게 됩니다. 바꾸시겠습니까?	기술을 전설화 하면 해당 기술은 15로 설정되며 특성 수치를 돌려받게 됩니다. 바꾸시겠습니까?
+Malacath is the daedric prince of curses and the spurned. Many orcs worship him as their god-king.	말라카스는 저주와 버림받은 자들의 데이드릭 프린스입니다. 오크들에게는 신이자 왕으로 숭배받고 있습니다.	말라카스는 저주와 경멸의 데이드릭 프린스입니다. 오크들에게는 신이자 왕으로 숭배받고 있습니다.
 Malign Aversion to Fire	독 - 화염 약점 최상급	독 - 화염 최상급
 Malign Aversion to Frost	독 - 냉기 약점 최상급	독 - 냉기 최상급
 Malign Aversion to Magic	독 - 마법 약점 최상급	독 - 마법 저항 최상급
@@ -297,6 +314,7 @@ Maurice said that renewal is more important than maintenance.	모리스는 유�
 Maybe a shorter title is in order?	책의 제목은 조금 더 짧은 편이 좋지 않겠소?	책의 제목은 조금 더 짧은 편이 좋지 않습니까?
 Meet Bujold at Hrothmund's Barrow	흐로스문드의 무덤에서 부졸드를 만나기	흐로스문드 무덤에서 부졸드를 만나기
 Meet Karliah at the standing stone	선돌 앞에서 칼라이아와 만나기	비석앞에서 칼라이아와 만나기
+Meet Mercer Frey outside Snow Veil Sanctum	스노우 베일 성역 바깥에서 머서 프레이와 만나기	스노우 베일성역 바깥에서 머서 프레이와 만나기
 Meet with <Alias=General>	<Alias=General>와(과) 만나기	<Alias=General>와 만나기
 Meet with the <Alias=General>	<Alias=General>와(과) 만나기	<Alias=General>와 만나기
 Meet with the <Alias=General> on the Front Line.	<Alias=General>와(과) 최전선에서 만나기	<Alias=General> 와 최전선에서 만나기
@@ -319,6 +337,7 @@ Obtain some Vampire Dust	흡혈귀 가루를 구하기	몇 개의 흡혈귀 가�
 Oglub	오글럽	오글로프
 Olda wanted me to steal this <Alias=QuestItem>.	올다가 이 <Alias=QuestItem>을 훔쳐달라고 했는데.	올다가 이 <Alias=QuestItem>를 훔쳐달라고 했는데.
 On Apocrypha: Boneless Limbs	아포크리파 : 촉수	아포크리파 : 무수한 촉수
+On second thought, perhaps I'll invest another time.	다시 생각해 봤는데, 투자는 다음에 해야 할 것 같습니다.	흐음, 다음 기회에.
 Once the capital of Skyrim, Winterhold has been all but abandoned in the last few hundred years.	한때 스카이림의 수도였던 윈터홀드는 지난 몇 백년동안 거의 버려지다시피 했습니다.	한때 스카이림의 수도였던 윈터홀드는 지난 몇 백년동안 완전히 방치되었습니다.
 Once, the dragons sought to eliminate or enslave all mortal races. If given the chance, they would surely do so again...	한때, 드래곤들은 모든 필멸의 종족을 제거하거나 노예로 삼으려 했던 적이 있습니다. 만약 기회가 주어진다면, 분명 같은 일을 반복하게 될 것입니다...	한때, 드래곤들은 필멸자들을 제거하거나 노예로 삼기 위해 눈에 불을 켜고 찾았던 적이 있습니다. 만약 기회가 주어진다면, 같은 일을 반복하게 될 것입니다...
 Orange Dartwing	주황 파리잠자리	노란 파리잠자리
@@ -347,10 +366,12 @@ Raerek's Inscribed Amulet of Talos	레이렉의 글귀가 새겨진 탈로스 �
 Raldbthar Deep Market	랄드브타르 지하 시장	랄드브타르 암시장
 Re-activate Nchuand-Zel's automated defenses	느츄안-젤의 자동방어를 다시 작동시키기	느츄안-젤의 자동방어를 다시 작동 시키기
 Read Daynas Valen's notes	데이나스 발렌의 메모를 읽기	데이나스 발렌의 기록들을 읽기
+Read Madanach's note	매더낙의 메모를 읽기	매더낙의 쪽지를 읽기
 Read Nepos's Journal	네포스의 기록을 읽기	네포스의 일기를 읽기
 Read the bandit's ransom note for <Alias=Spouse>	산적이 남겨둔 <Alias=Spouse>에 대한 몸값 요구 쪽지를 읽기	산적이 남겨둔 <Alias=Spouse>에 대한 몸값 요구쪽지를 읽기
 Recipe - Mind Control Spider	제조법 : 정신 조종 거미	제조법 : 정신조종 거미
 Recognize this? (Show <Alias.PronounObj=Steward> <Alias=Evidence>)	이게 뭔지 알겠나? (<Alias.PronounObj=Steward>에게 <Alias=Evidence>을(를) 보여준다)	이게 뭔지 알겠나? (<Alias.PronounObj=Steward>에게 <Alias=Evidence>를 보여준다)
+Recover the Crown of Barenziah	바렌자이아의 왕관을 회수하기	바렌자이아의 왕관을 복구하기
 Refined Tunic	야를의 세련된 의상	세련된 의상
 Remove all furniture from entryway and remodel it to match the main hall.	현관에 배치된 모든 가구를 제거하고 대청에 맞게 개조합니다.	현관에 배치된 모든 가구를 제거하고 대청에 맞게 재배치하기.
 Remove the workbench from the Storage Room.	저장고에서 작업선반을 제거합니다.	창고에서 작업선반을 제거합니다.
@@ -362,11 +383,15 @@ Report to <Alias=CWFieldCOSonsWhiterunCamp>	<Alias=CWFieldCOSonsWhiterunCamp>에
 Report to <Alias=FieldCO>.	<Alias=FieldCO>에게 보고하기	<Alias=FieldCO> 에게 보고하기
 Report to <Alias=ImperialFieldCO>	<Alias=ImperialFieldCO>에게 보고하기	<Alias=ImperialFieldCO> 에게 보고하기
 Report to <Alias=WhiterunCapitalImperialFieldCO>	<Alias=WhiterunCapitalImperialFieldCO>에게 보고하기	<Alias=WhiterunCapitalImperialFieldCO> 에게 보고하기
+Rescue <Alias=Victim> from <Alias=Lair>	<Alias=Lair>에서 <Alias=Victim>을(를) 구출하기	<Alias=Lair>에서 <Alias=Victim>를 구출하기
 Retrieve <Alias=ItemToGet> from <Alias=Mark> in <Alias=City>	<Alias=City>에 있는 <Alias=Mark>에게서 <Alias=ItemToGet> 훔쳐오기	<Alias=City>에 있는 <Alias=Mark> 에게서 <Alias=ItemToGet> 훔쳐오기
 Retrieve Lisbet's shipment from <Alias=ForswornCamp>	<Alias=ForswornCamp>에서 리즈벳의 짐을 회수하기	<Alias=ForswornCamp>에서 리스벳의 짐을 회수하기
+Retrieve the fragment	조각을 회수하기	파편조각을 회수하기
+Retrieve the fragments of Wuuthrad	우쓰라드의 조각들을 회수하기	우쓰라드의 파편 조각을 회수하기
 Retrieve the Soul Essence Gem	영혼 정수의 보석 회수하기	영혼의 정수 회수하기
 Retrieve the Unmelting Snow	'녹지 않는 눈'을 회수하기	'녹지않는 눈'을 회수하기
 Return <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias=QuestItem>을(를) <Alias.ShortName=QuestGiver>에게 돌려주기	<Alias=QuestItem>을 <Alias.ShortName=QuestGiver> 에게 돌려주기
+Return the Bust of the Gray Fox to Delvin	델빈에게 그레이 폭스 흉상을 가져가기	델빈에게 그레이폭스의 흉상을 가져가기
 Return the East Empire Shipping Map to Delvin	델빈에게 동제국 해상운송 지도를 가져가기	델빈에게 동 제국 해상운송 지도를 가져가기
 Revenge, Hired Thugs	복수, 고용된 폭력배	복수, 고용된 불량배
 Riften Military Camp	리프튼 군영지	리프튼 군용 주둔지
@@ -403,6 +428,8 @@ Sorry, I'm afraid you'll make me look silly.	미안하지만, 그 옷을 입으�
 Sorry. You'll have to find some other way to stroke your ego.	미안하지만. 자존심을 세우고 싶다면 다른 방법을 찾아보시오.	미안하지만. 아첨을 원한다면 다른 방법을 찾아보시오.
 Sounds like more then just "bad blood."	단순한 '원한' 이상인 것처럼 들리는데.	단순한 '악연' 이상인 것처럼 들리는데.
 Speak to <Alias.ShortName=Target> about going to the Temple of Divines.	디바인 신전에 가는 것에 관해 <Alias.ShortName=Target>와 대화하기	디바인 신전에 가는 것에 관해 <Alias.ShortName=Target>과 대화하기
+Speak to <Alias=Observer>	<Alias=Observer>와(과) 대화하기	<Alias=Observer>와 대화하기
+Speak to <Alias=Questgiver>	<Alias=Questgiver>와(과) 대화하기	<Alias=Questgiver>와 대화하기
 Speak to Brynjolf about becoming the Guild Master	브린욜프와 길드 마스터가 되는 것에 관해 대화하기	브린욜프와 길드 지도자가 되는 것에 관해 대화하기
 Speak to Brynjolf about being Guild Master	길드 마스터의 역할에 관해서 브린욜프와 대화하기	브린욜프에게 길드 지도자로 살아가는 것에 관해서 대화하기
 Speak to the Jarl of Dawnstar about the land for sale	판매 중인 토지에 관해서 던스타의 야를과 대화하기	판매중인 토지에 관해서 던스타의 야를과 대화하기
@@ -435,8 +462,10 @@ Tainted Blood Withdrawals	저주받은 피 금단 증상	저주받은 피 효과
 Take <Alias=Item> to the Shrine of Talos for <Alias=Questgiver>.	<Alias=Questgiver>을(를) 위해서 탈로스의 성소로 <Alias=Item> 가져가기	<Alias=Questgiver> 를 위해서 탈로스의 성소로 <Alias=Item> 가져가기
 Take sapling	묘목을 챙기기	묘목을 가지기
 Talk to <Alias.ShortName=Questgiver>	<Alias.ShortName=Questgiver>와(과) 대화하기	<Alias.ShortName=Questgiver>와 대화하기
+Talk to <Alias=AuthorityFigure>	<Alias=AuthorityFigure>와(과) 대화하기	<Alias=AuthorityFigure>와 대화하기
 Talk to <Alias=Questgiver>	<Alias=Questgiver>와(과) 대화하기	<Alias=Questgiver>와 대화하기
 Talk to <Alias=RiverwoodFriend> in Riverwood	리버우드에서 <Alias=RiverwoodFriend>와(과) 대화하기	리버우드에서 <Alias=RiverwoodFriend>와 대화하기
+Talk to <Alias=Victim>	<Alias=Victim>와(과) 대화하기	<Alias=Victim>와 대화하기
 Talk to Brynjolf about joining the Thieves Guild	도둑 길드에 가입하는 것에 관하여 브린욜프와 대화하기	도둑길드에 가입하는 것에 관하여 브린욜프와 대화하기
 Talk to Lucan about the robbery	도난 사건에 관해서 루칸과 이야기하기	도둑에 관해서 루칸과 이야기하기
 Talk with <Alias=FactionLeader>.	<Alias=FactionLeader>와(과) 대화하기	<Alias=FactionLeader> 와 대화하기
@@ -477,6 +506,7 @@ The Woodsman's Friend	나무꾼의 친구	나무꾼의 전투 도끼
 The World-Eater's Eyrie	세상을 삼키는 자의 둥지	세계를 삼키는 자의 둥지
 There are advantages to gaining <Alias=ImperialMinorHoldCapital>. (Persuade)	<Alias=ImperialMinorHoldCapital>을(를) 얻으면 여러 이점이 있습니다. (설득)	<Alias=ImperialMinorHoldCapital> 을/를 얻으면 여러 이점이 있습니다. (설득)
 There are advantages to gaining <Alias=SonsMinorHoldCapital>. (Persuade)	<Alias=SonsMinorHoldCapital>을(를) 얻으면 여러 이점이 있습니다. (설득)	<Alias=SonsMinorHoldCapital> 을/를 얻으면 여러 이점이 있습니다. (설득)
+There are those who believe that when night descends upon Skyrim, werewolves descend upon the unwary...	어떤 사람들은 스카이림에 어둠이 내리면 늑대인간이 방심하고 있는 인간을 덮친다고 믿고 있습니다...	어떤사람들은 스카이림에 어둠이 내리면 늑대인간이 방심하고 있는 인간을 덮친다고 믿고 있습니다...
 Thieves Guild Fence Chest	도둑 길드의 장물 보관함	도둑길드의 장물 보관함
 Third Letter from EEC	동제국 회사의 세 번째 편지	동제국 회사의 세번째 편지
 Thirsk, A Revised History	터스크, 역사의 재조명	터스크, 역사의 재 조명
@@ -502,8 +532,10 @@ Visit the College of Winterhold	윈터홀드 대학을 방문하기	윈터홀드
 Visit the hunters at Frostmoon Crag	프로스트문 바위의 사냥꾼을 만나기	프로스트문 바위산의 사냥꾼을 만나기
 Visit the werewolves at Frostmoon Crag	프로스트문 바위의 늑대인간을 만나기	프로스트문 바위산의 늑대인간을 만나기
 Visit your new property in <Alias=Hold> hold	<Alias=Hold> 영지 내에 있는 당신의 새 부동산을 방문하기	<Alias=Hold> 영지내에 있는 당신의 새 부동산을 방문하기
+Visit your spouse's house	배우자의 집을 방문하기	부부의 집을 방문하기
 Visiting Advisor	방문 중인 조언자	여행 중인 조언자
 Visiting Noble	방문 중인 귀족	방문중인 귀족
+Wait for Erandur to dispel the barrier	에란더가 장벽을 제거할 때까지 기다리기	장벽을 제거하기 위해 에란더를 기다리기
 We're called the Dawnguard. We're fighting a vampire conspiracy.	우리는 '던가드'요. 흡혈귀의 계략에 맞서 싸우고 있소.	우리는 '던가드'입니다. 흡혈귀의 계략에 맞서 싸우고 있습니다.
 We're very close. I can't wait to see them again.	아주 친하지. 어서 다시 보고 싶군.	아주 가까웠지. 다시 보고 싶군.
 Weak Aversion to Fire	독 - 화염 약점 하급	독 - 화염 하급
@@ -513,6 +545,7 @@ Weak Aversion to Shock	독 - 전격 약점 하급	독 - 전격 하급
 Were you successful?	성공했소?	성공했습니까?
 What are the Ancestral Tombs?	조상의 무덤들이란게 뭐요?	조상의 무덤들이란게 뭡니까?
 What are the duties of a Keeper?	키퍼의 역할은 뭐지?	관리자의 역할은 뭐지?
+What brings you to this remote place?	이렇게 먼 곳까지 무슨 일로 온 거요?	이렇게 먼 곳까지 무슨일로 온 거지?
 What did you do?	무슨 일을 한 겁니까?	무슨 일로?
 What do you have against the Greybeards?	그레이비어드한테 무슨 불만이라도 있나?	그레이비어드에게 무슨 문제라도 있나?
 What do you mean "supposed"?	'이른바'라니, 무슨 뜻이지?	'그랬어야 한다'는건 무슨 뜻이지?

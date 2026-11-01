@@ -489,6 +489,33 @@ public sealed class GameStringDictionary
 
     private static bool IsDialogue(string? rec) => TranslationRowRules.IsDialogue(rec);
 
+    /// <summary>
+    /// The text every record of an English shows, by the English's <see cref="EnglishKey"/>, where they all show one: the
+    /// bundled TM is checked against it, so a fix to an Update or DLC override does not leave the TM on the Skyrim.esm
+    /// string the override replaced.
+    /// </summary>
+    internal IReadOnlyDictionary<string, string> TextsEveryRecordShows()
+    {
+        var texts = new Dictionary<string, string?>(StringComparer.Ordinal);
+        foreach (var (englishHash, korean, _) in _byField.Values)
+        {
+            if (!texts.TryGetValue(englishHash, out var seen))
+            {
+                texts[englishHash] = korean;
+            }
+            else if (seen != null && !string.Equals(seen, korean, StringComparison.Ordinal))
+            {
+                texts[englishHash] = null;
+            }
+        }
+
+        return texts.Where(t => t.Value != null).ToDictionary(t => t.Key, t => t.Value!, StringComparer.Ordinal);
+    }
+
+    /// <summary>The key this dictionary files an English under, or null for one without words.</summary>
+    internal static string? EnglishKey(string sourceText)
+        => TranslationMemoryKey.NormalizeSource(sourceText) is { } key && !string.IsNullOrWhiteSpace(key) ? Fingerprint(key) : null;
+
     public void Save(Stream stream)
     {
         using var gzip = new GZipStream(stream, CompressionLevel.Optimal, leaveOpen: true);

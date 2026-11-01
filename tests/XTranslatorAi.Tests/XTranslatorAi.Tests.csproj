@@ -26,4 +26,9 @@
     <ProjectReference Include="..\..\src\XTranslatorAi.App\XTranslatorAi.App.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- The bundled TM's rows waiting for its next version: the seed may differ from the game's text only there. -->
+    <None Include="..\..\src\XTranslatorAi.App\Assets\TmSeeds\skyrim-tes-franchise-tm-pending.tsv" Link="TestData\skyrim-tes-franchise-tm-pending.tsv" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

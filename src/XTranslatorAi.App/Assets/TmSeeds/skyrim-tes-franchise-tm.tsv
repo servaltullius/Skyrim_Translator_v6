@@ -141,8 +141,8 @@ Source	Target
 <Alias=Player>'s <BaseName>	<Alias=Player>의 <BaseName>
 <Alias=Player>'s Horse	<Alias=Player>의 말
 <Alias=Player>'s Wolf Spirit	<Alias=Player>의 늑대 영혼
-<Alias=PlayerIsIt> is it. Hide from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt> 이/가 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요
-<Alias=PlayerIsIt> is it. Keep away from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요
+<Alias=PlayerIsIt> is it. Hide from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt>이(가) 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요
+<Alias=PlayerIsIt> is it. Keep away from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt>이(가) 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요
 <Alias=QuestGiver>'s <BaseName>	<Alias=QuestGiver>의 <BaseName>
 <Alias=RiverwoodFriend> sent me. Riverwood is in danger.	<Alias=RiverwoodFriend>이(가) 부탁해서 왔습니다. 리버우드가 위험합니다.
 <Alias=Steward> says there's a shipment of coin traveling to Solitude...	<Alias=Steward>이(가) 말하길 솔리튜드로 가는 현금수송이 있다고 합니다...
@@ -808,7 +808,7 @@ And if she doesn't?	만약에 가지고 있지 않다면?
 And in return?	그 대가는?
 And Nilsine Shatter-Shield? Why must she die?	닐신까지? 그녀는 왜 죽어야 하는거지?
 And now it's your turn.	이제 네 차례다.
-And now that Potema has returned?	그래서 포테마가 부활한 것입니까?
+And now that Potema has returned?	그럼 포테마가 돌아온 지금은 어떻습니까?
 And of course they can't prove he murdered them.	흐로가가 살인범이라는 증거는 없는 모양이군.
 And Serana's opinion in this?	그럼 세라나의 선택은?
 And that story led you here?	그럼 그 이야기를 따라 여기까지 온 건가?
@@ -2860,7 +2860,7 @@ Claws	발톱
 Clay	점토
 Clay Deposit	점토 채집장
 Clay. (<Global=BYOHHPAmountClay> for <Global=BYOHHPCostClay> gold)	점토. (<Global=BYOHHPAmountClay>개에 <Global=BYOHHPCostClay> 골드)
-Clean up that murderer's mess. (<Global=HDWindhelmKiller> gold)	살인자가 저지른 일의 뒷처리. (<Global=HDWindhelmKiller> 골드)
+Clean up that murderer's mess. (<Global=HDWindhelmKiller> gold)	살인자가 저지른 일의 뒤처리. (<Global=HDWindhelmKiller> 골드)
 Cleanse <Alias=Questgiver> of beastblood	<Alias=Questgiver>의 늑대인간 피를 정화하기
 Cleanse the Beast Stone	짐승의 바위를 정화하기
 Cleanse the Earth Stone	땅의 바위를 정화하기
@@ -4022,7 +4022,7 @@ Did you say "exile"?	'추방'이라고 말했습니까?
 Did you say free meat pies?	공짜 고기 파이라고 했습니까?
 Did you say something about money?	지금 뭔가 돈이 되는 일에 관해서 말한 것 같은데?
 Did you say you came here from Markarth?	마르카스에서 왔다고 했나?
-Did you see that?	이거 보이십니까?
+Did you see that?	방금 그거 보셨습니까?
 Did you see what happened here?	여기서 무슨 일이 일어난건지 봤습니까?
 Did you see where the dragon went?	드래곤이 어디로 갔는지 봤나?
 Did you send that guard to threaten me?	날 위협하려고 그 경비병을 보낸건가?
@@ -6277,7 +6277,7 @@ Enter Labyrinthian	미궁에 들어가기
 Enter melee mode	근접 공격 형태를 취하기
 Enter Pinewatch	파인워치에 들어가기
 Enter Riften Warehouse	리프튼의 창고에 들어가기
-Enter Snow Veil Sanctum	스노우 베일성역에 들어가기
+Enter Snow Veil Sanctum	스노우 베일 성역에 들어가기
 Enter Sovngarde	소븐가드에 들어가기
 Enter the Alik'r hideout	알리키어의 은신처에 들어가기
 Enter the column of light and read the Elder Scroll (Blood)	빛의 기둥 안으로 들어가 '엘더스크롤 - 피'를 읽기
@@ -6342,7 +6342,7 @@ Escape the Tower!	탑에서 탈출하기
 Escape Yngol's Barrow	잉골 고분을 탈출하기
 Escaped Criminal	탈주범
 Escaped Prisoner	탈출한 죄수
-Escort <Alias=Victim> back to <Alias=VictimHome>	<Alias=Victim>를 <Alias=VictimHome>까지 데려다주기
+Escort <Alias=Victim> back to <Alias=VictimHome>	<Alias=Victim>을(를) <Alias=VictimHome>까지 데려다주기
 Escort Esbern to Riverwood	에스번을 리버우드 마을까지 데려가기
 Escort Telrav to his camp.	텔라브를 그의 야영지로 데려다 주기
 Esmond	에스몬드
@@ -6736,10 +6736,10 @@ Find the Redguard woman	레드가드 여성을 찾기
 Find the ruins of Mzulft	므줄프트 유적을 찾기
 Find the secret of Bleak Falls Barrow	황량한 폭포 무덤의 비밀을 찾기
 Find the Secret Passage in Hillgrund's Tomb	힐그룬드의 무덤의 비밀통로를 찾기
-Find the shrine of Boethiah	보에디아의 성지를 찾기
+Find the shrine of Boethiah	보에디아의 성소를 찾기
 Find the skooma dealers in Cragslane Cavern	크래그슬레인 대동굴에서 스쿠마 상인들을 찾기
 Find the source of Miraak's power	미락에게 힘을 주는 원천을 찾기
-Find the source of power in <Alias=Dungeon>	<Alias=Dungeon> 에서 힘의 원천을 찾기
+Find the source of power in <Alias=Dungeon>	<Alias=Dungeon>에서 힘의 원천을 찾기
 Find the source of the attacks	공격의 출처를 찾기
 Find the source of the murders in Frostflow Lighthouse	프로스트플로우 등대에서 살인사건의 원인을 찾기
 Find the Staff	지팡이를 찾기
@@ -6882,7 +6882,7 @@ Folk are talking about murders.	사람들은 살인사건에 대해 얘기하던
 Follow	따르기
 Follow <Alias=Friend> and ambush enemy scout	<Alias=Friend>을(를) 따라가서 매복하고 적의 정찰병을 습격하기
 Follow <Alias=General>	<Alias=General> 따라가기
-Follow <Alias=Questgiver>	<Alias=Questgiver>를 따라가기
+Follow <Alias=Questgiver>	<Alias=Questgiver>을(를) 따라가기
 Follow Adril Arano	아드릴 아라노를 따라가기
 Follow Ancano	안카노를 따라가기
 Follow Brynjolf	브린욜프를 따라가기
@@ -7329,7 +7329,7 @@ Get access to Hjerim	예림으로 들어갈 허가를 받기
 Get advice from Yngvar	잉바의 조언을 얻기
 Get assistance from Jorleif	욜리프의 도움을 얻기
 Get Derkeethus out of the cave.	더키서스를 동굴에서 꺼내주기
-Get Greybeards' help in negotiating a truce	그레이비어드 도움을 받아 휴전협상을 맺기
+Get Greybeards' help in negotiating a truce	휴전 협상을 위해 그레이비어드의 도움을 받기
 Get Imperial gear from Beirand	베이란드를 만나 제국군 장비를 받기
 Get information from Gulum-Ei	걸럼-아이에게 정보를 얻기
 Get new orders	새로운 명령을 받기
@@ -7411,7 +7411,7 @@ Give me the long version.	자세한 설명.
 Give Potema's remains to Styrr	포테마의 유해를 스티어에게 전달하기
 Give Rjorn's Drum to Giraud	지로에게 리욘의 북을 주기
 Give the Argonian Ale to Brenuin	브레뉴인에게 아르고니안 맥주를 전해주기
-Give the final fragment to Eorlund	에올룬드에게 마지막 파편조각을 주기
+Give the final fragment to Eorlund	에올룬드에게 마지막 조각을 주기
 Give the fragments of Wuuthrad to Eorlund	에올룬드에게 우쓰라드의 조각들을 주기
 Give the Frost Salts to Arcadia	아케디아에게 냉기 소금을 전해주기
 Give the Lexicon to Septimus	셉티무스에게 고대사전을 주기
@@ -9699,7 +9699,7 @@ I have returned from <Alias=Dungeon> with the <Alias=Remains>.	<Alias=Dungeon>�
 I have returned with Shagrol's Hammer.	샤그롤의 망치를 가지고 왔소.
 I have Rjorn's Drum.	리욘의 북을 발견했습니다.
 I have silver ore to sell.	은 광석을 팔고 싶은데.
-I have slain <Alias=DeadFriend> to gain your favor.	당신의 호의를 얻기 위해 <Alias=DeadFriend>를 죽였습니다.
+I have slain <Alias=DeadFriend> to gain your favor.	당신의 호의를 얻기 위해 <Alias=DeadFriend>을(를) 죽였습니다.
 I have some Frost Salts for you, from Farengar.	파렌가씨의 부탁으로 냉기 소금을 가져왔소.
 I have some information about Fort Frostmoth.	프로스트모스 요새에 관한 정보가 몇가지 있소.
 I have some information about Svidi.	스비디에 관한 정보가 좀 있는데.
@@ -11222,7 +11222,7 @@ Interrogate Odahviing	오다빙을 심문하기
 Interrogation Chamber Key	열쇠 - 취조실
 Interrupts the soul drain effect in the Soul Cairn.	소울 케언의 영혼 흡수를 중단시킵니다.
 Intimidate	위협
-Intimidate <Alias=Brute> in <Alias=BruteTown>	<Alias=BruteTown>에 있는 <Alias=Brute>를 위협하기
+Intimidate <Alias=Brute> in <Alias=BruteTown>	<Alias=BruteTown>에 있는 <Alias=Brute>을(를) 위협하기
 Intimidation	협박
 Inventory	소지품
 Investigate	조사하기
@@ -12412,7 +12412,7 @@ Learn the location of the Elder Scroll	엘더스크롤이 있는 곳을 알아�
 Learn the second word of Durnehviir's Shout	더네비어의 함성 두 번째 단어를 배우기
 Learn the secret of Alduin's Wall	알두인의 벽에 관한 비밀을 알아내기
 Learn the truth from Daynas Valen	데이나스 발렌으로부터 진실을 알아내기
-Learn the Word of Power from Borri	마스터 보리에게 힘의 단어를 배우기
+Learn the Word of Power from Borri	보리 사범에게 힘의 단어를 배우기
 Learn the Word of Power from Einarth	아이나스 사범에게 힘의 단어를 배우기
 Learn the Word of Power from Paarthurnax	파써낙스에게 힘의 단어를 배우기
 Learn the Word of Power from Wulfgar	마스터 울프가에게 힘의 단어를 배우기
@@ -12993,10 +12993,10 @@ Make this easier for you, tell me what I want to know. (Persuade)	쉽게 쉽게 
 Make your way to the Keep	요새로 가는 길을 찾기
 Makes sense.	말이 되는군.
 Makhel Abbas	마켈 아바스
-Making a skill Legendary will set it to 15 and return its perks. Are you sure?	기술을 전설화 하면 해당 기술은 15로 설정되며 특성 수치를 돌려받게 됩니다. 바꾸시겠습니까?
+Making a skill Legendary will set it to 15 and return its perks. Are you sure?	기술을 전설화하면 해당 기술은 15로 설정되며 퍽을 돌려받게 됩니다. 바꾸시겠습니까?
 Making Friends and Influencing People	친구를 사귀고 타인에게 영향을 주기
 Malacath	말라카스
-Malacath is the daedric prince of curses and the spurned. Many orcs worship him as their god-king.	말라카스는 저주와 경멸의 데이드릭 프린스입니다. 오크들에게는 신이자 왕으로 숭배받고 있습니다.
+Malacath is the daedric prince of curses and the spurned. Many orcs worship him as their god-king.	말라카스는 저주와 버림받은 자들의 데이드릭 프린스입니다. 오크들에게는 신이자 왕으로 숭배받고 있습니다.
 Malachite Ore	광석 - 공작석
 Malachite Ore Vein	공작석 광맥
 Malborn	맬보언
@@ -13202,7 +13202,7 @@ Meet Karliah at the Ragged Flagon	'누더기 술병'에서 칼라이아를 만�
 Meet Karliah at the standing stone	선돌 앞에서 칼라이아와 만나기
 Meet Legate Rikke outside Korvanjund	코반준드 입구 근처에서 리카를 만나기
 Meet Malborn in Solitude	솔리튜드에서 맬보언을 만나기
-Meet Mercer Frey outside Snow Veil Sanctum	스노우 베일성역 바깥에서 머서 프레이와 만나기
+Meet Mercer Frey outside Snow Veil Sanctum	스노우 베일 성역 바깥에서 머서 프레이와 만나기
 Meet Silus at the Shrine of Mehrunes Dagon	메이룬스 데이건의 성소에서 사일러스를 만나기
 Meet the Circle	서클 멤버와 만나기
 Meet the Ebony Warrior at the Last Vigil	마지막 기원에서 에보니 전사를 만나기
@@ -14613,7 +14613,7 @@ On second thought, maybe I'll pass...	흐음, 관두는 게 좋겠군...
 On second thought, maybe I'll wait a bit longer to decide.	생각해보니, 결정은 좀 미뤄야 되겠군.
 On second thought, maybe not.	다시 생각해보니, 안되겠군.
 On second thought, maybe we'll fight later.	흐음. 싸우는 건 다음 기회로 미루지.
-On second thought, perhaps I'll invest another time.	흐음, 다음 기회에.
+On second thought, perhaps I'll invest another time.	다시 생각해 봤는데, 투자는 다음에 해야 할 것 같습니다.
 On second thought, perhaps I'll wait a bit longer to decide.	생각해보니, 결정은 좀 미뤄야 되겠군.
 On Stepping Lightly	조심스러운 발걸음
 On the Great Collapse	대붕괴에 관하여
@@ -15704,7 +15704,7 @@ Read Cicero's diary	시세로의 일기를 읽기
 Read Cultists' Orders	광신도의 명령서를 읽기
 Read Daynas Valen's notes	데이나스 발렌의 메모를 읽기
 Read Eltrys' Note	엘트리스의 쪽지를 읽기
-Read Madanach's note	매더낙의 쪽지를 읽기
+Read Madanach's note	매더낙의 메모를 읽기
 Read Margret's Journal	마그레트의 일기를 읽기
 Read Nepos's Journal	네포스의 기록을 읽기
 Read the bandit's ransom note for <Alias=Spouse>	산적이 남겨둔 <Alias=Spouse>에 대한 몸값 요구 쪽지를 읽기
@@ -15801,7 +15801,7 @@ Recover skooma source information	스쿠마의 출처에 관한 정보를 회수
 Recover Staubs' journal	스터번의 일지를 회수하기
 Recover Stromm's journal	스트롬의 일기를 회수하기
 Recover the Bonemold Formula for Glover Mallory	글로버 말로리를 위하여 뼈다귀 물품 제조법을 찾아내기
-Recover the Crown of Barenziah	바렌자이아의 왕관을 복구하기
+Recover the Crown of Barenziah	바렌자이아의 왕관을 회수하기
 Recover the Elder Scroll	엘더스크롤을 되찾기
 Recover the Stones of Barenziah  (<Global=TGCrownGemsFound>/<Global=TGCrownGemsTotal>)	바렌자이아의 왕관 보석을 회수하기 (<Global=TGCrownGemsFound>/<Global=TGCrownGemsTotal>)
 Recover your equipment	장비를 회수하기
@@ -16015,7 +16015,7 @@ Requires Key	열쇠가 필요합니다
 Rescue	구조
 Rescue <Alias=Prisoner> from <Alias=Dungeon>	<Alias=Dungeon>에서 <Alias=Prisoner> 구조하기
 Rescue <Alias=Spouse> from <Alias=BanditDungeon>	<Alias=BanditDungeon>에서 <Alias=Spouse> 구해내기
-Rescue <Alias=Victim> from <Alias=Lair>	<Alias=Lair>에서 <Alias=Victim>를 구출하기
+Rescue <Alias=Victim> from <Alias=Lair>	<Alias=Lair>에서 <Alias=Victim>을(를) 구출하기
 Rescue Fjotra from the Forsworn	포스원으로부터 피요트라를 구출하기
 Rescue from <Alias=AttackPoint>	<Alias=AttackPoint> 구출작전
 Rescue Mission	구출 임무
@@ -16114,9 +16114,9 @@ Retrieve the blade shards of Mehrunes' Razor	메이룬스의 면도칼 칼날을
 Retrieve the Dragonstone	드래곤의 석판을 회수하기
 Retrieve the Ebony Blade	에보니 블레이드를 회수하기
 Retrieve the Elder Scroll	엘더스크롤을 회수하기
-Retrieve the fragment	파편조각을 회수하기
+Retrieve the fragment	조각을 회수하기
 Retrieve the fragment of Wuuthrad	우쓰라드의 조각을 회수하기
-Retrieve the fragments of Wuuthrad	우쓰라드의 파편 조각을 회수하기
+Retrieve the fragments of Wuuthrad	우쓰라드의 조각들을 회수하기
 Retrieve the Golden Claw	황금 발톱을 회수하기
 Retrieve the hilt of Mehrunes' Razor	메이룬스의 면도칼 자루 부분을 회수하기
 Retrieve the Horn of Jurgen Windcaller	유르겐 윈드콜러의 나팔을 회수하기
@@ -16155,7 +16155,7 @@ Return the amulet to Andurs	앤더스에게 아뮬렛을 돌려주기
 Return the book to Urag gro-Shub	우라그에게 책을 돌려주기
 Return the books	책들을 돌려주기
 Return the box to Trius for the promised reward.	트리우스에게 상자를 돌려주고 보상을 받기
-Return the Bust of the Gray Fox to Delvin	델빈에게 그레이폭스의 흉상을 가져가기
+Return the Bust of the Gray Fox to Delvin	델빈에게 그레이 폭스 흉상을 가져가기
 Return the Crystal to Paratus	파라투스에게 크리스털을 돌려주기
 Return the Dwemer Puzzle Cube to Delvin	델빈에게 드웨머 수수께끼 큐브를 가져가기
 Return the East Empire Shipping Map to Delvin	델빈에게 동제국 해상운송 지도를 가져가기
@@ -17974,8 +17974,8 @@ Spawns the Selected NPC	선택한 NPC를 생성합니다
 Speak	대화하기
 Speak to <Alias.ShortName=Target> about going to the Temple of Divines.	디바인 신전에 가는 것에 관해 <Alias.ShortName=Target>와 대화하기
 Speak to <Alias.ShortName=Target> with <Alias.ShortName=Questgiver>'s outfit on.	<Alias.ShortName=Questgiver>의 옷을 입고 <Alias.ShortName=Target>와 대화하기
-Speak to <Alias=Observer>	<Alias=Observer>와 대화하기
-Speak to <Alias=Questgiver>	<Alias=Questgiver>와 대화하기
+Speak to <Alias=Observer>	<Alias=Observer>와(과) 대화하기
+Speak to <Alias=Questgiver>	<Alias=Questgiver>와(과) 대화하기
 Speak to Adelaisa to return	돌아가기 위하여 아델라이자와 대화하기
 Speak to Adril Arano	아드릴 아라노와 대화하기
 Speak to Arngeir	안기어와 대화하기
@@ -19518,10 +19518,10 @@ Talib	탈립
 Talk	대화하기
 Talk to <Alias.ShortName=Questgiver>	<Alias.ShortName=Questgiver>와(과) 대화하기
 Talk to <Alias.ShortName=Target> about <Alias.ShortName=Questgiver>	<Alias.ShortName=Target>에게 <Alias.ShortName=Questgiver>에 관해서 말하기
-Talk to <Alias=AuthorityFigure>	<Alias=AuthorityFigure>와 대화하기
+Talk to <Alias=AuthorityFigure>	<Alias=AuthorityFigure>와(과) 대화하기
 Talk to <Alias=Questgiver>	<Alias=Questgiver>와(과) 대화하기
 Talk to <Alias=RiverwoodFriend> in Riverwood	리버우드에서 <Alias=RiverwoodFriend>와(과) 대화하기
-Talk to <Alias=Victim>	<Alias=Victim>와 대화하기
+Talk to <Alias=Victim>	<Alias=Victim>와(과) 대화하기
 Talk to Adelaisa	아델라이자와 대화하기
 Talk to Aela	에일라와 대화하기
 Talk to Amaund Motierre	아먼드 모티에르와 대화하기
@@ -20526,7 +20526,7 @@ There are only four of you?	당신들 네명이 전부입니까?
 There are others here like you?	여기에 당신같은 사람이 또 있소?
 There are some things I want to ask you about.	당신에게 질문할 것이 몇가지 있는데.
 There are Thalmor agents in the Ratway. Looking for you.	탈모어 요원들이 쥐소굴에 있소. 당신을 찾고 있더군.
-There are those who believe that when night descends upon Skyrim, werewolves descend upon the unwary...	어떤사람들은 스카이림에 어둠이 내리면 늑대인간이 방심하고 있는 인간을 덮친다고 믿고 있습니다...
+There are those who believe that when night descends upon Skyrim, werewolves descend upon the unwary...	어떤 사람들은 스카이림에 어둠이 내리면 늑대인간이 방심하고 있는 인간을 덮친다고 믿고 있습니다...
 There are worse things than being fired.	해고당하는 것보다 더 나쁜 일을 당하나 보군.
 There aren't many Redguards in Skyrim. What brought you here?	스카이림에 레드가드는 흔치 않은데, 여기에는 무슨일로 오게 된 건가?
 There Be Dragons	드래곤의 존재
@@ -21400,7 +21400,7 @@ Visit the Shrine of Azura	아주라의 성소를 방문하기
 Visit the werewolves at Frostmoon Crag	프로스트문 바위의 늑대인간을 만나기
 Visit Vlindrel Hall, your new house	당신의 새 집, 블린드렐 회관을 방문하기
 Visit your new property in <Alias=Hold> hold	<Alias=Hold> 영지 내에 있는 당신의 새 부동산을 방문하기
-Visit your spouse's house	부부의 집을 방문하기
+Visit your spouse's house	배우자의 집을 방문하기
 Visiting Advisor	방문 중인 조언자
 Visiting Noble	방문 중인 귀족
 Vittoria	비토리아
@@ -21457,7 +21457,7 @@ Wabbajack Alt	와바잭
 Wait a moment... You're Gallus!	잠깐만... 당신 갤러스잖아!
 Wait for a message from Ralis	랄리스의 편지를 기다리기
 Wait for Brelyna's spell to wear off	브렐리나의 마법이 풀어지는 것을 기다리기
-Wait for Erandur to dispel the barrier	장벽을 제거하기 위해 에란더를 기다리기
+Wait for Erandur to dispel the barrier	에란더가 장벽을 제거할 때까지 기다리기
 Wait for Falion to complete the ritual	팔리온이 의식을 마칠때까지 기다리기
 Wait for me at home...	집에서 기다려...
 Wait for me in the city...	도시에서 기다리기...
@@ -21768,7 +21768,7 @@ What better reason to act than to fulfill my destiny?	내 운명을 완수하는
 What brings a Breton to Skyrim?	어쩌다 브레튼이 스카이림까지 오게 된 거요?
 What brings you out here?	왜 이 밖에 있는 거지?
 What brings you to this party?	이 연회에는 어떤 일로 왔소?
-What brings you to this remote place?	이렇게 먼 곳까지 무슨일로 온 거지?
+What brings you to this remote place?	이렇게 먼 곳까지 무슨 일로 온 거요?
 What can be done about it now?	이제 어떻게 하면 되겠소?
 What can I do for you, Jarl?	도와드릴 일이 있소, 야를?
 What can I do for you?	무엇을 도와 드릴까요?

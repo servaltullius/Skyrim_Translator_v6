@@ -23,6 +23,11 @@ dotnet run --project tools/XTranslatorAi.KoreanPatchReview -- apply $data $patch
 dotnet run --project tools/XTranslatorAi.KoreanPatchReview -- dictionary $data $patch src/XTranslatorAi.App/Assets/GameStrings/game-strings-skyrim.gz
 ```
 
+A rebuilt dictionary that changes the text of a bundled TM row fails `ElderScrollsSeed_HasTheTextTheGameShows` until
+the row waits in `src/XTranslatorAi.App/Assets/TmSeeds/skyrim-tes-franchise-tm-pending.tsv` (Source, Target: the game's
+new text) in the same commit. The script that makes the next seed version (tm-v10.py, not written yet) reads the list
+into the seed, a source the seed lacks as a new row (an empty Previous), and empties it; a release stops while it has rows.
+
 `apply` skips a change when the patch no longer holds the `current_ko` the reviewer saw, or when the new text loses
 the English's tags and placeholders. Read every suggestion before `--write`: reviews from a model can be wrong or
 misaligned between rows.
