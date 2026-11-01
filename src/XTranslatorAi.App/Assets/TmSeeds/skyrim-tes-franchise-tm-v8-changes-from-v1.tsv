@@ -187,7 +187,6 @@ Change preset and lose your changes?	변경사항을 버리고 사전설정으�
 Changed Ones	변화한 자들	변절한 자들
 Charm - Master of the Mind	매료 - 정신의 지배자	매료 - 정신마법의 달인
 Chasing Echoes	메아리를 쫓아서	따라오는 메아리
-Claim Mehrunes' Razor	메이룬스 데이건의 단검을 가지기	메이룬스의 면도칼을 가지기
 Clay. (<Global=BYOHHPAmountClay> for <Global=BYOHHPCostClay> gold)	점토. (<Global=BYOHHPAmountClay>개에 <Global=BYOHHPCostClay> 골드)	점토. (<Global=BYOHHPAmountClay> for <Global=BYOHHPCostClay> 골드)
 Cleanse the focal points for magical energies around the College	대학 주변의 마법 에너지 중심점을 정화하기	대학주변의 마법 에너지 중심점을 정화하기
 Clear <Alias=WealthyHome> in <Alias=City> of valuables (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)	<Alias=City> 도시의 <Alias=WealthyHome>에서 귀중품들을 싹쓸이하기 (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)	<Alias=City> 도시의 <Alias=WealthyHome> 에서 귀중품들을 싹쓸이하기 (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)
@@ -227,9 +226,6 @@ Deliver <Alias=QuestItem> to <Alias.ShortName=Target>	<Alias.ShortName=Target>�
 Deliver Mead to Wilhelm	윌헴에게 벌꿀술을 배달하기	윌헴에게 벌꿀주를 배달하기
 Deliver the stone to Phinis	시질 스톤을 피니스에게 전달하기	시질스톤을 피니스에게 전달하기
 Deliver the sword to Proventus Avenicci	프로벤투스 아베니치에게 검을 배달하기	프로벤투스 아베니치 에게 검을 배달하기
-Demonstrate your "Unrelenting Force" Shout	"거침없는 힘" 함성을 보여주기	'거침없는 힘' 함성을 보여주기
-Demonstrate your "Unrelenting Force" Shout (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	"거침없는 힘" 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	'거침없는 힘' 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)
-Demonstrate your "Whirlwind Sprint" Shout	"회오리 질주" 함성을 사용하기	'회오리 질주' 함성을 사용하기
 Deor Woodcutter's House	디오어 우드커터의 집	나무꾼 디오어의 집
 Depends. Who's asking?	그런 질문을 하는 당신은 누구지?	그런 질문은 하는 당신은 누구지?
 Desecrated Corpse	훼손된 시체	바짝마른 시체
@@ -662,7 +658,6 @@ Letter to Beem-Ja	빔자에게 주는 편지	빔-자에게 주는 편지
 Library, Doors	도서실, 문	도서실,문들
 Lightning Apparatus	번개 장치	빛나는 장치
 Lightning Attractor	번개 유도장치	빛나는 끌개
-Lisbet	리스벳	리즈벳
 Listen to Mercer Frey	머서 프레이의 말을 듣기	머서 프레이와 대화하기
 Living room furnishings. (<Global=HDWhiterunLiving> gold)	거실 가구들. (<Global=HDWhiterunLiving> 골드)	거실 가구 (<Global=HDWhiterunLiving> 골드)
 Llewellyn the Nightingale	나이팅게일 르웰린	르웰린
@@ -724,7 +719,7 @@ No, not yet.	아직은.	아니, 아직은.
 No. Dragons like mountains, right?	아니요. 드래곤이 산을 좋아해서 그런 겁니까?	그게. 드래곤이 산을 좋아해서 그런 겁니까?
 No. No pets. Ever.	안 된다. 애완동물은 안 돼. 절대로.	난 동물이 싫다.
 No. We expected some kind of artifact.	아니오. 우리는 어떤 유물이 있을 거라 생각했소.	우리는 어떤 종류의 유물이라고 생각하고 있소.
-Noble Clothes	야를의 기품있는 의상	귀족의 의상
+Noble Clothes	야를의 기품 있는 의상	귀족의 의상
 Nobody hears from them much anymore.	더 이상 소식 들을 일은 없을 거야.	더이상 소식들을 일은 없을 거야.
 Nocturnal is the daedric mistress of stealth and shadow, and a patron to thieves.	녹터널은 잠행과 그림자의 데이드릭 프린스이며, 도둑들의 후원자입니다.	녹터널은 잠행과 그림자의 데이드라 프린스이며, 도둑들의 후원자입니다.
 North Skybound Watch	북부 스카이바운드 감시대	스카이바운드 감시대
@@ -817,7 +812,7 @@ Remove the workbench from the Enchanter's Tower.	마법부여 연구탑에서 �
 Remove the workbench from the Storage Room.	저장고에서 작업선반을 제거합니다.	창고에서 작업선반을 제거합니다.
 Remove Tree	나무의 바위 효과 제거	나무의 바위효과 제거
 Replace my Enchanting Lab with a Child's Room. (<Global=HDRiftenChildRoom> gold)	마법부여 연구실을 아이의 방으로 개조하고 싶다. (<Global=HDRiftenChildRoom> 골드)	마법 부가 연구실을 아이의 방으로 개조라고 싶다. (<Global=HDRiftenChildRoom> 골드)
-Replace the beacon	표식을 교체하기	등불을 교체하기
+Replace the beacon	등불을 제자리에 놓기	등불을 교체하기
 Report failure to <Alias=FactionLeader>.	<Alias=FactionLeader>에게 작전실패를 보고하기	<Alias=FactionLeader> 에게 작전실패를 보고하기
 Report success to <Alias=FactionLeader>.	<Alias=FactionLeader>에게 작전성공을 보고하기	<Alias=FactionLeader> 에게 작전성공을 보고하기
 Report to <Alias=CWFieldCOSonsWhiterunCamp>	<Alias=CWFieldCOSonsWhiterunCamp>에게 보고하기	<Alias=CWFieldCOSonsWhiterunCamp> 에게 보고하기
@@ -831,7 +826,6 @@ Retrieve the Soul Essence Gem	영혼 정수의 보석 회수하기	영혼의 정
 Retrieve the Stalhrim Source Map	스탈림 원천 지도를 회수하기	스탈림 근원의 지도를 회수하기
 Retrieve the Unmelting Snow	'녹지 않는 눈'을 회수하기	'녹지않는 눈'을 회수하기
 Return <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias=QuestItem>을(를) <Alias.ShortName=QuestGiver>에게 돌려주기	<Alias=QuestItem>을 <Alias.ShortName=QuestGiver> 에게 돌려주기
-Return the East Empire Shipping Map to Delvin	델빈에게 동 제국 해상운송 지도를 가져가기	델빈에게 동제국 해상운송 지도를 가져가기
 Return to the Sanctuary	성역으로 돌아가기	성지로 돌아가기
 Revenge, Hired Thugs	복수, 고용된 폭력배	복수, 고용된 불량배
 Reverent Nordic Battleaxe	노드제 전투 도끼 - 중급 신성	노드제 전투 도끼 - 상급 신성

@@ -58,6 +58,49 @@ public sealed class TranslationMemorySeedChangesTests : IDisposable
         }
     }
 
+    // v8 offers a row twice where users can hold either of two older texts (the v3 one, or the v2 one a v1/v2 upgrade
+    // left): each applies only to its own, and the second does nothing once the first has.
+    [Fact]
+    public async Task SeedChanges_TwoPreviousTextsOfOneSource_EachReplacesItsOwn()
+    {
+        var path = Path.Combine(_root, "bundled-skyrim-tes-franchise-tm-v8-changes.tsv");
+        await File.WriteAllTextAsync(path,
+            "Source\tTarget\tPrevious\n"
+            + "Replace the beacon\t등불을 제자리에 놓기\t표식을 교체하기\n"
+            + "Replace the beacon\t등불을 제자리에 놓기\t등불을 교체하기\n"
+            + "Noble Clothes\t야를의 기품 있는 의상\t야를의 기품있는 의상\n"
+            + "Noble Clothes\t야를의 기품 있는 의상\t귀족의 의상\n"
+            + "Refined Tunic\t야를의 세련된 의상\t야를의 세련된 옷\n"
+            + "Refined Tunic\t야를의 세련된 의상\t세련된 의상\n");
+        var global = new GlobalProjectDbService(new BuiltInGlossaryService(), Path.Combine(_root, "global"));
+        try
+        {
+            var tm = new FranchiseTranslationMemoryService(global);
+            await tm.BulkUpsertAsync("english", "korean",
+                new List<(string, string)>
+                {
+                    ("Replace the beacon", "등불을 교체하기"), ("Noble Clothes", "야를의 기품있는 의상"), ("Refined Tunic", "내가 고친 의상"),
+                },
+                CancellationToken.None);
+
+            Assert.Equal(2, await tm.ImportFromTsvAsync("english", "korean", path, CancellationToken.None));
+
+            var entries = await tm.GetEntriesAsync("english", "korean", CancellationToken.None);
+            Assert.Contains(entries, e => e.SourceText == "Replace the beacon" && e.DestText == "등불을 제자리에 놓기");
+            Assert.Contains(entries, e => e.SourceText == "Noble Clothes" && e.DestText == "야를의 기품 있는 의상");
+            Assert.Contains(entries, e => e.SourceText == "Refined Tunic" && e.DestText == "내가 고친 의상");
+            Assert.Equal(3, entries.Count);
+        }
+        finally
+        {
+            await global.DisposeAsync();
+            foreach (var db in Directory.GetFiles(_root, "*.sqlite", SearchOption.AllDirectories))
+            {
+                TestDbHelper.ReleaseProjectPoolAndDeleteDbFiles(db);
+            }
+        }
+    }
+
     public void Dispose()
     {
         try

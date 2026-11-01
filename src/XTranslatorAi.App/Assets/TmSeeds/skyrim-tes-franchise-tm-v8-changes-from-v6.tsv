@@ -10,13 +10,13 @@ Break through the First Barricade	첫 번째 바리케이드를 파괴하기	첫
 Call of the Wild	야생의 외침	아생의 외침
 Can you share anything about the Thieves Guild?	도둑 길드에 대한 정보를 알려주시오.	도둑길드에 대한 정보를 알려주시오.
 Change preset and lose your changes?	변경사항을 버리고 사전설정으로 바꾸겠습니까?	변경사항을 버리고 사전설정으로 바꿀까요?
-Claim Mehrunes' Razor	메이룬스 데이건의 단검을 가지기	메이룬스의 면도칼을 가지기
+Claim Mehrunes' Razor	메이룬스의 면도칼을 가지기	메이룬스 데이건의 단검을 가지기
 CONJURATION	소환마법	소환
 CONTAINERS	보관함	상자
 Could I help?	내가 도와줄 수 있겠소?	도와드릴까요?
-Demonstrate your "Unrelenting Force" Shout	"거침없는 힘" 함성을 보여주기	'거침없는 힘' 함성을 보여주기
-Demonstrate your "Unrelenting Force" Shout (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	"거침없는 힘" 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	'거침없는 힘' 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)
-Demonstrate your "Whirlwind Sprint" Shout	"회오리 질주" 함성을 사용하기	'회오리 질주' 함성을 사용하기
+Demonstrate your "Unrelenting Force" Shout	'거침없는 힘' 함성을 보여주기	"거침없는 힘" 함성을 보여주기
+Demonstrate your "Unrelenting Force" Shout (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	'거침없는 힘' 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	"거침없는 힘" 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)
+Demonstrate your "Whirlwind Sprint" Shout	'회오리 질주' 함성을 사용하기	"회오리 질주" 함성을 사용하기
 Didn't work out that way I assume.	제대로 되지 않았나 보오.	제대로 되지 않았을 거라고 생각되는군요.
 Discerning the Transmundane	다른 차원의 것을 인식	다른 차원의 것을 알아내기
 Do I need to read the scrolls in any particular order?	엘더스크롤을 뭔가 특별한 순서대로 읽어야 하는 거요?	엘더스크롤을 뭔가 특별한 순서대로 읽어야 하는 겁니까?
@@ -48,18 +48,20 @@ Know anything about the Thieves Guild?	도둑 길드에 대해 조금이라도 �
 Learn more about the Thieves Guild from Delvin	델빈에게 도둑 길드에 관하여 좀 더 알아보기	델빈에게 도둑길드에 관하여 좀 더 알아보기
 Learn more about the Thieves Guild from Vex	벡스에게 도둑 길드에 관해서 더 알아보기	벡스에게 도둑길드에 관해서 더 알아보기
 Letter to Beem-Ja	빔자에게 주는 편지	빔-자에게 주는 편지
-Lisbet	리스벳	리즈벳
+Lisbet	리즈벳	리스벳
 Maybe a shorter title is in order?	책의 제목은 조금 더 짧은 편이 좋지 않겠소?	책의 제목은 조금 더 짧은 편이 좋지 않습니까?
 Morthal is said to be named after the great Nord hero Morihaus, though none alive today are sure of the connection.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하우스의 이름을 따서 지어졌다고 합니다.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하스의 이름을 따서 지어졌다고 합니다.
 Mudcrab Boss (Old Salty)	거대 진흙게 (올드 살티)	거대 진흙 게 (올드 살티)
 Neither side is making much headway. What's the harm in talking to Ulfric?	어느 쪽도 큰 진전이 없으니, 울프릭과 이야기한다고 해서 나쁠 건 없지 않습니까?	어느 쪽이든 큰 진전이 없으니 울프릭에게 이야기 한다고 해서 나쁠건 없겠지?
-Noble Clothes	야를의 기품있는 의상	귀족의 의상
+Noble Clothes	야를의 기품 있는 의상	야를의 기품있는 의상
+Noble Clothes	야를의 기품 있는 의상	귀족의 의상
 Now, what were you saying?	음, 뭐라고 했소?	음, 뭐라고 했습니까?
 Prison? You mean the Soul Cairn?	감옥? 소울 케언을 말하는 거요?	감옥? 소울 케언을 뜻하는 겁니까?
 Refined Tunic	야를의 세련된 의상	세련된 의상
-Replace the beacon	표식을 교체하기	등불을 교체하기
+Replace the beacon	등불을 제자리에 놓기	표식을 교체하기
+Replace the beacon	등불을 제자리에 놓기	등불을 교체하기
 Return <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias=QuestItem>을(를) <Alias.ShortName=QuestGiver>에게 돌려주기	<Alias=QuestItem>을 <Alias.ShortName=QuestGiver> 에게 돌려주기
-Return the East Empire Shipping Map to Delvin	델빈에게 동 제국 해상운송 지도를 가져가기	델빈에게 동제국 해상운송 지도를 가져가기
+Return the East Empire Shipping Map to Delvin	델빈에게 동제국 해상운송 지도를 가져가기	델빈에게 동 제국 해상운송 지도를 가져가기
 Revenge, Hired Thugs	복수, 고용된 폭력배	복수, 고용된 불량배
 Sea Squall	바다 소나기 호	
 Skein of Magnus	매그너스의 실타래	마그누스의 실타래

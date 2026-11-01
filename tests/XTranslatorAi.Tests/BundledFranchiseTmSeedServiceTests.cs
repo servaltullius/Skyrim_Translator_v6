@@ -593,9 +593,14 @@ public class BundledFranchiseTmSeedServiceTests
             // From v3 to v7, 18 rows ended in a CR that broke a changes file's line, and the import dropped them: those
             // who came from v1 or v2 still have the v2 text, which every upgrade now replaces.
             Assert.DoesNotContain('\r', changes);
-            Assert.Contains("\nLisbet\t리스벳\t리즈벳\n", changes, StringComparison.Ordinal);
             Assert.Contains("\nALTERATION\t변화마법\t변화\n", changes, StringComparison.Ordinal);
             Assert.DoesNotContain("\nFinished?\t", changes, StringComparison.Ordinal);
+            // Eight of them took in v3 a text the patch no longer has. v8 takes the patch's: where that is the v2 text
+            // (Lisbet 리즈벳), only a v3 or later memory changes; where it is neither, both older texts are offered.
+            Assert.Equal(!beforeV3, changes.Contains("\nLisbet\t리즈벳\t리스벳\n", StringComparison.Ordinal));
+            Assert.DoesNotContain("\nLisbet\t리즈벳\t리즈벳\n", changes, StringComparison.Ordinal);
+            Assert.Equal(!beforeV3, changes.Contains("\nReplace the beacon\t등불을 제자리에 놓기\t표식을 교체하기\n", StringComparison.Ordinal));
+            Assert.Contains("\nReplace the beacon\t등불을 제자리에 놓기\t등불을 교체하기\n", changes, StringComparison.Ordinal);
             // The gallery's reports the first match missed reach those who imported a seed older than v7: 도둑 길드, as
             // most of the patch spells it.
             Assert.Equal(beforeV7, changes.Contains("\nThieves Guild Fence Chest\t도둑 길드의 장물 보관함\t", StringComparison.Ordinal));
