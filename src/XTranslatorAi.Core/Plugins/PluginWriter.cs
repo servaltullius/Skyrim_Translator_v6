@@ -41,6 +41,8 @@ public static class PluginWriter
     {
         try
         {
+            // The export writes text in a rune font as the source's (see ExportAsync), so a translation of it is not refused.
+            translated = Text.CipherFontSpans.RestoreFromSource(source, translated);
             TokenValidator.ValidateFinalTextIntegrity(
                 allowDroppedInitialsAndPronouns ? WithoutDroppedInitialsAndPronouns(source, translated) : source, translated, context);
             return Array.Empty<string>();
@@ -88,6 +90,16 @@ public static class PluginWriter
         var encoding = PluginBinary.GetEncoding(options.TargetEncoding);
         var outputLanguage = PluginReader.ValidateLanguage(options.OutputLanguage ?? document.Info.Options.SourceLanguage);
         var fields = document.Fields.ToDictionary(field => field.Key, StringComparer.Ordinal);
+        // Text in a rune font ($DaedricFont and the like) is written as the source's: the font has no Hangul, and a
+        // project translated before 1.16.40 may hold Korean there (see CipherFontSpans).
+        foreach (var key in edits.Keys.ToList())
+        {
+            if (fields.TryGetValue(key, out var runeField) && edits[key] is { } text)
+            {
+                edits[key] = Text.CipherFontSpans.RestoreFromSource(options.CheckAgainst?.GetValueOrDefault(key) ?? runeField.SourceText, text);
+            }
+        }
+
         foreach (var (key, translated) in edits)
         {
             if (!fields.TryGetValue(key, out var field)) throw new InvalidDataException($"원본에 없는 번역 필드: {key}");

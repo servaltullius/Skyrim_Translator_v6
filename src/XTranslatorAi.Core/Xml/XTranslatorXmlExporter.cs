@@ -105,7 +105,9 @@ public static class XTranslatorXmlExporter
             foreach (var row in rows)
             {
                 var el = XElement.Parse(row.RawStringXml, LoadOptions.PreserveWhitespace);
-                UpsertDestElement(el, row.DestText);
+                // Text in a rune font is written as the source's (see CipherFontSpans), as the plugin export does.
+                var source = el.Element("Source")?.Value;
+                UpsertDestElement(el, source == null || row.DestText == null ? row.DestText : Text.CipherFontSpans.RestoreFromSource(source, row.DestText));
                 el.WriteTo(xmlWriter);
             }
         }

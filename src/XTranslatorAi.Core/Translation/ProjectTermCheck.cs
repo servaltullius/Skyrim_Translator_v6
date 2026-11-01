@@ -21,6 +21,7 @@ internal static class ProjectTermCheck
     }
 
     /// <summary>Whether <paramref name="text"/> has every forced term's translation that <paramref name="source"/> calls for.</summary>
+    // A term in a rune font stays English there (CipherFontSpans), so it is not looked for.
     public static bool Keeps(GlossaryApplier? terms, string source, string text)
-        => terms?.Apply(source).TokenToReplacement.Values.All(term => text.Contains(term, StringComparison.Ordinal)) ?? true;
+        => terms?.Apply(CipherFontSpans.Remove(source)).TokenToReplacement.Values.All(term => text.Contains(term, StringComparison.Ordinal)) ?? true;
 }

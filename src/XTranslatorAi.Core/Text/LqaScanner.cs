@@ -431,6 +431,7 @@ public static class LqaScanner
         return false;
     }
 
+    // Text in a rune font goes with the markup: its English is a cipher the game shows as runes, not text left untranslated.
     internal static string StripUiTokens(string text)
     {
         if (string.IsNullOrEmpty(text))
@@ -438,7 +439,7 @@ public static class LqaScanner
             return "";
         }
 
-        return UiTagTokenRegex.Replace(text, "");
+        return UiTagTokenRegex.Replace(CipherFontSpans.Remove(text), "");
     }
 
     // An unbalanced translation is reported only when the source is not unbalanced the same way:

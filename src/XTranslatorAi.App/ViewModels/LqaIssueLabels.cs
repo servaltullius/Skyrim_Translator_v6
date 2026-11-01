@@ -15,6 +15,7 @@ public static class LqaIssueLabels
     private static readonly IReadOnlyDictionary<string, string> Codes = new Dictionary<string, string>
     {
         ["token_mismatch"] = "태그·토큰 불일치",
+        ["cipher_font_text"] = "룬 문자 글꼴 안 번역",
         ["untranslated"] = "미번역",
         ["glossary_missing"] = "용어 누락",
         ["glossary_variant"] = "용어집과 다른 표기",

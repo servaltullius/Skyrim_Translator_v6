@@ -16,7 +16,8 @@ public static class TranslationPostEdits
         }
 
         var src = sourceText ?? "";
-        var working = PromptLeakCleaner.StripLeakedPlaceholderInstructions(src, translatedText);
+        // Text in a rune font is the source's, whatever the translation wrote there (see CipherFontSpans).
+        var working = CipherFontSpans.RestoreFromSource(src, PromptLeakCleaner.StripLeakedPlaceholderInstructions(src, translatedText));
 
         // Keep the order aligned with the core translation pipeline:
         // 1) Placeholder/tag fixes

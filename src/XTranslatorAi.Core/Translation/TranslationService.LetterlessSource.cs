@@ -20,8 +20,10 @@ public sealed partial class TranslationService
     private static readonly Regex SemanticPlaceholderTokenRegex = new(
         @"__XT_PH_[A-Z]+_[0-9]{4}__", RegexOptions.CultureInvariant);
 
+    // Text in a rune font is not to translate either (CipherFontSpans): the Atronach Forge recipes are nothing else.
     internal static bool HasLettersToTranslate(string? sourceText)
-        => !string.IsNullOrEmpty(sourceText) && NonTextMarkupRegex.Replace(sourceText, " ").Any(char.IsLetter);
+        => !string.IsNullOrEmpty(sourceText)
+           && NonTextMarkupRegex.Replace(XTranslatorAi.Core.Text.CipherFontSpans.Remove(sourceText), " ").Any(char.IsLetter);
 
     /// <summary>
     /// A row that is only forced names or glossary terms once they are tokens ("Iron Sword", "Spell Tome: Maven")

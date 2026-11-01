@@ -59,11 +59,12 @@ public sealed class PlaceholderMasker
     public MaskedText Mask(string text)
     {
         var tokenToOriginal = new Dictionary<string, string>(StringComparer.Ordinal);
+        var working = MaskCipherFontSpans(text, tokenToOriginal);
         var formattingNames = ProtectedTextKinds.FormattingNamesFor(
-            PlaceholderRegex.Matches(text).Select(m => m.Value)
+            PlaceholderRegex.Matches(working).Select(m => m.Value)
         );
         var masked = PlaceholderRegex.Replace(
-            text,
+            working,
             m =>
             {
                 var original = m.Value;
@@ -88,7 +89,7 @@ public sealed class PlaceholderMasker
 
                 // Runtime values (<Alias=…>, %s, {name}) are labeled VAR so token checks let them
                 // follow target-language word order; layout tokens keep the plain form and their order.
-                var label = TryGetSemanticPlaceholderLabel(original, text, m.Index, m.Length)
+                var label = TryGetSemanticPlaceholderLabel(original, working, m.Index, m.Length)
                             ?? (ProtectedTextKinds.IsLayout(original, formattingNames) ? null : "VAR");
                 var token = label == null ? $"__XT_PH_{idx:0000}__" : $"__XT_PH_{label}_{idx:0000}__";
                 tokenToOriginal[token] = original;
@@ -96,7 +97,57 @@ public sealed class PlaceholderMasker
             }
         );
 
-        return new MaskedText(masked, tokenToOriginal);
+        return ReferenceEquals(working, text)
+            ? new MaskedText(masked, tokenToOriginal)
+            : NumberInTextOrder(masked, tokenToOriginal);
+    }
+
+    // Text in a rune font (CipherFontSpans) is one protected piece, its tags and words with it: the model translated
+    // the Atronach Forge recipes into Korean the font cannot show. A layout token, so it keeps its place.
+    private static string MaskCipherFontSpans(string text, Dictionary<string, string> tokenToOriginal)
+    {
+        var spans = CipherFontSpans.Find(text);
+        if (spans.Count == 0)
+        {
+            return text;
+        }
+
+        var builder = new System.Text.StringBuilder(text.Length);
+        var last = 0;
+        foreach (var (start, length, _) in spans)
+        {
+            var token = $"__XT_PH_{tokenToOriginal.Count:0000}__";
+            tokenToOriginal[token] = text.Substring(start, length);
+            builder.Append(text, last, start - last).Append(token);
+            last = start + length;
+        }
+
+        return builder.Append(text, last, text.Length - last).ToString();
+    }
+
+    private static readonly Regex NumberedTokenRegex = new(
+        pattern: @"__XT_PH_(?:(?<label>[A-Z]+)_)?(?<index>[0-9]{4})__",
+        options: RegexOptions.CultureInvariant
+    );
+
+    // The rune spans were numbered before the rest; numbered again in the order they stand, the protected pieces keep
+    // their order where it is read from the values (the integrity check compares the source's and the translation's).
+    private static MaskedText NumberInTextOrder(string masked, Dictionary<string, string> tokenToOriginal)
+    {
+        var renumbered = new Dictionary<string, string>(StringComparer.Ordinal);
+        var text = NumberedTokenRegex.Replace(masked, m =>
+        {
+            if (!tokenToOriginal.TryGetValue(m.Value, out var original))
+            {
+                return m.Value;
+            }
+
+            var label = m.Groups["label"].Success ? m.Groups["label"].Value + "_" : "";
+            var token = $"__XT_PH_{label}{renumbered.Count:0000}__";
+            renumbered[token] = original;
+            return token;
+        });
+        return new MaskedText(text, renumbered);
     }
 
     private static bool IsControlKey(string placeholder)

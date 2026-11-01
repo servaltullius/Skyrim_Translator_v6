@@ -80,6 +80,8 @@ public sealed partial class TranslationService
 
         try
         {
+            // A patch block with Korean in a rune font (the patch's recipes, before 1.16.40) takes the source's text there.
+            spliced = XTranslatorAi.Core.Text.CipherFontSpans.RestoreFromSource(source, spliced);
             TokenValidator.ValidateFinalTextIntegrity(source, spliced, context: $"id={id} game splice");
             return spliced;
         }

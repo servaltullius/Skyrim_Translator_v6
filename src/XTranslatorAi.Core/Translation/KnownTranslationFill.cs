@@ -16,7 +16,9 @@ public static class KnownTranslationFill
 
     public static Prepared Prepare(long id, string sourceText, string knownText, string targetLang, bool enableTemplateFixer)
     {
-        var final = TranslationService.MatchSourceLineEndings(sourceText, knownText);
+        // A known translation with Korean in a rune font (the patch's Atronach Forge recipes) gives that text back to the
+        // source: the font has no Hangul (see CipherFontSpans).
+        var final = TranslationService.MatchSourceLineEndings(sourceText, CipherFontSpans.RestoreFromSource(sourceText, knownText));
         if (enableTemplateFixer)
         {
             final = MagDurPlaceholderFixer.Fix(sourceText, final, targetLang);
