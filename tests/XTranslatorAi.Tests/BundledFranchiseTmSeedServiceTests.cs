@@ -16,6 +16,11 @@ public class BundledFranchiseTmSeedServiceTests
     [Theory]
     [InlineData("bundled-skyrim-tes-franchise-tm.tsv", true)]
     [InlineData("bundled-starfield-franchise-tm.tsv", true)]
+    // Any version's changes file: an earlier one left in tm-import when the next version wrote its own.
+    [InlineData("bundled-skyrim-tes-franchise-tm-v8-changes.tsv", true)]
+    [InlineData("bundled-skyrim-tes-franchise-tm-v7-changes.tsv", true)]
+    [InlineData("bundled-skyrim-tes-franchise-tm-v-changes.tsv", false)]
+    [InlineData("bundled-skyrim-tes-franchise-tm-mine-changes.tsv", false)]
     [InlineData("my-own-terms.tsv", false)]
     public void BundledSeeds_AreImportedAsEnglishToKorean(string fileName, bool bundled)
         => Assert.Equal(bundled ? ("english", "korean") : null, BundledFranchiseTmSeedService.LanguagesOfSeedFile(@"C:\tm-import\" + fileName));

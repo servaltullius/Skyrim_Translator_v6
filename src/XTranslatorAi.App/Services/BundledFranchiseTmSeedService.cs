@@ -101,13 +101,25 @@ public sealed class BundledFranchiseTmSeedService
         {
             if (GetBundledSeedMetadata(franchise) is { } metadata
                 && (string.Equals(metadata.FileName, name, StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(metadata.ChangesFileName, name, StringComparison.OrdinalIgnoreCase)))
+                    || IsChangesFileOfSeed(metadata.FileName, name)))
             {
                 return ("english", "korean");
             }
         }
 
         return null;
+    }
+
+    // Any version's changes file, not only the current one's: a v7 file the import had not taken yet when 1.16.40 wrote
+    // v8's beside it went in with the open project's languages.
+    private static bool IsChangesFileOfSeed(string seedFileName, string name)
+    {
+        var stem = Path.GetFileNameWithoutExtension(seedFileName) + "-v";
+        const string suffix = "-changes.tsv";
+        return name.Length > stem.Length + suffix.Length
+            && name.StartsWith(stem, StringComparison.OrdinalIgnoreCase)
+            && name.EndsWith(suffix, StringComparison.OrdinalIgnoreCase)
+            && name[stem.Length..^suffix.Length].All(char.IsAsciiDigit);
     }
 
     public static BundledSeedMetadata? GetBundledSeedMetadata(BethesdaFranchise franchise)
