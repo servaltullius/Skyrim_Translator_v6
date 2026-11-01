@@ -264,7 +264,7 @@ USSEP 한국어판은 플러그인을 통째로 바꾸므로 원본과 버전이
 
 - 베타 5(`kopatch-26.10.16-beta5`)와 문자열 표를 바로 비교하면 바뀐 문자열은 906개다. 본편·DLC 833, CC 58, USCCCP 15(네 판 합계)다.
 - 인터페이스 `translate_english.txt`는 확인 창 7줄이 바뀌었다.
-- USSEP 한국어 4판은 하위 레코드 239·230·230·230개가 바뀌었다(4.2.5b·4.2.9a·4.3.8a·4.3.9c). USSEP가 가진 한패 글 사본에는 베타 5 글이 남지 않았다(다시 스캔하면 0). USSEP 자기 번역에는 회차 고침 조각을 옮겨 심었다. 인터페이스 줄 수와 USSEP 수는 `diff-beta5.py`가 아니라 줄 비교와 `artifacts/patch-review-r3check-20261031/esp-recdiff.py`로 셌다.
+- USSEP 한국어 4판은 하위 레코드 239·230·230·230개가 바뀌었다(4.2.5b·4.2.9a·4.3.8a·4.3.9c). USSEP가 가진 한패 글 사본에는 이번에 고친 줄의 옛 글이 남지 않았다(다시 스캔하면 0). USSEP 자기 번역에는 회차 고침 조각을 옮겨 심었다. 인터페이스 줄 수와 USSEP 수는 `diff-beta5.py`가 아니라 줄 비교와 `artifacts/patch-review-r3check-20261031/esp-recdiff.py`로 셌다.
 - fomod `info.xml`과 `읽어보기.txt`를 `26.10.16 베타 6`으로 올리고, 읽어보기에 베타 6 요약을 넣었다.
 - 이름 표기 가운데 Almalexia는 알마렉시아에서 아말렉시아로 바꿨다(본편·CC·USSEP·USCCCP 모두).
 - zip은 베타 5와 같은 꼴(262개 파일)이다: `artifacts/kopatch-26.10.16-beta6/build-zip.py`.
