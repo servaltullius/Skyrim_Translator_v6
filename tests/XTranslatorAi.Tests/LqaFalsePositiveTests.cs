@@ -198,6 +198,39 @@ public class LqaFalsePositiveTests
         Assert.Contains("대부분 합니다체", tone.Message);
     }
 
+    // A tutorial prompt in -(으)세요 is how the Korean patch writes an instruction among 합니다체 messages (Dawnguard's
+    // "[Jump] 키를 눌러서 점프하세요."); it was flagged as 해요체. A 해요체 statement, a question in -세요? and a 해요체
+    // sentence before the instruction still are.
+    [Fact]
+    public async Task RecTone_TakesATutorialInstructionAmongHamnidaMessages()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Row(1, "MESG:DESC", "효과가 해제됩니다."),
+            Row(2, "MESG:DESC", "무기를 제작할 수 있습니다."),
+            Row(3, "MESG:DESC", "반지와 룬을 획득하는 데 사용됩니다."),
+            Row(4, "MESG:DESC", "슈퍼아머가 발동합니다."),
+            Row(5, "MESG:DESC", "흡혈귀 군주가 되었습니다."),
+            Row(6, "MESG:DESC", "새 능력을 얻었습니다."),
+            Row(7, "MESG:DESC", "[Jump] 키를 눌러서 점프하세요."),
+            Row(8, "MESG:DESC", "흡혈귀 군주로 변했습니다. 흡혈귀 군주 능력을 사용하세요!"),
+            Row(9, "MESG:DESC", "효과가 사라져요."),
+            Row(10, "MESG:DESC", "어디로 가세요?"),
+            Row(11, "MESG:DESC", "능력을 얻었어요. 사용하세요."),
+            Row(22, "MESG:DESC", "문을 여세요. 그리고 안으로 들어가세요…"),
+            Row(23, "MESG:DESC", "어서 오세요."),
+        };
+        // The field needs a strong 합니다체 majority (three in four) for the check to read it.
+        foreach (var id in Enumerable.Range(12, 10).Concat(Enumerable.Range(30, 10)))
+        {
+            entries.Add(Row(id, "MESG:DESC", "아이템을 얻었습니다."));
+        }
+
+        var issues = await LqaScanner.ScanAsync(entries, targetLang: "ko", glossary: new List<GlossaryEntry>());
+
+        Assert.Equal(new long[] { 9, 10, 11, 23 }, issues.Where(i => i.Code == "rec_tone").Select(i => i.Id).OrderBy(id => id));
+    }
+
     [Fact]
     public void GlossaryMissing_FollowsTheTranslatorsMatchingRules()
     {

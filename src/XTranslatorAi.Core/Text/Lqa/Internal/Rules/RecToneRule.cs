@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text.Lqa.Internal;
 using XTranslatorAi.Core.Translation;
@@ -66,7 +68,8 @@ internal static class RecToneRule
         }
 
         var tone = LqaToneClassifier.Classify(destText);
-        if (tone == ToneKind.Unknown || tone == majority || IsRhetoricalQuestionAfterHamnida(destText, tone, majority))
+        if (tone == ToneKind.Unknown || tone == majority || IsRhetoricalQuestionAfterHamnida(destText, tone, majority)
+            || IsInstructionAmongHamnida(field, destText, tone, majority))
         {
             return;
         }
@@ -105,6 +108,39 @@ internal static class RecToneRule
 
         var lastStart = text.LastIndexOfAny(new[] { '.', '!', '?', '\n' }, text.Length - 2);
         return lastStart > 0 && LqaToneClassifier.Classify(text[..(lastStart + 1)]) == ToneKind.Hamnida;
+    }
+
+    /// <summary>
+    /// "[Jump] 키를 눌러서 점프하세요.": a tutorial prompt tells the player what to do in -(으)세요, the Korean patch's
+    /// way of writing an instruction among 합니다체 messages, not a 해요체 that breaks them. Messages only (a book's "그분은
+    /// 집에 계세요." is 해요체 narration); every sentence an instruction or 합니다체, the last an instruction. A question
+    /// in -세요? and a greeting ("어서 오세요.") still count.
+    /// </summary>
+    private static bool IsInstructionAmongHamnida(string field, string destText, ToneKind tone, ToneKind majority)
+    {
+        if (tone != ToneKind.Haeyo || majority != ToneKind.Hamnida || !field.StartsWith("MESG", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        var sentences = SentenceBreakRegex.Split(LqaScanner.StripUiTokens(destText).Trim())
+            .Select(sentence => sentence.Trim())
+            .Where(sentence => sentence.Length > 0)
+            .ToList();
+        return sentences.Count > 0
+            && IsInstruction(sentences[^1])
+            && sentences.Take(sentences.Count - 1).All(sentence => IsInstruction(sentence)
+                || LqaToneClassifier.Classify(sentence) is ToneKind.Hamnida or ToneKind.Unknown);
+    }
+
+    private static readonly Regex SentenceBreakRegex = new(@"(?<=[.!?…])\s+|\n", RegexOptions.CultureInvariant);
+
+    private static readonly Regex GreetingRegex = new(@"(?:어서\s*오|안녕히\s*(?:가|계)|잘\s*(?:가|있으))세요$", RegexOptions.CultureInvariant);
+
+    private static bool IsInstruction(string sentence)
+    {
+        var end = sentence.TrimEnd(' ', '\t', '"', '\'', '”', '’', ')', '.', '!', '…', '~');
+        return end.EndsWith("세요", StringComparison.Ordinal) && !GreetingRegex.IsMatch(end);
     }
 
     private static string? GetCheckedField(string? rec)
