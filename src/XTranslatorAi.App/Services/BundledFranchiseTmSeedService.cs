@@ -174,8 +174,11 @@ public sealed class BundledFranchiseTmSeedService
             // v10 takes the choices a soldier makes when the general discharges them at the council or offers a place,
             // in the 존댓말 the player speaks to a commander (옳다고 생각한 일을 했을 뿐입니다; Sorry, sir 죄송합니다,
             // 장군님); 4 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v10", "bundled-skyrim-tes-franchise-tm.tsv", 1528918, "3448f09b36118aa8d9391df8b1ad9d118472e03b3ba7285e256d2689b1eae29b",
-                PreviousVersions: new[] { "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v10-changes.tsv"),
+            // v11 takes the patch's spacing review, its rules run on the seed's own text: the dependent nouns apart (있을
+            // 거요, 찾을 수), the particles 뿐 and 밖에 joined, 있다 and 않다 apart after -고 and -지 (알고 있소); 237 rows
+            // changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v11", "bundled-skyrim-tes-franchise-tm.tsv", 1529133, "860951f686ebe215b3f5ca3bd9c617da623d6fcee3a8cb2a7d0ddfb037569bab",
+                PreviousVersions: new[] { "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v11-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,

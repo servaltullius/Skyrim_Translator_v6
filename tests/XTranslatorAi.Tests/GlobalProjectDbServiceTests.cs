@@ -106,8 +106,8 @@ public sealed class GlobalProjectDbServiceTests : IAsyncLifetime
         var first = new GlobalProjectDbService(new BuiltInGlossaryService(), GlobalRoot);
         Assert.NotEmpty(await (await first.GetOrCreateAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None))!.GetGlossaryAsync(CancellationToken.None));
         await first.DisposeAsync();
-        var tmStamp = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, "v10", GlobalRoot);
-        await File.WriteAllTextAsync(tmStamp, "v10");
+        var tmStamp = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, "v11", GlobalRoot);
+        await File.WriteAllTextAsync(tmStamp, "v11");
         TestDbHelper.ReleaseProjectPoolAndDeleteDbFiles(GlobalDbPath);
 
         var db = await NewService().GetOrCreateAsync(BethesdaFranchise.ElderScrolls, CancellationToken.None);
