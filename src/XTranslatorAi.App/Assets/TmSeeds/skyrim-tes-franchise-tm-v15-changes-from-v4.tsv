@@ -1,13 +1,12 @@
 Source	Target	Previous
 "...even to my lord as to my fellow brothers and sisters in arms."	'... 내 동료 전우들과 함께, 주군께 충성을 바칠 것을 선서합니다.'	'... 내 동료 전우들과 함께, 주군께 충성을 바칠것을 선서합니다.'
 "As Talos is my witness, may this oath bind me to death and beyond..."	'탈로스께서 내 증인이시니, 이 맹세가 죽음과 그 너머까지 나를 묶을지어다...'	'탈로스께서 내 증인이시며, 죽음과 그 너머라도...'
-"Bent a few folks' arms the wrong way"?	'몇몇 사람들의 심기가 불편해졌다'고?	'주민들의 무기가 엉뚱한 방향을 향했다'고?
+"Bent a few folks' arms the wrong way"?	'몇몇 사람들의 심기가 불편해졌다'고?	'주민들의 팔을 좀 비틀었다'고?
 %s discovered from %s	효과 : %s - %s에서 발견했습니다	효과 : %s - %s 에서 발견했습니다
 %s Increased to %i	%s 기술 증가 - 현재 %i	%s 기술 증가- 현재 %i
 (Optional) Discover leverage to sway Niranye	(선택) 니라녜의 마음을 바꾸기 위한 수단을 찾기	(선택) 니랴네의 마음을 바꾸기 위한 수단을 찾기
 (Optional) Enter Goldenglow using sewer	(선택) 하수도를 이용하여 골든글로우 농장에 들어가기	(선택) 하수도를 이용하여 골든글로우 지구에 들어가기
 (Optional) Find the key to the well in the Catacombs	(선택) 지하묘지 안에서 우물의 열쇠를 찾기	(선택) 지하묘지안에서 우물의 열쇠를 찾기
-(Optional) Retrieve the Blade of Woe	(선택) 비통의 단검을 가지기	(선택) 비통의 단검를 가지기
 (Optional) Show Skorm Snow-Strider's journal to Valmir	(선택) 발머에게 스콤의 일기를 보여주기	(선택) 발머에게 스콤의 일지를 보여주기
 (Optional) Speak to Vex about Goldenglow Estate	(선택) 골든글로우 농장에 관해 벡스와 대화하기	(선택) 골든글로우 지구에 관해 벡스와 대화하기
 (Optional) Travel to Riverwood with <Alias=FactionFriend>	(선택) <Alias=FactionFriend>와(과) 함께 리버우드로 가기	(선택) <Alias=FactionFriend>와 함께 리버우드로 가기
@@ -22,7 +21,7 @@ Source	Target	Previous
 <Alias=Brute> was killed.	<Alias=Brute>은(는) 죽어버렸소.	<Alias=Brute> 는 죽어버렸소.
 <Alias=ImperialMinorHoldCapital> seems like a fair trade.	<Alias=ImperialMinorHoldCapital>(이)라면 공정한 거래같이 보이는군.	<Alias=ImperialMinorHoldCapital>라면 공정한 거래같이 보이는군.
 <Alias=Player>'s Wolf Spirit	<Alias=Player>의 늑대 영혼	<Alias=Player>의 늑대 정령
-<Alias=PlayerIsIt> is it. Hide from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt>이(가) 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요
+<Alias=PlayerIsIt> is it. Hide from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt>이(가) 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요	<Alias=PlayerIsIt> 이/가 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요
 <Alias=PlayerIsIt> is it. Keep away from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt>이(가) 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요	<Alias=PlayerIsIt> 입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요
 <Alias=RiverwoodFriend> sent me. Riverwood is in danger.	<Alias=RiverwoodFriend>이(가) 부탁해서 왔습니다. 리버우드가 위험합니다.	<Alias=RiverwoodFriend>가 부탁해서 왔습니다. 리버우드가 위험합니다.
 <Alias=Steward> says there's a shipment of coin traveling to Solitude...	<Alias=Steward>이(가) 말하길 솔리튜드로 가는 현금수송이 있다고 합니다...	<Alias=Steward>가 말하길 솔리튜드로 가는 현금수송이 있다고 합니다...
@@ -53,13 +52,11 @@ Add a kitchen that can be fitted out with cooking stations, food containers and 
 Add a residential wing with master bedroom and childrens' bedroom. Includes an exterior porch.	주 침실과 어린이용 침실들로 구성된 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.	주 침실과 어린이용 침실들로 구성된 공간을 추가합니다. 외부로 통하는 문도 포함되어 있습니다.
 Add a room that can be equipped with smithing stations and weapon storage. Includes an exterior porch.	제련용 시설 외에 무기들을 저장할 수 있는 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.	제련용 시설외에 무기들을 저장할 수 있는 공간을 추가합니다. 외부로 통하는 문도 포함되어 있습니다.
 Add a storage area which can be equipped with a variety of containers and weapon racks. Includes an exterior porch.	다양한 보관함 상자들과 무기 거치대 등을 설치할 수 있는 창고를 추가합니다. 야외 베란다도 포함되어 있습니다.	다양한 보관함 상자들과 무기 거치대등을 설치할 수 있는 창고를 추가합니다. 외부로 통하는 문도 포함되어 있습니다.
-Add a tower that can be turned into a fully-equipped enchanting laboratory.	완벽한 마법부여 연구실로 전환할 수 있는 탑을 추가합니다.	완벽한 마법부가 연구실로 전환할 수 있는 탑을 추가합니다.
 Add a trophy room that can be equipped with display cases, animal trophies, and weapon racks.	진열장, 동물 전리품, 무기 거치대 등을 설치할 수 있는 전시실을 추가합니다.	진열장, 동물 전리품, 무기 거치대등을 설치할 수 있는 전시실을 추가합니다.
 Addition - West Wing - Enchanter's Tower	추가 - 서쪽 부속 건물 - 마법부여 연구탑	추가 - 서쪽 부속 건물 - 마법부가 연구탑
 Adds <mag>% to the dragon breath and spell absorption of Miraak's robes.	미락의 로브가 가진 드래곤의 숨결 및 마법 흡수 효과에 <mag>% 를 더합니다.	미락의 로브가 적의 마법과 드래곤의 숨결을 <mag>% 흡수합니다.
 Adril Arano	아드릴 아라노	아드릴
 Advances in Lockpicking	잠금해제의 발전	상급 잠금해제
-AETHERIUM	에테리움	아테리움
 Affable Gent	상냥한 신사	정중한 겐트
 Agent of Dibella added	디벨라의 사도가 추가되었습니다	디벨라의 대행자가 추가되었습니다
 Agrius's Journal	아그리우스의 일기	아그리어스의 일기
@@ -72,7 +69,7 @@ ALL	모두 보기	모두보기
 All I know is that your people need you to return.	내가 아는 건 당신의 백성들이 당신이 돌아오길 바란다는 것뿐이오.	내가 아는 거라고는 당신이 돌아가야 한다는 것 뿐이오.
 All I've ever wanted to do is serve this Sanctuary.	이 성역을 위해서라면 무엇이든 하지.	이 성지를 위해서라면 무엇이든 하지.
 All right, you've swayed me. So what can I do?	좋소, 설득당했군. 내가 뭘 하면 되지?	좋소. 내가 뭘 하면 되지?
-Allegiance	충성	명령을 내려주십시오.
+All right. But you're responsible for him.	알았다. 대신 씻기거나 청소하는 건 네가 해야 된다.	알았다. 대신 씻기거나 청소하는 건 네가 해야된다.
 Alright then. Where did you learn these secrets?	그렇다면, 어디에서 그 비밀들을 배웠소?	그렇다면, 어디에서 그 비법들을 배웠소?
 Altar of Thrond Cave	쓰론드 제단 동굴	쓰론드 동굴 제단
 ALTERATION	변화마법	변화
@@ -146,7 +143,6 @@ Barter	거래	흥정
 Bashnag is dead.	배쉬나그는 죽었다.	배쉬나그은 죽었다.
 Become Guild Master for the Thieves Guild	도둑 길드의 길드 마스터가 되기	도둑 길드의 지도자가 되기
 Begin the hunt	사냥 시작하기	사냥 시작
-Blacksmith's Forge	대장간의 화로	대장간 모루
 Bloated Man's Grotto	부푼 사내의 암굴	부풀은 사내의 암굴
 Blue Mountain Flower (3)	파란 들꽃 (3)	푸른 들꽃 (3)
 Board the Katariah	카타리아호에 승선하기	카타리아호에 승선하라
@@ -157,9 +153,6 @@ Bonemold Pauldron Armor	뼈다귀 견갑 방어구	뼈다귀 방어구
 Bound Axe	마법 전투 도끼	마법 전투 도끼 소환
 Braided Bread	땋은 빵	바게트 빵
 Break through the First Barricade	첫 번째 바리케이드를 파괴하기	첫 번째 바리케이드 파괴하기
-Break through the Second Barricade	두 번째 바리케이드를 파괴하기	두 번째 바리케이트를 파괴하기
-Breath of Nchuak	느츄악의 숨결	느챠닥의 숨결
-Bring 10 fire salts to Balimund (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개를 가져다 주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개을 가져다 주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)
 Bring a filled Black Soul Gem to Morthal	충전된 검은 소울젬을 모탈로 가져가기	모탈로 충전된 검은 소울젬을 가져가기
 Bring a giant's toe to Elynea	엘리니아에게 거인의 발가락 하나를 가져다 주기	엘리니아에게 거인의 발톱 하나를 가져다 주기
 Bring a hagraven's claw to Elynea	엘리니아에게 해그레이븐 발톱 하나를 가져다 주기	엘리니아에게 헤그레이븐의 발톱을 몇개 가져다 주기
@@ -207,13 +200,12 @@ Change preset and lose your changes?	변경사항을 버리고 사전설정으�
 Changed Ones	변화한 자들	변절한 자들
 Charm - Master of the Mind	매료 - 정신의 지배자	매료 - 정신마법의 달인
 Chasing Echoes	메아리를 쫓아서	따라오는 메아리
-Clay. (<Global=BYOHHPAmountClay> for <Global=BYOHHPCostClay> gold)	점토. (<Global=BYOHHPAmountClay>개에 <Global=BYOHHPCostClay> 골드)	점토. (<Global=BYOHHPAmountClay> for <Global=BYOHHPCostClay> 골드)
+Claim Mehrunes' Razor	메이룬스의 면도칼을 가지기	메이룬스 데이건의 단검을 가지기
 Clean up that murderer's mess. (<Global=HDWindhelmKiller> gold)	살인자가 저지른 일의 뒤처리. (<Global=HDWindhelmKiller> 골드)	살인자가 저지른 일의 뒷처리. (<Global=HDWindhelmKiller> 골드)
 Cleanse the focal points for magical energies around the College	대학 주변의 마법 에너지 중심점을 정화하기	대학주변의 마법 에너지 중심점을 정화하기
 Clear <Alias=WealthyHome> in <Alias=City> of valuables (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)	<Alias=City> 도시의 <Alias=WealthyHome>에서 귀중품들을 싹쓸이하기 (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)	<Alias=City> 도시의 <Alias=WealthyHome> 에서 귀중품들을 싹쓸이하기 (<Global=TGRHCValuablesStolen>/<Global=TGRHCValuablesTotal>)
 Collect <Alias=SamplePelt>s (<Global=CR03PeltsGotten>/<Global=CR03TotalPeltsNeeded>)	<Alias=SamplePelt>을(를) 모으기 (<Global=CR03PeltsGotten>/<Global=CR03TotalPeltsNeeded>)	<Alias=SamplePelt>를 모으기 (<Global=CR03PeltsGotten>/<Global=CR03TotalPeltsNeeded>)
 Collect the reward from <Alias=Enemy> for killing <Alias=Victim>	<Alias=Enemy>(으)로부터 <Alias=Victim>을(를) 죽인 보수를 받기	<Alias=Enemy> 으로부터 <Alias=Victim>를 죽인 보수를 받기
-Come on. Let's go.	어서. 가자.	여기서 나가자.
 Commune with Hrothmund's Spirit	흐로스문드의 유령과 대화하기	흐로스문드의 영혼과 대화하기
 Complaint Letter	항의 편지	고소 편지
 CONJURATION	소환마법	소환
@@ -223,7 +215,6 @@ Could I help?	내가 도와줄 수 있겠소?	도와드릴까요?
 Could you repeat that inscription?	그 문장을 한 번 더 반복해 주시오.	그 문장을 한번 더 반복해 주시오.
 Cow Hand	목동	카우 핸드
 Creates a wall of frost that does <mag> damage per second.	지면에 얼음의 장벽을 만들어 매 초마다 <mag> 의 냉기 피해를 입힙니다.	지면에 얼음의 장벽을 만들어 매 초마다 <50> 의 냉기 피해를 입힙니다.
-Cure Poison	독 치료	물약 - 독 치료
 Damages the caster <mag> points per second.	시전자에게 매 초마다 <mag> 의 피해를 입힙니다.	매 초마다 <mag> 의 피해를 입힙니다.
 Darkfall Grotto	다크폴 암굴	다크폴 동굴
 Darkfall Passage Note I	다크폴 통로 쪽지 1	다크폴 통로 쪽지
@@ -236,8 +227,6 @@ Deadly Aversion to Magic	독 - 마법 약점 특급	독 - 마법 저항 특급
 Deadly Aversion to Shock	독 - 전격 약점 특급	독 - 전격 특급
 Deal with the rogue wizard	변절한 마법사를 처리하기	도둑 마도사와 거래하기
 Deathbell (3)	데스벨 (3)	데쓰벨 (3)
-Decrease the target's Stamina regeneration by <mag>% for <dur> seconds.	<dur> 초 동안 지구력 재생을 <mag>% 감소시킵니다.	<dur> 초 동안 지구력 재생이 <mag>% 감소시킵니다.
-Decree of Monument	기념비 포고령	법령의 기념비
 Defeat Hofgrir in an unarmed brawl	호프기어를 맨손 싸움으로 물리치기	호프기어를 싸움으로 물리치기
 Defeat the Guardians of the Forge	대장간의 수호자를 물리치기	화로의 수호자를 물리치기
 Defend <Alias=Capital>	<Alias=Capital>을(를) 방어하기	<Alias=Capital> 을 방어하기
@@ -245,6 +234,9 @@ Deliver <Alias=QuestItem> to <Alias.ShortName=Target>	<Alias.ShortName=Target>�
 Deliver Mead to Wilhelm	윌헴에게 벌꿀술을 배달하기	윌헴에게 벌꿀주를 배달하기
 Deliver the stone to Phinis	시질 스톤을 피니스에게 전달하기	시질스톤을 피니스에게 전달하기
 Deliver the sword to Proventus Avenicci	프로벤투스 아베니치에게 검을 배달하기	프로벤투스 아베니치 에게 검을 배달하기
+Demonstrate your "Unrelenting Force" Shout	'거침없는 힘' 함성을 보여주기	"거침없는 힘" 함성을 보여주기
+Demonstrate your "Unrelenting Force" Shout (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	'거침없는 힘' 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	"거침없는 힘" 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)
+Demonstrate your "Whirlwind Sprint" Shout	'회오리 질주' 함성을 사용하기	"회오리 질주" 함성을 사용하기
 Deor Woodcutter's House	디오어 우드커터의 집	나무꾼 디오어의 집
 Depends. Who's asking?	그런 질문을 하는 당신은 누구지?	그런 질문은 하는 당신은 누구지?
 Desecrated Corpse	훼손된 시체	바짝마른 시체
@@ -260,7 +252,6 @@ Dining room decorations. (<Global=HDWhiterunDining> gold)	식당 장식들. (<Gl
 Discerning the Transmundane	다른 차원의 것을 인식	다른 차원의 것을 알아내기
 Discover the location of the Elder Scroll (Dragon)	'엘더스크롤 - 드래곤'이 있는 장소를 찾기	엘더스크롤이 있는 장소를 찾기
 Discreetly kill <Alias=Target>	은밀하게 <Alias=Target> 죽이기	신중하게 <Alias=Target> 죽이기
-Distribute %d Point	분배하세요 - %d 포인트	분배하세요- %d Point
 Ditched it for this. Easier to sneak past the enemy.	이걸 입으려고 버렸습니다. 적에게 들키지 않고 지나가기가 더 쉽거든요.	이 임무를 위해 파기했습니다. 적군 속에 숨어 빠져나오기 쉽기 때문입니다.
 Do I have to beat it out of you? (Brawl)	두들겨 패야 털어놓겠나? (싸움)	너를 죽도록 패줄까? (싸움)
 Do I need to read the scrolls in any particular order?	엘더스크롤을 뭔가 특별한 순서대로 읽어야 하는 거요?	엘더스크롤을 뭔가 특별한 순서대로 읽어야 하는 겁니까?
@@ -294,19 +285,16 @@ Does the Arch-Mage often ask for advice?	대마법사가 자주 조언을 구하
 Does the Guild provide other services?	길드에서 달리 제공하는 게 있나?	길드에서 달리 제공하는게 있나?
 Does the war mean good business for you?	전쟁 덕분에 장사가 잘되나?	전쟁덕분에 장사가 잘 된다는 소린가?
 Does Ulfric have much need for magic?	울프릭은 마법을 많이 필요로 합니까?	울프릭은 마법이 많이 필요로 합니까?
-Don't be ridiculous. Dreams are harmless.	되지도 않는 소리 마시오. 꿈은 위험하지 않소.	되도 않는 소리 마시오. 꿈은 위험하지 않소.
+Don't be foolish. I'll do it.	멍청하게 굴지 마. 내가 하지.	멍청하게 굴지마. 내가 하지.
 Don't know why I bothered. This place is a mess.	내가 왜 이런 귀찮은 짓을 하는지 모르겠군. 여기 완전 개판인데.	내가 왜 이런 귀찮은 짓을 하지 모르겠군. 여기 완전 개판인데.
 Don't worry, I was just leaving.	신경쓰지 마시오, 곧 갈 테니.	신경쓰지 마시오, 곧 갈테니.
 Don't worry, I'm not going to kill Paarthurnax.	걱정마시오. 내가 파써낙스를 죽이러 가진 않을 테니.	걱정마시오. 내가 파써낙스를 죽이러 가진 않을테니.
 Don't worry. I have a plan. I'm going to trap a dragon in Dragonsreach.	걱정마시오. 계획이 있소. 드래곤스리치에 드래곤을 가둘 생각이오.	걱정마시오. 계획이 있소. 드래곤스리치에서 함정으로 잡을 생각이오.
 Don't worry. I'll get them to agree to peace.	걱정 마시오. 내가 그들이 평화 협정을 체결하게끔 만들 테니.	걱정 마시오. 내가 그들이 평화 협정을 체결하게끔 만들테니.
-Don't you want your treasure? Riches, and all that?	보물을 얻고 싶지 않나? 돈과, 그밖에 여러가지 것들 말이야?	보물을 얻고싶지 않나? 돈과, 그밖에 여러가지 것들 말이야?
-Door to Garvey's Room	가비의 방 문	가비
+Don't you want your treasure? Riches, and all that?	보물을 얻고 싶지 않나? 돈과, 그밖에 여러 가지 것들 말이야?	보물을 얻고싶지 않나? 돈과, 그밖에 여러가지 것들 말이야?
 Double-Distilled Skooma	재증류한 스쿠마	재 증류한 스쿠마
 Dragon Priest Dagger	드래곤 사제의 단검	드래곤의 사제 단검
 Dragon Souls are required to unlock shouts.	함성을 해제하려면 드래곤의 영혼이 필요합니다.	드래곤의 영혼을 사용하여 함성을 해제하세요.
-Dragonscale Armor of the Eminent Knight	드래곤 비늘 방어구 - 상급 경갑	드래곤 비늘 방어구 - 상급 중갑
-Dragonscale Armor of the Noble Knight	드래곤 비늘 방어구 - 최상급 경갑	드래곤 비늘 방어구 - 최상급 중갑
 Drains <mag> points from Carry Weight.	무게 한계가 <mag> 감소합니다.	무게 한계를 <mag> 흡수합니다.
 Dremora Prices	드레모라 가격	드레모라 군주
 Drop the debt or answer to me. (Intimidate)	빚을 없애 주든가, 아니면 나를 상대하든가. (위협)	빚을 없애주거나, 내 상담을 받거나. (위협)
@@ -342,7 +330,6 @@ Enchanter's Tower, Second Floor Supports	마법부여 연구탑, 2층 지지대	
 Enchanter's Tower, Second Floor Walls	마법부여 연구탑, 2층 벽	마법부가 연구탑, 2층 벽
 Enchanter's Tower. (<Global=BYOHHPCostEnchanting> gold)	마법부여 연구탑. (<Global=BYOHHPCostEnchanting> 골드)	마법 부가 연구탑. (<Global=BYOHHPCostEnchanting> 골드)
 End the threat to Councilor Morvayn	모베인 의원에 대한 위협을 끝내기	모베인 의원의 위협을 끝내기
-Enemies who strike you with a melee attack have a small chance of being paralyzed.	근접 공격 피해를 입으면 적을 일정한 확률로 마비시킵니다.	근접 공격 피해를 입으면 적을 일정한 확률로 <dur> 초 동안 마비시킵니다.
 Enough talk. Just tell me who to kill.	시시콜콜한 얘기는 그만하고. 죽여야 하는 게 누군지만 말해.	시시콜콜한 얘기는 그만하고. 죽여야 하는게 누군지만 말해.
 Enter Snow Veil Sanctum	스노우 베일 성역에 들어가기	스노우 베일성역에 들어가기
 Enter the column of light and read the Elder Scroll (Blood)	빛의 기둥 안으로 들어가 '엘더스크롤 - 피'를 읽기	빛의 기둥을 밝히고 엘더스크롤 읽기
@@ -355,6 +342,7 @@ Escape from the Blue Palace	푸른 궁전에서 탈출하기	파란 궁전에서
 Escape the Tower!	탑에서 탈출하기	탑에서 탈출하라!
 Escape Yngol's Barrow	잉골 고분을 탈출하기	잉골의 무덤을 탈출하기
 Escort <Alias=Victim> back to <Alias=VictimHome>	<Alias=Victim>을(를) <Alias=VictimHome>까지 데려다주기	<Alias=Victim>를 <Alias=VictimHome>까지 데려다주기
+Ever think of moving to Morrowind?	모로윈드로 이사 가는 걸 생각해 본 적 있소?	모로윈드로 이사가는 걸 생각해 본 적 있소?
 Execute Ulfric Stormcloak	울프릭 스톰클록을 처형하기	울프릭 처형하기
 Experiment? What did you do to her?	실험? 무슨 짓을 한 거지?	실험? 무슨 짓을 한거지?
 Experimental Subject	실험 대상	실험 과제
@@ -368,7 +356,6 @@ Faendal wanted me to deliver this letter to Camilla, and say it was from you.	�
 Fall from Glory	영광에서의 몰락	영광에서 몰락
 Fast travel to %s?	%s까지 빠른 이동을 사용하겠습니까?	%s 까지 빠른 이동을 사용할까요?
 Fathom	페덤	파돔
-Fellow dovah? I am not a dragon.	도바 동료? 나는 드래곤이 아닌데.	Dovah 동료? 나는 드래곤이 아닌데.
 Find 20 deathbell for Ingun Black-Briar (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 가져다 줄 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)
 Find <Alias=QuestItem> for <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>을(를) 위해 <Alias=QuestItem> 찾기	<Alias.ShortName=QuestGiver>를 위해 <Alias=QuestItem> 찾기
 Find a Moth Priest's knife	나방 사제의 칼을 찾기	나방 사제의 나이프를 찾기
@@ -389,14 +376,12 @@ Fletcher	화살 공방	화살깃털 상점
 Follow <Alias=Friend> and ambush enemy scout	<Alias=Friend>을(를) 따라가서 매복하고 적의 정찰병을 습격하기	<Alias=Friend>를 따라가서 매복하고 적의 정찰병을 습격하기
 Follow <Alias=Questgiver>	<Alias=Questgiver>을(를) 따라가기	<Alias=Questgiver>를 따라가기
 Follow Gianna to the dining room	지아나를 따라 식당으로 가기	지아나를 따라 주방으로 가기
-Follow Legate Rikke	리카 군단장을 따라가기	리카 군단장를 따라가기
 Follow me, or you'll regret it. (Intimidate)	나를 따라오지 않으면 후회하게 될 거야. (위협)	나를 따라오지 않으면 후회하게 될거야. (위협)
 Follow the <Alias=General>	<Alias=General>을(를) 따라가기	<Alias=General> 를 따라가기
 For <dur> seconds nearby opponents take <8> points of shock damage and half magicka damage.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 전격 피해와 절반의 매지카 피해를 입힙니다.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 전격 피해와 매지카 피해를 입힙니다.
 For <dur> seconds, opponents in melee range have a chance to be infected.	<dur> 초 동안 일정한 확률로 주변 적을 감염시킵니다.	<dur> 초 동안 일정한 확률로 주변 적에게 피해를 줍니다.
 For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	불꽃의 망토를 둘러 <dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 For <dur> seconds, opponents that get too close take <8> points per second of fire damage.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 화염 피해를 입힙니다.	<dur> 초 동안 주변 적에게 <8> 의 화염 피해를 입힙니다.
-For <dur> seconds, undead in melee range take <10> points sun damage per second.	<dur> 초 동안 주변 언데드에게 매 초마다 <10> 의 태양 피해를 입힙니다.	<dur> 초 동안 주변 언데드에게 매 초마다 <mag> 의 태양 피해를 입힙니다.
 For the Dark Brotherhood, that can be easily arranged. (Intimidate)	다크 브라더후드에게 그 정도는 쉬운 일이지. (위협)	다크 브라더후드 앞에서 그런건 중요하지 않을텐데. (위협)
 Force <Alias=Jarl>'s surrender	<Alias=Jarl>의 항복을 강요하기	<Alias=Jarl> 의 항복을 강요하기
 Force <Alias=Jarl>'s surrender.	<Alias=Jarl>에게 항복을 강요하기	<Alias=Jarl> 에게 항복을 강요하기
@@ -412,7 +397,6 @@ Fragment: On Artaeum	단편: 아테이움에 관하여	단편 - 아테이움에�
 Frightened Woman	겁에 질린 여성	겁에질린 여성
 Fultheim the Fearless	두려움 없는 풀트하임	두려움없는 풀트하임
 Fur-Trimmed Cloak	야를의 털가죽 망토로 장식된 의상	털가죽 망토
-Gadnor's Staff of Charming	개드너의 매혹 지팡이	개드너의 지팡이
 Gain access to the Pelagius Wing of the Blue Palace	푸른 궁전에 있는 펠라지우스 구역에 접근할 방법을 찾기	파란 궁전에 있는 펠라지우스 구역에 접근할 방법을 찾기
 Gaius Maro's Schedule	가이우스 마로의 일정	가이우스 마로의 예정
 Gallows Hall	교수대 회관	교수대 바위
@@ -424,7 +408,6 @@ General Falx Carius	팔크스 카리우스 장군	폭스 카리우스 장군
 General Tullius said you'd get me outfitted.	툴리우스 장군은 당신이 내 장비를 챙겨줄 거라고 하던데.	툴리우스 장군은 당신이 내 장비를 챙겨줄거라고 하던데.
 Get Greybeards' help in negotiating a truce	휴전 협상을 위해 그레이비어드의 도움을 받기	그레이비어드 도움을 받아 휴전협상을 맺기
 Get the staff	지팡이를 손에 넣기	지팡이를 가지기
-Gharol's Message	가롤의 메시지	가롤의 메세지
 Ghosts in the Storm	폭풍 속의 유령들	폭풍속의 유령들
 Give me everything you are carrying.	가지고 있는 짐을 전부 나에게 줘.	자기고 있는 짐을 전부 나에게 줘.
 Give me the hilt, or things get ugly. (Brawl)	그 칼자루를 내놔, 그렇지 않으면 험한 꼴을 당하게 될 거야. (싸움)	그 칼자루를 내놔, 그렇지 않으면 험한 꼴을 당할게 될 거야. (싸움)
@@ -433,41 +416,37 @@ Give the final fragment to Eorlund	에올룬드에게 마지막 조각을 주기
 Give the fragments of Wuuthrad to Eorlund	에올룬드에게 우쓰라드의 조각들을 주기	에올룬드에게 조각들을 주기
 Give the logbook to Orthus	오서스에게 항해일지를 주기	오서스에게 항박일지를 주기
 Give the note to Captain Veleth	벨레스 대장에게 쪽지를 주기	벨레스 대장에게 노트를 주기
+Glass Armor of Resurgence	글래스 투구 - 최상급 매지카 재생	글래스 방어구 - 최상급 매지카 재생
 Glowing Mushroom (5)	발광 버섯 (5)	형광 버섯 (5)
 Glowing Spider	발광 거미	빛나는 거미
 Go to the Shrine of Talos	탈로스의 성소로 가기	탈로스의 성지로 가기
-Gold Necklace	금 목걸이	황금 목걸이
 Goldenglow Estate	골든글로우 농장	골든글로우 지구
 Goldenglow Estate Basement	골든글로우 농장 지하실	골든글로우 지구 지하실
 Goldenglow Estate Second Floor	골든글로우 농장 2층	골든글로우 지구 2층
 Goldenglow Estate Sewer	골든글로우 농장 하수구	골든글로우 지구 하수구
 Goodbye	잘 가시오.	잘 가.
+Got any ideas about the knife?	그 칼로 뭘 해야 할지 알 것 같소?	그 칼로 뭘 해야할지 알 것 같소?
 Grand Staff of Charming	지팡이 - 광역 진정	지팡이 - 진정
 Grate	창살문	강판
 Greater Magic Resistance	상급 마법 저항력	상급 마법 저항
 Greenhouse, Doors	온실, 문	온실,문들
 Grelka's Strongbox	그렐카의 튼튼한 상자	그레카의 튼튼한 상자
 Grim Shieldmaiden	음울한 여전사	그림 실드메이든
-Gunjar	건냐르	건쟈
 Hallowed Dead	신성한 시신	신성한 사체
 Hard to be sure. He put up a strong fight.	확신할 수는 없군. 상당히 거세게 저항했거든.	확신할 수는 없군. 그는 상당히 강력한 것 같던데.
 Has the war made your travels difficult?	전쟁 때문에 여행하기가 힘듭니까?	전쟁때문에 여행하기가 힘듭니까?
-Have Need of Cynric	신릭의 도움 요청	마지막 제안
 Have we angered the Ideal Masters?	아이디얼 마스터들을 화나게 한 거요?	아이디얼 마스터들을 화나게 한겁니까?
 Have you been working in the mines long?	광산에서 일한 지 오래되었나?	광산에서 일한지 오래되었나?
 Have you ever met with the Psijic Order?	씨직 오더와 만난 적이 있습니까?	씨직 오더와 만난적이 있습니까?
 Have you ever thought about moving to a city?	도시로 이사하는 것에 대해서는 생각해 본 적이 없습니까?	도시로 이사하는 것에 대해서는 생각해 본적이 없습니까?
 Have you heard from Thorald?	쏘럴드에게서 소식은 있었소?	쏘럴드에게 이야기를 들었소?
-Have you known Elenwen long?	엘렌웬을 안 지 오래 되었소?	엘렌웬을 안지 오래 되었소?
-Have you thought about getting cured of vampirism?	흡혈귀 증상을 치료하는 것에 관하여 생각해 본 적은 없나?	흡혈귀 증상을 치료하는 것에 관해여 생각해 본 적은 없나?
+Have you known Elenwen long?	엘렌웬을 안 지 오래되었소?	엘렌웬을 안지 오래 되었소?
 Haven't they seen dead bodies before?	그들은 이전에는 시체를 본 적도 없소?	그들은 이전에는 시체를 본적도 없소?
 Having an outsider do your bidding might seem powerful...	외부인을 부하처럼 부리는 건 강해 보일 수도 있을 텐데...	외부인에게 부탁하는 게 강해 보일지는...
 He appeared mad. I had to kill him to defend myself.	그는 미쳐버린 것 같더군. 그를 죽일 수밖에 없었소.	그는 미쳐버린 것 같더군. 그를 죽일 수 밖에 없었소.
 He convinced Solitude to attack Winterhold.	올라프가 솔리튜드에게 윈터홀드를 공격하라고 설득했다.	올라프가 솔리튜드에게 화이트런을 공격하라고 설득했다.
 He ordered the execution. It's on his head... not yours.	처형을 명령한 것은 의원이야. 책임은 그자에게 있지... 당신이 아니라.	처형을 명령한 것은 의원이야. 죽어도 그자가 죽지... 당신이 아니라.
 He said it's the only way he'll teach me the final Word of Miraak's Shout.	미락의 함성 마지막 단어를 가르쳐주길 원한다면 그것뿐이라고 했소.	미락의 함성 마지막 단어를 가르쳐주길 원한다면 그것 뿐이라고 했소.
-He still needs to pay for his crimes.	그래도 죗값을 치러야 합니다.	그래도 죗값을 치르어야 합니다.
-He wants the "secrets of the Skaal" in exchange for teaching me the third Word.	세번째 힘의 단어를 가르쳐주는 대가로 '스칼의 비밀'을 원하고 있습니다.	세번째 힘의 단어를 가르쳐주는 댓가로 '스칼의 비밀'을 원하고 있습니다.
 He won't bother you again.	그는 더 이상 당신을 괴롭히지 않을 거요.	그는 더 이상 당신을 괴롭히지 않을거요.
 He's done me no wrong. I won't kill him.	그 자는 내게 잘못한 게 없으니 죽이지 않을 것이다.	그 자는 내게 잘못한게 없으니 죽이지 않을 것이다.
 He's on his way.	그는 곧 올 거요.	그는 곧 올거요.
@@ -475,19 +454,17 @@ Here are the notes you wanted.	당신이 원하던 메모요.	당신이 원하�
 Here's your <Alias=QuestItem>.	여기 <Alias=QuestItem>(이)오.	여기 <Alias=QuestItem> 이오.
 Here's your gold. (10,000 gold)	자 지불하지. (10,000 골드)	자 지불하지. (10.000 골드)
 Here's your heartscale.	심장비늘을 가져왔습니다.	심장 비늘을 가져왔습니다.
-Here's your money. He'd better be safe. (Give <Global=BYOHHBA2Ransom> gold)	돈을 낼 테니 그를 풀어줘라. (<Global=BYOHHBA2Ransom> 골드 주기)	돈을 낼테니 그를 풀어줘라. (Give <Global=BYOHHBA2Ransom> 골드)
-Here's your money. She'd better be safe. (Give <Global=BYOHHBA2Ransom> gold)	여기 돈이다. 그녀는 무사해야 할 거다. (<Global=BYOHHBA2Ransom> 골드 주기)	요구한 돈을 주겠다. 그녀는 안전한가? (Give <Global=BYOHHBA2Ransom> 골드)
+Here's your money. He'd better be safe. (Give <Global=BYOHHBA2Ransom> gold)	돈을 낼 테니 그를 풀어줘라. (<Global=BYOHHBA2Ransom> 골드 주기)	돈을 낼테니 그를 풀어줘라. (<Global=BYOHHBA2Ransom> 골드 주기)
+Here's your money. She'd better be safe. (Give <Global=BYOHHBA2Ransom> gold)	여기 돈이다. 그녀는 무사해야 할 거다. (<Global=BYOHHBA2Ransom> 골드 주기)	요구한 돈을 주겠다. 그녀는 안전한가? (<Global=BYOHHBA2Ransom> 골드 주기)
 Here, boy. Let me show you what I need.	자, 필요한 게 뭔지 보여주마.	자, 필요한게 뭔지 보여주마.
+Here, I brought you a drink.	여기, 마실 것을 가져왔소.	여기, 마실것을 가져왔소.
 Here, I've got a dwarven gyro. Take it.	자, 드웨머 회전바퀴를 가지고 있소. 받으시오.	드워프제 회전바퀴를 가지고 있는데. 받으시오.
 Here, take them. (Give fragments)	여기, 받으시오. (조각들을 건넨다)	여기, 받으시오. (파편들을 건넨다)
-Here. Have a gold piece. (1 gold)	여기. 한 푼 받게나. (1 골드)	여기. 한푼 받게나. (1 골드)
 Hermaeus Mora wouldn't have helped me without Storn's sacrifice.	스토언의 희생이 없었다면 헤르메우스 모라가 나를 도와주지 않았을 거요.	스토언의 희생이 없었다면 헤르메우스 모라가 나를 도와주지 않았을거요.
-herself	그녀 자신	그녀의
 Hewnon Black-Skeever	휴넌 블랙-스키버	휴논 블랙-스키버
 Hey, take it easy.	이봐, 쉽게 좀 가자구.	이봐, 진정하라구.
 High elves are born with extra Magicka. They can use Highborn to regenerate Magicka quickly, for a short time.	하이 엘프는 더 많은 매지카를 가지고 태어납니다. 그들은 고귀한 혈통을 사용하여 짧은 시간 동안 매지카를 빠른 속도로 회복할 수 있습니다.	하이 엘프는 더 많은 매지카를 가지고 태어납니다. 그들은 고귀한 혈통을 사용하여 짧은 시간동안 매지카를 빠른 속도로 회복할 수 있습니다.
 Hilde	힐데	힐드
-himself	그 자신	그의
 His dragon allies must know where this portal is...	그 녀석과 동맹을 맺은 드래곤들은 그 차원문이 어디에 있는지 반드시 알 거라고 생각하는데...	그 녀석과 동맹을 맺은 드래곤들은 그 차원문이 어디에 있는지 반드시 알거라고 생각하는데...
 His paranoia is gone.	펠라지우스의 피해망상이 사라졌소.	펠라지우스의 피해망상을 사라졌소.
 Hold on - I just wanted some information.	잠깐만 - 그저 몇 가지 알고 싶을 뿐인데.	잠깐만 - 그저 몇가지 알고 싶을뿐인데.
@@ -503,12 +480,12 @@ How about you take half? (Intimidate)	절반의 금액이면 어때? (위협)	�
 How are you enjoying the party?	연회는 즐겁습니까?	연회를 즐겁습니까?
 How can I avoid trouble with the law?	어떻게 법적 문제를 피할 수 있습니까?	어떻게 법적문제를 피할 수 있습니까?
 How can I find your master?	당신 주인을 어떻게 찾을 수 있습니까?	당신 주인을 어떻게 찾을수 있습니까?
+How can I get to your master?	당신의 주인을 만나려면 어떻게 해야 하지?	당신의 주인을 만나려면 어떻게 해야하지?
 How can the rest of the people not care?	어떻게 이런 일에 신경 안 쓰는 거지?	어떻게 이런 일에 신경 안 쓰는거지?
 How could bears run you out of business?	왜 곰 때문에 사업이 곤란해진 거지?	왜 곰때문에 사업이 곤란해진거지?
 How could that have happened?	어떻게 그런 일이 생긴 거지?	어떻게 그런 일이 생긴거지?
 How did Aerin save your life?	에린이 어떻게 당신의 목숨을 구해준 거지?	에린이 어떻게 당신의 목숨을 구해준거지?
 How did he end up in Skyrim?	그는 어쩌다 스카이림에 오게 되었습니까?	그는 스카이림에서 어떻게 되었습니까?
-How did it end up in Lake Honrich?	어쩌다 혼리크 호수에 빠지게 된 거야?	어쩌다 혼리크 호수로 보내버린 거야?
 How did you become allied with the Thieves Guild?	어떻게 도둑 길드와 동맹을 맺게 된 거지?	어떻게 도둑길드와 동맹을 맺게 된 거지?
 How did you earn your nicknames?	어떻게 그런 별명을 얻게 된 거요?	어떻게 그런 별명을 얻게 된 겁니까?
 How did you end up as Imperial prisoners?	어쩌다가 제국군의 포로가 된 거지?	어쩌다가 제국군의 포로가 된거지?
@@ -517,7 +494,7 @@ How did you end up on Solstheim?	어쩌다가 솔스트하임까지 오게 된 �
 How did you join the Dawnguard?	어떻게 던가드에 가입하게 된 거요?	어떻게 던가드에 가입하게 된거요?
 How do I get in?	어떻게 안으로 들어가면 되오?	어떻게 안으로 들어가나?
 How do the Orcs govern themselves?	어떻게 오크들끼리 통제할 수 있는 거지?	어떻게 오크들끼리 통제할 수 있는거지?
-How does the Ebonmere affect all of us?	에본미어가 어떻게 우리 모두에게 영향을 끼치는 거지?	에본미어가 어떻게 우리 모두에게 영향를 끼치는 거지?
+How does one join the Imperial Legion?	제국군에 가입하고 싶은 사람은 어떻게 해야 합니까?	제국군에 가입하고 싶은 사람은 어떻게 해야합니까?
 How has Raven Rock needed your help?	레이븐 락에 당신들의 도움이 왜 필요했지?	레이븐 락이 어떤 도움을 필요로 하지?
 How is all this affecting the Guild?	이것들이 길드에 어떤 영향을 주는 거지?	이것들이 길드에 어떤 영향을 주는거지?
 How is your work going so far?	당신의 책은 어디까지 진행되었소?	당신의 책은 어디까지 진행되었습니까?
@@ -526,7 +503,6 @@ How long have they been missing?	사라진 지 얼마나 지났소?	사라진지
 How long have you been a sea captain?	뱃사람이 된 지 얼마나 됐소?	뱃사람이 된지 얼마나 됐소?
 How long have you been a stablemaster?	마구간 주인이 된 지 얼마나 지났습니까?	마구간 주인이 된지 얼마나 지났습니까?
 How long have you been a Steward?	행정관이 된 지 얼마나 되었습니까?	행정관이 된지 얼마나 되었습니까?
-How long have you been down here?	얼마나 오랫동안 이 아래에 있었소?	얼마나 오랬동안 이 아래에 있었소?
 How long have you been First Hunter?	얼마나 오랫동안 최고 사냥꾼이었소?	얼마나 오랫동안 1급 사냥꾼이었소?
 How long have you been the court wizard?	궁정 마법사가 된 지 얼마나 되었습니까?	궁정 마법사가 된지 얼마나 되었습니까?
 How long have you been training dogs?	개들을 훈련시킨 지 얼마나 되었소?	개들을 훈련시킨지 얼마나 되었소?
@@ -534,15 +510,15 @@ How long have you studied alchemy?	연금술을 연구한 지 얼마나 되나?	
 How many do you need?	몇 개나 필요하오?	몇개나 필요하오?
 How many pages did you lose?	잃어버린 쪽지가 몇 장이나 되오?	잃어버린 쪽지가 몇장이나 됩니까?
 How old are your horses?	당신의 말은 몇 살이나 되었지?	당신의 말은 몇살이나 되었지?
+How old is that stone bridge near the town?	마을 근처의 돌다리는 얼마나 오래된 거지?	마을 근처의 돌다리는 얼마나 오래 된 거지?
 How so?	어째서 그런 거요?	어째서 그런거요?
 How'd you end up here fighting for Ulfric?	자네는 왜 울프릭을 위해 싸우기로 한 거지?	자네는 왜 울프릭을 위해 싸우기로 한거지?
 How'd you get involved?	넌 어떻게 관련된 거지?	넌 어떻게 관련된거지?
 How's your father to blame for your job?	왜 이 직업 때문에 당신 아버지를 원망하는 것이지?	왜 이 직업때문에 당신 아버지를 원망하는 것이지?
-Howl of Terror	공포의 울부짖음	피의 자취
 I accept your offer. I'd like to join the Stormcloaks.	제안을 받아들이겠습니다. 스톰클록에 합류하겠습니다.	제안을 받아들이지. 스톰클록에 합류하지.
 I agree. The Empire should turn over <Alias=ImperialMinorHold2>.	동의하오. 제국은 <Alias=ImperialMinorHold2>을(를) 넘겨주어야 합니다.	동의하오. 제국은 <Alias=ImperialMinorHold2>을/를 넘겨주어야 합니다.
-I agree. This will set the tone for the whole negotiation. Elenwen should go.	동의합니다. 이 결정이 협상 전반에 영향을 미칠 겁니다. 엘렌웬은 나가야 합니다.	동의합니다. 이것은 협상에 대한 전반적인 영향를 끼칠테니 엘렌웬은 가야됩니다.
-I agree. Ulfric should turn over <Alias=SonsMinorHold2>.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을(를) 넘겨야하오.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을/를 넘겨야하오.
+I agree. This will set the tone for the whole negotiation. Elenwen should go.	동의합니다. 이 결정이 협상 전반에 영향을 미칠 겁니다. 엘렌웬은 나가야 합니다.	동의합니다. 이것은 협상에 대한 전반적인 영향을 끼칠테니 엘렌웬은 가야됩니다.
+I agree. Ulfric should turn over <Alias=SonsMinorHold2>.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을(를) 넘겨야 하오.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을/를 넘겨야하오.
 I almost got killed!	거의 죽을 뻔했어!	거의 죽을뻔 했어!
 I assure you it wasn't anyone from the Guild.	장담하는데 우리 길드원 소행은 아니야.	우리 길드원 소행은 확실히 아니군.
 I believe we've already met.	이전에 당신과 만난 적이 있는 것 같군.	이전에 당신과 만난적이 있는 것 같군.
@@ -583,10 +559,8 @@ I don't understand why you won't come with me.	왜 나와 같이 가지 않으�
 I don't understand.	이해가 안 되는군요.	이해가 안되는군요.
 I don't understand. What coincidence?	이해가 안 되는데. 뭐가 우연의 일치라는 겁니까?	이해가 안되는데. 뭐가 우연의 일치라는 겁니까?
 I don't want to help you.	당신을 도와주진 않을 거요.	당신을 도와주진 않을거요.
-I found King Olaf's Verse.	올라프 왕의 시를 발견했습니다.	올라프 왕의 시을 발견했습니다.
 I found the same marking at Honningbrew Meadery.	허닝브루 양조장에서 같은 문양을 발견했지.	허닝브루 양조장에서 같은 상징을 발견했지.
 I found this heart stone with the ring.	반지와 함께 이 하트스톤을 발견했는데.	반지와 함께 이 하트 스톤을 발견했는데.
-I found this in Shroud Hearth Barrow. (Give journal)	이걸 장막덮인 난로 무덤에서 찾았는데. (일기를 주기)	이걸 장막덮힌 난로 무덤에서 찾았는데. (일기를 주기)
 I go where I please.	내가 가고 싶으면 가는 거지.	내가 가고 싶으면 가는거지.
 I got the fragment.	조각을 가져왔습니다.	조각들을 가져왔습니다.
 I guess I'll have to trust you.	당신을 믿을 수밖에 없겠군.	당신을 믿을 수 밖에 없겠군.
@@ -609,7 +583,7 @@ I have some questions about your daughter.	당신의 딸에 대해 몇 가지 �
 I have some things to sell.	몇 가지 팔고 싶은 게 있는데.	몇가지 팔고싶은게 있는데.
 I have the three soaked taproots.	물에 적신 곧은뿌리 3개를 가져왔는데.	물에 적신 곧은 뿌리 3 개를 가져왔는데.
 I have to know what Miraak knows if I want to stop him.	그를 막기 위해서는 미락이 알고 있는 게 무엇인지 밝혀내야 합니다.	그를 막기 위해서는 미락이 알고 있는게 무엇인지 밝혀내야 합니다.
-I have to speak with Astrid! She's here, in the Sanctuary. Follow me.	아스트리드와 이야기를 해 봐야한다! 그녀는 지금 여기 성역에 있으니, 따라 와.	아스트리드와 이야기를 해 봐야한다! 그녀는 지금 여기 성지에 있으니, 따라 와.
+I have to speak with Astrid! She's here, in the Sanctuary. Follow me.	아스트리드와 이야기를 해 봐야 한다! 그녀는 지금 여기 성역에 있으니, 따라 와.	아스트리드와 이야기를 해 봐야한다! 그녀는 지금 여기 성지에 있으니, 따라 와.
 I have your amulet.	아뮬렛을 가져왔소.	목걸이를 가져왔소.
 I have. Cicero won't be bothering you again.	그렇소. 시세로는 더 이상 귀찮게 하지 않을 거요.	그렇소. 시세로는 더 이상 귀찮게 하지 않을거요.
 I haven't done anything, I swear.	아무짓도 안 했는데, 정말로.	아무짓도 안했는데, 정말로.
@@ -620,13 +594,14 @@ I heard you know about Elder Scrolls.	당신이 엘더스크롤에 관해 안다
 I imagine you know why we're here.	왜 우리가 여기에 있는지 알고 있을 거라고 생각하는데.	왜 우리가 여기에 있는지 알고 있을거라고 생각하는데.
 I know the phrase. I'll get Cicero - you go home.	암호문은 알고 있어. 내가 시세로를 처리할 테니 넌 돌아가.	암호문은 알고 있어. 내가 시세로를 처리할테니 넌 돌아가.
 I know what I'm doing.	내가 뭘 하는지 잘 알고 있어.	내가 뭘하는지 잘 알고있어.
-I know where the Blood Horkers are.	블러드 호커 해적단이 있는 장소를 알아냈다.	블러드 호커 해적단이 있는 잘소를 알아냈다.
 I made a mistake. I want to go ahead with the ceremony.	제가 실수했습니다. 결혼식을 열고 싶습니다.	실수했군. 결혼식을 열고 싶습니다.
 I must speak with Amaund Motierre once more.	아먼드 모티에르를 한 번 더 만나야겠군.	아먼드 모티에르를 한번 더 만나야겠군.
 I need some things for the Sanctuary.	성역을 위해 필요한 게 몇 가지 있는데.	성역을 위해 필요한 게 몇가지 있는데.
 I need some training in Lockpicking.	잠금해제 기술훈련을 받고 싶은데.	잠금해제 기술훈련을 받고싶은데.
 I need something enchanted.	마법부여가 필요한 물건이 있습니다.	마법부여를 하고 싶습니다.
+I need to go there anyway.	어떻게든 거기에 가야 하는데.	어떻게든 거기에 가야하는데.
 I need to rearrange your equipment.	네 장비들을 바꾸는 게 좋겠군.	네 장비들을 바꾸는게 좋겠군.
+I need to talk to him. I'm a friend. His life's in danger. (Persuade)	이야기를 해야 해. 나는 그 사람 친구야. 그 사람의 목숨이 위험하다고. (설득)	이야기를 해야해. 나는 그 사람 친구야. 그 사람의 목숨이 위험하다고. (설득)
 I need you to cause a scene. Get everyone's attention for a few minutes.	약간 소동을 일으켜주면 좋겠는데. 몇 분 동안 모든 사람들의 이목을 끌 수 있게.	약간 소동을 일으켜주면 좋겠는데. 몇 분동안 모든 사람들의 이목을 끌 수 있게.
 I never met a thief that worshipped anything.	신을 믿는 도둑은 본 적이 없는데.	신을 믿는 도둑은 본적이 없는데.
 I never wanted to help you. Let me go!	절대로 널 돕지 않을 거다. 내보내 줘!	절대로 널 돕지 않을거다. 내보내 줘!
@@ -655,6 +630,7 @@ I think you know what it is.	뭔지 알고 있을 텐데.	뭔지 알고 있을�
 I think you know what really happened to Thorald Gray-Mane. (Persuade)	당신은 쏘럴드 그레이-메인에게 무슨 일이 일어났는지 알 거라고 생각하는데. (설득)	당신은 쏘럴드에게 무슨 일이 일어났는지 알거라고 생각하는데. (설득)
 I think you need to shut your mouth. (Brawl)	그만 입을 닥치는 게 어때. (싸움)	그만 입을 닥치는게 어때. (싸움)
 I think you owe me one. (Persuade)	나에게 빚진게 하나 있을 텐데. (설득)	나에게 빚진게 하나 있을텐데. (설득)
+I thought dragons were all dead long ago.	드래곤은 오래전에 다 죽어버린 줄 알았는데.	드래곤은 오래 전에 다 죽어버린 줄 알았는데.
 I thought I did the job like you asked...?	부탁한 대로 했다고 생각하는데...?	부탁한대로 했다고 생각하는데...?
 I thought the Empire needed to be taken down a notch.	제국의 콧대를 좀 꺾어 놓을 필요가 있는 것 같더군.	제국은 좀 진정할 필요가 있는 것 같더군.
 I thought you needed to be taken down a notch.	댁의 콧대를 좀 꺾어 놓을 필요가 있는 것 같더군.	댁은 좀 진정할 필요가 있는 것 같더군.
@@ -669,6 +645,7 @@ I want answers about the Forsworn.	포스원에 관해 답변을 듣고 싶군.	
 I want to get out here.	여기서 내리겠소.	여기서 벗어나고 싶소.
 I want to know about Thonar.	토나에 대해 알고 싶다.	토나에 대해 알고싶다.
 I want to know about Thorald Gray-Mane.	쏘럴드 그레이-메인에 관해서 알고 싶은데.	쏘럴드 그레이-메인에 관해서 알고싶은데.
+I want to show you something. It's important. You really must come. (Persuade)	뭔가 보여줄 게 있다. 아주 중요한 것이니 네가 반드시 와야 한다. (설득)	뭔가 보여줄 게 있다. 아주 중요한 것이니 네가 반드시 와야한다. (설득)
 I want to stop at Kynesgrove. (<Global=CarriageCost> gold)	카인즈그로브까지. (<Global=CarriageCost> 골드)	카인즈그로브까지.(<Global=CarriageCost> 골드)
 I want to stop at Stonehills. (<Global=CarriageCost> gold)	스톤힐스까지. (<Global=CarriageCost> 골드)	돌 언덕까지.(<Global=CarriageCost> 골드)
 I want to try again.	한 번 더 해보지.	한번 더 해보지.
@@ -676,7 +653,6 @@ I want to unravel the mysteries of Aetherius.	에테리우스의 신비를 풀�
 I want you to leave Omluag alone.	옴러그를 내버려두시오.	옴러그를 내버려두시오.
 I was given strict instructions. For the Jarl's eyes only.	엄격한 지시를 받았소. 야를께서만 보셔야 하오.	나는 엄격한 지시를 받았소. 직접 야를의 눈으로 보시오.
 I was hired to kill you, and that's what I intend to do.	너를 죽이라고 고용됐고, 그럴 생각이다.	너를 죽이기 위해 고용되었다, 그리고 내가 할 일이지.
-I was hoping you might want to talk about it.	너도 그 이야기를 하고 싶어 하길 바랐는데.	너도 이 말을 듣고 싶어하길 바랬는데.
 I was in Helgen when the dragon attacked.	드래곤이 헬겐을 공격했을 때 거기에 있었단다.	드래곤이 헬겐을 공격했을때 거기에 있었단다.
 I was just fulfilling my destiny as Dragonborn.	저는 드래곤본으로서 제 운명을 완수했을 뿐입니다.	나는 드래곤본으로서 제 운명을 완수했을 뿐입니다.
 I was just seeing if you came to your senses.	네가 제정신을 차렸는지 확인해 본 것뿐이네.	네가 제 정신인지 확인하고 있네.
@@ -709,6 +685,7 @@ I'm a Thane? What does that mean?	내가 쎄인이라고? 그게 무슨 뜻이�
 I'm a traveler. I have questions.	여행자요. 궁금한 게 있소.	여행자요. 궁금한게 있소.
 I'm Arch-Mage of the College of Winterhold.	난 윈터홀드 대학의 대마법사다.	난 윈터홀드 대학의 대 마법사다.
 I'm back from <Alias=Dungeon> with the <Alias=Item>.	<Alias=Dungeon>에서 <Alias=Item>을(를) 가지고 돌아왔소.	<Alias=Dungeon>에서 <Alias=Item>을 가지고 돌아왔소.
+I'm going alone?	나 혼자서 가야 하오?	나 혼자서 가야하오?
 I'm going in this way. Stand aside! (Intimidate)	난 이 길로 갈 거야. 비켜! (위협)	난 이 길로 갈거야. 비켜! (위협)
 I'm going to put it on Olaf's Effigy.	올라프 왕의 모형에 입힐 것입니다.	올라프의 인형에게 입힐 것입니다.
 I'm Harbinger of the Companions.	난 컴패니언의 인도자다.	난 컴페니언의 선도자다.
@@ -725,7 +702,7 @@ I'm not ready to pay the fine.	아직 벌금을 낼 준비가 안 됐소.	아직
 I'm not sure I understand the terms.	그 조건이 잘 이해가 안 되는데.	그 조건이 잘 이해가 안되는데.
 I'm not.	관심 없어.	아직은.
 I'm ready. Let's go get them.	준비되었소. 놈들을 치러 갑시다.	준비되었소. 그걸 구하러 갑시다.
-I'm sorry about your uncle.	삼촌일은 안됐구나.	삼촌일은 안 됐구나.
+I'm sorry about your uncle.	삼촌 일은 안됐구나.	삼촌일은 안 됐구나.
 I'm sorry boy, but I'm not who you think I am.	미안하다, 꼬마야. 하지만 난 네가 생각하는 그런 사람이 아니란다.	미안하다 얘야. 나는 네가 생각하는 그런 사람이 아니야.
 I'm sorry. I was trying to reach a fair agreement.	죄송합니다. 저는 공정한 합의를 이루려고 했습니다.	미안하오. 나는 공정한 협상을 하려고 했소.
 I'm sorry?	미안하지만...?	실례지만?
@@ -734,7 +711,6 @@ I'm with the Guild. How about you look the other way? (<BribeCost> gold)	나는 
 I've been better. And you?	썩 좋지는 않네. 자네는?	좀 나아진 것 같군. 자네는?
 I've been sent to resolve a dispute. (Brawl)	분쟁을 해결하라고 해서 왔다. (싸움)	자네를 적당히 손 좀 봐주라더군. (싸움)
 I've been traveling all over. Even been to Helgen...	나는 모든 지역을 여행해 보았소. 헬겐까지도...	나는 모든 지역을 여행해 보았소.헬겐까지도...
-I've collected all the Rings of Blood Magic.	피의 마법 반지를 모두 모았소.	피의 마법 반지을 모두 모았소.
 I've destroyed the <Alias=Vampire> at <Alias=Dungeon>.	<Alias=Dungeon>에서 <Alias=Vampire>을(를) 죽였소.	<Alias=Dungeon>에서 <Alias=Vampire>을 죽였소.
 I've found the fire salts for your forge.	당신의 대장간에 쓸 화염 소금 몇 개를 가져왔소.	당신의 대장간에 쓸 화염소금 몇 개를 가져왔소.
 I've found the journal of Skorm Snow-Strider.	스콤 스노우-스트라이더의 일기를 찾았소.	스콤 스노우-스트라이더의 일지를 찾았소.
@@ -747,7 +723,6 @@ I've killed the vampire masquerading as a <Alias=Target>.	<Alias=Target>(으)로
 I've made my peace. I'm ready.	마음의 정리는 끝났어. 준비 되었어.	나는 아주 평온한 상태야. 준비 되었어.
 I've never heard of it.	한 번도 들어본 적이 없는데.	한번도 들어본 적이 없는데.
 I've planted the contraband on the Dainty Sload.	데인티 슬로드 호에 밀수품을 심고 왔다.	데인티 슬로드에 밀수품을 심고 왔다.
-I've recovered all of Arondil's Journals.	아론딜의 일지를 전부 회수했소.	당신 운이 좋은가 본데.
 I've rescued <Alias=Prisoner> from <Alias=Dungeon>.	<Alias=Dungeon>에서 <Alias=Prisoner>을(를) 구출했소.	<Alias=Dungeon>에서 <Alias=Prisoner> 을 구출했소.
 I've retrieved the <Alias=Item> from <Alias=Dungeon>.	<Alias=Dungeon>에서 <Alias=Item>을(를) 되찾아 왔소.	<Alias=Dungeon>에서 <Alias=Item>을 되찾아 왔소.
 I've returned you home, as promised.	약속한 대로 당신의 집까지 호위해주었소.	약속한대로 당신의 집까지 호위해주었소.
@@ -760,15 +735,16 @@ Identify the Crystal Shard	크리스털 파편의 정체를 알아내기	크리�
 If I didn't know better, I'd say you were trying to kill me.	자세하게 알지 못했다면, 당신이 날 죽이려 했다고 생각했을 거야.	자세하게 알지 못했다면, 당신이 날 죽이려 했다고 생각했을거야.
 If it's fixed, then it's mine.	이게 고쳐진 거라면 내가 가지지.	이게 고쳐진거라면 내가 가지지.
 If she made it there, we'll find her.	거기로 간 거라면, 가서 찾아야겠군.	거기로 간거라면, 가서 찾아야겠군.
+If the Shout is lost, how can I defeat Alduin?	그 함성이 사라졌다면, 무슨 방법으로 알두인을 물리쳐야 합니까?	그 함성이 사라졌다면, 무슨 방법으로 알두인을 물리쳐야합니까?
 Imbued Spider	마력이 깃든 거미	얼룩진 거미
 Imbuing Switch	주입 스위치	염색 스위치
-Imperial Legion	제국군	임페리얼
-In 3E 389 Emperor Uriel VII was imprisoned by his Imperial Battlemage, Jagar Tharn, who then impersonated him for years.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄에 의해 갇히게 되었습니다. 그 후 수 년 동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄 에 의해 갇히게 되었습니다. 그 후 수 년동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.
+In 3E 389 Emperor Uriel VII was imprisoned by his Imperial Battlemage, Jagar Tharn, who then impersonated him for years.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄에 의해 갇히게 되었습니다. 그 후 수년 동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄 에 의해 갇히게 되었습니다. 그 후 수 년동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.
+In order to use the Add-Ons associated with this profile, you will need to restart.	이 프로필에 연계된 DLC를 이용하려면 게임을 다시 시작해야 합니다.	이 프로필에 연계된 DLC를 이용하려면 게임을 다시 시작해야합니다.
+In order to use the downloaded content associated with this profile, you will need to restart.	이 프로필을 사용하여 DLC를 이용하려면 게임을 다시 시작해야 합니다.	이 프로필을 사용하여 DLC를 이용하려면 게임을 다시 시작해야합니다.
 Increase the damage and decrease the cost of Destruction spells for <dur> seconds.	<dur> 초 동안 파괴마법의 위력이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 파괴마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Increase the duration and decrease the cost of Conjuration spells for <dur> seconds.	<dur> 초 동안 소환마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 소환마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Increase the duration and decrease the cost of Illusion spells for <dur> seconds.	<dur> 초 동안 환영마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 환영마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Intimidate <Alias=Brute> in <Alias=BruteTown>	<Alias=BruteTown>에 있는 <Alias=Brute>을(를) 위협하기	<Alias=BruteTown>에 있는 <Alias=Brute>를 위협하기
-Investigate Shroud Hearth Barrow	장막덮인 난로 무덤을 조사하기	장막덮힌 난로 무덤을 조사하기
 Iron Door	철문	강철 문
 Is it difficult commanding the Redoran Guard?	레도란 경비병들에게 지시를 내리는 게 어려운가?	레도란 경비병들에게 지시를 내리는게 어려운가?
 Is it true that the Companions are werewolves?	컴패니언들은 늑대인간이라는 게 사실입니까?	컴패니언들은 늑대인간이라는게 사실입니까?
@@ -791,6 +767,7 @@ It wasn't me. I've been framed!	내가 아닌데, 누명을 쓴 거야!	내가 �
 It will be an honor.	영광입니다.	나야 영광이지.
 It'll turn up sooner or later.	언젠가는 밝혀질 텐데.	언젠가는 밝혀질텐데.
 It's all right. But have you found anything?	괜찮소. 뭔가 찾은 게 있소?	괜찮소. 뭔가 찾은게 있소?
+It's all right. Just tell me what I need to know. (Persuade)	괜찮아. 내가 알아야 할 것만 말해봐. (설득)	괜찮아. 내가 알아야할 것만 말해봐. (설득)
 It's important that I find him right away. (Persuade)	당장 그를 찾아내는 게 중요한 일이오. (설득)	당장 그를 찾아내는게 중요한 일이오. (설득)
 It's in everyone's best interest if you return the amulet. (Persuade)	그 아뮬렛을 돌려주면 모두에게 이득이 될 거요. (설득)	그 아뮬렛을 돌려주면 모두에게 이득이 될거요. (설득)
 It's true. He told me.	사실이오. 그가 말해 주었소.	사실이오. 그가 말했주었소.
@@ -807,7 +784,6 @@ Jumping Shock Spider	도약형 전격 거미	폭발형 전격 거미
 Just checking on our take. How are we doing?	우리 몫을 확인하러 왔지. 요즘 어때?	전리품을 확인하고 있었지. 자 어떻게 할까?
 Just you?	너 혼자뿐인가?	너 혼자 뿐인가?
 Karthwasten.	카스웨이스튼.	카쓰웨이스튼.
-Key to Evette San's House	열쇠 - 이베트 산의 집	열쇠 - 이베트 산의 열쇠
 Key to Solitude Fletcher	열쇠 - 화살 공방	열쇠 - 화살깃털 상점
 Khajiit have deadly claws that can be used in unarmed combat. They can use Night Eye to see better in the dark.	카짓은 육탄전에서 치명적인 위력을 발휘하는 발톱을 가지고 있습니다. 또한 밤눈 기술을 사용하여 어둠에서 시야를 확보할 수 있습니다.	카짓은 육탄전에서 치명적인 위력을 발휘하는 손톱을 가지고 있습니다. 또한 밤눈 기술을 사용하여 어둠에서 시야를 확보할 수 있습니다.
 Kill everyone in the Sanctuary!	성역에 있는 자를 전부 죽이기	성역에 있는 자를 전부 죽여라!
@@ -818,32 +794,28 @@ Kitchen furnishings. (<Global=HDWindhelmKitchen> gold)	주방 가구. (<Global=H
 Kitchen, Doors	부엌, 문	부엌,문들
 Know anything about Goldenglow Estate?	골든글로우 농장에 대해서 뭔가 아는 게 있나?	골든글로우 지구에 대해서 뭔가 아는 게 있나?
 Know anything about the Thieves Guild?	도둑 길드에 대해 조금이라도 아는 게 있소?	도둑길드에 대해 조금이라도 아는게 있소?
-Krag's Journal	크라그의 일기	크래그의 일기
 Kust	쿠스트	커스트
 Kvenel the Tongue	혀 크베넬	언어의 크베넬
-Lay off the old man. Now. (Intimidate)	그 노인을 내버려 둬. 당장. (위협)	그 노인를 내버려 둬. 당장. (위협)
 Learn more about the Thieves Guild from Delvin	델빈에게 도둑 길드에 관하여 좀 더 알아보기	델빈에게 도둑길드에 관하여 좀 더 알아보기
 Learn more about the Thieves Guild from Vex	벡스에게 도둑 길드에 관해서 더 알아보기	벡스에게 도둑길드에 관해서 더 알아보기
 Learn the Word of Power from Borri	보리 사범에게 힘의 단어를 배우기	마스터 보리에게 힘의 단어를 배우기
 Leave her alone, or else. (Brawl)	카를로타를 내버려 둬, 그러지 않으면. (싸움)	카를로타를 내버려 둬, 그러지 않으면. (위협)
-Leave this island now, or your life is forfeit. (Intimidate)	당장 이 섬을 떠나, 아니면 네 목숨은 없다. (위협)	당장 이 섬을 떠나, 아니면 네 목숨을 없다. (위협)
 Lesser Magic Resistance	하급 마법 저항력	하급 마법 저항
-Let her back in, or you answer to me! (Intimidate)	그녀를 다시 들여보내. 아니면 나를 상대해야 할 거야! (위협)	그녀를 들려보내든가, 내 질문에 대답을 해! (협박)
+Let her back in, or you answer to me! (Intimidate)	그녀를 다시 들여보내. 아니면 나를 상대해야 할 거야! (위협)	그녀를 들여보내든가, 내 질문에 대답을 해! (협박)
 Let me guess, you need me to do something dangerous.	보아하니, 뭔가 위험한 일을 시키고 싶은 거로군요.	보아하니, 뭔가 위험한 일을 시키고 싶은거로군요.
 Let me know if you need anything.	뭔가 필요한 게 있으면 말해.	뭔가 필요한게 있으면 말해.
 Let Tullius have his way on this. He'll have to give ground later.	툴리우스가 원하는 대로 하게 둡시다. 나중에는 그쪽이 양보해야 할 테니.	툴리우스가 원하는대로 하게 둡시다. 나중에 대가를 치르게 될 테니.
 Let Ulfric have his way now. He'll have to give ground later.	울프릭이 맘대로 하게 놔둡시다. 나중에 대가를 치르게 될 테니까.	울프릭이 맘대로 하게 놔둡시다. 나중에 대가를 치르게 될테니까.
 Let's go. Let me worry about the guards.	가자. 경비병들은 내가 신경 쓰지.	가자. 경비병들이나 신경쓰자구.
 Let's never speak of this again.	이 일은 다시는 입에 올리지 말자.	다시는 그런 부탁 하지 마.
-Letter from the Steward of <Alias=HoldCity>	<Alias=HoldCity> 행정관의 편지	행정관 <Alias=HoldCity>의 편지
 Letter to Beem-Ja	빔자에게 주는 편지	빔-자에게 주는 편지
 Library, Doors	도서실, 문	도서실,문들
 Lightning Apparatus	번개 장치	빛나는 장치
 Lightning Attractor	번개 유도장치	빛나는 끌개
+Lisbet	리즈벳	리스벳
 Listen to Mercer Frey	머서 프레이의 말을 듣기	머서 프레이와 대화하기
 Living room furnishings. (<Global=HDWhiterunLiving> gold)	거실 가구들. (<Global=HDWhiterunLiving> 골드)	거실 가구 (<Global=HDWhiterunLiving> 골드)
 Living with you would be perfect.	당신과 함께 사는 게 최고입니다.	당신과 함께 사는게 최고입니다.
-Llewellyn the Nightingale	나이팅게일 르웰린	르웰린
 Locate the East Empire Pendants for Fethis Alor in Raven Rock	페디스 알로어를 위해 레이븐 락에서 동제국 회사 펜던트를 찾기	동제국 회사 펜던트를 레이븐 락에 있는 페디스 알로어에게 전하기
 Locate Valdr's hunting party.	발더의 사냥 일행을 찾기	발더의 사냥 집단을 찾기
 Loft decorations (<Global=HDWhiterunLoft> gold)	다락 장식들. (<Global=HDWhiterunLoft> 골드)	다락 장식들.(<Global=HDWhiterunLoft> 골드)
@@ -854,9 +826,7 @@ Looks like you're no longer needed. Time to die.	이제 넌 더 이상 쓸모가
 Lots of gold to be had plundering ships.	배를 약탈하면 금화를 잔뜩 챙길 수 있겠군.	수많은 금화들을 쌓아두었겠지.
 Lowers the cost and increases the duration of Alteration spells for <dur> seconds.	<dur> 초 동안 변화마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 변화마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Lowers the cost and increases the potency of Restoration spells for <dur> seconds.	<dur> 초 동안 회복마법의 위력이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 회복마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
-Lumber. (<Global=BYOHHPAmountLogs> for <Global=BYOHHPCostLogs> gold)	목재. (<Global=BYOHHPAmountLogs>개에 <Global=BYOHHPCostLogs> 골드)	목재. (<Global=BYOHHPAmountLogs> for <Global=BYOHHPCostLogs> 골드)
 Lurker Vindicator	러커 응징자	러커 지원병
-Lymdrenn Tenvanni's Journal	림드렌 텔바니의 일기	림드렌 트레반니의 일기
 Majni	마지니	매즈니
 Making a skill Legendary will set it to 15 and return its perks. Are you sure?	기술을 전설화하면 해당 기술은 15로 설정되며 퍽을 돌려받게 됩니다. 바꾸시겠습니까?	기술을 전설화 하면 해당 기술은 15로 설정되며 특성 수치를 돌려받게 됩니다. 바꾸시겠습니까?
 Malacath is the daedric prince of curses and the spurned. Many orcs worship him as their god-king.	말라카스는 저주와 버림받은 자들의 데이드릭 프린스입니다. 오크들에게는 신이자 왕으로 숭배받고 있습니다.	말라카스는 저주와 경멸의 데이드릭 프린스입니다. 오크들에게는 신이자 왕으로 숭배받고 있습니다.
@@ -887,8 +857,6 @@ Meet with the <Alias=General>	<Alias=General>와(과) 만나기	<Alias=General>�
 Meet with the <Alias=General> on the Front Line.	<Alias=General>와(과) 최전선에서 만나기	<Alias=General> 와 최전선에서 만나기
 Meet Yamarz at Fallowstone Cave	팔로우 스톤 동굴에서 야마즈를 만나기	팔로우 스톤의 동굴에서 야마즈를 만나기
 Mercer wants me to discover Goldenglow's buyer.	머서는 골든글로우 농장의 구매자가 누군지 알아내길 원하는데.	머서는 골든글로우 지구의 구매자가 누군지 알아내길 원하는데.
-Message from General Tullius	툴리우스 장군의 메시지	툴리우스 장군의 메세지
-Molag Bal created the first vampire.	몰락 발이 첫 흡혈귀를 만들었소.	몰락-발이 첫 흡혈귀를 만들었소.
 Money's not going to do you much good after I've killed you.	널 죽이고 나면 돈 따위는 아무 소용 없을 거다.	그냥 죽여주마.
 Mora's Grasp	모라의 손아귀	모라의 이해
 Morthal is said to be named after the great Nord hero Morihaus, though none alive today are sure of the connection.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하우스의 이름을 따서 지어졌다고 합니다.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하스의 이름을 따서 지어졌다고 합니다.
@@ -904,9 +872,11 @@ Nchardak Great Chamber	느챠닥 대석실	느챠닥 대매장묘실
 Nearby creatures, including undead, machines and daedra, can be seen through walls for <dur> seconds.	<dur> 초 동안 주변의 언데드, 기계, 데이드라를 포함한 생물체를 벽 너머로 볼 수 있습니다.	<dur> 초 동안 주변의 언데드, 기계, 데이드라를 제외한 생물체를 벽 너머로 볼 수 있습니다.
 Neither side is making much headway. What's the harm in talking to Ulfric?	어느 쪽도 큰 진전이 없으니, 울프릭과 이야기한다고 해서 나쁠 건 없지 않습니까?	어느 쪽이든 큰 진전이 없으니 울프릭에게 이야기 한다고 해서 나쁠건 없겠지?
 Neloth's <mag> point health boost.	체력이 <mag> 증가합니다.	체력이 <mag> 증가합니다
-Never mind that... it worked!	신경 쓰지마... 제대로 되었어!	신경 쓰지마... 재대로 되었어!
+Never mind that... it worked!	신경 쓰지 마... 제대로 되었어!	신경 쓰지마... 제대로 되었어!
+Never mind, boy. I don't need you to do anything.	신경 쓰지 마. 아무것도 하지 않아도 된다.	신경쓰지마. 아무것도 하지 않아도 된다.
 Never mind, I'll look somewhere else.	신경쓰지 마시오. 다른 곳을 찾아볼 테니.	신경쓰지 마시오. 다른 곳을 찾아볼테니.
 Never mind. It's not important.	신경쓰지 마시오. 별로 중요한 게 아닙니다.	신경쓰지 마시오. 별로 중요한게 아닙니다.
+Nevermind, I don't need you to do anything right now.	신경 쓰지 마, 지금 당장은 필요없어.	신경 쓰지마, 지금 당장은 필요없어.
 New owner? What are you talking about?	새 주인이라고? 무슨 소리를 하는 거지?	새 주인이라고? 무슨 소리를 하는거지?
 Nirya wanted me to steal your notes.	니리야가 당신의 메모를 훔쳐달라더군.	니리야가 당신의 쪽지를 훔져달라더군.
 No bolts equipped.	장비 중인 볼트가 없습니다.	장비중인 볼트가 없습니다.
@@ -917,6 +887,7 @@ No, sorry. I didn't see a dog.	아니, 미안. 개를 본 적은 없소.	아니,
 No. Dragons like mountains, right?	아니요. 드래곤이 산을 좋아해서 그런 겁니까?	그게. 드래곤이 산을 좋아해서 그런 겁니까?
 No. No pets. Ever.	안 된다. 애완동물은 안 돼. 절대로.	난 동물이 싫다.
 No. We expected some kind of artifact.	아니오. 우리는 어떤 유물이 있을 거라 생각했소.	우리는 어떤 종류의 유물이라고 생각하고 있소.
+Noble Clothes	야를의 기품 있는 의상	야를의 기품있는 의상
 Noble Clothes	야를의 기품 있는 의상	귀족의 의상
 Nobody hears from them much anymore.	더 이상 소식 들을 일은 없을 거야.	더이상 소식들을 일은 없을 거야.
 Nocturnal is the daedric mistress of stealth and shadow, and a patron to thieves.	녹터널은 잠행과 그림자의 데이드릭 프린스이며, 도둑들의 후원자입니다.	녹터널은 잠행과 그림자의 데이드라 프린스이며, 도둑들의 후원자입니다.
@@ -932,24 +903,25 @@ Now, what were you saying?	음, 뭐라고 했소?	음, 뭐라고 했습니까?
 Obtain a Deathbell Flower	데스벨 꽃을 구하기	데쓰벨 꽃을 구하기
 Obtain some Vampire Dust	흡혈귀 가루를 구하기	몇개의 흡혈귀 가루를 구하기
 Of course it's valid.	물론 정당한 학파죠.	물론 주요 학파죠.
+Of course you're not invisible. Go bother someone else.	물론 아니지. 더 이상 날 귀찮게 하지 마.	물론 아니지. 더 이상 날 귀찮게 하지마.
 Off the northern coast of Skyrim, due west of Solitude.	스카이림의 북쪽 해안, 솔리튜드에서 정서쪽이다.	스카이림의 북동쪽 해안, 솔리튜드에서 정서쪽이다.
 Oglub	오글럽	오글로프
 Okay, so what's your offer?	좋아, 뭘 제안하려는 거지?	좋아, 뭘 원하지?
 Olaf was Numinex. A dragon in human form! (Persuade)	올라프의 정체는 누미넥스였다. 인간의 모습을 한 드래곤이었던 것이다! (설득)	올라프의 정체가 누미넥스였다. 인간의 형태로 있었던 것이다! (설득)
 Olda wanted me to steal this <Alias=QuestItem>.	올다가 이 <Alias=QuestItem>을 훔쳐달라고 했는데.	올다가 이 <Alias=QuestItem>를 훔쳐달라고 했는데.
 On Apocrypha: Boneless Limbs	아포크리파 : 촉수	아포크리파 : 무수한 촉수
-On second thought, I'll be leaving.	다시 생각해보니, 그냥 가는 게 낫겠군.	다시 생각해보니, 그냥 가는 게 났겠군.
 On second thought, I'll walk.	그냥 걸어가야겠군.	그냥 걸어가야 겠군.
 On second thought, maybe not.	다시 생각해보니, 안 되겠군.	다시 생각해보니, 안되겠군.
 On second thought, perhaps I'll invest another time.	다시 생각해 봤는데, 투자는 다음에 해야 할 것 같습니다.	흐음, 다음 기회에.
 Once a source of pride for the people of Winterhold, the College is now shunned and feared.	한 때 윈터홀드 시민들에게 자부심을 주던 대학은 이제 기피와 두려움의 대상이 되었습니다.	한 때 윈터홀드 시민들에게 자부심을 주던 대학은 이제 기피와 두려움의 목표이 되었습니다.
-Once the capital of Skyrim, Winterhold has been all but abandoned in the last few hundred years.	한때 스카이림의 수도였던 윈터홀드는 지난 몇 백년 동안 거의 버려지다시피 했습니다.	한때 스카이림의 수도였던 윈터홀드는 지난 몇 백년동안 완전히 방치되었습니다.
+Once the capital of Skyrim, Winterhold has been all but abandoned in the last few hundred years.	한때 스카이림의 수도였던 윈터홀드는 지난 몇백 년 동안 거의 버려지다시피 했습니다.	한때 스카이림의 수도였던 윈터홀드는 지난 몇 백년동안 완전히 방치되었습니다.
 Once, the dragons sought to eliminate or enslave all mortal races. If given the chance, they would surely do so again...	한때, 드래곤들은 모든 필멸의 종족을 제거하거나 노예로 삼으려 했던 적이 있습니다. 만약 기회가 주어진다면, 분명 같은 일을 반복하게 될 것입니다...	한때, 드래곤들은 필멸자들을 제거하거나 노예로 삼기 위해 눈에 불을 켜고 찾았던 적이 있습니다. 만약 기회가 주어진다면, 같은 일을 반복하게 될 것입니다...
 Open the Last Exterior Gate	마지막 외벽문을 열기	마지만 외벽문을 열기
-Opponents in melee range take <mag> points shock damage per second.	주변 적에게 매 초마다 <mag> 의 전격 피해를 입힙니다.	주변 적에게 매 초마다 <mag> 의 전격 피해와 매지카 피해를 입힙니다.
 Orange Dartwing	주황 파리잠자리	노란 파리잠자리
+Orcish Armor of Eminent Stamina	오크제 전투화 - 상급 지구력 증가	오크제 방어구 - 상급 지구력 증가
+Orcish Armor of Extreme Stamina	오크제 전투화 - 최상급 지구력 증가	오크제 방어구 - 최상급 지구력 증가
+Orcish Armor of Major Stamina	오크제 전투화 - 중급 지구력 증가	오크제 방어구 - 중급 지구력 증가
 Orcs can use Berserk to do double damage while only taking half damage, for a short time.	오크는 광전사의 분노를 사용하여 잠깐 동안 2배의 공격력을 가지며 피해는 절반만 받을 수 있습니다.	오크는 광전사의 분노를 사용하여 잠깐동안 2배의 공격력을 가지며 피해는 절반만 받을 수 있습니다.
-Orichalcum Ingot	주괴 - 오리칼쿰	윌란드리아의 오리칼쿰 주괴
 Our Family lives on, Nazir. You have to trust me.	우리는 살아 남을 거야, 나지어. 나를 믿어.	우리는 살아 남을거야, 나지어. 나를 믿어.
 Over my dead body.	내 시체를 밟고 건너야 할 거야.	내 시체를 밟고 건너야 할거야.
 Pacify	광역 진정	평온
@@ -967,7 +939,6 @@ Place the Aetherium Shards	에테리움 파편들을 놓기	에테리움 조각�
 Place the burial urn in Yngol Barrow	잉골 고분에 유골 단지를 놓기	잉골 고분에 유물 단지를 놓기
 Plant the <Alias=Evidence> in <Alias=WealthyHome> in <Alias=City>	<Alias=City>에 있는 <Alias=WealthyHome>에 <Alias=Evidence> 몰래 두고오기	<Alias=City>에 있는 <Alias=WealthyHome> 에 <Alias=Evidence> 몰래 두고오기
 Plant the Incriminating Letter on Gaius Maro's body	가이우스 마로의 시체에 유죄증명 편지를 숨겨두기	가이우스 마로의 시체에 조작된 편지를 숨겨두기
-Planter	화분	농장주
 Please be patient. I'll get you your money.	좀 참아보시오. 그 돈을 받아줄 테니.	좀 참아보시오. 그 돈을 받아줄테니.
 Pleated Shoes	야를의 주름 잡힌 신발	야를의 주름잡힌 신발
 Poison Cloaked Spider	마법 주문서 - 맹독 망토 거미	마법 주문서 - 독 망토 거미
@@ -984,21 +955,19 @@ Predator's Grace	포식자의 가호	약탈자의 가호
 Prison? You mean the Soul Cairn?	감옥? 소울 케언을 말하는 거요?	감옥? 소울 케언을 뜻하는 겁니까?
 Promissory Note	약속어음	약속 메모
 Purchase a house in Windhelm	윈드헬름에서 집을 구입하기	윈드헬름의 집을 구입하기
-Quick Test Cell	빠른 테스트 셀	Quick Test Cell
 QuickShot	신속 사격	속사
+Quite a party. It's my first time, you know. Where can I get a drink?	대단한 연회군요. 보시다시피 여기에는 처음이라... 뭔가 마실 것은 어디에 있소?	대단한 연회군요. 보시다시피 여기에는 처음이라... 뭔가 마실것은 어디에 있소?
 Radiant Raiment Fine Clothes	화려한 의상실 고급 의상	고급 화려하게 반짝이는 의상
 Raerek's Inscribed Amulet of Talos	레이렉의 글귀가 새겨진 탈로스 아뮬렛	레이렉의 탈로스 아뮬렛
-Rage Of The Ancients	고대인의 분노	Rage Of The Ancients
 Raldbthar Deep Market	랄드브타르 지하 시장	랄드브타르 암시장
 Re-activate Nchuand-Zel's automated defenses	느츄안-젤의 자동방어를 다시 작동시키기	느츄안-젤의 자동방어를 다시 작동 시키기
 Reach the summit of Arkngthamz	아큰담즈의 정상에 도달하기	아큰담즈의 정상에 도달히기
 Read Daynas Valen's notes	데이나스 발렌의 메모를 읽기	데이나스 발렌의 기록들을 읽기
 Read Madanach's note	매더낙의 메모를 읽기	매더낙의 쪽지를 읽기
-Read Nepos's Journal	네포스의 기록을 읽기	네포스의 일기을 읽기
+Read Nepos's Journal	네포스의 기록을 읽기	네포스의 일기를 읽기
 Read the bandit's ransom note for <Alias=Spouse>	산적이 남겨둔 <Alias=Spouse>에 대한 몸값 요구 쪽지를 읽기	산적이 남겨둔 <Alias=Spouse>에 대한 몸값 요구쪽지를 읽기
 Read the Elder Scroll (Blood)	'엘더스크롤 - 피'를 읽기	엘더스크롤 읽기
 Read the Elder Scroll at the Time-Wound	시간의 틈에서 엘더스크롤을 읽기	시간의 상처에서 엘더스크롤을 읽기
-Reanimate a powerful dead body to fight for you for <dur> seconds.	<dur> 초 동안 나를 위해 싸울 강력한 시체를 하나 부활시킵니다.	<dur> 초 동안 나를 위해 싸울 조금 강력한 시체를 하나 부활시킵니다.
 Recipe - Jumping Flame Spider	제조법 : 도약형 화염 거미	제조법 : 화염 거미
 Recipe - Jumping Flame Spider 2x	제조법 : 도약형 화염 거미 2x	제조법 : 화염 거미 2x
 Recipe - Jumping Frost Spider	제조법 : 도약형 냉기 거미	제조법 : 폭발형 냉기 거미
@@ -1020,6 +989,7 @@ Remove the workbench from the Enchanter's Tower.	마법부여 연구탑에서 �
 Remove the workbench from the Storage Room.	저장고에서 작업선반을 제거합니다.	창고에서 작업선반을 제거합니다.
 Remove Tree	나무의 바위 효과 제거	나무의 바위효과 제거
 Replace my Enchanting Lab with a Child's Room. (<Global=HDRiftenChildRoom> gold)	마법부여 연구실을 아이의 방으로 개조하고 싶다. (<Global=HDRiftenChildRoom> 골드)	마법 부가 연구실을 아이의 방으로 개조라고 싶다. (<Global=HDRiftenChildRoom> 골드)
+Replace the beacon	등불을 제자리에 놓기	표식을 교체하기
 Replace the beacon	등불을 제자리에 놓기	등불을 교체하기
 Report failure to <Alias=FactionLeader>.	<Alias=FactionLeader>에게 작전실패를 보고하기	<Alias=FactionLeader> 에게 작전실패를 보고하기
 Report success to <Alias=FactionLeader>.	<Alias=FactionLeader>에게 작전성공을 보고하기	<Alias=FactionLeader> 에게 작전성공을 보고하기
@@ -1038,6 +1008,7 @@ Retrieve the Stalhrim Source Map	스탈림 원천 지도를 회수하기	스탈�
 Retrieve the Unmelting Snow	'녹지 않는 눈'을 회수하기	'녹지않는 눈'을 회수하기
 Return <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias=QuestItem>을(를) <Alias.ShortName=QuestGiver>에게 돌려주기	<Alias=QuestItem>을 <Alias.ShortName=QuestGiver> 에게 돌려주기
 Return the Bust of the Gray Fox to Delvin	델빈에게 그레이 폭스 흉상을 가져가기	델빈에게 그레이폭스의 흉상을 가져가기
+Return the East Empire Shipping Map to Delvin	델빈에게 동제국 해상운송 지도를 가져가기	델빈에게 동 제국 해상운송 지도를 가져가기
 Return to the Sanctuary	성역으로 돌아가기	성지로 돌아가기
 Revenge, Hired Thugs	복수, 고용된 폭력배	복수, 고용된 불량배
 Reverent Nordic Battleaxe	노드제 전투 도끼 - 중급 신성	노드제 전투 도끼 - 상급 신성
@@ -1045,9 +1016,7 @@ Riften is home to the Black-Briar Meadery, one of the largest and most successfu
 Riften Military Camp	리프튼 군영지	리프튼 군용 주둔지
 Right. You were at Dragonsreach when I gave it to him.	아. 그에게 전해 주었을 때 드래곤스리치에 있었군.	아. 그에게 전해 주었을때 드래곤스리치에 있었군.
 Ring of Reanimate Corpse	반지 - 중급 강령술	반지 - 시체 조종
-Ring of the Major Knight	반지 - 중급 중갑	반지 - 하급 중갑
 Rogue Wizard	변절한 마법사	도둑 마도사
-Room 7Workbench Enable	Room 7 작업선반 설치	Room 7작업선반 설치
 Rustleif's House	러스틀레이프의 집	러스틀레프의 집
 Sabjorn's Dresser	사비욘의 서랍장	사비욘의 옷상자
 Sacred Stones only confer powers once a day	신성한 바위는 하루에 한 번만 능력을 부여해 줍니다.	신성한 바위은 하루에 한 번만 능력을 부여해 줍니다.
@@ -1060,7 +1029,6 @@ Sealed Scroll	봉인된 두루마리	봉인된 마법 주문서
 Search for the Aetherium Shards (<Global=DLC1LD_ShardsFound>/<Global=DLC1LD_ShardsTotal>)	에테리움 파편을 찾기 (<Global=DLC1LD_ShardsFound>/<Global=DLC1LD_ShardsTotal>)	에테리움 조각을 찾기 (<Global=DLC1LD_ShardsFound>/<Global=DLC1LD_ShardsTotal>)
 Seared Slaughterfish	구운 식인물고기	말린 식인물고기
 Second Letter from EEC	동제국 회사의 두 번째 편지	동제국 회사의 두번째 편지
-Secunda's Kiss	세쿤다의 입맞춤	세쿤다의 선반
 See to it at once.	당장 처리하시오.	일단 한번 보시오.
 Self Doubt	자기 의심	자아 의문
 Severin Family Safe	세브린 가문 금고	스베린 가문 금고
@@ -1077,12 +1045,7 @@ She's not yours. Stop this nonsense. (Persuade)	그녀는 네 것이 아니야. 
 Shock Cloaked Spider	천둥 망토 거미	전격 거미
 Shriekwind Bastion	쉬리크윈드 보루요새	쉬리크윈드 전망대
 Shrine Base	성소 받침대	신전 영역
-Shroud Hearth Barrow	장막덮인 난로 무덤	장막덮힌 난로 무덤
-Shroud Hearth Barrows Key	열쇠 - 장막덮인 난로 무덤	열쇠 - 장막덮힌 난로 무덤
-Shroud Hearth Depths	장막덮인 난로 심층부	장막덮힌 난로 심층부
 Shrouded Cowl Maskless	암살자의 가면 없는 두건	암살자의 가면없는 두건
-Shrouded Grove	장막덮인 숲	장막덮힌 숲
-Shrouded Grove Cave	장막덮인 숲 동굴	장막덮힌 숲 동굴
 Sibbi's Stash Key	열쇠 - 시비의 은닉처	열쇠 - 시비의 비밀 열쇠
 Sightless Pit	보이지 않는 구덩이	보이지않는 구덩이
 Sing me a song, bard. A song of fear, and death!	노래를 불러 주게, 바드여. 공포와 죽음의 노래를!	노래를 불러 주게, 바드여. 공포의 죽음의 노래를!
@@ -1091,14 +1054,12 @@ Skjor has fallen to the Silver Hand.	스키욜이 실버 핸드들에게 죽임�
 Skyrim is home to more than just Nords.	스카이림은 노드만의 집이 아닙니다.	스카이림의 노드만의 집은 아닙니다.
 Skyrim's Horkers are often hunted for their tusks and meat.	스카이림의 호커들은 그 상아와 고기 때문에 자주 사냥당합니다.	스카이림의 호커들은 그 상아와 고기때문에 자주 사냥당합니다.
 Slay the other cultists	다른 광신도들을 죽이기	다른 광신자들을 죽이기
-Smelter	용광로	도가니
-Smithing	제련	뼈다귀 제련
-Snowclad Ruins	눈덮인 유적	눈덮힌 유적
-Snowy Ice Vine	눈덮인 얼음 포도덩굴	눈덮힌 얼음 포도덩굴
 So do you remember anything I said when I got here?	내가 여기 왔을 때 무슨 말을 했는지 기억나는 게 있소?	내가 여기 와서 무슨말을 했는지 기억하나는 게 있소?
 So how do I get him to talk?	그래서 그놈 입을 열게 하려면 어떻게 하지?	그래서 그놈이랑 대화하려면 어떻게 하지?
+So I should go to Volunruud? I should talk to this man?	그러면 볼룬루드로 가면 되나? 그 자와 대화를 해야 하나?	그러면 볼룬루드로 가면 되나? 그 자와 대화를 해야하나?
 So that's how you got here.	그 방법으로 여기까지 온 거로군.	그 방법으로 여기까지 온거로군.
 So we need to deal with Malyn somehow.	메일린을 어떻게든 처리해야만 하는 거군.	메일린을 어떻게든 처리해야만 하는거군.
+So what do we do?	그래서 뭘 해야 하지?	그래서 뭘 해야하지?
 So what happened to him?	그래서, 무슨 일이 일어난 거지?	그래서, 무슨 일이 일어난거지?
 So what is the Poetic Edda?	그 '운문 에다'라는 게 뭡니까?	그 '운문 에다'라는게 뭡니까?
 So what's the problem? I'm sure he'll pay you...	뭐가 문제지? 그가 돈을 낼 텐데...	뭐가 문제지? 그가 돈을 낼텐데...
@@ -1127,7 +1088,6 @@ Sorry, I'm not ready for that just yet.	미안하지만, 아직 준비가 안 �
 Sorry, sir. I was trying to come to a fair agreement.	죄송합니다, 장군님. 공정한 합의를 이루려고 했습니다.	죄송합니다. 저는 공평한 합의를 이루려고 할 뿐입니다.
 Sorry. I don't know anything.	미안하지만, 아는 게 없소.	미안하지만, 아는게 없소.
 Sorry. You'll have to find some other way to stroke your ego.	미안하지만. 자존심을 세우고 싶다면 다른 방법을 찾아보시오.	미안하지만. 아첨을 원한다면 다른 방법을 찾아보시오.
-Soul trap me. I won't feel right as a vampire.	소울 트랩을 걸어 줘. 흡혈귀가 돼서는 안 될 것 같아.	소울 트랩을 걸어 줘. 흡혈귀가 되서는 안 될 것 같아.
 Sounds good, I'll follow you.	좋소, 따라가지.	좋소., 따라가지.
 Sounds like more then just "bad blood."	단순한 '원한' 이상인 것처럼 들리는데.	단순한 '악연' 이상인 것처럼 들리는데.
 Sounds like you've seen you far share of hardship.	고생을 꽤나 겪은 것 같군.	믿기 어려울 정도로 대단하군.
@@ -1140,24 +1100,18 @@ Speak to Brynjolf about becoming the Guild Master	브린욜프와 길드 마스�
 Speak to Brynjolf about being Guild Master	길드 마스터의 역할에 관해서 브린욜프와 대화하기	브린욜프에게 길드 지도자로 살아가는 것에 관해서 대화하기
 Speak to Degaine	디게인과 대화하기	디게인과와 대화하기
 Speak to From Deepest Fathoms	프롬-디피스트-페덤스와 대화하기	프롬-디프스트-파돔과 대화하기
-Speak to Mercer Frey	머서 프레이와 대화하기	머서 프레이와와 대화하기
 Speak to Orthas Endario about the East Empire Company's problems	동제국 회사의 문제점에 관해서 오서스 엔다리오와 대화하기	동제국 회사의 문제점에 관해서 오투스 엔다리오와 대화하기
 Speak to the Jarl of Dawnstar about the land for sale	판매 중인 토지에 관해서 던스타의 야를과 대화하기	판매중인 토지에 관해서 던스타의 야를과 대화하기
 Speak to the Steward of Falkreath about the land for sale	판매 중인 토지에 관해서 팔크리스의 행정관과 대화하기	판매중인 토지에 관해서 팔크리스의 행정관과 대화하기
 Speak to the Steward of Morthal about the land for sale	판매 중인 토지에 관해서 모탈의 행정관과 대화하기	판매중인 토지에 관해서 모탈의 행정관과 대화하기
-Speak to Thorald Gray-Mane	쏘럴드 그레이-메인과 대화하기	프랄리아 그레이-메인에게 돌아가기
 Speak with <Alias=CurrentQuestGiver> for an assignment	임무에 관해서 <Alias=CurrentQuestGiver>와(과) 대화하기	임무에 관해서 <Alias=CurrentQuestGiver>와 대화하기
 Speak with Constance Michel about Adoption	입양에 관해서 콘스턴스 미쉘과 대화하기	입양에 관해서 콘스탄스 미쉘과 대화하기
-Speak with Golldir	골디어와 대화하기	골디어과 대화하기
 Spell Tome: Detect Undead	마법책: 시체 탐지	마법책: 사체 탐지
-Stabilized	안정	안 정
 Staff of Daedric Command	지팡이 - 데이드라 지배	지팡이 - 데이드라제 지배
 Staff of Sparks	지팡이 - 번갯불	지팡이 - 최하급 번갯불
 Staff of Vanquishment	지팡이 - 광역 공포	지팡이 - 중급 공포
 Stalhrim Armor of Eminent Illusion	스탈림 방어구 - 상급 환영마법	스탈림 방어구 - 최상급 환영마법
-Stalhrim Armor of Extreme Illusion	스탈림 방어구 - 최상급 환영마법	스탈림 방어구 - 특급 환영마법
 Stallion's Potion	종마의 물약	스탈리온의 물약
-Stamina regenerates <mag> points more slowly.	지구력 재생이 <mag> 감소합니다.	<dur> 초 동안 지구력 재생이 감소합니다.
 Stands-In-Shallows	스탠드-인-섈로즈	스탠드-인-스왈로즈
 Start a new game? Creations are currently loaded. Note: Trophies are disabled.	현재 모드를 사용하고 있습니다. 새 게임을 시작하시겠습니까? 주의: 업적 달성을 할 수 없습니다.	현재 모드를 사용하고 있습니다. 새 게임을 시작할까요? 주의: 업적 달성을 할 수 없습니다.
 Start game as %s?	%s 로 게임을 시작하겠습니까?	%s 로 게임을 시작할까요?
@@ -1169,10 +1123,9 @@ Steal the <Alias=QuestItem> for <Alias.ShortName=QuestGiver>	<Alias.ShortName=Qu
 Steal the <Alias=QuestItem> for Olda	올다를 위해서 <Alias=QuestItem>을 훔치기	올다를 위해서 <Alias=QuestItem>를 훔치기
 Steal the plans from <Alias=Camp>	<Alias=Camp>에서 계획서를 입수하기	<Alias=Camp> 에서 계획서를 입수하기
 Steamed Mudcrab Legs	찐 진흙게 다리	구운 진흙게 다리
-Steel Arrow	화살 - 강철	화살 - 강철 화살
+Steel Armor of Major Stamina	강철 전투화 - 중급 지구력 증가	강철 방어구 - 중급 지구력 증가
 Steel Battleaxe of Fiery Souls	강철 전투 도끼 - 화염 소울 트랩	강철 전투 도끼 - 불꽃영혼
 Still buying East Empire Pendants?	여전히 동제국 회사 펜던트를 구입하시오?	여전히 동제국 펜던트를 구입하시오?
-Stone. (<Global=BYOHHPAmountStone> for <Global=BYOHHPCostStone> gold)	석재. (<Global=BYOHHPAmountStone>개에 <Global=BYOHHPCostStone> 골드)	석재. (<Global=BYOHHPAmountStone> for <Global=BYOHHPCostStone> 골드)
 Storage Room - Remove Workbench	저장고 - 작업선반 제거	창고 - 작업선반 제거
 Storage Room - Workbench	저장고 - 작업선반	창고 - 작업선반
 Storage Room, Doors	저장고, 문	저장고,문들
@@ -1189,9 +1142,8 @@ Summons Arvak in the Soul Cairn or Tamriel wilderness to act as your steed.	소�
 Summons the ghost of the legendary assassin Lucien Lachance to fight by your side, until he's defeated.	전설적인 암살자 루시엔 러찬스의 영혼을 소환하여, 쓰러질 때까지 내 곁에서 싸우게 합니다.	전설적인 암살자 루시엔 러찬스의 영혼을 소환합니다.
 Sunlight explosion that does <mag> points of damage in a 15 foot radius to undead, and half that to living targets	15 피트 범위의 태양빛 폭발을 일으켜 언데드에게 <mag> 의 피해를 입히고 생명체에게는 절반의 피해를 입힙니다.	15 피트 범위의 태양빛 폭발을 일으키는 화염구를 날려 언데드에게 <mag> 의 피해를 입히고 생명체에게는 절반의 피해를 입힙니다.
 Sunlight explosion that does <mag> points of damage in a 15 foot radius to undead.	15 피트 범위의 태양빛 폭발을 일으켜 언데드에게 <mag> 의 피해를 입힙니다.	15 피트 범위의 태양빛 폭발을 일으키는 화염구를 날려 언데드에게 <mag> 의 피해를 입힙니다.
-Sure, I'd like the help.	물론, 도와준다면 고맙지.	물론, 기꺼지 도와주지.
+Sure, I'd like the help.	물론, 도와준다면 고맙지.	물론, 기꺼이 도와주지.
 Sure. When I don't need him, he can stay with you.	물론이지. 내가 필요 없을 땐 너와 함께 지내도 좋다.	물론이지. 별다른 일만 없다면 같이 놀아도 좋다.
-Suvaris Atheron's Logbook	수바리스 아테론의 항해일지	수바리스 아테론의 항박일지
 Sven wanted me to deliver this letter to Camilla, saying it was from you.	스벤은 이 편지를 카밀라에게 전해주면서 당신이 보낸 거라고 거짓말하라더군.	스벤은 이 편지를 카밀라에게 전해주면서 당신이 보낸거라고 거짓말하라더군.
 Sven wanted to trick you into believing this letter was from Faendal.	스벤은 이 편지가 페인달이 보낸 거라고 속이려고 했소.	스벤은 이 편지가 페인달이 보낸거라고 속이려고 했소.
 Swap my Child's Room with an Enchanting Lab. (<Global=HDRiftenEnchanting> gold)	아이들 방을 마법부여 연구실로 변경하고 싶다. (<Global=HDRiftenEnchanting> 골드)	아이들 방을 마법 부가 연구실로 변경하고 싶다. (<Global=HDRiftenEnchanting> 골드)
@@ -1206,7 +1158,6 @@ Talk to <Alias=RiverwoodFriend> in Riverwood	리버우드에서 <Alias=Riverwood
 Talk to <Alias=Victim>	<Alias=Victim>와(과) 대화하기	<Alias=Victim>와 대화하기
 Talk to Amaund Motierre	아먼드 모티에르와 대화하기	아먼드 모티에르와 대화하라
 Talk to Brynjolf about joining the Thieves Guild	도둑 길드에 가입하는 것에 관하여 브린욜프와 대화하기	도둑길드에 가입하는 것에 관하여 브린욜프와 대화하기
-Talk to Legate Rikke	리카 군단장과 대화하기	리카 군단장와 대화하기
 Talk to Lucan about the robbery	도난 사건에 관해서 루칸과 이야기하기	도둑에 관해서 루칸과 이야기하기
 Talk with <Alias=FactionLeader>.	<Alias=FactionLeader>와(과) 대화하기	<Alias=FactionLeader> 와 대화하기
 Target is paralyzed for <dur> and takes 25 points of damage over <dur> seconds.	목표를 <dur> 초 동안 마비시키고, <dur> 초에 걸쳐 25 의 피해를 입힙니다.	<dur> 초 동안 <mag> 의 피해를 입히고 마비시킵니다.
@@ -1228,7 +1179,6 @@ Tell me your side of the story about Sibbi.	시비에 얽힌 당신 쪽 사연�
 Tell me, what's it like being Boethiah's champion?	말해보시오, 보에디아의 챔피언이란게 어떤 거지?	말해보시오, 보에디아의 챔피언이란게 어떤거지?
 Tempered Sphere	단련된 드워프 구체	단련된 드워프 스피어
 Temple Ancestral Tomb	신전 선조의 무덤	사원 선조의 무덤
-Temporarily reanimates corpses in the immediate area.	잠깐 동안 나를 위해 싸울 주변의 시체들을 부활시킵니다.	잠깐 동안 나를 위해 싸울 주변의 시체들를 부활시킵니다.
 Thanks for nothing.	아무것도 안 해준다니 고맙기도 하군.	아무것도 안해준다니 고맙기도 하군.
 That man shouted something about the "Forsworn."	그 남자는 '포스원'에 관해 뭐라고 소리쳤는데.	그 남자는 '포스원'이 뭐라고 소리쳤는데.
 That proves I have the Voice.	내가 소리의 힘을 다룰 수 있다는 걸 증명했습니다.	내가 소리에 힘을 다룰 수 있다는 걸 증명했습니다.
@@ -1244,7 +1194,6 @@ The <Alias=Boss> at <Alias=Dungeon> has been destroyed.	<Alias=Dungeon>의 <Alia
 The Alchemy skill determines the creation and potency of potions and poisons.	연금술 기술은 물약과 독을 만들고, 그것을 얼마나 강력하게 만들 수 있는지를 결정합니다.	연금술 기술은 물약과 독을 만들고, 그것을 얼마나 강력하게 만들 수 있는지를 결정합니다.
 The Alik'r won't trouble you anymore.	알리키어 걱정은 이제 안 해도 되오.	알리키어는 걱정은 이제 안 해도 되오.
 The Apprentice Stone ability doubles your Magicka and regeneration speed, but makes you twice as susceptible to spells.	'수습생의 선돌'은 당신의 매지카와 재생 속도를 2배로 향상시킵니다. 그러나 상대의 마법공격에 2배 더 약해집니다.	'수습생의 선돌'은 당신의 매지카와 회복속도를 2배로 향상시킵니다. 그러나 상대의 마법공격에 2배 더 약해집니다.
-The Apprentice's Assistant	수습생의 조수	수습생
 The Augur referred to it as the Eye of Magnus, not me.	그걸 '매그너스의 눈'이라고 부른 건 예언자지, 내가 아니오.	예언은 '매그너스의 눈'과 관련이 있다고 했지, 내가 아니오.
 The bandit leader at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>의 산적 두목은 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 의 산적 두목은 죽었습니다. 현상금을 받으러 왔습니다.
 The bandits won't be a problem anymore.	산적들은 더 이상 문제가 되지 않을 거요.	산적들은 더 이상 문제가 되지 않을거요.
@@ -1259,11 +1208,12 @@ The Dawnguard were protecting him, and they nearly killed me.	던가드가 그�
 The Dawnguard would want me to kill you.	던가드는 당신을 죽이길 바랄 텐데.	던가드는 당신을 죽이길 바랄텐데.
 The dragon at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>에 있던 드래곤은 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 에 있던 드래곤은 죽었습니다. 현상금을 받으러 왔습니다.
 The dragonstone was some kind of map?	드래곤의 석판은 일종의 지도 같은 건가 보군?	드래곤의 석판은 일종의 지도같은 건가 보군?
+The dwarves of Tamriel disappeared millennia ago and are presumed extinct.	탐리엘에서 드워프들은 천여 년 전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.	탐리엘에서 드워프들은 천여년전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.
 The Empire supported Elisif, but Ulfric now controls Skyrim.	제국은 엘리시프를 지지했지만, 이제는 울프릭이 스카이림을 지배하고 있소.	제국은 엘리시프를 지지하고 있지만, 울프릭이 스카이림을 지배하고 있소.
 The Empire supports Elisif, and killed Ulfric for his rebellion.	제국이 엘리시프를 지지하고 있고, 울프릭을 반역죄로 처형했지.	제국이 엘리시프를 지지하고 있고, 울프릭을 반역죄로 처형 당했지.
 The Empire supports Elisif, but there are many in Skyrim loyal to Ulfric.	제국은 엘리시프를 지지하고 있지만, 스카이림에는 울프릭에게 충성하는 사람들도 많지.	제국은 엘리시프를 지지하고 있지만, 스카이림 울프릭에게 충성하는 사람들도 많지.
 The Five Far Stars	멀리 떨어진 다섯 개의 별	다섯개의 별
-The Fourth Era began 200 years ago when Martin Septim sacrificed himself to save the world from the Oblivion Crisis.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대 위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.
+The Fourth Era began 200 years ago when Martin Septim sacrificed himself to save the world from the Oblivion Crisis.	200년 전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대 위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.
 The giant at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>에 있던 거인은 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 에 있던 거인은 죽었습니다. 현상금을 받으러 왔습니다.
 The Gourmet. Who is he? Where is he?	'미식가'는 누구지? 어디에 있지?	'미식가'는 누구이며? 어디에 있지?
 The Imperials gained control of <Alias=Hold>.	제국군이 <Alias=Hold>을(를) 점령했습니다.	제국군이 <Alias=Hold> 를 점령했습니다.
@@ -1271,6 +1221,7 @@ The Imperials kept control of <Alias=Hold>.	제국군이 <Alias=Hold>을(를) �
 The Imperials lost control of <Alias=Hold>.	제국군이 <Alias=Hold>을(를) 잃었습니다.	제국군이 <Alias=Hold> 를 잃었습니다.
 The ingredients are in the vessel.	그릇 안에 재료들을 담아두었어.	그릇안에 재료들을 담아두었어.
 The Keepers of the Razor	면도칼의 파수꾼	메이룬스 단검의 파수꾼
+The last battle here was hundreds of years ago.	여기서 벌어진 마지막 전투는 몇백 년 전의 일인데.	여기서 벌어진 마지막 전투는 몇 백년전의 일인데.
 The leader of <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>의 우두머리는 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 의 우두머리는 죽었습니다. 현상금을 받으러 왔습니다.
 The lock has been broken.	자물쇠가 망가졌습니다.	자물쇠는 망가졌습니다.
 The Nords first conquered Markarth from the native people of the Reach thousands of years ago.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 빼앗았습니다.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 뺏았습니다.
@@ -1322,7 +1273,6 @@ This person is busy.	이 사람은 바쁜 것 같습니다.	이 사람은 바쁜
 This will be easier without you getting in my way.	네가 방해하지만 않는다면 훨씬 쉬워질 텐데.	네가 방해하지만 않는다면 훨씬 쉬워질텐데.
 Three Thieves	세 명의 도둑들	세명의 도둑들
 To Be Read Immedately!	즉시 읽을 것!	즉시 읽을것!
-Together until the end, then.	최후까지 함께하자.	최후가지 함께하자.
 Tolan was right. And he's dead. The vampires killed him.	톨란의 말이 맞았소. 하지만 죽어버렸소. 흡혈귀들 짓이지.	톨란이 말이 맞았소. 하지만 죽어버렸소. 흡혈귀들 짓이지.
 Tolenos Omoren	톨레노스 오모렌	톨레노트 오모렌
 Too frightened to leave home? (Brawl)	집을 떠나는 게 그렇게 무서운가? (싸움)	집을 떠나는게 그렇게 무서운가? (싸움)
@@ -1348,15 +1298,11 @@ Um... The one where you saw a lady in half?	음... 여자를 톱으로 반토막
 Unbound Dremora	속박되지 않은 드레모라	계약없는 드레모라
 Undead targets takes <mag> points of sun damage,	언데드에게 <mag> 의 태양 피해를 입힙니다.	언데드에게 <mag>의 태양 피해를 입힙니다.
 Understandable. Be on your way.	알 만하군. 가 보라고.	알만 한군. 가 보라고.
-Unknown Book, Vol. II	알 수 없는 책, 제 2권	알 수 없는 책, 2 권
-Unknown Book, Vol. IV	알 수 없는 책, 제 4권	알 수 없는 책, 4 권
 Unmelting Snow	녹지 않는 눈	녹지않는 눈
 Unmelting Snowbank	녹지 않는 눈더미	녹지않는 눈더미
 Until Next Time	다음에 만날 때까지	다음에 만날때까지
-up to level	최대 레벨:	다음 레벨까지:
 Use the key to gain access to the Pelagius Wing	열쇠를 사용해서 펠라지우스 구역에 들어가기	열쇠를 사용해서 펠라지우스 구역을 통과하기
 Vahlok the Jailer	간수 발록	발록
-Vahlok the Jailor	간수 발록	발록
 Vampire Hunter	흡혈귀 사냥꾼	사냥꾼 흡혈귀
 Vampiric Blood Rested	안식을 취한 흡혈귀의 피	흡혈귀의 피가 편안한 휴식을 취했습니다.
 Verner Rock-Chucker	버너 락-처커	버너 락-크러셔
@@ -1367,7 +1313,6 @@ Vigilant Adalvald	경계병 아달발드	아달발드 경계병
 Vignar	비그나	비그너
 Vignar Gray-Mane	비그나 그레이-메인	비그너 그레이-메인
 Vilkas said you can still be cured.	빌카스의 말로는 당신이 아직 치료될 수 있다고 합니다.	빌카스의 말로는 당신이 아직 저주에 걸려있다고 합니다.
-Visit Proudspire Manor, your new house	당신의 새 집, 프라우드스파이어 저택을 방문하기	당신의 새 집, 프라우드스파이어 저택를 방문하기
 Visit the College of Winterhold	윈터홀드 대학을 방문하기	윈터홀드의 마법 대학을 방문하기
 Visit the hunters at Frostmoon Crag	프로스트문 바위의 사냥꾼을 만나기	프로스트문 바위산의 사냥꾼을 만나기
 Visit the werewolves at Frostmoon Crag	프로스트문 바위의 늑대인간을 만나기	프로스트문 바위산의 늑대인간을 만나기
@@ -1380,7 +1325,6 @@ Wait for Falion to complete the ritual	팔리온이 의식을 마칠 때까지 �
 Was it aboard a ship?	배에 실려 있었소?	선박에 실어졌다고?
 We could live in Gallows Hall.	교수대 회관에서 삽시다.	교수대 바위에서 삽시다.
 We could use your help in Tamriel.	탐리엘에서 당신의 도움이 필요하오.	탐리엘에서 당신의 도움을 받을 수도 있소.
-We didn't really get along. Best that I haven't seen them in a while.	잘 지내진 못했지. 안 보게 돼서 기쁘군.	잘 지내진 못했지. 안 보게 되서 기쁘군.
 We might have something, yes.	뭔가 있을지도 모르지, 그래.	확실히 뭔가 있기는 한데.
 We'll require... significant compensation. Can you pay the price?	우리는... 상당히 많은 보수를 요구할 텐데. 당신이 그걸 지불할 수 있을까?	우리는... 상당히 많은 보수를 요구할텐데. 당신이 그걸 지불할 수 있을까?
 We're called the Dawnguard. We're fighting a vampire conspiracy.	우리는 '던가드'요. 흡혈귀의 계략에 맞서 싸우고 있소.	우리는 '던가드'입니다. 흡혈귀의 계략에 맞서 싸우고 있습니다.
@@ -1391,14 +1335,13 @@ Weak Aversion to Magic	독 - 마법 약점 하급	독 - 마법 저항 하급
 Weak Aversion to Shock	독 - 전격 약점 하급	독 - 전격 하급
 Were you successful?	성공했소?	성공했습니까?
 What about the information on Goldenglow Estate?	골든글로우 농장에 대한 정보는?	골든글로우 지구에 대한 정보는?
-What about them?	걔네가 왜?	조금 더 알려줄 수 있나?
-What about you?	당신께선 어떻습니까?	당신에 대한 이야기?
+What am I supposed to tell Christer?	크리스터에게는 뭐라고 해야 하지?	크리스터에게는 뭐라고 해야하지?
 What are the Ancestral Tombs?	조상의 무덤들이란게 뭐요?	조상의 무덤들이란게 뭡니까?
 What are the duties of a Keeper?	키퍼의 역할은 뭐지?	관리자의 역할은 뭐지?
 What are the Eyes of the Falmer?	팔머의 눈이라는 게 뭐지?	팔머의 눈이라는게 뭐지?
 What are your thoughts on Cicero and the Night Mother?	시세로와 나이트 마더에 대해서 어떻게 생각하시오?	시세로와 나이트마더에 대해서 어떻게 생각하시오?
 What brings a Breton to Skyrim?	어쩌다 브레튼이 스카이림까지 오게 된 거요?	어쩌다 브레튼이 스카이림까지 오게 된 거요.
-What brings you to this remote place?	이렇게 먼 곳까지 무슨 일로 온 거요?	이렇게 먼곳까지 무슨일로 온거요?
+What brings you to this remote place?	이렇게 먼 곳까지 무슨 일로 온 거요?	이렇게 먼 곳까지 무슨일로 온 거지?
 What can be done about it now?	이제 어떻게 하면 되겠소?	이제 어떻게 될 것 같소?
 What can you tell me about Auriel's Bow?	아우리엘의 활에 대해 알려주시오.	아우리엘의 활에 대해 알려주시오?
 What can you tell me about Morrowind?	모로윈드에 관해서 더 알려줄 수 있나?	모로윈드에 관해서 더 알려줄 수 있나.
@@ -1416,12 +1359,10 @@ What do I do with this sphere?	이 구체로 뭘 하라는 거요?	이 구체로
 What do I need to do?	내가 뭘 해야 하는 거요?	내가 뭘 해야 하는거요?
 What do we do with it now?	이제 이걸로 뭘 하지?	이게 이 걸로 뭘 하지?
 What do we know about the Dawnstar Sanctuary?	던스타 성역에 대해서 뭔가 아는 게 있소?	던스타 성역에 대해서 뭔가 아는게 있소?
-What do you have against the Blades?	블레이드를 꺼려하는 이유는 무엇입니까?	블레이드을 꺼려하는 이유는 무엇입니까?
 What do you have against the Greybeards?	그레이비어드한테 무슨 불만이라도 있나?	그레이비어드에게 무슨 문제라도 있나?
 What do you know about Ancano?	안카노에 대해 아는 게 있습니까?	안카노에 대해 아는게 있습니까?
 What do you know about it?	이 일에 대해 뭘 알고 있소?	이 일에 대해 뭘 알고있소?
 What do you know about the Psijic Order?	씨직 오더에 대해서 아는 게 있습니까?	씨직 오더에 대해서 아는게 있습니까?
-What do you mean "saviors of Mer"?	'머의 구세주'라는 게 무슨 뜻이오?	'머의 구세주'라는 게 무슨 듯이오?
 What do you mean "supposed"?	'이른바'라니, 무슨 뜻이지?	'그랬어야 한다'는건 무슨 뜻이지?
 What do you mean, "like you"?	'당신 같은 사람'이라니 무슨 뜻이오?	'당신같은 사람'이라니 무슨 뜻이오?
 What do you mean, "return"? You've been there?	'돌아간다'라는 게 무슨 뜻이지? 거기 가 본 적이 있나?	'돌아간다'라는게 무슨 뜻이지? 거기 출신인가?
@@ -1435,9 +1376,9 @@ What else do I need to know?	내가 알아둬야 하는 게 더 있소?	내가 �
 What else is there to be learned about Conjuration magic?	소환마법에 대해 더 배울 수 있습니까?	소환마법에 대해 더 배울수 있습니까?
 What ended up happening?	마지막에는 어떻게 되었소?	마지막에는 어떻게 되었습니까?
 What exactly are the "Reclamations?"	'레클러메이션'이라는 게 정확히 무엇입니까?	'레클러메이션'이라는게 정확히 무엇입니까?
-What exactly is "ash-grown food?"	'화산재에서 키운'이라니 정확히 무슨 뜻이지?	'화산재에서 키운'이라니 정확히 무슨 뜩이지?
 What happened during the Night of Green Fire?	녹색 화염의 밤에 무슨 일이 일어났습니까?	녹색 불의 밤에 무슨 일이 일어났습니까?
 What happened here?	무슨 일이 있었던 거지?	무슨 일이 있었던거지?
+What happened in the last few hundred years?	지난 몇백 년사이에 무슨 일이 있었습니까?	지난 몇 백년사이에 무슨 일이 있었습니까?
 What happened on the 30th of Frostfall?	10월 30일에 무슨 일이 일어났던 겁니까?	10월 30일에 무슨 일이 있어났던 겁니까?
 What happened to capturing Mercer alive?	머서를 생포한다더니 어떻게 된 거지?	머서를 생포하려다 어떤 일이 생긴거지?
 What happened to Fjotli?	표틀리에게 무슨 일이 일어난 거지?	표틀리에게 무슨 일이 일어난거지?
@@ -1450,7 +1391,6 @@ What happened with Gleda again? I'm a little fuzzy on that.	글레다한테 무�
 What happened? How did I get here?	무슨 일이지? 어떻게 여기로 오게 된 거지?	무슨 일이지? 어떻게 여기로 오게 된거지?
 What happens? I'm curious.	무슨 일이 생기는데? 궁금하군.	무슨 일이지? 궁금하군.
 What if I do?	만약 그렇다면?	만약 내가 한다면?
-What is "oneness with the land?"	'땅과의 하나됨'이라는 게 뭐지?	'땅의의 하나됨'이라는 게 뭐지?
 What is a heart stone?	하트스톤이라는 게 뭐지?	하트스톤이라는게 뭐지?
 What is it Arniel wanted you to get?	아니얼이 원하는 게 뭐지?	아니얼이 원하는게 뭐지?
 What is it that you want?	원하는 게 뭐지?	원하는게 뭐지?
@@ -1458,14 +1398,14 @@ What is it you do here in town?	이 도시에서 어떤 일을 하고 있습니�
 What is the "Way of the Voice"?	'소리의 길'이라는 게 무엇입니까?	'소리의 길'이라는게 무엇입니까?
 What is Thirsk?	터스크라는 게 뭐지?	터스크라는게 뭐지?
 What just happened?	무슨 일이 있었던 거지?	무슨 일이 있었던거지?
+What kind of security should I expect?	경계수준은 어떨 것 같소?	경계수준은 어떨것 같소?
 What kind of trouble are you in?	어떤 문제가 있는 거지?	어떤 문제가 있는거지?
-What of it?	그게 어쨌다는 겁니까?	그게 어쨋다는 겁니까?
+What should I do now?	이젠 어떻게 해야 합니까?	이젠 어떻게 해야합니까?
 What sort of help do you need?	어떤 도움이 필요한 거지?	어떤 도움이 필요한거지?
 What was going on with that spider?	거미라니 뭐가 어떻게 된 거지?	거미라니 뭐가 어떻게 된거지?
 What was left of him.	남은 건 그의 시신뿐이었소.	아직도 그에게 미련이 남아있나?
 What was your campaign against them?	그들에 대비해서 어떤 작전을 세웠소?	그들에 대비해서 어떤 작전을 세웠습니까?
 What were you arguing about with Lucan?	무엇 때문에 루칸과 말다툼을 한 거지?	무엇때문에 루칸과 말다툼을 한 거지?
-What would you ask of me?	나에게 어떠한 것을 부탁하러 온 겐가?	나에게 어떠 한 것을 부탁하러 온 겐가?
 What would you like?	뭘 갖고 싶니?	어떤 걸 좋아하니?
 What's an East Empire Pendant?	동제국 회사 펜던트라는 게 뭐요?	동제국 펜던트라는게 뭐요?
 What's at Fort Hraggstad?	흐라그스타드 요새에는 뭐가 있습니까?	흐라그스타드 요새에 무슨 일이 있었습니까?
@@ -1483,11 +1423,11 @@ What's to keep me from ending up like Malyn?	내가 메일린처럼 되지 않�
 What's with all the cloak and dagger?	이 첩보작전 같은 것은 다 뭐지?	이 첩보작전같은 것은 다 뭐지?
 When will you return to Tamriel?	언제 탐리엘로 돌아갈 거요?	언제 탐리엘로 돌아갈 겁니까?
 When you greeted Serana, it sounded like you hadn't seen her in a long time.	당신이 세라나를 맞이했을 때, 마치 아주 오랫동안 만나지 않았던 것 같았는데.	당신이 세라나를 맞이했을때, 마치 아주 오랫동안 만나지 않았던 것 같았는데.
-When you obtain a spell book, you need to read it to learn the spell, which destroys the book in the process.	마법책을 얻었을 때, 그 마법을 배우기 위해서는 책을 읽어야하고, 그 과정에서 해당 마법책은 사라지게 됩니다.	마법책을 얻었을때, 그 마법을 배우기 위해서는 책을 읽어야하고, 그 과정에서 해당 마법책은 사라지게 됩니다.
+When you obtain a spell book, you need to read it to learn the spell, which destroys the book in the process.	마법책을 얻었을 때, 그 마법을 배우기 위해서는 책을 읽어야 하고, 그 과정에서 해당 마법책은 사라지게 됩니다.	마법책을 얻었을때, 그 마법을 배우기 위해서는 책을 읽어야하고, 그 과정에서 해당 마법책은 사라지게 됩니다.
+Where am I headed again?	제가 가야 하는 곳이 어디라고 했습니까?	제가 가야하는 곳이 어디라고 했습니까?
 Where are we going?	우리는 어디로 가는 거지?	우리는 어디로 가는거지?
 Where are we now?	지금 우리는 어디에 있는 거지?	지금 우리는 어디에 있는거지?
 Where can I find a heart stone?	하트스톤은 어디에서 찾을 수 있지?	허트스톤은 어디에서 찾을 수 있지?
-Where can I find him?	어디에서 찾을 수 있습니까?	어디에서 찾으면 되요?
 Where can I learn more about magic?	어디에서 마법을 더 배울 수 있소?	어디에서 마법을 더 배울수 있소?
 Where could they have gone?	어디로 가버린 거지?	어디로 가버린거지?
 Where did they take her?	그 애를 어디로 데려간 거지?	그 애를 어디로 데려간거지?
@@ -1495,11 +1435,12 @@ Where did you find this Black Book?	이 검은 책을 어디에서 찾은 거요
 Where did you get all these items?	이 물품들을 어디서 구한 거요?	이 물품들을 어디서 구한거요?
 Where do I find a Daedra Heart?	데이드라 심장은 어디서 구할 수 있소?	데이드라의 심장은 어디서 구할 수 있소?
 Where do the thralls come from?	노예들은 어디에서 오는 거요?	노예들은 어디에서 오는거요?
+Where exactly am I going?	정확히 어디로 가야 하지?	정확히 어디로 가야하지?
 Where is this "Blackreach"?	'블랙리치'는 어디에 있소?	'블랙리치'는 어디에 있나?
 Where is this shrine?	그 성소는 어디에 있습니까?	그 성지는 어디에 있습니까?
 Where were you captured?	어디에서 납치되었소?	어디에서 납치되었습니까?
+Where would I go to join up?	가입하려면 어디로 가야 하지?	가입하려면 어디로 가야하지?
 Where's this dragon?	그 드래곤은 어디 있소?	드래곤이 어디에 있었소?
-Whirlwind Sprint	회오리 질주	회오리의 질주
 Who are the Companions?	컴패니언이 누구요?	컴패니언즈가 누구요?
 Who are the Silver Hand?	실버 핸드는 어떤 사람들이지?	실버핸드는 어떤 사람들이지?
 Who are the spectral Prelates you mentioned?	아까 말한 유령 고위 성직자는 누구요?	아까 말한 유령 고위사제는 누구요?
@@ -1518,7 +1459,6 @@ Who's to say what happened at <Alias=ImperialTownRaided>?	<Alias=ImperialTownRai
 Who's to say what happened at <Alias=SonsTownRaided>?	<Alias=SonsTownRaided>에서 무슨 일이 있었는지 누가 알겠소?	<Alias=SonsTownRaided>에서 일어난 일에 관해 말해볼 사람은 없소?
 Whoa, brother. Don't you recognize a fellow Guild member?	어이, 친구. 같은 길드원도 몰라보는 거야?	어이, 친구. 같은 길드원도 몰라보는거야?
 Whoa. Not so close.	워. 너무 가까이 오지 마시오.	에... 전혀 아닌데.
-Why are you after Talos worshippers?	왜 탈로스 숭배자들을 추적하는 겁니까?	왜 탈로스 숭배자들을 추척하는 겁니까?
 Why are you doing all this?	왜 이런 일을 하는 거지?	왜 이런 일을 하는거지?
 Why are you here, then?	그렇다면 왜 여기에 있는 거지?	그렇다면 왜 여기에 있는거지?
 Why are you so concerned about this?	왜 이 일에 그렇게 신경 쓰는 겁니까?	왜 이 일에 관여하는 겁니까?
@@ -1539,7 +1479,6 @@ Why do Dunmer leave ash yams in their tombs?	왜 던머가 무덤에 화산 참�
 Why do I need this Word of Power to defeat Miraak?	미락을 물리치는 데 왜 이 힘의 단어가 필요하지?	미락을 물리치기 위해서는 이 힘의 단어가 필요하다고?
 Why do Nords have a problem with the College?	노드들이 대학과 무슨 문제가 있는 거지?	노드들이 대학과 무슨 문제가 있는거지?
 Why do we need these cubes?	왜 이 큐브들이 필요한 거요?	왜 이 큐브들이 필요한거요?
-Why do you hate the Blades?	왜 블레이드를 증오합니까?	왜 블레이드을 증오합니까?
 Why do you need the Guild's help for that?	왜 길드의 도움이 필요한 거지?	왜 길드의 도움이 필요한거지?
 Why do you think this Neloth can help me find Black Books?	어째서 넬로스란 사람이 내가 검은 책을 찾을 수 있도록 도와줄 수 있다고 생각하는 거요?	어째서 넬로스란 사람이 내가 검은책을 찾을 수 있도록 도와줄 수 있다고 생각하는 거요?
 Why does it require that type of protection?	어째서 이런 보호가 필요한 거지?	어째서 이런 보호가 필요한거지?
@@ -1550,7 +1489,6 @@ Why don't you like camping here?	여기서 야영하는 게 왜 마음에 안 �
 Why have you shut down the mine?	왜 광산을 닫은 거지?	왜 광산을 닫은거지?
 Why is a shrine being built near town?	왜 마을 근처에 성소가 건설되고 있지?	왜 마을 근처에 성소이 건설되고 있지?
 Why is it so run down?	왜 이렇게 된 거지?	왜 이렇게 된거지?
-Why is that?	어째서지?	왜 불가능한 거요?
 Why is this amulet so important to you?	어째서 이 아뮬렛이 그렇게 중요한 거지?	어째서 이 아뮬렛이 그렇게 중요한거지?
 Why live alone on a mountain if you love conversation?	대화를 좋아한다면서 왜 산 속에 혼자 살고 있는 겁니까?	대화를 좋아한다면서 왜 산 속에 혼자 살고있는 겁니까?
 Why not level the entire estate?	왜 농장 전체를 싹 갈아버리면 안 되는 거지?	왜 지구 전체를 싹 갈아버리면 안 되는 거지?
@@ -1563,11 +1501,11 @@ Why were you being executed?	왜 처형될 뻔한 거지?	왜 처형될 뻔 한�
 Why would a dremora attack you?	어째서 드레모라가 당신을 공격했소?	어째서 드레모라가 당신을 공격했습니까?
 Why would anyone accuse you of that?	왜 사람들이 당신을 그렇게 몰아세우는 거지?	누가 당신한테 그렇다고 따지는 거지?
 Why would anyone think you're a spy?	왜 사람들이 당신을 첩자라고 생각하는 겁니까?	도대체 누가 당신을 첩자라고 생각하는 겁니까?
+Why would I release you?	어째서 너를 놓아줘야 하지?	어째서 너를 놓아줘야하지?
 Why would the Ulens want him dead?	왜 울렌 가문이 의원의 죽음을 원하는 거지?	왜 울렌 가문이 의원의 죽음을 원하는거지?
 Why would you leave all that behind?	왜 모두 남겨두고 떠난 거지?	왜 모두 남겨두고 떠난거지?
 Why would you want to leave Skyrim?	어째서 스카이림을 떠나고 싶은 거지?	어째서 스카이림을 떠나고 싶은거지?
 Why'd you send me if you weren't going to believe me?	믿지 않을 거면 왜 나를 보낸 거지?	믿지 않을 거면 왜 나를 보낸거지?
-Why?	어째서?	어째서 그렇소?
 Why? What's happened?	왜? 무슨 일이오?	아니? 무슨 일이오?
 Widow's Watch Ruins	미망인의 감시대 폐허	미망감시대 폐허
 Will I be able to safely revisit the Soul Cairn?	내가 소울 케언을 다시 방문해도 무사하겠소?	제가 안전하게 소울 케언을 방문할 수 있을까요?
@@ -1576,8 +1514,7 @@ Word of Power	힘의 단어	힘의 언어
 Would ten pinches of fire salts help?	화염 소금 10 개면 충분할까?	화염소금 10 개면 충분할까?
 Would this loosen your tongue? (<bribecost> gold)	이거면 혀가 좀 풀리나? (<bribecost> 골드)	이거면 혀가 좀 풀리나? (<BribeCost> 골드)
 Would you believe I was given a vision?	내가 계시를 받았다고 하면 믿겠소?	내가 예언을 받았다는 것을 믿소?
-Wulf Wild-Blood	울프 와일드-블러드	울프
-Wulf Wild-Blood's House	울프 와일드-블러드의 집	울프 와일드-불러드의 집
+Yeah, I've been getting that a lot.	아, 여러 번 들었소.	아, 여러번 들었소.
 Yes, but they're far from Skyrim.	있지, 하지만 스카이림에서 멀리 떨어져 있어.	있지, 하지만 스카이림 멀리 떨어져 있어.
 Yes, Gallows Hall.	그래, 교수대 회관.	그래, 교수대 바위.
 Yes, he said to meet him at Fort Dawnguard.	그렇소, 던가드 요새에서 만나자고 하더군.	그렇소, 던가드 요새로 오면 되오.
@@ -1599,7 +1536,6 @@ You are able to move more quietly, and opponents that get too close take <5> poi
 You aren't afraid to die?	죽는 게 두렵지 않나?	죽는게 두렵지 않나?
 You asked my opinion. I gave it to you.	내 의견을 물은 것은 당신이오. 그래서 내 의견을 말한 거고.	내 의견을 물은 것은 당신이오. 그래서 내 의견을 말한거고.
 You became trapped.	결국 갇혀 버린 거군.	함정에 빠진거였군.
-You become invulnerable, but unable to attack. However you recover magicka and stamina.	안개의 형상으로 변하여 피해를 입히지도, 입지도 않게 되며 매지카와 지구력이 회복됩니다.	안개의 형상으로 변하여 피해를 입히지도, 입지도 않게 됩니다.
 You can find us at Fort Dawnguard, near Stendarr's Beacon.	스텐다르의 봉화대 근처, 던가드 요새로 와 주시오.	스텐다르의 봉화 근처에, 던가드 요새로 와 주시오.
 You can make Dragonbone weapons at a forge that are more deadly than daedric weapons, but weigh more.	대장간에서 데이드라제 무기들보다 더욱 강력한 드래곤 뼈 무기를 제작할 수 있습니다. 그러나 당연하게도 더 무겁습니다.	대장간에서 데이드라제 무기들보다 더욱 강력한 드래곤본 무기를 제작할 수 있습니다. 그러나 당연하게도 더 무겁습니다.
 You can trust your servant to keep this secret?	당신의 하인이 비밀을 지킬 거라고 믿소?	당신의 하인이 비밀을 지킬거라고 믿소?
@@ -1619,6 +1555,7 @@ You know what you have to do.	뭘 해야 하는지 알고 있을 텐데.	뭘 해
 You live here?	여기에 살고 있나?	여기에 살고있나?
 You mentioned trading caravans?	카짓 행상인들이라 했소?	캐러밴이라 했소?
 You must be crazy.	미친 게 분명하오.	미쳐버린 것 같은데.
+You must first equip a weapon to poison it.	당신은 먼저 독을 바를 무기를 장비해야 합니다.	당신은 먼저 독을 바를 무기를 장비해야합니다.
 You must know something. (Persuade)	분명히 뭔가 알고 있을 텐데. (설득)	분명히 뭔가 알고 있을텐데. (설득)
 You need to leave <Alias=QuestGiver> alone.	<Alias=QuestGiver>말인데 좀 내버려 둘 수 없소.	<Alias=QuestGiver>말인데 좀 내버려 둘수 없소.
 You never mentioned that lunatic living in the tunnels.	굴 속 미친놈에 대해선 말 안 했더군.	굴 속 미친놈에 대해선 말 안했더군.
@@ -1656,7 +1593,6 @@ You'd never had to do that before?	예전에는 그런 적이 없었나?	예전�
 You'd prefer your son to grow bitter and resent you? (Persuade)	아들이 괴로워하며 당신을 원망해도 괜찮소? (설득)	아들이 괴로워서 당신을 원망을 해도 괜찮소? (설득)
 You'll listen to gold, I take it? (<BribeCost> gold)	두둑하게 줄 테니, 어때? (<BribeCost> 골드)	두둑하게 줄테니, 어때? (<BribeCost> 골드)
 You're a long way from home, then.	당신은 집에서부터 먼 길을 떠나온 거군.	당신은 집에서부터 먼 길을 떠나온거군.
-You're dead.	넌 이제 죽었어.	이미 죽은 겁니다.
 You're holding out on Arniel again.	또 아니얼한테 물건을 안 넘기고 버티는군.	또 아니얼을 속이고 있군.
 You're making a mistake...	넌 실수하는 거야...	넌 실수하는거야...
 You're no kin of mine, pig-face.	넌 내 친척이 아냐, 돼지 같은 녀석.	넌 내 친척이 아냐, 돼지같은 녀석.
@@ -1671,6 +1607,4 @@ You've killed the High King. Why make war on your own people?	당신은 하이�
 You've worked with Isran before?	예전에 이스란과 함께 일한 적이 있소?	예전에 이스란과 함께 일한적이 있소?
 You... must not see many Orcs around here.	당신은... 이 근처에서 오크를 별로 못 봤나 보군.	당신은... 이 주변의 많은 오크들을 보지 않았군.
 Your Frost Breath Shout encases foes in ice for <15> seconds.	서리 숨결이 <15> 초 동안 적을 빙결시킵니다.	냉기 숨결이 <15> 초 동안 적을 빙결시킵니다.
-Your Wards are <25>% less effective, but absorb <50>% of the magicka from incoming spells.	방어막 마법의 위력이 <25>% 감소하지만 적의 마법으로부터 <50>%의 매지카를 흡수합니다.	방어막 마법의 위력이 <25>% 감소하지만 매지카 흡수량이 <50>% 증가합니다.
-Ysolda's Message	이솔다의 메시지	이솔다의 메세지
 Zenithar is the god of work and commerce. He has a shrine in the Temple of the Divines in Solitude.	제니타르는 일과 상업의 신입니다. 그의 성소는 솔리튜드의 디바인 신전에 있습니다.	제니타르는 일과 상업의 신입니다. 그의 성소는 솔리튜드의 디바인 신전에 있습니다.
