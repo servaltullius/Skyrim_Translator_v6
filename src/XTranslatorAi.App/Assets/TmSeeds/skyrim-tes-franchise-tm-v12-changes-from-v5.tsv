@@ -26,6 +26,7 @@ A dragon destroyed Helgen. <Alias=RiverwoodFriend> is afraid Riverwood is next.	
 A dremora captured you?	드레모라가 당신을 가두었단 말이오?	드레모라가 당신을 가두었다고?
 A Grand Soul gem filled with a Grand Soul is required to build the Arcane Enchanter.	마법부여대를 제작하기 위해서는 특급 소울젬(특급)이 필요합니다.	마법 부여대를 제작하기 위해서는 특급 소울젬(특급)이 필요합니다.
 A tidy, one-room house.	깔끔한 방 하나짜리 집.	자그마한, 방 하나짜리 집.
+A truly strong chief would break the curse, not suffer from it.	진정으로 강한 족장이라면 저주를 풀어야지, 저주 때문에 고통받는 것이 아니고.	진정으로 강한 족장이라면 저주를 풀어야지, 저주때문에 고통받는 것이 아니고.
 Accept Jarl <Alias=Jarl>'s surrender	<Alias=Jarl>의 항복을 받기	<Alias=Jarl> 의 항복을 받기
 Actually, now that you mention it...(Attack)	사실, 말이 나와서 말인데... (공격)	흠, 그걸 언급한 이상은... (공격)
 Add a greenhouse with customizable planters.	마음대로 여러 가지 식물을 재배할 수 있는 온실을 추가합니다.	마음대로 여러가지 식물을 재배할 수 있는 온실을 추가합니다.
@@ -55,6 +56,7 @@ Anything dangerous on that small island to the east?	동쪽의 작은 섬에 뭔
 Arcane Enchanter	마법부여대	마법 부여대
 Arcane Enchanter Recipe	마법부여대 제작법	마법 부여대 제작법
 Arch Conjurer	대 소환마법사	대 소환마도사
+Are you a mercenary? You won't find much work here.	용병인가? 여기에는 별로 일거리가 없을 텐데.	용병인가? 여기에는 별로 일거리가 없을텐데.
 Are you aware that Letrush stole Frost?	리트러쉬가 프로스트를 훔친 걸 알고 있소?	리트러쉬가 프로스트를 훔친 걸 알고있소?
 Are you aware there's a plot to steal Frost?	프로스트란 말을 훔치려는 계획에 관해 알고 있소?	프로스트란 말을 훔치려는 계획에 관해 알고있소?
 Are you going to tell me, or am I going to have to beat it out of you? (Brawl)	그냥 순순히 불 거야, 아니면 말할 때까지 패 줄까? (싸움)	그냥 순순히 불 거야, 아니면 말할 때 까지 패 줄까? (싸움)
@@ -62,7 +64,7 @@ Are you nervous about being here?	여기 있는 게 불안합니까?	여기 있�
 Are you sure you know what you're doing?	지금 당신이 뭘 하고 있는지 잘 알고 있는 거요?	지금 당신이 뭘 하고 있는지 잘 알고 있는거요?
 Are you trying to get my attention?	내 주의를 끌고 싶은 거요?	내 주의를 끌고 싶은거요?
 Are you... all right?	당신... 괜찮소?	당신... 괜찮나?
-Aren't you his apprentice? He must have taught you his secrets...	그의 조수가 아니었소? 그가 비밀을 가르쳐 주었을텐데...	그의 조수가 아니었소? 그가 비결을 가르쳐 주었을텐데...
+Aren't you his apprentice? He must have taught you his secrets...	그의 조수가 아니었소? 그가 비밀을 가르쳐 주었을 텐데...	그의 조수가 아니었소? 그가 비결을 가르쳐 주었을텐데...
 Aretino Family Heirloom	아레티노 가문의 가보	아렌티노 가문의 가보
 Arniel's Shade	아니얼의 유령	아니얼의 망령
 Ascendant Conjurer	상급 소환마법사	숙련된 소환마법사
@@ -71,6 +73,7 @@ Ask around about Laelette	레일레트에 관해 여러 사람에게 물어보�
 Assault <Alias=Enemy> but don't kill <Alias=Enemy.pronoun>	<Alias=Enemy>을(를) 습격하되 <Alias=Enemy.pronoun>를 죽이지 않기	<Alias=Enemy>를 습격하되 <Alias=Enemy.pronoun>를 죽이지 않기
 Assess the damage to the Great Hall	대회랑의 피해규모를 가늠하기	대 회랑의 피해규모를 가늠하기
 Assist the people of the Reach (<Global=FriendsCountReach>/<Global=FriendsTotalMajorHold>)	리치 지역의 주민들을 돕기 (<Global=FriendsCountReach>/<Global=FriendsTotalMajorHold>)	리치지역의 주민들을 돕기 (<Global=FriendsCountReach>/<Global=FriendsTotalMajorHold>)
+At least the Blades aren't keeping secrets from me.	적어도 블레이드는 나에게 비밀 같은 건 없습니다.	적어도 블레이드는 나에게 비밀같은 건 없습니다.
 Attacks can be blocked with either a shield or a weapon, but shields are much more effective.	상대방의 공격은 방패나 무기를 들고 있을 때 방어할 수 있습니다. 그러나 방패가 훨씬 더 효과적입니다.	상대방의 공격은 방패나 무기를 들고 있을때 방어할 수 있습니다. 그러나 방패가 훨씬 더 효과적입니다.
 Aversion to Fire	독 - 화염 약점 중급	독 - 화염 중급
 Aversion to Frost	독 - 냉기 약점 중급	독 - 냉기 중급
@@ -103,6 +106,9 @@ Burial Urn	유골 단지	유물 단지
 Buy the Book off Lod	로드에게서 그 책을 구입하기	로드에게 그 책을 구입하기
 Cage	우리	벽장
 Call of the Wild	야생의 외침	아생의 외침
+Calm down. Just tell me what happened.	진정하고. 무슨 일인지 말해주시오.	진정하고. 무슨일인지 말해주시오.
+Calm down. Tell me what happened.	진정하고, 무슨 일인지 말해보시오.	진정하고, 무슨일인지 말해보시오.
+Can I ask you something first?	그 전에 몇 가지 물어봐도 되겠나?	그 전에 몇가지 물어봐도 되겠나?
 Can you help me get the Elder Scroll or not?	엘더스크롤을 얻게 도와줄 수 있소, 없소?	내가 엘더스크롤을 얻게 도와줄 수 있겠나?
 Can you share anything about the Thieves Guild?	도둑 길드에 대한 정보를 알려주시오.	도둑길드에 대한 정보를 알려주시오.
 Cast Soul Trap on an enemy during combat, and his soul will be captured in one of your empty soul gems, when he dies.	전투 중 적에게 소울 트랩 마법을 사용하십시오, 그러면 상대가 죽을 때 그 영혼은 비어있는 소울젬 안에 갇히게 됩니다.	전투 중 적에게 소울 트랩 마법을 사용하십시오, 그러면 상대가 죽을때 그 영혼은 비어있는 소울젬 안에 갇히게 됩니다.
@@ -141,6 +147,7 @@ Destroy the barricade blocking the Jarl's house.	야를의 집을 막고 있는 
 Did you see that?	방금 그거 보셨습니까?	이거 보이십니까?
 Did you send that guard to threaten me?	날 위협하려고 그 경비병을 보낸건가?	날 위협하려고 그 경비병들을 보낸건가?
 Didn't work out that way I assume.	제대로 되지 않았나 보오.	제대로 되지 않았을 거라고 생각되는군요.
+Die, worm!	죽어라, 구더기 같으니!	죽어라, 구더기같으니!
 Discerning the Transmundane	다른 차원의 것을 인식	다른 차원의 것을 알아내기
 Discreetly kill <Alias=Target>	은밀하게 <Alias=Target> 죽이기	신중하게 <Alias=Target> 죽이기
 Do I need to read the scrolls in any particular order?	엘더스크롤을 뭔가 특별한 순서대로 읽어야 하는 거요?	엘더스크롤을 뭔가 특별한 순서대로 읽어야 하는 겁니까?
@@ -156,6 +163,7 @@ Do you know anything about the Forsworn?	포스원에 대해서 뭔가 알고 �
 Do you know anything about these robes?	이 로브에 대해 뭔가 아는 게 있소?	이 로브에 대해 뭔가 아는게 있소?
 Do you know Gaius Maro's schedule?	가이우스 마로의 일정에 관해서 알고 있나?	가이우스 마로의 일정에 관해서 알고있나?
 Do you know Isabelle Rolaine?	이자벨 로레인을 알고 있소?	이자벨 로레인을 알고있소?
+Do you know where I can buy materials like glass or straw?	유리나 밀짚 같은 재료들은 어디서 구할 수 있겠나?	유리나 밀짚같은 재료들은 어디서 구할 수 있겠나?
 Do you like having Haming around?	해밍이 여기에 있는 게 괜찮소?	해밍이 여기에 있는게 괜찮소?
 Do you like working at the Riften Fishery?	리프튼 양식장에서 일하는 게 마음에 드나?	리프튼 양식장에서 일하는게 마음에 드나?
 Do you want to create this item?	이 물품을 제작하겠습니까?	이 물품을 제작할까요?
@@ -165,7 +173,11 @@ Do you worry about raising a family in these dangerous times?	이렇게 위험�
 Does <mag> damage over <dur> seconds. Additional opponents in melee range have a chance to be infected.	<dur> 초 동안 <mag> 의 피해를 입힙니다. 일정한 확률로 주변 적도 감염시킵니다.	<dur> 초 동안 <mag> 의 피해를 입힙니다. 일정한 확률로 주변 적에게 피해를 줍니다.
 Does the Guild provide other services?	길드에서 달리 제공하는 게 있나?	길드에서 달리 제공하는게 있나?
 Does the war mean good business for you?	전쟁 덕분에 장사가 잘되나?	전쟁덕분에 장사가 잘 된다는 소린가?
+Don't worry, I was just leaving.	신경쓰지 마시오, 곧 갈 테니.	신경쓰지 마시오, 곧 갈테니.
+Don't worry, I'm not going to kill Paarthurnax.	걱정마시오. 내가 파써낙스를 죽이러 가진 않을 테니.	걱정마시오. 내가 파써낙스를 죽이러 가진 않을테니.
 Don't worry. I have a plan. I'm going to trap a dragon in Dragonsreach.	걱정마시오. 계획이 있소. 드래곤스리치에 드래곤을 가둘 생각이오.	걱정마시오. 계획이 있소. 드래곤스리치에서 함정으로 잡을 생각이오.
+Don't worry. I'll get them to agree to peace.	걱정 마시오. 내가 그들이 평화 협정을 체결하게끔 만들 테니.	걱정 마시오. 내가 그들이 평화 협정을 체결하게끔 만들테니.
+Don't you want your treasure? Riches, and all that?	보물을 얻고 싶지 않나? 돈과, 그밖에 여러가지 것들 말이야?	보물을 얻고싶지 않나? 돈과, 그밖에 여러가지 것들 말이야?
 Double-Distilled Skooma	재증류한 스쿠마	재 증류한 스쿠마
 Dragon Priest Dagger	드래곤 사제의 단검	드래곤의 사제 단검
 Drunk Cultist	술 취한 신도	술취한 신도
@@ -237,6 +249,7 @@ Go to the Shrine of Talos	탈로스의 성소로 가기	탈로스의 성지로 �
 Goodbye	잘 가시오.	잘 가.
 Greater Magic Resistance	상급 마법 저항력	상급 마법 저항
 Hallowed Dead	신성한 시신	신성한 사체
+Has the war made your travels difficult?	전쟁 때문에 여행하기가 힘듭니까?	전쟁때문에 여행하기가 힘듭니까?
 Have we angered the Ideal Masters?	아이디얼 마스터들을 화나게 한 거요?	아이디얼 마스터들을 화나게 한겁니까?
 Have you heard from Thorald?	쏘럴드에게서 소식은 있었소?	쏘럴드에게 이야기를 들었소?
 Having an outsider do your bidding might seem powerful...	외부인을 부하처럼 부리는 건 강해 보일 수도 있을 텐데...	외부인에게 부탁하는 게 강해 보일지는...
@@ -249,17 +262,20 @@ He's on his way.	그는 곧 올 거요.	그는 곧 올거요.
 Here are the notes you wanted.	당신이 원하던 메모요.	당신이 원하던 쪽지들이오.
 Here's your <Alias=QuestItem>.	여기 <Alias=QuestItem>(이)오.	여기 <Alias=QuestItem> 이오.
 Here's your heartscale.	심장비늘을 가져왔습니다.	심장 비늘을 가져왔습니다.
+Here's your money. He'd better be safe. (Give <Global=BYOHHBA2Ransom> gold)	돈을 낼 테니 그를 풀어줘라. (<Global=BYOHHBA2Ransom> 골드 주기)	돈을 낼테니 그를 풀어줘라. (<Global=BYOHHBA2Ransom> 골드 주기)
 Here, boy. Let me show you what I need.	자, 필요한 게 뭔지 보여주마.	자, 필요한게 뭔지 보여주마.
 Here, take them. (Give fragments)	여기, 받으시오. (조각들을 건넨다)	여기, 받으시오. (파편들을 건넨다)
 Hermaeus Mora wouldn't have helped me without Storn's sacrifice.	스토언의 희생이 없었다면 헤르메우스 모라가 나를 도와주지 않았을 거요.	스토언의 희생이 없었다면 헤르메우스 모라가 나를 도와주지 않았을거요.
 Hewnon Black-Skeever	휴넌 블랙-스키버	휴논 블랙-스키버
 Hey, take it easy.	이봐, 쉽게 좀 가자구.	이봐, 진정하라구.
+Hold on - I just wanted some information.	잠깐만 - 그저 몇 가지 알고 싶을뿐인데.	잠깐만 - 그저 몇가지 알고 싶을뿐인데.
+Hold on. You may know something important.	잠시만, 뭔가 중요한 것을 알고 있을 텐데.	잠시만, 뭔가 중요한 것을 알고 있을텐데.
 Honed Draugr War Axe	연마된 고대 노드 도끼	연마된 드로거 도끼
 Horker and Ash Yam Stew	호커와 화산 참마 스튜	호커와 화산참마 스튜
-How about I pay you some gold and you look the other way? (<BribeCost> gold)	이 돈을 줄테니 잠시 못본 척 하는 게 어떻겠소? (<BribeCost> 골드)	이 돈을 줄테니 잠시 못본 척 하는게 어떻겠소? (<BribeCost> 골드)
+How about I pay you some gold and you look the other way? (<BribeCost> gold)	이 돈을 줄 테니 잠시 못본 척 하는 게 어떻겠소? (<BribeCost> 골드)	이 돈을 줄테니 잠시 못본 척 하는게 어떻겠소? (<BribeCost> 골드)
 How can I find your master?	당신 주인을 어떻게 찾을 수 있습니까?	당신 주인을 어떻게 찾을수 있습니까?
 How can the rest of the people not care?	어떻게 이런 일에 신경 안 쓰는 거지?	어떻게 이런 일에 신경 안 쓰는거지?
-How could bears run you out of business?	왜 곰때문에 사업이 곤란해진 거지?	왜 곰때문에 사업이 곤란해진거지?
+How could bears run you out of business?	왜 곰 때문에 사업이 곤란해진 거지?	왜 곰때문에 사업이 곤란해진거지?
 How could that have happened?	어떻게 그런 일이 생긴 거지?	어떻게 그런 일이 생긴거지?
 How did Aerin save your life?	에린이 어떻게 당신의 목숨을 구해준 거지?	에린이 어떻게 당신의 목숨을 구해준거지?
 How did you become allied with the Thieves Guild?	어떻게 도둑 길드와 동맹을 맺게 된 거지?	어떻게 도둑길드와 동맹을 맺게 된 거지?
@@ -274,9 +290,12 @@ How has Raven Rock needed your help?	레이븐 락에 당신들의 도움이 왜
 How is all this affecting the Guild?	이것들이 길드에 어떤 영향을 주는 거지?	이것들이 길드에 어떤 영향을 주는거지?
 How is your work going so far?	당신의 책은 어디까지 진행되었소?	당신의 책은 어디까지 진행되었습니까?
 How long have you been First Hunter?	얼마나 오랫동안 최고 사냥꾼이었소?	얼마나 오랫동안 1급 사냥꾼이었소?
+How many do you need?	몇 개나 필요하오?	몇개나 필요하오?
 How many pages did you lose?	잃어버린 쪽지가 몇 장이나 되오?	잃어버린 쪽지가 몇장이나 됩니까?
+How old are your horses?	당신의 말은 몇 살이나 되었지?	당신의 말은 몇살이나 되었지?
 How'd you end up here fighting for Ulfric?	자네는 왜 울프릭을 위해 싸우기로 한 거지?	자네는 왜 울프릭을 위해 싸우기로 한거지?
 How'd you get involved?	넌 어떻게 관련된 거지?	넌 어떻게 관련된거지?
+How's your father to blame for your job?	왜 이 직업 때문에 당신 아버지를 원망하는 것이지?	왜 이 직업때문에 당신 아버지를 원망하는 것이지?
 I accept your offer. I'd like to join the Stormcloaks.	제안을 받아들이겠습니다. 스톰클록에 합류하겠습니다.	제안을 받아들이지. 스톰클록에 합류하지.
 I agree. The Empire should turn over <Alias=ImperialMinorHold2>.	동의하오. 제국은 <Alias=ImperialMinorHold2>을(를) 넘겨주어야 합니다.	동의하오. 제국은 <Alias=ImperialMinorHold2>을/를 넘겨주어야 합니다.
 I agree. Ulfric should turn over <Alias=SonsMinorHold2>.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을(를) 넘겨야하오.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을/를 넘겨야하오.
@@ -290,8 +309,10 @@ I did what I thought was right.	옳다고 생각한 일을 했을 뿐입니다.	
 I discovered this note on one of the ash spawn.	화산재 스폰의 잔해들 중에서 이 쪽지를 발견했는데.	화산재 스폰의 잔해들 중에서 이 노트를 발견했는데.
 I do, but you can't leave that way.	알고 있소. 하지만 당신은 그 방법으로는 나갈 수 없소.	그렇소, 하지만 당신은 그 방법으로는 나갈 수 없는데.
 I do. My hand is yours.	그래. 내 손은 당신 거야.	그래. 나의 팔은 당신 거야.
+I don't believe in destiny. But I will stop Alduin.	운명 같은 건 믿지 않지만 내가 알두인을 막을 것입니다.	운명같은 건 믿지 않지만 내가 알두인을 막을 것입니다.
 I don't have time for this. Do you?	이렇게 낭비할 시간따위는 없어. 당신은 있나?	이렇게 낭비할 시간따위는 없어.
 I don't have time for this... I can get rough with you if I have to.	이럴 시간이 없는데... 거칠게 다룰 수도 있어.	이럴 시간이 없는데... 거칠게 다룰 수도 있어.
+I don't need your help. I'll learn Miraak's secrets on my own.	너의 도움은 필요없다. 미락의 비밀은 나 혼자 힘으로 알아낼 테니.	너의 도움은 필요없다. 미락의 비밀은 나 혼자 힘으로 알아낼테니.
 I don't really know. Paarthurnax told me it would work.	전혀 모르겠군. 파써낙스는 그게 통할 거라고 하던데.	전혀 모르겠군. 파써낙스는 그걸로 알 수 있을거라고 하던데.
 I don't suppose there's a way to free you.	당신을 풀어줄 방법은 없을 것 같소.	당신을 풀어줄 방법은 없는 것 같은데.
 I don't think Camilla will be spending any more time with Sven.	카밀라는 더 이상 스벤과 만나지 않을 거요.	카밀라는 더 이상 스벤과 만나지 않을거요.
@@ -301,19 +322,24 @@ I go where I please.	내가 가고 싶으면 가는 거지.	내가 가고 싶으
 I got the fragment.	조각을 가져왔습니다.	조각들을 가져왔습니다.
 I guess I'll have to trust you.	당신을 믿을 수밖에 없겠군.	당신을 믿을 수 밖에 없겠군.
 I had questions about Weylin.	웨일린에 대해 궁금한 게 있는데.	웨일린에 대해 궁금한게 있는데.
-I had some questions about this city.	이 도시에 대해 몇가지 물어볼 것이 있습니다.	이 도시에 대해 몇가지 물어볼것이 있습니다.
+I had some questions about this city.	이 도시에 대해 몇 가지 물어볼 것이 있습니다.	이 도시에 대해 몇가지 물어볼것이 있습니다.
 I had to kill her. She attacked me.	그녀를 죽일 수밖에 없었소. 나를 공격했기 때문에...	그녀를 죽일 수 밖에 없었소. 나를 공격했기 때문에...
 I have Kodlak's fragment.	코들락이 가지고 있던 조각을 가져왔습니다.	코들락이 가지고 있던 조각들을 가져왔습니다.
 I have returned from <Alias=Dungeon> with the <Alias=Remains>.	<Alias=Dungeon>에 있던 <Alias=Remains>을(를) 가지고 돌아왔소.	<Alias=Dungeon>에 있던 <Alias=Remains>을 가지고 돌아왔소.
 I have slain <Alias=DeadFriend> to gain your favor.	당신의 호의를 얻기 위해 <Alias=DeadFriend>을(를) 죽였습니다.	당신의 호의를 얻기 위해 <Alias=DeadFriend>를 죽였습니다.
-I have some things to sell.	몇가지 팔고싶은 게 있는데.	몇가지 팔고싶은게 있는데.
+I have some information about Fort Frostmoth.	프로스트모스 요새에 관한 정보가 몇 가지 있소.	프로스트모스 요새에 관한 정보가 몇가지 있소.
+I have some questions about your daughter.	당신의 딸에 대해 몇 가지 질문이 있습니다.	당신의 딸에 대해 몇가지 질문이 있습니다.
+I have some things to sell.	몇 가지 팔고 싶은 게 있는데.	몇가지 팔고싶은게 있는데.
 I have to know what Miraak knows if I want to stop him.	그를 막기 위해서는 미락이 알고 있는 게 무엇인지 밝혀내야 합니다.	그를 막기 위해서는 미락이 알고 있는게 무엇인지 밝혀내야 합니다.
 I have your amulet.	아뮬렛을 가져왔소.	목걸이를 가져왔소.
 I have. Cicero won't be bothering you again.	그렇소. 시세로는 더 이상 귀찮게 하지 않을 거요.	그렇소. 시세로는 더 이상 귀찮게 하지 않을거요.
 I heard some shouting about the Forsworn. That was it.	포스원 어쩌고 소리치는 걸 들었는데, 그것뿐이오.	포스원 어쩌고 소리치는 걸 들었는데, 그것 뿐이오.
 I heard you know about Elder Scrolls.	당신이 엘더스크롤에 관해 안다고 들었소.	당신이 엘더스크롤에 관해 아는 게 있다고 들었는데.
-I know what I'm doing.	내가 뭘하는지 잘 알고 있어.	내가 뭘하는지 잘 알고있어.
+I know the phrase. I'll get Cicero - you go home.	암호문은 알고 있어. 내가 시세로를 처리할 테니 넌 돌아가.	암호문은 알고 있어. 내가 시세로를 처리할테니 넌 돌아가.
+I know what I'm doing.	내가 뭘 하는지 잘 알고 있어.	내가 뭘하는지 잘 알고있어.
 I made a mistake. I want to go ahead with the ceremony.	제가 실수했습니다. 결혼식을 열고 싶습니다.	실수했군. 결혼식을 열고 싶습니다.
+I need some things for the Sanctuary.	성역을 위해 필요한 게 몇 가지 있는데.	성역을 위해 필요한 게 몇가지 있는데.
+I need some training in Lockpicking.	잠금해제 기술훈련을 받고 싶은데.	잠금해제 기술훈련을 받고싶은데.
 I need to rearrange your equipment.	네 장비들을 바꾸는 게 좋겠군.	네 장비들을 바꾸는게 좋겠군.
 I never wanted to help you. Let me go!	절대로 널 돕지 않을 거다. 내보내 줘!	절대로 널 돕지 않을거다. 내보내 줘!
 I presume this <Alias=Loot> belongs to you?	이 <Alias=Loot>은(는) 당신 거라고 생각되는데?	이 <Alias=Loot>는 당신 거라고 생각되는데?
@@ -325,30 +351,45 @@ I think I'll just kill you...	그냥 널 죽여버리는 게...	그냥 널 죽�
 I think they may have met after all.	결국 그 둘은 만났던 것 같군.	아무튼 그 둘은 만났던 것 같군.
 I think we should learn something practical.	뭔가 실용적인 것을 배우는 게 좋을 것 같습니다.	뭔가 실용적인 것을 배우는게 좋을 것 같습니다.
 I think we should part ways.	헤어지는 게 좋을 것 같군.	헤어지는게 좋을 것 같군.
+I think you can do better than that. (Persuade)	그것보다는 더 낼 수 있을 텐데. (설득)	그것보다는 더 낼 수 있을텐데. (설득)
+I think you know it's not as simple as that.	그렇게 단순하지 않다는 걸 당신도 알고 있을 텐데.	그렇게 단순하지 않다는 걸 당신도 알고 있을텐데.
+I think you know what it is.	뭔지 알고 있을 텐데.	뭔지 알고 있을텐데.
 I think you need to shut your mouth. (Brawl)	그만 입을 닥치는 게 어때. (싸움)	그만 입을 닥치는게 어때. (싸움)
+I think you owe me one. (Persuade)	나에게 빚진게 하나 있을 텐데. (설득)	나에게 빚진게 하나 있을텐데. (설득)
 I thought the Empire needed to be taken down a notch.	제국의 콧대를 좀 꺾어 놓을 필요가 있는 것 같더군.	제국은 좀 진정할 필요가 있는 것 같더군.
 I thought you needed to be taken down a notch.	댁의 콧대를 좀 꺾어 놓을 필요가 있는 것 같더군.	댁은 좀 진정할 필요가 있는 것 같더군.
 I understand you know how to change someone's appearance.	외모를 변경하는 방법을 당신이 알고 있다고 하던데.	외모를 변경하는 방법을 당신이 알고있다고 하던데.
 I understand you need help.	당신에게 도움이 필요하다고 들었소.	당신에게 도움이 필요하다는 점을 이해했소.
+I want answers about the Forsworn.	포스원에 관해 답변을 듣고 싶군.	포스원에 관해 답변을 듣고싶군.
+I want to know about Thonar.	토나에 대해 알고 싶다.	토나에 대해 알고싶다.
+I want to know about Thorald Gray-Mane.	쏘럴드 그레이-메인에 관해서 알고 싶은데.	쏘럴드 그레이-메인에 관해서 알고싶은데.
 I want to unravel the mysteries of Aetherius.	에테리우스의 신비를 풀고 싶습니다.	에테리어스의 신비를 풀고 싶습니다.
 I want you to leave Omluag alone.	옴러그를 내버려두시오.	옴러그를 내버려두시오.
 I was in Helgen when the dragon attacked.	드래곤이 헬겐을 공격했을 때 거기에 있었단다.	드래곤이 헬겐을 공격했을때 거기에 있었단다.
 I was just fulfilling my destiny as Dragonborn.	저는 드래곤본으로서 제 운명을 완수했을 뿐입니다.	나는 드래곤본으로서 제 운명을 완수했을 뿐입니다.
 I was set free. I could've gone anywhere. I came here to fight for the Empire.	나는 자유의 몸이 되었고 어디든 갈 수 있었소. 난 제국을 위해 싸우려고 여기에 왔소.	나는 자유의 몸이 되었고 어디든 갈 수 있소. 난 제국을 위해 싸우려고 여기에 왔소.
 I was set free. I could've gone anywhere. I came here to fight the Empire.	나는 자유의 몸이 되었고 어디든 갈 수 있었소. 난 제국과 싸우려고 여기에 온 거요.	나는 자유의 몸이 되었고 어디든 갈 수 있소. 난 제국과 싸우려고 여기에 온 거요.
+I won't tell anyone. Promise. (Persuade)	아무에게도 말하지 않겠다고 약속할 테니. (설득)	아무에게도 말하지 않겠다고 약속할테니. (설득)
 I would kill him before he drew his sword.	그가 검을 꺼내기도 전에 죽일 수 있을 거요.	그가 검을 꺼내기도 전에 죽일 수 있을거요.
+I would think you'd have more respect for a Nightingale.	나이팅게일에게 경의를 표해야 할 텐데.	나이팅게일에게 경의를 표해야 할텐데.
+I would use the blue thing.	나라면 파란 걸 사용할 텐데.	나라면 파란 걸 사용할텐데.
+I'd ask the same question of you.	너에게 같은 질문을 하고 싶은데.	너에게 같은 질문을 하고싶은데.
+I'd like to hear another song. (5 Gold)	다른 노래를 듣고 싶군. (5 골드)	다른 노래를 듣고싶군. (5 골드)
 I'd rather not do that.	그 일은 하지 않는 게 좋겠군.	그 일은 하지 않는게 좋겠군.
 I'd rather not handle that.	그 일은 하지 않는 게 좋겠군.	그 일은 하지 않는게 좋겠군.
 I'll get rough with you if I have to. (Brawl)	필요하다면 힘으로 알아낼 수밖에 없지. (싸움)	필요하다면 힘으로 알아낼 수 밖에 없지. (싸움)
 I'll get rough with you if I have to. (Intimidate)	필요하다면 힘으로 알아낼 수밖에 없겠는데. (위협)	필요하다면 힘으로 알아낼 수 밖에 없겠는데. (위협)
 I'll keep quiet about your scam, but you owe me.	네 놈이 사기친 건 입 다물어 주지, 대신 나한테 빚을 진 거야.	네 놈이 사기친 건 입 다물어 주지, 대신 나한테 빚을 진거야.
 I'll pay for the hilt. (<BribeCost> gold)	그 칼자루 값을 치르지. (<BribeCost> 골드)	그 단검 손잡이 값을 치르지. (<BribeCost> 골드)
+I'll pay. Don't worry.  (<CrimeGold> gold)	지불할 테니 걱정마시오. (<CrimeGold> 골드)	지불할테니 걱정마시오. (<CrimeGold> 골드)
 I'm a traveler. I have questions.	여행자요. 궁금한 게 있소.	여행자요. 궁금한게 있소.
 I'm back from <Alias=Dungeon> with the <Alias=Item>.	<Alias=Dungeon>에서 <Alias=Item>을(를) 가지고 돌아왔소.	<Alias=Dungeon>에서 <Alias=Item>을 가지고 돌아왔소.
 I'm going in this way. Stand aside! (Intimidate)	난 이 길로 갈 거야. 비켜! (위협)	난 이 길로 갈거야. 비켜! (위협)
+I'm here for Elgrim's ore sample.	엘그림의 광석 표본 때문에 왔소.	엘그림의 광석 표본때문에 왔소.
 I'm just trying to find her.	단지 그녀를 찾으려는 것뿐이야.	단지 그녀를 찾으려는 것 뿐이야.
 I'm looking for a courier.	전령을 찾고 있소.	배달부를 찾고 있소.
 I'm looking for a Khajiit... might be a Thalmor spy.	카짓을 찾고 있소... 탈모어의 첩자인 듯 한데.	카짓을 찾고있소... 탈모어의 첩자인 듯 한데.
+I'm looking for an old guy hiding out in Riften, probably in the Ratway.	리프튼에 숨어 있는 늙은이를 찾고 있소, 아마도 쥐소굴에 있을 텐데.	리프튼에 숨어 있는 늙은이를 찾고 있소, 아마도 쥐소굴에 있을텐데.
 I'm married. (Lie)	나는 결혼했어. (거짓)	나는 결혼했어. (거짓말)
 I'm not doing anything yet.	아직 아무것도 하겠다고 한 적 없는데.	나는 아직 아무것도 하지 않았는데.
 I'm not.	관심 없어.	아직은.
@@ -363,6 +404,7 @@ I've made my peace. I'm ready.	마음의 정리는 끝났어. 준비 되었어.	
 I've rescued <Alias=Prisoner> from <Alias=Dungeon>.	<Alias=Dungeon>에서 <Alias=Prisoner>을(를) 구출했소.	<Alias=Dungeon>에서 <Alias=Prisoner> 을 구출했소.
 I've retrieved the <Alias=Item> from <Alias=Dungeon>.	<Alias=Dungeon>에서 <Alias=Item>을(를) 되찾아 왔소.	<Alias=Dungeon>에서 <Alias=Item>을 되찾아 왔소.
 I've run across these Alik'r before. I know where they're hiding.	전에 알리키어와 만난 적이 있어. 그들이 숨어있는 곳을 알고 있지.	전에 알리키어와 만난 적이 있어. 그들이 숨어있는 곳을 알고있지.
+I've saved her from your foolish plan.	당신의 바보 같은 계획에서 그녀를 구해냈소.	당신의 바보같은 계획에서 그녀를 구해냈소.
 Identify the Crystal Shard	크리스털 파편의 정체를 알아내기	크리스털 조각의 정체를 알아내기
 If I didn't know better, I'd say you were trying to kill me.	자세하게 알지 못했다면, 당신이 날 죽이려 했다고 생각했을 거야.	자세하게 알지 못했다면, 당신이 날 죽이려 했다고 생각했을거야.
 Imbuing Switch	주입 스위치	염색 스위치
@@ -378,10 +420,13 @@ Is that where you were attacked?	거기가 당신이 공격받은 곳이오?	거
 Is there anything I should be aware of?	미리 알아두면 좋은 게 있습니까?	미리 알아두면 좋은게 있습니까?
 Is this the tomb?	이게 무덤인가?	이 무덤인가?
 It is done. <Alias=Spouse> has been welcomed into the family.	끝났습니다. <Alias=Spouse>이(가) 우리의 가족이 되었습니다.	끝났습니다. <Alias=Spouse>가 우리의 가족이 되었습니다.
+It looks like an ash spawn attack.	화산재 스폰의 공격 같아 보이던데.	화산재 스폰의 공격같아 보이던데.
+It looks like at least some of the miners survived this time.	그래도 이번에는 광부들이 몇 명은 살아남은 것으로 보이는군.	그래도 이번에는 광부들이 몇명은 살아남은 것으로 보이는군.
 It sounds like the court mage has been experimenting.	궁정 마법사의 실험인가 본데.	궁중 마법사의 실험인가 본데.
 It was like this when I found it.	발견했을 때 이미 이런 상태였소.	발견했을때 이미 이런 상태였소.
 It was never a request.	부탁하는 게 아니다.	부탁하는게 아니다.
 It wasn't me. I've been framed!	내가 아닌데, 누명을 쓴 거야!	내가 아닌데, 누명을 쓴거야!
+It'll turn up sooner or later.	언젠가는 밝혀질 텐데.	언젠가는 밝혀질텐데.
 It's all right. But have you found anything?	괜찮소. 뭔가 찾은 게 있소?	괜찮소. 뭔가 찾은게 있소?
 It's important that I find him right away. (Persuade)	당장 그를 찾아내는 게 중요한 일이오. (설득)	당장 그를 찾아내는게 중요한 일이오. (설득)
 It's in everyone's best interest if you return the amulet. (Persuade)	그 아뮬렛을 돌려주면 모두에게 이득이 될 거요. (설득)	그 아뮬렛을 돌려주면 모두에게 이득이 될거요. (설득)
@@ -397,6 +442,7 @@ Learn more about the Thieves Guild from Vex	벡스에게 도둑 길드에 관해
 Learn the Word of Power from Borri	보리 사범에게 힘의 단어를 배우기	마스터 보리에게 힘의 단어를 배우기
 Lesser Magic Resistance	하급 마법 저항력	하급 마법 저항
 Let me know if you need anything.	뭔가 필요한 게 있으면 말해.	뭔가 필요한게 있으면 말해.
+Let Ulfric have his way now. He'll have to give ground later.	울프릭이 맘대로 하게 놔둡시다. 나중에 대가를 치르게 될 테니까.	울프릭이 맘대로 하게 놔둡시다. 나중에 대가를 치르게 될테니까.
 Letter to Beem-Ja	빔자에게 주는 편지	빔-자에게 주는 편지
 Lightning Apparatus	번개 장치	빛나는 장치
 Lisbet	리즈벳	리스벳
@@ -418,8 +464,11 @@ Malign Aversion to Shock	독 - 전격 약점 최상급	독 - 전격 최상급
 Mara is the goddess of love and compassion. She has a temple in Riften.	마라는 사랑과 자비의 여신입니다. 그녀의 신전은 리프튼에 있습니다.	마라는 사랑과 자비의 여신입니다. 그녀의 신전은 리프튼 에 있습니다.
 Maurice said that renewal is more important than maintenance.	모리스는 유지하는 것보다 재탄생이 더 중요하다고 했소.	모리스는 유지하는 것보다 개선이 더 중요하다고 했소.
 Maybe a shorter title is in order?	책의 제목은 조금 더 짧은 편이 좋지 않겠소?	책의 제목은 조금 더 짧은 편이 좋지 않습니까?
+Maybe this will change your mind. (<BribeCost> gold)	이 돈이면 생각을 바꿀 수 있을 텐데. (<BribeCost> 골드)	이 돈이면 생각을 바꿀 수 있을텐데. (<BribeCost> 골드)
+Maybe this will put your mind at ease. (<bribecost> gold)	이 돈이면 뭔가 생각이 날 텐데. (<bribecost> 골드)	이 돈이면 뭔가 생각이 날텐데. (<bribecost> 골드)
 Maybe you should leave me out of your speech.	연설에서 날 빼는 게 좋을 것 같군요.	연설에서 날 빼는게 좋을 것 같군요.
 Maybe you should speak to the authorities.	정부에 말해보는 게 좋을 것 같은데.	정부에 말해보는게 좋을 것 같은데.
+Maybe you'll see one yourself soon. Helgen isn't that far from here.	아마 곧 볼 수 있을 텐데. 헬겐은 가까우니까.	아마 곧 볼 수 있을텐데. 헬겐은 가까우니까.
 Meet Bujold at Hrothmund's Barrow	흐로스문드의 무덤에서 부졸드를 만나기	흐로스문드 무덤에서 부졸드를 만나기
 Meet Karliah at the standing stone	선돌 앞에서 칼라이아와 만나기	비석앞에서 칼라이아와 만나기
 Meet Mercer Frey outside Snow Veil Sanctum	스노우 베일 성역 바깥에서 머서 프레이와 만나기	스노우 베일성역 바깥에서 머서 프레이와 만나기
@@ -436,6 +485,7 @@ My business is my own. Just tell me what I need to know.	당신이 신경 쓸 �
 Mystic Dagger	신비한 단검	신비한 마법 단검
 Nchardak Great Chamber	느챠닥 대석실	느챠닥 대매장묘실
 Neither side is making much headway. What's the harm in talking to Ulfric?	어느 쪽도 큰 진전이 없으니, 울프릭과 이야기한다고 해서 나쁠 건 없지 않습니까?	어느 쪽이든 큰 진전이 없으니 울프릭에게 이야기 한다고 해서 나쁠건 없겠지?
+Never mind, I'll look somewhere else.	신경쓰지 마시오. 다른 곳을 찾아볼 테니.	신경쓰지 마시오. 다른 곳을 찾아볼테니.
 Never mind. It's not important.	신경쓰지 마시오. 별로 중요한 게 아닙니다.	신경쓰지 마시오. 별로 중요한게 아닙니다.
 New owner? What are you talking about?	새 주인이라고? 무슨 소리를 하는 거지?	새 주인이라고? 무슨 소리를 하는거지?
 Nirya wanted me to steal your notes.	니리야가 당신의 메모를 훔쳐달라더군.	니리야가 당신의 쪽지를 훔쳐달라더군.
@@ -456,11 +506,13 @@ Orange Dartwing	주황 파리잠자리	노란 파리잠자리
 Our Family lives on, Nazir. You have to trust me.	우리는 살아 남을 거야, 나지어. 나를 믿어.	우리는 살아 남을거야, 나지어. 나를 믿어.
 Over my dead body.	내 시체를 밟고 건너야 할 거야.	내 시체를 밟고 건너야 할거야.
 Pay Nazir the fine	나지어에게 벌금 내기	나지어에게 벌금내기
+Pay them, or things will get ugly. (Intimidate)	돈을 내지 않으면 아주 곤란해 질 텐데. (위협)	돈을 내지 않으면 아주 곤란해 질텐데. (위협)
 Pelagius Wing Key	열쇠 - 펠라지우스 구역	열쇠 - 펠라지우스 별관
 Place a workbench in the Storage Room.	저장고에 작업선반을 설치합니다.	창고에 작업선반을 설치합니다.
 Place the Aetherium Shards	에테리움 파편들을 놓기	에테리움 조각들을 놓기
 Place the burial urn in Yngol Barrow	잉골 고분에 유골 단지를 놓기	잉골 고분에 유물 단지를 놓기
 Plant the <Alias=Evidence> in <Alias=WealthyHome> in <Alias=City>	<Alias=City>에 있는 <Alias=WealthyHome>에 <Alias=Evidence> 몰래 두고오기	<Alias=City>에 있는 <Alias=WealthyHome> 에 <Alias=Evidence> 몰래 두고오기
+Please be patient. I'll get you your money.	좀 참아보시오. 그 돈을 받아줄 테니.	좀 참아보시오. 그 돈을 받아줄테니.
 Pleated Shoes	야를의 주름 잡힌 신발	야를의 주름잡힌 신발
 Pommel Stone of Mehrunes' Razor	메이룬스의 면도칼 자루 장식	메이룬스의 면도칼자루 장식
 Portal to Darkfall Grotto	차원문 - 다크폴 암굴	차원문 - 다크폴 동굴
@@ -529,6 +581,7 @@ Shards of Mehrunes' Razor	메이룬스의 면도칼 칼날 파편	메이룬스�
 She wanted to go home, so I took her to her castle.	집으로 돌아가길 원하길래, 그녀의 성으로 데려다 주었소.	집으로 돌아가길 원하길래, 데려다 주었소.
 She wants you to return to Temple.	당신이 신전에 다시 나오길 원하더군.	당신이 사원에 다시 나오길 원하더군.
 She's in Ivarstead using the name Lynly.	린리라는 이름으로 아이바스테드에 살고 있소.	린리라는 이름으로 아이바스테드에 살고있소.
+She's not yours. Stop this nonsense. (Persuade)	그녀는 네 것이 아니야. 바보 같은 짓을 그만 둬. (설득)	그녀는 네 것이 아니야. 바보같은 짓을 그만 둬. (설득)
 Shriekwind Bastion	쉬리크윈드 보루요새	쉬리크윈드 전망대
 Shrine Base	성소 받침대	신전
 Shrouded Cowl Maskless	암살자의 가면 없는 두건	암살자의 가면없는 두건
@@ -540,9 +593,12 @@ Slay the other cultists	다른 광신도들을 죽이기	다른 광신자들을 
 So we need to deal with Malyn somehow.	메일린을 어떻게든 처리해야만 하는 거군.	메일린을 어떻게든 처리해야만 하는거군.
 So what happened to him?	그래서, 무슨 일이 일어난 거지?	그래서, 무슨 일이 일어난거지?
 So what is the Poetic Edda?	그 '운문 에다'라는 게 뭡니까?	그 '운문 에다'라는게 뭡니까?
+So what's the problem? I'm sure he'll pay you...	뭐가 문제지? 그가 돈을 낼 텐데...	뭐가 문제지? 그가 돈을 낼텐데...
 So what's the story behind the Rueful Axe.	그래서 그 회한의 도끼에 얽힌 이야기란게 뭐지?	그래서 그 회한의 도끼에 얽힌 이야기란게 뭐지?
 So what's your price for the final Word of Power?	그래서, 마지막 힘의 단어를 가르쳐주는 대가로 뭘 원하는 거요?	그래서, 마지막 힘의 단어를 가르쳐주는 대가로 뭘 원하는거요?
+So why not help him? I'm sure he'll pay you.	왜 그를 도와주지 않소? 확실히 돈을 지불 할 텐데.	왜 그를 도와주지 않소? 확실히 돈을 지불 할텐데.
 So with the Ebonmere closed, our luck's run dry.	에본미어가 닫혀서 우리의 운이 사라진 거군.	에본미어가 닫혀서 우리의 운이 사라진거군.
+So you're treated badly because of your work?	그러니까 당신의 직업 때문에 부당한 대우를 받고 있다고요?	그러니까 당신의 직업때문에 부당한 대우를 받고 있다고요?
 So, should I drop this statue down a well?	그러면, 이 동상을 우물에 떨어뜨려도 되는 거지?	그러면, 이 동상을 우물에 떨어뜨려도 되는거지?
 So, where is the Scroll?	그럼, 엘더스크롤은 어디 있소?	그럼, 엘더스크롤은 어디있지?
 Solitude Military Camp	솔리튜드 군영지	솔리튜드 군용 주둔지
@@ -606,6 +662,7 @@ Tell <Alias.ShortName=Questgiver> what <Alias.ShortName=Target> said about the o
 Tell me about this temple.	이 신전에 대해 말해주시오.	이 사원에 대해 말해주시오.
 Temple Ancestral Tomb	신전 선조의 무덤	사원 선조의 무덤
 That was... a bit before my time.	그건... 내가 태어나기 한참 전의 일이오.	그것은... 몇시대 전에 일어났던 일인데.
+That's all I wanted to ask.	내가 알고 싶은 것은 그게 전부요.	내가 알고싶은 것은 그게 전부요.
 That's why I'm here. Let's go.	그것 때문에 온 거요. 자 갑시다.	그것 때문에 온거요. 자 갑시다.
 The <Alias=Beast> is dead.	<Alias=Beast>은(는) 죽었다.	<Alias=Beast>는 죽었다.
 The <Alias=Boss> at <Alias=Dungeon> has been dealt with.	<Alias=Dungeon>에 있던 <Alias=Boss>은(는) 처리되었소.	<Alias=Dungeon>에 있던 <Alias=Boss>는 처리되었소.
@@ -615,7 +672,9 @@ The Apprentice Stone ability doubles your Magicka and regeneration speed, but ma
 The bandit leader at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>의 산적 두목은 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 의 산적 두목은 죽었습니다. 현상금을 받으러 왔습니다.
 The bandits won't be a problem anymore.	산적들은 더 이상 문제가 되지 않을 거요.	산적들은 더 이상 문제가 되지 않을거요.
 The best time to negotiate is from a position of strength.	유리한 위치에 있을 때 협상하기에 가장 좋습니다.	유리한 위치에 있을때 협상하기에 가장 좋습니다.
+The Dawnguard would want me to kill you.	던가드는 당신을 죽이길 바랄 텐데.	던가드는 당신을 죽이길 바랄텐데.
 The dragon at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>에 있던 드래곤은 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 에 있던 드래곤은 죽었습니다. 현상금을 받으러 왔습니다.
+The dragonstone was some kind of map?	드래곤의 석판은 일종의 지도 같은 건가 보군?	드래곤의 석판은 일종의 지도같은 건가 보군?
 The Five Far Stars	멀리 떨어진 다섯 개의 별	다섯개의 별
 The Fourth Era began 200 years ago when Martin Septim sacrificed himself to save the world from the Oblivion Crisis.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대 위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.
 The giant at <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>에 있던 거인은 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 에 있던 거인은 죽었습니다. 현상금을 받으러 왔습니다.
@@ -626,6 +685,7 @@ The Imperials lost control of <Alias=Hold>.	제국군이 <Alias=Hold>을(를) �
 The Keepers of the Razor	면도칼의 파수꾼	메이룬스 단검의 파수꾼
 The leader of <Alias=BountyLocation> is dead. I'm here for the bounty.	<Alias=BountyLocation>의 우두머리는 죽었습니다. 현상금을 받으러 왔습니다.	<Alias=BountyLocation> 의 우두머리는 죽었습니다. 현상금을 받으러 왔습니다.
 The Nords first conquered Markarth from the native people of the Reach thousands of years ago.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 빼앗았습니다.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 뺏았습니다.
+The siege must have been hard on the city's merchants.	성 공격 때문에 도시의 상인들이 힘들었겠군.	성 공격때문에 도시의 상인들이 힘들었겠군.
 The Stormcloaks gained control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 점령했습니다.	스톰클록군이 <Alias=Hold> 를 점령했습니다.
 The Stormcloaks kept control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 지켜냈습니다.	스톰클록군이 <Alias=Hold>를 지켜냈습니다.
 The Stormcloaks lost control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 잃었습니다.	스톰클록군이 <Alias=Hold> 를 잃었습니다.
@@ -642,14 +702,22 @@ Then why stay here? Why not live somewhere safer?	그렇다면 왜 여기에 있
 Then you'll pay in more than just coin. (Brawl)	그렇다면 돈 외에 더 지불해야 할 거야. (싸움)	그렇다면 돈 외에 더 지불해야 할거야. (싸움)
 There are advantages to gaining <Alias=ImperialMinorHoldCapital>. (Persuade)	<Alias=ImperialMinorHoldCapital>을(를) 얻으면 여러 이점이 있습니다. (설득)	<Alias=ImperialMinorHoldCapital> 을/를 얻으면 여러 이점이 있습니다. (설득)
 There are advantages to gaining <Alias=SonsMinorHoldCapital>. (Persuade)	<Alias=SonsMinorHoldCapital>을(를) 얻으면 여러 이점이 있습니다. (설득)	<Alias=SonsMinorHoldCapital> 을/를 얻으면 여러 이점이 있습니다. (설득)
+There are others here like you?	여기에 당신 같은 사람이 또 있소?	여기에 당신같은 사람이 또 있소?
+There are some things I want to ask you about.	당신에게 질문할 것이 몇 가지 있는데.	당신에게 질문할 것이 몇가지 있는데.
 There are those who believe that when night descends upon Skyrim, werewolves descend upon the unwary...	어떤 사람들은 스카이림에 어둠이 내리면 늑대인간이 방심하고 있는 인간을 덮친다고 믿고 있습니다...	어떤사람들은 스카이림에 어둠이 내리면 늑대인간이 방심하고 있는 인간을 덮친다고 믿고 있습니다...
+There aren't many Redguards in Skyrim. What brought you here?	스카이림에 레드가드는 흔치 않은데, 여기에는 무슨 일로 오게 된 건가?	스카이림에 레드가드는 흔치 않은데, 여기에는 무슨일로 오게 된 건가?
+There has to be another way.	뭔가 다른 방법이 있을 텐데.	뭔가 다른 방법이 있을텐데.
 There is only one cure for your madness, Cicero. Me.	자네의 그 광기를 치료할 방법은 하나뿐이야, 시세로. 바로 나지.	자네의 그 광기를 치료할 방법은 하나 뿐이야, 시세로. 바로 나지.
+There must be a way.	무슨 방법이 있을 텐데.	무슨 방법이 있을텐데.
 There must be something I can do.	내가 할 수 있는 게 있을 거요.	내가 할 수 있는 게 있을거요.
-There must be something you want.	뭔가 원하는 게 있을텐데.	뭔가 원하는게 있을텐데.
+There must be something you want.	뭔가 원하는 게 있을 텐데.	뭔가 원하는게 있을텐데.
+There would be treasure to share... (Persuade)	나눠 가질만한 보물도 있을 텐데... (설득)	나눠 가질만한 보물도 있을텐데... (설득)
+They'll show up eventually I suppose.	그들은 아마 결국에는 나타날 텐데.	그들은 아마 결국에는 나타날텐데.
 They'll understand. Trust me. (Persuade)	그들은 이해할 거요. 나를 믿으시오. (설득)	그들은 이해할거요. 나를 믿으시오. (설득)
 Thieves Guild Fence Chest	도둑 길드의 장물 보관함	도둑길드의 장물 보관함
 Third Letter from EEC	동제국 회사의 세 번째 편지	동제국 회사의 세번째 편지
 Thirsk, A Revised History	터스크, 역사의 재조명	터스크, 역사의 재 조명
+This will be easier without you getting in my way.	네가 방해하지만 않는다면 훨씬 쉬워질 텐데.	네가 방해하지만 않는다면 훨씬 쉬워질텐데.
 Three Thieves	세 명의 도둑들	세명의 도둑들
 To Be Read Immedately!	즉시 읽을 것!	즉시 읽을것!
 Too frightened to leave home? (Brawl)	집을 떠나는 게 그렇게 무서운가? (싸움)	집을 떠나는게 그렇게 무서운가? (싸움)
@@ -681,6 +749,7 @@ Visiting Advisor	방문 중인 조언자	여행 중인 조언자
 Visiting Noble	방문 중인 귀족	방문중인 귀족
 Wait for Erandur to dispel the barrier	에란더가 장벽을 제거할 때까지 기다리기	장벽을 제거하기 위해 에란더를 기다리기
 Wait for Falion to complete the ritual	팔리온이 의식을 마칠 때까지 기다리기	팔리온이 의식을 마칠때까지 기다리기
+We'll require... significant compensation. Can you pay the price?	우리는... 상당히 많은 보수를 요구할 텐데. 당신이 그걸 지불할 수 있을까?	우리는... 상당히 많은 보수를 요구할텐데. 당신이 그걸 지불할 수 있을까?
 We're called the Dawnguard. We're fighting a vampire conspiracy.	우리는 '던가드'요. 흡혈귀의 계략에 맞서 싸우고 있소.	우리는 '던가드'입니다. 흡혈귀의 계략에 맞서 싸우고 있습니다.
 We're very close. I can't wait to see them again.	아주 친하지. 어서 다시 보고 싶군.	아주 가까웠지. 다시 보고 싶군.
 Weak Aversion to Fire	독 - 화염 약점 하급	독 - 화염 하급
@@ -708,7 +777,9 @@ What do you know about Ancano?	안카노에 대해 아는 게 있습니까?	안�
 What do you know about it?	이 일에 대해 뭘 알고 있소?	이 일에 대해 뭘 알고있소?
 What do you know about the Psijic Order?	씨직 오더에 대해서 아는 게 있습니까?	씨직 오더에 대해서 아는게 있습니까?
 What do you mean "supposed"?	'이른바'라니, 무슨 뜻이지?	'그랬어야 한다'는건 무슨 뜻이지?
+What do you mean, "like you"?	'당신 같은 사람'이라니 무슨 뜻이오?	'당신같은 사람'이라니 무슨 뜻이오?
 What do you want with the Elder Scroll?	엘더스크롤을 가지고 뭘 하려는 거요?	엘더스크롤을 가지고 뭘 하려는 거지?
+What does a kid do for fun around here?	애들은 이 주변에서 뭘 하고 놀지?	애들은 이 주변에서 뭘하고 놀지?
 What does he want?	그가 원하는 게 뭐지?	그가 원하는게 뭐지?
 What else do I need to know?	내가 알아둬야 하는 게 더 있소?	내가 알아둬야 하는게 더 있소?
 What else is there to be learned about Conjuration magic?	소환마법에 대해 더 배울 수 있습니까?	소환마법에 대해 더 배울수 있습니까?
@@ -722,7 +793,7 @@ What happened to House Hlaalu as a result?	그래서 흘랄루 가문은 어떻�
 What happened to the dragon?	그 드래곤에게 무슨 일이 있었던 거요?	그 드래곤에게 무슨 일이 있었던 겁니까?
 What happened to your blade, Grimsever?	당신의 검인 그림세버는 어떻게 된 거지?	당신의 검인 그림세버는 어떻게 된거지?
 What happened to your brother?	당신의 형제에게 무슨 일이 생긴 거요?	당신의 형제에게 무슨 일이 생긴거요?
-What happened when I Shouted at the Wind Stone?	바람의 바위에 함성을 사용했을 때 무슨일이 생긴 거요?	바람의 바위에 함성을 사용했을 때 무슨일이 생긴거요?
+What happened when I Shouted at the Wind Stone?	바람의 바위에 함성을 사용했을 때 무슨 일이 생긴 거요?	바람의 바위에 함성을 사용했을 때 무슨일이 생긴거요?
 What happened? How did I get here?	무슨 일이지? 어떻게 여기로 오게 된 거지?	무슨 일이지? 어떻게 여기로 오게 된거지?
 What is a heart stone?	하트스톤이라는 게 뭐지?	하트스톤이라는게 뭐지?
 What is it Arniel wanted you to get?	아니얼이 원하는 게 뭐지?	아니얼이 원하는게 뭐지?
@@ -735,6 +806,7 @@ What kind of trouble are you in?	어떤 문제가 있는 거지?	어떤 문제�
 What sort of help do you need?	어떤 도움이 필요한 거지?	어떤 도움이 필요한거지?
 What was going on with that spider?	거미라니 뭐가 어떻게 된 거지?	거미라니 뭐가 어떻게 된거지?
 What was your campaign against them?	그들에 대비해서 어떤 작전을 세웠소?	그들에 대비해서 어떤 작전을 세웠습니까?
+What were you arguing about with Lucan?	무엇 때문에 루칸과 말다툼을 한 거지?	무엇때문에 루칸과 말다툼을 한 거지?
 What would you like?	뭘 갖고 싶니?	어떤 걸 좋아하니?
 What's an East Empire Pendant?	동제국 회사 펜던트라는 게 뭐요?	동제국 회사 펜던트라는게 뭐요?
 What's at Fort Hraggstad?	흐라그스타드 요새에는 뭐가 있습니까?	흐라그스타드 요새에 무슨 일이 있었습니까?
@@ -746,6 +818,7 @@ What's so special about this ore?	이 광석이 뭐가 특별한 거지?	이 광
 What's special about the dagger?	그 단검이 왜 특별한 거지?	그 단검이 왜 특별한거지?
 What's the significance of this place?	이 장소에는 무슨 의미가 있는 거지?	이 장소에는 무슨 의미가 있는거지?
 What's there to do in the city?	도시에서 할만한 게 뭐가 있소?	도시에서 할만한게 뭐가 있소?
+What's with all the cloak and dagger?	이 첩보작전 같은 것은 다 뭐지?	이 첩보작전같은 것은 다 뭐지?
 When will you return to Tamriel?	언제 탐리엘로 돌아갈 거요?	언제 탐리엘로 돌아갈 겁니까?
 When you greeted Serana, it sounded like you hadn't seen her in a long time.	당신이 세라나를 맞이했을 때, 마치 아주 오랫동안 만나지 않았던 것 같았는데.	당신이 세라나를 맞이했을때, 마치 아주 오랫동안 만나지 않았던 것 같았는데.
 When you obtain a spell book, you need to read it to learn the spell, which destroys the book in the process.	마법책을 얻었을 때, 그 마법을 배우기 위해서는 책을 읽어야하고, 그 과정에서 해당 마법책은 사라지게 됩니다.	마법책을 얻었을때, 그 마법을 배우기 위해서는 책을 읽어야하고, 그 과정에서 해당 마법책은 사라지게 됩니다.
@@ -808,7 +881,9 @@ Yes, I've got a house in Hjaalmarch.	그래, 나는 히얄마치에 집이 있�
 Yes, I've got a house in the Pale.	그래, 나는 페일에 집이 있단다.	페일 지역의 집.
 Yes. I used Alduin's portal to travel to Sovngarde. He's dead.	그렇소. 알두인의 차원문을 사용하여 소븐가드에 갔소. 그는 죽었소.	알두인의 차원문을 사용하여 소븐가드에 갔고. 그는 죽었소.
 Yes. What's troubling you?	그래. 뭔가 곤란한 일이라도?	뭔가 곤란한 일이라도?
+Yes. You may have noticed he's trying to return to Solstheim.	그렇소. 그가 솔스트하임으로 돌아오려고 한다는 것을 알게 되었을 텐데.	그렇소. 그가 솔스트하임으로 돌아오려고 한다는 것을 알게 되었을텐데.
 Yngol's Barrow	잉골 고분	잉골의 무덤
+You acted as a broker for its new owner.	새 주인을 위해서 중개인 같은 역할을 했군.	새 주인을 위해서 중개인같은 역할을 했군.
 You and Tullius are both mistaken. I'm loyal to the Empire.	당신과 툴리우스는 실수하고 있는 거요. 나는 제국에 충성을 맹세했소.	당신과 툴리우스는 실수하고 있는거요. 나는 제국에 충성을 맹세했소.
 You are a disgrace to our race! I spit on your fur!	넌 우리 종족의 수치다! 네 털에 침을 뱉어 주마!	넌 우리 종족의 수치다! 네 가죽을 벗겨 침을 뱉어 주마!
 You aren't afraid to die?	죽는 게 두렵지 않나?	죽는게 두렵지 않나?
@@ -822,12 +897,16 @@ You have an Elder Scroll? Here?	엘더스크롤을 가지고 있단 말이오? �
 You have no faith in the Guild?	도둑 길드를 믿지 않나 보지?	도둑길드를 믿지 않나 보지?
 You have.... But I don't care.	잘 알아들었어... 하지만 상관없어.	당신은 그렇겠지... 하지만 상관없어.
 You know that dog on the road you asked me to get?	잡아달라고 했던, 길에 있는 그 개를 알고 있소?	잡아달라고 했던, 길에 있는 그 개를 알고있소?
+You know what you have to do.	뭘 해야 하는지 알고 있을 텐데.	뭘 해야 하는지 알고 있을텐데.
 You live here?	여기에 살고 있나?	여기에 살고있나?
 You mentioned trading caravans?	카짓 행상인들이라 했소?	캐러밴이라 했소?
 You must be crazy.	미친 게 분명하오.	미쳐버린 것 같은데.
+You must know something. (Persuade)	분명히 뭔가 알고 있을 텐데. (설득)	분명히 뭔가 알고 있을텐데. (설득)
+You need to leave <Alias=QuestGiver> alone.	<Alias=QuestGiver>말인데 좀 내버려 둘 수 없소.	<Alias=QuestGiver>말인데 좀 내버려 둘수 없소.
 You said something about a bad deal?	손해 본 거래에 대해 뭔가 말했지?	부당거래에 대해 뭔가 말했지?
 You said you were in prison?	감옥에 있었다고 했소?	감옥에 있었다니?
 You seem proud to be a bard.	자신이 바드라는 게 자랑스러운 모양이군.	자신이 바드라는게 자랑스러운 모양이군.
+You should pay me what you can. (Persuade)	나에게 적당한 금액을 지불해야 할 텐데. (설득)	나에게 적당한 금액을 지불해야 할텐데. (설득)
 You think she'll get over it?	당신 딸이 그 마음을 접을 거라고 생각하시오?	당신 딸이 견딜 수 있을거라고 생각하시오?
 You want your staff back.	지팡이를 되찾고 싶은 거군.	지팡이를 되찾고 싶은거군.
 You wanted to speak with me?	나와 이야기하고 싶었소?	저와 대화를 하기 원하십니까?
@@ -836,9 +915,11 @@ You were right to be paranoid, Ennodius.	네가 걱정하던 게 맞아, 에노�
 You will do my bidding.	내 명령을 따르라.	나의 부름에 응답하라.
 You won't miss it, then. (Persuade)	별로 아쉽지 않을 거요. (설득)	별로 아쉽지 않을거요. (설득)
 You'd better do what I want, or else. (Brawl)	시키는 대로 하는 게 좋을 거야. (싸움)	시키는 대로 하는게 좋을 거야. (싸움)
+You'll listen to gold, I take it? (<BribeCost> gold)	두둑하게 줄 테니, 어때? (<BribeCost> 골드)	두둑하게 줄테니, 어때? (<BribeCost> 골드)
 You're a long way from home, then.	당신은 집에서부터 먼 길을 떠나온 거군.	당신은 집에서부터 먼 길을 떠나온거군.
 You're holding out on Arniel again.	또 아니얼한테 물건을 안 넘기고 버티는군.	또 아니얼을 속이고 있군.
 You're making a mistake...	넌 실수하는 거야...	넌 실수하는거야...
+You're no kin of mine, pig-face.	넌 내 친척이 아냐, 돼지 같은 녀석.	넌 내 친척이 아냐, 돼지같은 녀석.
 You're not going to kill her, are you?	설마 저 군단장을 죽이실 생각은 아니시겠죠?	저 군단장을 죽이실 생각이십니까?
 You're not happy about being here?	여기 있는 게 불만인가?	여기 있는게 불만인가?
 You're right. <Alias=ImperialMajorHoldCapital> is a fair trade for Riften.	당신 말이 맞소. <Alias=ImperialMajorHoldCapital>은(는) 리프튼에 대한 공정한 거래라오.	당신 말이 맞소. <Alias=ImperialMajorHoldCapital>은 리프튼을 위한 공정한 거래라오.

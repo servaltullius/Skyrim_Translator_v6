@@ -176,9 +176,11 @@ public sealed class BundledFranchiseTmSeedService
             // 장군님); 4 rows changed.
             // v11 takes the patch's spacing review, its rules run on the seed's own text: the dependent nouns apart (있을
             // 거요, 찾을 수), the particles 뿐 and 밖에 joined, 있다 and 않다 apart after -고 and -지 (알고 있소); 237 rows
-            // changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v11", "bundled-skyrim-tes-franchise-tm.tsv", 1529133, "860951f686ebe215b3f5ca3bd9c617da623d6fcee3a8cb2a7d0ddfb037569bab",
-                PreviousVersions: new[] { "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v11-changes.tsv"),
+            // changed (1.16.42).
+            // v12 takes the second spacing review the same way: 터, 수, 몇, 때문, 무슨 and 뭘 apart (있을 텐데, 몇 개나),
+            // 같다 after a noun and 싶다 after -고 (구더기 같으니, 듣고 싶군); 89 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v12", "bundled-skyrim-tes-franchise-tm.tsv", 1529223, "55a04a316bd5ae7694538e8459c6029386c9ba887f8e11b597f8e91811a6321f",
+                PreviousVersions: new[] { "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v12-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,
