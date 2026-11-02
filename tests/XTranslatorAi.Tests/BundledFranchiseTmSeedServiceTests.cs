@@ -584,7 +584,9 @@ public class BundledFranchiseTmSeedServiceTests
             // string, and the particle form the decision gives an <Alias> that takes any name. From v8 that is all.
             Assert.Contains("\nFind the shrine of Boethiah\t보에디아의 성소를 찾기\t보에디아의 성지를 찾기\n", changes, StringComparison.Ordinal);
             Assert.Contains("\nRescue <Alias=Victim> from <Alias=Lair>\t<Alias=Lair>에서 <Alias=Victim>을(를) 구출하기\t<Alias=Lair>에서 <Alias=Victim>를 구출하기\n", changes, StringComparison.Ordinal);
-            Assert.True(beforeV8 || parsed.Count == 33, $"{parsed.Count} rows from v8");
+            // And the player's choices to Septimus in 하오, the decision after the round.
+            Assert.Contains("\nWhere is this \"Blackreach\"?\t'블랙리치'는 어디에 있소?\t'블랙리치'는 어디에 있나?\n", changes, StringComparison.Ordinal);
+            Assert.True(beforeV8 || parsed.Count == 45, $"{parsed.Count} rows from v8");
             // The patch's third review round (1.16.40's v8) reaches those who imported a seed older than it: names and
             // terms as the game spells them, the player's choices in the voice of their conversation, a space the Korean
             // fonts have where a no-break space was.
@@ -722,10 +724,12 @@ public class BundledFranchiseTmSeedServiceTests
         string? Shown(string source)
             => XTranslatorAi.Core.Plugins.GameStringDictionary.EnglishKey(source) is { } key && shown.TryGetValue(key, out var game) ? game.Trim() : null;
 
-        var differ = seed.Split('\n').Skip(1).Where(line => line.Length > 0).Select(line => line.Split('\t'))
-            .Where(row => Shown(row[0]) is { } game && !string.Equals(game, row[1].Trim(), StringComparison.Ordinal)
-                && !(pending.TryGetValue(row[0], out var next) && string.Equals(game, next.Trim(), StringComparison.Ordinal)))
-            .Select(row => $"{row[0]} → {row[1]}")
+        // Read as the import reads the seed (an escaped seed or a third column would read the same).
+        var rows = TranslationMemoryFileService.ParseTsvPairs(seed.Split('\n'));
+        var differ = rows
+            .Where(row => Shown(row.SourceText) is { } game && !string.Equals(game, row.DestText.Trim(), StringComparison.Ordinal)
+                && !(pending.TryGetValue(row.SourceText, out var next) && string.Equals(game, next.Trim(), StringComparison.Ordinal)))
+            .Select(row => $"{row.SourceText} → {row.DestText}")
             .ToList();
         // A waiting row has the text the game shows now, so the next version does not take an outdated one.
         var stale = pending.Where(row => Shown(row.Key) is { } game && !string.Equals(game, row.Value.Trim(), StringComparison.Ordinal))
@@ -733,6 +737,7 @@ public class BundledFranchiseTmSeedServiceTests
             .ToList();
 
         Assert.True(shown.Count > 20000, $"{shown.Count} texts");
+        Assert.True(rows.Count > 20000, $"{rows.Count} seed rows");
         Assert.Empty(differ);
         Assert.Empty(stale);
     }

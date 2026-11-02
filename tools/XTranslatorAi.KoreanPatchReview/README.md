@@ -25,8 +25,10 @@ dotnet run --project tools/XTranslatorAi.KoreanPatchReview -- dictionary $data $
 
 A rebuilt dictionary that changes the text of a bundled TM row fails `ElderScrollsSeed_HasTheTextTheGameShows` until
 the row waits in `src/XTranslatorAi.App/Assets/TmSeeds/skyrim-tes-franchise-tm-pending.tsv` (Source, Target: the game's
-new text) in the same commit. The script that makes the next seed version (tm-v10.py, not written yet) reads the list
-into the seed, a source the seed lacks as a new row (an empty Previous), and empties it; a release stops while it has rows.
+new text) in the same commit. CI warns on every push while rows wait, and a release stops while it has rows. The
+script that makes the next seed version reads the list into the seed and empties it; a source the seed lacks goes in
+as a new row, with an empty Previous in the changes files. (artifacts/tm-v9-20261101/tm-v9.py took the first 12 rows,
+all sources v8 had, into v9 before it shipped, from a copy of the list, and empties the list only of those.)
 
 `apply` skips a change when the patch no longer holds the `current_ko` the reviewer saw, or when the new text loses
 the English's tags and placeholders. Read every suggestion before `--write`: reviews from a model can be wrong or

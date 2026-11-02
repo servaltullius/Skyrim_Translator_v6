@@ -2,6 +2,8 @@ Source	Target	Previous
 <Alias=PlayerIsIt> is it. Hide from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt>이(가) 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요	<Alias=PlayerIsIt> 이/가 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요
 <Alias=PlayerIsIt> is it. Keep away from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt>이(가) 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요
 And now that Potema has returned?	그럼 포테마가 돌아온 지금은 어떻습니까?	그래서 포테마가 부활한 것입니까?
+Are you... all right?	당신... 괜찮소?	당신... 괜찮나?
+Can you help me get the Elder Scroll or not?	엘더스크롤을 얻게 도와줄 수 있소, 없소?	내가 엘더스크롤을 얻게 도와줄 수 있겠나?
 Clean up that murderer's mess. (<Global=HDWindhelmKiller> gold)	살인자가 저지른 일의 뒤처리. (<Global=HDWindhelmKiller> 골드)	살인자가 저지른 일의 뒷처리. (<Global=HDWindhelmKiller> 골드)
 Did you see that?	방금 그거 보셨습니까?	이거 보이십니까?
 Enter Snow Veil Sanctum	스노우 베일 성역에 들어가기	스노우 베일성역에 들어가기
@@ -11,7 +13,9 @@ Find the source of power in <Alias=Dungeon>	<Alias=Dungeon>에서 힘의 원천�
 Follow <Alias=Questgiver>	<Alias=Questgiver>을(를) 따라가기	<Alias=Questgiver>를 따라가기
 Get Greybeards' help in negotiating a truce	휴전 협상을 위해 그레이비어드의 도움을 받기	그레이비어드 도움을 받아 휴전협상을 맺기
 Give the final fragment to Eorlund	에올룬드에게 마지막 조각을 주기	에올룬드에게 마지막 파편조각을 주기
+How do I get in?	어떻게 안으로 들어가면 되오?	어떻게 안으로 들어가나?
 I have slain <Alias=DeadFriend> to gain your favor.	당신의 호의를 얻기 위해 <Alias=DeadFriend>을(를) 죽였습니다.	당신의 호의를 얻기 위해 <Alias=DeadFriend>를 죽였습니다.
+I heard you know about Elder Scrolls.	당신이 엘더스크롤에 관해 안다고 들었소.	당신이 엘더스크롤에 관해 아는 게 있다고 들었는데.
 Intimidate <Alias=Brute> in <Alias=BruteTown>	<Alias=BruteTown>에 있는 <Alias=Brute>을(를) 위협하기	<Alias=BruteTown>에 있는 <Alias=Brute>를 위협하기
 Learn the Word of Power from Borri	보리 사범에게 힘의 단어를 배우기	마스터 보리에게 힘의 단어를 배우기
 Making a skill Legendary will set it to 15 and return its perks. Are you sure?	기술을 전설화하면 해당 기술은 15로 설정되며 퍽을 돌려받게 됩니다. 바꾸시겠습니까?	기술을 전설화 하면 해당 기술은 15로 설정되며 특성 수치를 돌려받게 됩니다. 바꾸시겠습니까?
@@ -24,6 +28,7 @@ Rescue <Alias=Victim> from <Alias=Lair>	<Alias=Lair>에서 <Alias=Victim>을(를
 Retrieve the fragment	조각을 회수하기	파편조각을 회수하기
 Retrieve the fragments of Wuuthrad	우쓰라드의 조각들을 회수하기	우쓰라드의 파편 조각을 회수하기
 Return the Bust of the Gray Fox to Delvin	델빈에게 그레이 폭스 흉상을 가져가기	델빈에게 그레이폭스의 흉상을 가져가기
+So, where is the Scroll?	그럼, 엘더스크롤은 어디 있소?	그럼, 엘더스크롤은 어디있지?
 Speak to <Alias=Observer>	<Alias=Observer>와(과) 대화하기	<Alias=Observer>와 대화하기
 Speak to <Alias=Questgiver>	<Alias=Questgiver>와(과) 대화하기	<Alias=Questgiver>와 대화하기
 Talk to <Alias=AuthorityFigure>	<Alias=AuthorityFigure>와(과) 대화하기	<Alias=AuthorityFigure>와 대화하기
@@ -32,3 +37,10 @@ There are those who believe that when night descends upon Skyrim, werewolves des
 Visit your spouse's house	배우자의 집을 방문하기	부부의 집을 방문하기
 Wait for Erandur to dispel the barrier	에란더가 장벽을 제거할 때까지 기다리기	장벽을 제거하기 위해 에란더를 기다리기
 What brings you to this remote place?	이렇게 먼 곳까지 무슨 일로 온 거요?	이렇게 먼 곳까지 무슨일로 온 거지?
+What do I do with this cube?	이 큐브로 뭘 하라는 거요?	이 큐브로 뭘 하라는 거지?
+What do I do with this sphere?	이 구체로 뭘 하라는 거요?	이 구체로 뭘 하라는 거지?
+What do you want with the Elder Scroll?	엘더스크롤을 가지고 뭘 하려는 거요?	엘더스크롤을 가지고 뭘 하려는 거지?
+Where is this "Blackreach"?	'블랙리치'는 어디에 있소?	'블랙리치'는 어디에 있나?
+Who is your lord?	당신의 군주는 누구요?	당신의 군주는 누구지?
+Why are you so eager to open the box?	어째서 그 상자를 여는 데 그리 집착하는 거요?	어째서 그 상자를 여는데 집착하는 거지?
+You have an Elder Scroll? Here?	엘더스크롤을 가지고 있단 말이오? 여기에?	엘더스크롤을 가지고 있다고? 여기?

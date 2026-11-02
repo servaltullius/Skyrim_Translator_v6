@@ -366,9 +366,24 @@ public sealed class GameStringDictionary
             foreach (var field in plugin.Fields)
             {
                 if (field.TableKind is not { } kind || field.StringId is not { } id
-                    || !plugin.Korean.TryGetValue((kind, id), out var korean) || !Hangul.IsMatch(korean)
                     || FieldIdentity(field.Key, plugin.Masters, plugin.FileName) is not { } identity)
                 {
+                    continue;
+                }
+
+                // A later plugin's text without Hangul (left in English, as the Atronach forge recipes are) is what
+                // the game shows for the record: the earlier plugin's Korean, hidden now, no longer counts.
+                if (!plugin.Korean.TryGetValue((kind, id), out var korean) || !Hangul.IsMatch(korean))
+                {
+                    // An override that changes the English leaves the earlier pair a translation of its own English,
+                    // as below; only the record's own match goes.
+                    if (byField.Remove(identity, out var hidden)
+                        && TranslationMemoryKey.NormalizeSource(field.SourceText) is { } laterEnglish && !string.IsNullOrWhiteSpace(laterEnglish)
+                        && string.Equals(Fingerprint(laterEnglish), hidden.Item1, StringComparison.Ordinal))
+                    {
+                        shownText.Remove((identity, hidden.Item1));
+                    }
+
                     continue;
                 }
 

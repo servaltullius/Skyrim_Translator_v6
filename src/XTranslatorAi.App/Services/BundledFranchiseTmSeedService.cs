@@ -169,8 +169,9 @@ public sealed class BundledFranchiseTmSeedService
             // v9 takes the text the game shows for the 33 rows where every record with that English shows one text and
             // the seed had another: 31 held the Skyrim.esm string an Update or DLC override replaces, which the reviews
             // never touched (Find the shrine of Boethiah 성소, not 성지; Rescue <Alias=Victim>을(를), as the decision has
-            // it), 2 a text the patch no longer has (a skill made Legendary returns its 퍽); 33 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v9", "bundled-skyrim-tes-franchise-tm.tsv", 1528876, "f431524e2e06d49b0f72b139cd6d476681ff14c1787a82b0f16f33a88171aa37",
+            // it), 2 a text the patch no longer has (a skill made Legendary returns its 퍽). It also takes 12 of the player's
+            // choices to Septimus, a stranger, in 하오 ('블랙리치'는 어디에 있소?); 45 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v9", "bundled-skyrim-tes-franchise-tm.tsv", 1528886, "c2b3d628469fbe98ebf24a7051478854265ca4ef29e08b8106f933c26456100b",
                 PreviousVersions: new[] { "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v9-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),

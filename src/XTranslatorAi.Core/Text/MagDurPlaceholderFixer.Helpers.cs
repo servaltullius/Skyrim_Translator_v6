@@ -14,11 +14,43 @@ public static partial class MagDurPlaceholderFixer
     // <mag> read as a time: a time unit right after it ("<mag>초 동안"). A time word before it is the common, correct
     // Korean order ("<dur>초 동안 <mag>포인트의 피해"), which matched too and had the two tags swapped. A 분, 일 or 주
     // that begins a word is not a unit ("+<mag> 주문 위력", "<mag> 일격", "<mag> 분노"), nor is 초당, a rate. Nor is a
-    // 의 that goes on into a word ("<mag> 주의력") or a fraction ("<mag>분의 1").
-    private static readonly Regex MagLooksTimeRegex = new(
-        @"[+-]?<\s*mag\s*>\s*%?\s*(초간|초(?!당)|시간|개월|년|동안|간|(?:분|일|주)(?=$|[^가-힣]|의(?![가-힣])(?!\s*\d)|간|동안|마다|에|을|를|이|가))",
+    // one-syllable unit's 의 that goes on into a word ("<mag> 주의력") or a fraction ("<mag>분의 1"), read as the answer
+    // check reads it (KoreanTimeUnits).
+    private static readonly Regex MagThenUnitRegex = new(
+        @"[+-]?<\s*mag\s*>\s*%?\s*(초간|초(?!당)|시간|개월|년|동안|간|분|일|주)",
         RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
+
+    // What may follow a 분, 일 or 주 that is a unit; any other syllable makes a word of it.
+    private static readonly string[] FollowersOfShortUnits = ["의", "간", "동안", "마다", "에", "을", "를", "이", "가"];
+
+    private static bool MagLooksTime(string dest)
+    {
+        foreach (Match match in MagThenUnitRegex.Matches(dest))
+        {
+            var unit = match.Groups[1].Value;
+            var after = dest.AsSpan(match.Index + match.Length);
+            if (unit.Length == 1 && KoreanTimeUnits.OfMakesAWordOrFraction(after))
+            {
+                continue;
+            }
+
+            if (unit is not ("분" or "일" or "주") || after.IsEmpty || !KoreanSyllables.IsHangulSyllable(after[0]))
+            {
+                return true;
+            }
+
+            foreach (var follower in FollowersOfShortUnits)
+            {
+                if (after.StartsWith(follower.AsSpan(), StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 
     private static readonly Regex MagHasPercentRegex = new(
         @"[+-]?<\s*mag\s*>\s*%",
@@ -140,7 +172,7 @@ public static partial class MagDurPlaceholderFixer
         // A few strong signals that the placeholders got swapped or placed on the wrong particle.
         // We keep this conservative: only auto-fix when it is very likely wrong.
         var durLooksAmount = DurLooksAmountRegex.IsMatch(dest);
-        var magLooksTime = MagLooksTimeRegex.IsMatch(dest);
+        var magLooksTime = MagLooksTime(dest);
         var magHasPercent = MagHasPercentRegex.IsMatch(dest);
         var durHasPercent = DurHasPercentRegex.IsMatch(dest);
 

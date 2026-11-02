@@ -74,6 +74,44 @@ public sealed class GameStringDictionaryTests
         Assert.Equal("철검", game.Find(Identity("WEAP/00001001/0/FULL/0"), "WEAP:FULL", "Iron Sword")!.Text);
     }
 
+    // A later master that overrides a record with text left in English shows that English: the earlier Korean is
+    // hidden and is neither the record's nor the sentence's translation (nor what the bundled TM is held to).
+    [Fact]
+    public void OverrideWithoutHangul_HidesTheEarlierKorean()
+    {
+        var skyrim = new GameStringPlugin("Skyrim.esm", new string[0], new[]
+        {
+            Field("BOOK/00001000/0/DESC/0", "Recipe", PluginStringTableKind.DlStrings, 1),
+            Field("BOOK/00001001/0/DESC/0", "Recipe", PluginStringTableKind.DlStrings, 2),
+            Field("BOOK/00001002/0/DESC/0", "Old note", PluginStringTableKind.DlStrings, 3),
+        }, new Dictionary<(PluginStringTableKind, uint), string>
+        {
+            [(PluginStringTableKind.DlStrings, 1)] = "제조법",
+            [(PluginStringTableKind.DlStrings, 2)] = "제조법",
+            [(PluginStringTableKind.DlStrings, 3)] = "옛 쪽지",
+        });
+        // Update leaves 1000 in English, and rewrites 1002's English, leaving that in English too.
+        var update = new GameStringPlugin("Update.esm", new[] { "Skyrim.esm" }, new[]
+        {
+            Field("BOOK/00001000/0/DESC/0", "Recipe", PluginStringTableKind.DlStrings, 5),
+            Field("BOOK/00001002/0/DESC/0", "New note", PluginStringTableKind.DlStrings, 6),
+        }, new Dictionary<(PluginStringTableKind, uint), string>
+        {
+            [(PluginStringTableKind.DlStrings, 5)] = "Recipe",
+            [(PluginStringTableKind.DlStrings, 6)] = "New note",
+        });
+
+        var game = GameStringDictionary.Build(new[] { skyrim, update });
+
+        // The overridden record is no longer its own match; the sentence, as the other record shows it, still is.
+        Assert.Equal("같은 문장", game.Find(Identity("BOOK/00001000/0/DESC/0"), "BOOK:DESC", "Recipe")!.Origin);
+        Assert.Equal("Skyrim.esm 같은 레코드", game.Find(Identity("BOOK/00001001/0/DESC/0"), "BOOK:DESC", "Recipe")!.Origin);
+        Assert.Equal(1, game.FieldCount);
+        Assert.Equal("제조법", game.TextsEveryRecordShows()[GameStringDictionary.EnglishKey("Recipe")!]);
+        // The rewritten English leaves the old pair a translation of the old English, for a mod that keeps it.
+        Assert.Equal("옛 쪽지", game.Find(null, "BOOK:DESC", "Old note")!.Text);
+    }
+
     [Fact]
     public void ChangedText_OrTheModsOwnRecord_IsNotTheGamesLine()
     {

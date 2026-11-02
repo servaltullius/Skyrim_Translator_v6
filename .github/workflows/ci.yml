@@ -29,6 +29,19 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
+      # Rows waiting for the bundled TM's next seed version stop a release (release-win-x64-singlefile.yml), but only
+      # after the release is published; this warns on every push while any wait, so the seed is cut before publishing.
+      - name: Warn of waiting TM rows
+        shell: pwsh
+        run: |
+          $pendingPath = 'src/XTranslatorAi.App/Assets/TmSeeds/skyrim-tes-franchise-tm-pending.tsv'
+          if (Test-Path $pendingPath) {
+            $pending = @(Get-Content $pendingPath | Select-Object -Skip 1 | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+            if ($pending.Count -gt 0) {
+              Write-Output "::warning file=$pendingPath::$($pending.Count) bundled TM rows wait for the next seed version; a release stops until they are taken in."
+            }
+          }
+
       - name: Restore
         shell: pwsh
         run: dotnet restore tests/XTranslatorAi.Tests/XTranslatorAi.Tests.csproj

@@ -29,6 +29,7 @@ public sealed class TranslationServiceSemanticRepairTriggerTests
     [InlineData("대상의 __XT_PH_MAG_0000__ 주의력을 빼앗습니다.")]
     [InlineData("받는 물 피해가 __XT_PH_MAG_0000__분의 1로 줄어듭니다.")]
     [InlineData("받는 물 피해가 __XT_PH_MAG_0000__ 분의 1로 줄어듭니다.")]
+    [InlineData("받는 물 피해가 __XT_PH_MAG_0000__초의 1로 줄어듭니다.")]
     public void NeedsPlaceholderSemanticRepair_DoesNotReadAWordAfterAMagnitudeAsATimeUnit(string output)
     {
         Assert.False(TokenSanitizer.NeedsPlaceholderSemanticRepair(
@@ -42,6 +43,9 @@ public sealed class TranslationServiceSemanticRepairTriggerTests
     [InlineData("__XT_PH_MAG_0000__일마다 화염 피해를 줍니다.")]
     [InlineData("__XT_PH_MAG_0000__일의 기간 동안 화염 피해를 줍니다.")]
     [InlineData("__XT_PH_MAG_0000__주의 기간 동안 화염 피해를 줍니다.")]
+    // The rule covers every one-syllable unit the check knows (초, 년, 간 too).
+    [InlineData("__XT_PH_MAG_0000__년의 세월 동안 화염 피해를 줍니다.")]
+    [InlineData("__XT_PH_MAG_0000__초의 시간 동안 화염 피해를 줍니다.")]
     public void NeedsPlaceholderSemanticRepair_StillCatchesAMagnitudeUsedAsATime(string output)
     {
         Assert.True(TokenSanitizer.NeedsPlaceholderSemanticRepair(

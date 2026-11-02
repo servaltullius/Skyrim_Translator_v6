@@ -6,10 +6,12 @@ A dremora captured you?	드레모라가 당신을 가두었단 말이오?	드레
 Agrius's Journal	아그리우스의 일기	아그리어스의 일기
 ALTERATION	변화마법	변화
 And now that Potema has returned?	그럼 포테마가 돌아온 지금은 어떻습니까?	그래서 포테마가 부활한 것입니까?
+Are you... all right?	당신... 괜찮소?	당신... 괜찮나?
 Barter	거래	흥정
 Become Guild Master for the Thieves Guild	도둑 길드의 길드 마스터가 되기	도둑 길드의 지도자가 되기
 Break through the First Barricade	첫 번째 바리케이드를 파괴하기	첫 번째 바리케이드 파괴하기
 Call of the Wild	야생의 외침	아생의 외침
+Can you help me get the Elder Scroll or not?	엘더스크롤을 얻게 도와줄 수 있소, 없소?	내가 엘더스크롤을 얻게 도와줄 수 있겠나?
 Change preset and lose your changes?	변경사항을 버리고 사전설정으로 바꾸겠습니까?	변경사항을 버리고 사전설정으로 바꿀까요?
 Claim Mehrunes' Razor	메이룬스의 면도칼을 가지기	메이룬스 데이건의 단검을 가지기
 Clean up that murderer's mess. (<Global=HDWindhelmKiller> gold)	살인자가 저지른 일의 뒤처리. (<Global=HDWindhelmKiller> 골드)	살인자가 저지른 일의 뒷처리. (<Global=HDWindhelmKiller> 골드)
@@ -42,12 +44,14 @@ Give the final fragment to Eorlund	에올룬드에게 마지막 조각을 주기
 Goodbye	잘 가시오.	잘 가.
 Have we angered the Ideal Masters?	아이디얼 마스터들을 화나게 한 거요?	아이디얼 마스터들을 화나게 한겁니까?
 How did you earn your nicknames?	어떻게 그런 별명을 얻게 된 거요?	어떻게 그런 별명을 얻게 된 겁니까?
+How do I get in?	어떻게 안으로 들어가면 되오?	어떻게 안으로 들어가나?
 How is your work going so far?	당신의 책은 어디까지 진행되었소?	당신의 책은 어디까지 진행되었습니까?
 How many pages did you lose?	잃어버린 쪽지가 몇 장이나 되오?	잃어버린 쪽지가 몇장이나 됩니까?
 I do, but you can't leave that way.	알고 있소. 하지만 당신은 그 방법으로는 나갈 수 없소.	그렇소, 하지만 당신은 그 방법으로는 나갈 수 없는데.
 I don't have time for this... I can get rough with you if I have to.	이럴 시간이 없는데... 거칠게 다룰 수도 있어.	이럴 시간이 없는데... 거칠게 다룰 수도 있어.
 I don't suppose there's a way to free you.	당신을 풀어줄 방법은 없을 것 같소.	당신을 풀어줄 방법은 없는 것 같은데.
 I have slain <Alias=DeadFriend> to gain your favor.	당신의 호의를 얻기 위해 <Alias=DeadFriend>을(를) 죽였습니다.	당신의 호의를 얻기 위해 <Alias=DeadFriend>를 죽였습니다.
+I heard you know about Elder Scrolls.	당신이 엘더스크롤에 관해 안다고 들었소.	당신이 엘더스크롤에 관해 아는 게 있다고 들었는데.
 I want to unravel the mysteries of Aetherius.	에테리우스의 신비를 풀고 싶습니다.	에테리어스의 신비를 풀고 싶습니다.
 I want you to leave Omluag alone.	옴러그를 내버려두시오.	옴러그를 내버려두시오.
 I'm married. (Lie)	나는 결혼했어. (거짓)	나는 결혼했어. (거짓말)
@@ -83,6 +87,7 @@ Sea Squall	바다 소나기 호
 Skein of Magnus	매그너스의 실타래	마그누스의 실타래
 Slay the other cultists	다른 광신도들을 죽이기	다른 광신자들을 죽이기
 So what's the story behind the Rueful Axe.	그래서 그 회한의 도끼에 얽힌 이야기란게 뭐지?	그래서 그 회한의 도끼에 얽힌 이야기란게 뭐지?
+So, where is the Scroll?	그럼, 엘더스크롤은 어디 있소?	그럼, 엘더스크롤은 어디있지?
 Speak to <Alias=Observer>	<Alias=Observer>와(과) 대화하기	<Alias=Observer>와 대화하기
 Speak to <Alias=Questgiver>	<Alias=Questgiver>와(과) 대화하기	<Alias=Questgiver>와 대화하기
 Speak to Brynjolf about becoming the Guild Master	브린욜프와 길드 마스터가 되는 것에 관해 대화하기	브린욜프와 길드 지도자가 되는 것에 관해 대화하기
@@ -107,14 +112,21 @@ We're called the Dawnguard. We're fighting a vampire conspiracy.	우리는 '던�
 Were you successful?	성공했소?	성공했습니까?
 What are the Ancestral Tombs?	조상의 무덤들이란게 뭐요?	조상의 무덤들이란게 뭡니까?
 What brings you to this remote place?	이렇게 먼 곳까지 무슨 일로 온 거요?	이렇게 먼 곳까지 무슨일로 온 거지?
+What do I do with this cube?	이 큐브로 뭘 하라는 거요?	이 큐브로 뭘 하라는 거지?
+What do I do with this sphere?	이 구체로 뭘 하라는 거요?	이 구체로 뭘 하라는 거지?
+What do you want with the Elder Scroll?	엘더스크롤을 가지고 뭘 하려는 거요?	엘더스크롤을 가지고 뭘 하려는 거지?
 What ended up happening?	마지막에는 어떻게 되었소?	마지막에는 어떻게 되었습니까?
 What happened to the dragon?	그 드래곤에게 무슨 일이 있었던 거요?	그 드래곤에게 무슨 일이 있었던 겁니까?
 What was your campaign against them?	그들에 대비해서 어떤 작전을 세웠소?	그들에 대비해서 어떤 작전을 세웠습니까?
 When will you return to Tamriel?	언제 탐리엘로 돌아갈 거요?	언제 탐리엘로 돌아갈 겁니까?
+Where is this "Blackreach"?	'블랙리치'는 어디에 있소?	'블랙리치'는 어디에 있나?
 Where were you captured?	어디에서 납치되었소?	어디에서 납치되었습니까?
+Who is your lord?	당신의 군주는 누구요?	당신의 군주는 누구지?
 Who threw you in here?	누가 당신을 여기에 던져 넣었소?	누가 당신을 여기에 던져넣었습니까?
+Why are you so eager to open the box?	어째서 그 상자를 여는 데 그리 집착하는 거요?	어째서 그 상자를 여는데 집착하는 거지?
 Why was Dagon able to do this?	어째서 데이건이 그렇게 할 수 있었소?	어째서 데이건이 그렇게 할 수 있었습니까?
 Why would a dremora attack you?	어째서 드레모라가 당신을 공격했소?	어째서 드레모라가 당신을 공격했습니까?
+You have an Elder Scroll? Here?	엘더스크롤을 가지고 있단 말이오? 여기에?	엘더스크롤을 가지고 있다고? 여기?
 You must be crazy.	미친 게 분명하오.	미쳐버린 것 같은데.
 You said you were in prison?	감옥에 있었다고 했소?	감옥에 있었다니?
 You wanted to speak with me?	나와 이야기하고 싶었소?	저와 대화를 하기 원하십니까?
