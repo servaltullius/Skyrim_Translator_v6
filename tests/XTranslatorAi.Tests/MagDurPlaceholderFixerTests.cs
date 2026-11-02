@@ -37,12 +37,26 @@ public sealed class MagDurPlaceholderFixerTests
     }
 
     // With such a line left to the swap check, a 주, 일 or 분 that begins a word after <mag> read as a time unit and swapped
-    // the two tags ("+<mag> 주문 위력" became "+<mag> 초 동안 <dur> 주문 위력").
+    // the two tags ("+<mag> 주문 위력" became "+<mag> 초 동안 <dur> 주문 위력"). So did a 의 that goes on into a word or
+    // makes a fraction ("<mag> 주의력", "<mag>분의 1").
     [Theory]
     [InlineData("+<mag> Spell Power for <dur> seconds.", "<dur>초 동안 +<mag> 주문 위력.")]
     [InlineData("+<mag> Fury for <dur> seconds.", "<dur>초 동안 +<mag> 분노.")]
+    [InlineData("+<mag> Focus for <dur> seconds.", "<dur>초 동안 +<mag> 주의력.")]
+    [InlineData("Damage taken is cut to one <mag>th for <dur> seconds.", "<dur>초 동안 받는 피해가 <mag>분의 1로 줄어듭니다.")]
     public void Fix_DoesNotReadAWordAfterMagAsATimeUnit(string source, string dest)
         => Assert.Equal(dest, MagDurPlaceholderFixer.Fix(source, dest, "korean"));
+
+    // A 의 before a word of its own is still a time ("<mag>일의 기간"): the two tags are still swapped back.
+    [Fact]
+    public void Fix_StillReadsATimeUnitWithItsOwnWordAfterMag()
+    {
+        var fixedText = MagDurPlaceholderFixer.Fix("Causes <mag> points of poison damage for <dur> days.",
+            "<mag>일의 기간 동안 대상이 <dur>의 독 피해를 입습니다.", "korean");
+
+        Assert.DoesNotContain("<mag>일", fixedText, StringComparison.Ordinal);
+        Assert.Contains("<dur>", fixedText, StringComparison.Ordinal);
+    }
 
     [Fact]
     public void Fix_StillWritesTheSignedAmountTemplate_ForAKnownSubject()

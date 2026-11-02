@@ -13,9 +13,10 @@ public static partial class MagDurPlaceholderFixer
 
     // <mag> read as a time: a time unit right after it ("<mag>초 동안"). A time word before it is the common, correct
     // Korean order ("<dur>초 동안 <mag>포인트의 피해"), which matched too and had the two tags swapped. A 분, 일 or 주
-    // that begins a word is not a unit ("+<mag> 주문 위력", "<mag> 일격", "<mag> 분노"), nor is 초당, a rate.
+    // that begins a word is not a unit ("+<mag> 주문 위력", "<mag> 일격", "<mag> 분노"), nor is 초당, a rate. Nor is a
+    // 의 that goes on into a word ("<mag> 주의력") or a fraction ("<mag>분의 1").
     private static readonly Regex MagLooksTimeRegex = new(
-        @"[+-]?<\s*mag\s*>\s*%?\s*(초간|초(?!당)|시간|개월|년|동안|간|(?:분|일|주)(?=$|[^가-힣]|의|간|동안|마다|에|을|를|이|가))",
+        @"[+-]?<\s*mag\s*>\s*%?\s*(초간|초(?!당)|시간|개월|년|동안|간|(?:분|일|주)(?=$|[^가-힣]|의(?![가-힣])(?!\s*\d)|간|동안|마다|에|을|를|이|가))",
         RegexOptions.CultureInvariant | RegexOptions.IgnoreCase
     );
 

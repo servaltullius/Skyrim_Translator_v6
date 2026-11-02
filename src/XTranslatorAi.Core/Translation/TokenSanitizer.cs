@@ -666,6 +666,13 @@ internal static class TokenSanitizer
             }
 
             var next = text[1];
+            // A 의 that goes on into a word ("<mag> 주의력") or makes a fraction ("<mag>분의 1") is no unit, as the
+            // template fixer reads it too (MagDurPlaceholderFixer's MagLooksTimeRegex).
+            if (next == '의' && ((text.Length > 2 && IsHangulSyllable(text[2])) || text[2..].TrimStart() is [var first, ..] && char.IsDigit(first)))
+            {
+                continue;
+            }
+
             if (TimeUnitFollowers.Contains(next) && !(unit == "주" && next is '는' or '도'))
             {
                 return true;
