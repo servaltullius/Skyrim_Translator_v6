@@ -178,9 +178,11 @@ public sealed class BundledFranchiseTmSeedService
             // 거요, 찾을 수), the particles 뿐 and 밖에 joined, 있다 and 않다 apart after -고 and -지 (알고 있소); 237 rows
             // changed (1.16.42).
             // v12 takes the second spacing review the same way: 터, 수, 몇, 때문, 무슨 and 뭘 apart (있을 텐데, 몇 개나),
-            // 같다 after a noun and 싶다 after -고 (구더기 같으니, 듣고 싶군); 89 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v12", "bundled-skyrim-tes-franchise-tm.tsv", 1529223, "55a04a316bd5ae7694538e8459c6029386c9ba887f8e11b597f8e91811a6321f",
-                PreviousVersions: new[] { "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v12-changes.tsv"),
+            // 같다 after a noun and 싶다 after -고 (구더기 같으니, 듣고 싶군); 89 rows changed (1.16.43).
+            // v13 takes the third spacing review the same way: 거 the first round missed (그럴 거라고), the negating 안
+            // (안 돼), 동안, 대로, 적, 리 and 한 번 when it counts (본 적이, 한 번 더); 96 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v13", "bundled-skyrim-tes-franchise-tm.tsv", 1529311, "883d45a766578b7cc0fba1dd1b0a47f090b6b3a42357486e3bb120eccf26eb74",
+                PreviousVersions: new[] { "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v13-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,
