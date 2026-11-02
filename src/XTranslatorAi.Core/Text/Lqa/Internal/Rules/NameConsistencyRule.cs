@@ -21,12 +21,14 @@ internal static class NameConsistencyRule
     private static readonly Regex WordRegex = new(@"[A-Za-z]+(?:['’][A-Za-z]+)*", RegexOptions.CultureInvariant);
     private static readonly Regex HangulWordRegex = new(@"[가-힣]+", RegexOptions.CultureInvariant);
 
-    // Particles and endings that follow a name; stripped to find the name itself.
+    // Particles and endings that follow a name; stripped to find the name itself. 일 is 이다 before a dependent noun,
+    // written apart from it ("스톰클록들일 거야"). 인 is not stripped: it also makes a name of a people (리치인 for
+    // Reachman, a spelling of its own next to 리치맨).
     private static readonly string[] Suffixes =
     {
         "이라고요", "라고요", "에게서", "한테서", "이라는", "이라고", "이시여", "에서는", "으로서", "으로는", "께서", "시여", "에게", "한테", "이랑", "이라", "이란",
         "이여", "이야", "라는", "라고", "처럼", "보다", "까지", "부터", "에서", "에선", "에는", "으로", "로서", "로는",
-        "이나", "은", "는", "이", "가", "을", "를", "의", "와", "과", "도", "만", "에", "엔", "로", "랑", "나", "아", "야", "여", "님", "씨", "들",
+        "이나", "은", "는", "이", "가", "을", "를", "의", "와", "과", "도", "만", "에", "엔", "로", "랑", "나", "아", "야", "여", "님", "씨", "들", "일",
     };
 
     // The suffixes a word can end with, by its last syllable, in the order of Suffixes (which decides Stem).

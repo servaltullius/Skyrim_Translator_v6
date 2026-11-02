@@ -36,6 +36,38 @@ public class BundledFranchiseTmSeedServiceTests
             new[] { @"C:\tm-import\bundled-skyrim-tes-franchise-tm-v9-changes.tsv", @"C:\tm-import\bundled-skyrim-tes-franchise-tm-v10-changes.tsv", @"C:\tm-import\my-terms.tsv" },
             FranchiseTranslationMemoryService.InImportOrder(new[] { @"C:\tm-import\my-terms.tsv", @"C:\tm-import\bundled-skyrim-tes-franchise-tm-v10-changes.tsv", @"C:\tm-import\bundled-skyrim-tes-franchise-tm-v9-changes.tsv" }));
 
+    // The import itself: a v9 changes file still waiting and the v10 one, both changing one row, end in v10's text.
+    [Fact]
+    public async Task WaitingChangesFiles_OfTwoVersions_EndInTheLaterText()
+    {
+        var root = CreateTempRoot();
+        var global = new GlobalProjectDbService(new BuiltInGlossaryService(), Path.Combine(root, "global"));
+        try
+        {
+            var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.ElderScrolls, Path.Combine(root, "global"));
+            Directory.CreateDirectory(importDir);
+            await File.WriteAllTextAsync(Path.Combine(importDir, "a-memory.tsv"), "Source\tTarget\nWaiting row\t옛 글\n");
+            await File.WriteAllTextAsync(Path.Combine(importDir, "bundled-skyrim-tes-franchise-tm-v9-changes.tsv"), "Source\tTarget\tPrevious\nWaiting row\tv9 글\t옛 글\n");
+            await File.WriteAllTextAsync(Path.Combine(importDir, "bundled-skyrim-tes-franchise-tm-v10-changes.tsv"), "Source\tTarget\tPrevious\nWaiting row\tv10 글\tv9 글\n");
+
+            var tm = new FranchiseTranslationMemoryService(global);
+            var (_, unreadable) = await tm.ImportPendingFilesAsync("english", "korean", null, CancellationToken.None);
+
+            Assert.Null(unreadable);
+            Assert.Contains(await tm.GetEntriesAsync("english", "korean", CancellationToken.None), e => e.SourceText == "Waiting row" && e.DestText == "v10 글");
+        }
+        finally
+        {
+            await global.DisposeAsync();
+            foreach (var db in Directory.GetFiles(root, "*.sqlite", SearchOption.AllDirectories))
+            {
+                XTranslatorAi.Tests.TestSupport.TestDbHelper.ReleaseProjectPoolAndDeleteDbFiles(db);
+            }
+
+            TryDeleteDirectory(root);
+        }
+    }
+
     // Stopped while it was written (an open the user stopped), the seed was swallowed half written and imported as it was.
     [Fact]
     public async Task EnsureBundledSeedAsync_Stopped_LeavesNoSeedAndSaysSo()

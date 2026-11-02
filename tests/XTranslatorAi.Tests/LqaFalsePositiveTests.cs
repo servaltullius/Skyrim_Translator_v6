@@ -728,6 +728,35 @@ public class LqaFalsePositiveTests
         Assert.Equal(new long[] { 1 }, issues.Where(i => i.Code == "name_inconsistent").Select(i => i.Id).ToArray());
     }
 
+    // The spacing review wrote "스톰클록들일 거야" apart: 일 (이다 before a dependent noun) after the plural is no spelling of
+    // Stormcloaks next to 스톰클록군. A different spelling (스톰크록군) is still reported, and so is 리치인 next to 리치맨 for
+    // Reachman: 인 there names the people, so it is not stripped as 이다.
+    [Fact]
+    public async Task NameInconsistent_IgnoresTheCopulaBeforeADependentNoun()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Dialogue(1, "The Stormcloaks hold Windhelm.", "스톰클록군이 윈드헬름을 쥐고 있어."),
+            Dialogue(2, "The Stormcloaks will come.", "스톰클록군이 올 거야."),
+            Dialogue(3, "Join the Stormcloaks.", "스톰클록군에 합류해."),
+            Dialogue(4, "Stormcloaks everywhere.", "어딜 가나 스톰클록군이야."),
+            Dialogue(10, "A Stormcloaks soldier.", "스톰클록 병사 하나."),
+            Dialogue(11, "Stormcloaks camp.", "스톰클록 야영지."),
+            Dialogue(12, "The Stormcloaks' leader.", "스톰클록 지도자."),
+            Dialogue(5, "The Stormcloaks took the fort.", "스톰클록들이 요새를 차지했어."),
+            Dialogue(6, "I hate the Stormcloaks.", "난 스톰클록들은 싫어."),
+            Dialogue(7, "If anyone did it, it'd be the Stormcloaks.", "누가 그랬다면 스톰클록들일 거야."),
+            Dialogue(9, "The Stormcloaks marched on.", "스톰크록군이 행군했어."),
+            Dialogue(21, "A Reachman came by.", "리치맨 하나가 들렀어."),
+            Dialogue(22, "The Reachman left.", "리치맨이 떠났어."),
+            Dialogue(23, "I'm a true child of the Reach. (Reachman)", "진정한 리치의 자손이다. (리치인)"),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        Assert.Equal(new long[] { 9, 23 }, issues.Where(i => i.Code == "name_inconsistent").Select(i => i.Id).OrderBy(id => id).ToArray());
+    }
+
     private static GlossaryEntry Term(string source, string target)
         => new(0, null, source, target, true, GlossaryMatchMode.WordBoundary, GlossaryForceMode.ForceToken, 10, null);
 
