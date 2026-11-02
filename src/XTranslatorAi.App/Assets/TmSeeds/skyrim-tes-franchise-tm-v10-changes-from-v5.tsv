@@ -224,6 +224,7 @@ How has Raven Rock needed your help?	레이븐 락에 당신들의 도움이 왜
 How is your work going so far?	당신의 책은 어디까지 진행되었소?	당신의 책은 어디까지 진행되었습니까?
 How long have you been First Hunter?	얼마나 오랫동안 최고 사냥꾼이었소?	얼마나 오랫동안 1급 사냥꾼이었소?
 How many pages did you lose?	잃어버린 쪽지가 몇 장이나 되오?	잃어버린 쪽지가 몇장이나 됩니까?
+I accept your offer. I'd like to join the Stormcloaks.	제안을 받아들이겠습니다. 스톰클록에 합류하겠습니다.	제안을 받아들이지. 스톰클록에 합류하지.
 I agree. The Empire should turn over <Alias=ImperialMinorHold2>.	동의하오. 제국은 <Alias=ImperialMinorHold2>을(를) 넘겨주어야 합니다.	동의하오. 제국은 <Alias=ImperialMinorHold2>을/를 넘겨주어야 합니다.
 I agree. Ulfric should turn over <Alias=SonsMinorHold2>.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을(를) 넘겨야하오.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을/를 넘겨야하오.
 I assure you it wasn't anyone from the Guild.	장담하는데 우리 길드원 소행은 아니야.	우리 길드원 소행은 확실히 아니군.
@@ -231,6 +232,7 @@ I blackmailed <Alias=Steward> for the information.	정보를 얻기 위해 <Alia
 I bring an offer from the Thieves Guild.	도둑 길드의 제안을 가져왔다.	도둑길드의 제안을 가져왔다.
 I can break some of your bones if that's what it's going to take... (Brawl)	그래야 한다면 네 뼈를 부러뜨려주마. (싸움)	만약 그럴 작정이라면 네 뼈를 부러뜨려주마. (싸움)
 I convinced <Alias.ShortName=Target> to ease up a bit.	부담을 조금 줄여달라고 <Alias.ShortName=Target>을(를) 설득했다.	부담을 조금 줄여달라고 <Alias.ShortName=Target>를 설득했다.
+I did what I thought was right.	옳다고 생각한 일을 했을 뿐입니다.	옳다고 생각한 일을 한 것 뿐이오.
 I discovered this note on one of the ash spawn.	화산재 스폰의 잔해들 중에서 이 쪽지를 발견했는데.	화산재 스폰의 잔해들 중에서 이 노트를 발견했는데.
 I do, but you can't leave that way.	알고 있소. 하지만 당신은 그 방법으로는 나갈 수 없소.	그렇소, 하지만 당신은 그 방법으로는 나갈 수 없는데.
 I do. My hand is yours.	그래. 내 손은 당신 거야.	그래. 나의 팔은 당신 거야.
@@ -267,6 +269,7 @@ I'm married. (Lie)	나는 결혼했어. (거짓)	나는 결혼했어. (거짓말
 I'm not doing anything yet.	아직 아무것도 하겠다고 한 적 없는데.	나는 아직 아무것도 하지 않았는데.
 I'm not.	관심 없어.	아직은.
 I'm sorry boy, but I'm not who you think I am.	미안하다, 꼬마야. 하지만 난 네가 생각하는 그런 사람이 아니란다.	(떠나기)
+I'm sorry. I was trying to reach a fair agreement.	죄송합니다. 저는 공정한 합의를 이루려고 했습니다.	미안하오. 나는 공정한 협상을 하려고 했소.
 I'm sorry?	미안하지만...?	실례지만?
 I've destroyed the <Alias=Vampire> at <Alias=Dungeon>.	<Alias=Dungeon>에서 <Alias=Vampire>을(를) 죽였소.	<Alias=Dungeon>에서 <Alias=Vampire>을 죽였소.
 I've killed the vampire masquerading as a <Alias=Target>.	<Alias=Target>(으)로 변장한 흡혈귀를 죽였소.	<Alias=Target> (으)로 변장한 흡혈귀를 죽였소.
@@ -430,6 +433,7 @@ Solstheim Mudcrab	솔스트하임 진흙게	솔스트하임 진흙 게
 Something for bad dreams?	악몽에 듣는 약이라니?	나쁜 꿈을 꾸기라도 했소?
 Something tells me that it is.	왠지 그럴 것 같아.	무언가가 내게 그렇다고 말하고 있어.
 Sorry, I'm afraid you'll make me look silly.	미안하지만, 그 옷을 입으면 내가 우스워 보일 것 같은데.	미안하지만, 나를 바보로 만드는 것 같은데.
+Sorry, sir. I was trying to come to a fair agreement.	죄송합니다, 장군님. 공정한 합의를 이루려고 했습니다.	죄송합니다. 저는 공평한 합의를 이루려고 할 뿐입니다.
 Sorry. You'll have to find some other way to stroke your ego.	미안하지만. 자존심을 세우고 싶다면 다른 방법을 찾아보시오.	미안하지만. 아첨을 원한다면 다른 방법을 찾아보시오.
 Sounds like more then just "bad blood."	단순한 '원한' 이상인 것처럼 들리는데.	단순한 '악연' 이상인 것처럼 들리는데.
 Speak to <Alias.ShortName=Target> about going to the Temple of Divines.	디바인 신전에 가는 것에 관해 <Alias.ShortName=Target>와 대화하기	디바인 신전에 가는 것에 관해 <Alias.ShortName=Target>과 대화하기

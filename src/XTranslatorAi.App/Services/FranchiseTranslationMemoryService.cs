@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using XTranslatorAi.Core.Data;
@@ -20,6 +21,17 @@ public sealed class FranchiseTranslationMemoryService
         => await _globalDbService.GetOrCreateAsync(cancellationToken);
 
     /// <summary>
+    /// By name, numbers compared as numbers: a seed's v10 changes come after its v9 ones (by name alone, before), so a
+    /// row both changed ends in the later text when a file of the earlier version is still waiting.
+    /// </summary>
+    internal static List<string> InImportOrder(IEnumerable<string> paths)
+        => paths.OrderBy(path => DigitRuns.Replace(Path.GetFileName(path), match => match.Value.TrimStart('0').PadLeft(20, '0')), StringComparer.OrdinalIgnoreCase)
+            .ThenBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+    private static readonly Regex DigitRuns = new(@"\d+", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(200));
+
+    /// <summary>
     /// Imports the TSV files waiting in the selected series' tm-import folder (the bundled Korean patch TM the seed
     /// service writes there, or a file the user put there) and moves each into imported/. Only the GUI did this, when
     /// it opened a project: agent mode wrote the seed and never read it, so a user of the kit alone translated with an
@@ -36,9 +48,7 @@ public sealed class FranchiseTranslationMemoryService
             return (0, null);
         }
 
-        var files = Directory.GetFiles(importDir, "*.tsv", SearchOption.TopDirectoryOnly)
-            .OrderBy(f => f, StringComparer.OrdinalIgnoreCase)
-            .ToList();
+        var files = InImportOrder(Directory.GetFiles(importDir, "*.tsv", SearchOption.TopDirectoryOnly));
         if (files.Count == 0)
         {
             return (0, null);

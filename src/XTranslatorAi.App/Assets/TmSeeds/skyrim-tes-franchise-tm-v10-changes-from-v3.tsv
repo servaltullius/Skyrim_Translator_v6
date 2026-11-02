@@ -416,6 +416,7 @@ How has Raven Rock needed your help?	레이븐 락에 당신들의 도움이 왜
 How is your work going so far?	당신의 책은 어디까지 진행되었소?	당신의 책은 어디까지 진행되었습니까?
 How long have you been First Hunter?	얼마나 오랫동안 최고 사냥꾼이었소?	얼마나 오랫동안 1급 사냥꾼이었소?
 How many pages did you lose?	잃어버린 쪽지가 몇 장이나 되오?	잃어버린 쪽지가 몇장이나 됩니까?
+I accept your offer. I'd like to join the Stormcloaks.	제안을 받아들이겠습니다. 스톰클록에 합류하겠습니다.	제안을 받아들이지. 스톰클록에 합류하지.
 I agree. The Empire should turn over <Alias=ImperialMinorHold2>.	동의하오. 제국은 <Alias=ImperialMinorHold2>을(를) 넘겨주어야 합니다.	동의하오. 제국은 <Alias=ImperialMinorHold2>을/를 넘겨주어야 합니다.
 I agree. This will set the tone for the whole negotiation. Elenwen should go.	동의합니다. 이 결정이 협상 전반에 영향을 미칠 겁니다. 엘렌웬은 나가야 합니다.	동의합니다. 이것은 협상에 대한 전반적인 영향을 끼칠테니 엘렌웬은 가야됩니다.
 I agree. Ulfric should turn over <Alias=SonsMinorHold2>.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을(를) 넘겨야하오.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을/를 넘겨야하오.
@@ -431,6 +432,7 @@ I convinced <Alias.ShortName=Target> to ease up a bit.	부담을 조금 줄여�
 I could be convinced to catch him. (Persuade)	대가만 맞으면 잡아다 줄 수도 있지. (설득)	개를 잡을 수 있을지 모르겠는데. (설득)
 I could find those frost salts for you.	내가 그 냉기 소금을 찾아 줄 수 있는데.	내가 그 냉기소금을 찾아 줄 수 있는데.
 I could use a hand.	도와주면 좋겠소.	도와줄 수 있는데.
+I did what I thought was right.	옳다고 생각한 일을 했을 뿐입니다.	옳다고 생각한 일을 한 것 뿐이오.
 I didn't agree to anything. Talk. (Intimidate)	나랑은 합의된 거 없는데. 말해. (위협)	나랑은 합의된 거 없는데. 말 해. (위협)
 I discovered this note on one of the ash spawn.	화산재 스폰의 잔해들 중에서 이 쪽지를 발견했는데.	화산재 스폰의 잔해들 중에서 이 노트를 발견했는데.
 I do, but you can't leave that way.	알고 있소. 하지만 당신은 그 방법으로는 나갈 수 없소.	그렇소, 하지만 당신은 그 방법으로는 나갈 수 없는데.
@@ -520,6 +522,7 @@ I'm not doing anything yet.	아직 아무것도 하겠다고 한 적 없는데.	
 I'm not.	관심 없어.	아직은.
 I'm ready. Let's go get them.	준비되었소. 놈들을 치러 갑시다.	준비되었소. 그걸 구하러 갑시다.
 I'm sorry boy, but I'm not who you think I am.	미안하다, 꼬마야. 하지만 난 네가 생각하는 그런 사람이 아니란다.	미안하다 얘야. 나는 네가 생각하는 그런 사람이 아니야.
+I'm sorry. I was trying to reach a fair agreement.	죄송합니다. 저는 공정한 합의를 이루려고 했습니다.	미안하오. 나는 공정한 협상을 하려고 했소.
 I'm sorry?	미안하지만...?	실례지만?
 I'm the Jarl's Thane. I demand you let me go at once.	나는 야를의 쎄인이다. 당장 날 보내 줘라.	야를의 쎄인이다. 즉시 물러나라.
 I've been better. And you?	썩 좋지는 않네. 자네는?	좀 나아진 것 같군. 자네는?
@@ -819,6 +822,7 @@ Someone has to be in charge, though.	그래도 누군가는 이끌어야 할 텐
 Something for bad dreams?	악몽에 듣는 약이라니?	나쁜 꿈을 꾸기라도 했소?
 Something tells me that it is.	왠지 그럴 것 같아.	무언가가 내게 그렇다고 말하고 있어.
 Sorry, I'm afraid you'll make me look silly.	미안하지만, 그 옷을 입으면 내가 우스워 보일 것 같은데.	미안하지만, 나를 바보로 만드는 것 같은데.
+Sorry, sir. I was trying to come to a fair agreement.	죄송합니다, 장군님. 공정한 합의를 이루려고 했습니다.	죄송합니다. 저는 공평한 합의를 이루려고 할 뿐입니다.
 Sorry. You'll have to find some other way to stroke your ego.	미안하지만. 자존심을 세우고 싶다면 다른 방법을 찾아보시오.	미안하지만. 아첨을 원한다면 다른 방법을 찾아보시오.
 Sounds good, I'll follow you.	좋소, 따라가지.	좋소., 따라가지.
 Sounds like more then just "bad blood."	단순한 '원한' 이상인 것처럼 들리는데.	단순한 '악연' 이상인 것처럼 들리는데.
