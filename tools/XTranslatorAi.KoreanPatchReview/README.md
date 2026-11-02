@@ -31,8 +31,9 @@ as a new row, with an empty Previous in the changes files. (artifacts/tm-v9-2026
 all sources v8 had, into v9 before it shipped, from a copy of the list, and empties the list only of those;
 artifacts/tm-v10-20261102/tm-v10.py took the 4 of chunk K into v10 the same way, and
 artifacts/tm-v11-20261102/tm-v11.py the 237 of the spacing review into v11,
-artifacts/tm-v12-20261102/tm-v12.py the 89 of the second spacing review into v12, and
-artifacts/tm-v13-20261103/tm-v13.py the 96 of the third spacing review into v13.)
+artifacts/tm-v12-20261102/tm-v12.py the 89 of the second spacing review into v12,
+artifacts/tm-v13-20261103/tm-v13.py the 96 of the third spacing review into v13, and
+artifacts/tm-v14-20261103/tm-v14.py the 13 of the fourth spacing review into v14.)
 
 `apply` skips a change when the patch no longer holds the `current_ko` the reviewer saw, or when the new text loses
 the English's tags and placeholders. Read every suggestion before `--write`: reviews from a model can be wrong or

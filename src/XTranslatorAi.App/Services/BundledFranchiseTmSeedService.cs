@@ -180,9 +180,11 @@ public sealed class BundledFranchiseTmSeedService
             // v12 takes the second spacing review the same way: 터, 수, 몇, 때문, 무슨 and 뭘 apart (있을 텐데, 몇 개나),
             // 같다 after a noun and 싶다 after -고 (구더기 같으니, 듣고 싶군); 89 rows changed (1.16.43).
             // v13 takes the third spacing review the same way: 거 the first round missed (그럴 거라고), the negating 안
-            // (안 돼), 동안, 대로, 적, 리 and 한 번 when it counts (본 적이, 한 번 더); 96 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v13", "bundled-skyrim-tes-franchise-tm.tsv", 1529311, "883d45a766578b7cc0fba1dd1b0a47f090b6b3a42357486e3bb120eccf26eb74",
-                PreviousVersions: new[] { "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v13-changes.tsv"),
+            // (안 돼), 동안, 대로, 적, 리 and 한 번 when it counts (본 적이, 한 번 더); 96 rows changed (1.16.44).
+            // v14 takes the fourth: the dependent noun 지 before a span of time apart (된 지 얼마나), the ending -ㄹ지
+            // joined (가능할지도) and 안되다 meaning pitiful joined (안됐구나); 13 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v14", "bundled-skyrim-tes-franchise-tm.tsv", 1529320, "27d3e1b8d26c8a4a4318f997a29558e1fef2bccce9ce9e6571d929aa0151dcb2",
+                PreviousVersions: new[] { "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v14-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,
