@@ -185,8 +185,10 @@ public sealed class BundledFranchiseTmSeedService
             // joined (가능할지도) and 안되다 meaning pitiful joined (안됐구나); 13 rows changed.
             // v15 takes the rest of the fourth: -아야/-어야 하다 apart (해야 할지), 전 of time apart, 오래전 and 오래되다
             // joined, the auxiliary 말다 apart (하지 마) and units after a numeral apart (몇백 년, 여러 가지); 45 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v15", "bundled-skyrim-tes-franchise-tm.tsv", 1529357, "719fe06b8712b2b710911da6fa4fe2a616b3ed485aba54ec06ef0f53cf56e12b",
-                PreviousVersions: new[] { "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v15-changes.tsv"),
+            // v16 takes the fifth: a noun before 없다 apart (필요 없소), 그 밖 apart, a unit after a numeral apart (네 명, 두 번),
+            // 뿐 after a plural noun joined (가시들뿐) and the auxiliaries 척하다 and 듯하다 joined (못 본 척하는); 39 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v16", "bundled-skyrim-tes-franchise-tm.tsv", 1529388, "9c84074769ec073e6e5f6e6c2cfb926468b98121b8d3119da0a64cd425312715",
+                PreviousVersions: new[] { "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v16-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,

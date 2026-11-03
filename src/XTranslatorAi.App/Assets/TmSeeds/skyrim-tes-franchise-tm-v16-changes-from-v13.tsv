@@ -1,12 +1,18 @@
 Source	Target	Previous
 All right. But you're responsible for him.	알았다. 대신 씻기거나 청소하는 건 네가 해야 된다.	알았다. 대신 씻기거나 청소하는 건 네가 해야된다.
+Anything else in it for me?	그 밖에 내가 얻는 것은 뭐요?	그밖에 내가 얻는 것은 뭐요?
+Bring both Elder Scrolls to Dexion	두 개의 엘더스크롤을 덱시온에게 가져가기	두개의 엘더스크롤을 덱시온에게 가져가기
+Did you need any more help with your project?	그 계획에 다른 도움은 필요 없나?	그 계획에 다른 도움은 필요없나?
 Don't be foolish. I'll do it.	멍청하게 굴지 마. 내가 하지.	멍청하게 굴지마. 내가 하지.
-Don't you want your treasure? Riches, and all that?	보물을 얻고 싶지 않나? 돈과, 그밖에 여러 가지 것들 말이야?	보물을 얻고 싶지 않나? 돈과, 그밖에 여러가지 것들 말이야?
+Don't bother asking. I'm not interested.	귀찮군. 흥미 없소.	귀찮군. 흥미없소.
+Don't you want your treasure? Riches, and all that?	보물을 얻고 싶지 않나? 돈과, 그 밖에 여러 가지 것들 말이야?	보물을 얻고 싶지 않나? 돈과, 그밖에 여러가지 것들 말이야?
 Ever think of moving to Morrowind?	모로윈드로 이사 가는 걸 생각해 본 적 있소?	모로윈드로 이사가는 걸 생각해 본 적 있소?
 Got any ideas about the knife?	그 칼로 뭘 해야 할지 알 것 같소?	그 칼로 뭘 해야할지 알 것 같소?
 Have you been working in the mines long?	광산에서 일한 지 오래되었나?	광산에서 일한지 오래되었나?
 Have you known Elenwen long?	엘렌웬을 안 지 오래되었소?	엘렌웬을 안지 오래 되었소?
+He wants the "secrets of the Skaal" in exchange for teaching me the third Word.	세 번째 힘의 단어를 가르쳐주는 대가로 '스칼의 비밀'을 원하고 있습니다.	세번째 힘의 단어를 가르쳐주는 대가로 '스칼의 비밀'을 원하고 있습니다.
 Here, I brought you a drink.	여기, 마실 것을 가져왔소.	여기, 마실것을 가져왔소.
+How about I pay you some gold and you look the other way? (<BribeCost> gold)	이 돈을 줄 테니 잠시 못 본 척하는 게 어떻겠소? (<BribeCost> 골드)	이 돈을 줄 테니 잠시 못본 척 하는 게 어떻겠소? (<BribeCost> 골드)
 How can I get to your master?	당신의 주인을 만나려면 어떻게 해야 하지?	당신의 주인을 만나려면 어떻게 해야하지?
 How does one join the Imperial Legion?	제국군에 가입하고 싶은 사람은 어떻게 해야 합니까?	제국군에 가입하고 싶은 사람은 어떻게 해야합니까?
 How long has Yamarz been cursed?	야마즈가 저주를 받은 지 얼마나 되었소?	야마즈가 저주를 받은지 얼마나 되었소?
@@ -19,13 +25,29 @@ How long have you been training dogs?	개들을 훈련시킨 지 얼마나 되�
 How long have you studied alchemy?	연금술을 연구한 지 얼마나 되나?	연금술을 연구한지 얼마나 되나?
 How old is that stone bridge near the town?	마을 근처의 돌다리는 얼마나 오래된 거지?	마을 근처의 돌다리는 얼마나 오래 된 거지?
 I agree. Ulfric should turn over <Alias=SonsMinorHold2>.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을(를) 넘겨야 하오.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을(를) 넘겨야하오.
+I don't need some bucket of scrap metal following me around...	내 주변에 쇳조각 한 덩어리가 어슬렁 거리는 것을 원하진 않아...	내 주변에 쇳조각 한덩어리가 어슬렁 거리는 것을 원하진 않아...
+I don't need some mutt following me around.	졸졸 따라다니는 개 따위는 필요 없어.	졸졸 따라다니는 개 따위는 필요없어.
+I don't need your help. I can do this myself.	도움은 필요 없어. 스스로 하지.	도움은 필요없어. 스스로 하지.
+I don't need your help. I'll learn Miraak's secrets on my own.	너의 도움은 필요 없다. 미락의 비밀은 나 혼자 힘으로 알아낼 테니.	너의 도움은 필요없다. 미락의 비밀은 나 혼자 힘으로 알아낼 테니.
+I found this map at the EETC. Interested?	동제국 회사에서 이 지도를 발견했는데. 흥미 없나?	동제국 회사에서 이 지도를 발견했는데. 흥미없나?
+I have my skill, not powers or magic.	기술이면 충분해, 권능이나 마법은 필요 없어.	기술이면 충분해, 권능이나 마법은 필요없어.
 I have to speak with Astrid! She's here, in the Sanctuary. Follow me.	아스트리드와 이야기를 해 봐야 한다! 그녀는 지금 여기 성역에 있으니, 따라 와.	아스트리드와 이야기를 해 봐야한다! 그녀는 지금 여기 성역에 있으니, 따라 와.
+I learned the second Word of the Bend Will Shout.	'의지 꺾기' 함성의 두 번째 단어를 배웠소.	'의지 꺾기' 함성의 두번째 단어를 배웠소.
 I need to go there anyway.	어떻게든 거기에 가야 하는데.	어떻게든 거기에 가야하는데.
 I need to talk to him. I'm a friend. His life's in danger. (Persuade)	이야기를 해야 해. 나는 그 사람 친구야. 그 사람의 목숨이 위험하다고. (설득)	이야기를 해야해. 나는 그 사람 친구야. 그 사람의 목숨이 위험하다고. (설득)
+I need your help. I need to capture a dragon.	도움이 필요합니다. 드래곤 한 마리를 생포해야 하는데.	도움이 필요합니다. 드래곤 한마리를 생포해야 하는데.
+I only see the spikes of this trap.	보이는 거라곤 이 함정의 가시들뿐인데.	보이는 거라곤 이 함정의 가시들 뿐인데.
 I thought dragons were all dead long ago.	드래곤은 오래전에 다 죽어버린 줄 알았는데.	드래곤은 오래 전에 다 죽어버린 줄 알았는데.
 I want to show you something. It's important. You really must come. (Persuade)	뭔가 보여줄 게 있다. 아주 중요한 것이니 네가 반드시 와야 한다. (설득)	뭔가 보여줄 게 있다. 아주 중요한 것이니 네가 반드시 와야한다. (설득)
+I'd rather not have company right now.	지금은 동행이 필요 없소.	지금은 동행이 필요없소.
 I'm going alone?	나 혼자서 가야 하오?	나 혼자서 가야하오?
+I'm looking for a Khajiit... might be a Thalmor spy.	카짓을 찾고 있소... 탈모어의 첩자인 듯한데.	카짓을 찾고 있소... 탈모어의 첩자인 듯 한데.
+I'm not interested.	흥미 없소.	흥미없소.
+I'm not interested. Sorry.	미안하지만, 관심 없어.	미안하지만, 관심없어.
+I'm not into books.	책에는 별로 관심 없는데.	책에는 별로 관심없는데.
 I'm sorry about your uncle.	삼촌 일은 안됐구나.	삼촌일은 안 됐구나.
+I'm sorry. I'm not interested.	미안하지만, 흥미 없어.	미안하지만, 흥미없어.
+I'm with the Guild. How about you look the other way? (<BribeCost> gold)	나는 길드원이야. 잠시 못 본 척하면 안 될까? (<BribeCost> 골드)	나는 길드원이야. 잠시 못본 척 하면 안 될까? (<BribeCost> 골드)
 If the Shout is lost, how can I defeat Alduin?	그 함성이 사라졌다면, 무슨 방법으로 알두인을 물리쳐야 합니까?	그 함성이 사라졌다면, 무슨 방법으로 알두인을 물리쳐야합니까?
 In 3E 389 Emperor Uriel VII was imprisoned by his Imperial Battlemage, Jagar Tharn, who then impersonated him for years.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄에 의해 갇히게 되었습니다. 그 후 수년 동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄에 의해 갇히게 되었습니다. 그 후 수 년 동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.
 In order to use the Add-Ons associated with this profile, you will need to restart.	이 프로필에 연계된 DLC를 이용하려면 게임을 다시 시작해야 합니다.	이 프로필에 연계된 DLC를 이용하려면 게임을 다시 시작해야합니다.
@@ -33,19 +55,33 @@ In order to use the downloaded content associated with this profile, you will ne
 It's all right. Just tell me what I need to know. (Persuade)	괜찮아. 내가 알아야 할 것만 말해봐. (설득)	괜찮아. 내가 알아야할 것만 말해봐. (설득)
 Never mind that... it worked!	신경 쓰지 마... 제대로 되었어!	신경 쓰지마... 제대로 되었어!
 Never mind, boy. I don't need you to do anything.	신경 쓰지 마. 아무것도 하지 않아도 된다.	신경쓰지마. 아무것도 하지 않아도 된다.
-Nevermind, I don't need you to do anything right now.	신경 쓰지 마, 지금 당장은 필요없어.	신경 쓰지마, 지금 당장은 필요없어.
+Never mind. I don't need anything.	신경 쓰지 마시오, 아무것도 필요 없소.	신경쓰지 마시오, 아무 것도 필요없소.
+Never mind. I'm not interested.	음. 흥미 없소.	음. 흥미없소.
+Nevermind, I don't need you to do anything right now.	신경 쓰지 마, 지금 당장은 필요 없어.	신경 쓰지마, 지금 당장은 필요없어.
+No thanks.	필요 없소.	필요없소.
+Not interested.	흥미 없소.	흥미없소.
+Not really interested.	별 관심 없소.	별 관심없소.
+Nothing right now.	지금은 필요 없소.	지금은 필요없소.
 Of course you're not invisible. Go bother someone else.	물론 아니지. 더 이상 날 귀찮게 하지 마.	물론 아니지. 더 이상 날 귀찮게 하지마.
 Once the capital of Skyrim, Winterhold has been all but abandoned in the last few hundred years.	한때 스카이림의 수도였던 윈터홀드는 지난 몇백 년 동안 거의 버려지다시피 했습니다.	한때 스카이림의 수도였던 윈터홀드는 지난 몇 백년 동안 거의 버려지다시피 했습니다.
+Only a beast kills without feeling.	짐승이나 아무런 감정 없이 상대를 죽이지.	짐승이나 아무런 감정없이 상대를 죽이지.
+Only cowards hunt animals. True game walks on two legs.	동물을 사냥하는 건 겁쟁이들뿐이지. 진짜 사냥감은 두 발로 서 있는 것들이야.	동물을 사냥하는 건 겁쟁이들 뿐이지. 진짜 사냥감은 두 발로 서 있는 것들이야.
 Perhaps it could be translated.	번역이 가능할지도 모르겠군.	번역이 가능할 지도 모르겠군.
 Quite a party. It's my first time, you know. Where can I get a drink?	대단한 연회군요. 보시다시피 여기에는 처음이라... 뭔가 마실 것은 어디에 있소?	대단한 연회군요. 보시다시피 여기에는 처음이라... 뭔가 마실것은 어디에 있소?
 So I should go to Volunruud? I should talk to this man?	그러면 볼룬루드로 가면 되나? 그 자와 대화를 해야 하나?	그러면 볼룬루드로 가면 되나? 그 자와 대화를 해야하나?
+So if I could lure a dragon into Dragonsreach...	그래서 드래곤스리치로 한 마리를 끌어들일 수 있다면...	그래서 드래곤스리치로 한마리를 끌어들일 수 있다면...
+So this is all the Blades? Two people?	그래서 이게 블레이드의 전부인가? 단 두 명이?	그래서 이게 블레이드의 전부인가? 단 두명이?
 So what do we do?	그래서 뭘 해야 하지?	그래서 뭘 해야하지?
+Sorry, not interested.	미안하군, 별로 흥미 없소.	미안하군, 별로 흥미없소.
 The Dark Brotherhood was once bound by a set of rules called the Five Tenets, but they have long since been abandoned.	다크 브라더후드는 한 때 다섯 교리로 묶여있었지만, 지금은 그 교리들이 사라진 지 오래되었습니다.	다크 브라더후드는 한 때 다섯 교리로 묶여있었지만, 지금은 그 교리들이 사라진지 오래되었습니다.
 The dwarves of Tamriel disappeared millennia ago and are presumed extinct.	탐리엘에서 드워프들은 천여 년 전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.	탐리엘에서 드워프들은 천여년전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.
 The Fourth Era began 200 years ago when Martin Septim sacrificed himself to save the world from the Oblivion Crisis.	200년 전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.
 The last battle here was hundreds of years ago.	여기서 벌어진 마지막 전투는 몇백 년 전의 일인데.	여기서 벌어진 마지막 전투는 몇 백년전의 일인데.
+Then we have no further need of you.	그렇다면 더 이상 당신은 필요 없겠군.	그렇다면 더 이상 당신은 필요없겠군.
+There are only four of you?	당신들 네 명이 전부입니까?	당신들 네명이 전부입니까?
+Twice-Killed?	두 번 죽었다고?	두번 죽었다고?
 What am I supposed to tell Christer?	크리스터에게는 뭐라고 해야 하지?	크리스터에게는 뭐라고 해야하지?
-What happened in the last few hundred years?	지난 몇백 년사이에 무슨 일이 있었습니까?	지난 몇 백년사이에 무슨 일이 있었습니까?
+What happened in the last few hundred years?	지난 몇백 년 사이에 무슨 일이 있었습니까?	지난 몇 백년사이에 무슨 일이 있었습니까?
 What kind of security should I expect?	경계수준은 어떨 것 같소?	경계수준은 어떨것 같소?
 What should I do now?	이젠 어떻게 해야 합니까?	이젠 어떻게 해야합니까?
 When you obtain a spell book, you need to read it to learn the spell, which destroys the book in the process.	마법책을 얻었을 때, 그 마법을 배우기 위해서는 책을 읽어야 하고, 그 과정에서 해당 마법책은 사라지게 됩니다.	마법책을 얻었을 때, 그 마법을 배우기 위해서는 책을 읽어야하고, 그 과정에서 해당 마법책은 사라지게 됩니다.
