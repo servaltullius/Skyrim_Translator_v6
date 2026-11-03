@@ -184,11 +184,15 @@ public sealed class BundledFranchiseTmSeedService
             // v14 takes the fourth: the dependent noun 지 before a span of time apart (된 지 얼마나), the ending -ㄹ지
             // joined (가능할지도) and 안되다 meaning pitiful joined (안됐구나); 13 rows changed.
             // v15 takes the rest of the fourth: -아야/-어야 하다 apart (해야 할지), 전 of time apart, 오래전 and 오래되다
-            // joined, the auxiliary 말다 apart (하지 마) and units after a numeral apart (몇백 년, 여러 가지); 45 rows changed.
+            // joined, the auxiliary 말다 apart (하지 마) and units after a numeral apart (몇백 년, 여러 가지); 45 rows changed
+            // (1.16.45).
             // v16 takes the fifth: a noun before 없다 apart (필요 없소), 그 밖 apart, a unit after a numeral apart (네 명, 두 번),
-            // 뿐 after a plural noun joined (가시들뿐) and the auxiliaries 척하다 and 듯하다 joined (못 본 척하는); 39 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v16", "bundled-skyrim-tes-franchise-tm.tsv", 1529388, "9c84074769ec073e6e5f6e6c2cfb926468b98121b8d3119da0a64cd425312715",
-                PreviousVersions: new[] { "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v16-changes.tsv"),
+            // 뿐 after a plural noun joined (가시들뿐) and the auxiliaries 척하다 and 듯하다 joined (못 본 척하는); 39 rows changed
+            // (1.16.46).
+            // v17 takes the sixth: the pronouns 이곳 and 그곳 joined (이곳에서는), 수많다 joined (수많은) and the particle 뿐
+            // joined after a noun (하트스톤뿐이던데); 6 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v17", "bundled-skyrim-tes-franchise-tm.tsv", 1529382, "2b70b811a16507b348c87e0449a765e59c54329e2b6baf7c7ec8c624aca84082",
+                PreviousVersions: new[] { "v16", "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v17-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,

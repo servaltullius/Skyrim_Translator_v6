@@ -5,6 +5,7 @@ Source	Target	Previous
 <Alias=PlayerIsIt> is it. Hide from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt>이(가) 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요	<Alias=PlayerIsIt> 이/가 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요
 <Alias=PlayerIsIt> is it. Keep away from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt>이(가) 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요
 A dremora captured you?	드레모라가 당신을 가두었단 말이오?	드레모라가 당신을 가두었다고?
+A recent string of murders has many Windhelm residents fearing for their lives...	최근 연이은 살인사건이 수많은 윈드헬름 주민들의 삶을 공포에 떨게하고 있습니다.	최근 연이은 살인사건이 수 많은 윈드헬름 주민들의 삶을 공포에 떨게하고 있습니다.
 A truly strong chief would break the curse, not suffer from it.	진정으로 강한 족장이라면 저주를 풀어야지, 저주 때문에 고통받는 것이 아니고.	진정으로 강한 족장이라면 저주를 풀어야지, 저주때문에 고통받는 것이 아니고.
 A vampire? I don't think so.	흡혈귀라고? 안 될 거 같군.	흡혈귀라고? 안될 거 같군.
 Agrius's Journal	아그리우스의 일기	아그리어스의 일기
@@ -17,10 +18,12 @@ Any chance I could talk you into overlooking this? (Persuade)	한 번만 봐주�
 Any idea why?	이유를 알고 있나?	이유를 알고있나?
 Anything dangerous on that small island to the east?	동쪽의 작은 섬에 뭔가 위험한 게 있나?	동쪽의 작은 섬에 뭔가 위험한게 있나?
 Anything else in it for me?	그 밖에 내가 얻는 것은 뭐요?	그밖에 내가 얻는 것은 뭐요?
+Are sales that bad out here?	이곳에서는 장사가 잘 안 되나?	이 곳에서는 장사가 잘 안 되나?
 Are things not going well for you?	일이 잘 안 되고 있습니까?	일이 잘 안되고 있습니까?
 Are you a mercenary? You won't find much work here.	용병인가? 여기에는 별로 일거리가 없을 텐데.	용병인가? 여기에는 별로 일거리가 없을텐데.
 Are you aware that Letrush stole Frost?	리트러쉬가 프로스트를 훔친 걸 알고 있소?	리트러쉬가 프로스트를 훔친 걸 알고있소?
 Are you aware there's a plot to steal Frost?	프로스트란 말을 훔치려는 계획에 관해 알고 있소?	프로스트란 말을 훔치려는 계획에 관해 알고있소?
+Are you going to be able to lead this place, still?	그래도 여전히 이곳을 이끌어갈 수 있겠나?	그래도 여전히 이 곳을 이끌어갈 수 있겠나?
 Are you going to tell me, or am I going to have to beat it out of you? (Brawl)	그냥 순순히 불 거야, 아니면 말할 때까지 패 줄까? (싸움)	그냥 순순히 불 거야, 아니면 말할 때 까지 패 줄까? (싸움)
 Are you mad? I could have died!	당신 미쳤나? 죽을 뻔했잖아!	당신 미쳤나? 죽을 뻔 했잖아!
 Are you nervous about being here?	여기 있는 게 불안합니까?	여기 있는게 불안합니까?
@@ -412,6 +415,7 @@ Solitude? Then why am I here in Whiterun?	솔리튜드? 그럼 내가 왜 화이
 Soon, the Emperor will die. Murdered, by the Gourmet.	곧, 황제는 죽을 거야. '미식가'에게 살해 당하는 거지.	곧, 황제는 죽을거야. '미식가'에게 살해 당하는 거지.
 Sorry, I don't even have 750 gold.	미안하군, 가진 돈이 750골드도 안 되는데.	미안하군, 가진 돈이 750골드도 안되는데.
 Sorry, I'm not ready for that just yet.	미안하지만, 아직 준비가 안 됐습니다.	미안하지만, 아직 준비가 안됐습니다.
+Sorry, I'm still not ready to go in there.	미안한데, 아직 그곳에 갈 준비가 되지 않았소.	미안한데, 아직 그 곳에 갈 준비가 되지 않았소.
 Sorry, not interested.	미안하군, 별로 흥미 없소.	미안하군, 별로 흥미없소.
 Sorry, sir. I was trying to come to a fair agreement.	죄송합니다, 장군님. 공정한 합의를 이루려고 했습니다.	죄송합니다. 저는 공평한 합의를 이루려고 할 뿐입니다.
 Sorry. I don't know anything.	미안하지만, 아는 게 없소.	미안하지만, 아는게 없소.
@@ -468,6 +472,7 @@ There is only one cure for your madness, Cicero. Me.	자네의 그 광기를 치
 There must be a way.	무슨 방법이 있을 텐데.	무슨 방법이 있을텐데.
 There must be something I can do.	내가 할 수 있는 게 있을 거요.	내가 할 수 있는 게 있을거요.
 There must be something you want.	뭔가 원하는 게 있을 텐데.	뭔가 원하는게 있을텐데.
+There wasn't a body in the grave. Just the heart stone.	무덤에 시체는 없고 하트스톤뿐이던데.	무덤에 시체는 없고 하트스톤 뿐이던데.
 There would be treasure to share... (Persuade)	나눠 가질만한 보물도 있을 텐데... (설득)	나눠 가질만한 보물도 있을텐데... (설득)
 They'll show up eventually I suppose.	그들은 아마 결국에는 나타날 텐데.	그들은 아마 결국에는 나타날텐데.
 They'll understand. Trust me. (Persuade)	그들은 이해할 거요. 나를 믿으시오. (설득)	그들은 이해할거요. 나를 믿으시오. (설득)
@@ -555,6 +560,7 @@ Where could they have gone?	어디로 가버린 거지?	어디로 가버린거�
 Where did they take her?	그 애를 어디로 데려간 거지?	그 애를 어디로 데려간거지?
 Where did you find this Black Book?	이 검은 책을 어디에서 찾은 거요?	이 검은 책을 어디에서 찾은거요?
 Where did you get all these items?	이 물품들을 어디서 구한 거요?	이 물품들을 어디서 구한거요?
+Where did you live before you were here?	이곳에 오기 전에는 어디서 살았지?	이 곳에 오기 전에는 어디서 살았지?
 Where do the thralls come from?	노예들은 어디에서 오는 거요?	노예들은 어디에서 오는거요?
 Where exactly am I going?	정확히 어디로 가야 하지?	정확히 어디로 가야하지?
 Where is this "Blackreach"?	'블랙리치'는 어디에 있소?	'블랙리치'는 어디에 있나?
