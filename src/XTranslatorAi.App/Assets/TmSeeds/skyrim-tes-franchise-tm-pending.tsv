@@ -1,1 +1,11 @@
 Source	Target
+Add a kitchen that can be fitted out with cooking stations, food containers and the like.	조리대와 음식 저장 용기 등을 갖출 수 있는 부엌을 추가합니다.
+Creatures and people will attack enemies nearby for 10 seconds.	10 초 동안 주변의 적을 공격하게 합니다.
+Targets up to level <20> that fail to resist are frenzied for <30> seconds.	주변 표면에 광란의 룬을 설치합니다. 적이 접근 시 폭발하여 저항에 실패한 레벨 <20> 이하인 목표가 <30> 초 동안 다른 이를 공격하게 합니다.
+Transmutes one piece of unrefined Iron ore to Silver, or Silver ore to Gold if the caster is carrying any.	소지품에 있는 철 광석 하나를 은 광석으로 변환하거나 은 광석 하나를 금 광석으로 변환합니다.
+Stealth skills are all  <10>% more effective.	모든 도적 기술의 효과가 <10>% 증가합니다.
+Targets that fail to resist take <mag> points of poison damage per second for <dur> seconds.	주변 표면에 맹독의 룬을 설치합니다. 적이 접근 시 폭발하여 저항에 실패한 목표에게 <dur> 초 동안 매 초마다 <mag> 의 독 피해를 입힙니다.
+A cyclone that does <mag> points of damage per second and may fling victims into the air.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버릴 수 있습니다.
+You become invulnerable, but unable to attack. However you recover magicka and stamina.	에테르 형상으로 변하여 피해를 입히지도, 입지도 않게 되며 매지카와 지구력이 회복됩니다.
+A blast of flame that sets the target on fire, doing <mag> damage per second for <15> seconds.	불꽃을 날려 목표에 불을 붙이고 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다.
+Combat skills are all <10>% more effective.	모든 전사 기술의 효과가 <10>% 증가합니다.
