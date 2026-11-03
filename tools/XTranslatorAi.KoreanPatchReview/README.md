@@ -36,8 +36,9 @@ artifacts/tm-v13-20261103/tm-v13.py the 96 of the third spacing review into v13,
 artifacts/tm-v14-20261103/tm-v14.py the 13 of the fourth spacing review's first chunk into v14,
 artifacts/tm-v15-20261103/tm-v15.py the 45 of its second and third chunks into v15,
 artifacts/tm-v16-20261103/tm-v16.py the 39 of the fifth spacing review into v16,
-artifacts/tm-v17-20261103/tm-v17.py the 6 of the sixth into v17, and
-artifacts/tm-v18-20261103/tm-v18.py the 81 of the seventh into v18.)
+artifacts/tm-v17-20261103/tm-v17.py the 6 of the sixth into v17,
+artifacts/tm-v18-20261103/tm-v18.py the 81 of the seventh into v18, and
+artifacts/tm-v19-20261103/tm-v19.py the 53 of the eighth into v19.)
 
 `apply` skips a change when the patch no longer holds the `current_ko` the reviewer saw, or when the new text loses
 the English's tags and placeholders. Read every suggestion before `--write`: reviews from a model can be wrong or

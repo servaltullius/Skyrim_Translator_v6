@@ -193,9 +193,11 @@ public sealed class BundledFranchiseTmSeedService
             // joined after a noun (하트스톤뿐이던데); 6 rows changed (1.16.47).
             // v18 takes the seventh: 신경 쓰다 and the adverb 못 apart (신경 쓰지 마시오, 못 본), the auxiliary 못하다 joined,
             // the dependent nouns 건 and 걸 apart after a modifier (있는 건, 모든 걸) and the particle 보다 joined (것보다);
-            // 81 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v18", "bundled-skyrim-tes-franchise-tm.tsv", 1529461, "b6114d36b554a9a387c4700bb5a12bcd3f0613791f8373c7615b9c55a0f557b6",
-                PreviousVersions: new[] { "v17", "v16", "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v18-changes.tsv"),
+            // 81 rows changed (1.16.48).
+            // v19 takes the eighth: the dependent nouns 거 and 게 apart after a modifier (화난 겁니까, 다른 게), -어하다 joined
+            // to an adjective (두려워하는) and 싶어 하다 apart after a phrase; 53 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v19", "bundled-skyrim-tes-franchise-tm.tsv", 1529487, "14c16f33c0a05248c20d23d6a37c8eb8f2f8aa05fc74c16f9fb7b44bc4017a42",
+                PreviousVersions: new[] { "v18", "v17", "v16", "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v19-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,
