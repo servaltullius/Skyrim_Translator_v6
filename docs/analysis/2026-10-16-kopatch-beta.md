@@ -27,6 +27,7 @@
   - Survival Mode 생존 모드
   - 지명 하핑가르, 히얄마치
 - `$ TO PLACE`, `$ TO STEAL`, `$lvl`의 공백은 원래대로 두었다. 키 이름의 공백이 화면에서는 사라져, 번역자가 단추 그림과 띄우려고 넣은 것으로 본다.
+  - `$lvl`은 2026-11-05에 '레벨 '에서 'Lv'로 바꿨다(공백도 뺌). 이 키는 아이템 카드의 레벨 라벨이다. 원본·SkyUI·UI 모드의 itemcard.swf에서 이 칸은 폭 23px·줄바꿈 켬·한 줄 높이라, 16pt에서 25.1px인 '레벨'은 '벨'이 둘째 줄로 밀려 '레'만 보였다(사용자 제보). 'Lv'는 11.0px다. 원본 공식 번역도 모두 서너 글자 약어이고, 일본어·중국어판은 'lvl' 그대로다(`artifacts/mistranslation-hunt-20261103/lvl-label.py`).
 - 결과: 기존 791개 중 104개 수정, 70개 추가, 모두 861항목. 형식(UTF-16, CRLF, 키[탭]값)은 그대로다.
 - 모드팩 파일도 교체했다. 원래 파일은 `artifacts/patch-review-interface-20261016/translate_english.modpack-before.txt`에 있다.
 
