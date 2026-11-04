@@ -1,4 +1,5 @@
 Source	Target	Previous
+"...even to my lord as to my fellow brothers and sisters in arms."	'... 주군께 그러하듯 내 동료 전우들에게도 충성을 바칠 것을 선서합니다.'	'... 내 동료 전우들과 함께, 주군께 충성을 바칠 것을 선서합니다.'
 A blast of flame that sets the target on fire, doing <mag> damage per second for <15> seconds.	불꽃을 날려 목표에 불을 붙이고 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다.	불꽃의 화살을 날려 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 A cyclone that does <mag> points of damage per second and may fling victims into the air.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버릴 수 있습니다.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버립니다.
 Add a kitchen that can be fitted out with cooking stations, food containers and the like.	조리대와 음식 저장 용기 등을 갖출 수 있는 부엌을 추가합니다.	여러 가지 주방용품들과 음식 저장 용기 등이 구비된 부엌을 추가합니다.

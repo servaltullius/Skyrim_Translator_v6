@@ -1,4 +1,5 @@
 Source	Target	Previous
+"...even to my lord as to my fellow brothers and sisters in arms."	'... 주군께 그러하듯 내 동료 전우들에게도 충성을 바칠 것을 선서합니다.'	'... 내 동료 전우들과 함께, 주군께 충성을 바칠 것을 선서합니다.'
 A blast of flame that sets the target on fire, doing <mag> damage per second for <15> seconds.	불꽃을 날려 목표에 불을 붙이고 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다.	불꽃의 화살을 날려 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 A cyclone that does <mag> points of damage per second and may fling victims into the air.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버릴 수 있습니다.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버립니다.
 A recent string of murders has many Windhelm residents fearing for their lives...	최근 연이은 살인사건이 수많은 윈드헬름 주민들의 삶을 공포에 떨게하고 있습니다.	최근 연이은 살인사건이 수 많은 윈드헬름 주민들의 삶을 공포에 떨게하고 있습니다.
