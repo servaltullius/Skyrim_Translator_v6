@@ -1,10 +1,13 @@
 Source	Target	Previous
 "...even to my lord as to my fellow brothers and sisters in arms."	'... 내 동료 전우들과 함께, 주군께 충성을 바칠 것을 선서합니다.'	'... 내 동료 전우들과 함께, 주군께 충성을 바칠것을 선서합니다.'
 <Alias.ShortName=Target> won't be bothering you anymore.	<Alias.ShortName=Target>에게 말해 두었소. 더 이상 당신을 괴롭히지 않을 거요.	<Alias.ShortName=Target>에게 말해 두었소. 더 이상 당신을 괴롭히지 않을거요.
+A blast of flame that sets the target on fire, doing <mag> damage per second for <15> seconds.	불꽃을 날려 목표에 불을 붙이고 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다.	불꽃의 화살을 날려 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
+A cyclone that does <mag> points of damage per second and may fling victims into the air.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버릴 수 있습니다.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버립니다.
 A recent string of murders has many Windhelm residents fearing for their lives...	최근 연이은 살인사건이 수많은 윈드헬름 주민들의 삶을 공포에 떨게하고 있습니다.	최근 연이은 살인사건이 수 많은 윈드헬름 주민들의 삶을 공포에 떨게하고 있습니다.
 A stalemate?	비긴 건가?	비긴건가?
 A truly strong chief would break the curse, not suffer from it.	진정으로 강한 족장이라면 저주를 풀어야지, 저주 때문에 고통받는 것이 아니고.	진정으로 강한 족장이라면 저주를 풀어야지, 저주때문에 고통받는 것이 아니고.
 A vampire? I don't think so.	흡혈귀라고? 안 될 거 같군.	흡혈귀라고? 안될 거 같군.
+Add a kitchen that can be fitted out with cooking stations, food containers and the like.	조리대와 음식 저장 용기 등을 갖출 수 있는 부엌을 추가합니다.	여러 가지 주방용품들과 음식 저장 용기 등이 구비된 부엌을 추가합니다.
 All right. But you're responsible for him.	알았다. 대신 씻기거나 청소하는 건 네가 해야 된다.	알았다. 대신 씻기거나 청소하는 건 네가 해야된다.
 And Nilsine Shatter-Shield? Why must she die?	닐신까지? 그녀는 왜 죽어야 하는 거지?	닐신까지? 그녀는 왜 죽어야 하는거지?
 Any chance I could talk you into overlooking this? (Persuade)	한 번만 봐주시오. (설득)	한번만 봐주시오. (설득)
@@ -31,6 +34,7 @@ Aren't you his apprentice? He must have taught you his secrets...	그의 조수�
 As dead as I can make him.	그는 이제 죽은 거나 다름없습니다.	그는 이제 죽은거나 다름 없습니다.
 At least the Blades aren't keeping secrets from me.	적어도 블레이드는 나에게 비밀 같은 건 없습니다.	적어도 블레이드는 나에게 비밀같은 건 없습니다.
 Attacks can be blocked with either a shield or a weapon, but shields are much more effective.	상대방의 공격은 방패나 무기를 들고 있을 때 방어할 수 있습니다. 그러나 방패가 훨씬 더 효과적입니다.	상대방의 공격은 방패나 무기를 들고 있을때 방어할 수 있습니다. 그러나 방패가 훨씬 더 효과적입니다.
+Azura is the daedric prince of dusk and dawn, and one of the few not considered to be inherently evil.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 본래부터 악하지는 않다고 여겨지는 프린스들 중 하나입니다.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 원래부터 악마는 아니라고 여겨지는 프린스들 중 하나입니다.
 Bring both Elder Scrolls to Dexion	두 개의 엘더스크롤을 덱시온에게 가져가기	두개의 엘더스크롤을 덱시온에게 가져가기
 Calm down. Just tell me what happened.	진정하고. 무슨 일인지 말해주시오.	진정하고. 무슨일인지 말해주시오.
 Calm down. Tell me what happened.	진정하고, 무슨 일인지 말해보시오.	진정하고, 무슨일인지 말해보시오.
@@ -39,8 +43,12 @@ Can't we just make up missing parts of the verse?	시에서 누락된 부분을 
 Can't we talk here?	여기서 이야기 하면 안 되나?	여기서 이야기 하면 안되나?
 Can't you just take the Key?	당신이 그냥 열쇠를 돌려놓으면 안 되나?	당신이 그냥 열쇠를 돌려놓으면 안되나?
 Cast Soul Trap on an enemy during combat, and his soul will be captured in one of your empty soul gems, when he dies.	전투 중 적에게 소울 트랩 마법을 사용하십시오, 그러면 상대가 죽을 때 그 영혼은 비어있는 소울젬 안에 갇히게 됩니다.	전투 중 적에게 소울 트랩 마법을 사용하십시오, 그러면 상대가 죽을때 그 영혼은 비어있는 소울젬 안에 갇히게 됩니다.
+Combat skills are all <10>% more effective.	모든 전사 기술의 효과가 <10>% 증가합니다.	모든 전사 기술이 <10>% 증가합니다.
 Could you repeat that inscription?	그 문장을 한 번 더 반복해 주시오.	그 문장을 한번 더 반복해 주시오.
+Creatures and people will attack enemies nearby for 10 seconds.	10 초 동안 주변의 적을 공격하게 합니다.	10 초 동안 다른 이를 공격하게 합니다.
 Dare I ask where all this meat comes from?	이 고기들을 어디서 구한 건지 물어봐도 되겠소?	이 고기들을 어디서 구한건지 물어봐도 되겠소?
+Dark elves, also known as Dunmer, are natives of Morrowind - a land many consider alien and inhospitable.	던머라고 알려진 다크 엘프들의 출신은 모로윈드인데 그곳은 대부분의 사람들이 이질적이고 살기 힘든 땅으로 여기는 지역입니다.	던머라고 알려진 다크 엘프들의 출신은 모로윈드인데 그곳은 대부분의 사람들이 이상한 생명체들로 가득하고 황폐한 땅으로 여기는 지역입니다.
+Dibella is the goddess of beauty. She has a temple in Markarth that is devoted to women.	디벨라는 미의 여신입니다. 마르카스에는 여성들을 위한 그녀의 신전이 있습니다.	디벨라는 미의 여신입니다. 마르카스에 위치한 그녀의 신전에서는 많은 여성들이 경배를 드립니다.
 Did you just talk?	지금 말을 한 건가?	지금 말을 한건가?
 Did you need any more help with your project?	그 계획에 다른 도움은 필요 없나?	그 계획에 다른 도움은 필요없나?
 Did you see what happened here?	여기서 무슨 일이 일어난 건지 봤습니까?	여기서 무슨 일이 일어난건지 봤습니까?
@@ -300,7 +308,9 @@ Let Ulfric have his way now. He'll have to give ground later.	울프릭이 맘�
 Lexicon? Burden? What are you talking about?	고대사전? 해방? 무슨 말을 하고 있는 건가?	고대사전? 해방? 무슨 말을 하고 있는건가?
 Living with you would be perfect.	당신과 함께 사는 게 최고입니다.	당신과 함께 사는게 최고입니다.
 Looks like you're no longer needed. Time to die.	이제 넌 더 이상 쓸모가 없을 것 같군. 죽을 시간이다.	이제 넌 더 이상 쓸모가 없을것 같군. 죽을 시간이다.
+Magicka is the energy used to power spells. The higher the magicka, the more spells that can be cast.	매지카는 마법들을 사용할 수 있게 해주는 힘입니다. 매지카의 수치가 클수록 더 많은 마법들을 사용할 수 있습니다.	매지카는 강력한 마법들을 사용할 수 있게 해주는 힘입니다. 매지카의 수치가 클수록 더 많은 마법들을 사용할 수 있습니다.
 Make this easier for you, tell me what I want to know. (Persuade)	쉽게 쉽게 합시다. 내가 알고 싶은 걸 말해주시오. (설득)	쉽게 쉽게 합시다. 내가 알고 싶은걸 말해주시오. (설득)
+Many species of bear roam Skyrim's wilds. They are fearsome creatures, but will often avoid attacking unless provoked.	많은 종류의 곰들이 스카이림의 야생을 배회합니다. 그것들은 위험한 생물이지만 화나게 하지 않는다면 대개 먼저 공격해오지는 않습니다.	많은 종류의 곰들이 스카이림의 야생을 배회합니다. 그것들은 위험한 생물이지만 화나게 하지 않는다면 먼저 공격해오지는 않을 것입니다.
 Maybe so, but I plan to go down fighting. What about you?	그럴지도 모르지만 나는 끝까지 싸울 겁니다. 당신은 어떻습니까?	그럴지도 모르지만 나는 끝까지 싸울겁니다. 당신은 어떻습니까?
 Maybe this will change your mind. (<BribeCost> gold)	이 돈이면 생각을 바꿀 수 있을 텐데. (<BribeCost> 골드)	이 돈이면 생각을 바꿀 수 있을텐데. (<BribeCost> 골드)
 Maybe this will put your mind at ease. (<bribecost> gold)	이 돈이면 뭔가 생각이 날 텐데. (<bribecost> 골드)	이 돈이면 뭔가 생각이 날텐데. (<bribecost> 골드)
@@ -398,8 +408,11 @@ Sorry, I'm still not ready to go in there.	미안한데, 아직 그곳에 갈 �
 Sorry, not interested.	미안하군, 별로 흥미 없소.	미안하군, 별로 흥미없소.
 Sorry, sir. I was trying to come to a fair agreement.	죄송합니다, 장군님. 공정한 합의를 이루려고 했습니다.	죄송합니다. 저는 공평한 합의를 이루려고 할 뿐입니다.
 Sorry. I don't know anything.	미안하지만, 아는 게 없소.	미안하지만, 아는게 없소.
+Stealth skills are all  <10>% more effective.	모든 도적 기술의 효과가 <10>% 증가합니다.	모든 도적 기술이 <10>% 증가합니다.
 Sven wanted me to deliver this letter to Camilla, saying it was from you.	스벤은 이 편지를 카밀라에게 전해주면서 당신이 보낸 거라고 거짓말하라더군.	스벤은 이 편지를 카밀라에게 전해주면서 당신이 보낸거라고 거짓말하라더군.
 Sven wanted to trick you into believing this letter was from Faendal.	스벤은 이 편지가 페인달이 보낸 거라고 속이려고 했소.	스벤은 이 편지가 페인달이 보낸거라고 속이려고 했소.
+Targets that fail to resist take <mag> points of poison damage per second for <dur> seconds.	주변 표면에 맹독의 룬을 설치합니다. 적이 접근 시 폭발하여 저항에 실패한 목표에게 <dur> 초 동안 매 초마다 <mag> 의 독 피해를 입힙니다.	주변 표면에 맹독의 룬을 설치합니다. 적이 접근 시 폭발하여 <dur> 초 동안 매 초마다 <mag> 의 독 피해를 입힙니다.
+Targets up to level <20> that fail to resist are frenzied for <30> seconds.	주변 표면에 광란의 룬을 설치합니다. 적이 접근 시 폭발하여 저항에 실패한 레벨 <20> 이하인 목표가 <30> 초 동안 다른 이를 공격하게 합니다.	주변 표면에 광란의 룬을 설치합니다. 적이 접근 시 폭발하여 레벨 <20> 이하인 목표가 <30> 초 동안 다른 이를 공격하게 합니다.
 Tell me again about being a Vampire Lord.	흡혈귀 군주가 되는 것에 관해서 한 번 더 말해주시오.	흡혈귀 군주가 되는 것에 관해서 한번 더 말해주시오.
 Tell me, what's it like being Boethiah's champion?	말해보시오, 보에디아의 챔피언이란 게 어떤 거지?	말해보시오, 보에디아의 챔피언이란게 어떤거지?
 Telvanni? What are the Telvanni?	텔바니? 텔바니란 게 뭐지?	텔바니? 텔바니란게 뭐지?
@@ -410,11 +423,12 @@ That's exactly what Delphine warned me you'd say.	당신이 정확히 그렇게 
 That's not really your business.	그건 당신이 신경 쓸 문제가 아니오.	그건 당신이 신경쓸 문제가 아니오.
 That's why I'm here. Let's go.	그것 때문에 온 거요. 자 갑시다.	그것 때문에 온거요. 자 갑시다.
 The bandits won't be a problem anymore.	산적들은 더 이상 문제가 되지 않을 거요.	산적들은 더 이상 문제가 되지 않을거요.
+The Block skill reduces the damage and stagger from physical attacks when blocking with either a shield or weapon.	방어 기술은 방패 혹은 무기를 들고 방어할 때 물리공격에 의한 피해와 비틀거림을 감소시켜 줍니다.	방어 기술은 한손에 방패 혹은 무기를 들고 방어할 때 물리공격에 의한 피해와 비틀거림을 감소시켜 줍니다.
 The Dark Brotherhood was once bound by a set of rules called the Five Tenets, but they have long since been abandoned.	다크 브라더후드는 한 때 다섯 교리로 묶여있었지만, 지금은 그 교리들이 사라진 지 오래되었습니다.	다크 브라더후드는 한 때 다섯 교리로 묶여있었지만, 지금은 그 교리들이 사라진지 오래되었습니다.
 The Dawnguard were protecting him, and they nearly killed me.	던가드가 그를 보호하고 있었고 나는 거의 죽을 뻔했소.	던가드가 그를 보호하고 있었고 나는 거의 죽을뻔 했소.
 The Dawnguard would want me to kill you.	던가드는 당신을 죽이길 바랄 텐데.	던가드는 당신을 죽이길 바랄텐데.
 The dragonstone was some kind of map?	드래곤의 석판은 일종의 지도 같은 건가 보군?	드래곤의 석판은 일종의 지도같은 건가 보군?
-The dwarves of Tamriel disappeared millennia ago and are presumed extinct.	탐리엘에서 드워프들은 천여 년 전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.	탐리엘에서 드워프들은 천여년전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.
+The dwarves of Tamriel disappeared millennia ago and are presumed extinct.	탐리엘에서 드워프들은 수천 년 전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.	탐리엘에서 드워프들은 천여년전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.
 The Empire can't afford to snub the Greybeards.	제국은 그 그레이비어드를 무시할 형편이 못 됩니다.	제국은 그 그레이비어드를 무시할 형편이 못됩니다.
 The Fourth Era began 200 years ago when Martin Septim sacrificed himself to save the world from the Oblivion Crisis.	200년 전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.
 The ingredients are in the vessel.	그릇 안에 재료들을 담아두었어.	그릇안에 재료들을 담아두었어.
@@ -447,6 +461,7 @@ This will be easier without you getting in my way.	네가 방해하지만 않는
 Too frightened to leave home? (Brawl)	집을 떠나는 게 그렇게 무서운가? (싸움)	집을 떠나는게 그렇게 무서운가? (싸움)
 Too frightened to leave home? (Intimidate)	집을 떠나는 게 그렇게 무서운가? (위협)	집을 떠나는게 그렇게 무서운가? (위협)
 Torkild? Your brother is looking for you.	토킬드? 당신의 형제가 찾고 있던데.	토킬드? 당신의 형제가 찾고있던데.
+Transmutes one piece of unrefined Iron ore to Silver, or Silver ore to Gold if the caster is carrying any.	소지품에 있는 철 광석 하나를 은 광석으로 변환하거나 은 광석 하나를 금 광석으로 변환합니다.	소지품에 있는 철 광석을 은 광석으로 변환하거나 은 광석을 금 광석으로 변환합니다.
 Trolls regenerate health when wounded, but are susceptible to fire.	트롤은 상처를 입을 때마다 체력이 재생되는 능력을 가지고 있지만, 화염 공격에 약합니다.	트롤은 상처를 입을때마다 체력이 재생되는 능력을 가지고 있지만, 화염 공격에 약합니다.
 Trust me. You're invisible. (Lie)	진짜야. 정말로 안 보여. (거짓)	진짜야. 정말로 안보여. (거짓)
 Twice-Killed?	두 번 죽었다고?	두번 죽었다고?
@@ -595,6 +610,7 @@ You acted as a broker for its new owner.	새 주인을 위해서 중개인 같�
 You and Tullius are both mistaken. I'm loyal to the Empire.	당신과 툴리우스는 실수하고 있는 거요. 나는 제국에 충성을 맹세했소.	당신과 툴리우스는 실수하고 있는거요. 나는 제국에 충성을 맹세했소.
 You aren't afraid to die?	죽는 게 두렵지 않나?	죽는게 두렵지 않나?
 You asked my opinion. I gave it to you.	내 의견을 물은 것은 당신이오. 그래서 내 의견을 말한 거고.	내 의견을 물은 것은 당신이오. 그래서 내 의견을 말한거고.
+You become invulnerable, but unable to attack. However you recover magicka and stamina.	에테르 형상으로 변하여 피해를 입히지도, 입지도 않게 되며 매지카와 지구력이 회복됩니다.	안개의 형상으로 변하여 피해를 입히지도, 입지도 않게 되며 매지카와 지구력이 회복됩니다.
 You better start caring. (Intimidate)	신경 쓰는 게 좋을 텐데. (위협)	신경쓰는 게 좋을 텐데. (위협)
 You can trust your servant to keep this secret?	당신의 하인이 비밀을 지킬 거라고 믿소?	당신의 하인이 비밀을 지킬거라고 믿소?
 You can't fast travel while taking health damage.	체력에 피해를 받고 있는 도중에는 빠른 이동을 할 수 없습니다.	체력에 피해를 받고있는 도중에는 빠른 이동을 할 수 없습니다.

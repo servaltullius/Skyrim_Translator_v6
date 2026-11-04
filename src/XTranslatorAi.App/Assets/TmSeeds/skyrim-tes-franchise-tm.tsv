@@ -184,7 +184,7 @@ A blast of cold that does <mag> points of damage per second to Health and Stamin
 A blast of cold that does <mag> points per second damage to Health and Stamina.	차가운 돌풍을 뿜어내어 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
 A blast of fire that does <mag> points of damage. Targets on fire take extra damage.	타오르는 불덩이를 날려 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 A blast of fire that does <mag> points. Targets on fire take extra damage.	불꽃의 화살을 날려 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
-A blast of flame that sets the target on fire, doing <mag> damage per second for <15> seconds.	불꽃의 화살을 날려 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
+A blast of flame that sets the target on fire, doing <mag> damage per second for <15> seconds.	불꽃을 날려 목표에 불을 붙이고 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다.
 A blood-freezing poison that does <mag> points damage to Health and Stamina for <dur> seconds.	피가 굳어지는 독으로 <dur> 초 동안 매 초마다 <mag> 의 피해와 지구력 피해를 입힙니다.
 A blood-freezing poison that does <mag> points of damage to Health and Stamina per second.	피가 굳어지는 독으로 매 초마다 <mag> 의 피해와 지구력 피해를 입힙니다.
 A bolt of lightning that does <mag> points of shock damage to Health and half that to Magicka.	번개의 화살을 날려 <mag> 의 전격 피해와 절반의 매지카 피해를 입힙니다.
@@ -196,7 +196,7 @@ A courier gave me this invitation.	이 초대장을 받았는데.
 A courier gave me this pamphlet...	배달부가 이 광고지를 주던데...
 A curse? What can we do about it?	저주라고? 저주를 상대로 뭘 할 수 있지?
 A cyclone that does <mag> points of damage per second and flings victims into the air.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버립니다.
-A cyclone that does <mag> points of damage per second and may fling victims into the air.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버립니다.
+A cyclone that does <mag> points of damage per second and may fling victims into the air.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버릴 수 있습니다.
 A Daedra's Best Friend	데이드라의 개
 A daedra?	데이드라?
 A Dance in Fire, v1	불의 춤, 제 1권
@@ -385,7 +385,7 @@ Adara	아다라
 Add	추가
 Add a cellar beneath the Main Hall.	대청 아래쪽에 지하실을 추가합니다.
 Add a greenhouse with customizable planters.	마음대로 여러 가지 식물을 재배할 수 있는 온실을 추가합니다.
-Add a kitchen that can be fitted out with cooking stations, food containers and the like.	여러 가지 주방용품들과 음식 저장 용기 등이 구비된 부엌을 추가합니다.
+Add a kitchen that can be fitted out with cooking stations, food containers and the like.	조리대와 음식 저장 용기 등을 갖출 수 있는 부엌을 추가합니다.
 Add a residential wing with master bedroom and childrens' bedroom. Includes an exterior porch.	주 침실과 어린이용 침실들로 구성된 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.
 Add a room that can be equipped with smithing stations and weapon storage. Includes an exterior porch.	제련용 시설 외에 무기들을 저장할 수 있는 공간을 추가합니다. 야외 베란다도 포함되어 있습니다.
 Add a storage area which can be equipped with a variety of containers and weapon racks. Includes an exterior porch.	다양한 보관함 상자들과 무기 거치대 등을 설치할 수 있는 창고를 추가합니다. 야외 베란다도 포함되어 있습니다.
@@ -1392,7 +1392,7 @@ Azra's <BaseName>	아즈라의 <BaseName>
 Azra's Staffs	아즈라의 지팡이
 Azura	아주라
 Azura and the Box	아주라와 상자
-Azura is the daedric prince of dusk and dawn, and one of the few not considered to be inherently evil.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 원래부터 악마는 아니라고 여겨지는 프린스들 중 하나입니다.
+Azura is the daedric prince of dusk and dawn, and one of the few not considered to be inherently evil.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 본래부터 악하지는 않다고 여겨지는 프린스들 중 하나입니다.
 Azura's Star	아주라의 별
 Azura's Star Interior	아주라의 별 내부
 Azzada	아자다
@@ -2941,7 +2941,7 @@ College Practice Ward	대학 연습용 마법 방어막
 College Robes	마법 대학 로브
 Colovian Brandy	술 - 콜로비안 브랜디
 Combat	전투
-Combat skills are all <10>% more effective.	모든 전사 기술이 <10>% 증가합니다.
+Combat skills are all <10>% more effective.	모든 전사 기술의 효과가 <10>% 증가합니다.
 Combat-based magic only improves when used against valid opponents.	전투와 관련된 마법은 유효한 상대에게 사용할 때에만 숙련도가 올라갑니다.
 Combine ingredients to make potions	물약을 만들기 위해 재료를 조합하기
 Come on boy, let's go.	자 멍멍아, 가자.
@@ -3170,7 +3170,7 @@ Creatures and people up to level <mag> nearby won't fight for <dur> seconds.	레
 Creatures and people up to level <mag> will attack anyone nearby for <dur> seconds.	레벨 <mag> 이하인 목표가 <dur> 초 동안 다른 이를 공격하게 합니다.
 Creatures and people up to level <mag> will attack anything nearby for <dur> seconds.	<mag> 레벨 이하의 사람이나 생물들은 <dur> 초 동안 무작위로 주변을 공격하게 됩니다.
 Creatures and people up to level <mag> won't fight for <dur> seconds.	레벨 <mag> 이하인 목표가 <dur> 초 동안 싸움을 멈추게 합니다.
-Creatures and people will attack enemies nearby for 10 seconds.	10 초 동안 다른 이를 공격하게 합니다.
+Creatures and people will attack enemies nearby for 10 seconds.	10 초 동안 주변의 적을 공격하게 합니다.
 Creep Cluster	크립 줄기
 Creep Cluster (5)	크립 줄기 (5)
 Crescent Moon Crest	초승달 문장
@@ -3689,7 +3689,7 @@ Dark Brotherhood Initiate	다크 브라더후드 신참
 Dark Brotherhood Sanctuary	다크 브라더후드 성역
 Dark Chasm	암흑의 균열틈새
 Dark Elf	다크 엘프
-Dark elves, also known as Dunmer, are natives of Morrowind - a land many consider alien and inhospitable.	던머라고 알려진 다크 엘프들의 출신은 모로윈드인데 그곳은 대부분의 사람들이 이상한 생명체들로 가득하고 황폐한 땅으로 여기는 지역입니다.
+Dark elves, also known as Dunmer, are natives of Morrowind - a land many consider alien and inhospitable.	던머라고 알려진 다크 엘프들의 출신은 모로윈드인데 그곳은 대부분의 사람들이 이질적이고 살기 힘든 땅으로 여기는 지역입니다.
 Dark Sacrifice	어둠의 희생
 Dark Souls	어둠의 영혼
 Darkest Darkness	가장 어두운 암흑
@@ -3982,7 +3982,7 @@ Diamond	다이아몬드
 Diamond Claw	다이아몬드 발톱
 Diamond Paragon	파라곤 - 다이아몬드
 Diary of Faire Agarwen	페어리 아가웬의 일기
-Dibella is the goddess of beauty. She has a temple in Markarth that is devoted to women.	디벨라는 미의 여신입니다. 마르카스에 위치한 그녀의 신전에서는 많은 여성들이 경배를 드립니다.
+Dibella is the goddess of beauty. She has a temple in Markarth that is devoted to women.	디벨라는 미의 여신입니다. 마르카스에는 여성들을 위한 그녀의 신전이 있습니다.
 Dibella Statue	디벨라의 동상
 Diced horker meat.	잘게 썬 호커 고기.
 Did a woman named Margret stay here?	마그레트라는 여자가 여기 머물렀소?
@@ -12949,7 +12949,7 @@ Magic weapons lose power with each successful hit, but can be recharged with fil
 Magicka	매지카
 Magicka Damage	매지카 피해
 Magicka is increased by <mag> points for <dur> seconds.	<dur> 초 동안 매지카가 <mag> 증가합니다.
-Magicka is the energy used to power spells. The higher the magicka, the more spells that can be cast.	매지카는 강력한 마법들을 사용할 수 있게 해주는 힘입니다. 매지카의 수치가 클수록 더 많은 마법들을 사용할 수 있습니다.
+Magicka is the energy used to power spells. The higher the magicka, the more spells that can be cast.	매지카는 마법들을 사용할 수 있게 해주는 힘입니다. 매지카의 수치가 클수록 더 많은 마법들을 사용할 수 있습니다.
 Magicka Low	매지카 부족
 Magicka Poison	독 - 매지카 피해 중급
 Magicka Recovery Poison	독 - 매지카 재생 감소 중급
@@ -13045,7 +13045,7 @@ Mannequin	마네킹
 Mannimarco, King of Worms	매니마코, 벌레들의 왕
 Mantled College Robes	마법 대학 두건 달린 로브
 Many have fought and died. I'm no different than they are.	많은 사람들이 싸우고 죽어갔습니다. 저 또한 그들과 다를 바 없습니다.
-Many species of bear roam Skyrim's wilds. They are fearsome creatures, but will often avoid attacking unless provoked.	많은 종류의 곰들이 스카이림의 야생을 배회합니다. 그것들은 위험한 생물이지만 화나게 하지 않는다면 먼저 공격해오지는 않을 것입니다.
+Many species of bear roam Skyrim's wilds. They are fearsome creatures, but will often avoid attacking unless provoked.	많은 종류의 곰들이 스카이림의 야생을 배회합니다. 그것들은 위험한 생물이지만 화나게 하지 않는다면 대개 먼저 공격해오지는 않습니다.
 Many Steam Animunculi remain active, making the exploration of dwarven ruins a dangerous prospect.	드워프의 유적은 수많은 기계 골렘들이 여전히 작동하고 있어, 탐사하기에 매우 위험한 곳입니다.
 Many Thanks	진심을 담은 감사
 Many will die by my hand.	많은 사람들이 내 손에 죽게 될 것입니다.
@@ -18818,7 +18818,7 @@ Steal the plans from <Alias=Camp>	<Alias=Camp>에서 계획서를 입수하기
 Steal the statue in the Temple of Dibella	디벨라의 신전에서 동상을 훔치기
 Stealing Plans	작전 훔치기
 Stealth	잠행
-Stealth skills are all  <10>% more effective.	모든 도적 기술이 <10>% 증가합니다.
+Stealth skills are all  <10>% more effective.	모든 도적 기술의 효과가 <10>% 증가합니다.
 Steam Damage	증기 피해
 Steam Damage / Restoration	증기 피해 / 회복
 Steam Valve	증기 밸브
@@ -19652,8 +19652,8 @@ Targets take <mag> points of frost damage for <dur> seconds. Single use, then mu
 Targets that fail to resist are coated in solidified as for <dur> seconds.	저항에 실패한 목표를 <dur> 초 동안 석화시킵니다.
 Targets that fail to resist are immobilized in hardened ash for <dur> seconds.	화산재의 마법을 날려 저항에 실패한 목표를 <dur> 초 동안 석화시킵니다.
 Targets that fail to resist are paralyzed for <dur> seconds.	저항에 실패한 목표를 <dur> 초 동안 마비시킵니다.
-Targets that fail to resist take <mag> points of poison damage per second for <dur> seconds.	주변 표면에 맹독의 룬을 설치합니다. 적이 접근 시 폭발하여 <dur> 초 동안 매 초마다 <mag> 의 독 피해를 입힙니다.
-Targets up to level <20> that fail to resist are frenzied for <30> seconds.	주변 표면에 광란의 룬을 설치합니다. 적이 접근 시 폭발하여 레벨 <20> 이하인 목표가 <30> 초 동안 다른 이를 공격하게 합니다.
+Targets that fail to resist take <mag> points of poison damage per second for <dur> seconds.	주변 표면에 맹독의 룬을 설치합니다. 적이 접근 시 폭발하여 저항에 실패한 목표에게 <dur> 초 동안 매 초마다 <mag> 의 독 피해를 입힙니다.
+Targets up to level <20> that fail to resist are frenzied for <30> seconds.	주변 표면에 광란의 룬을 설치합니다. 적이 접근 시 폭발하여 저항에 실패한 레벨 <20> 이하인 목표가 <30> 초 동안 다른 이를 공격하게 합니다.
 Targets won't flee for <dur> seconds and get extra health and stamina.	목표들을 <dur> 초 동안 도망치지 않게 만들며 체력과 지구력을 증가시킵니다.
 Taron Dreth	타론 드레스
 Taron Dreth's Robes	타론 드레스의 로브
@@ -20031,7 +20031,7 @@ The Blades say you deserve to die.	블레이드는 당신이 죽어 마땅하다
 The Blades want me to kill Paarthurnax.	블레이드는 나에게 파써낙스를 죽일 것을 요청했소.
 The Blades? Who are they?	블레이드? 그게 누구지?
 The Blessings of Nature	자연의 축복
-The Block skill reduces the damage and stagger from physical attacks when blocking with either a shield or weapon.	방어 기술은 한손에 방패 혹은 무기를 들고 방어할 때 물리공격에 의한 피해와 비틀거림을 감소시켜 줍니다.
+The Block skill reduces the damage and stagger from physical attacks when blocking with either a shield or weapon.	방어 기술은 방패 혹은 무기를 들고 방어할 때 물리공격에 의한 피해와 비틀거림을 감소시켜 줍니다.
 The Bloodstone Chalice	혈석 성배
 The Blue Palace	푸른 궁전
 The Bond of Matrimony	결혼 서약 증표
@@ -20105,7 +20105,7 @@ The dragonstone was some kind of map?	드래곤의 석판은 일종의 지도 �
 The Dreamstride	꿈의 산책
 The Drunken Huntsman	술취한 사냥꾼
 The Dunmer of Morrowind construct chitin armor out of the shells of native insects layered with resinous glues.	모로윈드의 던머들은 토종 벌레들의 껍질을 송진으로 겹겹이 접착하여 키틴 방어구를 제작합니다.
-The dwarves of Tamriel disappeared millennia ago and are presumed extinct.	탐리엘에서 드워프들은 천여 년 전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.
+The dwarves of Tamriel disappeared millennia ago and are presumed extinct.	탐리엘에서 드워프들은 수천 년 전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.
 The dwarves were actually a race of elves known as the Dwemer, which roughly translates to "deep elves."	드워프는 드웨머로 알려진 엘프 종족중 하나입니다. '땅속의 엘프'라는 뜻입니다.
 The Dwemer? What do they have to do with this?	드웨머? 드웨머가 왜 이 일에 엮인 거요?
 The East Empire Company is sending up your spices.	동제국 회사는 당신의 향신료를 수송하는 중입니다.
@@ -20839,7 +20839,7 @@ Transform into the vampire lord.	흡혈귀 군주로 변신합니다.
 Transmogrify	변신
 Transmute	광석 변환
 Transmute Mineral Ore	광석 변환
-Transmutes one piece of unrefined Iron ore to Silver, or Silver ore to Gold if the caster is carrying any.	소지품에 있는 철 광석을 은 광석으로 변환하거나 은 광석을 금 광석으로 변환합니다.
+Transmutes one piece of unrefined Iron ore to Silver, or Silver ore to Gold if the caster is carrying any.	소지품에 있는 철 광석 하나를 은 광석으로 변환하거나 은 광석 하나를 금 광석으로 변환합니다.
 Trap	함정
 Trap Door	작은 문
 Trap Door Key	열쇠 - 바닥 문
@@ -23313,7 +23313,7 @@ You aren't afraid to die?	죽는 게 두렵지 않나?
 You aren't an Ulen.	당신은 울렌 가문 사람이 아닌데.
 You asked my opinion. I gave it to you.	내 의견을 물은 것은 당신이오. 그래서 내 의견을 말한 거고.
 You became trapped.	결국 갇혀 버린 거군.
-You become invulnerable, but unable to attack. However you recover magicka and stamina.	안개의 형상으로 변하여 피해를 입히지도, 입지도 않게 되며 매지카와 지구력이 회복됩니다.
+You become invulnerable, but unable to attack. However you recover magicka and stamina.	에테르 형상으로 변하여 피해를 입히지도, 입지도 않게 되며 매지카와 지구력이 회복됩니다.
 You better start caring. (Intimidate)	신경 쓰는 게 좋을 텐데. (위협)
 You call me Dragonborn. What does that mean?	나를 드래곤본이라고 부르는데, 그게 무슨 뜻입니까?
 You called me auxiliary?	나를 보조병이라고 불렀습니까?
