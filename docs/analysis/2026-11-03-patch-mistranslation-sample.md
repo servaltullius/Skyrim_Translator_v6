@@ -1484,3 +1484,36 @@ CC STRINGS(이름·퀘스트 목표·대화 주제·플레이어 선택지·메�
   - CC STRINGS 4개, USSEP, USCCCP 8.2 STRINGS를 바꿨다(`modpack-rccshort1.py`, USCCCP는 바뀐 표만 고르게 고쳤다).
   - 모드팩 전체 stale-scan에서 이번 옛 글이 남은 모드 플러그인 가운데 셋을 `stale-fix.py` + `plugin-write`로 고쳤다(예상 밖 0, 원본은 백업 rccshort1). AX ValSerano-CC.esp(목표 1), CeykyndArmor.esp(효과 설명 1), Ghosts of the Tribunal - Voiced.esp(대화 주제 등 2)다.
   - 'Synthesis - Sound and Combat.esp'(효과 설명 2)는 Synthesis 생성물이라 두었다. 다음에 Synthesis를 돌리면 따라온다.
+
+### CC 짧은 글 2덩이(ccshort-4..6, 1,800쌍)
+
+범위는 진귀한 골동품 뒷부분부터 제단까지다(보너스 방어구 묶음, 지팡이, 데이드릭 침공, 경연, 노르딕 장신구, 레드가드, 집 짓기 CC, 제국 용, 배낭).
+판정에서 다른 곳에서도 쓰이는 이름 용어는 처음부터 판정하지 않게 했다.
+
+판정과 되짚기:
+- 첫 판정은 맞음 1,782, 어색 9, 경미 9였다. ccshort-5(지팡이 이름 307줄 포함)는 경미 0이다.
+- 되짚기에서 2줄을 어색으로 내렸다.
+  - 모피 5개 '가져다주기'를 에둘러 쓴 목표.
+  - 고블린 대화 '거래'.
+
+고친 10줄(`review-ccshort2.csv`):
+- 진귀한 골동품 재료 이름:
+  - Ambrosia '돼지풀'(ragweed)을 '암브로시아'로.
+  - Aster Bloom Core '불가사리 꽃 응어리'를 '애스터 꽃 응어리'로.
+  - TM·책에 쓰이지 않는 이름이라 고쳤다.
+- 그림자의 활:
+  - 목표 '장부를 복사하기'를 '장부 사본 가져가기'로.
+  - 같은 오역인 일지 3줄(DLSTRINGS) '장부를 복사했다'를 '장부 사본을 가져왔다'로. 되짚기가 범위 밖에서 찾아 함께 고쳤다.
+- 데이드라제 사슬 목표: 반지를 '주고' 방어구 세트를 '받기'(방향이 거꾸로 읽혔음).
+- 드래곤 판금 선택지: '현상금이 걸린 일'(목표와 짝이 맞게).
+- 제국 용 선택지: '꼭 싸워야 합니까? 스카이림에 평화가 오기는 할까요?'.
+- 제단 광석 변환: 광석 '하나'(본편 같은 효과 설명과 맞춤).
+
+검수와 반영:
+- 고친 글 검수는 0곳이었다.
+- 사본 품질검사는 다섯 마스터와 CC 6플러그인 모두 새로 0이다.
+- USSEP 4.3.8a·4.3.9c의 진귀한 골동품 재료 이름 1필드씩, USCCCP 5.22 1줄을 고쳤다. TM 대기 0, 테스트 2,712.
+- 모드팩: CC 표·USSEP를 바꿨다(`modpack-rccshort2.py`).
+- 모드 플러그인은 새 스크립트 `mods-stale-follow.py`로 고쳤다. 이번 덩이 ID의 옛 글을 가진 플러그인을 찾아 stale-fix + plugin-write하고, Synthesis 등 생성물과 USSEP는 건너뛴다.
+  - RAEQuestRequirements.esp 1필드.
+  - 'CC - Alternative Armors - Quest Removal.esp' 20필드. 지난 덩이에서 퀘스트 제거 모드라 두었던 옛 글까지 한꺼번에 지금 한패 글로 맞춰졌다(예상 밖 0, 원본은 백업 rccshort2).
