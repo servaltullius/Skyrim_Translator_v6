@@ -270,6 +270,19 @@ USSEP 한국어판은 플러그인을 통째로 바꾸므로 원본과 버전이
 - 이름 표기 가운데 Almalexia는 알마렉시아에서 아말렉시아로 바꿨다(본편·CC·USSEP·USCCCP 모두).
 - zip은 베타 5와 같은 꼴(262개 파일)이다: `artifacts/kopatch-26.10.16-beta6/build-zip.py`.
 
+## 베타 20 (2026-11-05)
+
+크리에이션 클럽(CC) 글의 오역 고침을 넣은 판이다. 기록은 [오역률 표본 조사와 오역 고침](2026-11-03-patch-mistranslation-sample.md)의 "CC 대사·책·설명" 절에 있다.
+
+- 베타 19(`kopatch-26.10.16-beta19`)와 문자열 표를 바로 비교하면 바뀐 문자열은 CC 108개, USCCCP 43개(4판 합: 5.22 37, 7.7·8.2·8.5 2씩)이고, 본편·DLC는 바뀌지 않았다(`artifacts/kopatch-26.10.16-beta20/stats.py`).
+  - CC 책·설명 1,439쌍을 네 덩이로 읽었다(e30ec7b·a13a8f7·8339160·371e19c, 19·36·20·33개). CC의 새 대사 28쌍은 오역이 없었다.
+  - CC 영어 원문은 게임 Data의 cc*.bsa에서 꺼냈다(`artifacts/mistranslation-hunt-20261103/cc-extract-strings.py`).
+- USSEP 한국어 4.3.8a·4.3.9c는 하위 레코드 3개씩이 바뀌었다(낚시·성인과 유혹자 퀘스트 일지에 박혀 있던 옛 글, 베타 19 zip의 ESP와 `esp-recdiff.py`로 비교, 예상 밖 차이 0). 4.2.5b·4.2.9a는 바뀌지 않았다.
+- 25.3.14와 달라진 문자열은 기본 게임 17,309개(90,534개 중, 25.3.14에 없던 문자열 4개 포함), CC 1,095개(`_resourcepack` 3개 포함)다.
+- 툴리우스 번역기는 1.16.53 그대로다. 게임 번역 사전은 본편·DLC만 담아 이번 고침과 관계없다.
+- fomod `info.xml`과 `읽어보기.txt`를 `26.10.16 베타 20`으로 올리고, 읽어보기에 베타 20 요약을 넣었다(`artifacts/kopatch-26.10.16-beta20/label-beta20.py`).
+- zip은 베타 19와 같은 꼴이다: `artifacts/kopatch-26.10.16-beta20/build-zip.py`.
+
 ## 베타 19 (2026-11-05)
 
 남은 대사 오역 고침을 넣은 판이다. 이로써 본편·DLC의 NPC 대사(INFO NAM1)는 모두 영어 원문과 맞대어 읽었다(CC 대사는 읽지 않았다). 기록은 [오역률 표본 조사와 오역 고침](2026-11-03-patch-mistranslation-sample.md)에 있다.
