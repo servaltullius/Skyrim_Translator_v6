@@ -270,6 +270,19 @@ USSEP 한국어판은 플러그인을 통째로 바꾸므로 원본과 버전이
 - 이름 표기 가운데 Almalexia는 알마렉시아에서 아말렉시아로 바꿨다(본편·CC·USSEP·USCCCP 모두).
 - zip은 베타 5와 같은 꼴(262개 파일)이다: `artifacts/kopatch-26.10.16-beta6/build-zip.py`.
 
+## 베타 19 (2026-11-05)
+
+남은 대사 오역 고침을 넣은 판이다. 이로써 본편·DLC의 NPC 대사(INFO NAM1)는 모두 영어 원문과 맞대어 읽었다(CC 대사는 읽지 않았다). 기록은 [오역률 표본 조사와 오역 고침](2026-11-03-patch-mistranslation-sample.md)에 있다.
+
+- 베타 18(`kopatch-26.10.16-beta18`)과 문자열 표를 바로 비교하면 바뀐 문자열은 본편·DLC 138개이고, CC와 USCCCP는 바뀌지 않았다(`artifacts/kopatch-26.10.16-beta19/stats.py`).
+  - 화자가 두 사람 이상으로 정해진 대사 629쌍(43e5e39, 2개).
+  - 대사 수가 201위 밖인 화자 885명이 혼자 하는 대사 11,971쌍(fc73812..8c62781, 136개).
+- 바뀐 138개의 새 글은 모두 게임 번역 사전에 있고, 인터페이스 번역 파일은 베타 18과 같다(`artifacts/kopatch-26.10.16-beta19/dict-check.py`).
+- USSEP 한국어 4판은 하위 레코드 35·32·32·32개가 바뀌었다(4.2.5b·4.2.9a·4.3.8a·4.3.9c, 베타 18 zip의 ESP와 `esp-recdiff.py`로 비교, 예상 밖 차이 0).
+- 25.3.14와 달라진 문자열은 기본 게임 17,309개(90,534개 중, 25.3.14에 없던 문자열 4개 포함), CC 1,045개(`_resourcepack` 3개 포함)다.
+- fomod `info.xml`과 `읽어보기.txt`를 `26.10.16 베타 19`로 올리고, 읽어보기에 베타 19 요약을 넣었다(`artifacts/kopatch-26.10.16-beta19/label-beta19.py`).
+- zip은 베타 18과 같은 꼴이다: `artifacts/kopatch-26.10.16-beta19/build-zip.py`.
+
 ## 베타 18 (2026-11-05)
 
 대사 오역 고침을 더 넣은 판이다. 기록은 [오역률 표본 조사와 오역 고침](2026-11-03-patch-mistranslation-sample.md)에 있다.
