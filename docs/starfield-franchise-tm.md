@@ -4,10 +4,14 @@
 
 ## 목적
 - 로컬에 보유한 Starfield 영문 `.strings`와 한국어 패치 `.strings`를 비교해 `Starfield` 전용 TM TSV를 생성한다.
-- 생성된 TSV는 앱의 `시리즈 TM 가져오기`로만 적재한다.
+- 직접 만든 TSV는 앱의 `시리즈 TM 가져오기`로 따로 가져올 수 있다.
+
+## 내장 Starfield TM
+- 1.6부터 앱에 Starfield TM(`src/XTranslatorAi.App/Assets/TmSeeds/starfield-franchise-tm.tsv`, 약 153,000쌍)을 내장한다. 게임의 영어 원문과 스타필드 한국어 패치의 글을 짝지어 만든 것이다.
+- Starfield 프로젝트를 처음 열 때 시리즈 TM에 자동으로 들어간다.
 
 ## 데이터 정책
-- 제3자 번역 데이터는 저장소, 릴리즈, 임베디드 리소스에 포함하지 않는다.
+- 내장 Starfield TM은 코드와 따로 다루는 데이터다. 배포 조건은 README의 [라이선스](../README.md#라이선스) 절을 따른다.
 - Starfield TM은 TES/Fallout TM으로 승격하지 않는다.
 - 생성된 TSV는 검토 가능한 상태로 유지한다.
 
