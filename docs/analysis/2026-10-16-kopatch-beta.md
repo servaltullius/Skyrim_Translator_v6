@@ -270,6 +270,18 @@ USSEP 한국어판은 플러그인을 통째로 바꾸므로 원본과 버전이
 - 이름 표기 가운데 Almalexia는 알마렉시아에서 아말렉시아로 바꿨다(본편·CC·USSEP·USCCCP 모두).
 - zip은 베타 5와 같은 꼴(262개 파일)이다: `artifacts/kopatch-26.10.16-beta6/build-zip.py`.
 
+## 베타 25 (2026-11-06)
+
+본편·DLC 이름(FULL) 후보 읽기를 넣은 판이다. 기록은 [오역률 표본 조사와 오역 고침](2026-11-03-patch-mistranslation-sample.md)의 "이름(FULL) 후보 읽기" 절에 있다.
+
+- 베타 24(`kopatch-26.10.16-beta24`)와 문자열 표를 바로 비교하면, 바뀐 문자열은 본편·DLC 1개다. 던가드 특성 Turn(DLC1VampireTurnPerk)의 이름을 '변신'에서 '흡혈귀로 만들기'로 고쳤다(2f4f3ad). CC와 USCCCP는 바뀌지 않았다(`artifacts/kopatch-26.10.16-beta25/stats.py`).
+- 베타 24 zip과 바이트가 다른 파일은 `01-main/strings/Dawnguard_english.STRINGS`와, 판 표기를 올린 `읽어보기.txt`·`fomod/info.xml` 세 개다.
+- USSEP 한국어판 네 판은 이 특성을 덮어쓰지 않아(PERK 0200588B 없음) 바뀌지 않았다.
+- 25.3.14와 달라진 문자열은 기본 게임 17,376개(90,534개 중, 25.3.14에 없던 문자열 4개 포함), CC 1,146개(`_resourcepack` 3개 포함)다.
+- 툴리우스 번역기는 먼저 낸 1.16.56이 이미 이 고침을 따른다(게임 번역 사전; 내장 TM v24는 이 특성에서 온 'Turn → 변신' 행을 '돌리기'로 바꿈).
+- fomod `info.xml`과 `읽어보기.txt`를 `26.10.16 베타 25`로 올렸다. 읽어보기에 베타 25 요약을 넣고, README 한국어 패치 절의 최신 베타 링크를 바꿨다(`artifacts/kopatch-26.10.16-beta25/label-beta25.py`).
+- zip은 베타 24와 같은 꼴이다: `artifacts/kopatch-26.10.16-beta25/build-zip.py`.
+
 ## 베타 24 (2026-11-06)
 
 본편·DLC 플레이어 선택지 전수 읽기를 넣은 판이다. 기록은 [오역률 표본 조사와 오역 고침](2026-11-03-patch-mistranslation-sample.md)의 "플레이어 선택지 1덩이"~"4덩이" 절에 있다.
