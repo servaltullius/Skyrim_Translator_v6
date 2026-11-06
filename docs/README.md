@@ -2,7 +2,8 @@
 
 현재 기능과 실행 절차는 [루트 README](../README.md)를 기준으로 합니다.
 
-- [파이프라인·설정 개선과 후보 빌드 검증](analysis/2026-09-29-pipeline-defaults-implementation.md)
+- [릴리스 기록](release-history.md): 판마다 바뀐 것
+- [파이프라인·설정 개선과 검증](analysis/2026-09-29-pipeline-defaults-implementation.md)
 - [3.8 Flash 번역 프롬프트 개선과 실제 표본 비교](analysis/2026-09-30-prompt-improvement.md)
 - [EDID 문맥·자동 용어 기억 개선과 실제 표본 비교](analysis/2026-09-30-edid-session-memory.md)
 - [Skyrim SE/AE 플러그인 직접 번역 사용법과 검증 범위](direct-plugin-support.md)
