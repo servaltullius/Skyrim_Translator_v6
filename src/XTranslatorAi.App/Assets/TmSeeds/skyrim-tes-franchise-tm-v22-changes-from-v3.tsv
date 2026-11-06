@@ -211,6 +211,7 @@ Cast on a nearby surface, it explodes for and freezes the target in place for <d
 Cast Soul Trap on an enemy during combat, and his soul will be captured in one of your empty soul gems, when he dies.	전투 중 적에게 소울 트랩 마법을 사용하십시오, 그러면 상대가 죽을 때 그 영혼은 비어있는 소울젬 안에 갇히게 됩니다.	전투 중 적에게 소울 트랩 마법을 사용하십시오, 그러면 상대가 죽을때 그 영혼은 비어있는 소울젬 안에 갇히게 됩니다.
 Castle Fletcher	화살 공방	화살깃털 상점
 Castor the Puzzlemaker's Corpse	퍼즐 제작자 캐스터의 시체	캐스터의 시체
+Centurion Fight 3	백부장 전투 3	백부장 전사 3
 Change preset and lose your changes?	변경사항을 버리고 사전설정으로 바꾸겠습니까?	변경사항을 버리고 사전설정으로 바꿀까요?
 Changed Ones	변화한 자들	변절한 자들
 Charm - Master of the Mind	매료 - 정신의 지배자	매료 - 정신마법의 달인
@@ -227,6 +228,7 @@ Complaint Letter	항의 편지	고소 편지
 CONJURATION	소환마법	소환
 Conjure Spectral Dragon	유령 드래곤 소환	영체 드래곤 소환
 CONTAINERS	보관함	상자
+Corner Shelf	구석 선반	작은 선반
 Could I help?	내가 도와줄 수 있겠소?	도와드릴까요?
 Could you repeat that inscription?	그 문장을 한 번 더 반복해 주시오.	그 문장을 한번 더 반복해 주시오.
 Cow Hand	목동	카우 핸드
@@ -393,7 +395,7 @@ Find a Moth Priest's knife	나방 사제의 칼을 찾기	나방 사제의 나�
 Find pages from Saint Jiub's Opus (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaintTotal>)	성자 지웁의 작품에서 잃어버린 페이지를 찾기 (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaintTotal>)	지웁의 작품에서 잃어버린 페이지를 찾기 (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaintTotal>)
 Find Resonance Gems across Solstheim to complete the Kagrumez trials	카그루메즈의 시험을 통과하기 위하여 솔스트하임에 있는 몇 개의 공진 보석을 찾기	카그루메즈의 시험을 통과하기 위하여 슬츠하임에 있는 몇개의 공진 보석을 찾기
 Find some equipment	장비할 몇 가지의 물건들을 찾기	장비할 몇가지의 물건들을 찾기
-Find some Mammoth Tusk Powder	매머드 상아 가루 몇 개를 찾기	매머드 상아 가루 몇개를 찾기
+Find some Mammoth Tusk Powder	매머드 상아 가루를 찾기	매머드 상아 가루 몇개를 찾기
 Find someone who can identify the Unusual Gem	특이한 보석에 관해 알고 있는 사람을 찾기	특이한 보석에 관해 알고있는 사람을 찾기
 Find the <Alias=QuestItem> inside <Alias=Dungeon>	<Alias=Dungeon>안에서 <Alias=QuestItem>을 찾기	<Alias=Dungeon>안에서 <Alias=QuestItem>를 찾기
 Find the Augur of Dunlain	던레인의 예언자를 찾기	던레인의 예언을 찾기
@@ -441,6 +443,7 @@ Gate Barred	빗장 걸린 관문	빗장걸린 관문
 Gemma Uriel	겜마 유리엘	겜마 우리엘
 General Falx Carius	팔크스 카리우스 장군	폭스 카리우스 장군
 General Tullius said you'd get me outfitted.	툴리우스 장군은 당신이 내 장비를 챙겨줄 거라고 하던데.	툴리우스 장군은 당신이 내 장비를 챙겨줄거라고 하던데.
+Get access to Hjerim	예림으로 들어갈 방법을 찾기	예림으로 들어갈 허가를 받기
 Get Greybeards' help in negotiating a truce	휴전 협상을 위해 그레이비어드의 도움을 받기	그레이비어드 도움을 받아 휴전협상을 맺기
 Get the staff	지팡이를 손에 넣기	지팡이를 가지기
 Ghosts in the Storm	폭풍 속의 유령들	폭풍속의 유령들
@@ -890,6 +893,7 @@ Let's go. Let me worry about the guards.	가자. 경비병들은 내가 신경 �
 Let's never speak of this again.	이 일은 다시는 입에 올리지 말자.	다시는 그런 부탁 하지 마.
 Letter from the Steward of <Alias=HoldCity>	<Alias=HoldCity> 행정관의 편지	행정관 <Alias=HoldCity>의 편지
 Letter to Beem-Ja	빔자에게 주는 편지	빔-자에게 주는 편지
+Leveled Cultist	광신도 (레벨 맞춤)	광신도
 Lexicon? Burden? What are you talking about?	고대사전? 해방? 무슨 말을 하고 있는 건가?	고대사전? 해방? 무슨 말을 하고 있는건가?
 Library, Doors	도서실, 문	도서실,문들
 Lightning Apparatus	번개 장치	빛나는 장치
@@ -961,6 +965,9 @@ Nchardak Great Chamber	느챠닥 대석실	느챠닥 대매장묘실
 Nearby creatures, including undead, machines and daedra, can be seen through walls for <dur> seconds.	<dur> 초 동안 주변의 언데드, 기계, 데이드라를 포함한 생물체를 벽 너머로 볼 수 있습니다.	<dur> 초 동안 주변의 언데드, 기계, 데이드라를 제외한 생물체를 벽 너머로 볼 수 있습니다.
 Neither side is making much headway. What's the harm in talking to Ulfric?	어느 쪽도 큰 진전이 없으니, 울프릭과 이야기한다고 해서 나쁠 건 없지 않습니까?	어느 쪽이든 큰 진전이 없으니 울프릭에게 이야기 한다고 해서 나쁠건 없겠지?
 Neloth's <mag> point health boost.	체력이 <mag> 증가합니다.	체력이 <mag> 증가합니다
+Netch (Bull)	네치 (황소)	네치
+Netch (Calf)	네치 (어린)	네치
+Netch (Cow)	네치 (베티)	네치
 Never mind that... it worked!	신경 쓰지 마... 제대로 되었어!	신경 쓰지마... 제대로 되었어!
 Never mind, boy. I don't need you to do anything.	신경 쓰지 마. 아무것도 하지 않아도 된다.	신경쓰지마. 아무것도 하지 않아도 된다.
 Never mind, I'll look somewhere else.	신경 쓰지 마시오. 다른 곳을 찾아볼 테니.	신경쓰지 마시오. 다른 곳을 찾아볼테니.
@@ -1048,8 +1055,12 @@ Place a workbench in the Storage Room.	저장고에 작업선반을 설치합니
 Place Pithiken's Ring	피씨켄의 반지 놓기	피쉬켄의 반지 놓기
 Place the Aetherium Shards	에테리움 파편들을 놓기	에테리움 조각들을 놓기
 Place the burial urn in Yngol Barrow	잉골 고분에 유골 단지를 놓기	잉골 고분에 유물 단지를 놓기
+Plant <Alias=QuestItem> in <Alias=TargetHouse>	<Alias=TargetHouse>에 <Alias=QuestItem> 몰래 놓아두기	<Alias=TargetHouse>에 <Alias=QuestItem> 놓기
+Plant letter on <Alias=Victim>'s corpse	<Alias=Victim>의 시체에 편지를 몰래 넣어 두기	<Alias=Victim>의 시체에 편지를 숨겨두기
+Plant Madesi's Ring	마데시의 반지를 몰래 넣어 두기	마데시의 반지를 넣기
 Plant the <Alias=Evidence> in <Alias=WealthyHome> in <Alias=City>	<Alias=City>에 있는 <Alias=WealthyHome>에 <Alias=Evidence> 몰래 두고오기	<Alias=City>에 있는 <Alias=WealthyHome> 에 <Alias=Evidence> 몰래 두고오기
-Plant the Incriminating Letter on Gaius Maro's body	가이우스 마로의 시체에 유죄증명 편지를 숨겨두기	가이우스 마로의 시체에 조작된 편지를 숨겨두기
+Plant the Balmora Blue	발모라 블루를 몰래 넣어 두기	발모라 블루를 숨겨놓기
+Plant the Incriminating Letter on Gaius Maro's body	가이우스 마로의 시체에 유죄증명 편지를 몰래 넣어 두기	가이우스 마로의 시체에 조작된 편지를 숨겨두기
 Please be patient. I'll get you your money.	좀 참아보시오. 그 돈을 받아줄 테니.	좀 참아보시오. 그 돈을 받아줄테니.
 Pleated Shoes	야를의 주름 잡힌 신발	야를의 주름잡힌 신발
 Poison Cloaked Spider	마법 주문서 - 맹독 망토 거미	마법 주문서 - 독 망토 거미
@@ -1142,6 +1153,9 @@ Search for the Aetherium Shards (<Global=DLC1LD_ShardsFound>/<Global=DLC1LD_Shar
 Seared Slaughterfish	구운 식인물고기	말린 식인물고기
 Second Letter from EEC	동제국 회사의 두 번째 편지	동제국 회사의 두번째 편지
 See to it at once.	당장 처리하시오.	일단 한번 보시오.
+Seeker 1 (Mirror)	탐구자 1 (거울)	탐구자 1
+Seeker 2 (Mirror)	탐구자 2 (거울)	탐구자 2
+Seeker 3 (Mirror)	탐구자 3 (거울)	탐구자 3
 Self Doubt	자기 의심	자아 의문
 Severin Family Safe	세브린 가문 금고	스베린 가문 금고
 Shadow Warrior Invisibility	그림자 전사 투명화	어둠의 전사 투명화
@@ -1234,6 +1248,7 @@ Speak to the Steward of Morthal about the land for sale	판매 중인 토지에 
 Speak with <Alias=CurrentQuestGiver> for an assignment	임무에 관해서 <Alias=CurrentQuestGiver>와(과) 대화하기	임무에 관해서 <Alias=CurrentQuestGiver>와 대화하기
 Speak with Constance Michel about Adoption	입양에 관해서 콘스턴스 미쉘과 대화하기	입양에 관해서 콘스탄스 미쉘과 대화하기
 Spell Tome: Detect Undead	마법책: 시체 탐지	마법책: 사체 탐지
+Spriggan (Burnt)	스프리건 (타버린)	스프리건
 Staff of Daedric Command	지팡이 - 데이드라 지배	지팡이 - 데이드라제 지배
 Staff of Sparks	지팡이 - 번갯불	지팡이 - 최하급 번갯불
 Staff of Vanquishment	지팡이 - 광역 공포	지팡이 - 중급 공포

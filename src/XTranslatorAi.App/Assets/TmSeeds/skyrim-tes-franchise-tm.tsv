@@ -2545,7 +2545,7 @@ Cellar Key	열쇠 - 저장고
 Centurion Boss	백부장 우두머리
 Centurion Dynamo Core	드웨머 - 백부장 동력장치 핵심부
 Centurion Dynamo Core required	드웨머 - 백부장 동력장치 핵심부가 필요합니다.
-Centurion Fight 3	백부장 전사 3
+Centurion Fight 3	백부장 전투 3
 Ceremonial Axe	의식용 도끼
 Ceremonial Brazier	의식용 화로
 Ceremonial Door	의식의 문
@@ -3096,7 +3096,7 @@ Copper and Onyx Circlet	서클렛 - 마노 구리 서클렛
 Copper and Ruby Circlet	서클렛 - 루비 구리 서클렛
 Copper and Sapphire Circlet	서클렛 - 사파이어 구리 서클렛
 Coral Dragon Claw	산호 발톱
-Corner Shelf	작은 선반
+Corner Shelf	구석 선반
 Corpse	시체
 Corpse Curse	시체 저주
 Corpse Note	시체의 메모
@@ -6704,7 +6704,7 @@ Find Sam Guevenne	샘 게베인을 찾기
 Find Septimus Signus	셉티무스 시그누스를 찾기
 Find Shalidor's writings	샬리도어의 문서를 찾기
 Find some equipment	장비할 몇 가지의 물건들을 찾기
-Find some Mammoth Tusk Powder	매머드 상아 가루 몇 개를 찾기
+Find some Mammoth Tusk Powder	매머드 상아 가루를 찾기
 Find someone who can identify the Unusual Gem	특이한 보석에 관해 알고 있는 사람을 찾기
 Find someone who knows about the expedition.	탐험대에 관해 알고 있는 사람을 찾기
 Find the <Alias=Courier>	<Alias=Courier> 찾기
@@ -7325,7 +7325,7 @@ Gestur Rockbreaker	게스투어 락브레이커
 Get 3 flawless amethysts for Talen-Jei (<Global=FFRiften06Found>/<Global=FFRiften06Total>)	탈렌-제이에게 줄 완벽한 자수정 3개를 구하기 (<Global=FFRiften06Found>/<Global=FFRiften06Total>)
 Get a bottle of Skooma for Grisvar	그리즈바에게 줄 스쿠마 한 병을 구하기
 Get a Heart Stone	하트스톤을 구하기
-Get access to Hjerim	예림으로 들어갈 허가를 받기
+Get access to Hjerim	예림으로 들어갈 방법을 찾기
 Get advice from Yngvar	잉바의 조언을 얻기
 Get assistance from Jorleif	욜리프의 도움을 얻기
 Get Derkeethus out of the cave.	더키서스를 동굴에서 꺼내주기
@@ -12646,7 +12646,7 @@ LetterStorage	편지함
 Level	레벨
 Level Progress	레벨 진행도
 Level up available.	레벨 업을 하려면 기술 메뉴를 여세요.
-Leveled Cultist	광신도
+Leveled Cultist	광신도 (레벨 맞춤)
 Leveling Up	레벨 업
 Lever	레버
 Lexicon	고대사전
@@ -13742,9 +13742,9 @@ Nerien	네리엔
 Nervous Patron	불안한 후원자
 Nest	둥지
 Netch	네치
-Netch (Bull)	네치
-Netch (Calf)	네치
-Netch (Cow)	네치
+Netch (Bull)	네치 (황소)
+Netch (Calf)	네치 (어린)
+Netch (Cow)	네치 (베티)
 Netch Calf	어린 네치
 Netch Jelly	네치 젤리
 Netch Leather	가죽 - 네치
@@ -15272,12 +15272,12 @@ Place Treoy's Ring	트레위의 반지 놓기
 Place workbenches in the Main Hall for crafting furniture.	가구들을 제작하기 위한 작업선반을 대청에 설치합니다.
 Plague of the Dead	망자의 역병
 Plans for what?	무슨 계획?
-Plant <Alias=QuestItem> in <Alias=TargetHouse>	<Alias=TargetHouse>에 <Alias=QuestItem> 놓기
-Plant letter on <Alias=Victim>'s corpse	<Alias=Victim>의 시체에 편지를 숨겨두기
-Plant Madesi's Ring	마데시의 반지를 넣기
+Plant <Alias=QuestItem> in <Alias=TargetHouse>	<Alias=TargetHouse>에 <Alias=QuestItem> 몰래 놓아두기
+Plant letter on <Alias=Victim>'s corpse	<Alias=Victim>의 시체에 편지를 몰래 넣어 두기
+Plant Madesi's Ring	마데시의 반지를 몰래 넣어 두기
 Plant the <Alias=Evidence> in <Alias=WealthyHome> in <Alias=City>	<Alias=City>에 있는 <Alias=WealthyHome>에 <Alias=Evidence> 몰래 두고오기
-Plant the Balmora Blue	발모라 블루를 숨겨놓기
-Plant the Incriminating Letter on Gaius Maro's body	가이우스 마로의 시체에 유죄증명 편지를 숨겨두기
+Plant the Balmora Blue	발모라 블루를 몰래 넣어 두기
+Plant the Incriminating Letter on Gaius Maro's body	가이우스 마로의 시체에 유죄증명 편지를 몰래 넣어 두기
 Plant the taproot	곧은 뿌리를 심기
 Planter	화분
 Plate	접시
@@ -17101,11 +17101,11 @@ See to it at once.	당장 처리하시오.
 See what others cannot.	다른 이들은 볼 수 없는 것을 봅니다.
 Seeker	시커
 Seeker 1	탐구자 1
-Seeker 1 (Mirror)	탐구자 1
+Seeker 1 (Mirror)	탐구자 1 (거울)
 Seeker 2	탐구자 2
-Seeker 2 (Mirror)	탐구자 2
+Seeker 2 (Mirror)	탐구자 2 (거울)
 Seeker 3	탐구자 3
-Seeker 3 (Mirror)	탐구자 3
+Seeker 3 (Mirror)	탐구자 3 (거울)
 Seeker Aspirant	시커 지원병
 Seeker of Might	힘의 탐구자
 Seeker of Shadows	그림자의 탐구자
@@ -18246,7 +18246,7 @@ Sprayed on the ground, it creates a wall of lightning that does <50> points of s
 Sprays writhing tentacles on the ground that stagger and poison foes that enter them.	지면에 촉수의 장벽을 만들어 매 초마다 독 피해를 입히며 비틀거리게 합니다.
 Spread the Love	사랑을 펼치세요
 Spriggan	스프리건
-Spriggan (Burnt)	스프리건
+Spriggan (Burnt)	스프리건 (타버린)
 Spriggan Claw	스프리건 발톱
 Spriggan Earth Mother	대지의 스프리건
 Spriggan Matron	스프리건 치유사
