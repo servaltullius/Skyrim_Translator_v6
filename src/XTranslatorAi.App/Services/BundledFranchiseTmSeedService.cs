@@ -205,9 +205,11 @@ public sealed class BundledFranchiseTmSeedService
             // (몰래 넣어 두기); 17 rows changed (1.16.54).
             // v23 takes the patch's fixes to mistranslated player choices, all 7,449 pairs read against the English: a
             // dismissive Whatever (그러든가), the next move rather than the next place (다음엔 뭘 하지), beating some sense
-            // into someone (좀 맞아야 정신을 차리겠어) and others; 37 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v23", "bundled-skyrim-tes-franchise-tm.tsv", 1529774, "fa80528bfeab13f341a6ca0fbd3d0de6d634bbe28801b97d86a0755fe8099c3c",
-                PreviousVersions: new[] { "v22", "v21", "v20", "v19", "v18", "v17", "v16", "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v23-changes.tsv"),
+            // into someone (좀 맞아야 정신을 차리겠어) and others; 37 rows changed (1.16.55).
+            // v24 takes the patch's fix to Dawnguard's Turn perk, which turns someone into a vampire rather than changing
+            // one's own body: the row Turn now has 돌리기, the text of the game's other Turn strings; 1 row changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v24", "bundled-skyrim-tes-franchise-tm.tsv", 1529777, "0737225ff2cbdc90b531a9d5f03635c5fef834acf10df3eb98d8539d5c879229",
+                PreviousVersions: new[] { "v23", "v22", "v21", "v20", "v19", "v18", "v17", "v16", "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v24-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,
