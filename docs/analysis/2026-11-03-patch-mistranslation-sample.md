@@ -1800,3 +1800,21 @@ choice-4..6(2,054쌍, skyrim.esm 퀘스트 이름순 가운데)을 읽었다.
   - 퀘스트 목표 7필드(Favor204·205를 지명별로 나눈 퀘스트)는 따라 고치기가 옛 글이 같은 다른 퀘스트(Favor158, 10C7)의 새 글 '<Alias=QuestItem>를'로 바꿨다. 검수가 찾아 바닐라 Favor204·205(30E8·3961)와 같은 '<Alias=QuestItem>을(를) …에게 돌려주기'로 `word-fix.py`로 다시 고쳤다(예상 밖 차이 0).
   - 그 49필드 가운데 '좋아 그렇게 하지.' → '벌써 잊었는데요.'는 바닐라 'Already have.'(Favor013, ILSTRINGS 00006F35) 고침과 같은 대사라 맞다.
   - 예상 밖 차이 0, 백업 `modpack-backup-20261016/rchoice2`.
+
+### 플레이어 선택지 3덩이 (2026-11-06)
+
+choice-7..9(2,044쌍, skyrim.esm 퀘스트 이름순 끝쪽과 dawnguard.esm 앞쪽)를 읽었다.
+- 첫 판정: 맞음 2,023, 어색함 12, 경미한 오역 9, 심각한 오역 0이다.
+- 되짚기:
+  - 4248·5935·6017·6126·6130은 어색함으로 내렸다.
+  - 함께 본 4735·4747('I'm game' 승낙·거절)은 앞 NPC 대사 'I'm game if you're game!'(당신이 가는 길은 나도 가겠어!)을 받은 것이라 맞다.
+- 고친 것(4줄, `review-choice3.csv`):
+  - 'I won't condemn an innocent man'을 '죄인으로 몰 수는 없어'로 고쳤다(비난할 수는 없어였음).
+  - 'I'm ready for anything'을 '무슨 일이든 준비되어 있습니다'로 고쳤다. 짝 '시험을 받을 준비가 되었습니다'와 구별되고 NPC의 '오만은…'과 이어진다.
+  - 더네비어에게 '왜 나와 이야기를 나누려는 거지?'라고 묻는다.
+  - 스쿨리에게 'mature for your age'를 '나이에 비해 성숙하군'이라고 한다(늙어보이는군이었음). 게임에는 HearthFires.esm이 덮어쓴 '너는 엄청... 나이에 비해 성숙하구나.'가 보인다. Dawnguard 쪽 글은 처음 '당신은 확실히... 나이에 비해 성숙하군.'으로 고쳤다가, 검수 뒤 HearthFires·Skyrim과 똑같은 글로 맞췄다(뒷처리 `review-choice3b.csv`, 사전·TM 영향 없음).
+- 반영:
+  - 품질검사 새 경고 0, 사전 F 3, 테스트 2,714.
+  - TM 대기 3행을 반영 전에 넣었다(합계 30).
+  - USSEP·USCCCP에는 이 글이 없다.
+- 모드팩: 본편·던가드 표(`modpack-rchoice3.py`·뒷처리 `modpack-rchoice3b.py`, 백업 `modpack-backup-20261016/rchoice3`·`rchoice3b`). 모드 플러그인에는 이 옛 글이 없다.
