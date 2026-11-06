@@ -124,6 +124,18 @@ XML 왕복 검증 도구는 [Validate CLI](tools/XTranslatorAi.Validate/README.m
 
 테스트는 Release 빌드 후 `dotnet test --no-build`를 실행합니다. Publish 출력은 `artifacts/current`이며, 실행 중인 루트 EXE를 자동 교체하지 않습니다. 릴리스 워크플로는 지정 태그를 checkout하고 해당 커밋인지 확인한 뒤 .NET 10 Windows 단일 실행 파일과 SHA-256을 만듭니다. 로컬 빌드와 공개 릴리스는 별도 작업입니다. 개발 PC에서는 프로젝트 루트의 `TulliusTranslator.exe`를 최신 릴리스로 바꿔 두고, 바로 앞 판은 `artifacts/root-deploy-20261019/backup-<버전>/`에 둡니다(둘 다 저장소에는 올리지 않습니다).
 
+## 라이선스
+
+이 저장소의 코드와 문서(아래 데이터는 빼고)는 [GPL-3.0-or-later](LICENSE)로 배포합니다(Copyright © 2026 servaltullius). GNU 일반 공중 사용 허가서 3판, 또는 받는 사람이 고르는 그 뒤의 어느 판이 정한 조건에 따라 쓰고 고치고 다시 배포할 수 있습니다.
+
+- 직접 플러그인 기능이 쓰는 라이브러리(SharpZipLib, K4os.Compression.LZ4, K4os.Hash.xxHash, System.IO.Pipelines)의 고지는 [Licenses/](Licenses/README.md)에 있습니다. 앱은 이 밖에도 .NET 런타임·WPF, CommunityToolkit.Mvvm, Microsoft.Data.Sqlite·SQLitePCLRaw를 씁니다. 이것들은 각자의 라이선스(MIT, Apache-2.0 등)를 따릅니다.
+- 다음 데이터는 이 라이선스에 들지 않고, 각 권리자의 조건을 따릅니다.
+  - `Skyrim_Latest_Kor`(스카이림 한국어 패치): 엘더스크롤 시리즈 갤러리 한글패치 25.3.14를 고친 판입니다. 원본 게시글의 "수정배포자유"에 따라 배포합니다. 그 안의 글꼴 파일(`Interface/fonts_en.swf`)과 비공식 패치(USSEP·USCCCP) 한국어판은 각 원 권리자의 것입니다.
+  - 내장 스카이림 TM과 게임 번역 사전(`src/XTranslatorAi.App/Assets/TmSeeds`, `src/XTranslatorAi.App/Assets/GameStrings`): 게임의 영어 원문과 위 한국어 패치의 글로 만들었습니다.
+  - 내장 Starfield TM(`starfield-franchise-tm.tsv`): 게임의 영어 원문과 스타필드 한국어 패치(제3자 번역)로 만들었습니다.
+  - `fo4_strings_원본/`(폴아웃 4 게임 문자열), `FO4_Strings 230706/`(폴아웃 4 한국어 패치 문자열), `LegacyoftheDragonborn_english_korean.xml`과 `benchmarks/translation/lotd-v1/`(LOTD 모드의 영어 원문과 한국어 번역, 그 모델 비교 결과): 시험과 비교에 쓴 자료입니다.
+  - 게임의 원문과 이름에 대한 권리는 Bethesda Softworks에 있습니다.
+
 ## 문서 구분
 
 - [릴리스 기록](docs/release-history.md)

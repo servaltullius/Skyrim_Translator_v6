@@ -130,6 +130,10 @@ jobs:
           New-Item -ItemType Directory -Force $stage | Out-Null
           Copy-Item -Path "agent-kit" -Destination $stage -Recurse -Force
           Copy-Item "artifacts/current/TulliusTranslator.exe" "$stage/TulliusTranslator.exe"
+          # The EXE ships under the GPL with its text, and the libraries' notices the publish step put in Licenses/.
+          Copy-Item "LICENSE" "$stage/LICENSE"
+          if (!(Test-Path "artifacts/current/Licenses/README.md")) { throw "The publish output is missing Licenses/." }
+          Copy-Item -Path "artifacts/current/Licenses" -Destination $stage -Recurse -Force
           Add-Type -AssemblyName System.IO.Compression.FileSystem
           [System.IO.Compression.ZipFile]::CreateFromDirectory($stage, "$PWD/artifacts/current/TulliusTranslator-$($env:RELEASE_TAG).zip")
           [System.IO.Compression.ZipFile]::CreateFromDirectory("$stage/agent-kit", "$PWD/artifacts/current/TulliusTranslator-agent-kit.zip", [System.IO.Compression.CompressionLevel]::Optimal, $true)
@@ -137,6 +141,7 @@ jobs:
           $names = $zip.Entries.FullName; $zip.Dispose()
           $names
           if ($names -notcontains "TulliusTranslator.exe" -or $names -notcontains "agent-kit/.mcp.json") { throw "The zip is missing the EXE or the kit." }
+          if ($names -notcontains "LICENSE" -or $names -notcontains "Licenses/README.md") { throw "The zip is missing LICENSE or Licenses/." }
 
       - name: Upload assets to release
         shell: pwsh
