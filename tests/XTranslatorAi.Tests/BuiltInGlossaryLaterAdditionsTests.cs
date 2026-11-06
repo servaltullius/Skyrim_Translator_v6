@@ -226,6 +226,9 @@ public class BuiltInGlossaryLaterAdditionsTests : IAsyncLifetime
     [InlineData("Bloated Man's Grotto", "부풀은 사내의 암굴", "Built-in default glossary", "부푼 사내의 암굴")]
     [InlineData("Boethiah", "보에시아", null, "보에시아")]
     [InlineData("Boethiah", "보에씨아", "Built-in default glossary", "보에씨아")]
+    // The names read in full against the English (2026-11-06).
+    [InlineData("Spriggan Matron", "스프리건 치유사", "Built-in default glossary", "스프리건 대모")]
+    [InlineData("Spriggan Matron", "스프리건 치유사", null, "스프리건 치유사")]
     public async Task GameTextNames_AreCorrected_OnlyWhereTheUserKeptTheOldOne(string source, string target, string? note, string expected)
         => await CorrectedAsync(source, target, note, expected);
 

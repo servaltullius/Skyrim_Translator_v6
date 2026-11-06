@@ -74,6 +74,9 @@ public sealed class BuiltInGlossaryService
             ("Discerning the Transmundane", "다른 차원의 것을 알아내기"), ("The Horn of Jurgen Windcaller", "유르겐 윈드콜러의 뿔"),
             ("Way of the Voice", "목소리의 길"),
         }),
+        // The game translation's names read in full against the English (2026-11-06): the Spriggan Matron is a stronger
+        // spriggan that heals itself, not a healer of others, so the game text now names it 스프리건 대모.
+        new("2026-11-06", Array.Empty<string>(), new[] { ("Spriggan Matron", "스프리건 치유사") }),
     };
 
     /// <summary>
