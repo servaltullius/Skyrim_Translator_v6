@@ -3,6 +3,10 @@
 판마다 무엇이 바뀌었는지 적은 기록입니다. 받는 곳과 자세한 릴리스 글은 [GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases)에 있습니다.
 최근 판이 위에 있습니다. 1.8보다 앞선 판은 [이전 작업 기록](plans/2026-09-28-translator-improvement.md)과 [유지보수 계획](plans/2026-09-29-maintenance.md)을 보세요.
 
+## 1.16.57
+
+1.16.57은 [한글패치 26.10.16 베타 26](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/kopatch-26.10.16-beta26)과 함께 낸 판입니다. 한글패치의 이름 오역 고침(본편·DLC 이름 13,204쌍을 모두 영어 원문과 맞대어 읽음, 본편·DLC 73줄)을 게임 번역 사전이 따르고, 내장 TM은 v25(같은 고침 42행)가 됩니다([기록](analysis/2026-11-03-patch-mistranslation-sample.md)). 내장 용어집의 Spriggan Matron도 '스프리건 대모'로 맞췄고, 그 밖의 번역기 기능은 1.16.56과 같습니다.
+
 ## 1.16.56
 
 1.16.56은 라이선스를 붙인 첫 판입니다. 번역기는 GPL-3.0-or-later로 배포하고, 릴리스 zip에 `LICENSE`와 함께 .NET 런타임·WPF와 라이브러리의 라이선스 전문과 고지(`Licenses/`)를 넣습니다. 한글패치의 던가드 Turn 특성 고침('변신' → '흡혈귀로 만들기')을 게임 번역 사전이 따르고(이 고침은 다음 한글패치 베타에 들어갑니다), 내장 TM은 v24(Turn '변신' → '돌리기' 1행)가 됩니다([기록](analysis/2026-11-03-patch-mistranslation-sample.md)). 번역기 기능은 1.16.55와 같습니다.
