@@ -11,7 +11,7 @@ Skyrim SE/AE 플러그인(ESP·ESM·ESL)과 Bethesda/xTranslator XML(`SSTXMLRess
 
 ## 받기
 
-최신 릴리스는 **1.16.55**입니다. [GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/1.16.55)에서 받으세요. 판마다 바뀐 것은 [릴리스 기록](docs/release-history.md)에 있습니다.
+최신 릴리스는 **1.16.56**입니다. [GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/1.16.56)에서 받으세요. 판마다 바뀐 것은 [릴리스 기록](docs/release-history.md)에 있습니다.
 
 - **처음이라면** `TulliusTranslator-<버전>.zip` 하나를 받아 아무 폴더에 풉니다. 번역기 EXE와 에이전트 모드 키트(`agent-kit` 폴더)가 함께 들어 있어, 풀면 키트가 EXE 바로 옆에 놓입니다.
 - **이미 쓰고 있다면** `TulliusTranslator.exe`만 바꾸면 됩니다. 키트가 바뀐 판은 릴리스 글에 적으니, 그때는 zip을 덮어 풉니다(`agent-kit`의 `work`·`output`에 있는 번역은 그대로 남습니다).
