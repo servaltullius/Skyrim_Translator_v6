@@ -3,6 +3,10 @@
 판마다 무엇이 바뀌었는지 적은 기록입니다. 받는 곳과 자세한 릴리스 글은 [GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases)에 있습니다.
 최근 판이 위에 있습니다. 1.8보다 앞선 판은 [이전 작업 기록](plans/2026-09-28-translator-improvement.md)과 [유지보수 계획](plans/2026-09-29-maintenance.md)을 보세요.
 
+## 1.16.55
+
+1.16.55는 [한글패치 26.10.16 베타 24](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/kopatch-26.10.16-beta24)와 함께 낸 판입니다. 한글패치의 플레이어 선택지 오역 고침(본편·DLC 선택지 7,449쌍을 모두 영어 원문과 맞대어 읽음, 본편·DLC 40줄)을 게임 번역 사전이 따르고, 내장 TM은 v23(같은 고침 37행)이 됩니다([기록](analysis/2026-11-03-patch-mistranslation-sample.md)). 번역기 기능은 1.16.54와 같습니다.
+
 ## 1.16.54
 
 1.16.54는 [한글패치 26.10.16 베타 23](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/kopatch-26.10.16-beta23)을 따르는 판입니다. 한글패치의 메시지·퀘스트 목표 오역 고침(본편·DLC 메시지 1,240쌍과 퀘스트 목표 1,606쌍을 모두 영어 원문과 맞대어 읽음, 나미라 칭호·낚싯바늘과 함께 본편·DLC 50줄)을 게임 번역 사전이 따르고, 내장 TM은 v22(같은 고침 17행)가 됩니다([기록](analysis/2026-11-03-patch-mistranslation-sample.md)).
