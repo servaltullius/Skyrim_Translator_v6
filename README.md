@@ -98,7 +98,7 @@ TES 시드는 스카이림 한국어 패치(유저 번역)의 글로 만들었�
 
 저장소의 `Skyrim_Latest_Kor`는 엘더스크롤 시리즈 갤러리 한글패치 25.3.14를 바탕으로, 이 번역기로 검수해 고친 스카이림 AE(SE) 한국어 패치(26.10.16 베타)입니다. 릴리스 zip에는 본편·DLC·크리에이션 클럽과 비공식 패치(USSEP·USCCCP) 한국어판이 들어 있습니다(USSEP 플러그인은 저장소에 올리지 않습니다).
 
-- 베타는 GitHub 릴리스의 `kopatch-` 태그로 냅니다. 최신은 [베타 25](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/kopatch-26.10.16-beta25)입니다.
+- 베타는 GitHub 릴리스의 `kopatch-` 태그로 냅니다. 최신은 [베타 26](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/kopatch-26.10.16-beta26)입니다.
 - 번역기의 게임 번역 사전(바닐라 문장을 바로 채움)과 내장 TES TM은 이 패치의 글을 따릅니다.
 - 검수와 고침 기록은 [베타 기록](docs/analysis/2026-10-16-kopatch-beta.md)과 그 안의 링크에 있습니다.
 
