@@ -1,5 +1,10 @@
 Source	Target	Previous
+A Bad Trade	손해 본 거래	불경기
+A New Order	새로운 기사단	새로운 지시
 All right. But you're responsible for him.	알았다. 대신 돌보는 건 네 책임이다.	알았다. 대신 씻기거나 청소하는 건 네가 해야 된다.
+Alto Wine	술 - 알토 포도주	술 - 순한 포도주
+Ash Spawn Immolator	화산재 스폰 소각자	화산재 스폰 학살자
+Cyrodilic Spadetail	시로딜 스페이드테일	시로딜 변종어
 Do I need to beat some sense into you? (Brawl)	좀 맞아야 정신을 차리겠어? (싸움)	너에게 상식을 가르쳐줄까? (싸움)
 Do I need to beat some sense into you? (Intimidate)	좀 맞아야 정신을 차리겠어? (위협)	너에게 상식을 가르쳐줄까? (위협)
 Do what now?	뭘 하라는 겁니까?	이제 뭘 해야 합니까?
@@ -7,10 +12,17 @@ Do you get many offers?	사겠다는 사람이 많나?	주문이 많나?
 Do you know Dragonrend or not?	드래곤렌드를 아는 겁니까, 모르는 겁니까?	드래곤렌드에 관해서 알고 있습니까?
 Do you like it out here, away from everything?	세상과 멀리 떨어진 이곳에서 지내는 게 좋은가 보군?	모든 것을 다 잊고, 여기서 지내는 게 좋은가 보군?
 Do you work the forge all day?	하루 종일 대장간에서 일하는 건가?	매일 대장간에서 일하는 건가?
+Dragon Hunting	드래곤 사냥	드래곤 사냥꾼
+Draugr Scourge	드로거 재앙	드로거 사술사
+Enchanting Pick-Up	마법부여를 위한 물품 찾아오기	마법부여를 위한 물품 찾아오기<Enchanting Pick-Up>
+Felsaad Tern Feathers	펠사드 제비갈매기 깃털	펠사드 제비갈매기 날개
+Filling Soul Gems	소울젬 충전하기	소울젬 보충하기
+Fortified Healing	체력 재생 강화	치유 마법 강화
 General Tullius told me to report to you.	툴리우스 장군이 찾아가 신고하라고 했소.	툴리우스 장군이 당신에게 보고를 하라던데.
 Has the war been hard on Markarth?	전쟁 때문에 마르카스가 많이 힘들었습니까?	마르카스에서의 전쟁은 치열했습니까?
 He appeared mad. I had to kill him to defend myself.	그는 미쳐버린 것 같더군. 내 몸을 지키려면 그를 죽일 수밖에 없었소.	그는 미쳐버린 것 같더군. 그를 죽일 수밖에 없었소.
 Here's your money. He'd better be safe. (Give <Global=BYOHHBA2Ransom> gold)	여기 돈이다. 그는 무사해야 할 거다. (<Global=BYOHHBA2Ransom> 골드 주기)	돈을 낼 테니 그를 풀어줘라. (<Global=BYOHHBA2Ransom> 골드 주기)
+Holdings of Jarl Gjalund	걀룬드 야를의 영지 보고서	쟐룬드 야를의 영지 보고서
 How could you execute a fine and honorable man?	어떻게 명예롭고 괜찮은 사람을 처형할 수가 있나?	어쩌다 명예롭고 괜찮은 사람을 처형하게 된 건가?
 How do I know I can trust you?	당신을 믿어도 될지 어떻게 알지?	어째서 당신을 믿어달라는 거지?
 I bet you get some interesting people through here.	이곳엔 흥미로운 사람들이 꽤 드나들 것 같은데.	당신은 이 지역에서 흥미로운 사람을 알고 있을 것 같은데.
@@ -23,9 +35,39 @@ I'm ready for anything.	무슨 일이든 준비되어 있습니다.	준비 되�
 It's all in good fun, Tullius.	그저 재미로 하는 일일 뿐입니다, 툴리우스.	아주 재미있을 겁니다, 툴리우스.
 Let Ulfric have his way now. He'll have to give ground later.	울프릭이 맘대로 하게 놔둡시다. 나중에는 그쪽이 양보해야 할 테니까.	울프릭이 맘대로 하게 놔둡시다. 나중에 대가를 치르게 될 테니까.
 Listen, I don't want any trouble. (Persuade)	이봐, 말썽은 원치 않아. (설득)	이봐, 조용히 처리하자구. (설득)
+Locksmith	열쇠장인	자물쇠 장수
+Magic Anomaly	마법 특이점	기형 마법물질
+Mantled College Robes	마법 대학 망토 달린 로브	마법 대학 두건 달린 로브
+Nervous Patron	불안한 손님	불안한 후원자
+Pelagius the Suspicious	의심 많은 펠라지우스	수상한 펠라지우스
+Port Stone	석문	활석 문
+Portal to Shrine of Resolution	차원문 - 결의의 성소	차원문 - 해결의 성소
+Prisoner's Cuffs	죄수의 수갑	죄수의 장갑
+Reaver Marauder	습격 약탈자	강력한 약탈자
+Reaver Plunderer	강탈 약탈자	노련한 약탈자
+Research Thief	연구 도둑	도적 조사
+Sap Repository	수액 보관함	샙의 보관함
 So go search their house.	그럼 가서 그들의 집을 수색하시오.	그럼 가서 그들의 집을 수색합시다.
+Spell Tome: Bound Battleaxe	마법책: 마법 전투 도끼	마법책: 마법 전투 도끼 소환
+Spell Tome: Bound Bow	마법책: 마법 활	마법책: 마법 활 소환
+Spell Tome: Bound Dagger	마법책: 마법 단검	마법책: 마법 단검 소환
+Spell Tome: Bound Sword	마법책: 마법 검	마법책: 마법 검 소환
+Spriggan Matron	스프리건 대모	스프리건 치유사
+Strange Vessel	이상한 배	이상한 관
+Suvaris Atheron's Logbook	수바리스 아세론의 항해일지	수바리스 아테론의 항해일지
+Tall Shelf	큰 선반	큰 책장
+Tall Shelf with Display Case	큰 선반과 진열함	큰 책장과 진열함
 The Blades helped me find out about it.	블레이드가 그것을 알아내게 도와주었습니다.	블레이드가 그것을 찾게 도와주었습니다.
+The Kagrumez Gauntlet	카그루메즈 시험	카그루메즈 장갑
+The Third Era Timeline	제3시대 연표	제3세기 연표
 Turn	돌리기	변신
+Unenchanted Alteration Staff	마법부여되지 않은 변화마법 지팡이	변화마법 지팡이
+Unenchanted Conjuration Staff	마법부여되지 않은 소환마법 지팡이	소환마법 지팡이
+Unenchanted Destruction Staff	마법부여되지 않은 파괴마법 지팡이	파괴마법 지팡이
+Unenchanted Forsworn Staff	마법부여되지 않은 포스원 지팡이	포스원 지팡이
+Unenchanted Illusion Staff	마법부여되지 않은 환영마법 지팡이	환영마법 지팡이
+Unenchanted Restoration Staff	마법부여되지 않은 회복마법 지팡이	회복마법 지팡이
+Weystone Source	웨이스톤 원천	웨이스톤 초점
 What would it take to identify the buyer? (Bribe)	뭘 주면 구매자를 알려줄 건가? (뇌물)	얼마를 내면 구매자를 알려줄 건가? (뇌물)
 What's our next move?	다음엔 뭘 하지?	다음은 어디지?
 What's this about a crystal?	크리스털이라니, 대체 무슨 얘기지?	이 크리스털은 대체 뭐지?

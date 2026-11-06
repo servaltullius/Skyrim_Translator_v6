@@ -174,7 +174,7 @@ Source	Target
 [SUCCESS]	[성공]
 [SURV=Warmth is increased by <mag> points for <dur> seconds.]	[SURV=<dur> 초 동안 온기가 <mag> 증가합니다.]
 A <mag> point fiery explosion centered on the caster. Does more damage to closer targets.	거대한 불길의 폭풍을 일으켜 <mag> 의 화염 피해를 입힙니다. 가까운 적일수록 더 큰 피해를 입습니다.
-A Bad Trade	불경기
+A Bad Trade	손해 본 거래
 A battleaxe. (25 husks)	전투 도끼. (25 껍질)
 A benefit? How?	도움이라니? 무슨?
 A Blade in the Dark	어둠 속의 블레이드
@@ -253,7 +253,7 @@ A Mysterious Note	이상한 쪽지
 A native uprising in Markarth was put down 20 years ago. The survivors are known as the Forsworn.	마르카스에서 일어난 원주민 반란은 20년 전에 진압되었습니다. 생존자들은 포스원이라고 지칭되고 있습니다.
 A Netch?	네치?
 A New Debt	새로운 부채
-A New Order	새로운 지시
+A New Order	새로운 기사단
 A new passage to what?	새로운 길이라니, 어디로 가는 길입니까?
 A New Source of Stalhrim	신규 스탈림 근원
 A Night To Remember	기억해야 하는 밤
@@ -672,7 +672,7 @@ Alternative Armors - Silver	추가 방어구 - 은
 Alternative Armors - Stalhrim Fur	추가 방어구 - 스탈림 모피
 Alternative Armors - Steel Soldier	추가 방어구 - 강철 군용
 Although much of Skyrim is cold and unforgiving, Windhelm is the snowiest city in the province.	스카이림 대부분이 엄청나게 춥고, 또 위험한 지역이지만, 윈드헬름은 그 중에서도 가장 눈이 많은 도시입니다.
-Alto Wine	술 - 순한 포도주
+Alto Wine	술 - 알토 포도주
 Alva	알바
 Alva is a vampire!	알바는 흡혈귀입니다!
 Alva set the fire. She's the murderer.	알바가 불을 질렀소. 그녀가 바로 살인자입니다.
@@ -1238,7 +1238,7 @@ Ash Spawn 1	화산재 스폰 1
 Ash Spawn 2	화산재 스폰 2
 Ash Spawn 3	화산재 스폰 3
 Ash Spawn Battle Axe	화산재 스폰 전투 도끼
-Ash Spawn Immolator	화산재 스폰 학살자
+Ash Spawn Immolator	화산재 스폰 소각자
 Ash Spawn Sample	화산재 스폰 표본
 Ash Spawn Skirmisher	화산재 스폰 척후병
 Ash Spawn War Axe	화산재 스폰 도끼
@@ -3250,7 +3250,7 @@ Cyclone	사이클론
 Cynric	신릭
 Cynric Endell	신릭 엔델
 Cyrodilic Brandy	술 - 시로딜 브랜디
-Cyrodilic Spadetail	시로딜 변종어
+Cyrodilic Spadetail	시로딜 스페이드테일
 Daedra Heart	데이드라 심장
 DAEDRIC	데이드라
 Daedric Armor	데이드라제 방어구
@@ -4378,7 +4378,7 @@ Dragon Bridge Overlook	드래곤 브리지 전망대
 Dragon Bridge.	드래곤 브리지.
 Dragon Cultist	드래곤 광신도
 Dragon Heartscales	드래곤 심장비늘
-Dragon Hunting	드래곤 사냥꾼
+Dragon Hunting	드래곤 사냥
 Dragon Infusion	드래곤의 대항자
 Dragon Investigation: Current Status	드래곤 조사: 현재 상황
 Dragon Lair 3	드래곤의 둥지
@@ -4710,7 +4710,7 @@ Draugr	드로거
 Draugr Death Overlord	드로거 죽음의 대군주
 Draugr Deathlord	드로거 죽음의 군주
 Draugr Overlord	드로거 대군주
-Draugr Scourge	드로거 사술사
+Draugr Scourge	드로거 재앙
 Draugr Scourge Lord	드로거 재앙의 군주
 Draugr Thrall	드로거 노예
 Draugr Wight	드로거 와이트
@@ -6229,7 +6229,7 @@ Enchanting laboratory. (<Global=HDRiftenEnchanting> gold)	마법부여 연구실
 Enchanting laboratory. (<Global=HDSolitudeEnchanting> gold)	마법부여 연구실. (<Global=HDSolitudeEnchanting> 골드)
 Enchanting laboratory. (<Global=HDWindhelmEnchanting> gold)	마법부여 연구실. (<Global=HDWindhelmEnchanting> 골드)
 Enchanting Perks	마법부여 퍽
-Enchanting Pick-Up	마법부여를 위한 물품 찾아오기<Enchanting Pick-Up>
+Enchanting Pick-Up	마법부여를 위한 물품 찾아오기
 Enchanting Table	마법부여대
 Enchantment	마법부여 효과
 Enchantment does additional sun damage based on the number of undead killed  <Global=DLC1UndeadKilled> undead killed.	마법부여가 처치한 언데드 숫자에 비례하여 추가 태양 피해를 입힙니다. 처치한 언데드: <Global=DLC1UndeadKilled>
@@ -6599,7 +6599,7 @@ Fellow Prisoner	동료 죄수
 Fellstar Farm	펠스타 농장
 Fellstar Farm Key	열쇠 - 펠스타 농장
 Felsaad Tern	펠사드 제비갈매기
-Felsaad Tern Feathers	펠사드 제비갈매기 날개
+Felsaad Tern Feathers	펠사드 제비갈매기 깃털
 female	여
 Fence	장물아비
 Fenn's Gulch Mine	펜의 협곡 광산
@@ -6633,7 +6633,7 @@ Fill the Chalice from the spring	샘물로 성배를 채우기
 Fill the Chalice with vampire blood	흡혈귀의 피로 성배를 채우기
 Fill the Initiate's Ewer (<Global=DLC1VQ07EwerFills>/<Global=DLC1VQ07EwerTotal>)	입문자의 물병을 채우기 (<Global=DLC1VQ07EwerFills>/<Global=DLC1VQ07EwerTotal>)
 Filled with %s Soul	충전량 - %s
-Filling Soul Gems	소울젬 보충하기
+Filling Soul Gems	소울젬 충전하기
 Filnjar	필른냐르
 Filnjar's House	필른냐르의 집
 Final Lesson	마지막 수업
@@ -7047,7 +7047,7 @@ Fort Sungard Muster	선가드 요새 집결지
 Fort Sungard Oubliette	선가드 요새 지하감옥
 Fort Sungard Shrine	선가드 요새 성소
 Fort Sungard Tower	선가드 요새 탑
-Fortified Healing	치유 마법 강화
+Fortified Healing	체력 재생 강화
 Fortify	마법강화
 Fortify Alchemy	연금술 강화
 Fortify Alteration	변화마법 강화
@@ -8781,7 +8781,7 @@ Hold on. You may know something important.	잠시만, 뭔가 중요한 것을 �
 Hold on... you shot me!	잠깐... 네가 쐈잖아!
 Hold the front line for as long as possible.	가능한 한 오랫동안 전선을 유지하기
 Holder	받침대
-Holdings of Jarl Gjalund	쟐룬드 야를의 영지 보고서
+Holdings of Jarl Gjalund	걀룬드 야를의 영지 보고서
 Holgeir	홀기어
 Hollowed Stump	빈 그루터기
 Hollowed-Out Rock	움푹 파인 바위
@@ -12792,7 +12792,7 @@ Lockpicking	잠금해제
 Lockpicking is <mag>% easier for <dur> seconds.	<dur> 초 동안 잠금해제가 <mag>% 쉬워집니다.
 Lockpicking is <mag>% easier.	잠금해제가 <mag>% 쉬워집니다.
 Lockpicking Perks	잠금해제 퍽
-Locksmith	자물쇠 장수
+Locksmith	열쇠장인
 Locksmith's Touch	열쇠장인의 손길
 Lod	로드
 Lod has a book he stole from a grave.	로드가 무덤에서 훔친 책을 가지고 있소.
@@ -12942,7 +12942,7 @@ Mage Hood	마법 대학 두건
 Mage Robes	마법사의 로브
 Mage's Circlet	마법사의 서클렛
 Magelight	마법사의 빛
-Magic Anomaly	기형 마법물질
+Magic Anomaly	마법 특이점
 Magic from the Sky	하늘에서 내려온 마법
 Magic Resistance	마법 저항력
 Magic weapons lose power with each successful hit, but can be recharged with filled soul gems.	마법 무기는 목표를 제대로 맞출때마다 충전된 힘을 소모하게 됩니다. 하지만 영혼이 담겨있는 소울젬을 사용하여 다시 충전할 수 있습니다.
@@ -13043,7 +13043,7 @@ Mani's Cellar Key	열쇠 - 매니의 저장고
 Mani's Letter	매니의 편지
 Mannequin	마네킹
 Mannimarco, King of Worms	매니마코, 벌레들의 왕
-Mantled College Robes	마법 대학 두건 달린 로브
+Mantled College Robes	마법 대학 망토 달린 로브
 Many have fought and died. I'm no different than they are.	많은 사람들이 싸우고 죽어갔습니다. 저 또한 그들과 다를 바 없습니다.
 Many species of bear roam Skyrim's wilds. They are fearsome creatures, but will often avoid attacking unless provoked.	많은 종류의 곰들이 스카이림의 야생을 배회합니다. 그것들은 위험한 생물이지만 화나게 하지 않는다면 대개 먼저 공격해오지는 않습니다.
 Many Steam Animunculi remain active, making the exploration of dwarven ruins a dangerous prospect.	드워프의 유적은 수많은 기계 골렘들이 여전히 작동하고 있어, 탐사하기에 매우 위험한 곳입니다.
@@ -13739,7 +13739,7 @@ Nepos's Journal	네포스의 기록
 Nerevar at Red Mountain	레드 마운틴의 네레바
 Nerevar Moon and Star	네레바 달과 별
 Nerien	네리엔
-Nervous Patron	불안한 후원자
+Nervous Patron	불안한 손님
 Nest	둥지
 Netch	네치
 Netch (Bull)	네치 (황소)
@@ -15117,7 +15117,7 @@ Peddler	행상인
 Pedestal	받침대
 Pelagia Farm	펠라지아 농장
 Pelagius the Mad	광기의 펠라지우스
-Pelagius the Suspicious	수상한 펠라지우스
+Pelagius the Suspicious	의심 많은 펠라지우스
 Pelagius the Tormented	고통받는 펠라지우스
 Pelagius Wing	펠라지우스 구역
 Pelagius Wing Key	열쇠 - 펠라지우스 구역
@@ -15328,7 +15328,7 @@ Polymorph Skeever	스키버 변신
 Pommel Stone of Mehrunes' Razor	메이룬스의 면도칼 자루 장식
 Poor Fishwife	가난한 생선장수 아낙네
 Porch. (<Global=HDRiftenPorch> gold)	현관. (<Global=HDRiftenPorch> 골드)
-Port Stone	활석 문
+Port Stone	석문
 Portal	차원문
 Portal to Darkfall Cave	차원문 - 다크폴 동굴
 Portal to Darkfall Grotto	차원문 - 다크폴 암굴
@@ -15343,7 +15343,7 @@ Portal to Paragon Platform	차원문 - 파라곤 단상
 Portal to Shrine of Illumination	차원문 - 빛의 성소
 Portal to Shrine of Learning	차원문 - 배움의 성소
 Portal to Shrine of Radiance	차원문 - 광휘의 성소
-Portal to Shrine of Resolution	차원문 - 해결의 성소
+Portal to Shrine of Resolution	차원문 - 결의의 성소
 Portal to Shrine of Sight	차원문 - 예지의 성소
 Portal to Temple Balcony	차원문 - 신전 발코니
 Portal Vessel	차원문 그릇
@@ -15502,7 +15502,7 @@ Prison Registry	입소자 명부
 Prison? You mean the Soul Cairn?	감옥? 소울 케언을 말하는 거요?
 Prisoner	죄수
 Prisoner Belongings Chest	죄수용 소지품 상자
-Prisoner's Cuffs	죄수의 장갑
+Prisoner's Cuffs	죄수의 수갑
 Prisoner's Plan	죄수의 계획
 Private Letter	친서
 Probably better than you.	당신보다도 나을 걸.
@@ -15743,9 +15743,9 @@ Reaperr's Hood	사신의 두건
 Reaver	약탈자
 Reaver Highwayman	노상 약탈자
 Reaver Lord	약탈자 두목
-Reaver Marauder	강력한 약탈자
+Reaver Marauder	습격 약탈자
 Reaver Outlaw	무법 약탈자
-Reaver Plunderer	노련한 약탈자
+Reaver Plunderer	강탈 약탈자
 Reaver Thug	폭력 약탈자
 Rebel's Cairn	반역자의 돌무덤
 Rebuilding the Blades	블레이드의 재건
@@ -16023,7 +16023,7 @@ Rescue the Moth Priest	나방 사제를 구출하기
 Rescue Thorald from Northwatch Keep	노스와치 요새에서 쏘럴드를 구출하기
 Research Log	연구일지
 Research Notes	조사 메모들
-Research Thief	도적 조사
+Research Thief	연구 도둑
 Reset your control mappings to their default settings?	조작 키들을 초기설정으로 돌리겠습니까?
 Resist <mag>% of fire damage for <dur> seconds.	<dur> 초 동안 화염 저항력이 <mag>% 증가합니다.
 Resist <mag>% of frost damage for <dur> seconds.	<dur> 초 동안 냉기 저항력이 <mag>% 증가합니다.
@@ -16816,7 +16816,7 @@ Sanguine Rose	생귄의 장미
 Sanuarach Mine	사누아락 광산
 Sanurach Mine	사누아락 광산
 Sanyon	세넌
-Sap Repository	샙의 보관함
+Sap Repository	수액 보관함
 Sap Spigot	수액 배출구
 Sap Spout	수액 추출기
 Saplike poison does <mag> points of damage for <dur> seconds.	독성 수액이 <dur> 초 동안 <mag> 의 피해를 입힙니다.
@@ -18113,10 +18113,10 @@ Spell Tome: Ash Shell	마법책: 화산재 더미
 Spell Tome: Bane of the Undead	마법책: 언데드의 파멸
 Spell Tome: Banish Daedra	마법책: 하급 데이드라 추방
 Spell Tome: Blizzard	마법책: 눈보라
-Spell Tome: Bound Battleaxe	마법책: 마법 전투 도끼 소환
-Spell Tome: Bound Bow	마법책: 마법 활 소환
-Spell Tome: Bound Dagger	마법책: 마법 단검 소환
-Spell Tome: Bound Sword	마법책: 마법 검 소환
+Spell Tome: Bound Battleaxe	마법책: 마법 전투 도끼
+Spell Tome: Bound Bow	마법책: 마법 활
+Spell Tome: Bound Dagger	마법책: 마법 단검
+Spell Tome: Bound Sword	마법책: 마법 검
 Spell Tome: Call To Arms	마법책: 대규모 고무
 Spell Tome: Calm	마법책: 진정
 Spell Tome: Candlelight	마법책: 마법의 촛불
@@ -18249,7 +18249,7 @@ Spriggan	스프리건
 Spriggan (Burnt)	스프리건 (타버린)
 Spriggan Claw	스프리건 발톱
 Spriggan Earth Mother	대지의 스프리건
-Spriggan Matron	스프리건 치유사
+Spriggan Matron	스프리건 대모
 Spriggan Sap	스프리건 수액
 Spriggan Shield	스프리건 방패
 Spriggan Swarm	스프리건 군집
@@ -19256,7 +19256,7 @@ strange crystal	이상한 크리스털
 Strange flora native to Morrowind have sprouted up in the ash that blankets the southern reaches of Solstheim.	모로윈드 토종 식물들은 솔스트하임 남부지역을 뒤덮은 화산재 속에서 싹이 돋았습니다.
 Strange Gem	이상한 보석
 Strange Orb	이상한 구체
-Strange Vessel	이상한 관
+Strange Vessel	이상한 배
 Straw	밀짚
 Stray Dog	떠돌이 개
 Strengthened by the blood of deceit	피로 물든 배신에 의해 강화됩니다.
@@ -19435,7 +19435,7 @@ Susanna	수산나
 Susanna the Wicked	위험한 수산나
 Suspicious Cabinet	수상한 보관함
 Suvaris Atheron	수바리스 아세론
-Suvaris Atheron's Logbook	수바리스 아테론의 항해일지
+Suvaris Atheron's Logbook	수바리스 아세론의 항해일지
 Svaknir	스바크니어
 Svana Far-Shield	스바나 파-실드
 Svari	스바리
@@ -19599,8 +19599,8 @@ Talk with Barbas	바바스와 대화하기
 Talk, or I send you to the gods.	말해. 아니면 신들께 보내 줄 테니까.
 Talking Stone Camp	말하는 돌 야영지
 Tall Bookshelf	큰 책장
-Tall Shelf	큰 책장
-Tall Shelf with Display Case	큰 책장과 진열함
+Tall Shelf	큰 선반
+Tall Shelf with Display Case	큰 선반과 진열함
 Tall Wardrobe	큰 옷장
 Talsgar the Wanderer	방랑자 탈스가
 Talvas	탈바스
@@ -20213,7 +20213,7 @@ The Journal of Ralis Sedarys - Volume 20	랄리스 세다리스의 일지 - V20
 The Journal of Ralis Sedarys - Volume 21	랄리스 세다리스의 일지 - V21
 The Journal of Ralis Sedarys - Volume 22	랄리스 세다리스의 일지 - V22
 The Journal of Ralis Sedarys - Volume 23	랄리스 세다리스의 일지 - V23
-The Kagrumez Gauntlet	카그루메즈 장갑
+The Kagrumez Gauntlet	카그루메즈 시험
 The Karthspire	카쓰 첨탑
 The Katariah	카타리아 호
 The Keepers of the Razor	면도칼의 파수꾼
@@ -20422,7 +20422,7 @@ The Thief Stone	도적의 선돌
 The Thief Stone ability lets you learn stealth skills more quickly.	'도적의 선돌'은 도적 계열 기술을 더 빠르게 배울 수 있도록 해줍니다.
 The Thieves Guild has a problem out here?	도둑 길드는 이 지역에서 뭔가 문제라도 있소?
 The Third Door	세 번째 문
-The Third Era Timeline	제3세기 연표
+The Third Era Timeline	제3시대 연표
 The threat is worse than you know. Alduin has returned.	생각보다 더 위험한 상황입니다. 알두인이 돌아왔습니다.
 The three of us could keep it.	우리 세 명이 가지고 있으면 되겠지.
 The Throat of the World	세계의 목
@@ -21044,12 +21044,12 @@ Understood.	알았소.
 Unearthed	발굴작업
 Unearthly Will	섬뜩한 의지
 Unemployed Laborer	실업 노동자
-Unenchanted Alteration Staff	변화마법 지팡이
-Unenchanted Conjuration Staff	소환마법 지팡이
-Unenchanted Destruction Staff	파괴마법 지팡이
-Unenchanted Forsworn Staff	포스원 지팡이
-Unenchanted Illusion Staff	환영마법 지팡이
-Unenchanted Restoration Staff	회복마법 지팡이
+Unenchanted Alteration Staff	마법부여되지 않은 변화마법 지팡이
+Unenchanted Conjuration Staff	마법부여되지 않은 소환마법 지팡이
+Unenchanted Destruction Staff	마법부여되지 않은 파괴마법 지팡이
+Unenchanted Forsworn Staff	마법부여되지 않은 포스원 지팡이
+Unenchanted Illusion Staff	마법부여되지 않은 환영마법 지팡이
+Unenchanted Restoration Staff	마법부여되지 않은 회복마법 지팡이
 Unfathomable Depths	측량할 수 없는 깊이
 Ungrien	언그리엔
 Unh, my head.	아이고, 머리야.
@@ -21709,7 +21709,7 @@ Weylin got his orders from Nepos.	웨일린은 네포스의 명령을 받았소.
 Weylin's Note	웨일린의 쪽지
 Weynon Stones	웨이넌 비석
 Weystone Focus	웨이스톤 초점
-Weystone Source	웨이스톤 초점
+Weystone Source	웨이스톤 원천
 What about Clan Gray-Mane?	그레이-메인 가문은 어떻소?
 What about it?	무슨?
 What about just going in through the brewery?	그냥 바로 발효장으로 가면 안 되나?

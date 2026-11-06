@@ -42,8 +42,9 @@ artifacts/tm-v19-20261103/tm-v19.py the 53 of the eighth into v19,
 artifacts/tm-v20-20261104/tm-v20.py the 17 of the effect description and loading screen fixes into v20,
 artifacts/tm-v21-20261104/tm-v21.py the 1 of the NPC dialogue fixes into v21,
 artifacts/tm-v22-20261106/tm-v22.py the 17 of the message and quest objective fixes into v22,
-artifacts/tm-v23-20261106/tm-v23.py the 37 of the player choice fixes into v23, and
-artifacts/tm-v24-20261106/tm-v24.py the 1 of the Turn perk fix into v24.)
+artifacts/tm-v23-20261106/tm-v23.py the 37 of the player choice fixes into v23,
+artifacts/tm-v24-20261106/tm-v24.py the 1 of the Turn perk fix into v24, and
+artifacts/tm-v25-20261106/tm-v25.py the 42 of the name fixes into v25.)
 
 `apply` skips a change when the patch no longer holds the `current_ko` the reviewer saw, or when the new text loses
 the English's tags and placeholders. Read every suggestion before `--write`: reviews from a model can be wrong or
