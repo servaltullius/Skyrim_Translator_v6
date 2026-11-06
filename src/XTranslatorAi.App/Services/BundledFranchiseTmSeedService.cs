@@ -202,9 +202,12 @@ public sealed class BundledFranchiseTmSeedService
             // the brothers and sisters in arms as to the lord (주군께 그러하듯 내 동료 전우들에게도); 1 row changed (1.16.51).
             // v22 takes the patch's fixes to mistranslated messages and quest objectives: debug menu buttons that had come
             // out the same (네치 (베티)), Corner Shelf (구석 선반), a way into Hjerim, one tusk powder and planted evidence
-            // (몰래 넣어 두기); 17 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v22", "bundled-skyrim-tes-franchise-tm.tsv", 1529615, "5ca244e2ba970cd33633c3ff14c59efe56c20dcf9ee3bda5df8e316933cbe445",
-                PreviousVersions: new[] { "v21", "v20", "v19", "v18", "v17", "v16", "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v22-changes.tsv"),
+            // (몰래 넣어 두기); 17 rows changed (1.16.54).
+            // v23 takes the patch's fixes to mistranslated player choices, all 7,449 pairs read against the English: a
+            // dismissive Whatever (그러든가), the next move rather than the next place (다음엔 뭘 하지), beating some sense
+            // into someone (좀 맞아야 정신을 차리겠어) and others; 37 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v23", "bundled-skyrim-tes-franchise-tm.tsv", 1529774, "fa80528bfeab13f341a6ca0fbd3d0de6d634bbe28801b97d86a0755fe8099c3c",
+                PreviousVersions: new[] { "v22", "v21", "v20", "v19", "v18", "v17", "v16", "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v23-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,
