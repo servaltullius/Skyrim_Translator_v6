@@ -24,7 +24,8 @@ internal static class AgentMcpServer
         "툴리우스 번역기 에이전트 모드 도구다. 스카이림 모드 플러그인을 네가 직접 한국어로 번역하고, 이 도구들은 읽기·보호·검증·저장만 한다. " +
         "절차는 agent-kit의 AGENTS.md와 guide-translate.md(번역), guide-review.md(기존 한국어판 검수), guide-lanes.md(갈래)를 따르되 " +
         "tullius.cmd 대신 이 도구를 쓴다. 파일을 읽을 수 없으면 guide 도구로 읽는다. next·submit 결과에 다음 요청 내용이 함께 오고, 새 지시 절이 있으면 instructions로 읽는다. " +
-        "답은 submit의 answer에 요청의 응답 형식 그대로 넣는다(파일을 쓰지 않는다).";
+        "답은 submit의 answer에 요청의 응답 형식 그대로 넣는다(파일을 쓰지 않는다). " +
+        "번역이나 검수를 맡으면 남은 줄이 0이 되고 check·export·끝 보고를 마칠 때까지 한 응답 안에서 이어 간다. 진행 알림을 한 뒤에도 멈추지 않는다(멈출 경우는 AGENTS.md의 '끝까지 이어 가기', 파일을 못 읽으면 guide 도구의 rules).";
 
     private sealed record Tool(string Name, string Description, JsonObject Properties, string[] Required);
 
