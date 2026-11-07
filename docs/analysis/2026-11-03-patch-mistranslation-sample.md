@@ -1985,3 +1985,21 @@ choice-10·11(1,270쌍, dawnguard.esm 뒤쪽·dragonborn·hearthfires·update)�
   - 대사: 리아스 리트리트 'Hey, Longhammer'(ILSTRINGS FD12)가 '라드'로 옮겨짐(미확인)
 - 모드팩의 Book Covers Skyrim.esp에는 앞 회차 옛 책 본문 24필드가 남아 있다(보호 글자 때문에 쓰기 도구가 거부).
 
+
+### 제보 뒤 번역 안 된 이름 점검 (2026-11-07)
+
+- 제보(드로거): 모쌀 헬기의 관에 'saw mill'이 보인다. 헬기의 관(ACTI 000A734E `MS14Coffin`, 모쌀 `MS14HelgiCoffinRef`)은 영어 이름 자체가 원문 실수로 "Saw Mill"이고, USSEP 4.2.5b~4.3.9c 모두 이 레코드를 고치지 않는다. 한글패치는 이 이름을 번역하지 않고 영어 그대로 두었다.
+- 이름 전부 읽기(`make-names.py`)는 한글이 영어와 같은 쌍을 대조에서 뺐다. 그래서 번역 안 된 이름은 읽지 않았다. 본편·DLC에서 한글=영어인 이름은 3,501개(퀘스트 987·머리 부위 657·효과 424·세력 406 등)이고, 대부분 플레이어에게 안 보이는 내부 이름이다.
+- 보일 만한 갈래(활성물·가구·용기·무기·물약 등)만 골라 놓인 자리(REFR)를 ESM으로 확인했다.
+  - 고침(`review-fb1.csv`·`review-fb1b.csv`, 문자열 5개):
+    - Saw Mill → '헬기의 관'
+    - Bed Roll Ground(`BedrollGround`, 랄드바르 6곳) → '침낭'(다른 Bed Roll과 같게, 던가드·CC 장작 표의 같은 글 2줄 포함)
+    - Wheel(`ShipWheelBreak01`, 아이스러너 난파선) → '타륜'
+  - 남김: Wheat Mill·Portcullis·Unknown Potion·Loose Rubble은 놓인 자리가 없고, Holding Cell Safe는 플레이어가 갈 수 없는 던가드 보관 셀(`DLC1VQHoldingCell`)에만 있다.
+- 반영: 새 경고 0(번역 안 됨 경고 3개가 사라짐), USSEP 0, 사전 F 4·T 3, 테스트 2,725. TM은 이 영어 행이 없어 대기 0.
+- 되짚기가 플레이어에게 보일 이름을 더 찾았다(`review-fb2.csv`, 문자열 9개).
+  - Droops(드래곤본 질병, 재 호퍼가 옮김) → '근약화증', Unknown Potion(`DefaultPotion`, 기본 물약 객체) → '물약 - 정체불명의 물약'. 둘 다 한글 USSEP이 이미 쓰는 표기다. USCCCP 7.7 표의 Droops와 생존 모드의 Severe·Crippling Droops('심각한·치명적인 근약화증', 다른 판·생존 모드 CC와 같게) 3줄도 고쳤다.
+  - Protect Soul(영혼 껍질을 먹으면 걸리는 효과) → '영혼 보호', Mist Form Muffle → '안개 형상 소음 억제', Immolate(뱀파이어 주문·효과) → '불사르기', Dragon Aspect - Arms(효과 3개) → '드래곤 형상 - 팔'. 마지막 셋은 활성 효과 목록에 보이는지 게임에서 확인하지 못했다(숨김 표시는 없음).
+  - 반영: 새 경고 0, USSEP 0, 사전 F 9·T 6, 테스트 2,725, TM 대기 0.
+  - 남김: 'Dragon Aspect - Head'(숨김 퍽)와 'Immolation'(드래곤본, 아무도 쓰지 않는 주문)은 화면에 나오지 않아 영어로 둔다. Immolate도 바닐라에서는 흡혈귀 군주 주문 목록에만 있고 주는 곳이 없다.
+- 같은 날 제보(로모씨): '서클렛 - 월장석 구리 서클렛'처럼 쓰면 '마법사의 서클렛'도 '서클렛 - 마법사의 서클렛'이어야 하지 않나. 한글패치는 만들 수 있는 일반 장신구(보석·재질 조합, 마법 부여 등급)만 '종류 - 세부' 꼴로 묶고, 퀘스트 보상 같은 고유 물건은 제 이름으로 둔다(`Mage's Circlet`은 대학 퀘스트 보상 `MG04Reward06`, 같은 꼴로 '칼셀모의 반지'·'원로 위원회의 아뮬렛'·'학자의 왕관'). 고치지 않았다.
