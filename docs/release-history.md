@@ -3,6 +3,10 @@
 판마다 무엇이 바뀌었는지 적은 기록입니다. 받는 곳과 자세한 릴리스 글은 [GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases)에 있습니다.
 최근 판이 위에 있습니다. 1.8보다 앞선 판은 [이전 작업 기록](plans/2026-09-28-translator-improvement.md)과 [유지보수 계획](plans/2026-09-29-maintenance.md)을 보세요.
 
+## 1.16.58
+
+1.16.58은 에이전트 모드를 다듬은 판입니다. 이제 `agent-kit` 폴더뿐 아니라 그 위 번역기 폴더(zip을 푼 폴더)를 열어도 같은 안내와 번역기 도구(MCP)를 쓰고, 프로젝트와 결과도 `agent-kit`의 `work`·`output`에 함께 남습니다. 키트 안내에는 번역을 맡으면 진행 알림 뒤에도 멈추지 않고 끝 보고까지 이어 가라는 규칙을 더했습니다. 게임 번역 사전·내장 TM(v25)·내장 용어집은 1.16.57과 같습니다.
+
 ## 1.16.57
 
 1.16.57은 [한글패치 26.10.16 베타 26](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/kopatch-26.10.16-beta26)과 함께 낸 판입니다. 한글패치의 이름 오역 고침(본편·DLC 이름 13,204쌍을 모두 영어 원문과 맞대어 읽음, 본편·DLC 73줄)을 게임 번역 사전이 따르고, 내장 TM은 v25(같은 고침 42행)가 됩니다([기록](analysis/2026-11-03-patch-mistranslation-sample.md)). 내장 용어집의 Spriggan Matron도 '스프리건 대모'로 맞췄고, 그 밖의 번역기 기능은 1.16.56과 같습니다.
