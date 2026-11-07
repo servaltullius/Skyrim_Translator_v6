@@ -23,7 +23,7 @@ internal sealed class AgentCommand
     public bool Help { get; private init; }
     public string Work { get; private init; } = "";
 
-    /// <summary>Whether --work was given (else the work folder is the current folder's).</summary>
+    /// <summary>Whether --work was given (else the work folder is DefaultWork's).</summary>
     public bool WorkGiven { get; private init; }
     public AppSettings Settings { get; private init; } = null!;
     public GlobalProjectDbService GlobalDb { get; private init; } = null!;
@@ -57,7 +57,7 @@ internal sealed class AgentCommand
         var c = new AgentCommand(rest);
         var help = rest.Contains("--help") || rest.Contains("-h") || rest.Contains("/?");
         var givenWork = c.Option("--work");
-        var work = givenWork ?? Path.Combine(Environment.CurrentDirectory, "work");
+        var work = givenWork ?? DefaultWork(AgentMcpServer.ExeFolder, Environment.CurrentDirectory);
         var settings = new AppSettingsStore(SettingsPathForTests).Load();
         var globalRoot = GlobalRootOption(c);
         var globalDb = new GlobalProjectDbService(new BuiltInGlossaryService(), globalRoot);
@@ -81,6 +81,20 @@ internal sealed class AgentCommand
             Ids = ids, After = after, Count = count, All = all, Undo = undo, To = to, Note = note, Clear = clear, Lane = lane,
             Session = new AgentSession(work, globalDb, gameStrings, settings, projectsRoot, new BundledFranchiseTmSeedService(globalRoot)),
         };
+    }
+
+    /// <summary>
+    /// The work folder without --work: ./work, which in agent-kit is the kit's. An app that opened the translator folder
+    /// rather than agent-kit ran agent-kit's tullius.cmd from there and kept its projects (and output) in a work folder of
+    /// its own, which the MCP server (agent-kit's work) did not see: from the translator's own folder it is agent-kit's
+    /// work too. Any other folder keeps its own, the one the app's sandbox lets it write.
+    /// </summary>
+    internal static string DefaultWork(string exeFolder, string currentDirectory)
+    {
+        var kit = Path.Combine(exeFolder, "agent-kit");
+        var inTranslatorFolder = string.Equals(Path.GetFullPath(currentDirectory).TrimEnd(Path.DirectorySeparatorChar),
+            Path.GetFullPath(exeFolder).TrimEnd(Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase);
+        return Path.Combine(inTranslatorFolder && Directory.Exists(kit) ? kit : currentDirectory, "work");
     }
 
     // --global with its folder left out was ignored (the last argument) or took the next option as the folder

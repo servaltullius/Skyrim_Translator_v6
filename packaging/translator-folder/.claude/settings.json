@@ -1,0 +1,6 @@
+{
+  "enabledMcpjsonServers": ["tullius"],
+  "permissions": {
+    "allow": ["mcp__tullius"]
+  }
+}

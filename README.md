@@ -20,7 +20,7 @@ Skyrim SE/AE 플러그인(ESP·ESM·ESL)과 Bethesda/xTranslator XML(`SSTXMLRess
 
 ## 에이전트 모드
 
-1. `agent-kit` 폴더를 구독 앱에서 작업 폴더로 엽니다(Claude 앱은 Code 탭, Codex는 작업 폴더, 안티그라비티는 워크스페이스).
+1. `agent-kit` 폴더나 번역기 폴더(zip을 푼 폴더)를 구독 앱에서 작업 폴더로 엽니다(Claude 앱은 Code 탭, Codex는 작업 폴더, 안티그라비티는 워크스페이스). 어느 쪽을 열어도 같은 안내·도구·프로젝트를 씁니다.
 2. "G:\모드\○○\○○.esp 번역해 줘"처럼 말합니다.
 3. 앱이 번역기 도구(tullius)로 요청을 받아 번역하고, 품질 검사 뒤 `agent-kit/output`에 번역한 플러그인을 저장합니다.
 

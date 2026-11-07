@@ -142,7 +142,7 @@ internal static class AgentMcpServer
 
     // The folder of the translator itself: a single-file build runs from an extraction folder (AppContext.BaseDirectory),
     // and the 1.16.4 build found no agent-kit there.
-    private static string ExeFolder => Path.GetDirectoryName(Environment.ProcessPath) ?? AppContext.BaseDirectory;
+    internal static string ExeFolder => Path.GetDirectoryName(Environment.ProcessPath) ?? AppContext.BaseDirectory;
 
     private static string GuidePath(string file) => Path.Combine(KitFolder(ExeFolder, Environment.CurrentDirectory), file);
 
@@ -155,7 +155,10 @@ internal static class AgentMcpServer
     {
         var beside = Path.Combine(exeFolder, "agent-kit");
         if (Directory.Exists(beside)) return beside;
-        return File.Exists(Path.Combine(currentDirectory, "AGENTS.md")) && File.Exists(Path.Combine(currentDirectory, "tullius.cmd"))
+        // The translator's own folder has an AGENTS.md and a tullius.cmd too, which only lead to agent-kit.
+        var translatorFolder = string.Equals(Path.GetFullPath(currentDirectory).TrimEnd(Path.DirectorySeparatorChar),
+            Path.GetFullPath(exeFolder).TrimEnd(Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase);
+        return !translatorFolder && File.Exists(Path.Combine(currentDirectory, "AGENTS.md")) && File.Exists(Path.Combine(currentDirectory, "tullius.cmd"))
             ? currentDirectory
             : beside;
     }
@@ -183,7 +186,7 @@ internal static class AgentMcpServer
         return $"""
             툴리우스 번역기를 MCP 도구(tullius)로 쓰는 설정입니다. 도구는 tullius.cmd의 명령과 같습니다.
 
-            Claude(Code 탭·Claude Code)와 Codex는 agent-kit 폴더를 열면 그 폴더의 .mcp.json, .codex\config.toml로 바로 씁니다
+            Claude(Code 탭·Claude Code)와 Codex는 agent-kit 폴더나 번역기 폴더를 열면 그 폴더의 .mcp.json, .codex\config.toml로 바로 씁니다
             (처음 한 번 서버 사용을 허용하거나 폴더를 신뢰한다고 답합니다).
 
             안티그라비티는 agent-kit의 "안티그라비티 연결.cmd"를 더블클릭하면(또는 tullius.cmd mcp-config --install antigravity)
@@ -259,7 +262,7 @@ internal static class AgentMcpServer
     {
         if (!string.Equals(app, "antigravity", StringComparison.OrdinalIgnoreCase))
         {
-            throw new AgentModeException($"자동 연결은 안티그라비티만 됩니다(--install antigravity). Claude와 Codex는 agent-kit 폴더를 열면 바로 됩니다: {app}");
+            throw new AgentModeException($"자동 연결은 안티그라비티만 됩니다(--install antigravity). Claude와 Codex는 agent-kit 폴더나 번역기 폴더를 열면 바로 됩니다: {app}");
         }
 
         var exe = Environment.ProcessPath ?? Path.Combine(ExeFolder, "TulliusTranslator.exe");
@@ -268,15 +271,15 @@ internal static class AgentMcpServer
                + $"\n설정 파일: {AntigravityConfigPath}"
                + (result.Backup != null ? $"\n원래 설정은 {Path.GetFileName(result.Backup)}에 남겨 두었습니다." : "")
                + "\n\n다음:\n1. 안티그라비티를 껐다가 다시 켭니다(켜져 있는 동안 바꾼 설정은 읽지 않습니다)."
-               + "\n2. 이 agent-kit 폴더를 프로젝트로 엽니다."
+               + "\n2. agent-kit 폴더나 번역기 폴더를 프로젝트로 엽니다."
                + "\n3. \"G:\\모드\\○○\\○○.esp 번역해 줘\"처럼 말합니다."
                + "\n\n번역기 폴더를 옮기면 이 연결을 한 번 더 실행하세요.";
     }
 
     public static async Task<int> RunAsync(AgentCommand given)
     {
-        // An app starts the server from a folder of its own: without --work, the work folder is agent-kit's beside the
-        // translator, where tullius.cmd keeps it.
+        // An app starts the server from a folder of its own (Antigravity's global server from whatever folder is open):
+        // without --work, the work folder is agent-kit's beside the translator, where tullius.cmd keeps it.
         var kit = Path.Combine(ExeFolder, "agent-kit");
         var server = given.WorkGiven || !Directory.Exists(kit)
             ? given

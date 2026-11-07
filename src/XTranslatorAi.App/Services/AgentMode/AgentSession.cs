@@ -404,7 +404,7 @@ public sealed partial class AgentSession
         return matches.Count switch
         {
             1 => matches[0],
-            0 => throw new AgentModeException($"'{nameOrKeyOrPath}' 프로젝트가 없습니다. 먼저 open으로 플러그인을 여세요."),
+            0 => throw new AgentModeException($"'{nameOrKeyOrPath}' 프로젝트가 없습니다. 먼저 open으로 플러그인을 여세요(번역한 줄은 프로젝트 DB에 남아 있어, 전에 번역하던 플러그인도 다시 open하면 이어서 합니다)."),
             _ => throw new AgentModeException($"'{nameOrKeyOrPath}'에 맞는 프로젝트가 여럿입니다: {string.Join(", ", matches.Select(m => m.Key))}. 키로 지정하세요."),
         };
     }

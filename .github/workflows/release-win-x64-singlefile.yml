@@ -129,6 +129,9 @@ jobs:
           $stage = "$PWD/artifacts/package"
           New-Item -ItemType Directory -Force $stage | Out-Null
           Copy-Item -Path "agent-kit" -Destination $stage -Recurse -Force
+          # An app that opens the translator folder rather than agent-kit reads only that folder's AGENTS.md and MCP
+          # configs: the folder gets its own, which lead to agent-kit (dot files and folders included).
+          Get-ChildItem -Force "packaging/translator-folder" | Copy-Item -Destination $stage -Recurse -Force
           Copy-Item "artifacts/current/TulliusTranslator.exe" "$stage/TulliusTranslator.exe"
           # The EXE ships under the GPL with its text, and the libraries' notices the publish step put in Licenses/.
           Copy-Item "LICENSE" "$stage/LICENSE"
@@ -142,6 +145,9 @@ jobs:
           $names
           if ($names -notcontains "TulliusTranslator.exe" -or $names -notcontains "agent-kit/.mcp.json") { throw "The zip is missing the EXE or the kit." }
           if ($names -notcontains "LICENSE" -or $names -notcontains "Licenses/README.md") { throw "The zip is missing LICENSE or Licenses/." }
+          foreach ($f in "AGENTS.md", "CLAUDE.md", "GEMINI.md", "tullius.cmd", ".mcp.json", ".claude/settings.json", ".codex/config.toml") {
+            if ($names -notcontains $f) { throw "The zip is missing the translator folder's $f." }
+          }
 
       - name: Upload assets to release
         shell: pwsh

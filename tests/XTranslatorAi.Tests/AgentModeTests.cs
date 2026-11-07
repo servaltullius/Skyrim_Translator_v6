@@ -787,6 +787,70 @@ public sealed class AgentModeTests : IAsyncLifetime
         Assert.Contains("TulliusTranslator.exe 바로 옆", text);
     }
 
+    // An app that opened the translator folder rather than agent-kit ran agent-kit's tullius.cmd from there, and its
+    // projects went to a work folder of their own that the MCP server (agent-kit's work) did not see. From the
+    // translator's folder the work folder is now agent-kit's; any other folder keeps its own, which the app's sandbox
+    // lets it write (a renamed kit, a mod folder), and so does a translator with no kit beside it.
+    [Fact]
+    public void DefaultWork_FromTheTranslatorFolderIsTheKits_ElsewhereTheFoldersOwn()
+    {
+        var exeFolder = Path.Combine(_root, "translator");
+        var renamed = Path.Combine(exeFolder, "kit-codex");
+        Directory.CreateDirectory(renamed);
+        Assert.Equal(Path.Combine(exeFolder, "work"), AgentCommand.DefaultWork(exeFolder, exeFolder));
+        Assert.Equal(Path.Combine(renamed, "work"), AgentCommand.DefaultWork(exeFolder, renamed));
+
+        var kit = Path.Combine(exeFolder, "agent-kit");
+        Directory.CreateDirectory(kit);
+        Assert.Equal(Path.Combine(kit, "work"), AgentCommand.DefaultWork(exeFolder, exeFolder));
+        Assert.Equal(Path.Combine(kit, "work"), AgentCommand.DefaultWork(exeFolder, exeFolder + Path.DirectorySeparatorChar));
+        Assert.Equal(Path.Combine(kit, "work"), AgentCommand.DefaultWork(exeFolder, kit));
+        Assert.Equal(Path.Combine(renamed, "work"), AgentCommand.DefaultWork(exeFolder, renamed));
+        var elsewhere = Path.Combine(_root, "elsewhere");
+        Assert.Equal(Path.Combine(elsewhere, "work"), AgentCommand.DefaultWork(exeFolder, elsewhere));
+    }
+
+    // The translator folder's own AGENTS.md and tullius.cmd lead to agent-kit: with no kit beside the translator, the
+    // guide tool says agent-kit is missing rather than look for guides in the translator folder.
+    [Fact]
+    public void KitFolder_IsNotTheTranslatorFolder_ThoughItHasAnAgentsMdAndTulliusCmd()
+    {
+        var exeFolder = Path.Combine(_root, "translator-only");
+        Directory.CreateDirectory(exeFolder);
+        File.WriteAllText(Path.Combine(exeFolder, "AGENTS.md"), "pointer");
+        File.WriteAllText(Path.Combine(exeFolder, "tullius.cmd"), "");
+        Assert.Equal(Path.Combine(exeFolder, "agent-kit"), AgentMcpServer.KitFolder(exeFolder, exeFolder));
+    }
+
+    // The release zip puts these files in the translator folder for an app that opens it: they must lead to the kit
+    // beside them and start the translator in that folder, not the one above (agent-kit's own files do that).
+    [Fact]
+    public void TranslatorFolderFiles_LeadToTheKitAndStartTheTranslatorBesideThem()
+    {
+        var folder = Path.Combine(RepoRoot(), "packaging", "translator-folder");
+        var mcp = JsonDocument.Parse(File.ReadAllText(Path.Combine(folder, ".mcp.json"))).RootElement
+            .GetProperty("mcpServers").GetProperty("tullius");
+        Assert.Equal(@".\TulliusTranslator.exe", mcp.GetProperty("command").GetString());
+        Assert.Contains(@"command = '.\TulliusTranslator.exe'", File.ReadAllText(Path.Combine(folder, ".codex", "config.toml")));
+        Assert.Equal(File.ReadAllText(Path.Combine(RepoRoot(), "agent-kit", ".claude", "settings.json")),
+            File.ReadAllText(Path.Combine(folder, ".claude", "settings.json")));
+        Assert.Contains(@"agent-kit\AGENTS.md", File.ReadAllText(Path.Combine(folder, "AGENTS.md")));
+        // Claude Code and Gemini CLI also read a parent folder's CLAUDE.md/GEMINI.md: opening agent-kit must not pull in
+        // the kit's AGENTS.md a second time, only the short pointer, which says to skip itself there.
+        Assert.Equal("@AGENTS.md", File.ReadAllText(Path.Combine(folder, "CLAUDE.md")).Trim());
+        Assert.DoesNotContain("agent-kit/AGENTS.md", File.ReadAllText(Path.Combine(folder, "GEMINI.md")));
+        Assert.StartsWith("# 툴리우스 번역기 폴더\n\n지금 연 폴더가 이 폴더(`TulliusTranslator.exe`가 바로 들어 있는 폴더)가 아니면 이 파일은 건너뛰고",
+            File.ReadAllText(Path.Combine(folder, "AGENTS.md")).ReplaceLineEndings("\n"));
+        Assert.Contains("\"%~dp0TulliusTranslator.exe\" agent %*", File.ReadAllText(Path.Combine(folder, "tullius.cmd")));
+    }
+
+    private static string RepoRoot()
+    {
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        while (dir != null && !File.Exists(Path.Combine(dir.FullName, "XTranslatorAi.sln"))) dir = dir.Parent;
+        return dir?.FullName ?? throw new DirectoryNotFoundException("XTranslatorAi.sln");
+    }
+
     // Antigravity reads one global MCP config; pasting the mcp-config text into it was its one manual setup step.
     // The install keeps the other servers, copies a file with content aside, and leaves a file that is not JSON alone.
     [Fact]

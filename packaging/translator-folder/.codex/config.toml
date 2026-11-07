@@ -1,0 +1,10 @@
+# Codex starts the translator's agent mode as MCP tools (tullius) when the translator folder is open:
+# the same server as agent-kit's config, for an app that opened this folder rather than agent-kit.
+# The command is the translator in this folder; tool calls are the same commands as tullius.cmd.
+[mcp_servers.tullius]
+command = '.\TulliusTranslator.exe'
+args = ['agent', 'mcp']
+# open on a large plugin takes longer than the default 60 seconds.
+tool_timeout_sec = 600
+# The tools only read, check and save the translator's projects: no approval for each call.
+default_tools_approval_mode = 'approve'
