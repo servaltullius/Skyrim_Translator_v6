@@ -156,6 +156,35 @@ public sealed class GameStringDictionaryTests
             GameStringDictionary.FieldIdentity("MGEF/010145CD/0/FULL/0", new[] { "Skyrim.esm" }, "Dragonborn.esm"), "Creation Club Cell"));
     }
 
+    /// <summary>
+    /// Helgi's coffin is named "Saw Mill" by a slip of the original game, and the Icerunner wreck's "Wheel" is a ship's wheel;
+    /// the patch names each for that record (헬기의 관, 타륜). A mod's sawmill or cart wheel with the same English is
+    /// not filled with them, while an ordinary name such as Bed Roll Ground still fills every field with its text.
+    /// </summary>
+    [Fact]
+    public void SawMillAndWheel_AreMatchedByTheirRecordOnly()
+    {
+        var skyrim = new GameStringPlugin("Skyrim.esm", Array.Empty<string>(), new[]
+        {
+            Field("ACTI/000A734E/0/FULL/0", "Saw Mill", PluginStringTableKind.Strings, 0x2E0C),
+            Field("ACTI/00050E75/0/FULL/0", "Wheel", PluginStringTableKind.Strings, 0xFDF3),
+            Field("FURN/000B8371/0/FULL/0", "Bed Roll Ground", PluginStringTableKind.Strings, 0xCAB6),
+        }, new Dictionary<(PluginStringTableKind, uint), string>
+        {
+            [(PluginStringTableKind.Strings, 0x2E0C)] = "헬기의 관",
+            [(PluginStringTableKind.Strings, 0xFDF3)] = "타륜",
+            [(PluginStringTableKind.Strings, 0xCAB6)] = "침낭",
+        });
+
+        var game = GameStringDictionary.Build(new[] { skyrim });
+
+        Assert.Null(game.Find(null, "ACTI:FULL", "Saw Mill"));
+        Assert.Null(game.Find(null, "MISC:FULL", "Wheel"));
+        Assert.Equal(("헬기의 관", true), game.FindRecord(GameStringDictionary.FieldIdentity("ACTI/000A734E/0/FULL/0", Array.Empty<string>(), "Skyrim.esm"), "Saw Mill"));
+        Assert.Equal(("타륜", true), game.FindRecord(GameStringDictionary.FieldIdentity("ACTI/00050E75/0/FULL/0", Array.Empty<string>(), "Skyrim.esm"), "Wheel"));
+        Assert.NotNull(game.Find(null, "FURN:FULL", "Bed Roll Ground"));
+    }
+
     [Fact]
     public void SameText_IsMatchedOutsideDialogue_ByTheMostCommonSpelling()
     {

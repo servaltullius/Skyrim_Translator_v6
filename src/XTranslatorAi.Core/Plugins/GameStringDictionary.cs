@@ -350,7 +350,13 @@ public sealed class GameStringDictionary
             $"{parts[0]}/{owner.ToLowerInvariant()}:{formId & 0x00FFFFFFu:X6}/{parts[2]}/{parts[3]}/{parts[4]}");
     }
 
-    private const string CreationClubCellPlaceholder = "creation club cell"; // As TranslationMemoryKey.NormalizeSource has it.
+    /// <summary>
+    /// English (as TranslationMemoryKey.NormalizeSource has it) that the patch translates for one record only, not for every
+    /// field with the same text. Game 1.6 renamed some 1.5.97 strings "Creation Club Cell" for its hidden Creation Club cells;
+    /// Helgi's coffin is named "Saw Mill" by a slip of the original game, which a real sawmill in a mod is not; and the
+    /// Icerunner wreck's "Wheel" is a ship's wheel (타륜), which a cart's or a mill's is not.
+    /// </summary>
+    private static readonly HashSet<string> RecordOnlyTexts = new(StringComparer.Ordinal) { "creation club cell", "saw mill", "wheel" };
 
     /// <summary>Plugins in load order: a later plugin's text for a record (Update, DLC) replaces the earlier one.</summary>
     public static GameStringDictionary Build(IEnumerable<GameStringPlugin> plugins)
@@ -396,11 +402,10 @@ public sealed class GameStringDictionary
                 var key = Fingerprint(normalized);
                 byField[identity] = (key, korean, plugin.FileName);
                 english.Add((identity, field.Rec, field.SourceText));
-                // Game 1.6 renamed some 1.5.97 strings "Creation Club Cell" for its hidden Creation Club cells, and the
-                // patch translates such a string for what the 1.5.97 game shows (a Dragonborn effect still points at
-                // one): the record keeps it, but the placeholder text translates no other record's name.
-                if (kind == PluginStringTableKind.IlStrings || IsDialogue(field.Rec)
-                    || string.Equals(normalized, CreationClubCellPlaceholder, StringComparison.Ordinal))
+                // The patch translates "Creation Club Cell" for what the 1.5.97 game shows (a Dragonborn effect still
+                // points at one), and "Saw Mill" and "Wheel" for the one record each names: the record keeps its
+                // Korean, but the text translates no other record's (RecordOnlyTexts).
+                if (kind == PluginStringTableKind.IlStrings || IsDialogue(field.Rec) || RecordOnlyTexts.Contains(normalized))
                 {
                     continue;
                 }
