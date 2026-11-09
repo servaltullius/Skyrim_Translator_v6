@@ -3,6 +3,10 @@
 판마다 무엇이 바뀌었는지 적은 기록입니다. 받는 곳과 자세한 릴리스 글은 [GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases)에 있습니다.
 최근 판이 위에 있습니다. 1.8보다 앞선 판은 [이전 작업 기록](plans/2026-09-28-translator-improvement.md)과 [유지보수 계획](plans/2026-09-29-maintenance.md)을 보세요.
 
+## 1.16.59
+
+1.16.59는 [한글패치 26.10.16 베타 27](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/kopatch-26.10.16-beta27)과 함께 낸 판입니다. 한글패치가 번역하지 않은 채 남겨 둔 글 가운데 게임에 보이는 것(헬기의 관·침낭·근약화증·현상금 알림 등 본편·DLC 18줄)을 게임 번역 사전이 따릅니다([기록](analysis/2026-11-03-patch-mistranslation-sample.md)). 게임 번역 사전은 "Saw Mill"(헬기의 관, 원문 실수)과 "Wheel"(타륜)을 그 레코드에만 쓰고, 영어가 같은 다른 모드의 줄은 채우지 않습니다. 내장 TM(v25)·내장 용어집과 그 밖의 번역기 기능은 1.16.58과 같습니다.
+
 ## 1.16.58
 
 1.16.58은 에이전트 모드를 다듬은 판입니다. 이제 `agent-kit` 폴더뿐 아니라 그 위 번역기 폴더(zip을 푼 폴더)를 열어도 같은 안내와 번역기 도구(MCP)를 쓰고, 프로젝트와 결과도 `agent-kit`의 `work`·`output`에 함께 남습니다. 키트 안내에는 번역을 맡으면 진행 알림 뒤에도 멈추지 않고 끝 보고까지 이어 가라는 규칙을 더했습니다. 게임 번역 사전·내장 TM(v25)·내장 용어집은 1.16.57과 같습니다.

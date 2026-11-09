@@ -11,7 +11,7 @@ Skyrim SE/AE 플러그인(ESP·ESM·ESL)과 Bethesda/xTranslator XML(`SSTXMLRess
 
 ## 받기
 
-최신 릴리스는 **1.16.58**입니다. [GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/1.16.58)에서 받으세요. 판마다 바뀐 것은 [릴리스 기록](docs/release-history.md)에 있습니다.
+최신 릴리스는 **1.16.59**입니다. [GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/1.16.59)에서 받으세요. 판마다 바뀐 것은 [릴리스 기록](docs/release-history.md)에 있습니다.
 
 - **처음이라면** `TulliusTranslator-<버전>.zip` 하나를 받아 아무 폴더에 풉니다. 번역기 EXE와 에이전트 모드 키트(`agent-kit` 폴더)가 함께 들어 있어, 풀면 키트가 EXE 바로 옆에 놓입니다.
 - **이미 쓰고 있다면** `TulliusTranslator.exe`만 바꾸면 됩니다. 키트가 바뀐 판은 릴리스 글에 적으니, 그때는 zip을 덮어 풉니다(`agent-kit`의 `work`·`output`에 있는 번역은 그대로 남습니다).
@@ -98,7 +98,7 @@ TES 시드는 스카이림 한국어 패치(유저 번역)의 글로 만들었�
 
 저장소의 `Skyrim_Latest_Kor`는 엘더스크롤 시리즈 갤러리 한글패치 25.3.14를 바탕으로, 이 번역기로 검수해 고친 스카이림 AE(SE) 한국어 패치(26.10.16 베타)입니다. 릴리스 zip에는 본편·DLC·크리에이션 클럽과 비공식 패치(USSEP·USCCCP) 한국어판이 들어 있습니다(USSEP 플러그인은 저장소에 올리지 않습니다).
 
-- 베타는 GitHub 릴리스의 `kopatch-` 태그로 냅니다. 최신은 [베타 26](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/kopatch-26.10.16-beta26)입니다.
+- 베타는 GitHub 릴리스의 `kopatch-` 태그로 냅니다. 최신은 [베타 27](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/kopatch-26.10.16-beta27)입니다.
 - 번역기의 게임 번역 사전(바닐라 문장을 바로 채움)과 내장 TES TM은 이 패치의 글을 따릅니다.
 - 검수와 고침 기록은 [베타 기록](docs/analysis/2026-10-16-kopatch-beta.md)과 그 안의 링크에 있습니다.
 
