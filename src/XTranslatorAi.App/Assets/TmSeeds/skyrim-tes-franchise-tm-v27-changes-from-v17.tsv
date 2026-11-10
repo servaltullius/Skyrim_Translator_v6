@@ -5,7 +5,6 @@ A Bad Trade	손해 본 거래	불경기
 A blast of flame that sets the target on fire, doing <mag> damage per second for <15> seconds.	불꽃을 날려 목표에 불을 붙이고 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다.	불꽃의 화살을 날려 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 A cyclone that does <mag> points of damage per second and may fling victims into the air.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버릴 수 있습니다.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버립니다.
 A New Order	새로운 기사단	새로운 지시
-A recent string of murders has many Windhelm residents fearing for their lives...	최근 연이은 살인사건이 수많은 윈드헬름 주민들의 삶을 공포에 떨게하고 있습니다.	최근 연이은 살인사건이 수 많은 윈드헬름 주민들의 삶을 공포에 떨게하고 있습니다.
 A stalemate?	비긴 건가?	비긴건가?
 A truly strong chief would break the curse, not suffer from it.	진정으로 강한 족장이라면 저주에 시달리고만 있지 않고 저주를 풀 거요.	진정으로 강한 족장이라면 저주를 풀어야지, 저주 때문에 고통받는 것이 아니고.
 Add a kitchen that can be fitted out with cooking stations, food containers and the like.	조리대와 음식 저장 용기 등을 갖출 수 있는 부엌을 추가합니다.	여러 가지 주방용품들과 음식 저장 용기 등이 구비된 부엌을 추가합니다.
@@ -13,15 +12,14 @@ All right. But you're responsible for him.	알았다. 대신 돌보는 건 네 �
 Alto Wine	술 - 알토 포도주	술 - 순한 포도주
 Amulet of Mara (Possessed)	아뮬렛 - 마라 (영혼이 깃듦)	아뮬렛 - 마라 (소유)
 Anything else before I set off?	떠나기 전에 다른 건 없나?	떠나기 전에 다른건 없나?
-Are sales that bad out here?	이곳에서는 장사가 잘 안 되나?	이 곳에서는 장사가 잘 안 되나?
 Are you doing well, serving as Jarl?	야를로 지내는 건 어떻습니까?	야를로 지내는건 어떻습니까?
-Are you going to be able to lead this place, still?	그래도 여전히 이곳을 이끌어갈 수 있겠나?	그래도 여전히 이 곳을 이끌어갈 수 있겠나?
 Are you going to tell me, or am I going to have to beat it out of you?	그냥 순순히 말할 건가, 아니면 주먹으로 패 줄까?	그냥 순순히 말할건가, 아니면 주먹으로 패 줄까?
 Are you sure about this?	확실한 건가?	확실 한건가?
 Are you surrendering?	항복할 건가?	항복할건가?
 As dead as I can make him.	그는 이제 죽은 거나 다름없습니다.	그는 이제 죽은거나 다름 없습니다.
 Ash Spawn Immolator	화산재 스폰 소각자	화산재 스폰 학살자
 Azura is the daedric prince of dusk and dawn, and one of the few not considered to be inherently evil.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 본래부터 악하지는 않다고 여겨지는 프린스들 중 하나입니다.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 원래부터 악마는 아니라고 여겨지는 프린스들 중 하나입니다.
+Carrying capacity increased by <mag>, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.	무게 한계가 <mag> 증가합니다. 장착한 방어구가 이동 속도를 감소시키지 않으며 무게 한계에 포함되지 않습니다.
 Centurion Fight 3	백부장 전투 3	백부장 전사 3
 Combat skills are all <10>% more effective.	모든 전사 기술의 효과가 <10>% 증가합니다.	모든 전사 기술이 <10>% 증가합니다.
 Corner Shelf	구석 선반	작은 선반
@@ -60,11 +58,13 @@ Frontier, Conquest	개척지, 정복	개척자, 정복
 General Tullius told me to report to you.	툴리우스 장군이 찾아가 신고하라고 했소.	툴리우스 장군이 당신에게 보고를 하라던데.
 Get access to Hjerim	예림으로 들어갈 방법을 찾기	예림으로 들어갈 허가를 받기
 Got Haelga's payment here.	헬가의 돈을 가져왔다.	헬가의 돈을 가져 왔다.
+has already caught you.	: 이미 당신을 눈치챘습니다.	: 당신을 지켜보고 있습니다.
 Has the war been hard on Markarth?	전쟁 때문에 마르카스가 많이 힘들었습니까?	마르카스에서의 전쟁은 치열했습니까?
 He appeared mad. I had to kill him to defend myself.	그는 미쳐버린 것 같더군. 내 몸을 지키려면 그를 죽일 수밖에 없었소.	그는 미쳐버린 것 같더군. 그를 죽일 수밖에 없었소.
 Here's what they owed us.	빚을 가져왔어.	빚을 가져 왔어.
 Here's your money. He'd better be safe. (Give <Global=BYOHHBA2Ransom> gold)	여기 돈이다. 그는 무사해야 할 거다. (<Global=BYOHHBA2Ransom> 골드 주기)	돈을 낼 테니 그를 풀어줘라. (<Global=BYOHHBA2Ransom> 골드 주기)
 Holdings of Jarl Gjalund	걀룬드 야를의 영지 보고서	쟐룬드 야를의 영지 보고서
+hour	시간	시
 How about you tell me for free? (Intimidate)	공짜로 말해주는 건 어때? (위협)	공짜로 말해주는건 어때? (위협)
 How can you protect Whiterun from the dragons?	드래곤의 공격에서 어떤 방법으로 화이트런을 지킬 겁니까?	드래곤의 공격에서 어떤 방법으로 화이트런을 지킬겁니까?
 How could you execute a fine and honorable man?	어떻게 명예롭고 괜찮은 사람을 처형할 수가 있나?	어쩌다 명예롭고 괜찮은 사람을 처형하게 된 건가?
@@ -142,6 +142,7 @@ Plant letter on <Alias=Victim>'s corpse	<Alias=Victim>의 시체에 편지를 �
 Plant Madesi's Ring	마데시의 반지를 몰래 넣어 두기	마데시의 반지를 넣기
 Plant the Balmora Blue	발모라 블루를 몰래 넣어 두기	발모라 블루를 숨겨놓기
 Plant the Incriminating Letter on Gaius Maro's body	가이우스 마로의 시체에 유죄증명 편지를 몰래 넣어 두기	가이우스 마로의 시체에 유죄증명 편지를 숨겨두기
+PLEASE STAND BY	잠시 기다려 주세요.	준비하세요.
 Port Stone	석문	활석 문
 Portal to Shrine of Resolution	차원문 - 결의의 성소	차원문 - 해결의 성소
 Prisoner's Cuffs	죄수의 수갑	죄수의 장갑
@@ -167,7 +168,6 @@ So what's the story behind the Rueful Axe.	그래서 그 회한의 도끼에 얽
 So... I'm free to go?	그럼... 이만 가도 되는 건가?	그럼... 이만 가도 되는건가?
 Some of your friends feel you're troubled.	당신의 친구들이 당신이 힘들어한다던데.	당신의 친구들이 당신이 힘들어 한다던데.
 Sorry, I didn't mean anything by it.	미안하군, 다른 의도가 있는 건 아니오.	미안하군, 다른 의도가 있는건 아니오.
-Sorry, I'm still not ready to go in there.	미안한데, 아직 그곳에 갈 준비가 되지 않았소.	미안한데, 아직 그 곳에 갈 준비가 되지 않았소.
 Spell Tome: Bound Battleaxe	마법책: 마법 전투 도끼	마법책: 마법 전투 도끼 소환
 Spell Tome: Bound Bow	마법책: 마법 활	마법책: 마법 활 소환
 Spell Tome: Bound Dagger	마법책: 마법 단검	마법책: 마법 단검 소환
@@ -176,6 +176,7 @@ Spriggan (Burnt)	스프리건 (타버린)	스프리건
 Spriggan Matron	스프리건 대모	스프리건 치유사
 Stealth skills are all  <10>% more effective.	모든 도적 기술의 효과가 <10>% 증가합니다.	모든 도적 기술이 <10>% 증가합니다.
 Strange Vessel	이상한 배	이상한 관
+STUDDED	강화	장식
 Sure. When I don't need him, he can stay with you.	물론이지. 내가 데리고 다니지 않을 땐 너와 함께 지내도 좋다.	물론이지. 내가 필요 없을 땐 너와 함께 지내도 좋다.
 Suvaris Atheron's Logbook	수바리스 아세론의 항해일지	수바리스 아테론의 항해일지
 Tall Shelf	큰 선반	큰 책장
@@ -191,10 +192,11 @@ The Block skill reduces the damage and stagger from physical attacks when blocki
 The dwarves of Tamriel disappeared millennia ago and are presumed extinct.	탐리엘에서 드워프들은 수천 년 전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.	탐리엘에서 드워프들은 천여 년 전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.
 The Empire can't afford to snub the Greybeards.	제국은 그 그레이비어드를 무시할 형편이 못 됩니다.	제국은 그 그레이비어드를 무시할 형편이 못됩니다.
 The Kagrumez Gauntlet	카그루메즈 시험	카그루메즈 장갑
+The selected storage device does not have sufficient space available.  New saves will not be created.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않습니다.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않았습니다.
 The Third Era Timeline	제3시대 연표	제3세기 연표
-There wasn't a body in the grave. Just the heart stone.	무덤에 시체는 없고 하트스톤뿐이던데.	무덤에 시체는 없고 하트스톤 뿐이던데.
 There's no way you'll come peacefully?	평화롭게 마무리할 방법은 없는 건가?	평화롭게 마무리할 방법은 없는건가?
 This is hardly proof of anything.	그런 건 아무런 증거가 되지 못하는데.	그런건 아무런 증거가 되지 못하는데.
+Those trained to use Heavy Armor make more effective use of Iron, Steel, Dwarven, Orcish, Ebony, and Daedric armors.	중갑 방어구는 철, 강철, 드워프제, 오크제, 에보니, 데이드라제 등의 중갑 방어구를 효과적으로 사용하는 기술입니다.	중갑 방어구는 철, 강철, 드워프제, 오크제, 에보니, 데이드라제 등의 중갑 방어구를 효과적으로 사용하는 기술입니다. 무거운 재료를 사용한 이 방어구들은 착용자의 몸을 보호하는데 큰 도움을 줍니다.
 Transmutes one piece of unrefined Iron ore to Silver, or Silver ore to Gold if the caster is carrying any.	소지품에 있는 철 광석 하나를 은 광석으로 변환하거나 은 광석 하나를 금 광석으로 변환합니다.	소지품에 있는 철 광석을 은 광석으로 변환하거나 은 광석을 금 광석으로 변환합니다.
 Turn	돌리기	변신
 Ulfric doesn't care about outsiders?	울프릭은 이방인에 관해서는 신경 쓰지 않나?	울프릭은 이방인에 관해서는 신경쓰지 않나?
@@ -234,7 +236,6 @@ What's this about a crystal?	크리스털이라니, 대체 무슨 얘기지?	이
 What's your problem with Faralda?	파랄다와 무슨 문제가 있는 겁니까?	파랄다와 무슨 문제가 있는겁니까?
 Whatever.	그러든가.	알았다.
 Where are we headed?	어디로 가는 겁니까?	어디로 가던 길입니까?
-Where did you live before you were here?	이곳에 오기 전에는 어디서 살았지?	이 곳에 오기 전에는 어디서 살았지?
 Who cares, we're the Thieves Guild.	알 게 뭐야, 우리는 도둑 길드인데.	알게 뭐야, 우리는 도둑 길드인데.
 Why all the hatred for the Empire?	왜 그렇게 제국을 증오하는 겁니까?	왜 다들 제국을 증오하는 겁니까?
 Why are they collecting these souls?	왜 그들은 영혼을 수집하고 있는 걸까?	왜 그들은 영혼을 수집하고 있는걸까?
@@ -252,9 +253,11 @@ Will you buy it?	그걸 살 건가?	그걸 살건가?
 Will you let the Argonians into the city?	아르고니안들이 도시에 들어오게 놔둘 겁니까?	아르고니안들이 도시에 들어오게 놔둘겁니까?
 You become invulnerable, but unable to attack. However you recover magicka and stamina.	에테르 형상으로 변하여 피해를 입히지도, 입지도 않게 되며 매지카와 지구력이 회복됩니다.	안개의 형상으로 변하여 피해를 입히지도, 입지도 않게 되며 매지카와 지구력이 회복됩니다.
 You better start caring. (Intimidate)	신경 쓰는 게 좋을 텐데. (위협)	신경쓰는 게 좋을 텐데. (위협)
+You cannot sit on owned furniture.	다른사람의 가구에는 앉을 수 없습니다.	다른사람이 차지하고 있는 가구에는 앉을 수 없습니다.
 You have nothing to fear from me. (Persuade)	무서워할 필요는 없소. (설득)	무서워 할 필요는 없소. (설득)
 You killed Eltrys!	엘트리스를 죽인 건 너야!	엘트리스를 죽인건 너야!
 You let your aunt go in there by herself?	고모가 혼자 들어가게 내버려둔 건가?	고모가 혼자 들어가게 내버려둔건가?
+You must have a weapon drawn.	무기를 꺼내 들어야 합니다.	무기를 장착해야 합니다.
 You should pay me what you can. (Persuade)	나에게 낼 수 있는 만큼은 내야 할 텐데. (설득)	나에게 적당한 금액을 지불해야 할 텐데. (설득)
 You sound a little confused.	조금 혼란스러워하는 것 같군.	조금 혼란스러워 하는 것 같군.
 You sure you won't buy it?	정말로 사지 않을 건가?	정말로 사지 않을건가?

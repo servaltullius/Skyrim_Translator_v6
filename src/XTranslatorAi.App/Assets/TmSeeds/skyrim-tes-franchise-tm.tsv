@@ -2486,7 +2486,7 @@ Carrot	당근
 Carrots (4)	당근 (4)
 Carrots.	당근.
 Carrying capacity increased by <mag> points.	무게 한계가 <mag> 증가합니다.
-Carrying capacity increased by <mag>, and no movement penalty from armor.	무게 한계가 <mag> 증가합니다. 장착한 방어구가 이동 속도를 감소시키지 않으며 무게 한계에 포함되지 않습니다.
+Carrying capacity increased by <mag>, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.
 Carrying capacity increases by <mag> for <dur> seconds.	<dur> 초 동안 무게 한계가 <mag> 증가합니다.
 Cart Driver	마차 운전수
 Cast a Fear Spell	공포 마법을 사용하기
@@ -8236,7 +8236,7 @@ Harvest Nirnroot	넌루트 채집
 Harvest Orc blood	오크의 피를 수집하기
 Harvest Wood Elf blood	우드 엘프의 피를 수집하기
 Harvesting Frostbite Spider Venom	동상 거미 독 채취
-has already caught you.	: 당신을 지켜보고 있습니다.
+has already caught you.	: 이미 당신을 눈치챘습니다.
 Has anyone ever explored the barrow?	이전에 무덤을 조사해 본 사람이 있나?
 has been damaged	손상되었습니다
 Has security been an issue?	보안에 관련해서 뭔가 문제라도 있소?
@@ -8891,7 +8891,7 @@ Horse Hide	가죽 - 말
 Horse Meat	말 고기
 Horse. (<Global=HorseCost> gold)	말. (<Global=HorseCost> 골드)
 Horses	말
-hour	시
+hour	시간
 Hours	시
 HOUSE	집
 House - Remove Workbench	집 - 작업선반 제거
@@ -15292,7 +15292,7 @@ Please be patient. I'll get you your money.	좀 참아보시오. 그 돈을 받�
 Please connect a controller to continue.	계속하려면 컨트롤러를 연결해 주세요.
 Please continue...	계속하시오...
 Please cure me.	치료를 부탁합니다.
-PLEASE STAND BY	준비하세요.
+PLEASE STAND BY	잠시 기다려 주세요.
 Please, allow me access.	입장을 허가해 주시오.
 Please, it's very important that I find him. (Persuade)	내가 그를 찾아내는 건 아주 중요한 일입니다. (설득)
 Please, take this. Consider it a gift... (<BribeCost> gold)	이걸 선물로 치고 받아주시오. (<BribeCost> 골드)
@@ -19270,7 +19270,7 @@ Stromm's Diary	스트롬의 일기
 Strong Box	튼튼한 상자
 Strongbox	튼튼한 상자
 Stros M'Kai Rum	술 - 스트로스 므'카이 럼주
-STUDDED	장식
+STUDDED	강화
 Studded Armor	가죽 강화 방어구
 Studded Armor of Health	가죽 강화 방어구 - 하급 체력 증가
 Studded Armor of Major Health	가죽 강화 방어구 - 중급 체력 증가
@@ -20366,7 +20366,7 @@ The Scorched Hammer Key	열쇠 - 그을린 망치 대장간
 The scrolls gave me its exact location.	스크롤이 정확한 위치를 알려 줬어.
 The Secrets of Ragnvald	라근발드의 비밀
 The Seed	씨앗
-The selected storage device does not have sufficient space available.  New saves will not be created.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않았습니다.
+The selected storage device does not have sufficient space available.  New saves will not be created.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않습니다.
 The Serpent Doomstone	뱀의 선돌
 The Serpent Stone	뱀의 선돌
 The Serpent Stone power lets you paralyze and poison a target once a day.	'뱀의 선돌'은 하루에 한 번 목표를 마비시키고 중독시킬 수 있는 능력을 추가합니다.
@@ -20693,7 +20693,7 @@ Those are my only options?	다른 선택은 없나?
 Those bandits back there...	저 뒤에 있는 산적들은...
 Those interested in learning more about magic may consider joining the College of Winterhold.	마법에 대해 배우고 싶은 이들은, 윈터홀드 대학에 입학하는 것을 고려하는 편이 좋습니다.
 Those sellswords won't be a problem now.	그 용병들 문제는 해결되었소.
-Those trained to use Heavy Armor make more effective use of Iron, Steel, Dwarven, Orcish, Ebony, and Daedric armors.	중갑 방어구는 철, 강철, 드워프제, 오크제, 에보니, 데이드라제 등의 중갑 방어구를 효과적으로 사용하는 기술입니다. 무거운 재료를 사용한 이 방어구들은 착용자의 몸을 보호하는데 큰 도움을 줍니다.
+Those trained to use Heavy Armor make more effective use of Iron, Steel, Dwarven, Orcish, Ebony, and Daedric armors.	중갑 방어구는 철, 강철, 드워프제, 오크제, 에보니, 데이드라제 등의 중갑 방어구를 효과적으로 사용하는 기술입니다.
 Those with the blood of a werewolf can never gain resting bonuses from sleeping.	늑대인간은 잠을 자도 휴식 효과를 얻을 수 없습니다.
 Three Thieves	세 명의 도둑들
 Threki the Innocent	순진한 트레키
@@ -23365,7 +23365,7 @@ You cannot repair items when enemies are nearby.	적이 근처에 있을 때에�
 You cannot repair items while in combat.	전투 중에는 수리할 수 없습니다.
 You cannot save right now.	지금은 저장할 수 없습니다.
 You cannot shout while casting a spell	마법을 사용하는 도중에는 함성을 사용할 수 없습니다.
-You cannot sit on owned furniture.	다른사람이 차지하고 있는 가구에는 앉을 수 없습니다.
+You cannot sit on owned furniture.	다른사람의 가구에는 앉을 수 없습니다.
 You cannot sleep at this time.	지금은 잘 수 없습니다.
 You cannot sleep in an owned bed.	다른사람의 침대에서는 잘 수 없습니다.
 You cannot sleep in the air.	공중에 떠 있는 동안에는 잘 수 없습니다.
@@ -23556,7 +23556,7 @@ You must close your current game to change resolutions.	해상도를 변경하�
 You must exit and restart Skyrim for changes in this setting to take effect.	변경사항을 적용하려면 스카이림을 다시 시작해야 합니다.
 You must exit and restart Skyrim for the new resolution to take effect.	새로운 해상도를 적용하기 위해서는 스카이림을 종료하고 재시작해야 합니다.
 You must first equip a weapon to poison it.	당신은 먼저 독을 바를 무기를 장비해야 합니다.
-You must have a weapon drawn.	무기를 장착해야 합니다.
+You must have a weapon drawn.	무기를 꺼내 들어야 합니다.
 You must have your hands full with the change in government.	조정이 변해서 아주 바쁜 모양이군.
 You must know something. (Persuade)	분명히 뭔가 알고 있을 텐데. (설득)
 You must level up to train more.	훈련을 더 받기 위해서는 레벨 업을 해야 합니다.

@@ -212,6 +212,7 @@ Can you tell me more about the Augur of Dunlain?	던레인의 예언자에 관�
 Can't we just make up missing parts of the verse?	시에서 누락된 부분을 만들어 넣으면 안 됩니까?	시에서 누락된 부분을 만들어 넣으면 안됩니까?
 Can't we talk here?	여기서 이야기 하면 안 되나?	여기서 이야기 하면 안되나?
 Can't you just take the Key?	당신이 그냥 열쇠를 돌려놓으면 안 되나?	당신이 그냥 열쇠를 돌려놓으면 안되나?
+Carrying capacity increased by <mag>, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.	무게 한계가 <mag> 증가합니다. 장착한 방어구가 이동 속도를 감소시키지 않으며 무게 한계에 포함되지 않습니다.
 Cast on a nearby surface, it explodes for and freezes the target in place for <dur> seconds.	주변 표면에 정지의 룬을 설치합니다. 폭발하면 목표를 <dur> 초 동안 그 자리에 얼어붙게 합니다.	주변 표면에 정지의 룬을 설치합니다. 적이 접근 시 폭발하여 <mag> 의 냉기 피해를 입힙니다.
 Cast Soul Trap on an enemy during combat, and his soul will be captured in one of your empty soul gems, when he dies.	전투 중 적에게 소울 트랩 마법을 사용하십시오, 그러면 상대가 죽을 때 그 영혼은 비어있는 소울젬 안에 갇히게 됩니다.	전투 중 적에게 소울 트랩 마법을 사용하십시오, 그러면 상대가 죽을때 그 영혼은 비어있는 소울젬 안에 갇히게 됩니다.
 Castle Fletcher	화살 공방	화살깃털 상점
@@ -494,6 +495,7 @@ Grelka's Strongbox	그렐카의 튼튼한 상자	그레카의 튼튼한 상자
 Grim Shieldmaiden	음울한 여전사	그림 실드메이든
 Hallowed Dead	신성한 시신	신성한 사체
 Hard to be sure. He put up a strong fight.	확신할 수는 없군. 상당히 거세게 저항했거든.	확신할 수는 없군. 그는 상당히 강력한 것 같던데.
+has already caught you.	: 이미 당신을 눈치챘습니다.	: 당신을 지켜보고 있습니다.
 Has the war been hard on Markarth?	전쟁 때문에 마르카스가 많이 힘들었습니까?	마르카스에서의 전쟁은 치열했습니까?
 Has the war made your travels difficult?	전쟁 때문에 여행하기가 힘듭니까?	전쟁때문에 여행하기가 힘듭니까?
 Have we angered the Ideal Masters?	아이디얼 마스터들을 화나게 한 거요?	아이디얼 마스터들을 화나게 한겁니까?
@@ -539,6 +541,7 @@ Hold on. You may know something important.	잠시만, 뭔가 중요한 것을 �
 Holdings of Jarl Gjalund	걀룬드 야를의 영지 보고서	쟐룬드 야를의 영지 보고서
 Honed Draugr War Axe	연마된 고대 노드 도끼	연마된 드로거 도끼
 Horker and Ash Yam Stew	호커와 화산 참마 스튜	호커와 화산참마 스튜
+hour	시간	시
 How about I pay you some gold and you look the other way? (<BribeCost> gold)	이 돈을 줄 테니 잠시 못 본 척하는 게 어떻겠소? (<BribeCost> 골드)	이 돈을 줄테니 잠시 못본 척 하는게 어떻겠소? (<BribeCost> 골드)
 How about you just let her go and nobody has to get hurt? (Persuade)	그냥 그녀를 풀어 주고 아무도 다치지 않는 게 어떤가? (설득)	내 아내를 풀어줘라. 그러면 더 이상 너희들을 죽이지 않겠다. (설득)
 How about you just let him go and nobody has to get hurt? (Persuade)	그냥 그를 풀어주면 아무도 다칠 일 없을 거다. 어때? (설득)	내 남편을 풀어줘라. 그러면 더 이상 너희들을 죽이지 않겠다. (설득)
@@ -1103,6 +1106,7 @@ Plant the <Alias=Evidence> in <Alias=WealthyHome> in <Alias=City>	<Alias=City>�
 Plant the Balmora Blue	발모라 블루를 몰래 넣어 두기	발모라 블루를 숨겨놓기
 Plant the Incriminating Letter on Gaius Maro's body	가이우스 마로의 시체에 유죄증명 편지를 몰래 넣어 두기	가이우스 마로의 시체에 조작된 편지를 숨겨두기
 Please be patient. I'll get you your money.	좀 참아보시오. 그 돈을 받아줄 테니.	좀 참아보시오. 그 돈을 받아줄테니.
+PLEASE STAND BY	잠시 기다려 주세요.	준비하세요.
 Pleated Shoes	야를의 주름 잡힌 신발	야를의 주름잡힌 신발
 Poison Cloaked Spider	마법 주문서 - 맹독 망토 거미	마법 주문서 - 독 망토 거미
 Poisonous Cloaked Spider	맹독 망토 거미	독 거미
@@ -1332,6 +1336,7 @@ Storage Room, Doors	저장고, 문	저장고,문들
 Storn didn't die for nothing. Miraak will never threaten Solstheim again.	스토언의 죽음은 헛되지 않았어. 미락이 다시는 솔스트하임을 위협하지 못할 테니까.	스토언의 죽음은 헛되지 않았어. 미락이 다시는 솔스트하임으로 돌아올 수 없을테니까.
 Strange Vessel	이상한 배	이상한 관
 Strengthened by the infamy of its bearer	소유자의 악명으로 강화됩니다.	소유자의 악명으로 강화합니다.
+STUDDED	강화	장식
 Summon and subdue an Unbound Dremora	속박되지 않은 드레모라를 소환하고 복종시키기	계약없는 드레모라를 소환하고 복종시키기
 Summon Ice Wolves 1	설원늑대 소환 1	설원 늑대소환 1
 Summon Ice Wolves 2	설원늑대 소환 2	설원 늑대소환 2
@@ -1440,6 +1445,7 @@ The lock has been broken.	자물쇠가 망가졌습니다.	자물쇠는 망가�
 The Nords first conquered Markarth from the native people of the Reach thousands of years ago.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 빼앗았습니다.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 뺏았습니다.
 The poor in Markarth live in the Warrens, and are almost exclusively natives of the Reach.	마르카스의 가난한 자들은 빈민굴에 살고 있으며, 대부분은 리치의 원주민들입니다.	마르카스의 가난한 자들은 빈민촌에 살고 있으며, 대부분은 리치의 원주민들입니다.
 The power from the Lady's Stone lets you regenerate Health and Stamina much faster for a while.	'숙녀의 선돌'은 체력과 지구력을 잠깐 동안 더 빠르게 회복할 수 있는 능력을 추가합니다.	'숙녀의 선돌'은 체력과 지구력을 잠깐동안 더 빠르게 회복할 수 있는 능력을 추가합니다.
+The selected storage device does not have sufficient space available.  New saves will not be created.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않습니다.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않았습니다.
 The siege must have been hard on the city's merchants.	성 공격 때문에 도시의 상인들이 힘들었겠군.	성 공격때문에 도시의 상인들이 힘들었겠군.
 The Stormcloaks gained control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 점령했습니다.	스톰클록군이 <Alias=Hold> 를 점령했습니다.
 The Stormcloaks kept control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 지켜냈습니다.	스톰클록군이 <Alias=Hold>를 지켜냈습니다.
@@ -1490,6 +1496,7 @@ This is hardly proof of anything.	그런 건 아무런 증거가 되지 못하�
 This NPC cannot help you train any higher.	이 NPC는 지금 단계 이상으로는 훈련을 도와줄 수 없습니다.	이 NPC는 지금단계 이상으로는 훈련을 도와줄 수 없습니다.
 This person is busy.	이 사람은 바쁜 것 같습니다.	이 사람은 바쁜 것 같다.
 This will be easier without you getting in my way.	네가 방해하지만 않는다면 훨씬 쉬워질 텐데.	네가 방해하지만 않는다면 훨씬 쉬워질텐데.
+Those trained to use Heavy Armor make more effective use of Iron, Steel, Dwarven, Orcish, Ebony, and Daedric armors.	중갑 방어구는 철, 강철, 드워프제, 오크제, 에보니, 데이드라제 등의 중갑 방어구를 효과적으로 사용하는 기술입니다.	중갑 방어구는 철, 강철, 드워프제, 오크제, 에보니, 데이드라제 등의 중갑 방어구를 효과적으로 사용하는 기술입니다. 무거운 재료를 사용한 이 방어구들은 착용자의 몸을 보호하는데 큰 도움을 줍니다.
 Three Thieves	세 명의 도둑들	세명의 도둑들
 To Be Read Immedately!	즉시 읽을 것!	즉시 읽을것!
 Tolan was right. And he's dead. The vampires killed him.	톨란의 말이 맞았소. 하지만 죽어버렸소. 흡혈귀들 짓이지.	톨란이 말이 맞았소. 하지만 죽어버렸소. 흡혈귀들 짓이지.
@@ -1819,6 +1826,7 @@ You can make Dragonbone weapons at a forge that are more deadly than daedric wea
 You can trust your servant to keep this secret?	당신의 하인이 비밀을 지킬 거라고 믿소?	당신의 하인이 비밀을 지킬거라고 믿소?
 You can't fast travel while taking health damage.	체력에 피해를 받고 있는 도중에는 빠른 이동을 할 수 없습니다.	체력에 피해를 받고있는 도중에는 빠른 이동을 할 수 없습니다.
 You cannot cast a spell while shouting	함성을 사용하는 도중에는 마법을 사용할 수 없습니다.	함성 사용하는 도중에는 마법을 사용할 수 없습니다.
+You cannot sit on owned furniture.	다른사람의 가구에는 앉을 수 없습니다.	다른사람이 차지하고 있는 가구에는 앉을 수 없습니다.
 You cannot sleep while taking health damage.	체력에 피해를 받고 있는 도중에는 잠을 잘 수 없습니다.	체력에 피해를 받고있는 도중에는 잠을 잘 수 없습니다.
 You cannot wait while taking health damage.	체력에 피해를 받고 있을 때에는 대기할 수 없습니다.	체력에 피해를 받고있을 때에는 대기할 수 없습니다.
 You dare question my skill?	감히 내 실력을 의심하는 겁니까?	감히 내 실력을 묻는 겁니까?
@@ -1837,6 +1845,7 @@ You live here?	여기에 살고 있나?	여기에 살고있나?
 You mentioned trading caravans?	카짓 행상인들이라 했소?	캐러밴이라 했소?
 You must be crazy.	미친 게 분명하오.	미쳐버린 것 같은데.
 You must first equip a weapon to poison it.	당신은 먼저 독을 바를 무기를 장비해야 합니다.	당신은 먼저 독을 바를 무기를 장비해야합니다.
+You must have a weapon drawn.	무기를 꺼내 들어야 합니다.	무기를 장착해야 합니다.
 You must know something. (Persuade)	분명히 뭔가 알고 있을 텐데. (설득)	분명히 뭔가 알고 있을텐데. (설득)
 You need to leave <Alias=QuestGiver> alone.	<Alias=QuestGiver>말인데 좀 내버려 둘 수 없소.	<Alias=QuestGiver>말인데 좀 내버려 둘수 없소.
 You never mentioned that lunatic living in the tunnels.	굴 속 미친놈에 대해선 말 안 했더군.	굴 속 미친놈에 대해선 말 안했더군.

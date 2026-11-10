@@ -24,6 +24,7 @@ As dead as I can make him.	그는 이제 죽은 거나 다름없습니다.	그�
 Ash Spawn Immolator	화산재 스폰 소각자	화산재 스폰 학살자
 Azura is the daedric prince of dusk and dawn, and one of the few not considered to be inherently evil.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 본래부터 악하지는 않다고 여겨지는 프린스들 중 하나입니다.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 원래부터 악마는 아니라고 여겨지는 프린스들 중 하나입니다.
 Bring both Elder Scrolls to Dexion	두 개의 엘더스크롤을 덱시온에게 가져가기	두개의 엘더스크롤을 덱시온에게 가져가기
+Carrying capacity increased by <mag>, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.	무게 한계가 <mag> 증가합니다. 장착한 방어구가 이동 속도를 감소시키지 않으며 무게 한계에 포함되지 않습니다.
 Centurion Fight 3	백부장 전투 3	백부장 전사 3
 Combat skills are all <10>% more effective.	모든 전사 기술의 효과가 <10>% 증가합니다.	모든 전사 기술이 <10>% 증가합니다.
 Corner Shelf	구석 선반	작은 선반
@@ -68,15 +69,16 @@ General Tullius told me to report to you.	툴리우스 장군이 찾아가 신�
 Get access to Hjerim	예림으로 들어갈 방법을 찾기	예림으로 들어갈 허가를 받기
 Got any ideas about the knife?	그 칼로 뭘 해야 할지 알 것 같소?	그 칼로 뭘 해야할지 알 것 같소?
 Got Haelga's payment here.	헬가의 돈을 가져왔다.	헬가의 돈을 가져 왔다.
+has already caught you.	: 이미 당신을 눈치챘습니다.	: 당신을 지켜보고 있습니다.
 Has the war been hard on Markarth?	전쟁 때문에 마르카스가 많이 힘들었습니까?	마르카스에서의 전쟁은 치열했습니까?
-Have you been working in the mines long?	광산에서 일한 지 오래되었나?	광산에서 일한지 오래되었나?
-Have you known Elenwen long?	엘렌웬을 안 지 오래되었소?	엘렌웬을 안지 오래 되었소?
+Have you known Elenwen long?	엘렌웬을 안 지 오래되었소?	엘렌웬을 안 지 오래 되었소?
 He appeared mad. I had to kill him to defend myself.	그는 미쳐버린 것 같더군. 내 몸을 지키려면 그를 죽일 수밖에 없었소.	그는 미쳐버린 것 같더군. 그를 죽일 수밖에 없었소.
 He wants the "secrets of the Skaal" in exchange for teaching me the third Word.	세 번째 힘의 단어를 가르쳐주는 대가로 '스칼의 비밀'을 원하고 있습니다.	세번째 힘의 단어를 가르쳐주는 대가로 '스칼의 비밀'을 원하고 있습니다.
 Here's what they owed us.	빚을 가져왔어.	빚을 가져 왔어.
 Here's your money. He'd better be safe. (Give <Global=BYOHHBA2Ransom> gold)	여기 돈이다. 그는 무사해야 할 거다. (<Global=BYOHHBA2Ransom> 골드 주기)	돈을 낼 테니 그를 풀어줘라. (<Global=BYOHHBA2Ransom> 골드 주기)
 Here, I brought you a drink.	여기, 마실 것을 가져왔소.	여기, 마실것을 가져왔소.
 Holdings of Jarl Gjalund	걀룬드 야를의 영지 보고서	쟐룬드 야를의 영지 보고서
+hour	시간	시
 How about I pay you some gold and you look the other way? (<BribeCost> gold)	이 돈을 줄 테니 잠시 못 본 척하는 게 어떻겠소? (<BribeCost> 골드)	이 돈을 줄 테니 잠시 못본 척 하는 게 어떻겠소? (<BribeCost> 골드)
 How about you tell me for free? (Intimidate)	공짜로 말해주는 건 어때? (위협)	공짜로 말해주는건 어때? (위협)
 How can I get to your master?	당신의 주인을 만나려면 어떻게 해야 하지?	당신의 주인을 만나려면 어떻게 해야하지?
@@ -84,14 +86,6 @@ How can you protect Whiterun from the dragons?	드래곤의 공격에서 어떤 
 How could you execute a fine and honorable man?	어떻게 명예롭고 괜찮은 사람을 처형할 수가 있나?	어쩌다 명예롭고 괜찮은 사람을 처형하게 된 건가?
 How do I know I can trust you?	당신을 믿어도 될지 어떻게 알지?	어째서 당신을 믿어달라는 거지?
 How does one join the Imperial Legion?	제국군에 가입하고 싶은 사람은 어떻게 해야 합니까?	제국군에 가입하고 싶은 사람은 어떻게 해야합니까?
-How long has Yamarz been cursed?	야마즈가 저주를 받은 지 얼마나 되었소?	야마즈가 저주를 받은지 얼마나 되었소?
-How long have they been missing?	사라진 지 얼마나 지났소?	사라진지 얼마나 지났소?
-How long have you been a sea captain?	뱃사람이 된 지 얼마나 됐소?	뱃사람이 된지 얼마나 됐소?
-How long have you been a stablemaster?	마구간 주인이 된 지 얼마나 지났습니까?	마구간 주인이 된지 얼마나 지났습니까?
-How long have you been a Steward?	행정관이 된 지 얼마나 되었습니까?	행정관이 된지 얼마나 되었습니까?
-How long have you been the court wizard?	궁정 마법사가 된 지 얼마나 되었습니까?	궁정 마법사가 된지 얼마나 되었습니까?
-How long have you been training dogs?	개들을 훈련시킨 지 얼마나 되었소?	개들을 훈련시킨지 얼마나 되었소?
-How long have you studied alchemy?	연금술을 연구한 지 얼마나 되나?	연금술을 연구한지 얼마나 되나?
 How many of these are there?	이런 게 몇 개나 되지?	이런게 몇 개나 되지?
 How old is that stone bridge near the town?	마을 근처의 돌다리는 얼마나 오래된 거지?	마을 근처의 돌다리는 얼마나 오래 된 거지?
 I agree. Ulfric should turn over <Alias=SonsMinorHold2>.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을(를) 넘겨야 하오.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을(를) 넘겨야하오.
@@ -136,7 +130,7 @@ I'm not interested.	흥미 없소.	흥미없소.
 I'm not interested. Sorry.	미안하지만, 관심 없어.	미안하지만, 관심없어.
 I'm not into books.	책에는 별로 관심 없는데.	책에는 별로 관심없는데.
 I'm ready for anything.	무슨 일이든 준비되어 있습니다.	준비 되었습니다.
-I'm sorry about your uncle.	삼촌 일은 안됐구나.	삼촌일은 안 됐구나.
+I'm sorry about your uncle.	삼촌 일은 안됐구나.	삼촌일은 안됐구나.
 I'm sorry. I'm not interested.	미안하지만, 흥미 없어.	미안하지만, 흥미없어.
 I'm with the Guild. How about you look the other way? (<BribeCost> gold)	나는 길드원이야. 잠시 못 본 척하면 안 될까? (<BribeCost> 골드)	나는 길드원이야. 잠시 못본 척 하면 안 될까? (<BribeCost> 골드)
 I've brought you <Alias=QuestItem>.	<Alias=QuestItem>를 가져왔습니다.	<Alias=QuestItem>를 가져 왔습니다.
@@ -203,12 +197,12 @@ Once the capital of Skyrim, Winterhold has been all but abandoned in the last fe
 Only a beast kills without feeling.	짐승이나 아무런 감정 없이 상대를 죽이지.	짐승이나 아무런 감정없이 상대를 죽이지.
 Only cowards hunt animals. True game walks on two legs.	동물을 사냥하는 건 겁쟁이들뿐이지. 진짜 사냥감은 두 발로 서 있는 것들이야.	동물을 사냥하는 건 겁쟁이들 뿐이지. 진짜 사냥감은 두 발로 서 있는 것들이야.
 Pelagius the Suspicious	의심 많은 펠라지우스	수상한 펠라지우스
-Perhaps it could be translated.	번역이 가능할지도 모르겠군.	번역이 가능할 지도 모르겠군.
 Plant <Alias=QuestItem> in <Alias=TargetHouse>	<Alias=TargetHouse>에 <Alias=QuestItem> 몰래 놓아두기	<Alias=TargetHouse>에 <Alias=QuestItem> 놓기
 Plant letter on <Alias=Victim>'s corpse	<Alias=Victim>의 시체에 편지를 몰래 넣어 두기	<Alias=Victim>의 시체에 편지를 숨겨두기
 Plant Madesi's Ring	마데시의 반지를 몰래 넣어 두기	마데시의 반지를 넣기
 Plant the Balmora Blue	발모라 블루를 몰래 넣어 두기	발모라 블루를 숨겨놓기
 Plant the Incriminating Letter on Gaius Maro's body	가이우스 마로의 시체에 유죄증명 편지를 몰래 넣어 두기	가이우스 마로의 시체에 유죄증명 편지를 숨겨두기
+PLEASE STAND BY	잠시 기다려 주세요.	준비하세요.
 Port Stone	석문	활석 문
 Portal to Shrine of Resolution	차원문 - 결의의 성소	차원문 - 해결의 성소
 Prisoner's Cuffs	죄수의 수갑	죄수의 장갑
@@ -249,6 +243,7 @@ Spriggan (Burnt)	스프리건 (타버린)	스프리건
 Spriggan Matron	스프리건 대모	스프리건 치유사
 Stealth skills are all  <10>% more effective.	모든 도적 기술의 효과가 <10>% 증가합니다.	모든 도적 기술이 <10>% 증가합니다.
 Strange Vessel	이상한 배	이상한 관
+STUDDED	강화	장식
 Sure. When I don't need him, he can stay with you.	물론이지. 내가 데리고 다니지 않을 땐 너와 함께 지내도 좋다.	물론이지. 내가 필요 없을 땐 너와 함께 지내도 좋다.
 Suvaris Atheron's Logbook	수바리스 아세론의 항해일지	수바리스 아테론의 항해일지
 Tall Shelf	큰 선반	큰 책장
@@ -261,18 +256,19 @@ That was from Brynjolf. Get the message?	브린욜프가 보낸 건데. 뭔지 �
 That's not really your business.	그건 당신이 신경 쓸 문제가 아니오.	그건 당신이 신경쓸 문제가 아니오.
 The Blades helped me find out about it.	블레이드가 그것을 알아내게 도와주었습니다.	블레이드가 그것을 찾게 도와주었습니다.
 The Block skill reduces the damage and stagger from physical attacks when blocking with either a shield or weapon.	방어 기술은 방패 혹은 무기를 들고 방어할 때 물리공격에 의한 피해와 비틀거림을 감소시켜 줍니다.	방어 기술은 한손에 방패 혹은 무기를 들고 방어할 때 물리공격에 의한 피해와 비틀거림을 감소시켜 줍니다.
-The Dark Brotherhood was once bound by a set of rules called the Five Tenets, but they have long since been abandoned.	다크 브라더후드는 한 때 다섯 교리로 묶여있었지만, 지금은 그 교리들이 사라진 지 오래되었습니다.	다크 브라더후드는 한 때 다섯 교리로 묶여있었지만, 지금은 그 교리들이 사라진지 오래되었습니다.
 The dwarves of Tamriel disappeared millennia ago and are presumed extinct.	탐리엘에서 드워프들은 수천 년 전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.	탐리엘에서 드워프들은 천여년전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.
 The Empire can't afford to snub the Greybeards.	제국은 그 그레이비어드를 무시할 형편이 못 됩니다.	제국은 그 그레이비어드를 무시할 형편이 못됩니다.
 The Fourth Era began 200 years ago when Martin Septim sacrificed himself to save the world from the Oblivion Crisis.	200년 전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.	200년전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.
 The Kagrumez Gauntlet	카그루메즈 시험	카그루메즈 장갑
 The last battle here was hundreds of years ago.	여기서 벌어진 마지막 전투는 몇백 년 전의 일인데.	여기서 벌어진 마지막 전투는 몇 백년전의 일인데.
+The selected storage device does not have sufficient space available.  New saves will not be created.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않습니다.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않았습니다.
 The Third Era Timeline	제3시대 연표	제3세기 연표
 Then we have no further need of you.	그렇다면 더 이상 당신은 필요 없겠군.	그렇다면 더 이상 당신은 필요없겠군.
 There are only four of you?	당신들 네 명이 전부입니까?	당신들 네명이 전부입니까?
 There wasn't a body in the grave. Just the heart stone.	무덤에 시체는 없고 하트스톤뿐이던데.	무덤에 시체는 없고 하트스톤 뿐이던데.
 There's no way you'll come peacefully?	평화롭게 마무리할 방법은 없는 건가?	평화롭게 마무리할 방법은 없는건가?
 This is hardly proof of anything.	그런 건 아무런 증거가 되지 못하는데.	그런건 아무런 증거가 되지 못하는데.
+Those trained to use Heavy Armor make more effective use of Iron, Steel, Dwarven, Orcish, Ebony, and Daedric armors.	중갑 방어구는 철, 강철, 드워프제, 오크제, 에보니, 데이드라제 등의 중갑 방어구를 효과적으로 사용하는 기술입니다.	중갑 방어구는 철, 강철, 드워프제, 오크제, 에보니, 데이드라제 등의 중갑 방어구를 효과적으로 사용하는 기술입니다. 무거운 재료를 사용한 이 방어구들은 착용자의 몸을 보호하는데 큰 도움을 줍니다.
 Transmutes one piece of unrefined Iron ore to Silver, or Silver ore to Gold if the caster is carrying any.	소지품에 있는 철 광석 하나를 은 광석으로 변환하거나 은 광석 하나를 금 광석으로 변환합니다.	소지품에 있는 철 광석을 은 광석으로 변환하거나 은 광석을 금 광석으로 변환합니다.
 Turn	돌리기	변신
 Twice-Killed?	두 번 죽었다고?	두번 죽었다고?
@@ -341,10 +337,12 @@ Will you let the Argonians into the city?	아르고니안들이 도시에 들어
 Yeah, I've been getting that a lot.	아, 여러 번 들었소.	아, 여러번 들었소.
 You become invulnerable, but unable to attack. However you recover magicka and stamina.	에테르 형상으로 변하여 피해를 입히지도, 입지도 않게 되며 매지카와 지구력이 회복됩니다.	안개의 형상으로 변하여 피해를 입히지도, 입지도 않게 되며 매지카와 지구력이 회복됩니다.
 You better start caring. (Intimidate)	신경 쓰는 게 좋을 텐데. (위협)	신경쓰는 게 좋을 텐데. (위협)
+You cannot sit on owned furniture.	다른사람의 가구에는 앉을 수 없습니다.	다른사람이 차지하고 있는 가구에는 앉을 수 없습니다.
 You have nothing to fear from me. (Persuade)	무서워할 필요는 없소. (설득)	무서워 할 필요는 없소. (설득)
 You killed Eltrys!	엘트리스를 죽인 건 너야!	엘트리스를 죽인건 너야!
 You let your aunt go in there by herself?	고모가 혼자 들어가게 내버려둔 건가?	고모가 혼자 들어가게 내버려둔건가?
 You must first equip a weapon to poison it.	당신은 먼저 독을 바를 무기를 장비해야 합니다.	당신은 먼저 독을 바를 무기를 장비해야합니다.
+You must have a weapon drawn.	무기를 꺼내 들어야 합니다.	무기를 장착해야 합니다.
 You should pay me what you can. (Persuade)	나에게 낼 수 있는 만큼은 내야 할 텐데. (설득)	나에게 적당한 금액을 지불해야 할 텐데. (설득)
 You sound a little confused.	조금 혼란스러워하는 것 같군.	조금 혼란스러워 하는 것 같군.
 You sure you won't buy it?	정말로 사지 않을 건가?	정말로 사지 않을건가?

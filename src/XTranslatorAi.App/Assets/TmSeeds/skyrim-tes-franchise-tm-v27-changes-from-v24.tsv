@@ -6,6 +6,7 @@ A truly strong chief would break the curse, not suffer from it.	진정으로 강
 Alto Wine	술 - 알토 포도주	술 - 순한 포도주
 Amulet of Mara (Possessed)	아뮬렛 - 마라 (영혼이 깃듦)	아뮬렛 - 마라 (소유)
 Ash Spawn Immolator	화산재 스폰 소각자	화산재 스폰 학살자
+Carrying capacity increased by <mag>, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.	무게 한계가 <mag> 증가합니다. 장착한 방어구가 이동 속도를 감소시키지 않으며 무게 한계에 포함되지 않습니다.
 Cyrodilic Spadetail	시로딜 스페이드테일	시로딜 변종어
 Dragon Hunting	드래곤 사냥	드래곤 사냥꾼
 Draugr Scourge	드로거 재앙	드로거 사술사
@@ -14,7 +15,9 @@ Felsaad Tern Feathers	펠사드 제비갈매기 깃털	펠사드 제비갈매기
 Filling Soul Gems	소울젬 충전하기	소울젬 보충하기
 Fortified Healing	체력 재생 강화	치유 마법 강화
 Frontier, Conquest	개척지, 정복	개척자, 정복
+has already caught you.	: 이미 당신을 눈치챘습니다.	: 당신을 지켜보고 있습니다.
 Holdings of Jarl Gjalund	걀룬드 야를의 영지 보고서	쟐룬드 야를의 영지 보고서
+hour	시간	시
 Jeweled Amulet	보석장식 아뮬렛	목걸이 - 보석 아뮬렛
 Locksmith	열쇠장인	자물쇠 장수
 Magic Anomaly	마법 특이점	기형 마법물질
@@ -23,6 +26,7 @@ Morvayn Manor Chambers	모베인 저택 내실	모베인 저택 회의실
 Necromantic Grimoire	강령술 마도서	강령술 마법
 Nervous Patron	불안한 손님	불안한 후원자
 Pelagius the Suspicious	의심 많은 펠라지우스	수상한 펠라지우스
+PLEASE STAND BY	잠시 기다려 주세요.	준비하세요.
 Port Stone	석문	활석 문
 Portal to Shrine of Resolution	차원문 - 결의의 성소	차원문 - 해결의 성소
 Prisoner's Cuffs	죄수의 수갑	죄수의 장갑
@@ -37,13 +41,15 @@ Spell Tome: Bound Dagger	마법책: 마법 단검	마법책: 마법 단검 소�
 Spell Tome: Bound Sword	마법책: 마법 검	마법책: 마법 검 소환
 Spriggan Matron	스프리건 대모	스프리건 치유사
 Strange Vessel	이상한 배	이상한 관
+STUDDED	강화	장식
 Sure. When I don't need him, he can stay with you.	물론이지. 내가 데리고 다니지 않을 땐 너와 함께 지내도 좋다.	물론이지. 내가 필요 없을 땐 너와 함께 지내도 좋다.
 Suvaris Atheron's Logbook	수바리스 아세론의 항해일지	수바리스 아테론의 항해일지
 Tall Shelf	큰 선반	큰 책장
 Tall Shelf with Display Case	큰 선반과 진열함	큰 책장과 진열함
 The Kagrumez Gauntlet	카그루메즈 시험	카그루메즈 장갑
+The selected storage device does not have sufficient space available.  New saves will not be created.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않습니다.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않았습니다.
 The Third Era Timeline	제3시대 연표	제3세기 연표
-Turn	돌리기	변신
+Those trained to use Heavy Armor make more effective use of Iron, Steel, Dwarven, Orcish, Ebony, and Daedric armors.	중갑 방어구는 철, 강철, 드워프제, 오크제, 에보니, 데이드라제 등의 중갑 방어구를 효과적으로 사용하는 기술입니다.	중갑 방어구는 철, 강철, 드워프제, 오크제, 에보니, 데이드라제 등의 중갑 방어구를 효과적으로 사용하는 기술입니다. 무거운 재료를 사용한 이 방어구들은 착용자의 몸을 보호하는데 큰 도움을 줍니다.
 Unenchanted Alteration Staff	마법부여되지 않은 변화마법 지팡이	변화마법 지팡이
 Unenchanted Conjuration Staff	마법부여되지 않은 소환마법 지팡이	소환마법 지팡이
 Unenchanted Destruction Staff	마법부여되지 않은 파괴마법 지팡이	파괴마법 지팡이
@@ -51,3 +57,5 @@ Unenchanted Forsworn Staff	마법부여되지 않은 포스원 지팡이	포스�
 Unenchanted Illusion Staff	마법부여되지 않은 환영마법 지팡이	환영마법 지팡이
 Unenchanted Restoration Staff	마법부여되지 않은 회복마법 지팡이	회복마법 지팡이
 Weystone Source	웨이스톤 원천	웨이스톤 초점
+You cannot sit on owned furniture.	다른사람의 가구에는 앉을 수 없습니다.	다른사람이 차지하고 있는 가구에는 앉을 수 없습니다.
+You must have a weapon drawn.	무기를 꺼내 들어야 합니다.	무기를 장착해야 합니다.
