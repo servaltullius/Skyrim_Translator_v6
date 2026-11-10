@@ -173,7 +173,7 @@ Source	Target
 [Optional] Find <Alias=Jarl> and escape with <Alias.PronounObj=Jarl> through the city.	(선택) <Alias=Jarl>을(를) 찾고 <Alias.PronounObj=Jarl>와 함께 도시를 통하여 탈출하기
 [SUCCESS]	[성공]
 [SURV=Warmth is increased by <mag> points for <dur> seconds.]	[SURV=<dur> 초 동안 온기가 <mag> 증가합니다.]
-A <mag> point fiery explosion centered on the caster. Does more damage to closer targets.	거대한 불길의 폭풍을 일으켜 <mag> 의 화염 피해를 입힙니다. 가까운 적일수록 더 큰 피해를 입습니다.
+A <mag> point fiery explosion centered on the caster. Does more damage to closer targets.	시전자를 중심으로 화염 폭발을 일으켜 <mag> 의 화염 피해를 입힙니다. 가까운 적일수록 더 큰 피해를 입습니다.
 A Bad Trade	손해 본 거래
 A battleaxe. (25 husks)	전투 도끼. (25 껍질)
 A benefit? How?	도움이라니? 무슨?
@@ -290,7 +290,7 @@ A sword. (25 husks)	검. (25 껍질)
 A Thunderbolt that does <mag> points of shock damage to Health and half that to Magicka.	치명적인 벼락을 날려 <mag> 의 전격 피해와 절반의 매지카 피해를 입힙니다.
 A tidy, one-room house.	깔끔한 방 하나짜리 집.
 A Tragedy in Black	검은 비극
-A truly strong chief would break the curse, not suffer from it.	진정으로 강한 족장이라면 저주를 풀어야지, 저주 때문에 고통받는 것이 아니고.
+A truly strong chief would break the curse, not suffer from it.	진정으로 강한 족장이라면 저주에 시달리고만 있지 않고 저주를 풀 거요.
 A vampire? I don't think so.	흡혈귀라고? 안 될 거 같군.
 A volley of frozen shards that do <mag> points of damage, and twice as much Stamina damage.	얼음 파편들을 발사하여 <mag> 의 냉기 피해를 입힙니다. 지구력에도 2배의 피해를 입힙니다.
 A Warning	경고
@@ -710,7 +710,7 @@ Amulet of Draining Grip	아뮬렛 - 흡수의 손아귀
 Amulet of Julianos	아뮬렛 - 줄리아노스
 Amulet of Kynareth	아뮬렛 - 키나레스
 Amulet of Mara	아뮬렛 - 마라
-Amulet of Mara (Possessed)	아뮬렛 - 마라 (소유)
+Amulet of Mara (Possessed)	아뮬렛 - 마라 (영혼이 깃듦)
 Amulet of Mist Form	아뮬렛 - 안개 형상
 Amulet of Stendarr	아뮬렛 - 스텐다르
 Amulet of Supernatural Reflexes	아뮬렛 - 초자연적 반사신경
@@ -7143,7 +7143,7 @@ Froki's Shack	프로키의 판잣집
 From the Ashes	재에서
 From who?	누가 보낸 거지?
 From-Deepest-Fathoms	프롬-디피스트-페덤스
-Frontier, Conquest	개척자, 정복
+Frontier, Conquest	개척지, 정복
 Frorkmar Banner-Torn	프로크마 배너-톤
 Frossel	프로셀
 Frost	된서리
@@ -11844,7 +11844,7 @@ Jester's Boots	광대의 신발
 Jester's Clothes	광대의 의상
 Jester's Gloves	광대의 장갑
 Jester's Hat	광대의 모자
-Jeweled Amulet	목걸이 - 보석 아뮬렛
+Jeweled Amulet	보석장식 아뮬렛
 Jeweled Candlestick	보석장식 촛대
 Jeweled Flagon	보석장식 병
 Jeweled Goblet	보석장식 잔
@@ -13403,7 +13403,7 @@ Morthal. (<Global=CarriageCostSmall> gold)	모탈까지. (<Global=CarriageCostSm
 Mortrag Peak	모트락 봉우리
 Morvayn Ancestral Tomb	모베인 선조의 무덤
 Morvayn Manor	모베인 저택
-Morvayn Manor Chambers	모베인 저택 회의실
+Morvayn Manor Chambers	모베인 저택 내실
 Morvayn Manor Key	열쇠 - 모베인 저택
 Morven	모벤
 Morven Stroud	모븐 스트라우드
@@ -13713,7 +13713,7 @@ Necromancer Amulet	강령술사의 아뮬렛
 Necromancer Robes	강령술사 로브
 Necromancer's Letter	강령술사의 편지
 Necromancy	강령술
-Necromantic Grimoire	강령술 마법
+Necromantic Grimoire	강령술 마도서
 Necromantic Healing	강령 치유
 Necromantic Staff	강령술사 지팡이
 Need any help around the forge?	대장간에 도와줄 만한 일거리가 있소?
@@ -15927,7 +15927,7 @@ Remove the workbench from the entryway.	현관에서 작업선반을 제거합�
 Remove the workbench from the Greenhouse.	온실에서 작업선반을 제거합니다.
 Remove the workbench from the Kitchen.	부엌에서 작업선반을 제거합니다.
 Remove the workbench from the Library.	도서실에서 작업선반을 제거합니다.
-Remove the workbench from the small house.	집에서 작업선반을 제거합니다.
+Remove the workbench from the small house.	작은 집에서 작업선반을 제거합니다.
 Remove the workbench from the Storage Room.	저장고에서 작업선반을 제거합니다.
 Remove the workbench from the Trophy Room.	전시실에서 작업선반을 제거합니다.
 Remove the workbenches from the Main Hall.	대청에서 작업선반을 제거합니다.
@@ -19423,7 +19423,7 @@ Sure. I'd be glad to help.	물론. 도울 수 있어 다행이군.
 Sure. Take a look.	물론. 보시오.
 Sure. What do you have?	물론이지. 어떤 걸 가지고 있지?
 Sure. What game do you want to play?	물론. 너는 어떤 놀이를 하고 싶지?
-Sure. When I don't need him, he can stay with you.	물론이지. 내가 필요 없을 땐 너와 함께 지내도 좋다.
+Sure. When I don't need him, he can stay with you.	물론이지. 내가 데리고 다니지 않을 땐 너와 함께 지내도 좋다.
 Surefoot	조용한 발걸음
 Surely the Night Mother wouldn't misdirect us...	나이트 마더께서 우리를 잘못된 길로 인도하실 리는 없겠지...
 Surely there's more you can tell me.	내게 더 해줄 말이 있지 않습니까.

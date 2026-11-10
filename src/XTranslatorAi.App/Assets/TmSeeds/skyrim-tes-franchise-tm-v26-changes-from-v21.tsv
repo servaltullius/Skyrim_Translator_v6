@@ -1,9 +1,14 @@
 Source	Target	Previous
+A <mag> point fiery explosion centered on the caster. Does more damage to closer targets.	시전자를 중심으로 화염 폭발을 일으켜 <mag> 의 화염 피해를 입힙니다. 가까운 적일수록 더 큰 피해를 입습니다.	거대한 불길의 폭풍을 일으켜 <mag> 의 화염 피해를 입힙니다. 가까운 적일수록 더 큰 피해를 입습니다.
 A Bad Trade	손해 본 거래	불경기
 A New Order	새로운 기사단	새로운 지시
+A truly strong chief would break the curse, not suffer from it.	진정으로 강한 족장이라면 저주에 시달리고만 있지 않고 저주를 풀 거요.	진정으로 강한 족장이라면 저주를 풀어야지, 저주 때문에 고통받는 것이 아니고.
 All right. But you're responsible for him.	알았다. 대신 돌보는 건 네 책임이다.	알았다. 대신 씻기거나 청소하는 건 네가 해야 된다.
 Alto Wine	술 - 알토 포도주	술 - 순한 포도주
+Amulet of Mara (Possessed)	아뮬렛 - 마라 (영혼이 깃듦)	아뮬렛 - 마라 (소유)
 Ash Spawn Immolator	화산재 스폰 소각자	화산재 스폰 학살자
+Centurion Fight 3	백부장 전투 3	백부장 전사 3
+Corner Shelf	구석 선반	작은 선반
 Cyrodilic Spadetail	시로딜 스페이드테일	시로딜 변종어
 Do I need to beat some sense into you? (Brawl)	좀 맞아야 정신을 차리겠어? (싸움)	너에게 상식을 가르쳐줄까? (싸움)
 Do I need to beat some sense into you? (Intimidate)	좀 맞아야 정신을 차리겠어? (위협)	너에게 상식을 가르쳐줄까? (위협)
@@ -17,8 +22,11 @@ Draugr Scourge	드로거 재앙	드로거 사술사
 Enchanting Pick-Up	마법부여를 위한 물품 찾아오기	마법부여를 위한 물품 찾아오기<Enchanting Pick-Up>
 Felsaad Tern Feathers	펠사드 제비갈매기 깃털	펠사드 제비갈매기 날개
 Filling Soul Gems	소울젬 충전하기	소울젬 보충하기
+Find some Mammoth Tusk Powder	매머드 상아 가루를 찾기	매머드 상아 가루 몇 개를 찾기
 Fortified Healing	체력 재생 강화	치유 마법 강화
+Frontier, Conquest	개척지, 정복	개척자, 정복
 General Tullius told me to report to you.	툴리우스 장군이 찾아가 신고하라고 했소.	툴리우스 장군이 당신에게 보고를 하라던데.
+Get access to Hjerim	예림으로 들어갈 방법을 찾기	예림으로 들어갈 허가를 받기
 Has the war been hard on Markarth?	전쟁 때문에 마르카스가 많이 힘들었습니까?	마르카스에서의 전쟁은 치열했습니까?
 He appeared mad. I had to kill him to defend myself.	그는 미쳐버린 것 같더군. 내 몸을 지키려면 그를 죽일 수밖에 없었소.	그는 미쳐버린 것 같더군. 그를 죽일 수밖에 없었소.
 Here's your money. He'd better be safe. (Give <Global=BYOHHBA2Ransom> gold)	여기 돈이다. 그는 무사해야 할 거다. (<Global=BYOHHBA2Ransom> 골드 주기)	돈을 낼 테니 그를 풀어줘라. (<Global=BYOHHBA2Ransom> 골드 주기)
@@ -33,27 +41,45 @@ I won't condemn an innocent man.	무고한 사람을 죄인으로 몰 수는 없
 I'll just take the sap. Danica was very insistent on having it.	그냥 수액만 가져가겠습니다. 다니카가 원하던 겁니다.	나무의 수액이 필요한데. 다니카가 원하던 겁니다.
 I'm ready for anything.	무슨 일이든 준비되어 있습니다.	준비 되었습니다.
 It's all in good fun, Tullius.	그저 재미로 하는 일일 뿐입니다, 툴리우스.	아주 재미있을 겁니다, 툴리우스.
+Jeweled Amulet	보석장식 아뮬렛	목걸이 - 보석 아뮬렛
 Let Ulfric have his way now. He'll have to give ground later.	울프릭이 맘대로 하게 놔둡시다. 나중에는 그쪽이 양보해야 할 테니까.	울프릭이 맘대로 하게 놔둡시다. 나중에 대가를 치르게 될 테니까.
+Leveled Cultist	광신도 (레벨 맞춤)	광신도
 Listen, I don't want any trouble. (Persuade)	이봐, 말썽은 원치 않아. (설득)	이봐, 조용히 처리하자구. (설득)
 Locksmith	열쇠장인	자물쇠 장수
 Magic Anomaly	마법 특이점	기형 마법물질
 Mantled College Robes	마법 대학 망토 달린 로브	마법 대학 두건 달린 로브
+Morvayn Manor Chambers	모베인 저택 내실	모베인 저택 회의실
+Necromantic Grimoire	강령술 마도서	강령술 마법
 Nervous Patron	불안한 손님	불안한 후원자
+Netch (Bull)	네치 (황소)	네치
+Netch (Calf)	네치 (어린)	네치
+Netch (Cow)	네치 (베티)	네치
 Pelagius the Suspicious	의심 많은 펠라지우스	수상한 펠라지우스
+Plant <Alias=QuestItem> in <Alias=TargetHouse>	<Alias=TargetHouse>에 <Alias=QuestItem> 몰래 놓아두기	<Alias=TargetHouse>에 <Alias=QuestItem> 놓기
+Plant letter on <Alias=Victim>'s corpse	<Alias=Victim>의 시체에 편지를 몰래 넣어 두기	<Alias=Victim>의 시체에 편지를 숨겨두기
+Plant Madesi's Ring	마데시의 반지를 몰래 넣어 두기	마데시의 반지를 넣기
+Plant the Balmora Blue	발모라 블루를 몰래 넣어 두기	발모라 블루를 숨겨놓기
+Plant the Incriminating Letter on Gaius Maro's body	가이우스 마로의 시체에 유죄증명 편지를 몰래 넣어 두기	가이우스 마로의 시체에 유죄증명 편지를 숨겨두기
 Port Stone	석문	활석 문
 Portal to Shrine of Resolution	차원문 - 결의의 성소	차원문 - 해결의 성소
 Prisoner's Cuffs	죄수의 수갑	죄수의 장갑
 Reaver Marauder	습격 약탈자	강력한 약탈자
 Reaver Plunderer	강탈 약탈자	노련한 약탈자
+Remove the workbench from the small house.	작은 집에서 작업선반을 제거합니다.	집에서 작업선반을 제거합니다.
 Research Thief	연구 도둑	도적 조사
 Sap Repository	수액 보관함	샙의 보관함
+Seeker 1 (Mirror)	탐구자 1 (거울)	탐구자 1
+Seeker 2 (Mirror)	탐구자 2 (거울)	탐구자 2
+Seeker 3 (Mirror)	탐구자 3 (거울)	탐구자 3
 So go search their house.	그럼 가서 그들의 집을 수색하시오.	그럼 가서 그들의 집을 수색합시다.
 Spell Tome: Bound Battleaxe	마법책: 마법 전투 도끼	마법책: 마법 전투 도끼 소환
 Spell Tome: Bound Bow	마법책: 마법 활	마법책: 마법 활 소환
 Spell Tome: Bound Dagger	마법책: 마법 단검	마법책: 마법 단검 소환
 Spell Tome: Bound Sword	마법책: 마법 검	마법책: 마법 검 소환
+Spriggan (Burnt)	스프리건 (타버린)	스프리건
 Spriggan Matron	스프리건 대모	스프리건 치유사
 Strange Vessel	이상한 배	이상한 관
+Sure. When I don't need him, he can stay with you.	물론이지. 내가 데리고 다니지 않을 땐 너와 함께 지내도 좋다.	물론이지. 내가 필요 없을 땐 너와 함께 지내도 좋다.
 Suvaris Atheron's Logbook	수바리스 아세론의 항해일지	수바리스 아테론의 항해일지
 Tall Shelf	큰 선반	큰 책장
 Tall Shelf with Display Case	큰 선반과 진열함	큰 책장과 진열함

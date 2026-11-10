@@ -4,6 +4,7 @@ Source	Target	Previous
 <Alias.ShortName=Target> won't be bothering you anymore.	<Alias.ShortName=Target>에게 말해 두었소. 더 이상 당신을 괴롭히지 않을 거요.	<Alias.ShortName=Target>에게 말해 두었소. 더 이상 당신을 괴롭히지 않을거요.
 <Alias=PlayerIsIt> is it. Hide from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt>이(가) 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요	<Alias=PlayerIsIt> 이/가 술래입니다. <Alias=PlayerIsIt.PronounObj>에게서 숨으세요
 <Alias=PlayerIsIt> is it. Keep away from <Alias=PlayerIsIt.PronounObj>	<Alias=PlayerIsIt>이(가) 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요	<Alias=PlayerIsIt> 이 술래입니다. <Alias=PlayerIsIt.PronounObj>로부터 멀리 피하세요
+A <mag> point fiery explosion centered on the caster. Does more damage to closer targets.	시전자를 중심으로 화염 폭발을 일으켜 <mag> 의 화염 피해를 입힙니다. 가까운 적일수록 더 큰 피해를 입습니다.	거대한 불길의 폭풍을 일으켜 <mag> 의 화염 피해를 입힙니다. 가까운 적일수록 더 큰 피해를 입습니다.
 A Bad Trade	손해 본 거래	불경기
 A blast of flame that sets the target on fire, doing <mag> damage per second for <15> seconds.	불꽃을 날려 목표에 불을 붙이고 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다.	불꽃의 화살을 날려 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 A cyclone that does <mag> points of damage per second and may fling victims into the air.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버릴 수 있습니다.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버립니다.
@@ -11,13 +12,14 @@ A dremora captured you?	드레모라가 당신을 가두었단 말이오?	드레
 A New Order	새로운 기사단	새로운 지시
 A recent string of murders has many Windhelm residents fearing for their lives...	최근 연이은 살인사건이 수많은 윈드헬름 주민들의 삶을 공포에 떨게하고 있습니다.	최근 연이은 살인사건이 수 많은 윈드헬름 주민들의 삶을 공포에 떨게하고 있습니다.
 A stalemate?	비긴 건가?	비긴건가?
-A truly strong chief would break the curse, not suffer from it.	진정으로 강한 족장이라면 저주를 풀어야지, 저주 때문에 고통받는 것이 아니고.	진정으로 강한 족장이라면 저주를 풀어야지, 저주때문에 고통받는 것이 아니고.
+A truly strong chief would break the curse, not suffer from it.	진정으로 강한 족장이라면 저주에 시달리고만 있지 않고 저주를 풀 거요.	진정으로 강한 족장이라면 저주를 풀어야지, 저주때문에 고통받는 것이 아니고.
 A vampire? I don't think so.	흡혈귀라고? 안 될 거 같군.	흡혈귀라고? 안될 거 같군.
 Add a kitchen that can be fitted out with cooking stations, food containers and the like.	조리대와 음식 저장 용기 등을 갖출 수 있는 부엌을 추가합니다.	여러 가지 주방용품들과 음식 저장 용기 등이 구비된 부엌을 추가합니다.
 Agrius's Journal	아그리우스의 일기	아그리어스의 일기
 All right. But you're responsible for him.	알았다. 대신 돌보는 건 네 책임이다.	알았다. 대신 씻기거나 청소하는 건 네가 해야된다.
 ALTERATION	변화마법	변화
 Alto Wine	술 - 알토 포도주	술 - 순한 포도주
+Amulet of Mara (Possessed)	아뮬렛 - 마라 (영혼이 깃듦)	아뮬렛 - 마라 (소유)
 And Nilsine Shatter-Shield? Why must she die?	닐신까지? 그녀는 왜 죽어야 하는 거지?	닐신까지? 그녀는 왜 죽어야 하는거지?
 And now that Potema has returned?	그럼 포테마가 돌아온 지금은 어떻습니까?	그래서 포테마가 부활한 것입니까?
 Any chance I could talk you into overlooking this? (Persuade)	한 번만 봐주시오. (설득)	한번만 봐주시오. (설득)
@@ -149,6 +151,7 @@ For <dur> seconds, opponents in melee range take <mag> points per second fire da
 Forget I mentioned it.	내가 말했던 건 잊어버려.	내가 말했던건 잊어버려.
 Forget it. Maybe I'll come back later.	신경 쓰지 마시오. 다시 오지.	신경쓰지 마시오. 다시 오지.
 Fortified Healing	체력 재생 강화	치유 마법 강화
+Frontier, Conquest	개척지, 정복	개척자, 정복
 Fur-Trimmed Cloak	야를의 털가죽 망토로 장식된 의상	털가죽 망토
 Ganna Uriel	간나 유리엘	간나 우리엘
 Gemma Uriel	겜마 유리엘	겜마 우리엘
@@ -391,6 +394,7 @@ It's all right. Just tell me what I need to know. (Persuade)	괜찮아. 내가 �
 It's from Gorm, in Morthal.	모탈의 고엄이 보낸 건데.	모탈의 고엄이 보낸건데.
 It's important that I find him right away. (Persuade)	당장 그를 찾아내는 게 중요한 일이오. (설득)	당장 그를 찾아내는게 중요한 일이오. (설득)
 It's in everyone's best interest if you return the amulet. (Persuade)	그 아뮬렛을 돌려주면 모두에게 이득이 될 거요. (설득)	그 아뮬렛을 돌려주면 모두에게 이득이 될거요. (설득)
+Jeweled Amulet	보석장식 아뮬렛	목걸이 - 보석 아뮬렛
 Just call your name in Tamriel? That's it?	탐리엘에서 너의 이름을 부르기만 하면 되는 건가?	탐리엘에서 너의 이름을 부르기만 하면 되는건가?
 Know anything about the Thieves Guild?	도둑 길드에 대해 조금이라도 아는 게 있소?	도둑 길드에 대해 조금이라도 아는게 있소?
 Learn the Word of Power from Borri	보리 사범에게 힘의 단어를 배우기	마스터 보리에게 힘의 단어를 배우기
@@ -423,9 +427,11 @@ Maybe you should speak to the authorities.	정부에 말해보는 게 좋을 것
 Maybe you'll see one yourself soon. Helgen isn't that far from here.	아마 곧 볼 수 있을 텐데. 헬겐은 가까우니까.	아마 곧 볼 수 있을텐데. 헬겐은 가까우니까.
 Meet Mercer Frey outside Snow Veil Sanctum	스노우 베일 성역 바깥에서 머서 프레이와 만나기	스노우 베일성역 바깥에서 머서 프레이와 만나기
 Morthal is said to be named after the great Nord hero Morihaus, though none alive today are sure of the connection.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하우스의 이름을 따서 지어졌다고 합니다.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하스의 이름을 따서 지어졌다고 합니다.
+Morvayn Manor Chambers	모베인 저택 내실	모베인 저택 회의실
 Muiri sent me. She is quite unhappy...	뮤이리가 날 보냈지. 그녀는 상당히 불쾌해하더군...	뮤이리가 날 보냈지. 그녀는 상당히 불쾌해 하더군...
 Must be tough to grow anything out here.	여기는 농사짓기에 힘들 것 같군.	여기는 농사짓기에 힘들것 같군.
 My business is my own. Just tell me what I need to know.	당신이 신경 쓸 문제가 아니오. 내가 알고 싶은 것을 당장 말하시오.	당신이 신경 쓸 문제가 아니오. 내가 알고 싶은것을 당장 말하시오.
+Necromantic Grimoire	강령술 마도서	강령술 마법
 Neither side is making much headway. What's the harm in talking to Ulfric?	어느 쪽도 큰 진전이 없으니, 울프릭과 이야기한다고 해서 나쁠 건 없지 않습니까?	어느 쪽이든 큰 진전이 없으니 울프릭에게 이야기 한다고 해서 나쁠건 없겠지?
 Nervous Patron	불안한 손님	불안한 후원자
 Netch (Bull)	네치 (황소)	네치
@@ -496,6 +502,7 @@ Recover the Crown of Barenziah	바렌자이아의 왕관을 회수하기	바렌�
 Redguards are 50% resistant to poison. They can use Adrenaline Rush to regenerate Stamina quickly, for a short time.	레드가드는 독에 대하여 50% 저항력을 가지고 있습니다. 그들은 아드레날린 분출을 사용하여 짧은 시간 동안 지구력을 빠른 속도로 회복할 수 있습니다.	레드가드는 독에 대하여 50% 저항력을 가지고 있습니다. 그들은 아드레날린 분출을 사용하여 짧은 시간동안 지구력을 빠른 속도로 회복할 수 있습니다.
 Refined Tunic	야를의 세련된 의상	세련된 의상
 Remind me... who are the Thalmor?	기억이 잘 안 나는군... 탈모어가 뭐하는 놈들이라고?	기억이 잘 안나는군... 탈모어가 뭐하는 놈들이라고?
+Remove the workbench from the small house.	작은 집에서 작업선반을 제거합니다.	집에서 작업선반을 제거합니다.
 Replace the beacon	등불을 제자리에 놓기	표식을 교체하기
 Replace the beacon	등불을 제자리에 놓기	등불을 교체하기
 Rescue <Alias=Victim> from <Alias=Lair>	<Alias=Lair>에서 <Alias=Victim>을(를) 구출하기	<Alias=Lair>에서 <Alias=Victim>를 구출하기
@@ -572,6 +579,7 @@ Stealth skills are all  <10>% more effective.	모든 도적 기술의 효과가 
 Strange Vessel	이상한 배	이상한 관
 Summon and subdue an Unbound Dremora	속박되지 않은 드레모라를 소환하고 복종시키기	계약없는 드레모라를 소환하고 복종시키기
 Summons an unbound Dremora for <dur> seconds.	<dur> 초 동안 속박되지 않은 드레모라를 소환합니다.	<dur> 초 동안 계약없는 드레모라를 소환합니다.
+Sure. When I don't need him, he can stay with you.	물론이지. 내가 데리고 다니지 않을 땐 너와 함께 지내도 좋다.	물론이지. 내가 필요 없을 땐 너와 함께 지내도 좋다.
 Suvaris Atheron's Logbook	수바리스 아세론의 항해일지	수바리스 아테론의 항해일지
 Sven wanted me to deliver this letter to Camilla, saying it was from you.	스벤은 이 편지를 카밀라에게 전해주면서 당신이 보낸 거라고 거짓말하라더군.	스벤은 이 편지를 카밀라에게 전해주면서 당신이 보낸거라고 거짓말하라더군.
 Sven wanted to trick you into believing this letter was from Faendal.	스벤은 이 편지가 페인달이 보낸 거라고 속이려고 했소.	스벤은 이 편지가 페인달이 보낸거라고 속이려고 했소.

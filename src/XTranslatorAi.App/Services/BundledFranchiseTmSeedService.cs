@@ -210,9 +210,12 @@ public sealed class BundledFranchiseTmSeedService
             // one's own body: the row Turn now has 돌리기, the text of the game's other Turn strings; 1 row changed (1.16.56).
             // v25 takes the patch's fixes to names, all 13,204 read against the English: the Weystone Source socket (웨이스톤
             // 원천), Prisoner's Cuffs (죄수의 수갑), the Hearthfire Tall Shelf (큰 선반), the Kagrumez Gauntlet (카그루메즈 시험),
-            // the Spriggan Matron (스프리건 대모) and others; 42 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v25", "bundled-skyrim-tes-franchise-tm.tsv", 1529880, "65dd1c54ae75fb0761b98aa4f59b8c0b021e071cf2a8a54395c0346b091902d0",
-                PreviousVersions: new[] { "v24", "v23", "v22", "v21", "v20", "v19", "v18", "v17", "v16", "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v25-changes.tsv"),
+            // the Spriggan Matron (스프리건 대모) and others; 42 rows changed (1.16.57).
+            // v26 takes the patch's second read of the books and CC books, sentence by sentence, and the choices settled after
+            // it: the book name Frontier, Conquest (개척지, 정복), the Necromantic Grimoire (강령술 마도서), the Amulet of Mara
+            // (Possessed) (영혼이 깃듦), Morvayn Manor Chambers (내실) and others; 9 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v26", "bundled-skyrim-tes-franchise-tm.tsv", 1529907, "ceabf40d67858298538aea16571ef8226f419803f45d57685b14b44fc0ebb6ca",
+                PreviousVersions: new[] { "v25", "v24", "v23", "v22", "v21", "v20", "v19", "v18", "v17", "v16", "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v26-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,

@@ -30,6 +30,7 @@ Source	Target	Previous
 <mag> points of extra damage to Animals.	동물에게 <mag> 의 추가 피해를 입힙니다.	동물에게 <mag>의 추가 피해를 입힙니다.
 <mag> points of extra damage to Nords.	노드에게 <mag> 의 추가 피해를 입힙니다.	노드에게 <mag>의 추가 피해를 입힙니다.
 [Optional] Find <Alias=Jarl> and escape with <Alias.PronounObj=Jarl> through the city.	(선택) <Alias=Jarl>을(를) 찾고 <Alias.PronounObj=Jarl>와 함께 도시를 통하여 탈출하기	(선택) <Alias=Jarl>을 찾고 <Alias.PronounObj=Jarl>과 함께 도시를 통하여 탈출하기.
+A <mag> point fiery explosion centered on the caster. Does more damage to closer targets.	시전자를 중심으로 화염 폭발을 일으켜 <mag> 의 화염 피해를 입힙니다. 가까운 적일수록 더 큰 피해를 입습니다.	거대한 불길의 폭풍을 일으켜 <mag> 의 화염 피해를 입힙니다. 가까운 적일수록 더 큰 피해를 입습니다.
 A Bad Trade	손해 본 거래	불경기
 A blast of flame that sets the target on fire, doing <mag> damage per second for <15> seconds.	불꽃을 날려 목표에 불을 붙이고 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다.	불꽃의 화살을 날려 <15> 초 동안 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 A cyclone that does <mag> points of damage per second and may fling victims into the air.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버릴 수 있습니다.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버립니다.
@@ -44,7 +45,7 @@ A recent string of murders has many Windhelm residents fearing for their lives..
 A spear of ice that does <mag> points of frost damage, and twice as much Stamina damage.	얼음의 가시를 날려 <mag> 의 냉기 피해와 2배의 지구력 피해를 입힙니다.	얼음의 가시를 날려 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
 A stalemate?	비긴 건가?	비긴건가?
 A tidy, one-room house.	깔끔한 방 하나짜리 집.	자그마한, 방 하나짜리 집.
-A truly strong chief would break the curse, not suffer from it.	진정으로 강한 족장이라면 저주를 풀어야지, 저주 때문에 고통받는 것이 아니고.	진정으로 강한 족장이라면 저주를 풀어야지, 저주때문에 고통받는 것이 아니고.
+A truly strong chief would break the curse, not suffer from it.	진정으로 강한 족장이라면 저주에 시달리고만 있지 않고 저주를 풀 거요.	진정으로 강한 족장이라면 저주를 풀어야지, 저주때문에 고통받는 것이 아니고.
 A vampire? I don't think so.	흡혈귀라고? 안 될 거 같군.	흡혈귀라고? 안될 거 같군.
 A volley of frozen shards that do <mag> points of damage, and twice as much Stamina damage.	얼음 파편들을 발사하여 <mag> 의 냉기 피해를 입힙니다. 지구력에도 2배의 피해를 입힙니다.	얼음 파편들을 발사하여 <mag> 냉기 피해를 입힙니다. 지구력에도 2 배의 피해를 입힙니다.
 A... mudcrab?	뭐...? 진흙게?	뭐...? 진흙 게?
@@ -81,7 +82,7 @@ Altar of Thrond Cave	쓰론드 제단 동굴	쓰론드 동굴 제단
 ALTERATION	변화마법	변화
 Alto Wine	술 - 알토 포도주	술 - 순한 포도주
 Ambarys	엠바리스	앰바리스
-Amulet of Mara (Possessed)	아뮬렛 - 마라 (소유)	마라의 아뮬렛 (소유)
+Amulet of Mara (Possessed)	아뮬렛 - 마라 (영혼이 깃듦)	마라의 아뮬렛 (소유)
 Amulet of Supernatural Reflexes	아뮬렛 - 초자연적 반사신경	아뮬렛 - 초자연적인 반응
 An infestation of what?	침략이라니, 무엇한테?	침입이라니, 무엇이?
 Ancestor's Wrath	선조의 분노	선조의 영혼
@@ -449,6 +450,7 @@ Fortify Magicka Rate	매지카 재생 강화	매지카재생 강화
 Fourth Ring	네 번째 고리	네 번째 반지
 Fragment: On Artaeum	단편: 아테이움에 관하여	단편 - 아테이움에서
 Frightened Woman	겁에 질린 여성	겁에질린 여성
+Frontier, Conquest	개척지, 정복	개척자, 정복
 Fultheim the Fearless	두려움 없는 풀트하임	두려움없는 풀트하임
 Fur-Trimmed Cloak	야를의 털가죽 망토로 장식된 의상	털가죽 망토
 Gadnor's Staff of Charming	개드너의 매혹 지팡이	개드너의 지팡이
@@ -883,6 +885,7 @@ It's important that I find him right away. (Persuade)	당장 그를 찾아내는
 It's in everyone's best interest if you return the amulet. (Persuade)	그 아뮬렛을 돌려주면 모두에게 이득이 될 거요. (설득)	그 아뮬렛을 돌려주면 모두에게 이득이 될거요. (설득)
 It's true. He told me.	사실이오. 그가 말해 주었소.	사실이오. 그가 말했주었소.
 J'zhar's Pack	지'자르의 짐	지자르의 짐
+Jeweled Amulet	보석장식 아뮬렛	목걸이 - 보석 아뮬렛
 Join Barbas outside Rimerock Burrow	라임락 땅굴 바깥에서 바바스와 만나기	서리바위 동굴 바깥에서 바바스와 만나기
 Join the College of Winterhold	윈터홀드 대학에 가입하기	윈터홀드의 마법 대학에 가입하기
 Join the men attacking <Alias=Fort>	<Alias=Fort>을(를) 공격하는 병사들과 합류하기	<Alias=Fort> 를 공격하는 병사들과 합류하기
@@ -986,6 +989,7 @@ Molag Bal created the first vampire.	몰락 발이 첫 흡혈귀를 만들었소
 Money's not going to do you much good after I've killed you.	널 죽이고 나면 돈 따위는 아무 소용 없을 거다.	그냥 죽여주마.
 Mora's Grasp	모라의 손아귀	모라의 이해
 Morthal is said to be named after the great Nord hero Morihaus, though none alive today are sure of the connection.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하우스의 이름을 따서 지어졌다고 합니다.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하스의 이름을 따서 지어졌다고 합니다.
+Morvayn Manor Chambers	모베인 저택 내실	모베인 저택 회의실
 Most of Winterhold was lost to the sea in the Great Collapse of 4E 122, but the College was left mysteriously unharmed.	윈터홀드의 대부분은 제 4시대 122년의 대붕괴 때 바닷속으로 가라앉아 버렸지만, 불가사의하게도 대학만은 무사했습니다.	윈터홀드의 대부분은 4시대 122년의 대붕괴 때 바닷속으로 가라앉아 버렸지만, 불가사의하게도 대학만은 무사했습니다.
 Mounted Elk Antlers	큰뿔사슴 뿔 박제	큰 뿔 박제
 Mounted Elk Head	큰뿔사슴 머리 박제	큰 뿔 사슴 박제
@@ -997,6 +1001,7 @@ Mystic Dagger	신비한 단검	신비한 마법 단검
 Nasty bit of business, Roggvir's execution.	로그비어의 처형이라, 볼썽사나운 일이더군.	로그비어의 처형이라, 볼성사나운 일이더군.
 Nchardak Great Chamber	느챠닥 대석실	느챠닥 대매장묘실
 Nearby creatures, including undead, machines and daedra, can be seen through walls for <dur> seconds.	<dur> 초 동안 주변의 언데드, 기계, 데이드라를 포함한 생물체를 벽 너머로 볼 수 있습니다.	<dur> 초 동안 주변의 언데드, 기계, 데이드라를 제외한 생물체를 벽 너머로 볼 수 있습니다.
+Necromantic Grimoire	강령술 마도서	강령술 마법
 Neither side is making much headway. What's the harm in talking to Ulfric?	어느 쪽도 큰 진전이 없으니, 울프릭과 이야기한다고 해서 나쁠 건 없지 않습니까?	어느 쪽이든 큰 진전이 없으니 울프릭에게 이야기 한다고 해서 나쁠건 없겠지?
 Neloth's <mag> point health boost.	체력이 <mag> 증가합니다.	체력이 <mag> 증가합니다
 Nervous Patron	불안한 손님	불안한 후원자
@@ -1149,6 +1154,7 @@ Refined Tunic	야를의 세련된 의상	세련된 의상
 Remind me... who are the Thalmor?	기억이 잘 안 나는군... 탈모어가 뭐하는 놈들이라고?	기억이 잘 안나는군... 탈모어가 뭐하는 놈들이라고?
 Remove all furniture from entryway and remodel it to match the main hall.	현관에 배치된 모든 가구를 제거하고 대청에 맞게 개조합니다.	현관에 배치된 모든 가구를 제거하고 대청에 맞게 재배치하기.
 Remove the workbench from the Enchanter's Tower.	마법부여 연구탑에서 작업선반을 제거합니다.	마법부가 연구탑에서 작업선반을 제거합니다.
+Remove the workbench from the small house.	작은 집에서 작업선반을 제거합니다.	집에서 작업선반을 제거합니다.
 Remove the workbench from the Storage Room.	저장고에서 작업선반을 제거합니다.	창고에서 작업선반을 제거합니다.
 Remove Tree	나무의 바위 효과 제거	나무의 바위효과 제거
 Replace my Enchanting Lab with a Child's Room. (<Global=HDRiftenChildRoom> gold)	마법부여 연구실을 아이의 방으로 개조하고 싶다. (<Global=HDRiftenChildRoom> 골드)	마법 부가 연구실을 아이의 방으로 개조라고 싶다. (<Global=HDRiftenChildRoom> 골드)
@@ -1338,7 +1344,7 @@ Summons the ghost of the legendary assassin Lucien Lachance to fight by your sid
 Sunlight explosion that does <mag> points of damage in a 15 foot radius to undead, and half that to living targets	15 피트 범위의 태양빛 폭발을 일으켜 언데드에게 <mag> 의 피해를 입히고 생명체에게는 절반의 피해를 입힙니다.	15 피트 범위의 태양빛 폭발을 일으키는 화염구를 날려 언데드에게 <mag> 의 피해를 입히고 생명체에게는 절반의 피해를 입힙니다.
 Sunlight explosion that does <mag> points of damage in a 15 foot radius to undead.	15 피트 범위의 태양빛 폭발을 일으켜 언데드에게 <mag> 의 피해를 입힙니다.	15 피트 범위의 태양빛 폭발을 일으키는 화염구를 날려 언데드에게 <mag> 의 피해를 입힙니다.
 Sure, I'd like the help.	물론, 도와준다면 고맙지.	물론, 기꺼이 도와주지.
-Sure. When I don't need him, he can stay with you.	물론이지. 내가 필요 없을 땐 너와 함께 지내도 좋다.	물론이지. 별다른 일만 없다면 같이 놀아도 좋다.
+Sure. When I don't need him, he can stay with you.	물론이지. 내가 데리고 다니지 않을 땐 너와 함께 지내도 좋다.	물론이지. 별다른 일만 없다면 같이 놀아도 좋다.
 Suvaris Atheron's Logbook	수바리스 아세론의 항해일지	수바리스 아테론의 항박일지
 Sven wanted me to deliver this letter to Camilla, saying it was from you.	스벤은 이 편지를 카밀라에게 전해주면서 당신이 보낸 거라고 거짓말하라더군.	스벤은 이 편지를 카밀라에게 전해주면서 당신이 보낸거라고 거짓말하라더군.
 Sven wanted to trick you into believing this letter was from Faendal.	스벤은 이 편지가 페인달이 보낸 거라고 속이려고 했소.	스벤은 이 편지가 페인달이 보낸거라고 속이려고 했소.
