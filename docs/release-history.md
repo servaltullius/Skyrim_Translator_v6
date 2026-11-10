@@ -3,6 +3,10 @@
 판마다 무엇이 바뀌었는지 적은 기록입니다. 받는 곳과 자세한 릴리스 글은 [GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases)에 있습니다.
 최근 판이 위에 있습니다. 1.8보다 앞선 판은 [이전 작업 기록](plans/2026-09-28-translator-improvement.md)과 [유지보수 계획](plans/2026-09-29-maintenance.md)을 보세요.
 
+## 1.16.62
+
+1.16.62는 [한글패치 26.10.16 베타 30](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/kopatch-26.10.16-beta30)과 함께 낸 판입니다. 한글패치가 붙여 쓴 "다른사람"·"저장파일"을 "다른 사람"·"저장 파일"로 띄어 쓴 것(본편·DLC 21줄)을 게임 번역 사전이 따르고, 내장 TM은 v28(같은 고침 11행)이 됩니다([기록](analysis/2026-10-16-kopatch-beta.md)). 내장 용어집과 그 밖의 번역기 기능은 1.16.61과 같습니다.
+
 ## 1.16.61
 
 1.16.61은 [한글패치 26.10.16 베타 29](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/kopatch-26.10.16-beta29)와 함께 낸 판입니다. 한글패치가 어느 회차에서도 영어와 맞대어 읽지 않았던 본편·DLC 글 1,950줄을 마저 읽고 고친 것(56줄: 기술 설명, 설득 장비 설명, 시스템 문구 등)을 게임 번역 사전이 따르고, 내장 TM은 v27(같은 고침 9행)이 됩니다([기록](analysis/2026-11-03-patch-mistranslation-sample.md)). 내장 용어집과 그 밖의 번역기 기능은 1.16.60과 같습니다.
