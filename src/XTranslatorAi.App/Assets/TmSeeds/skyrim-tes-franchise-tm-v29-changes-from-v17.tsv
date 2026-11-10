@@ -6,7 +6,6 @@ A Bad Trade	손해 본 거래	불경기
 A blast of flame that sets the target on fire, doing <mag> damage per second for <15> seconds.	불꽃을 날려 목표에 불을 붙이고 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다.	불꽃의 화살을 날려 <15> 초 동안 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 A cyclone that does <mag> points of damage per second and may fling victims into the air.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버릴 수 있습니다.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버립니다.
 A New Order	새로운 기사단	새로운 지시
-A recent string of murders has many Windhelm residents fearing for their lives...	최근 연이은 살인사건이 수많은 윈드헬름 주민들의 삶을 공포에 떨게하고 있습니다.	최근 연이은 살인사건이 수 많은 윈드헬름 주민들의 삶을 공포에 떨게하고 있습니다.
 A stalemate?	비긴 건가?	비긴건가?
 A truly strong chief would break the curse, not suffer from it.	진정으로 강한 족장이라면 저주에 시달리고만 있지 않고 저주를 풀 거요.	진정으로 강한 족장이라면 저주를 풀어야지, 저주 때문에 고통받는 것이 아니고.
 Add a kitchen that can be fitted out with cooking stations, food containers and the like.	조리대와 음식 저장 용기 등을 갖출 수 있는 부엌을 추가합니다.	여러 가지 주방용품들과 음식 저장 용기 등이 구비된 부엌을 추가합니다.
@@ -14,9 +13,7 @@ All right. But you're responsible for him.	알았다. 대신 돌보는 건 네 �
 Alto Wine	술 - 알토 포도주	술 - 순한 포도주
 Amulet of Mara (Possessed)	아뮬렛 - 마라 (영혼이 깃듦)	아뮬렛 - 마라 (소유)
 Anything else before I set off?	떠나기 전에 다른 건 없나?	떠나기 전에 다른건 없나?
-Are sales that bad out here?	이곳에서는 장사가 잘 안 되나?	이 곳에서는 장사가 잘 안 되나?
 Are you doing well, serving as Jarl?	야를로 지내는 건 어떻습니까?	야를로 지내는건 어떻습니까?
-Are you going to be able to lead this place, still?	그래도 여전히 이곳을 이끌어갈 수 있겠나?	그래도 여전히 이 곳을 이끌어갈 수 있겠나?
 Are you going to tell me, or am I going to have to beat it out of you?	그냥 순순히 말할 건가, 아니면 주먹으로 패 줄까?	그냥 순순히 말할건가, 아니면 주먹으로 패 줄까?
 Are you sure about this?	확실한 건가?	확실 한건가?
 Are you surrendering?	항복할 건가?	항복할건가?
@@ -177,7 +174,6 @@ So what's the story behind the Rueful Axe.	그래서 그 회한의 도끼에 얽
 So... I'm free to go?	그럼... 이만 가도 되는 건가?	그럼... 이만 가도 되는건가?
 Some of your friends feel you're troubled.	당신의 친구들이 당신이 힘들어한다던데.	당신의 친구들이 당신이 힘들어 한다던데.
 Sorry, I didn't mean anything by it.	미안하군, 다른 의도가 있는 건 아니오.	미안하군, 다른 의도가 있는건 아니오.
-Sorry, I'm still not ready to go in there.	미안한데, 아직 그곳에 갈 준비가 되지 않았소.	미안한데, 아직 그 곳에 갈 준비가 되지 않았소.
 Spell Tome: Bound Battleaxe	마법책: 마법 전투 도끼	마법책: 마법 전투 도끼 소환
 Spell Tome: Bound Bow	마법책: 마법 활	마법책: 마법 활 소환
 Spell Tome: Bound Dagger	마법책: 마법 단검	마법책: 마법 단검 소환
@@ -204,8 +200,7 @@ The Empire can't afford to snub the Greybeards.	제국은 그 그레이비어드
 The Kagrumez Gauntlet	카그루메즈 시험	카그루메즈 장갑
 The selected storage device does not have sufficient space available.  New saves will not be created.	선택된 저장장치에 용량이 부족합니다. 새로운 저장 파일이 만들어지지 않습니다.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않았습니다.
 The Third Era Timeline	제3시대 연표	제3세기 연표
-There wasn't a body in the grave. Just the heart stone.	무덤에 시체는 없고 하트스톤뿐이던데.	무덤에 시체는 없고 하트스톤 뿐이던데.
-There's no way you'll come peacefully?	평화롭게 마무리할 방법은 없는 건가?	평화롭게 마무리할 방법은 없는건가?
+There's no way you'll come peacefully?	순순히 따라올 생각은 없는 건가?	평화롭게 마무리할 방법은 없는건가?
 This is hardly proof of anything.	그런 건 아무런 증거가 되지 못하는데.	그런건 아무런 증거가 되지 못하는데.
 This object is already in use by someone else.	이것은 이미 다른 사람이 사용 중입니다.	이것은 이미 다른사람이 사용 중입니다.
 This save relies on content that is no longer present. Some objects may no longer be available. Continue Loading?	이 저장 파일은 게임폴더 내에 존재하지 않는 구성 요소가 포함되어 있습니다. 일부 요소는 더 이상 사용할 수 없습니다. 불러오겠습니까?	이 저장파일은 게임폴더 내에 존재하지 않는 구성 요소가 포함되어 있습니다. 일부 요소는 더 이상 사용할 수 없습니다. 불러오겠습니까?
@@ -249,7 +244,6 @@ What's this about a crystal?	크리스털이라니, 대체 무슨 얘기지?	이
 What's your problem with Faralda?	파랄다와 무슨 문제가 있는 겁니까?	파랄다와 무슨 문제가 있는겁니까?
 Whatever.	그러든가.	알았다.
 Where are we headed?	어디로 가는 겁니까?	어디로 가던 길입니까?
-Where did you live before you were here?	이곳에 오기 전에는 어디서 살았지?	이 곳에 오기 전에는 어디서 살았지?
 Who cares, we're the Thieves Guild.	알 게 뭐야, 우리는 도둑 길드인데.	알게 뭐야, 우리는 도둑 길드인데.
 Why all the hatred for the Empire?	왜 그렇게 제국을 증오하는 겁니까?	왜 다들 제국을 증오하는 겁니까?
 Why are they collecting these souls?	왜 그들은 영혼을 수집하고 있는 걸까?	왜 그들은 영혼을 수집하고 있는걸까?
