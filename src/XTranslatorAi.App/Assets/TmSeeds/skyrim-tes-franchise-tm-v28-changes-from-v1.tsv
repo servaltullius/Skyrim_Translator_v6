@@ -30,6 +30,7 @@ Source	Target	Previous
 <Alias=Victim> was killed.	<Alias=Victim>은(는) 죽었소.	<Alias=Victim> 은/는 죽었소.
 <mag> points of extra damage to Animals.	동물에게 <mag> 의 추가 피해를 입힙니다.	동물에게 <mag>의 추가 피해를 입힙니다.
 <mag> points of extra damage to Nords.	노드에게 <mag> 의 추가 피해를 입힙니다.	노드에게 <mag>의 추가 피해를 입힙니다.
+[NO SAVES FOUND]	[저장 파일 없음]	[저장파일 없음]
 [Optional] Find <Alias=Jarl> and escape with <Alias.PronounObj=Jarl> through the city.	(선택) <Alias=Jarl>을(를) 찾고 <Alias.PronounObj=Jarl>와 함께 도시를 통하여 탈출하기	(선택) <Alias=Jarl>을 찾고 <Alias.PronounObj=Jarl>과 함께 도시를 통하여 탈출하기.
 A <mag> point fiery explosion centered on the caster. Does more damage to closer targets.	시전자를 중심으로 화염 폭발을 일으켜 <mag> 의 화염 피해를 입힙니다. 가까운 적일수록 더 큰 피해를 입습니다.	거대한 불길의 폭풍을 일으켜 <mag> 의 화염 피해를 입힙니다. 가까운 적일수록 더 큰 피해를 입습니다.
 A Bad Trade	손해 본 거래	불경기
@@ -257,6 +258,7 @@ Could you repeat that inscription?	그 문장을 한 번 더 반복해 주시오
 Cow Hand	목동	카우 핸드
 Creates a wall of frost that does <mag> damage per second.	지면에 얼음의 장벽을 만들어 매 초마다 <mag> 의 냉기 피해를 입힙니다.	지면에 얼음의 장벽을 만들어 매 초마다 <50> 의 냉기 피해를 입힙니다.
 Creation Club Cell	Creation Club Cell	던가드 흡혈귀 사냥꾼
+Creations are currently loaded. Note: Achievements are disabled.  Do you wish to continue loading this save?	현재 모드가 로드 되었습니다. 주의: 도전과제가 비활성화 됩니다.  이 저장 파일을 불러오시겠습니까?	현재 모드가 로드 되었습니다. 주의: 도전과제가 비활성화 됩니다.  이 저장파일을 불러오시겠습니까?
 Creatures and people will attack enemies nearby for 10 seconds.	10 초 동안 주변의 적을 공격하게 합니다.	10 초 동안 다른 이를 공격하게 합니다.
 Cure Poison	독 치료	물약 - 독 치료
 Cyrodilic Spadetail	시로딜 스페이드테일	시로딜 변종어
@@ -280,6 +282,7 @@ Decree of Monument	기념비 포고령	법령의 기념비
 Defeat Hofgrir in an unarmed brawl	호프기어를 맨손 싸움으로 물리치기	호프기어를 싸움으로 물리치기
 Defeat the Guardians of the Forge	대장간의 수호자를 물리치기	화로의 수호자를 물리치기
 Defend <Alias=Capital>	<Alias=Capital>을(를) 방어하기	<Alias=Capital> 을 방어하기
+Delete this game?	이 저장 파일을 삭제하겠습니까?	이 저장파일을 삭제하겠습니까?
 Deliver <Alias=QuestItem> to <Alias.ShortName=Target>	<Alias.ShortName=Target>에게 <Alias=QuestItem> 배달하기	<Alias.ShortName=Target> 에게 <Alias=QuestItem> 배달하기
 Deliver Mead to Wilhelm	윌헴에게 벌꿀술을 배달하기	윌헴에게 벌꿀주를 배달하기
 Deliver the stone to Phinis	시질 스톤을 피니스에게 전달하기	시질스톤을 피니스에게 전달하기
@@ -1111,6 +1114,7 @@ No bolts equipped.	장비 중인 볼트가 없습니다.	장비중인 볼트가 
 No deal. This sounds too risky.	안 돼요. 그건 너무 위험합니다.	안돼요. 그건 너무 위험합니다.
 No more self loathing for Pelagius.	펠라지우스는 더 이상 자신을 혐오하지 않을 것이오.	펠라지우스는 더 이상의 자신을 혐오하지 않을 것이오.
 No thanks.	필요 없소.	필요없어.
+No valid save game found.	올바른 저장 파일을 찾을 수 없습니다.	올바른 저장파일을 찾을 수 없습니다.
 No way. That name would scare anyone. (Persuade)	그럴 리가. 그 이름 아주 무섭게 들리는데. (설득)	그럴리가. 그 이름 아주 무섭게 들리는데. (설득)
 No, I didn't see them in there.	아니, 안에서는 못 봤는데.	아니, 안에서는 못봤는데.
 No, never mind.	신경 쓰지 마라.	신경쓰지 마라.
@@ -1285,6 +1289,8 @@ Saerek's Skull Key	세렉의 두개골 열쇠	세이렉의 두개골 열쇠
 Saint Jiub's Kiss	성자 지웁의 키스	성인 지웁의 키스
 Samuel	사무엘	사뮤엘
 Sap Repository	수액 보관함	샙의 보관함
+SAVE CORRUPT	저장 파일 손상됨	저장파일 손상됨
+SAVE OBSOLETE	옛날버전의 저장 파일	옛날버전의 저장파일
 Say no more. He's as good as dead.	더 이상 말할 필요는 없소. 그는 이제 죽은 거나 마찬가지니까.	더 이상 말할 필요는 없소. 그는 이제 죽은거나 마찬가지니까.
 Scourge of the Gray Quarter	잿빛 지구의 골칫거리	골칫거리 잿빛 지구
 Sea Squall	바다 소나기 호	
@@ -1554,7 +1560,7 @@ The lock has been broken.	자물쇠가 망가졌습니다.	자물쇠는 망가�
 The Nords first conquered Markarth from the native people of the Reach thousands of years ago.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 빼앗았습니다.	노드들은 수천 년 전에 최초로 리치의 원주민들로부터 마르카스를 뺏았습니다.
 The poor in Markarth live in the Warrens, and are almost exclusively natives of the Reach.	마르카스의 가난한 자들은 빈민굴에 살고 있으며, 대부분은 리치의 원주민들입니다.	마르카스의 가난한 자들은 빈민촌에 살고 있으며, 대부분은 리치의 원주민들입니다.
 The power from the Lady's Stone lets you regenerate Health and Stamina much faster for a while.	'숙녀의 선돌'은 체력과 지구력을 잠깐 동안 더 빠르게 회복할 수 있는 능력을 추가합니다.	'숙녀의 선돌'은 체력과 지구력을 잠깐동안 더 빠르게 회복할 수 있는 능력을 추가합니다.
-The selected storage device does not have sufficient space available.  New saves will not be created.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않습니다.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않았습니다.
+The selected storage device does not have sufficient space available.  New saves will not be created.	선택된 저장장치에 용량이 부족합니다. 새로운 저장 파일이 만들어지지 않습니다.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않았습니다.
 The siege must have been hard on the city's merchants.	성 공격 때문에 도시의 상인들이 힘들었겠군.	성 공격때문에 도시의 상인들이 힘들었겠군.
 The Stormcloaks gained control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 점령했습니다.	스톰클록군이 <Alias=Hold> 를 점령했습니다.
 The Stormcloaks kept control of <Alias=Hold>.	스톰클록군이 <Alias=Hold>을(를) 지켜냈습니다.	스톰클록군이 <Alias=Hold>를 지켜냈습니다.
@@ -1604,7 +1610,9 @@ This "Ruminations" book is incomprehensible.	이 '고찰'이라는 책은 이해
 This heart stone is the source of the attacks.	이 하트스톤이 공격의 근원이던데.	이 하트 스톤이 공격의 근원이던데.
 This is hardly proof of anything.	그런 건 아무런 증거가 되지 못하는데.	그런건 아무런 증거가 되지 못하는데.
 This NPC cannot help you train any higher.	이 NPC는 지금 단계 이상으로는 훈련을 도와줄 수 없습니다.	이 NPC는 지금단계 이상으로는 훈련을 도와줄 수 없습니다.
+This object is already in use by someone else.	이것은 이미 다른 사람이 사용 중입니다.	이것은 이미 다른사람이 사용 중입니다.
 This person is busy.	이 사람은 바쁜 것 같습니다.	이 사람은 바쁜 것 같다.
+This save relies on content that is no longer present. Some objects may no longer be available. Continue Loading?	이 저장 파일은 게임폴더 내에 존재하지 않는 구성 요소가 포함되어 있습니다. 일부 요소는 더 이상 사용할 수 없습니다. 불러오겠습니까?	이 저장파일은 게임폴더 내에 존재하지 않는 구성 요소가 포함되어 있습니다. 일부 요소는 더 이상 사용할 수 없습니다. 불러오겠습니까?
 This will be easier without you getting in my way.	네가 방해하지만 않는다면 훨씬 쉬워질 텐데.	네가 방해하지만 않는다면 훨씬 쉬워질텐데.
 Those trained to use Heavy Armor make more effective use of Iron, Steel, Dwarven, Orcish, Ebony, and Daedric armors.	중갑 방어구는 철, 강철, 드워프제, 오크제, 에보니, 데이드라제 등의 중갑 방어구를 효과적으로 사용하는 기술입니다.	중갑 방어구는 철, 강철, 드워프제, 오크제, 에보니, 데이드라제 등의 중갑 방어구를 효과적으로 사용하는 기술입니다. 무거운 재료를 사용한 이 방어구들은 착용자의 몸을 보호하는데 큰 도움을 줍니다.
 Three Thieves	세 명의 도둑들	세명의 도둑들
@@ -1977,7 +1985,8 @@ You can make Dragonbone weapons at a forge that are more deadly than daedric wea
 You can trust your servant to keep this secret?	당신의 하인이 비밀을 지킬 거라고 믿소?	당신의 하인이 비밀을 지킬거라고 믿소?
 You can't fast travel while taking health damage.	체력에 피해를 받고 있는 도중에는 빠른 이동을 할 수 없습니다.	체력에 피해를 받고있는 도중에는 빠른 이동을 할 수 없습니다.
 You cannot cast a spell while shouting	함성을 사용하는 도중에는 마법을 사용할 수 없습니다.	함성 사용하는 도중에는 마법을 사용할 수 없습니다.
-You cannot sit on owned furniture.	다른사람의 가구에는 앉을 수 없습니다.	다른사람이 차지하고 있는 가구에는 앉을 수 없습니다.
+You cannot sit on owned furniture.	다른 사람의 가구에는 앉을 수 없습니다.	다른사람이 차지하고 있는 가구에는 앉을 수 없습니다.
+You cannot sleep in an owned bed.	다른 사람의 침대에서는 잘 수 없습니다.	다른사람의 침대에서는 잘 수 없습니다.
 You cannot sleep while taking health damage.	체력에 피해를 받고 있는 도중에는 잠을 잘 수 없습니다.	체력에 피해를 받고있는 도중에는 잠을 잘 수 없습니다.
 You cannot wait while taking health damage.	체력에 피해를 받고 있을 때에는 대기할 수 없습니다.	체력에 피해를 받고있을 때에는 대기할 수 없습니다.
 You dare question my skill?	감히 내 실력을 의심하는 겁니까?	감히 내 실력을 묻는 겁니까?

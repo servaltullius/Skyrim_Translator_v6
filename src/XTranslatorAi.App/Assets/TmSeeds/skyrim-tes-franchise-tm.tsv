@@ -169,7 +169,7 @@ Source	Target
 [HIDDEN]	[은신]
 [INACCESSIBLE]	[사용불가]
 [NEW SAVE]	[새로 저장]
-[NO SAVES FOUND]	[저장파일 없음]
+[NO SAVES FOUND]	[저장 파일 없음]
 [Optional] Find <Alias=Jarl> and escape with <Alias.PronounObj=Jarl> through the city.	(선택) <Alias=Jarl>을(를) 찾고 <Alias.PronounObj=Jarl>와 함께 도시를 통하여 탈출하기
 [SUCCESS]	[성공]
 [SURV=Warmth is increased by <mag> points for <dur> seconds.]	[SURV=<dur> 초 동안 온기가 <mag> 증가합니다.]
@@ -3162,7 +3162,7 @@ Creates a wall of frost that does <mag> damage per second.	지면에 얼음의 �
 Creates an Ash Guardian that guards that location until destroyed. Consumes a heart stone from your inventory.	하트스톤을 소모하여 소환된 장소를 수호하는 화산재 수호자를 소환합니다. 하트스톤이 없을 시 적대적인 상태가 됩니다.
 Creation Club Cell	Creation Club Cell
 Creations	모드
-Creations are currently loaded. Note: Achievements are disabled.  Do you wish to continue loading this save?	현재 모드가 로드 되었습니다. 주의: 도전과제가 비활성화 됩니다.  이 저장파일을 불러오시겠습니까?
+Creations are currently loaded. Note: Achievements are disabled.  Do you wish to continue loading this save?	현재 모드가 로드 되었습니다. 주의: 도전과제가 비활성화 됩니다.  이 저장 파일을 불러오시겠습니까?
 Creations are currently loaded. Note: Trophies are disabled. Do you wish to continue loading this save?	현재 모드를 사용하고 있습니다. 이 세이브를 불러오시겠습니까? 주의: 업적 달성을 할 수 없습니다.
 Creatures and people that this spider attaches to will fight for you for 30 seconds.	30 초 동안 이 거미가 달라붙은 이가 나를 위해 싸웁니다.
 Creatures and people up to level <mag> flee from combat for <dur> seconds.	레벨 <mag> 이하인 목표가 <dur> 초 동안 도망가게 합니다.
@@ -3883,7 +3883,7 @@ Deft Movement	재빠른 몸놀림
 Degaine	디게인
 Delacourt	딜라쿠어
 Delayed Burial	지연된 장례식
-Delete this game?	이 저장파일을 삭제하겠습니까?
+Delete this game?	이 저장 파일을 삭제하겠습니까?
 Deliver <Alias=QuestItem> to <Alias.ShortName=Target>	<Alias.ShortName=Target>에게 <Alias=QuestItem> 배달하기
 Deliver axe to Jarl Ulfric	야를 울프릭에게 도끼를 전달하기
 Deliver axe to the Jarl of Whiterun	화이트런의 야를에게 도끼를 전달하기
@@ -13896,7 +13896,7 @@ No thanks.	필요 없소.
 No thanks. That sounds like a bad idea.	사양하지. 나쁜 생각 같으니까.
 No time to explain. Let's get out of here. (Free him)	설명할 시간이 없군. 여기서 나갑시다. (그를 풀어주기)
 No time to lose then.	그럼 낭비할 시간이 없군.
-No valid save game found.	올바른 저장파일을 찾을 수 없습니다.
+No valid save game found.	올바른 저장 파일을 찾을 수 없습니다.
 No way. It was wrong to do those things.	안 돼. 이런 건 나쁜 짓이야.
 No way. That name would scare anyone. (Persuade)	그럴 리가. 그 이름 아주 무섭게 들리는데. (설득)
 No way. That sounds illegal.	안 되지. 불법이잖아.
@@ -16838,11 +16838,11 @@ Saturalia Holiday Pack	사투랠리아 명절 팩
 Savage Blows	잔인한 일격
 Savage Feeding	흉포한 식성
 Savage Strike	흉포한 일격
-SAVE CORRUPT	저장파일 손상됨
+SAVE CORRUPT	저장 파일 손상됨
 Save failed.	저장 실패
 Save game deleted.	저장된 게임이 삭제되었습니다.
 Save location full. Disabling Autosave.	저장 공간이 가득 찼습니다. 자동 저장 불가로 전환합니다.
-SAVE OBSOLETE	옛날버전의 저장파일
+SAVE OBSOLETE	옛날버전의 저장 파일
 Save On Rest	휴식시 저장
 Save On Travel	빠른 이동 시 저장
 Save On Wait	대기시 저장
@@ -20366,7 +20366,7 @@ The Scorched Hammer Key	열쇠 - 그을린 망치 대장간
 The scrolls gave me its exact location.	스크롤이 정확한 위치를 알려 줬어.
 The Secrets of Ragnvald	라근발드의 비밀
 The Seed	씨앗
-The selected storage device does not have sufficient space available.  New saves will not be created.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않습니다.
+The selected storage device does not have sufficient space available.  New saves will not be created.	선택된 저장장치에 용량이 부족합니다. 새로운 저장 파일이 만들어지지 않습니다.
 The Serpent Doomstone	뱀의 선돌
 The Serpent Stone	뱀의 선돌
 The Serpent Stone power lets you paralyze and poison a target once a day.	'뱀의 선돌'은 하루에 한 번 목표를 마비시키고 중독시킬 수 있는 능력을 추가합니다.
@@ -20653,9 +20653,9 @@ This must be awkward for you.	불편하시겠습니다.
 This note says you're a liar! (Show note)	이 쪽지에 네가 거짓말쟁이라고 나와 있군! (쪽지를 보여준다)
 This NPC cannot help you train any higher.	이 NPC는 지금 단계 이상으로는 훈련을 도와줄 수 없습니다.
 This object is activated from somewhere else.	이것은 다른 곳에서 작동시킬 수 있습니다.
-This object is already in use by someone else.	이것은 이미 다른사람이 사용 중입니다.
+This object is already in use by someone else.	이것은 이미 다른 사람이 사용 중입니다.
 This person is busy.	이 사람은 바쁜 것 같습니다.
-This save relies on content that is no longer present. Some objects may no longer be available. Continue Loading?	이 저장파일은 게임폴더 내에 존재하지 않는 구성 요소가 포함되어 있습니다. 일부 요소는 더 이상 사용할 수 없습니다. 불러오겠습니까?
+This save relies on content that is no longer present. Some objects may no longer be available. Continue Loading?	이 저장 파일은 게임폴더 내에 존재하지 않는 구성 요소가 포함되어 있습니다. 일부 요소는 더 이상 사용할 수 없습니다. 불러오겠습니까?
 This seems dangerous.	위험해 보이는군.
 This ship, the Katariah. How will I get onboard?	그 카타리아호 라는 배 말인데, 어떻게 승선하면 되지?
 This should help translate Gallus's Journal.	이게 갤러스의 일기를 번역하는데 도움이 될 거야.
@@ -23365,9 +23365,9 @@ You cannot repair items when enemies are nearby.	적이 근처에 있을 때에�
 You cannot repair items while in combat.	전투 중에는 수리할 수 없습니다.
 You cannot save right now.	지금은 저장할 수 없습니다.
 You cannot shout while casting a spell	마법을 사용하는 도중에는 함성을 사용할 수 없습니다.
-You cannot sit on owned furniture.	다른사람의 가구에는 앉을 수 없습니다.
+You cannot sit on owned furniture.	다른 사람의 가구에는 앉을 수 없습니다.
 You cannot sleep at this time.	지금은 잘 수 없습니다.
-You cannot sleep in an owned bed.	다른사람의 침대에서는 잘 수 없습니다.
+You cannot sleep in an owned bed.	다른 사람의 침대에서는 잘 수 없습니다.
 You cannot sleep in the air.	공중에 떠 있는 동안에는 잘 수 없습니다.
 You cannot sleep in this location.	이 장소에서는 잠을 잘 수 없습니다.
 You cannot sleep when enemies are nearby.	적들이 주변에 있을 때는 잘 수 없습니다.

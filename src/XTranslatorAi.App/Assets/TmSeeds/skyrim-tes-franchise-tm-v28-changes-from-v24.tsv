@@ -1,4 +1,5 @@
 Source	Target	Previous
+[NO SAVES FOUND]	[저장 파일 없음]	[저장파일 없음]
 A <mag> point fiery explosion centered on the caster. Does more damage to closer targets.	시전자를 중심으로 화염 폭발을 일으켜 <mag> 의 화염 피해를 입힙니다. 가까운 적일수록 더 큰 피해를 입습니다.	거대한 불길의 폭풍을 일으켜 <mag> 의 화염 피해를 입힙니다. 가까운 적일수록 더 큰 피해를 입습니다.
 A Bad Trade	손해 본 거래	불경기
 A New Order	새로운 기사단	새로운 지시
@@ -7,7 +8,9 @@ Alto Wine	술 - 알토 포도주	술 - 순한 포도주
 Amulet of Mara (Possessed)	아뮬렛 - 마라 (영혼이 깃듦)	아뮬렛 - 마라 (소유)
 Ash Spawn Immolator	화산재 스폰 소각자	화산재 스폰 학살자
 Carrying capacity increased by <mag>, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.	무게 한계가 <mag> 증가합니다. 장착한 방어구가 이동 속도를 감소시키지 않으며 무게 한계에 포함되지 않습니다.
+Creations are currently loaded. Note: Achievements are disabled.  Do you wish to continue loading this save?	현재 모드가 로드 되었습니다. 주의: 도전과제가 비활성화 됩니다.  이 저장 파일을 불러오시겠습니까?	현재 모드가 로드 되었습니다. 주의: 도전과제가 비활성화 됩니다.  이 저장파일을 불러오시겠습니까?
 Cyrodilic Spadetail	시로딜 스페이드테일	시로딜 변종어
+Delete this game?	이 저장 파일을 삭제하겠습니까?	이 저장파일을 삭제하겠습니까?
 Dragon Hunting	드래곤 사냥	드래곤 사냥꾼
 Draugr Scourge	드로거 재앙	드로거 사술사
 Enchanting Pick-Up	마법부여를 위한 물품 찾아오기	마법부여를 위한 물품 찾아오기<Enchanting Pick-Up>
@@ -25,6 +28,7 @@ Mantled College Robes	마법 대학 망토 달린 로브	마법 대학 두건 �
 Morvayn Manor Chambers	모베인 저택 내실	모베인 저택 회의실
 Necromantic Grimoire	강령술 마도서	강령술 마법
 Nervous Patron	불안한 손님	불안한 후원자
+No valid save game found.	올바른 저장 파일을 찾을 수 없습니다.	올바른 저장파일을 찾을 수 없습니다.
 Pelagius the Suspicious	의심 많은 펠라지우스	수상한 펠라지우스
 PLEASE STAND BY	잠시 기다려 주세요.	준비하세요.
 Port Stone	석문	활석 문
@@ -35,6 +39,8 @@ Reaver Plunderer	강탈 약탈자	노련한 약탈자
 Remove the workbench from the small house.	작은 집에서 작업선반을 제거합니다.	집에서 작업선반을 제거합니다.
 Research Thief	연구 도둑	도적 조사
 Sap Repository	수액 보관함	샙의 보관함
+SAVE CORRUPT	저장 파일 손상됨	저장파일 손상됨
+SAVE OBSOLETE	옛날버전의 저장 파일	옛날버전의 저장파일
 Spell Tome: Bound Battleaxe	마법책: 마법 전투 도끼	마법책: 마법 전투 도끼 소환
 Spell Tome: Bound Bow	마법책: 마법 활	마법책: 마법 활 소환
 Spell Tome: Bound Dagger	마법책: 마법 단검	마법책: 마법 단검 소환
@@ -47,8 +53,10 @@ Suvaris Atheron's Logbook	수바리스 아세론의 항해일지	수바리스 �
 Tall Shelf	큰 선반	큰 책장
 Tall Shelf with Display Case	큰 선반과 진열함	큰 책장과 진열함
 The Kagrumez Gauntlet	카그루메즈 시험	카그루메즈 장갑
-The selected storage device does not have sufficient space available.  New saves will not be created.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않습니다.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않았습니다.
+The selected storage device does not have sufficient space available.  New saves will not be created.	선택된 저장장치에 용량이 부족합니다. 새로운 저장 파일이 만들어지지 않습니다.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않았습니다.
 The Third Era Timeline	제3시대 연표	제3세기 연표
+This object is already in use by someone else.	이것은 이미 다른 사람이 사용 중입니다.	이것은 이미 다른사람이 사용 중입니다.
+This save relies on content that is no longer present. Some objects may no longer be available. Continue Loading?	이 저장 파일은 게임폴더 내에 존재하지 않는 구성 요소가 포함되어 있습니다. 일부 요소는 더 이상 사용할 수 없습니다. 불러오겠습니까?	이 저장파일은 게임폴더 내에 존재하지 않는 구성 요소가 포함되어 있습니다. 일부 요소는 더 이상 사용할 수 없습니다. 불러오겠습니까?
 Those trained to use Heavy Armor make more effective use of Iron, Steel, Dwarven, Orcish, Ebony, and Daedric armors.	중갑 방어구는 철, 강철, 드워프제, 오크제, 에보니, 데이드라제 등의 중갑 방어구를 효과적으로 사용하는 기술입니다.	중갑 방어구는 철, 강철, 드워프제, 오크제, 에보니, 데이드라제 등의 중갑 방어구를 효과적으로 사용하는 기술입니다. 무거운 재료를 사용한 이 방어구들은 착용자의 몸을 보호하는데 큰 도움을 줍니다.
 Unenchanted Alteration Staff	마법부여되지 않은 변화마법 지팡이	변화마법 지팡이
 Unenchanted Conjuration Staff	마법부여되지 않은 소환마법 지팡이	소환마법 지팡이
@@ -57,5 +65,6 @@ Unenchanted Forsworn Staff	마법부여되지 않은 포스원 지팡이	포스�
 Unenchanted Illusion Staff	마법부여되지 않은 환영마법 지팡이	환영마법 지팡이
 Unenchanted Restoration Staff	마법부여되지 않은 회복마법 지팡이	회복마법 지팡이
 Weystone Source	웨이스톤 원천	웨이스톤 초점
-You cannot sit on owned furniture.	다른사람의 가구에는 앉을 수 없습니다.	다른사람이 차지하고 있는 가구에는 앉을 수 없습니다.
+You cannot sit on owned furniture.	다른 사람의 가구에는 앉을 수 없습니다.	다른사람이 차지하고 있는 가구에는 앉을 수 없습니다.
+You cannot sleep in an owned bed.	다른 사람의 침대에서는 잘 수 없습니다.	다른사람의 침대에서는 잘 수 없습니다.
 You must have a weapon drawn.	무기를 꺼내 들어야 합니다.	무기를 장착해야 합니다.
