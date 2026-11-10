@@ -15,8 +15,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <AssemblyName>TulliusTranslator</AssemblyName>
-    <Version>1.16.59</Version>
-    <InformationalVersion>1.16.59</InformationalVersion>
+    <Version>1.16.60</Version>
+    <InformationalVersion>1.16.60</InformationalVersion>
     <StartupObject>XTranslatorAi.App.Program</StartupObject>
   </PropertyGroup>
 
