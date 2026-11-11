@@ -220,9 +220,11 @@ public sealed class BundledFranchiseTmSeedService
             // v28 takes the patch's spacing of 다른 사람 and 저장 파일 (the owned furniture and bed messages, the save menu
             // texts such as SAVE CORRUPT and No valid save game found); 11 rows changed (1.16.62).
             // v29 takes the patch's second residual sample: There's no way you'll come peacefully? (순순히 따라올 생각은
-            // 없는 건가?); 1 row changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v29", "bundled-skyrim-tes-franchise-tm.tsv", 1529747, "fc205ca5aed06057034f4cd3d8b5ec5bb46da07d8885d083f26680a7e21b9a79",
-                PreviousVersions: new[] { "v28", "v27", "v26", "v25", "v24", "v23", "v22", "v21", "v20", "v19", "v18", "v17", "v16", "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v29-changes.tsv"),
+            // 없는 건가?); 1 row changed (1.16.63).
+            // v30 takes the patch's spacing of -기 위해, -게 되-, 높은 곳, 하루 종일 and 아무 말 and its 함께하고말고: You will
+            // die now (죽게 될 거야), (Remain silent) (아무 말도 하지 않는다), Of course I'll join you and others; 13 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v30", "bundled-skyrim-tes-franchise-tm.tsv", 1529757, "fd22db3a6ae8ca6c5d6de050c6dbf1be4fcf87ed6c47c99627a5473a01282e22",
+                PreviousVersions: new[] { "v29", "v28", "v27", "v26", "v25", "v24", "v23", "v22", "v21", "v20", "v19", "v18", "v17", "v16", "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v30-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,

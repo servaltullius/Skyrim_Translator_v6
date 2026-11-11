@@ -12,6 +12,7 @@ Source	Target	Previous
 (Optional) Speak to Vex about Goldenglow Estate	(선택) 골든글로우 농장에 관해 벡스와 대화하기	(선택) 골든글로우 지구에 관해 벡스와 대화하기
 (Optional) Travel to Riverwood with <Alias=FactionFriend>	(선택) <Alias=FactionFriend>와(과) 함께 리버우드로 가기	(선택) <Alias=FactionFriend>와 함께 리버우드로 가기
 (Optional) Visit the College of Winterhold to ask about the Moth Priest	(선택) 윈터홀드 대학을 방문하여 나방 사제에 관해 물어보기	(선택) 윈터홀드의 마법대학을 방문하여 나방 사제에 관해 물어보기
+(Remain silent)	(아무 말도 하지 않는다)	(아무말도 하지 않는다)
 +<mag> carrying capacity, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.	무게한계 <mag> 증가, 무거운 방어구를 착용해도 이동에 영향을 받지 않게 됩니다.
 50% chance for each attribute to absorb <mag> points of Health, Stamina and/or Magicka.	체력, 지구력, 매지카 각각에 대해 50% 확률로 <mag> 흡수합니다.	50% 확률로 체력, 지구력, 매지카 중 하나를 <mag> 흡수합니다.
 50% chance for each element of fire, frost and shock to do <mag> points of damage.	화염, 냉기, 전격 각각에 대해 50% 확률로 <mag> 의 피해를 입힙니다.	50% 확률로 <mag> 의 화염, 냉기, 전격 중 하나의 피해를 입힙니다.
@@ -43,6 +44,7 @@ A freezing whirlwind that does <mag> points of damage per second, and twice as m
 A Grand Soul gem filled with a Grand Soul is required to build the Arcane Enchanter.	마법부여대를 제작하기 위해서는 특급 소울젬(특급)이 필요합니다.	마법 부여대를 제작하기 위해서는 특급 소울젬(특급)이 필요합니다.
 A New Order	새로운 기사단	새로운 지시
 A price for what?	뭐에 대한 대가 말이오?	뭐에 대한 대가 말이요?
+A readied arrow will be put back into its quiver if the bow is sheathed.	활을 집어넣으면 화살을 쏘기 위해 시위에 걸쳐놓았던 화살도 화살통으로 다시 들어가게 됩니다.	활을 집어넣으면 화살을 쏘기위해 시위에 걸쳐놓았던 화살도 화살통으로 다시 들어가게 됩니다.
 A recent string of murders has many Windhelm residents fearing for their lives...	최근 연이은 살인사건이 수많은 윈드헬름 주민들의 삶을 공포에 떨게하고 있습니다.	최근 연이은 살인사건이 수 많은 윈드헬름 주민들의 삶을 공포에 떨게하고 있습니다.
 A spear of ice that does <mag> points of frost damage, and twice as much Stamina damage.	얼음의 가시를 날려 <mag> 의 냉기 피해와 2배의 지구력 피해를 입힙니다.	얼음의 가시를 날려 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
 A stalemate?	비긴 건가?	비긴건가?
@@ -276,6 +278,7 @@ Deliver <Alias=QuestItem> to <Alias.ShortName=Target>	<Alias.ShortName=Target>�
 Deliver Mead to Wilhelm	윌헴에게 벌꿀술을 배달하기	윌헴에게 벌꿀주를 배달하기
 Deliver the stone to Phinis	시질 스톤을 피니스에게 전달하기	시질스톤을 피니스에게 전달하기
 Deliver the sword to Proventus Avenicci	프로벤투스 아베니치에게 검을 배달하기	프로벤투스 아베니치 에게 검을 배달하기
+Delphine needs your help to stop the dragons. (Persuade)	드래곤들을 막기 위해 당신이 델핀을 도와줘야 합니다. (설득)	드래곤들을 막기위해 당신이 델핀을 도와줘야 합니다. (설득)
 Deor Woodcutter's House	디오어 우드커터의 집	나무꾼 디오어의 집
 Depends. Who's asking?	그런 질문을 하는 당신은 누구지?	그런 질문은 하는 당신은 누구지?
 Desecrated Corpse	훼손된 시체	바짝마른 시체
@@ -329,6 +332,7 @@ Do you trade your weapons with any of the cities?	다른 도시들과도 무기�
 Do you want to create this item?	이 물품을 제작하겠습니까?	이 물품을 제작할까요?
 Do you want to improve this item?	이 물품을 강화하겠습니까?	이 물품을 강화할까요?
 Do you want to move your marker or remove it?	표시를 옮기거나 삭제하겠습니까?	표시를 옮기거나 삭제할까요?
+Do you work here all day?	하루 종일 여기서 일하는 겁니까?	하루종일 여기서 일하는 겁니까?
 Do you work the forge all day?	하루 종일 대장간에서 일하는 건가?	매일 대장간에서 일하는 건가?
 Do you worry about raising a family in these dangerous times?	이렇게 위험한 시기에 가족을 부양하는 게 걱정되나?	이렇게 위험한 시기에 가족을 부양하는게 걱정되나?
 Does <mag> damage over <dur> seconds. Additional opponents in melee range have a chance to be infected.	<dur> 초 동안 <mag> 의 피해를 입힙니다. 일정한 확률로 주변 적도 감염시킵니다.	<dur> 초 동안 <mag> 의 피해를 입힙니다. 일정한 확률로 주변 적에게 피해를 줍니다.
@@ -700,12 +704,13 @@ I have to know what Miraak knows if I want to stop him.	그를 막기 위해서�
 I have to speak with Astrid! She's here, in the Sanctuary. Follow me.	아스트리드와 이야기를 해 봐야 한다! 그녀는 지금 여기 성역에 있으니, 따라 와.	아스트리드와 이야기를 해 봐야한다! 그녀는 지금 여기 성지에 있으니, 따라 와.
 I have your amulet.	아뮬렛을 가져왔소.	목걸이를 가져왔소.
 I have. Cicero won't be bothering you again.	그렇소. 시세로는 더 이상 귀찮게 하지 않을 거요.	그렇소. 시세로는 더 이상 귀찮게 하지 않을거요.
-I haven't done anything, I swear.	아무짓도 안 했는데, 정말로.	아무짓도 안했는데, 정말로.
+I haven't done anything, I swear.	아무 짓도 안 했는데, 정말로.	아무짓도 안했는데, 정말로.
 I haven't met her, but I could try to get more information.	그녀를 만난 적은 없지만, 더 많은 정보를 얻기 위해 노력해볼 수는 있을 겁니다.	그녀를 만난적은 없지만, 더 많은 정보를 얻기 위해 노력해볼 수는 있을 겁니다.
 I haven't noticed any vampire menace.	흡혈귀의 위협은 한 번도 본 적이 없는데.	흡혈귀의 위협은 한번도 본 적이 없는데.
 I heard some shouting about the Forsworn. That was it.	포스원 어쩌고 소리치는 걸 들었는데, 그것뿐이오.	포스원 어쩌고 소리치는 걸 들었는데, 그것 뿐이오.
 I heard you know about Elder Scrolls.	당신이 엘더스크롤에 관해 안다고 들었소.	당신이 엘더스크롤에 관해 아는 게 있다고 들었는데.
 I imagine you know why we're here.	왜 우리가 여기에 있는지 알고 있을 거라고 생각하는데.	왜 우리가 여기에 있는지 알고 있을거라고 생각하는데.
+I know that mound - high on the hill east of Kynesgrove.	카인즈그로브의 동쪽 언덕 높은 곳에 있는 그 무덤 말이군.	카인즈그로브의 동쪽 언덕 높은곳에 있는 그 무덤 말이군.
 I know the phrase. I'll get Cicero - you go home.	암호문은 알고 있어. 내가 시세로를 처리할 테니 넌 돌아가.	암호문은 알고 있어. 내가 시세로를 처리할테니 넌 돌아가.
 I know what I'm doing.	내가 뭘 하는지 잘 알고 있어.	내가 뭘하는지 잘 알고있어.
 I know where the Blood Horkers are.	블러드 호커 해적단이 있는 장소를 알아냈다.	블러드 호커 해적단이 있는 잘소를 알아냈다.
@@ -722,6 +727,7 @@ I need to go there anyway.	어떻게든 거기에 가야 하는데.	어떻게든
 I need to rearrange your equipment.	네 장비들을 바꾸는 게 좋겠군.	네 장비들을 바꾸는게 좋겠군.
 I need to talk to him. I'm a friend. His life's in danger. (Persuade)	이야기를 해야 해. 나는 그 사람 친구야. 그 사람의 목숨이 위험하다고. (설득)	이야기를 해야해. 나는 그 사람 친구야. 그 사람의 목숨이 위험하다고. (설득)
 I need you to cause a scene. Get everyone's attention for a few minutes.	약간 소동을 일으켜주면 좋겠는데. 몇 분 동안 모든 사람들의 이목을 끌 수 있게.	약간 소동을 일으켜주면 좋겠는데. 몇 분동안 모든 사람들의 이목을 끌 수 있게.
+I need your help to stop the war.	전쟁을 멈추기 위해 당신의 도움이 필요합니다.	전쟁을 멈추기위해 당신의 도움이 필요합니다.
 I need your help. I need to capture a dragon.	도움이 필요합니다. 드래곤 한 마리를 생포해야 하는데.	도움이 필요합니다. 드래곤 한마리를 생포해야 하는데.
 I never met a thief that worshipped anything.	신을 믿는 도둑은 본 적이 없는데.	신을 믿는 도둑은 본적이 없는데.
 I never wanted to help you. Let me go!	처음부터 널 도울 생각은 없었다. 내보내 줘!	절대로 널 돕지 않을거다. 내보내 줘!
@@ -784,7 +790,7 @@ I was right there. He almost killed me.	거기에 있었소. 그자가 나를 �
 I was set free. I could've gone anywhere. I came here to fight for the Empire.	나는 자유의 몸이 되었고 어디든 갈 수 있었소. 난 제국을 위해 싸우려고 여기에 왔소.	나는 자유의 몸이 되었고 어디든 갈 수 있소. 난 제국을 위해 싸우려고 여기에 왔소.
 I was set free. I could've gone anywhere. I came here to fight the Empire.	나는 자유의 몸이 되었고 어디든 갈 수 있었소. 난 제국과 싸우려고 여기에 온 거요.	나는 자유의 몸이 되었고 어디든 갈 수 있소. 난 제국과 싸우려고 여기에 온 거요.
 I was there. I saw the dragon burn Helgen to the ground.	그곳에 있었습니다. 드래곤이 헬겐을 불태우는 걸 직접 봤습니다.	그곳에 있었습니다. 드래곤이 헬겐을 불태우는걸 직접 봤습니다.
-I was unable to defeat them all, and they're coming for you. (Lie)	그자들을 막지 못했소, 당신을 잡기위해서 오는 중이오. (거짓)	그자들을 막지 못했소, 당신을 잡기위해서 오는 중이요. (거짓)
+I was unable to defeat them all, and they're coming for you. (Lie)	그자들을 막지 못했소, 당신을 잡기 위해서 오는 중이오. (거짓)	그자들을 막지 못했소, 당신을 잡기위해서 오는 중이요. (거짓)
 I was wondering when I'd see you again.	언제 당신을 다시 만날 수 있을까 궁금해하고 있었지.	언제 당신을 다시 만날 수 있을까 궁금해 하고 있었지.
 I wasn't told where to take you.	당신을 어디로 데려가라는 말은 듣지 못했는데.	당신을 어디로 데려가겠다고 말한적은 없는데.
 I won't condemn an innocent man.	무고한 사람을 죄인으로 몰 수는 없어.	무고한 사람을 비난할 수는 없어.
@@ -821,10 +827,12 @@ I'm going to put it on Olaf's Effigy.	올라프 왕의 모형에 입힐 것입�
 I'm Harbinger of the Companions.	난 컴패니언의 인도자다.	난 컴페니언의 선도자다.
 I'm here about Goldenglow Estate.	골든글로우 농장 일로 왔다.	골든글로우 지구 일로 왔다.
 I'm here for Elgrim's ore sample.	엘그림의 광석 표본 때문에 왔소.	엘그림의 광석 표본때문에 왔소.
+I'm here to speak to Falk.	폴크와 대화를 하기 위해 왔습니다.	폴크와 대화를 하기위해 왔습니다.
 I'm just trying to find her.	단지 그녀를 찾으려는 것뿐이야.	단지 그녀를 찾으려는 것 뿐이야.
 I'm looking for a courier.	전령을 찾고 있소.	배달부를 찾고 있소.
 I'm looking for a Khajiit... might be a Thalmor spy.	카짓을 찾고 있소... 탈모어의 첩자인 듯한데.	카짓을 찾고있소... 탈모어의 첩자인 듯 한데.
 I'm looking for an old guy hiding out in Riften, probably in the Ratway.	리프튼에 숨어 있는 늙은이를 찾고 있소, 아마도 쥐소굴에 있을 텐데.	리프튼에 숨어 있는 늙은이를 찾고 있소, 아마도 쥐소굴에 있을텐데.
+I'm loyal to the Empire and don't care who knows it.	난 제국에 충성하며 누가 그것을 알게 되든 상관없습니다.	난 제국에 충성하며 누가 그것을 알게되든 상관없습니다.
 I'm married. (Lie)	나는 결혼했어. (거짓)	나는 결혼했어. (거짓말)
 I'm not doing anything yet.	아직 아무것도 하겠다고 한 적 없는데.	나는 아직 아무것도 하지 않았는데.
 I'm not for hire right now.	일자리 때문에 온 게 아닙니다.	일자리 때문에 온게 아닙니다.
@@ -1098,6 +1106,7 @@ Now, now, Gianna. Who's the Gourmet here?	이봐, 지아나. 여기서 '미식�
 Now, what were you saying?	음, 뭐라고 했소?	음, 뭐라고 했습니까?
 Obtain a Deathbell Flower	데스벨 꽃을 구하기	데쓰벨 꽃을 구하기
 Obtain some Vampire Dust	흡혈귀 가루를 구하기	몇개의 흡혈귀 가루를 구하기
+Of course I'll join you.	함께하고말고.	함께 하고 말고.
 Of course it's valid.	물론 정당한 학파죠.	물론 주요 학파죠.
 Of course you're not invisible. Go bother someone else.	물론 아니지. 더 이상 날 귀찮게 하지 마.	물론 아니지. 더 이상 날 귀찮게 하지마.
 Off the northern coast of Skyrim, due west of Solitude.	스카이림의 북쪽 해안, 솔리튜드에서 정서쪽이다.	스카이림의 북동쪽 해안, 솔리튜드에서 정서쪽이다.
@@ -1950,6 +1959,7 @@ You sure you won't buy it?	정말로 사지 않을 건가?	정말로 사지 않�
 You take half damage for <dur> seconds from all physical attacks and most magical attacks.	<dur> 초 동안 모든 물리 공격과 대부분의 마법 공격으로 입는 피해량이 50% 감소합니다.	<dur> 초 동안 입는 피해량이 50% 감소합니다.
 You think she'll get over it?	당신 딸이 그 마음을 접을 거라고 생각하시오?	당신 딸이 견딜 수 있을거라고 생각하시오?
 You think someone is out to get you?	누군가가 당신을 노리고 있다고 생각합니까?	누군가가 당신을 찾고 있다고 생각합니까?
+You took a big risk coming here.	여기 오기 위해 큰 위험을 감수했군.	여기 오기위해 큰 위험을 감수했군.
 You want me to murder someone else? Who?	또 다른 사람을 죽이라는 말인가? 누구를?	사람을 죽이라는 말인가? 누구를?
 You want to be shipped off to Honorhall Orphanage?	명예전당 고아원으로 보내 버릴까?	널 고아원에 보내는 배에다 실어버릴까?
 You want to help me kill the vampire?	흡혈귀를 죽이는 걸 도와주겠다고?	흡혈귀를 죽이는 일에 도움이 필요한가?
@@ -1960,6 +1970,7 @@ You were going to tell me a story.	뭔가 이야기를 해 주려던 것 같은�
 You were right to be paranoid, Ennodius.	네가 걱정하던 게 맞아, 에노디우스.	네가 걱정하던게 맞아, 에노디우스.
 You were the one presiding over the execution.	당신이 그 처형을 주관한 사람이었는데.	당신이 그 처형을 주관한 사람이였는데.
 You will die as you lived. An arrogant joke.	살아온 그대로 죽게 될 거다. 거만한 웃음거리로.	여태까지 네가 한 것처럼 당해서 죽게 될 거다. 이 거만한 녀석.
+You will die now.	넌 이제 죽게 될 거야.	넌 이제 죽게될 거야.
 You will do my bidding.	내 명령을 따르라.	나의 부름에 응답하라.
 You won't let Onmund out of his trade, but you want out of yours?	온문드가 거래를 그만두면 안 되지만, 당신은 그만두고 싶다고?	온문드가 거래를 그만두면 안되지만, 당신은 그만두고 싶다고?
 You won't miss it, then. (Persuade)	별로 아쉽지 않을 거요. (설득)	별로 아쉽지 않을거요. (설득)
