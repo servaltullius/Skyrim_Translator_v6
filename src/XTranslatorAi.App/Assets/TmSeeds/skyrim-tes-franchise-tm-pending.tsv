@@ -21,3 +21,5 @@ There's a town nearby in that direction. Do you need help getting there?	이 방
 This should help translate Gallus's Journal.	이게 갤러스의 일기를 번역하는 데 도움이 될 거야.
 I'm with the Guild. Is this enough to clear my bounty? (<Global=GuildCost> gold)	나는 길드원이야. 이 정도면 현상금을 없애는 데 충분할까? (<Global=GuildCost> 골드)
 Absorb <mag>% of the magicka from hostile spells for <dur> seconds.	<dur> 초 동안 적의 마법으로부터 <mag>%의 매지카를 흡수합니다.
+Magic weapons lose power with each successful hit, but can be recharged with filled soul gems.	마법 무기는 목표를 제대로 맞출 때마다 충전된 힘을 소모하게 됩니다. 하지만 영혼이 담겨있는 소울젬을 사용하여 다시 충전할 수 있습니다.
+No, didn't see anyone. (Lie)	아니, 아무도 본 적 없소. (거짓)
