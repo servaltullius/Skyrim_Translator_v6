@@ -1,3 +1,9 @@
 Source	Target
 Warehouse Bookshelves	창고 책장
 For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
+Editor Smoke Test Cell	에디터 스모크 테스트 셀
+I need you to do something.	부탁할 일이 있는데.
+Interested in me, are you?	나에게 관심이 있나?
+Follow me.	따라오게.
+I've got better things to do.	난 바쁜 사람이야.
+Wait for me in the city...	도시에서 기다려...
