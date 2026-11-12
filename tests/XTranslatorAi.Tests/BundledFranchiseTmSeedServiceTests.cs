@@ -17,6 +17,7 @@ public class BundledFranchiseTmSeedServiceTests
     [InlineData("bundled-skyrim-tes-franchise-tm.tsv", true)]
     [InlineData("bundled-starfield-franchise-tm.tsv", true)]
     // Any version's changes file: an earlier one left in tm-import when the next version wrote its own.
+    [InlineData("bundled-skyrim-tes-franchise-tm-v31-changes.tsv", true)]
     [InlineData("bundled-skyrim-tes-franchise-tm-v30-changes.tsv", true)]
     [InlineData("bundled-skyrim-tes-franchise-tm-v29-changes.tsv", true)]
     [InlineData("bundled-skyrim-tes-franchise-tm-v28-changes.tsv", true)]
@@ -606,48 +607,49 @@ public class BundledFranchiseTmSeedServiceTests
     // its fixes to mistranslated messages and quest objectives, v23 its fixes to mistranslated player choices, v24 its fix
     // to Dawnguard's Turn perk, v25 its fixes to names, all 13,204 read against the English, v26 its second read of the
     // books and CC books, v27 its read of the last base-game strings no pass had read against the English, v28 its
-    // spacing of 다른 사람 and 저장 파일, v29 its second residual sample, and v30 its spacing of -기 위해, -게 되- and
-    // the other leftover forms.
+    // spacing of 다른 사람 and 저장 파일, v29 its second residual sample, v30 its spacing of -기 위해, -게 되- and
+    // the other leftover forms, and v31 its spacing of the dependent nouns, -든지 and the compounds.
     // Users who already imported an earlier seed get only the rows changed since their version, so other rows they edited
     // in the global memory stay; a new install imports the whole seed. The v6 stamp is 1.15's, the v7 one 1.16's to 1.16.39's,
-    // the v8 one 1.16.40's, the v9 one 1.16.41's, the v11 one 1.16.42's, the v12 one 1.16.43's, the v13 one 1.16.44's, the v15 one 1.16.45's, the v16 one 1.16.46's, the v17 one 1.16.47's, the v18 one 1.16.48's, the v19 one 1.16.49's, the v20 one 1.16.50's, the v21 one 1.16.51's to 1.16.53's, the v22 one 1.16.54's, the v23 one 1.16.55's, the v24 one 1.16.56's, the v25 one 1.16.57's to 1.16.59's, the v26 one 1.16.60's, the v27 one 1.16.61's, the v28 one 1.16.62's, the v29 one 1.16.63's; v10 and v14 never shipped, but a build of main may have written them.
+    // the v8 one 1.16.40's, the v9 one 1.16.41's, the v11 one 1.16.42's, the v12 one 1.16.43's, the v13 one 1.16.44's, the v15 one 1.16.45's, the v16 one 1.16.46's, the v17 one 1.16.47's, the v18 one 1.16.48's, the v19 one 1.16.49's, the v20 one 1.16.50's, the v21 one 1.16.51's to 1.16.53's, the v22 one 1.16.54's, the v23 one 1.16.55's, the v24 one 1.16.56's, the v25 one 1.16.57's to 1.16.59's, the v26 one 1.16.60's, the v27 one 1.16.61's, the v28 one 1.16.62's, the v29 one 1.16.63's, the v30 one 1.16.64's; v10 and v14 never shipped, but a build of main may have written them.
     [Theory]
-    [InlineData("v29|1529747|fc205ca5aed06057034f4cd3d8b5ec5bb46da07d8885d083f26680a7e21b9a79|0", false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v28|1529753|5619b6196d61cd1ff3d09334477eb5f812a30468b6ea1d30a63d3541f7a89149|0", true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v27|1529742|c7756b1a30ae58c9bfa15e51c28dd91c6a173f8270b673b214f22f9ed548c1e0|0", true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v26|1529907|ceabf40d67858298538aea16571ef8226f419803f45d57685b14b44fc0ebb6ca|0", true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v25|1529880|65dd1c54ae75fb0761b98aa4f59b8c0b021e071cf2a8a54395c0346b091902d0|0", true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v24|1529777|0737225ff2cbdc90b531a9d5f03635c5fef834acf10df3eb98d8539d5c879229|0", true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v23|1529774|fa80528bfeab13f341a6ca0fbd3d0de6d634bbe28801b97d86a0755fe8099c3c|0", true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v22|1529615|5ca244e2ba970cd33633c3ff14c59efe56c20dcf9ee3bda5df8e316933cbe445|0", true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v21|1529490|1433408c2cda6d9ba91ea947a96fb2c44e06d9251157af44a61bfe7a3aa8e64b|0", true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v20|1529479|aad2912d47384ff74a9c1c46c32f99ee7d2e25474b4319e7b2b8288e17753eb0|0", true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v19|1529487|14c16f33c0a05248c20d23d6a37c8eb8f2f8aa05fc74c16f9fb7b44bc4017a42|0", true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v18|1529461|b6114d36b554a9a387c4700bb5a12bcd3f0613791f8373c7615b9c55a0f557b6|0", true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v17|1529382|2b70b811a16507b348c87e0449a765e59c54329e2b6baf7c7ec8c624aca84082|0", true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v16|1529388|9c84074769ec073e6e5f6e6c2cfb926468b98121b8d3119da0a64cd425312715|0", true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v15|1529357|719fe06b8712b2b710911da6fa4fe2a616b3ed485aba54ec06ef0f53cf56e12b|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v14|1529320|27d3e1b8d26c8a4a4318f997a29558e1fef2bccce9ce9e6571d929aa0151dcb2|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v13|1529311|883d45a766578b7cc0fba1dd1b0a47f090b6b3a42357486e3bb120eccf26eb74|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v12|1529223|55a04a316bd5ae7694538e8459c6029386c9ba887f8e11b597f8e91811a6321f|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v11|1529133|860951f686ebe215b3f5ca3bd9c617da623d6fcee3a8cb2a7d0ddfb037569bab|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v10|1528918|3448f09b36118aa8d9391df8b1ad9d118472e03b3ba7285e256d2689b1eae29b|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false)]
-    [InlineData("v9|1528886|c2b3d628469fbe98ebf24a7051478854265ca4ef29e08b8106f933c26456100b|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false)]
-    [InlineData("v8|1528768|0b4a21c8a7a09d5f10ff09d2f50ac2001446e9fea713d4279b87ac666cd30a42|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false)]
-    [InlineData("v7|1528774|a020a55d45ed0c1a8331294f057c005b8a35fe091fb890c4b676564883ea5db7|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false)]
-    [InlineData("v6|1528761|ed933491d5eafaf99142407ca1a159f92fdeee2ea7d2af625e13ccadd7d8bccc|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false)]
-    [InlineData("v5|1528360|1aa05d8bb8f743812f7870aea4a5b444028fc07647b2cdb71ecedbde3371477d|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false)]
-    [InlineData("v4|1527387|20d5bd50e2d722876bc0066bb627d446bc6abda67a88760f03ec6a91e490f426|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false)]
-    [InlineData("v3|1527327|e66600f3aff94bd6a9f7bf2f006279580d8b52aa74734640b3bec9b4a809d2eb|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false)]
-    [InlineData("v2|1527256|3a72a1830ab346b43fa3fb97251738d00480224ba014c3ff59005c47b5efb0fd|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
-    [InlineData("v1|1527384|8fd8931be7c1e7da90d99cbaaeac001ec4809c170fd18feb4274ceac83e69a44|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true)]
-    public async Task ElderScrollsSeed_V30_ImportsOnlyTheChangesSinceTheImportedVersion(string stamp, bool beforeV29, bool beforeV28, bool beforeV27, bool beforeV26, bool beforeV25, bool beforeV24, bool beforeV23, bool beforeV22, bool beforeV21, bool beforeV20, bool beforeV19, bool beforeV18, bool beforeV17, bool beforeV16, bool beforeV15, bool beforeV14, bool beforeV13, bool beforeV12, bool beforeV11, bool beforeV10, bool beforeV9, bool beforeV8, bool beforeV7, bool beforeV6, bool beforeV5, bool beforeV4, bool beforeV3, bool fromV1)
+    [InlineData("v30|1529757|fd22db3a6ae8ca6c5d6de050c6dbf1be4fcf87ed6c47c99627a5473a01282e22|0", false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v29|1529747|fc205ca5aed06057034f4cd3d8b5ec5bb46da07d8885d083f26680a7e21b9a79|0", true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v28|1529753|5619b6196d61cd1ff3d09334477eb5f812a30468b6ea1d30a63d3541f7a89149|0", true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v27|1529742|c7756b1a30ae58c9bfa15e51c28dd91c6a173f8270b673b214f22f9ed548c1e0|0", true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v26|1529907|ceabf40d67858298538aea16571ef8226f419803f45d57685b14b44fc0ebb6ca|0", true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v25|1529880|65dd1c54ae75fb0761b98aa4f59b8c0b021e071cf2a8a54395c0346b091902d0|0", true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v24|1529777|0737225ff2cbdc90b531a9d5f03635c5fef834acf10df3eb98d8539d5c879229|0", true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v23|1529774|fa80528bfeab13f341a6ca0fbd3d0de6d634bbe28801b97d86a0755fe8099c3c|0", true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v22|1529615|5ca244e2ba970cd33633c3ff14c59efe56c20dcf9ee3bda5df8e316933cbe445|0", true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v21|1529490|1433408c2cda6d9ba91ea947a96fb2c44e06d9251157af44a61bfe7a3aa8e64b|0", true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v20|1529479|aad2912d47384ff74a9c1c46c32f99ee7d2e25474b4319e7b2b8288e17753eb0|0", true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v19|1529487|14c16f33c0a05248c20d23d6a37c8eb8f2f8aa05fc74c16f9fb7b44bc4017a42|0", true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v18|1529461|b6114d36b554a9a387c4700bb5a12bcd3f0613791f8373c7615b9c55a0f557b6|0", true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v17|1529382|2b70b811a16507b348c87e0449a765e59c54329e2b6baf7c7ec8c624aca84082|0", true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v16|1529388|9c84074769ec073e6e5f6e6c2cfb926468b98121b8d3119da0a64cd425312715|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v15|1529357|719fe06b8712b2b710911da6fa4fe2a616b3ed485aba54ec06ef0f53cf56e12b|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v14|1529320|27d3e1b8d26c8a4a4318f997a29558e1fef2bccce9ce9e6571d929aa0151dcb2|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v13|1529311|883d45a766578b7cc0fba1dd1b0a47f090b6b3a42357486e3bb120eccf26eb74|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v12|1529223|55a04a316bd5ae7694538e8459c6029386c9ba887f8e11b597f8e91811a6321f|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v11|1529133|860951f686ebe215b3f5ca3bd9c617da623d6fcee3a8cb2a7d0ddfb037569bab|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v10|1528918|3448f09b36118aa8d9391df8b1ad9d118472e03b3ba7285e256d2689b1eae29b|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false)]
+    [InlineData("v9|1528886|c2b3d628469fbe98ebf24a7051478854265ca4ef29e08b8106f933c26456100b|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false)]
+    [InlineData("v8|1528768|0b4a21c8a7a09d5f10ff09d2f50ac2001446e9fea713d4279b87ac666cd30a42|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false)]
+    [InlineData("v7|1528774|a020a55d45ed0c1a8331294f057c005b8a35fe091fb890c4b676564883ea5db7|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false)]
+    [InlineData("v6|1528761|ed933491d5eafaf99142407ca1a159f92fdeee2ea7d2af625e13ccadd7d8bccc|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false)]
+    [InlineData("v5|1528360|1aa05d8bb8f743812f7870aea4a5b444028fc07647b2cdb71ecedbde3371477d|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false)]
+    [InlineData("v4|1527387|20d5bd50e2d722876bc0066bb627d446bc6abda67a88760f03ec6a91e490f426|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false)]
+    [InlineData("v3|1527327|e66600f3aff94bd6a9f7bf2f006279580d8b52aa74734640b3bec9b4a809d2eb|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false)]
+    [InlineData("v2|1527256|3a72a1830ab346b43fa3fb97251738d00480224ba014c3ff59005c47b5efb0fd|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+    [InlineData("v1|1527384|8fd8931be7c1e7da90d99cbaaeac001ec4809c170fd18feb4274ceac83e69a44|0", true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true)]
+    public async Task ElderScrollsSeed_V31_ImportsOnlyTheChangesSinceTheImportedVersion(string stamp, bool beforeV30, bool beforeV29, bool beforeV28, bool beforeV27, bool beforeV26, bool beforeV25, bool beforeV24, bool beforeV23, bool beforeV22, bool beforeV21, bool beforeV20, bool beforeV19, bool beforeV18, bool beforeV17, bool beforeV16, bool beforeV15, bool beforeV14, bool beforeV13, bool beforeV12, bool beforeV11, bool beforeV10, bool beforeV9, bool beforeV8, bool beforeV7, bool beforeV6, bool beforeV5, bool beforeV4, bool beforeV3, bool fromV1)
     {
         var root = CreateTempRoot();
         try
         {
             var metadata = BundledFranchiseTmSeedService.GetBundledSeedMetadata(BethesdaFranchise.ElderScrolls)!;
-            Assert.Equal("v30", metadata.Version);
+            Assert.Equal("v31", metadata.Version);
             var importDir = ProjectPaths.GetGlobalTranslationMemoryImportDir(BethesdaFranchise.ElderScrolls, root);
             Directory.CreateDirectory(importDir);
             var previousStamp = ProjectPaths.GetBundledFranchiseTmSeedStampPath(BethesdaFranchise.ElderScrolls, stamp.Split('|')[0], root);
@@ -669,40 +671,45 @@ public class BundledFranchiseTmSeedServiceTests
             // The import reads every row of it, a row new to the seed (no Previous) too.
             var parsed = TranslationMemoryFileService.ParseTsvChanges(await ImportTextFileReader.ReadAllLinesAsync(changesPath, CancellationToken.None));
             Assert.Equal(changes.Count(c => c == '\n') - 1, parsed!.Count);
-            // v30 is in every upgrade: the patch's spacing of -게 되-, -기 위해, 아무 말 and the others (a threat, the silent
-            // choice). From v29 that is all.
-            Assert.Contains("\nYou will die now.\t넌 이제 죽게 될 거야.\t넌 이제 죽게될 거야.\n", changes, StringComparison.Ordinal);
-            Assert.Contains("\n(Remain silent)\t(아무 말도 하지 않는다)\t(아무말도 하지 않는다)\n", changes, StringComparison.Ordinal);
-            Assert.True(beforeV29 || parsed.Count == 13, $"{parsed.Count} rows from v29");
+            // v31 is in every upgrade: the patch's spacing of the dependent noun 데 and its compound 물속 (a choice, a
+            // system message). From v30 that is all.
+            Assert.Contains("\nDo you need help finding the sword?\t그 칼을 찾는 데 도움이 필요한가?\t그 칼을 찾는데 도움이 필요한가?\n", changes, StringComparison.Ordinal);
+            Assert.Contains("\nYou cannot cast ranged spells underwater\t물속에서는 원거리 마법을 사용할 수 없습니다\t물 속에서는 원거리 마법을 사용할 수 없습니다\n", changes, StringComparison.Ordinal);
+            Assert.True(beforeV30 || parsed.Count == 34, $"{parsed.Count} rows from v30");
+            // v30 (1.16.64) reaches those who imported a seed older than it: the patch's spacing of -게 되-, -기 위해, 아무 말
+            // and the others (a threat, the silent choice).
+            Assert.Equal(beforeV30, changes.Contains("\nYou will die now.\t넌 이제 죽게 될 거야.\t넌 이제 죽게될 거야.\n", StringComparison.Ordinal));
+            Assert.Equal(beforeV30, changes.Contains("\n(Remain silent)\t(아무 말도 하지 않는다)\t(아무말도 하지 않는다)\n", StringComparison.Ordinal));
+            Assert.True(!beforeV30 || beforeV29 || parsed.Count == 47, $"{parsed.Count} rows from v29");
             // v29 (1.16.63) reaches those who imported a seed older than it: the patch's second residual sample (a player
             // choice: come peacefully).
             Assert.Equal(beforeV29, changes.Contains("\nThere's no way you'll come peacefully?\t순순히 따라올 생각은 없는 건가?\t", StringComparison.Ordinal));
-            Assert.True(!beforeV29 || beforeV28 || parsed.Count == 14, $"{parsed.Count} rows from v28");
+            Assert.True(!beforeV29 || beforeV28 || parsed.Count == 48, $"{parsed.Count} rows from v28");
             // v28 (1.16.62) reaches those who imported a seed older than it: the patch's spacing of 다른 사람 and 저장 파일
             // (the owned bed message, the save menu texts).
             Assert.Equal(beforeV28, changes.Contains("\nYou cannot sleep in an owned bed.\t다른 사람의 침대에서는 잘 수 없습니다.\t다른사람의 침대에서는 잘 수 없습니다.\n", StringComparison.Ordinal));
             Assert.Equal(beforeV28, changes.Contains("\nSAVE CORRUPT\t저장 파일 손상됨\t저장파일 손상됨\n", StringComparison.Ordinal));
-            Assert.True(!beforeV28 || beforeV27 || parsed.Count == 25, $"{parsed.Count} rows from v27");
+            Assert.True(!beforeV28 || beforeV27 || parsed.Count == 59, $"{parsed.Count} rows from v27");
             // v27 (1.16.61) reaches those who imported a seed older than it: the patch's read of the last base-game strings
             // no pass had read against the English (STUDDED, PLEASE STAND BY, an hour).
             Assert.Equal(beforeV27, changes.Contains("\nSTUDDED\t강화\t장식\n", StringComparison.Ordinal));
             Assert.Equal(beforeV27, changes.Contains("\nPLEASE STAND BY\t잠시 기다려 주세요.\t준비하세요.\n", StringComparison.Ordinal));
             Assert.Equal(beforeV27, changes.Contains("\nhour\t시간\t시\n", StringComparison.Ordinal));
-            Assert.True(!beforeV27 || beforeV26 || parsed.Count == 32, $"{parsed.Count} rows from v26");
+            Assert.True(!beforeV27 || beforeV26 || parsed.Count == 66, $"{parsed.Count} rows from v26");
             // v26 (1.16.60) reaches those who imported a seed older than it: the patch's second read of the books and CC books
             // and the choices settled after it (the book name Frontier, Conquest, the Necromantic Grimoire).
             Assert.Equal(beforeV26, changes.Contains("\nFrontier, Conquest\t개척지, 정복\t개척자, 정복\n", StringComparison.Ordinal));
             Assert.Equal(beforeV26, changes.Contains("\nNecromantic Grimoire\t강령술 마도서\t강령술 마법\n", StringComparison.Ordinal));
-            Assert.True(!beforeV26 || beforeV25 || parsed.Count == 41, $"{parsed.Count} rows from v25");
+            Assert.True(!beforeV26 || beforeV25 || parsed.Count == 75, $"{parsed.Count} rows from v25");
             // v25 (1.16.57) reaches those who imported a seed older than it: the patch's fixes to names (the Weystone Source
             // socket, Prisoner's Cuffs, the Kagrumez Gauntlet).
             Assert.Equal(beforeV25, changes.Contains("\nWeystone Source\t웨이스톤 원천\t웨이스톤 초점\n", StringComparison.Ordinal));
             Assert.Equal(beforeV25, changes.Contains("\nPrisoner's Cuffs\t죄수의 수갑\t죄수의 장갑\n", StringComparison.Ordinal));
             Assert.Equal(beforeV25, changes.Contains("\nThe Kagrumez Gauntlet\t카그루메즈 시험\t카그루메즈 장갑\n", StringComparison.Ordinal));
-            Assert.True(!beforeV25 || beforeV24 || parsed.Count == 83, $"{parsed.Count} rows from v24");
+            Assert.True(!beforeV25 || beforeV24 || parsed.Count == 117, $"{parsed.Count} rows from v24");
             // v24 (1.16.56) reaches those who imported a seed older than it: the Turn perk fix (Turn 변신 → 돌리기).
             Assert.Equal(beforeV24, changes.Contains("\nTurn\t돌리기\t변신\n", StringComparison.Ordinal));
-            Assert.True(!beforeV24 || beforeV23 || parsed.Count == 84, $"{parsed.Count} rows from v23");
+            Assert.True(!beforeV24 || beforeV23 || parsed.Count == 118, $"{parsed.Count} rows from v23");
             // v23 (1.16.55) reaches those who imported a seed older than it: the patch's fixes to mistranslated player
             // choices (a dismissive Whatever, the next move).
             Assert.Equal(beforeV23, changes.Contains("\nWhatever.\t그러든가.\t알았다.\n", StringComparison.Ordinal));
@@ -711,7 +718,7 @@ public class BundledFranchiseTmSeedServiceTests
             // seed holds.
             Assert.Equal(beforeV23 && !beforeV11, changes.Contains("\nI never wanted to help you. Let me go!\t처음부터 널 도울 생각은 없었다. 내보내 줘!\t절대로 널 돕지 않을 거다. 내보내 줘!\n", StringComparison.Ordinal));
             Assert.Equal(beforeV11, changes.Contains("\nI never wanted to help you. Let me go!\t처음부터 널 도울 생각은 없었다. 내보내 줘!\t절대로 널 돕지 않을거다. 내보내 줘!\n", StringComparison.Ordinal));
-            Assert.True(!beforeV23 || beforeV22 || parsed.Count == 121, $"{parsed.Count} rows from v22");
+            Assert.True(!beforeV23 || beforeV22 || parsed.Count == 155, $"{parsed.Count} rows from v22");
             // v22 (1.16.54) reaches those who imported a seed older than it: the patch's fixes to mistranslated messages and
             // quest objectives (Corner Shelf, a way into Hjerim, planted evidence).
             Assert.Equal(beforeV22, changes.Contains("\nCorner Shelf\t구석 선반\t작은 선반\n", StringComparison.Ordinal));
@@ -721,14 +728,14 @@ public class BundledFranchiseTmSeedServiceTests
             // v5 spaced the tusk powder row (몇개를 → 몇 개를), so the text v22 replaces is the one the imported seed holds.
             Assert.Equal(beforeV22 && !beforeV5, changes.Contains("\nFind some Mammoth Tusk Powder\t매머드 상아 가루를 찾기\t매머드 상아 가루 몇 개를 찾기\n", StringComparison.Ordinal));
             Assert.Equal(beforeV5, changes.Contains("\nFind some Mammoth Tusk Powder\t매머드 상아 가루를 찾기\t매머드 상아 가루 몇개를 찾기\n", StringComparison.Ordinal));
-            Assert.True(!beforeV22 || beforeV21 || parsed.Count == 138, $"{parsed.Count} rows from v21");
+            Assert.True(!beforeV22 || beforeV21 || parsed.Count == 172, $"{parsed.Count} rows from v21");
             // v21 (1.16.51) reaches those who imported a seed older than it: the patch's fixes to mistranslated NPC dialogue
             // (Galmar's oath swears loyalty to the brothers and sisters in arms as to the lord).
             Assert.Equal(beforeV21, changes.Contains("\n\"...even to my lord as to my fellow brothers and sisters in arms.\"\t'... 주군께 그러하듯 내 동료 전우들에게도 충성을 바칠 것을 선서합니다.'\t", StringComparison.Ordinal));
             // v11 spaced the oath (바칠것을 → 바칠 것을), so the text v21 replaces is the one the imported seed holds.
             Assert.Equal(beforeV21 && !beforeV11, changes.Contains("\n\"...even to my lord as to my fellow brothers and sisters in arms.\"\t'... 주군께 그러하듯 내 동료 전우들에게도 충성을 바칠 것을 선서합니다.'\t'... 내 동료 전우들과 함께, 주군께 충성을 바칠 것을 선서합니다.'\n", StringComparison.Ordinal));
             Assert.Equal(beforeV11, changes.Contains("\n\"...even to my lord as to my fellow brothers and sisters in arms.\"\t'... 주군께 그러하듯 내 동료 전우들에게도 충성을 바칠 것을 선서합니다.'\t'... 내 동료 전우들과 함께, 주군께 충성을 바칠것을 선서합니다.'\n", StringComparison.Ordinal));
-            Assert.True(!beforeV21 || beforeV20 || parsed.Count == 139, $"{parsed.Count} rows from v20");
+            Assert.True(!beforeV21 || beforeV20 || parsed.Count == 173, $"{parsed.Count} rows from v20");
             // v20 (1.16.50) reaches those who imported a seed older than it: the patch's fixes to mistranslated effect
             // descriptions and loading screens (one piece of ore, millennia).
             Assert.Equal(beforeV20, changes.Contains("\nTransmutes one piece of unrefined Iron ore to Silver, or Silver ore to Gold if the caster is carrying any.\t소지품에 있는 철 광석 하나를 은 광석으로 변환하거나 은 광석 하나를 금 광석으로 변환합니다.\t소지품에 있는 철 광석을 은 광석으로 변환하거나 은 광석을 금 광석으로 변환합니다.\n", StringComparison.Ordinal));
@@ -737,57 +744,57 @@ public class BundledFranchiseTmSeedServiceTests
             // holds.
             Assert.Equal(beforeV20 && !beforeV15, changes.Contains("\nThe dwarves of Tamriel disappeared millennia ago and are presumed extinct.\t탐리엘에서 드워프들은 수천 년 전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.\t탐리엘에서 드워프들은 천여 년 전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.\n", StringComparison.Ordinal));
             Assert.Equal(beforeV15, changes.Contains("\nThe dwarves of Tamriel disappeared millennia ago and are presumed extinct.\t탐리엘에서 드워프들은 수천 년 전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.\t탐리엘에서 드워프들은 천여년전에 사라졌고 지금은 멸종된 것으로 추정되고 있습니다.\n", StringComparison.Ordinal));
-            Assert.True(!beforeV20 || beforeV19 || parsed.Count == 156, $"{parsed.Count} rows from v19");
+            Assert.True(!beforeV20 || beforeV19 || parsed.Count == 190, $"{parsed.Count} rows from v19");
             // v19 (1.16.49) reaches those who imported a seed older than it: the eighth spacing review (겁니다, 게).
             Assert.Equal(beforeV19, changes.Contains("\nWhat's making you so angry?\t왜 그렇게 화난 겁니까?\t", StringComparison.Ordinal));
             Assert.Equal(beforeV19, changes.Contains("\nWhat else you got?\t다른 게 또 있나?\t", StringComparison.Ordinal));
-            Assert.True(!beforeV19 || beforeV18 || parsed.Count == 209, $"{parsed.Count} rows from v18");
+            Assert.True(!beforeV19 || beforeV18 || parsed.Count == 243, $"{parsed.Count} rows from v18");
             // v18 (1.16.48) reaches those who imported a seed older than it: the seventh spacing review (신경 쓰다, 걸).
             Assert.Equal(beforeV18, changes.Contains("\nNever mind.\t신경 쓰지 마시오.\t", StringComparison.Ordinal));
             Assert.Equal(beforeV18, changes.Contains("\nWhy are you telling me all this?\t왜 나에게 모든 걸 이야기하는 거지?\t", StringComparison.Ordinal));
-            Assert.True(!beforeV18 || beforeV17 || parsed.Count == 288, $"{parsed.Count} rows from v17");
+            Assert.True(!beforeV18 || beforeV17 || parsed.Count == 322, $"{parsed.Count} rows from v17");
             // v17 (1.16.47) reaches those who imported a seed older than it: the sixth spacing review (이곳, 뿐).
             Assert.Equal(beforeV17, changes.Contains("\nAre sales that bad out here?\t이곳에서는 장사가 잘 안 되나?\t", StringComparison.Ordinal));
             Assert.Equal(beforeV17, changes.Contains("\nThere wasn't a body in the grave. Just the heart stone.\t무덤에 시체는 없고 하트스톤뿐이던데.\t", StringComparison.Ordinal));
-            Assert.True(!beforeV17 || beforeV16 || parsed.Count == 294, $"{parsed.Count} rows from v16");
+            Assert.True(!beforeV17 || beforeV16 || parsed.Count == 328, $"{parsed.Count} rows from v16");
             // v16 (1.16.46) reaches those who imported a seed older than it: the fifth spacing review (없다, units after a
             // numeral).
             Assert.Equal(beforeV16, changes.Contains("\nNo thanks.\t필요 없소.\t", StringComparison.Ordinal));
             Assert.Equal(beforeV16, changes.Contains("\nThere are only four of you?\t당신들 네 명이 전부입니까?\t", StringComparison.Ordinal));
-            Assert.True(!beforeV16 || beforeV15 || parsed.Count == 333, $"{parsed.Count} rows from v15");
+            Assert.True(!beforeV16 || beforeV15 || parsed.Count == 367, $"{parsed.Count} rows from v15");
             // v15 (1.16.45) reaches those who imported a seed older than it: the rest of the fourth spacing review (-야 하다,
             // 여러 번).
             Assert.Equal(beforeV15, changes.Contains("\nSo what do we do?\t그래서 뭘 해야 하지?\t", StringComparison.Ordinal));
             Assert.Equal(beforeV15, changes.Contains("\nYeah, I've been getting that a lot.\t아, 여러 번 들었소.\t", StringComparison.Ordinal));
-            Assert.True(!beforeV15 || beforeV14 || parsed.Count == 373, $"{parsed.Count} rows from v14");
+            Assert.True(!beforeV15 || beforeV14 || parsed.Count == 407, $"{parsed.Count} rows from v14");
             // v14 (never shipped) reaches those who imported a seed older than it: the fourth review's first chunk (지 since
             // apart, -ㄹ지 joined).
             Assert.Equal(beforeV14, changes.Contains("\nHow long have you been a Steward?\t행정관이 된 지 얼마나 되었습니까?\t", StringComparison.Ordinal));
             Assert.Equal(beforeV14, changes.Contains("\nPerhaps it could be translated.\t번역이 가능할지도 모르겠군.\t", StringComparison.Ordinal));
-            Assert.True(!beforeV14 || beforeV13 || parsed.Count == 384, $"{parsed.Count} rows from v13");
+            Assert.True(!beforeV14 || beforeV13 || parsed.Count == 418, $"{parsed.Count} rows from v13");
             // v13 (1.16.44) reaches those who imported a seed older than it: the patch's third spacing review (거, the
             // negating 안, 적, 한 번).
             Assert.Equal(beforeV13, changes.Contains("\nI suspected as much.\t그럴 거라고 생각했소.\t그럴거라고 생각했소.\n", StringComparison.Ordinal));
             Assert.Equal(beforeV13, changes.Contains("\nHaven't they seen dead bodies before?\t그들은 이전에는 시체를 본 적도 없소?\t", StringComparison.Ordinal));
-            Assert.True(!beforeV13 || beforeV12 || parsed.Count == 473, $"{parsed.Count} rows from v12");
+            Assert.True(!beforeV13 || beforeV12 || parsed.Count == 507, $"{parsed.Count} rows from v12");
             // v12 (1.16.43) reaches those who imported a seed older than it: the patch's second spacing review.
             Assert.Equal(beforeV12, changes.Contains("\nHow many do you need?\t몇 개나 필요하오?\t몇개나 필요하오?\n", StringComparison.Ordinal));
-            Assert.True(!beforeV12 || beforeV11 || parsed.Count == 551, $"{parsed.Count} rows from v11");
+            Assert.True(!beforeV12 || beforeV11 || parsed.Count == 585, $"{parsed.Count} rows from v11");
             // v11 (1.16.42) reaches those who imported a seed older than it: the patch's first spacing review.
             Assert.Equal(beforeV11, changes.Contains("\nDo you know Isabelle Rolaine?\t이자벨 로레인을 알고 있소?\t이자벨 로레인을 알고있소?\n", StringComparison.Ordinal));
-            Assert.True(!beforeV11 || beforeV10 || parsed.Count == 772, $"{parsed.Count} rows from v10");
+            Assert.True(!beforeV11 || beforeV10 || parsed.Count == 805, $"{parsed.Count} rows from v10");
             // v10 reaches those who imported a seed older than it: the soldier discharged at the council speaks to the
             // general in 존댓말.
             Assert.Equal(beforeV10, changes.Contains("\nI did what I thought was right.\t옳다고 생각한 일을 했을 뿐입니다.\t옳다고 생각한 일을 한 것 뿐이오.\n", StringComparison.Ordinal));
             Assert.Equal(beforeV10, changes.Contains("\nSorry, sir. I was trying to come to a fair agreement.\t죄송합니다, 장군님. 공정한 합의를 이루려고 했습니다.\t죄송합니다. 저는 공평한 합의를 이루려고 할 뿐입니다.\n", StringComparison.Ordinal));
-            Assert.True(!beforeV10 || beforeV9 || parsed.Count == 776, $"{parsed.Count} rows from v9");
+            Assert.True(!beforeV10 || beforeV9 || parsed.Count == 809, $"{parsed.Count} rows from v9");
             // v9 (1.16.41) reaches those who imported a seed older than it: the text the game shows where an Update or DLC
             // override replaced the Skyrim.esm string, the particle form the decision gives an <Alias> that takes any
             // name, and the player's choices to Septimus in 하오.
             Assert.Equal(beforeV9, changes.Contains("\nFind the shrine of Boethiah\t보에디아의 성소를 찾기\t보에디아의 성지를 찾기\n", StringComparison.Ordinal));
             Assert.Equal(beforeV9, changes.Contains("\nRescue <Alias=Victim> from <Alias=Lair>\t<Alias=Lair>에서 <Alias=Victim>을(를) 구출하기\t<Alias=Lair>에서 <Alias=Victim>를 구출하기\n", StringComparison.Ordinal));
             Assert.Equal(beforeV9, changes.Contains("\nWhere is this \"Blackreach\"?\t'블랙리치'는 어디에 있소?\t'블랙리치'는 어디에 있나?\n", StringComparison.Ordinal));
-            Assert.True(!beforeV9 || beforeV8 || parsed.Count == 821, $"{parsed.Count} rows from v8");
+            Assert.True(!beforeV9 || beforeV8 || parsed.Count == 854, $"{parsed.Count} rows from v8");
             // The patch's third review round (1.16.40's v8) reaches those who imported a seed older than it: names and
             // terms as the game spells them, the player's choices in the voice of their conversation, a space the Korean
             // fonts have where a no-break space was.

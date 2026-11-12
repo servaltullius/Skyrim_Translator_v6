@@ -14,7 +14,7 @@ Source	Target
 "Long live the Emperor! Long live the Empire!"	'황제 폐하 만세! 제국 만세!'
 "May those above judge me, and those below take me, if I fail in my duty."	'내가 의무를 다하지 못할 때, 하늘이 나를 심판하고, 땅이 나를 데려갈지니.'
 "No rest in Dawnstar"?	'던스타에서는 쉴 수 없다'라니?
-"Nothing changes in the city of stone...." -- Amanda Alleia, A Sellsword's Guide to Markarth	'돌의 도시안에서는 그 어떤 것도 변하지 않았다...' - 아만다 알레이아, 마르카스의 용병 안내서 중에서
+"Nothing changes in the city of stone...." -- Amanda Alleia, A Sellsword's Guide to Markarth	'돌의 도시 안에서는 그 어떤 것도 변하지 않았다...' - 아만다 알레이아, 마르카스의 용병 안내서 중에서
 "One of the Jarl's men"?	'야를의 부하'?
 "Seen my coming"? What do you mean?	'내가 오고 있는 것을 봤다'? 무슨 뜻이오?
 "The best techniques are passed on by the survivors." -- Gaiden Shinji, 1E 490	'가장 좋은 기술은 살아남은 자들을 통해 전수된다.' - 가이든 신지, 제 1시대 490년
@@ -339,8 +339,8 @@ Absorb <mag> points of magicka.	매지카를 <mag> 흡수합니다.
 Absorb <mag> points of stamina from the target.	지구력을 <mag> 흡수합니다.
 Absorb <mag> points of stamina per second from the target.	매 초마다 지구력을 <mag> 흡수합니다.
 Absorb <mag> points of stamina.	지구력을 <mag> 흡수합니다.
-Absorb <mag>% of the magicka from dragon breath and spells.  Chance on hit to spawn a tentacle explosion.	드래곤의 숨결과 적의 마법으로부터 <mag>% 의 매지카를 흡수합니다. 피해를 입을 시 일정한 확률로 촉수를 생성합니다.
-Absorb <mag>% of the magicka from hostile spells for <dur> seconds.	<dur> 초 동안 적의 마법으로부터 <mag>% 의 매지카를 흡수합니다.
+Absorb <mag>% of the magicka from dragon breath and spells.  Chance on hit to spawn a tentacle explosion.	드래곤의 숨결과 적의 마법으로부터 <mag>%의 매지카를 흡수합니다. 피해를 입을 시 일정한 확률로 촉수를 생성합니다.
+Absorb <mag>% of the magicka from hostile spells for <dur> seconds.	<dur> 초 동안 적의 마법으로부터 <mag>%의 매지카를 흡수합니다.
 Absorb Health	체력 흡수
 Absorb Magicka	매지카 흡수
 Absorb Spells	마법 흡수
@@ -407,7 +407,7 @@ Addition - West Wing - Bedrooms	추가 - 서쪽 부속 건물 - 침실
 Addition - West Wing - Enchanter's Tower	추가 - 서쪽 부속 건물 - 마법부여 연구탑
 Addition - West Wing - Greenhouse	추가 - 서쪽 부속 건물 - 온실
 Additional Werewolf Transformation	추가 늑대인간 변신
-Adds <mag>% to the dragon breath and spell absorption of Miraak's robes.	미락의 로브가 가진 드래곤의 숨결 및 마법 흡수 효과에 <mag>% 를 더합니다.
+Adds <mag>% to the dragon breath and spell absorption of Miraak's robes.	미락의 로브가 가진 드래곤의 숨결 및 마법 흡수 효과에 <mag>%를 더합니다.
 Addvar	애드바
 Addvar's House	애드바의 집
 Addvild	애드빌드
@@ -554,7 +554,7 @@ Alchemy laboratory. (<Global=HDRiftenAlchemy> gold)	연금술 실험대. (<Globa
 Alchemy laboratory. (<Global=HDSolitudeAlchemy> gold)	연금술 실험대. (<Global=HDSolitudeAlchemy> 골드)
 Alchemy laboratory. (<Global=HDWhiterunAlchemy> gold)	연금술 실험대. (<Global=HDWhiterunAlchemy> 골드)
 Alchemy laboratory. (<Global=HDWindhelmAlchemy> gold)	연금술 실험대. (<Global=HDWindhelmAlchemy> 골드)
-Alchemy labs can be used to combine ingredients into useful potions and deadly poisons.	연금술 실험대는 재료들을 섞어 유용한 물약이나 치명적인 독으로 만드는데 사용됩니다.
+Alchemy labs can be used to combine ingredients into useful potions and deadly poisons.	연금술 실험대는 재료들을 섞어 유용한 물약이나 치명적인 독으로 만드는 데 사용됩니다.
 Alchemy Perks	연금술 퍽
 Alchemy. (<Global=BYOHHPCostAlchemy> gold)	연금술 실험실. (<Global=BYOHHPCostAlchemy> 골드)
 Alding	알딩
@@ -2770,7 +2770,7 @@ Choose an item to improve	강화할 물품을 선택하세요
 Choose an item, enchantment, and soul gem	물품, 마법부여 효과와 소울젬을 고르세요
 Choose Nightingale Role	나이팅게일 능력을 선택하기
 Choose Soul Gem to Use	사용할 소울젬을 고르세요
-Choose up to %d Trait	%d 까지 퍽을 고르세요
+Choose up to %d Trait	%d까지 퍽을 고르세요
 Chosen enchantment cannot be applied to this item	선택된 마법부여는 이 물품에 적용할 수 없습니다.
 Christer	크리스터
 Chronicles of Nchuleft	누슈레프트 연대기
@@ -2946,7 +2946,7 @@ Combat-based magic only improves when used against valid opponents.	전투와 �
 Combine ingredients to make potions	물약을 만들기 위해 재료를 조합하기
 Come on boy, let's go.	자 멍멍아, 가자.
 Come on, boy, I've got something for you...	이봐, 착하지, 널 위해서 뭘 좀 가져왔거든...
-Come on, get the truth off your chest. (Persuade)	제발, 가슴 속에 품은 진심을 말해 보게나. (설득)
+Come on, get the truth off your chest. (Persuade)	제발, 가슴속에 품은 진심을 말해 보게나. (설득)
 Come on, you can tell me. We're all friends here. (Persuade)	괜찮아, 나한테는 말해도 돼. 우린 다 친구인걸. (설득)
 Come on, you'd better get out of here. (Free her)	자, 어서 여기를 빠져나가시오. (풀어준다)
 Come on. Let's go.	어서. 가자.
@@ -4088,7 +4088,7 @@ Distribute Sadri's Sujamma  (<Global=DLC2RRF04DrinkCount>/<Global=DLC2RRF04Drink
 Distribute the Warmth of Mara within Riften (<Global=FFRiften05Served>/<Global=FFRiften05Total>)	리프튼에서 '마라의 온기'를 나눠주기 (<Global=FFRiften05Served>/<Global=FFRiften05Total>)
 Ditched it for this. Easier to sneak past the enemy.	이걸 입으려고 버렸습니다. 적에게 들키지 않고 지나가기가 더 쉽거든요.
 Divine Crusader	디바인 성기사
-Do 10% more damage and get 10% better prices from people of the opposite sex.	이성에게 10% 의 추가 피해를 입히며 10% 더 좋은 가격을 흥정합니다.
+Do 10% more damage and get 10% better prices from people of the opposite sex.	이성에게 10%의 추가 피해를 입히며 10% 더 좋은 가격을 흥정합니다.
 Do all Thalmor have such high opinions of themselves?	탈모어들은 다들 그렇게 자부심이 대단합니까?
 Do all the Thanes support Elisif?	쎄인들은 모두 엘리시프를 지지하는 건가?
 Do I get a reward for finding your daughter?	당신의 딸을 찾아낸 것에 대하여 보답을 받을 수 있소?
@@ -4204,7 +4204,7 @@ Do you make anything here that will kill dragons?	드래곤을 죽일 만한 무
 Do you make your own jewelry?	장신구를 손수 만드는 건가?
 Do you miss Ulfric Stormcloak?	울프릭이 그립나?
 Do you need any help?	뭔가 도움이 필요한가?
-Do you need help finding the sword?	그 칼을 찾는데 도움이 필요한가?
+Do you need help finding the sword?	그 칼을 찾는 데 도움이 필요한가?
 Do you need help with your research?	연구를 도와드릴까?
 Do you need help?	도움이 필요한가?
 Do you need someone to check out Wolfskull Cave?	늑대해골 동굴을 조사할 사람이 필요합니까?
@@ -7907,7 +7907,7 @@ Golldir	골디어
 Gonnar Oath-Giver	고나르 오스-기버
 Good Intentions	선의
 Good luck finding her from there.	거기에서 그녀를 찾기를 빈다.
-Good luck with that.	잘 해보게.
+Good luck with that.	잘해보게.
 Good luck, then.	그럼, 행운을 빌지.
 Good luck.	행운을 빌지.
 Good to see you.	만나게 되어 다행이군.
@@ -8331,7 +8331,7 @@ He has a house in Riften?	집은 리프튼에 있나?
 He has a terrible disease. It's very contagious.	그 애는 지금 심한 질병에 걸렸어. 전염될 위험이 있지.
 He has feelings for you.	그는 당신을 사랑하고 있소.
 He helped me escape from prison.	그는 내가 감옥에서 탈출하게 도와주었소.
-He helped me find the pieces. He deserves to live.	내가 조각들을 찾는데 도움을 주었으니, 살 자격이 있소.
+He helped me find the pieces. He deserves to live.	내가 조각들을 찾는 데 도움을 주었으니, 살 자격이 있소.
 He lives in a giant mushroom?	거대한 버섯 안에서 생활한다고?
 He must have been someone important.	아주 중요한 인물이었던 것 같군요.
 He ordered the execution. It's on his head... not yours.	처형을 명령한 것은 의원이야. 책임은 그자에게 있지... 당신이 아니라.
@@ -8944,7 +8944,7 @@ How about you let me in anyway? (25 Gold)	그냥 안에 들여보내 주면 어�
 How about you let me through and I don't kill you? (Intimidate)	나를 지나가게 해주면 죽이지는 않겠다. 어때? (위협)
 How about you take half? (Intimidate)	절반의 금액이면 어때? (위협)
 How about you tell me for free? (Intimidate)	공짜로 말해주는 건 어때? (위협)
-How am I doing?	저는 잘 해나가고 있습니까?
+How am I doing?	저는 잘해나가고 있습니까?
 How am I going to get into this party?	그 연회에 참가하는 방법은?
 How am I supposed to do all of this?	어떻게 이걸 전부 처리하라는 거지?
 How am I supposed to get rid of them?	그 자들을 없애려면 어떻게 하면 되겠소?
@@ -9117,7 +9117,7 @@ How has Raven Rock needed your help?	레이븐 락에 당신들의 도움이 왜
 How have things been now that Mercer's gone?	머서가 사라지니 어떤가?
 How is all this affecting the Guild?	이것들이 길드에 어떤 영향을 주는 거지?
 How is Dawnstar faring in the war?	전쟁 중에 던스타의 사정은 어떻습니까?
-How is Drovas working out?	드로바스는 일을 잘 하고 있나?
+How is Drovas working out?	드로바스는 일을 잘하고 있나?
 How is Gulum-Ei an asset to the Guild?	걸럼-아이가 왜 길드의 자산이란 거지?
 How is the hunting going?	사냥은 잘 되고 있나?
 How is the mead?	벌꿀술은 어떻나?
@@ -9152,7 +9152,7 @@ How many pages did you lose?	잃어버린 쪽지가 몇 장이나 되오?
 How much are we talking about?	당신 정보가 어느 정도의 가치가 있지?
 How much farther do I have to walk?	얼마나 더 가야 됩니까?
 How much mead is left?	벌꿀술은 얼마나 남아있나?
-How much to let me pass?	통과하는데 얼마면 되겠소?
+How much to let me pass?	통과하는 데 얼마면 되겠소?
 How much to pay your fine?	벌금이 얼마지?
 How much will it cost me?	비용은 얼마나 되겠소?
 How much?	얼마나 필요합니까?
@@ -9369,7 +9369,7 @@ I could talk to him for you.	내가 한번 그와 말해보겠소.
 I could talk to him.	내가 말을 해 보지.
 I could track the stash down for you.	내가 그 은닉처를 찾아보지.
 I could use a hand.	도와주면 좋겠소.
-I could use help with the crystals around here.	이 주변의 수정들을 상대하는데 도움이 필요하오.
+I could use help with the crystals around here.	이 주변의 수정들을 상대하는 데 도움이 필요하오.
 I couldn't have defeated Miraak without Storn's help.	스토언의 도움이 없었다면 미락을 물리칠 수 없었을 거요.
 I cured Kodlak.	코들락을 치유했다.
 I dealt with the rest of the bandits.	남아있던 산적들은 이미 처리했다.
@@ -9486,7 +9486,7 @@ I don't remember any of that. Be reasonable. (Persuade)	아무것도 기억나�
 I don't see another way. I'll become a vampire.	다른 방법이 없겠군. 흡혈귀가 되겠어.
 I don't see any bodies here.	시체가 전혀 안 보이는데.
 I don't see you with any better ideas.	당신도 더 나은 생각은 없어 보이는데.
-I don't suppose the ramp is easy to access.	경사로까지 닿는데 고생 좀 할 것 같군.
+I don't suppose the ramp is easy to access.	경사로까지 닿는 데 고생 좀 할 것 같군.
 I don't suppose there's a cure.	치료할 방법은 없어 보이는군.
 I don't suppose there's a way to free you.	당신을 풀어줄 방법은 없을 것 같소.
 I don't think Camilla will be spending any more time with Faendal.	카밀라는 이제 페인달을 만나주지 않을 거요.
@@ -10204,7 +10204,7 @@ I'd be more than interested.	관심이 많지.
 I'd better go see what Arngeir knows about this Shout.	안기어가 이 함성에 대해서 뭘 알고 있는지 확인해 봐야겠어.
 I'd like a battleaxe.	전투 도끼가 좋겠군요.
 I'd like a dagger.	단검을 원합니다.
-I'd like a drink.	한잔 하고 싶은데.
+I'd like a drink.	한잔하고 싶은데.
 I'd like a greatsword.	대검이 좋겠군요.
 I'd like a sword.	검이 좋겠군요.
 I'd like a waraxe.	도끼가 좋겠군요.
@@ -10663,7 +10663,7 @@ I'm used to a little more quiet on my journeys.	여행중에는 조금 더 조�
 I'm willing to pay. (<BribeCost> gold)	대가를 지불해 주지. (<BribeCost> 골드)
 I'm with the College of Winterhold.	윈터홀드 대학 소속의 마법사.
 I'm with the Guild. How about you look the other way? (<BribeCost> gold)	나는 길드원이야. 잠시 못 본 척하면 안 될까? (<BribeCost> 골드)
-I'm with the Guild. Is this enough to clear my bounty? (<Global=GuildCost> gold)	나는 길드원이야. 이 정도면 현상금을 없애는데 충분할까? (<Global=GuildCost> 골드)
+I'm with the Guild. Is this enough to clear my bounty? (<Global=GuildCost> gold)	나는 길드원이야. 이 정도면 현상금을 없애는 데 충분할까? (<Global=GuildCost> 골드)
 I'm working on getting your amulet back.	아뮬렛을 찾는 중이오.
 I've already been to the tomb. I have Olaf's Verse.	이미 무덤을 방문했고, 올라프 왕의 시를 가지고 있습니다.
 I've already cleared Redbelly Mine.	이미 레드벨리 광산을 정리했소.
@@ -12557,7 +12557,7 @@ Lesser Shield	하급 방패
 Lesser Soul Gem	소울젬 - 하급
 Lesser Ward	하급 방어막
 Let her back in, or you answer to me! (Intimidate)	그녀를 다시 들여보내. 아니면 나를 상대해야 할 거야! (위협)
-Let me find him first. Dragons are bad for business. (Persuade)	그 사람 찾는 거 부터 도와 주시지. 드래곤은 당신 사업에도 좋지 않을 테니까. (설득)
+Let me find him first. Dragons are bad for business. (Persuade)	그 사람 찾는 거부터 도와주시지. 드래곤은 당신 사업에도 좋지 않을 테니까. (설득)
 Let me guess, you need me to do something dangerous.	보아하니, 뭔가 위험한 일을 시키고 싶은 거로군요.
 Let me in or I'll kill you. (Intimidate)	들여보내지 않으면 죽여버리겠다. (위협)
 Let me know if you find anything else.	뭔가 더 발견하면 알려주시오.
@@ -12945,7 +12945,7 @@ Magelight	마법사의 빛
 Magic Anomaly	마법 특이점
 Magic from the Sky	하늘에서 내려온 마법
 Magic Resistance	마법 저항력
-Magic weapons lose power with each successful hit, but can be recharged with filled soul gems.	마법 무기는 목표를 제대로 맞출때마다 충전된 힘을 소모하게 됩니다. 하지만 영혼이 담겨있는 소울젬을 사용하여 다시 충전할 수 있습니다.
+Magic weapons lose power with each successful hit, but can be recharged with filled soul gems.	마법 무기는 목표를 제대로 맞출 때마다 충전된 힘을 소모하게 됩니다. 하지만 영혼이 담겨있는 소울젬을 사용하여 다시 충전할 수 있습니다.
 Magicka	매지카
 Magicka Damage	매지카 피해
 Magicka is increased by <mag> points for <dur> seconds.	<dur> 초 동안 매지카가 <mag> 증가합니다.
@@ -13157,7 +13157,7 @@ Maybe some gold will help? (<BribeCost> gold)	이정도 돈이면 어떻겠소? 
 Maybe some other time.	아마 다음 기회에.
 Maybe they were right. Don't destroy the staff.	그자들이 옳을지도 모르겠군. 지팡이를 파괴해선 안 되오.
 Maybe this will change your mind. (<BribeCost> gold)	이 돈이면 생각을 바꿀 수 있을 텐데. (<BribeCost> 골드)
-Maybe this will help your memory. (<BribeCost> gold)	이게 기억해 내는데 조금 도움이 되겠지. (<BribeCost> 골드)
+Maybe this will help your memory. (<BribeCost> gold)	이게 기억해 내는 데 조금 도움이 되겠지. (<BribeCost> 골드)
 Maybe this will put your mind at ease. (<bribecost> gold)	이 돈이면 뭔가 생각이 날 텐데. (<bribecost> 골드)
 Maybe we can come to an understanding. (<BribeCost> gold)	아마도 말이 통할 것 같은데. (<BribeCost> 골드)
 Maybe we can reason with him.	이성적인 대화로 풀 수 있을지도 모르지.
@@ -13786,7 +13786,7 @@ New Save	새로 저장
 New Spell Learned	새로운 마법을 배웠습니다
 Next	다음
 Next Rank:	다음 등급:
-Next time, try harder.	다음 번에는, 조금 더 노력해 보시오.
+Next time, try harder.	다음번에는, 조금 더 노력해 보시오.
 Nice castle you've got here.	아주 멋진 성이군요.
 Nice place you have here.	좋은 곳이군.
 Niels	니엘스
@@ -13905,7 +13905,7 @@ No, a group called the "Dawnguard" sent me here.	아니오. '던가드'라는 �
 No, but he told me how to find out.	아닙니다, 하지만 찾는 방법을 알려주었습니다.
 No, but I know how to find out. I need an Elder Scroll.	아니, 하지만 찾아낼 방법을 알고 있소. 엘더스크롤이 필요합니다.
 No, but we're all better off this way.	모르지, 하지만 그편이 모두에게 좋을 거야.
-No, didn't see anyone. (Lie)	아니, 아무도 본적 없소. (거짓)
+No, didn't see anyone. (Lie)	아니, 아무도 본 적 없소. (거짓)
 No, I didn't see them in there.	아니, 안에서는 못 봤는데.
 No, I don't hate your people.	아니, 난 다크 엘프들을 싫어하진 않소.
 No, I don't think so.	그건 곤란한데.
@@ -14550,7 +14550,7 @@ Oh?	음?
 Oh? Who would that be?	오? 그게 누구지?
 Oil Spider	기름 거미
 OK	확인
-Okay, but I'll need a few moments to cast the spell on you.	좋아, 하지만 마법을 외우는데 시간이 좀 필요해.
+Okay, but I'll need a few moments to cast the spell on you.	좋아, 하지만 마법을 외우는 데 시간이 좀 필요해.
 Okay, follow me.	좋아, 따라오시오.
 Okay, how much do I owe you?	좋소, 내가 얼마를 갚으면 되오?
 Okay, I can do that for you.	좋습니다, 그 일을 하지.
@@ -15454,7 +15454,7 @@ Powdered Mammoth Tusk	매머드 상아 가루
 Power	특수능력
 Power armor training is required to equip this item.	해당 물품을 장착하기 위해서는 방어구 훈련이 필요합니다.
 Power attacks cost no Stamina for <dur> seconds.	<dur> 초 동안 강한 공격의 지구력 소모량이 100% 감소합니다.
-Power attacks do <25>% more damage, +<mag> damage resistance for <dur> seconds.	<dur> 초 동안 강한 공격이 <25>% 의 추가 피해를 입힙니다. 피해 저항력이 <mag> 증가합니다.
+Power attacks do <25>% more damage, +<mag> damage resistance for <dur> seconds.	<dur> 초 동안 강한 공격이 <25>%의 추가 피해를 입힙니다. 피해 저항력이 <mag> 증가합니다.
 Power attacks use Stamina. If the Stamina bar is flashing, any attempted power attack becomes a regular attack instead.	강한 공격은 지구력을 사용합니다. 많이 소모되어 지구력 막대가 깜빡거리고 있는 도중에 시도하는 모든 강한 공격은 보통 공격이 됩니다.
 Power Attacks/Damage Resistance	강한 공격 / 피해 저항
 Power Bash	강한 밀어치기
@@ -17903,7 +17903,7 @@ Soul Gem	소울젬
 Soul Gem Fragment	소울젬 파편
 Soul Gem Shards	소울젬 파편
 SOUL GEMS	소울젬
-Soul gems with souls in them are used to create and recharge magic weapons and armor.	영혼이 담긴 소울젬은 마법 무기와 방어구를 만들고 충전하는데에 사용됩니다.
+Soul gems with souls in them are used to create and recharge magic weapons and armor.	영혼이 담긴 소울젬은 마법 무기와 방어구를 만들고 충전하는 데에 사용됩니다.
 Soul gems? Why are you asking?	소울젬? 왜 묻는 건가?
 Soul Husk	영혼 껍질
 Soul Husk Extract	영혼 껍질 추출물
@@ -17953,7 +17953,7 @@ Sounds rather complicated.	뭔가 아주 복잡한 것 같군.
 Sounds reasonable. (5 Gold)	적당한 가격이군. (5 골드)
 Sounds risky.	위험한 일처럼 들리는군.
 Sounds simple enough.	아주 간단해 보이는데.
-Sounds terrible. Good luck with that.	힘들 것 같군. 잘 해보시오.
+Sounds terrible. Good luck with that.	힘들 것 같군. 잘해보시오.
 South Brittleshin Pass	남부 브리틀쉰 길목
 South Cold Rock Pass	남부 싸늘바위 통로
 South Shriekwind Bastion	남부 쉬리크윈드 보루요새
@@ -20550,7 +20550,7 @@ There's a ghost haunting you.	너를 괴롭히는 유령이 있어.
 There's a horse waiting at the stables. I'll make sure you're safe. (Lie)	마구간에 말을 준비해 두었소. 안전은 보장하지. (거짓)
 There's a lot of nirnroot around here.	아주 많은 넌루트가 이 부근에 있군.
 There's a rumor that you're spying for the Thalmor.	당신이 탈모어의 첩자라는 소문이 돌고 있던데.
-There's a town nearby in that direction. Do you need help getting there?	이 방향으로 가면 근처에 마을이 있는데, 거기까지 가는데 도움이 필요하시오?
+There's a town nearby in that direction. Do you need help getting there?	이 방향으로 가면 근처에 마을이 있는데, 거기까지 가는 데 도움이 필요하시오?
 There's an enemy wagon loaded with coin and weapons. We need to capture it.	적 마차에 자금과 무기가 실려있다. 우리가 탈취해야 해.
 There's more to this than a debt, isn't there?	빚 때문만은 아닌 것 같은데, 맞지?
 There's my husband...	남편이 있는데...
@@ -20658,7 +20658,7 @@ This person is busy.	이 사람은 바쁜 것 같습니다.
 This save relies on content that is no longer present. Some objects may no longer be available. Continue Loading?	이 저장 파일은 게임폴더 내에 존재하지 않는 구성 요소가 포함되어 있습니다. 일부 요소는 더 이상 사용할 수 없습니다. 불러오겠습니까?
 This seems dangerous.	위험해 보이는군.
 This ship, the Katariah. How will I get onboard?	그 카타리아호 라는 배 말인데, 어떻게 승선하면 되지?
-This should help translate Gallus's Journal.	이게 갤러스의 일기를 번역하는데 도움이 될 거야.
+This should help translate Gallus's Journal.	이게 갤러스의 일기를 번역하는 데 도움이 될 거야.
 This sounds like a terrible idea...	아주 끔찍한 생각인 것 같은데...
 This statue looks valuable.	이 동상은 귀중해 보이는데.
 This store has seen better days, hasn't it?	이 가게가 예전에는 잘나갔던 것 같은데?
@@ -22898,7 +22898,7 @@ Why is your cemetery so large?	왜 이렇게 큰 공동묘지가 있는 겁니�
 Why is your shop down here in the canal?	이 가게는 왜 이런 아래쪽의 운하에 있소?
 Why isn't the Emperor attending the wedding?	왜 황제는 결혼식에 참석하지 않는 거지?
 Why keep it a secret?	왜 그걸 비밀로 한 거지?
-Why live alone on a mountain if you love conversation?	대화를 좋아한다면서 왜 산 속에 혼자 살고 있는 겁니까?
+Why live alone on a mountain if you love conversation?	대화를 좋아한다면서 왜 산속에 혼자 살고 있는 겁니까?
 Why live out here all by yourself?	왜 혼자서 살고 있지?
 Why me?	왜 나입니까?
 Why name your store Grave Concoctions?	왜 당신가게의 이름을 무덤 화합물 상점이라고 했소?
@@ -23341,7 +23341,7 @@ You can't Quickload while the game is paused.	게임이 일시정지 중일 때�
 You can't Quicksave while the game is paused.	게임이 일시정지 중일 때는 빠른 저장을 할 수 없습니다.
 You can't take your teammate's starting armor.	동료의 기본 방어구는 가져갈 수 없습니다.
 You cannot cast a spell while shouting	함성을 사용하는 도중에는 마법을 사용할 수 없습니다.
-You cannot cast ranged spells underwater	물 속에서는 원거리 마법을 사용할 수 없습니다
+You cannot cast ranged spells underwater	물속에서는 원거리 마법을 사용할 수 없습니다
 You cannot cast that type of spell while riding a dragon.	드래곤에 탑승한 상태에서 해당 마법은 사용할 수 없습니다.
 You cannot cast this spell while casting another	다른 마법을 사용하는 도중에는 이 마법을 사용할 수 없습니다.
 You cannot change armor while attacking.	공격 중에는 방어구를 바꿀 수 없습니다.
@@ -23402,7 +23402,7 @@ You do realize this is treason...	이건 명백한 반역 행위인데...
 You don't agree with Crescius?	크리시어스의 주장에 동의하지 않나?
 You don't believe us?	우리를 못 믿나?
 You don't care that they're dead?	그들이 죽었어도 상관이 없소?
-You don't even know if he's alive.	살아있는지 조차 모르나 보군.
+You don't even know if he's alive.	살아있는지조차 모르나 보군.
 You don't have anything that can help?	도움이 될만한 게 아무것도 없소?
 You don't have enough ammo.	화살이 부족합니다.
 You don't have enough gold.	골드가 부족합니다.
@@ -23418,7 +23418,7 @@ You don't look that old to me. Certainly you're still a strong, capable warrior.
 You don't need to worry about me.	나에 대해서는 걱정할 필요가 없소.
 You don't own the horse you already sold to Letrush?	소유권도 없는 말을 팔아 치웠단 말인가?
 You don't seem very grateful.	그다지 고마워하는 것 같지 않군.
-You don't sound very happy about it.	기뻐하시는 것처럼 들리지는 않는 군요.
+You don't sound very happy about it.	기뻐하시는 것처럼 들리지는 않는군요.
 You don't trust her, fine. Trust me. I believe her.	세라나를 믿지 않는군, 좋소. 나를 믿어주시오. 나는 세라나를 믿고 있으니.
 You don't trust the Jarl?	야를을 신뢰하지 않소?
 You don't trust Vingalmo?	빙갈모를 신뢰하지 않소?
@@ -23625,7 +23625,7 @@ You seem to dislike visitors in Riften.	당신은 리프튼의 방문객들이 �
 You seem to know an awful lot about this place.	이곳에 관해서 엄청나게 많은 걸 알고 있군.
 You seem troubled.	문제가 있는 걸로 보이는데.
 You seem very sure of yourself.	자신감이 넘쳐 보이는데.
-You seemed upset about something.	기분나쁜 일이 있나보군.
+You seemed upset about something.	기분 나쁜 일이 있나보군.
 You sent for me?	날 불렀소?
 You sent me a letter, didn't you? Thanking me for killing your rival?	당신이 나한테 편지를 보냈지? 당신의 경쟁자를 죽여줘서 고맙다고?
 You sent me a message about Wolf Skull Cave?	늑대해골 동굴에 관한 소식을 보냈던데?
