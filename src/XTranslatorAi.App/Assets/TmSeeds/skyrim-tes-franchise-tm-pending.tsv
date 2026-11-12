@@ -7,3 +7,7 @@ Interested in me, are you?	나에게 관심이 있나?
 Follow me.	따라오게.
 I've got better things to do.	난 바쁜 사람이야.
 Wait for me in the city...	도시에서 기다려...
+Opponents in melee range have a chance to be flung away.	일정한 확률로 주변 적을 날려버립니다.
+Targets take <mag> points of frost damage for <dur> seconds, plus Stamina damage.	<dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
+Targets take <mag> points of frost damage for <dur> seconds. Single use, then must be reacquired at the Wind Stone.	<dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다. 사용 후엔 바람의 바위의 축복을 다시 받아야 사용할 수 있습니다.
+Targets take <mag> points of frost damage for <dur> seconds.	<dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
