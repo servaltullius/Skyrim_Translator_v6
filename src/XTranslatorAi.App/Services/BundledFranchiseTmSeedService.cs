@@ -224,9 +224,9 @@ public sealed class BundledFranchiseTmSeedService
             // v30 takes the patch's spacing of -기 위해, -게 되-, 높은 곳, 하루 종일 and 아무 말 and its 함께하고말고: You will
             // die now (죽게 될 거야), (Remain silent) (아무 말도 하지 않는다), Of course I'll join you and others; 13 rows changed
             // (1.16.64).
-            // v31 takes the patch's spacing of the dependent nouns 데·때·줄, of -든지, 기분 나쁜 and 한잔하다, and its compounds
-            // 물속, 가슴속 and 산속: Do you need help finding the sword? (찾는 데), You cannot cast ranged spells underwater
-            // (물속에서는), Good luck with that. (잘해보게.) and others; 34 rows changed.
+            // v31 takes the patch's spacing of the dependent nouns 데·때·적, % with its particle, 잘하다, 기분 나쁜 and
+            // 한잔하다, and its compounds 물속, 가슴속 and 산속: Do you need help finding the sword? (찾는 데), You cannot cast
+            // ranged spells underwater (물속에서는), Good luck with that. (잘해보게.) and others; 34 rows changed.
             BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v31", "bundled-skyrim-tes-franchise-tm.tsv", 1529754, "1968f8bc581f47d92ed3e5c7a6c6f4ee246d8b6823e632dd009a009bb5d0500f",
                 PreviousVersions: new[] { "v30", "v29", "v28", "v27", "v26", "v25", "v24", "v23", "v22", "v21", "v20", "v19", "v18", "v17", "v16", "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v31-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),

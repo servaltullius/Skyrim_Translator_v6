@@ -50,7 +50,7 @@ artifacts/tm-v27-20261110/tm-v27.py the 9 of the last unread base-game strings i
 artifacts/tm-v28-20261110/tm-v28.py the 11 of the 다른 사람 / 저장 파일 spacing into v28,
 artifacts/tm-v29-20261111/tm-v29.py the 1 of the second residual sample into v29,
 artifacts/tm-v30-20261112/tm-v30.py the 13 of the -기 위해 / -게 되- / 아무 말 spacing into v30, and
-artifacts/tm-v31-20261112/tm-v31.py the 34 of the dependent noun / -든지 / compound spacing into v31.)
+artifacts/tm-v31-20261112/tm-v31.py the 34 of the dependent noun / % particle / 잘하다 / compound spacing into v31.)
 
 `apply` skips a change when the patch no longer holds the `current_ko` the reviewer saw, or when the new text loses
 the English's tags and placeholders. Read every suggestion before `--write`: reviews from a model can be wrong or

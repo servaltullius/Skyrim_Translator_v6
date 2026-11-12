@@ -608,7 +608,7 @@ public class BundledFranchiseTmSeedServiceTests
     // to Dawnguard's Turn perk, v25 its fixes to names, all 13,204 read against the English, v26 its second read of the
     // books and CC books, v27 its read of the last base-game strings no pass had read against the English, v28 its
     // spacing of 다른 사람 and 저장 파일, v29 its second residual sample, v30 its spacing of -기 위해, -게 되- and
-    // the other leftover forms, and v31 its spacing of the dependent nouns, -든지 and the compounds.
+    // the other leftover forms, and v31 its spacing of the dependent nouns, % particles, 잘하다 and the compounds.
     // Users who already imported an earlier seed get only the rows changed since their version, so other rows they edited
     // in the global memory stay; a new install imports the whole seed. The v6 stamp is 1.15's, the v7 one 1.16's to 1.16.39's,
     // the v8 one 1.16.40's, the v9 one 1.16.41's, the v11 one 1.16.42's, the v12 one 1.16.43's, the v13 one 1.16.44's, the v15 one 1.16.45's, the v16 one 1.16.46's, the v17 one 1.16.47's, the v18 one 1.16.48's, the v19 one 1.16.49's, the v20 one 1.16.50's, the v21 one 1.16.51's to 1.16.53's, the v22 one 1.16.54's, the v23 one 1.16.55's, the v24 one 1.16.56's, the v25 one 1.16.57's to 1.16.59's, the v26 one 1.16.60's, the v27 one 1.16.61's, the v28 one 1.16.62's, the v29 one 1.16.63's, the v30 one 1.16.64's; v10 and v14 never shipped, but a build of main may have written them.
