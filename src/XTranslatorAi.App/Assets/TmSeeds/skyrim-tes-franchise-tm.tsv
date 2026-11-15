@@ -2055,7 +2055,7 @@ Breton	브레튼
 Brewer Lid	양조통 뚜껑
 Breya	브레야
 Briar Heart	찔레 심장
-Briar Heart Storage	찔레심장 보관함
+Briar Heart Storage	찔레 심장 보관함
 Briarheart Geis	찔레심장 도끼
 Briarheart Lifeforce	찔레심장 생명력
 Briarheart Necropsy	찔레심장 해부
@@ -2080,7 +2080,7 @@ Bring <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGi
 Bring <Global=DLC2ThirskHilundSpearCount> Riekling Spears to Hilund	힐룬드에게 리클링 창 <Global=DLC2ThirskHilundSpearCount>개를 가져다 주기
 Bring <Global=NN01Total> Crimson Nirnroot to Avrusa Sarethi	붉은 넌루트 <Global=NN01Total>개를 아브루사 사레시에게 가져가기
 Bring a <Alias=Item> to Calcelmo	칼셀모에게 <Alias=Item> 가져가기
-Bring a briarheart to Elynea	엘리니아에게 찔레심장 하나를 가져다 주기
+Bring a briarheart to Elynea	엘리니아에게 찔레 심장 하나를 가져다 주기
 Bring a daedra heart to Elynea	엘리니아에게 데이드라의 심장 하나를 가져다 주기
 Bring a Daedra's Heart to Moth	모쓰에게 데이드라의 심장을 가져가기
 Bring a Dragon Scale and a Dragon Bone to Esbern	에스번에게 드래곤 비늘과 드래곤 뼈를 가져가기
@@ -5654,7 +5654,7 @@ Ebonyflesh	에보니 피부
 Ectoplasm	심령체
 Edda	에다
 Edith	이디스
-Editor Smoke Test Cell	테스팅 룸
+Editor Smoke Test Cell	에디터 스모크 테스트 셀
 Edla	에들라
 Edla's House	에들라의 집
 Edla's House Key	열쇠 - 에들라의 집
@@ -6902,7 +6902,7 @@ Follow Madanach	매더낙을 따라가기
 Follow Maurice	모리스를 따라가기
 Follow me, I need your help.	따라오게, 도움이 필요하니.
 Follow me, or you'll regret it. (Intimidate)	나를 따라오지 않으면 후회하게 될 거야. (위협)
-Follow me.	나를 따라오게.
+Follow me.	따라오게.
 Follow me. I need your help.	같이 갑시다.
 Follow me. I'll lead you through this mist.	따라오시오. 이 안개를 벗어나게 안내를 해 주지.
 Follow Paratus	파라투스를 따라가기
@@ -6932,7 +6932,7 @@ For <dur> seconds, opponents in melee range take <8> points frost damage and Sta
 For <dur> seconds, opponents in melee range take <mag> points fire damage per second. Targets on fire take extra damage.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 For <dur> seconds, opponents in melee range take <mag> points frost damage and stamina damage per second.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
 For <dur> seconds, opponents in melee range take <mag> points of damage per second.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 피해를 입힙니다.
-For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	불꽃의 망토를 둘러 <dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
+For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 For <dur> seconds, opponents in melee range take <mag> points shock damage and magicka damage per second.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 전격 피해와 매지카 피해를 입힙니다.
 For <dur> seconds, opponents that get too close take <8> points per second of fire damage.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 화염 피해를 입힙니다.
 For <dur> seconds, undead in melee range take <10> points sun damage per second.	<dur> 초 동안 주변 언데드에게 매 초마다 <10> 의 태양 피해를 입힙니다.
@@ -9909,7 +9909,7 @@ I need you to carry something...	들어줬으면 하는 짐이 있는데...
 I need you to cause a scene. Get everyone's attention for a few minutes.	약간 소동을 일으켜주면 좋겠는데. 몇 분 동안 모든 사람들의 이목을 끌 수 있게.
 I need you to come with me.	나와 함께 갑시다.
 I need you to do something for me.	날 위해서 이걸 좀 해주겠니?
-I need you to do something.	네가 해 줄 일이 있는데.
+I need you to do something.	부탁할 일이 있는데.
 I need your coat.	당신의 외투가 필요합니다.
 I need your help to defeat Alduin.	알두인을 물리치기 위해 당신의 도움이 필요합니다.
 I need your help to stop the war.	전쟁을 멈추기 위해 당신의 도움이 필요합니다.
@@ -10751,7 +10751,7 @@ I've got a giant's toe.	거인의 발가락을 가져왔는데.
 I've got a lot of Riekling spears. I hope it's enough. (Give spears.)	리클링 창을 많이 얻었는데. 이 정도면 충분할까. (창을 주기.)
 I've got a sapling.	묘목을 하나 구했습니다.
 I've got Azra's staff.	아즈라의 지팡이를 가져왔소.
-I've got better things to do.	난 바쁜 사람이오.
+I've got better things to do.	난 바쁜 사람이야.
 I've got it. Don't cast Ash Guardian without a heart stone.	알겠군. 하트스톤 없이는 화산재 수호자 주문을 사용하지 말라.
 I've got some juniper berries. (Give berries.)	향나무 열매를 좀 구했는데. (열매를 주기.)
 I've got some money. Are you looking for a partner?	가진 돈이 좀 있는데. 동업자를 찾고 있습니까?
@@ -11216,7 +11216,7 @@ Insubstantial	비현실
 Insufficient charge for enchantment	마법부여를 위한 충전량이 부족합니다.
 Intense Flames	강렬한 불길
 Interested in buying this Honningbrew Decanter?	허닝브루 디캔터를 살 생각 있나?
-Interested in me, are you?	나에게 관심이 있나본데?
+Interested in me, are you?	나에게 관심이 있나?
 Interesting.	흥미롭군.
 Interrogate Odahviing	오다빙을 심문하기
 Interrogation Chamber Key	열쇠 - 취조실
@@ -14658,7 +14658,7 @@ Open the trap.	덫을 풀어주시오.
 Open the whispering door	속삭이는 문을 열기
 Opened the container with a key.	상자를 열쇠로 열었습니다.
 Opening the Tomb	무덤을 열기
-Opponents in melee range have a chance to be flung away.	선풍 망토를 둘러 일정한 확률로 주변 적을 날려버립니다.
+Opponents in melee range have a chance to be flung away.	일정한 확률로 주변 적을 날려버립니다.
 Opponents in melee range take <mag> points frost damage per second.	주변 적에게 매 초마다 <mag> 의 냉기 피해를 입힙니다.
 Opponents in melee range take <mag> points poison damage per second.	주변 적에게 매 초마다 <mag> 의 독 피해를 입힙니다.
 Opponents in melee range take <mag> points shock damage per second.	주변 적에게 매 초마다 <mag> 의 전격 피해를 입힙니다.
@@ -18016,7 +18016,7 @@ Speak to Jorn	욘과 대화하기
 Speak to Jorn after dusk	해가 진 이후에 욘과 대화하기
 Speak to Karliah	칼라이아와 대화하기
 Speak to Kodlak	코들락과 대화하기
-Speak to Kodlak Whitemane	코들락과 대화하기
+Speak to Kodlak Whitemane	코들락 화이트메인과 대화하기
 Speak to Lod	로드와 대화하기
 Speak to Madesi	마데시와 대화하기
 Speak to Mallus Maccius	말루스 마키우스와 대화하기
@@ -19646,9 +19646,9 @@ Target takes <mag> points of shock damage, and half as much Magicka damage.	<mag
 Target won't flee for <dur> seconds and gets some extra health and stamina.	목표를 <dur> 초 동안 도망치지 않게 만들며 체력과 지구력을 증가시킵니다.
 Targets are frozen between Oblivion and Tamriel for <dur> seconds, and immune to all damage.	<dur> 초 동안 목표를 오블리비언과 탐리엘 사이의 차원에 고정시켜 피해를 입히지도, 입지도 않게 만듭니다.
 Targets flee for <dur> seconds.	<dur> 초 동안 도망가게 합니다.
-Targets take <mag> points of frost damage for <dur> seconds, plus Stamina damage.	강렬한 폭풍설을 일으켜 <dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
-Targets take <mag> points of frost damage for <dur> seconds.	강렬한 폭풍설을 일으켜 <dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
-Targets take <mag> points of frost damage for <dur> seconds. Single use, then must be reacquired at the Wind Stone.	하루에 한 번 강렬한 폭풍설을 일으켜 <dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다. 사용 후엔 바람의 바위의 축복을 다시 받아야 사용할 수 있습니다.
+Targets take <mag> points of frost damage for <dur> seconds, plus Stamina damage.	<dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
+Targets take <mag> points of frost damage for <dur> seconds.	<dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
+Targets take <mag> points of frost damage for <dur> seconds. Single use, then must be reacquired at the Wind Stone.	<dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다. 사용 후엔 바람의 바위의 축복을 다시 받아야 사용할 수 있습니다.
 Targets that fail to resist are coated in solidified as for <dur> seconds.	저항에 실패한 목표를 <dur> 초 동안 석화시킵니다.
 Targets that fail to resist are immobilized in hardened ash for <dur> seconds.	화산재의 마법을 날려 저항에 실패한 목표를 <dur> 초 동안 석화시킵니다.
 Targets that fail to resist are paralyzed for <dur> seconds.	저항에 실패한 목표를 <dur> 초 동안 마비시킵니다.
@@ -21460,7 +21460,7 @@ Wait for Brelyna's spell to wear off	브렐리나의 마법이 풀어지는 것�
 Wait for Erandur to dispel the barrier	에란더가 장벽을 제거할 때까지 기다리기
 Wait for Falion to complete the ritual	팔리온이 의식을 마칠 때까지 기다리기
 Wait for me at home...	집에서 기다려...
-Wait for me in the city...	도시에서 기다리기...
+Wait for me in the city...	도시에서 기다려...
 Wait for orders from Jarl Ulfric	울프릭의 명령을 기다리기
 Wait for Storn to read the book	스토언이 책을 읽도록 기다리기
 Wait for Telrav to return with your reward	보상을 받기 위해 텔라브가 돌아오는 것을 기다리기
@@ -21509,7 +21509,7 @@ Warden's Lash	감시관의 채찍
 Wardrobe	옷장
 Wardrobe, Small	옷장, 소
 Warehouse	창고
-Warehouse Bookshelves	창고 선반
+Warehouse Bookshelves	창고 책장
 Warehouses	창고
 Warlord Gathrik	대장군 개스릭
 Warmaiden's	여전사

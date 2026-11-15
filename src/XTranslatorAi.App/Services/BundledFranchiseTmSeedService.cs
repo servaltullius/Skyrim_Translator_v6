@@ -226,9 +226,13 @@ public sealed class BundledFranchiseTmSeedService
             // (1.16.64).
             // v31 takes the patch's spacing of the dependent nouns 데·때·적, % with its particle, 잘하다, 기분 나쁜 and
             // 한잔하다, and its compounds 물속, 가슴속 and 산속: Do you need help finding the sword? (찾는 데), You cannot cast
-            // ranged spells underwater (물속에서는), Good luck with that. (잘해보게.) and others; 34 rows changed.
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v31", "bundled-skyrim-tes-franchise-tm.tsv", 1529754, "1968f8bc581f47d92ed3e5c7a6c6f4ee246d8b6823e632dd009a009bb5d0500f",
-                PreviousVersions: new[] { "v30", "v29", "v28", "v27", "v26", "v25", "v24", "v23", "v22", "v21", "v20", "v19", "v18", "v17", "v16", "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v31-changes.tsv"),
+            // ranged spells underwater (물속에서는), Good luck with that. (잘해보게.) and others; 34 rows changed (1.16.65).
+            // v32 takes the patch's fixes from its mistranslation sweeps: the Skyrim.esm and DLC copies of a record matched to
+            // the text the game shows, the cloak and blizzard effects without the words the English does not say, and names
+            // the Korean had left out: Wait for me in the city... (도시에서 기다려...), Interested in me, are you? (나에게
+            // 관심이 있나?), Speak to Kodlak Whitemane (코들락 화이트메인과 대화하기) and others; 15 rows changed.
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v32", "bundled-skyrim-tes-franchise-tm.tsv", 1529603, "6949ca6f15ec247cc9e7fce7ea6dbb3bec0ca750d325875120cca1402d866da9",
+                PreviousVersions: new[] { "v31", "v30", "v29", "v28", "v27", "v26", "v25", "v24", "v23", "v22", "v21", "v20", "v19", "v18", "v17", "v16", "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v32-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,

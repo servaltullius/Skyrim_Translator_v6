@@ -1,4 +1,5 @@
 Source	Target	Previous
+"...even to my lord as to my fellow brothers and sisters in arms."	'... 주군께 그러하듯 내 동료 전우들에게도 충성을 바칠 것을 선서합니다.'	'... 내 동료 전우들과 함께, 주군께 충성을 바칠 것을 선서합니다.'
 "Nothing changes in the city of stone...." -- Amanda Alleia, A Sellsword's Guide to Markarth	'돌의 도시 안에서는 그 어떤 것도 변하지 않았다...' - 아만다 알레이아, 마르카스의 용병 안내서 중에서	'돌의 도시안에서는 그 어떤 것도 변하지 않았다...' - 아만다 알레이아, 마르카스의 용병 안내서 중에서
 (Remain silent)	(아무 말도 하지 않는다)	(아무말도 하지 않는다)
 [NO SAVES FOUND]	[저장 파일 없음]	[저장파일 없음]
@@ -15,6 +16,8 @@ All right. But you're responsible for him.	알았다. 대신 돌보는 건 네 �
 Alto Wine	술 - 알토 포도주	술 - 순한 포도주
 Amulet of Mara (Possessed)	아뮬렛 - 마라 (영혼이 깃듦)	아뮬렛 - 마라 (소유)
 Ash Spawn Immolator	화산재 스폰 소각자	화산재 스폰 학살자
+Briar Heart Storage	찔레 심장 보관함	찔레심장 보관함
+Bring a briarheart to Elynea	엘리니아에게 찔레 심장 하나를 가져다 주기	엘리니아에게 찔레심장 하나를 가져다 주기
 Carrying capacity increased by <mag>, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.	무게 한계가 <mag> 증가합니다. 장착한 방어구가 이동 속도를 감소시키지 않으며 무게 한계에 포함되지 않습니다.
 Centurion Fight 3	백부장 전투 3	백부장 전사 3
 Choose up to %d Trait	%d까지 퍽을 고르세요	%d 까지 퍽을 고르세요
@@ -36,10 +39,13 @@ Do you work here all day?	하루 종일 여기서 일하는 겁니까?	하루종
 Do you work the forge all day?	하루 종일 대장간에서 일하는 건가?	매일 대장간에서 일하는 건가?
 Dragon Hunting	드래곤 사냥	드래곤 사냥꾼
 Draugr Scourge	드로거 재앙	드로거 사술사
+Editor Smoke Test Cell	에디터 스모크 테스트 셀	테스팅 룸
 Enchanting Pick-Up	마법부여를 위한 물품 찾아오기	마법부여를 위한 물품 찾아오기<Enchanting Pick-Up>
 Felsaad Tern Feathers	펠사드 제비갈매기 깃털	펠사드 제비갈매기 날개
 Filling Soul Gems	소울젬 충전하기	소울젬 보충하기
 Find some Mammoth Tusk Powder	매머드 상아 가루를 찾기	매머드 상아 가루 몇 개를 찾기
+Follow me.	따라오게.	나를 따라오게.
+For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	불꽃의 망토를 둘러 <dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 Fortified Healing	체력 재생 강화	치유 마법 강화
 Frontier, Conquest	개척지, 정복	개척자, 정복
 General Tullius told me to report to you.	툴리우스 장군이 찾아가 신고하라고 했소.	툴리우스 장군이 당신에게 보고를 하라던데.
@@ -64,6 +70,7 @@ I found one of your journals, all about necromancy.	당신 일기 하나를 찾�
 I haven't done anything, I swear.	아무 짓도 안 했는데, 정말로.	아무짓도 안 했는데, 정말로.
 I know that mound - high on the hill east of Kynesgrove.	카인즈그로브의 동쪽 언덕 높은 곳에 있는 그 무덤 말이군.	카인즈그로브의 동쪽 언덕 높은곳에 있는 그 무덤 말이군.
 I need to get a look at Sabjorn's books.	사비욘의 장부를 봐야겠는데.	사비욘의 일지를 봐야겠는데.
+I need you to do something.	부탁할 일이 있는데.	네가 해 줄 일이 있는데.
 I need your help to stop the war.	전쟁을 멈추기 위해 당신의 도움이 필요합니다.	전쟁을 멈추기위해 당신의 도움이 필요합니다.
 I never wanted to help you. Let me go!	처음부터 널 도울 생각은 없었다. 내보내 줘!	절대로 널 돕지 않을 거다. 내보내 줘!
 I was unable to defeat them all, and they're coming for you. (Lie)	그자들을 막지 못했소, 당신을 잡기 위해서 오는 중이오. (거짓)	그자들을 막지 못했소, 당신을 잡기위해서 오는 중이오. (거짓)
@@ -74,6 +81,8 @@ I'm here to speak to Falk.	폴크와 대화를 하기 위해 왔습니다.	폴�
 I'm loyal to the Empire and don't care who knows it.	난 제국에 충성하며 누가 그것을 알게 되든 상관없습니다.	난 제국에 충성하며 누가 그것을 알게되든 상관없습니다.
 I'm ready for anything.	무슨 일이든 준비되어 있습니다.	준비 되었습니다.
 I'm with the Guild. Is this enough to clear my bounty? (<Global=GuildCost> gold)	나는 길드원이야. 이 정도면 현상금을 없애는 데 충분할까? (<Global=GuildCost> 골드)	나는 길드원이야. 이 정도면 현상금을 없애는데 충분할까? (<Global=GuildCost> 골드)
+I've got better things to do.	난 바쁜 사람이야.	난 바쁜 사람이오.
+Interested in me, are you?	나에게 관심이 있나?	나에게 관심이 있나본데?
 It's all in good fun, Tullius.	그저 재미로 하는 일일 뿐입니다, 툴리우스.	아주 재미있을 겁니다, 툴리우스.
 Jeweled Amulet	보석장식 아뮬렛	목걸이 - 보석 아뮬렛
 Let me find him first. Dragons are bad for business. (Persuade)	그 사람 찾는 거부터 도와주시지. 드래곤은 당신 사업에도 좋지 않을 테니까. (설득)	그 사람 찾는 거 부터 도와 주시지. 드래곤은 당신 사업에도 좋지 않을 테니까. (설득)
@@ -96,6 +105,7 @@ No valid save game found.	올바른 저장 파일을 찾을 수 없습니다.	�
 No, didn't see anyone. (Lie)	아니, 아무도 본 적 없소. (거짓)	아니, 아무도 본적 없소. (거짓)
 Of course I'll join you.	함께하고말고.	함께 하고 말고.
 Okay, but I'll need a few moments to cast the spell on you.	좋아, 하지만 마법을 외우는 데 시간이 좀 필요해.	좋아, 하지만 마법을 외우는데 시간이 좀 필요해.
+Opponents in melee range have a chance to be flung away.	일정한 확률로 주변 적을 날려버립니다.	선풍 망토를 둘러 일정한 확률로 주변 적을 날려버립니다.
 Pelagius the Suspicious	의심 많은 펠라지우스	수상한 펠라지우스
 Plant <Alias=QuestItem> in <Alias=TargetHouse>	<Alias=TargetHouse>에 <Alias=QuestItem> 몰래 놓아두기	<Alias=TargetHouse>에 <Alias=QuestItem> 놓기
 Plant letter on <Alias=Victim>'s corpse	<Alias=Victim>의 시체에 편지를 몰래 넣어 두기	<Alias=Victim>의 시체에 편지를 숨겨두기
@@ -120,6 +130,7 @@ Seeker 3 (Mirror)	탐구자 3 (거울)	탐구자 3
 So go search their house.	그럼 가서 그들의 집을 수색하시오.	그럼 가서 그들의 집을 수색합시다.
 Soul gems with souls in them are used to create and recharge magic weapons and armor.	영혼이 담긴 소울젬은 마법 무기와 방어구를 만들고 충전하는 데에 사용됩니다.	영혼이 담긴 소울젬은 마법 무기와 방어구를 만들고 충전하는데에 사용됩니다.
 Sounds terrible. Good luck with that.	힘들 것 같군. 잘해보시오.	힘들 것 같군. 잘 해보시오.
+Speak to Kodlak Whitemane	코들락 화이트메인과 대화하기	코들락과 대화하기
 Spell Tome: Bound Battleaxe	마법책: 마법 전투 도끼	마법책: 마법 전투 도끼 소환
 Spell Tome: Bound Bow	마법책: 마법 활	마법책: 마법 활 소환
 Spell Tome: Bound Dagger	마법책: 마법 단검	마법책: 마법 단검 소환
@@ -132,6 +143,9 @@ Sure. When I don't need him, he can stay with you.	물론이지. 내가 데리�
 Suvaris Atheron's Logbook	수바리스 아세론의 항해일지	수바리스 아테론의 항해일지
 Tall Shelf	큰 선반	큰 책장
 Tall Shelf with Display Case	큰 선반과 진열함	큰 책장과 진열함
+Targets take <mag> points of frost damage for <dur> seconds, plus Stamina damage.	<dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.	강렬한 폭풍설을 일으켜 <dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
+Targets take <mag> points of frost damage for <dur> seconds.	<dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.	강렬한 폭풍설을 일으켜 <dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
+Targets take <mag> points of frost damage for <dur> seconds. Single use, then must be reacquired at the Wind Stone.	<dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다. 사용 후엔 바람의 바위의 축복을 다시 받아야 사용할 수 있습니다.	하루에 한 번 강렬한 폭풍설을 일으켜 <dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다. 사용 후엔 바람의 바위의 축복을 다시 받아야 사용할 수 있습니다.
 The Blades helped me find out about it.	블레이드가 그것을 알아내게 도와주었습니다.	블레이드가 그것을 찾게 도와주었습니다.
 The Kagrumez Gauntlet	카그루메즈 시험	카그루메즈 장갑
 The selected storage device does not have sufficient space available.  New saves will not be created.	선택된 저장장치에 용량이 부족합니다. 새로운 저장 파일이 만들어지지 않습니다.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않았습니다.
@@ -149,6 +163,8 @@ Unenchanted Destruction Staff	마법부여되지 않은 파괴마법 지팡이	�
 Unenchanted Forsworn Staff	마법부여되지 않은 포스원 지팡이	포스원 지팡이
 Unenchanted Illusion Staff	마법부여되지 않은 환영마법 지팡이	환영마법 지팡이
 Unenchanted Restoration Staff	마법부여되지 않은 회복마법 지팡이	회복마법 지팡이
+Wait for me in the city...	도시에서 기다려...	도시에서 기다리기...
+Warehouse Bookshelves	창고 책장	창고 선반
 Weystone Source	웨이스톤 원천	웨이스톤 초점
 What would it take to identify the buyer? (Bribe)	뭘 주면 구매자를 알려줄 건가? (뇌물)	얼마를 내면 구매자를 알려줄 건가? (뇌물)
 What's our next move?	다음엔 뭘 하지?	다음은 어디지?

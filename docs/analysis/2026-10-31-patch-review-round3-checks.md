@@ -340,6 +340,13 @@ USSEP가 영어를 고쳐 자기 글로 다시 옮긴 필드(own)는 덮어쓰�
 - 판 번호가 두 자리가 됐다. 검수가 tm-import의 대기 파일을 이름순으로 가져오면 v10 파일이 v9 파일보다 먼저 들어가는 것을 짚었다. 가져오기에 실패해 앞 판 파일이 남은 경우, 두 판이 다 바꾼 행이 앞 판 글로 남을 수 있다. 그래서 파일 이름 속 숫자를 숫자로 견주어 가져온다(`FranchiseTranslationMemoryService.InImportOrder`). 이번 4행은 v1~v9 동안 바뀐 적이 없어 v10에는 해당하지 않는다.
 - 테스트: v9 스탬프에서 올라오면 4행, v8에서는 49행. 테스트가 스탬프 앞 두 글자를 판 이름으로 읽던 것을 `|` 앞으로 바꿨다(다음 판의 v10 행). 2,688 통과.
 
+## 내장 TM v32 (오역 찾기 덩이들 뒤, 2026-11-15)
+
+- 오역 고침 f122f1a·6c630fc·ef6ee39·30c6016·9d1caf2의 대기 15행을 받는다: Skyrim.esm·DLC 사본을 게임에 보이는 글로 맞춘 줄(Interested in me, are you? '나에게 관심이 있나본데?' → '나에게 관심이 있나?', Follow me., I need you to do something., I've got better things to do., Editor Smoke Test Cell, Warehouse Bookshelves), 애완동물 명령 Wait for me in the city... '도시에서 기다리기...' → '도시에서 기다려...', 영어에 없는 덧붙임을 뺀 망토·눈보라 효과 설명 5행, 빠진 이름을 되살린 Speak to Kodlak Whitemane·Briar Heart Storage·Bring a briarheart to Elynea(`artifacts/tm-v32-20261115/tm-v32.py`, 사본 `tm-v32-pending.tsv`).
+- 불꽃 망토 설명(For <dur> seconds, opponents in melee range take <mag> points per second fire damage…)은 v7에서 끝에 CR이 붙던 18행 가운데 하나다. v32 글이 그 행의 v2 글과 같아, v3~v7 바뀐 행 파일은 CR을 뗀 옛 글만 앞 글로 주고 v2 글을 가진 사람에게는 행을 쓰지 않는다(tm-v32.py가 이 한 행만 겹침을 허용).
+- 바뀐 행 파일은 v31에서 15, v30 49, v29 62, v28 63, v27 74, v26 81, v25 90, v24 132, v23 133, v22 170, v21 187, v20 188, v19 205, v18 258, v17 337, v16 343, v15 382, v14 422, v13 433, v12 522, v4 1,952, v1 2,122행이다. 시드 23,986행, 1,529,603바이트(sha256 6949ca6f…). v31은 1.16.65에 실렸다.
+- v31(94a5a87) 뒤 한패 본편·DLC에서 바뀐 문자열은 304개다. 그중 옛 글이 시드 글과 같던 것은 23개로, 22개는 받는 15행의 영어이고 1개(Is there anything else?, Skyrim 00009803)는 시드의 다수 꼴이 맞아 대기에서 뺀 것이다(upd1). 영어가 다른데 옛 글이 시드 글과 같던 것은 5개로(CC 자리 셀 이름 둘, Your call., Lead the way., What have you got for sale?), 그 시드 행의 영어 글은 그대로다(`artifacts/tm-v32-20261115/check-patch.py`).
+
 ## 내장 TM v31 (띄어쓰기 덩이 sp1112a~g 뒤, 2026-11-12)
 
 - 띄어쓰기 고침 87fb93e·c2a7b17·7d30abb·38dc188·54e0ec8·3ff02d9·7a0d75a의 대기 34행을 받는다: 의존 명사 '데' 12행(Do you need help finding the sword? '찾는데' → '찾는 데' 등), % 뒤 조사 5행, 잘하다 4행(Good luck with that. '잘 해보게.' → '잘해보게.' 등), 물속·가슴속·산속, 기분 나쁜, 한잔하다, 맞출 때, 본 적, 다음번, -지조차, %d까지 등(`artifacts/tm-v31-20261112/tm-v31.py`, 사본 `tm-v31-pending.tsv`).

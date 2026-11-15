@@ -178,6 +178,8 @@ Bonemold Pauldron Armor	뼈다귀 견갑 방어구	뼈다귀 방어구
 Bound Axe	마법 전투 도끼	마법 전투 도끼 소환
 Braided Bread	땋은 빵	바게트 빵
 Break through the First Barricade	첫 번째 바리케이드를 파괴하기	첫 번째 바리케이드 파괴하기
+Briar Heart Storage	찔레 심장 보관함	찔레심장 보관함
+Bring a briarheart to Elynea	엘리니아에게 찔레 심장 하나를 가져다 주기	엘리니아에게 찔레심장 하나를 가져다 주기
 Bring a filled Black Soul Gem to Morthal	충전된 검은 소울젬을 모탈로 가져가기	모탈로 충전된 검은 소울젬을 가져가기
 Bring a giant's toe to Elynea	엘리니아에게 거인의 발가락 하나를 가져다 주기	엘리니아에게 거인의 발톱 하나를 가져다 주기
 Bring a hagraven's claw to Elynea	엘리니아에게 해그레이븐 발톱 하나를 가져다 주기	엘리니아에게 헤그레이븐의 발톱을 몇개 가져다 주기
@@ -375,6 +377,7 @@ Dwarven Bracers of Major Wielding	드워프제 장갑 - 중급 한손무기	드�
 Dwarven Bracers of Smithing	드워프제 장갑 - 하급 제련	드워프제 손목 보호대 - 하급 제련
 Dwarven Bracers of Sure Grip	드워프제 장갑 - 하급 양손무기	드워프제 손목 보호대 - 하급 양손무기
 Dwarven Bracers of Wielding	드워프제 장갑 - 하급 한손무기	드워프제 손목 보호대 - 하급 한손무기
+Editor Smoke Test Cell	에디터 스모크 테스트 셀	테스팅 룸
 Eight-sided. Jade, ringed with ebony. A worn carving.	팔각형. 에보니로 테를 두른 비취. 낡은 장식.	팔면체. 에보니로 테를 두른 비취. 낡은 장식.
 Elven Armor (<Global=CCHorseArmorCostSwapOnly> gold)	엘프제 마갑 (<Global=CCHorseArmorCostSwapOnly> 골드)	엘프제 마갑(<Global=CCHorseArmorCostSwapOnly> 골드)
 Enchanter's Tower - Remove Workbench	마법부여 연구탑 - 작업선반 제거	마법부가 연구탑 - 작업선반 제거
@@ -442,10 +445,11 @@ Follow <Alias=Friend> and ambush enemy scout	<Alias=Friend>을(를) 따라가서
 Follow <Alias=Questgiver>	<Alias=Questgiver>을(를) 따라가기	<Alias=Questgiver>를 따라가기
 Follow Gianna to the dining room	지아나를 따라 식당으로 가기	지아나를 따라 주방으로 가기
 Follow me, or you'll regret it. (Intimidate)	나를 따라오지 않으면 후회하게 될 거야. (위협)	나를 따라오지 않으면 후회하게 될거야. (위협)
+Follow me.	따라오게.	나를 따라오게.
 Follow the <Alias=General>	<Alias=General>을(를) 따라가기	<Alias=General> 를 따라가기
 For <dur> seconds nearby opponents take <8> points of shock damage and half magicka damage.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 전격 피해와 절반의 매지카 피해를 입힙니다.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 전격 피해와 매지카 피해를 입힙니다.
 For <dur> seconds, opponents in melee range have a chance to be infected.	<dur> 초 동안 일정한 확률로 주변 적을 감염시킵니다.	<dur> 초 동안 일정한 확률로 주변 적에게 피해를 줍니다.
-For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	불꽃의 망토를 둘러 <dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
+For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	불꽃의 망토를 둘러 <dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 For <dur> seconds, opponents that get too close take <8> points per second of fire damage.	<dur> 초 동안 주변 적에게 매 초마다 <8> 의 화염 피해를 입힙니다.	<dur> 초 동안 주변 적에게 <8> 의 화염 피해를 입힙니다.
 For the Dark Brotherhood, that can be easily arranged. (Intimidate)	다크 브라더후드에게 그 정도는 쉬운 일이지. (위협)	다크 브라더후드 앞에서 그런건 중요하지 않을텐데. (위협)
 Force <Alias=Jarl>'s surrender	<Alias=Jarl>의 항복을 강요하기	<Alias=Jarl> 의 항복을 강요하기
@@ -708,6 +712,7 @@ I need to go there anyway.	어떻게든 거기에 가야 하는데.	어떻게든
 I need to rearrange your equipment.	네 장비들을 바꾸는 게 좋겠군.	네 장비들을 바꾸는게 좋겠군.
 I need to talk to him. I'm a friend. His life's in danger. (Persuade)	이야기를 해야 해. 나는 그 사람 친구야. 그 사람의 목숨이 위험하다고. (설득)	이야기를 해야해. 나는 그 사람 친구야. 그 사람의 목숨이 위험하다고. (설득)
 I need you to cause a scene. Get everyone's attention for a few minutes.	약간 소동을 일으켜주면 좋겠는데. 몇 분 동안 모든 사람들의 이목을 끌 수 있게.	약간 소동을 일으켜주면 좋겠는데. 몇 분동안 모든 사람들의 이목을 끌 수 있게.
+I need you to do something.	부탁할 일이 있는데.	네가 해 줄 일이 있는데.
 I need your help to stop the war.	전쟁을 멈추기 위해 당신의 도움이 필요합니다.	전쟁을 멈추기위해 당신의 도움이 필요합니다.
 I need your help. I need to capture a dragon.	도움이 필요합니다. 드래곤 한 마리를 생포해야 하는데.	도움이 필요합니다. 드래곤 한마리를 생포해야 하는데.
 I never met a thief that worshipped anything.	신을 믿는 도둑은 본 적이 없는데.	신을 믿는 도둑은 본적이 없는데.
@@ -843,6 +848,7 @@ I've destroyed the <Alias=Vampire> at <Alias=Dungeon>.	<Alias=Dungeon>에서 <Al
 I've found the fire salts for your forge.	당신의 대장간에 쓸 화염 소금 몇 개를 가져왔소.	당신의 대장간에 쓸 화염소금 몇 개를 가져왔소.
 I've found the journal of Skorm Snow-Strider.	스콤 스노우-스트라이더의 일기를 찾았소.	스콤 스노우-스트라이더의 일지를 찾았소.
 I've got a daedra heart.	데이드라 심장을 가져왔는데.	데이드라의 심장을 가져왔는데.
+I've got better things to do.	난 바쁜 사람이야.	난 바쁜 사람이오.
 I've got some money. Are you looking for a partner?	가진 돈이 좀 있는데. 동업자를 찾고 있습니까?	가진 돈이 좀 있는데. 동업자를 찾고있습니까?
 I've got the logbook.	항해일지를 찾았다.	항박일지를 찾았다.
 I've heard you dabble in necromancy.	당신이 강령술을 취미 삼아 익혔다던데.	당신이 강령술을 취미삼아 있혔다던데.
@@ -872,6 +878,7 @@ In order to use the downloaded content associated with this profile, you will ne
 Increase the damage and decrease the cost of Destruction spells for <dur> seconds.	<dur> 초 동안 파괴마법의 위력이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 파괴마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Increase the duration and decrease the cost of Conjuration spells for <dur> seconds.	<dur> 초 동안 소환마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 소환마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
 Increase the duration and decrease the cost of Illusion spells for <dur> seconds.	<dur> 초 동안 환영마법의 지속 시간이 증가하고 매지카 소모량이 감소합니다.	<dur> 초 동안 환영마법의 위력과 지속 시간이 증가하고 매지카 소모량이 감소합니다.
+Interested in me, are you?	나에게 관심이 있나?	나에게 관심이 있나본데?
 Intimidate <Alias=Brute> in <Alias=BruteTown>	<Alias=BruteTown>에 있는 <Alias=Brute>을(를) 위협하기	<Alias=BruteTown>에 있는 <Alias=Brute>를 위협하기
 Iron Door	철문	강철 문
 Is it difficult being away from your family?	가족들과 떨어져 지내는 건 힘들지 않나?	가족들과 떨어져 지내는건 힘들지 않나?
@@ -1101,6 +1108,7 @@ Once, the dragons sought to eliminate or enslave all mortal races. If given the 
 Only a beast kills without feeling.	짐승이나 아무런 감정 없이 상대를 죽이지.	짐승이나 아무런 감정없이 상대를 죽이지.
 Only cowards hunt animals. True game walks on two legs.	동물을 사냥하는 건 겁쟁이들뿐이지. 진짜 사냥감은 두 발로 서 있는 것들이야.	동물을 사냥하는 건 겁쟁이들 뿐이지. 진짜 사냥감은 두 발로 서 있는 것들이야.
 Open the Last Exterior Gate	마지막 외벽문을 열기	마지만 외벽문을 열기
+Opponents in melee range have a chance to be flung away.	일정한 확률로 주변 적을 날려버립니다.	선풍 망토를 둘러 일정한 확률로 주변 적을 날려버립니다.
 Orange Dartwing	주황 파리잠자리	노란 파리잠자리
 Orcish Armor of Eminent Stamina	오크제 전투화 - 상급 지구력 증가	오크제 방어구 - 상급 지구력 증가
 Orcish Armor of Extreme Stamina	오크제 전투화 - 최상급 지구력 증가	오크제 방어구 - 최상급 지구력 증가
@@ -1323,6 +1331,7 @@ Speak to Brynjolf about becoming the Guild Master	브린욜프와 길드 마스�
 Speak to Brynjolf about being Guild Master	길드 마스터의 역할에 관해서 브린욜프와 대화하기	브린욜프에게 길드 지도자로 살아가는 것에 관해서 대화하기
 Speak to Degaine	디게인과 대화하기	디게인과와 대화하기
 Speak to From Deepest Fathoms	프롬-디피스트-페덤스와 대화하기	프롬-디프스트-파돔과 대화하기
+Speak to Kodlak Whitemane	코들락 화이트메인과 대화하기	코들락과 대화하기
 Speak to Orthas Endario about the East Empire Company's problems	동제국 회사의 문제점에 관해서 오서스 엔다리오와 대화하기	동제국 회사의 문제점에 관해서 오투스 엔다리오와 대화하기
 Speak to the Jarl of Dawnstar about the land for sale	판매 중인 토지에 관해서 던스타의 야를과 대화하기	판매중인 토지에 관해서 던스타의 야를과 대화하기
 Speak to the Steward of Falkreath about the land for sale	판매 중인 토지에 관해서 팔크리스의 행정관과 대화하기	판매중인 토지에 관해서 팔크리스의 행정관과 대화하기
@@ -1397,6 +1406,9 @@ Tall Shelf	큰 선반	큰 책장
 Tall Shelf with Display Case	큰 선반과 진열함	큰 책장과 진열함
 Target is paralyzed for <dur> and takes 25 points of damage over <dur> seconds.	목표를 <dur> 초 동안 마비시키고, <dur> 초에 걸쳐 25 의 피해를 입힙니다.	<dur> 초 동안 <mag> 의 피해를 입히고 마비시킵니다.
 Target moves at 50% speed for <dur> seconds.	<dur> 초 동안 이동 속도를 50% 감소시킵니다.	<dur> 초 동안 이동 속도를 50% 감소시킵니다.
+Targets take <mag> points of frost damage for <dur> seconds, plus Stamina damage.	<dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.	강렬한 폭풍설을 일으켜 <dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
+Targets take <mag> points of frost damage for <dur> seconds.	<dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.	강렬한 폭풍설을 일으켜 <dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
+Targets take <mag> points of frost damage for <dur> seconds. Single use, then must be reacquired at the Wind Stone.	<dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다. 사용 후엔 바람의 바위의 축복을 다시 받아야 사용할 수 있습니다.	하루에 한 번 강렬한 폭풍설을 일으켜 <dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다. 사용 후엔 바람의 바위의 축복을 다시 받아야 사용할 수 있습니다.
 Targets that fail to resist are immobilized in hardened ash for <dur> seconds.	화산재의 마법을 날려 저항에 실패한 목표를 <dur> 초 동안 석화시킵니다.	<화산재>의 마법을 날려 저항에 실패한 목표를 <dur> 초 동안 석화시킵니다.
 Targets that fail to resist take <mag> points of poison damage per second for <dur> seconds.	주변 표면에 맹독의 룬을 설치합니다. 적이 접근 시 폭발하여 저항에 실패한 목표에게 <dur> 초 동안 매 초마다 <mag> 의 독 피해를 입힙니다.	주변 표면에 맹독의 룬을 설치합니다. 적이 접근 시 폭발하여 <dur> 초 동안 매 초마다 <mag> 의 독 피해를 입힙니다.
 Targets up to level <20> that fail to resist are frenzied for <30> seconds.	주변 표면에 광란의 룬을 설치합니다. 적이 접근 시 폭발하여 저항에 실패한 레벨 <20> 이하인 목표가 <30> 초 동안 다른 이를 공격하게 합니다.	주변 표면에 광란의 룬을 설치합니다. 적이 접근 시 폭발하여 레벨 <20> 이하인 목표가 <30> 초 동안 다른 이를 공격하게 합니다.
@@ -1588,6 +1600,8 @@ Visiting Advisor	방문 중인 조언자	여행 중인 조언자
 Visiting Noble	방문 중인 귀족	방문중인 귀족
 Wait for Erandur to dispel the barrier	에란더가 장벽을 제거할 때까지 기다리기	장벽을 제거하기 위해 에란더를 기다리기
 Wait for Falion to complete the ritual	팔리온이 의식을 마칠 때까지 기다리기	팔리온이 의식을 마칠때까지 기다리기
+Wait for me in the city...	도시에서 기다려...	도시에서 기다리기...
+Warehouse Bookshelves	창고 책장	창고 선반
 Was it aboard a ship?	배에 실려 있었소?	선박에 실어졌다고?
 We could live in Gallows Hall.	교수대 회관에서 삽시다.	교수대 바위에서 삽시다.
 We could use your help in Tamriel.	탐리엘에서 당신의 도움이 필요하오.	탐리엘에서 당신의 도움을 받을 수도 있소.

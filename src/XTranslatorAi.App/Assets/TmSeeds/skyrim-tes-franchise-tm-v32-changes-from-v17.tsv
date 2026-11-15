@@ -9,7 +9,6 @@ A blast of flame that sets the target on fire, doing <mag> damage per second for
 A cyclone that does <mag> points of damage per second and may fling victims into the air.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버릴 수 있습니다.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버립니다.
 A New Order	새로운 기사단	새로운 지시
 A readied arrow will be put back into its quiver if the bow is sheathed.	활을 집어넣으면 화살을 쏘기 위해 시위에 걸쳐놓았던 화살도 화살통으로 다시 들어가게 됩니다.	활을 집어넣으면 화살을 쏘기위해 시위에 걸쳐놓았던 화살도 화살통으로 다시 들어가게 됩니다.
-A recent string of murders has many Windhelm residents fearing for their lives...	최근 연이은 살인사건이 수많은 윈드헬름 주민들의 삶을 공포에 떨게하고 있습니다.	최근 연이은 살인사건이 수 많은 윈드헬름 주민들의 삶을 공포에 떨게하고 있습니다.
 A stalemate?	비긴 건가?	비긴건가?
 A truly strong chief would break the curse, not suffer from it.	진정으로 강한 족장이라면 저주에 시달리고만 있지 않고 저주를 풀 거요.	진정으로 강한 족장이라면 저주를 풀어야지, 저주 때문에 고통받는 것이 아니고.
 Absorb <mag>% of the magicka from dragon breath and spells.  Chance on hit to spawn a tentacle explosion.	드래곤의 숨결과 적의 마법으로부터 <mag>%의 매지카를 흡수합니다. 피해를 입을 시 일정한 확률로 촉수를 생성합니다.	드래곤의 숨결과 적의 마법으로부터 <mag>% 의 매지카를 흡수합니다. 피해를 입을 시 일정한 확률로 촉수를 생성합니다.
@@ -21,15 +20,15 @@ All right. But you're responsible for him.	알았다. 대신 돌보는 건 네 �
 Alto Wine	술 - 알토 포도주	술 - 순한 포도주
 Amulet of Mara (Possessed)	아뮬렛 - 마라 (영혼이 깃듦)	아뮬렛 - 마라 (소유)
 Anything else before I set off?	떠나기 전에 다른 건 없나?	떠나기 전에 다른건 없나?
-Are sales that bad out here?	이곳에서는 장사가 잘 안 되나?	이 곳에서는 장사가 잘 안 되나?
 Are you doing well, serving as Jarl?	야를로 지내는 건 어떻습니까?	야를로 지내는건 어떻습니까?
-Are you going to be able to lead this place, still?	그래도 여전히 이곳을 이끌어갈 수 있겠나?	그래도 여전히 이 곳을 이끌어갈 수 있겠나?
 Are you going to tell me, or am I going to have to beat it out of you?	그냥 순순히 말할 건가, 아니면 주먹으로 패 줄까?	그냥 순순히 말할건가, 아니면 주먹으로 패 줄까?
 Are you sure about this?	확실한 건가?	확실 한건가?
 Are you surrendering?	항복할 건가?	항복할건가?
 As dead as I can make him.	그는 이제 죽은 거나 다름없습니다.	그는 이제 죽은거나 다름 없습니다.
 Ash Spawn Immolator	화산재 스폰 소각자	화산재 스폰 학살자
 Azura is the daedric prince of dusk and dawn, and one of the few not considered to be inherently evil.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 본래부터 악하지는 않다고 여겨지는 프린스들 중 하나입니다.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 원래부터 악마는 아니라고 여겨지는 프린스들 중 하나입니다.
+Briar Heart Storage	찔레 심장 보관함	찔레심장 보관함
+Bring a briarheart to Elynea	엘리니아에게 찔레 심장 하나를 가져다 주기	엘리니아에게 찔레심장 하나를 가져다 주기
 Carrying capacity increased by <mag>, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.	무게 한계가 <mag> 증가합니다. 장착한 방어구가 이동 속도를 감소시키지 않으며 무게 한계에 포함되지 않습니다.
 Centurion Fight 3	백부장 전투 3	백부장 전사 3
 Choose up to %d Trait	%d까지 퍽을 고르세요	%d 까지 퍽을 고르세요
@@ -64,12 +63,15 @@ Doesn't anyone care that Orthorn stole things from the College?	아무도 오쏜
 Don't worry, I was just leaving.	신경 쓰지 마시오, 곧 갈 테니.	신경쓰지 마시오, 곧 갈 테니.
 Dragon Hunting	드래곤 사냥	드래곤 사냥꾼
 Draugr Scourge	드로거 재앙	드로거 사술사
+Editor Smoke Test Cell	에디터 스모크 테스트 셀	테스팅 룸
 Enchanting Pick-Up	마법부여를 위한 물품 찾아오기	마법부여를 위한 물품 찾아오기<Enchanting Pick-Up>
 Everything is fine. The shipment will be here soon.	모든 게 순조롭고, 수송품이 곧 이곳에 도착할 거라더군.	모든게 순조롭고, 수송품이 곧 이곳에 도착할 거라더군.
 Felsaad Tern Feathers	펠사드 제비갈매기 깃털	펠사드 제비갈매기 날개
 Filling Soul Gems	소울젬 충전하기	소울젬 보충하기
 Find some Mammoth Tusk Powder	매머드 상아 가루를 찾기	매머드 상아 가루 몇 개를 찾기
 First time I ever set out to return something...	뭔가 돌려주기 위해서 가는 건 처음이군...	뭔가 돌려주기 위해서 가는건 처음이군...
+Follow me.	따라오게.	나를 따라오게.
+For <dur> seconds, opponents in melee range take <mag> points per second fire damage. Targets on fire take extra damage.	<dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.	불꽃의 망토를 둘러 <dur> 초 동안 주변 적에게 매 초마다 <mag> 의 화염 피해를 입힙니다. 불이 붙은 적은 추가 피해를 입습니다.
 Forget I mentioned it.	내가 말했던 건 잊어버려.	내가 말했던건 잊어버려.
 Forget it. Maybe I'll come back later.	신경 쓰지 마시오. 다시 오지.	신경쓰지 마시오. 다시 오지.
 Fortified Healing	체력 재생 강화	치유 마법 강화
@@ -106,6 +108,7 @@ I know that mound - high on the hill east of Kynesgrove.	카인즈그로브의 �
 I must have missed it. Sorry.	난 못 본 것 같은데. 미안하군.	난 못본 것 같은데. 미안하군.
 I need the "secrets of the Skaal" in order to defeat Miraak.	미락을 물리치기 위해서는 '스칼의 비밀'이란 게 필요한데.	미락을 물리치기 위해서는 '스칼의 비밀'이란게 필요한데.
 I need to get a look at Sabjorn's books.	사비욘의 장부를 봐야겠는데.	사비욘의 일지를 봐야겠는데.
+I need you to do something.	부탁할 일이 있는데.	네가 해 줄 일이 있는데.
 I need your help to stop the war.	전쟁을 멈추기 위해 당신의 도움이 필요합니다.	전쟁을 멈추기위해 당신의 도움이 필요합니다.
 I never wanted to help you. Let me go!	처음부터 널 도울 생각은 없었다. 내보내 줘!	절대로 널 돕지 않을 거다. 내보내 줘!
 I think you owe me one. (Persuade)	나에게 빚진 게 하나 있을 텐데. (설득)	나에게 빚진게 하나 있을 텐데. (설득)
@@ -126,7 +129,9 @@ I'm not here to talk. I'm here for those documents.	잡담이나 하러 온 게 
 I'm ready for anything.	무슨 일이든 준비되어 있습니다.	준비 되었습니다.
 I'm with the Guild. Is this enough to clear my bounty? (<Global=GuildCost> gold)	나는 길드원이야. 이 정도면 현상금을 없애는 데 충분할까? (<Global=GuildCost> 골드)	나는 길드원이야. 이 정도면 현상금을 없애는데 충분할까? (<Global=GuildCost> 골드)
 I've brought you <Alias=QuestItem>.	<Alias=QuestItem>를 가져왔습니다.	<Alias=QuestItem>를 가져 왔습니다.
+I've got better things to do.	난 바쁜 사람이야.	난 바쁜 사람이오.
 I've heard you might know what Faleen likes.	팔린이 좋아하는 게 어떤 건지 당신이 알고 있다던데.	팔린이 좋아하는 게 어떤건지 당신이 알고 있다던데.
+Interested in me, are you?	나에게 관심이 있나?	나에게 관심이 있나본데?
 Is it difficult being away from your family?	가족들과 떨어져 지내는 건 힘들지 않나?	가족들과 떨어져 지내는건 힘들지 않나?
 Is the war really over?	정말로 전쟁이 끝난 건가?	정말로 전쟁이 끝난건가?
 Is there anything else you can tell me about Isabelle Rolaine?	이자벨 로레인에 대해서 더 말해줄 건 없나?	이자벨 로레인에 대해서 더 말해줄건 없나?
@@ -178,6 +183,7 @@ Nothing. Never mind.	아무것도 아니다. 신경 쓰지 마.	아무것도 아
 Of course I'll join you.	함께하고말고.	함께 하고 말고.
 Okay, but I'll need a few moments to cast the spell on you.	좋아, 하지만 마법을 외우는 데 시간이 좀 필요해.	좋아, 하지만 마법을 외우는데 시간이 좀 필요해.
 Okay, never mind.	좋아. 신경 쓰지 마.	좋아. 신경쓰지 마.
+Opponents in melee range have a chance to be flung away.	일정한 확률로 주변 적을 날려버립니다.	선풍 망토를 둘러 일정한 확률로 주변 적을 날려버립니다.
 Pelagius the Suspicious	의심 많은 펠라지우스	수상한 펠라지우스
 Plant <Alias=QuestItem> in <Alias=TargetHouse>	<Alias=TargetHouse>에 <Alias=QuestItem> 몰래 놓아두기	<Alias=TargetHouse>에 <Alias=QuestItem> 놓기
 Plant letter on <Alias=Victim>'s corpse	<Alias=Victim>의 시체에 편지를 몰래 넣어 두기	<Alias=Victim>의 시체에 편지를 숨겨두기
@@ -213,9 +219,9 @@ So what's the story behind the Rueful Axe.	그래서 그 회한의 도끼에 얽
 So... I'm free to go?	그럼... 이만 가도 되는 건가?	그럼... 이만 가도 되는건가?
 Some of your friends feel you're troubled.	당신의 친구들이 당신이 힘들어한다던데.	당신의 친구들이 당신이 힘들어 한다던데.
 Sorry, I didn't mean anything by it.	미안하군, 다른 의도가 있는 건 아니오.	미안하군, 다른 의도가 있는건 아니오.
-Sorry, I'm still not ready to go in there.	미안한데, 아직 그곳에 갈 준비가 되지 않았소.	미안한데, 아직 그 곳에 갈 준비가 되지 않았소.
 Soul gems with souls in them are used to create and recharge magic weapons and armor.	영혼이 담긴 소울젬은 마법 무기와 방어구를 만들고 충전하는 데에 사용됩니다.	영혼이 담긴 소울젬은 마법 무기와 방어구를 만들고 충전하는데에 사용됩니다.
 Sounds terrible. Good luck with that.	힘들 것 같군. 잘해보시오.	힘들 것 같군. 잘 해보시오.
+Speak to Kodlak Whitemane	코들락 화이트메인과 대화하기	코들락과 대화하기
 Spell Tome: Bound Battleaxe	마법책: 마법 전투 도끼	마법책: 마법 전투 도끼 소환
 Spell Tome: Bound Bow	마법책: 마법 활	마법책: 마법 활 소환
 Spell Tome: Bound Dagger	마법책: 마법 단검	마법책: 마법 단검 소환
@@ -229,6 +235,9 @@ Sure. When I don't need him, he can stay with you.	물론이지. 내가 데리�
 Suvaris Atheron's Logbook	수바리스 아세론의 항해일지	수바리스 아테론의 항해일지
 Tall Shelf	큰 선반	큰 책장
 Tall Shelf with Display Case	큰 선반과 진열함	큰 책장과 진열함
+Targets take <mag> points of frost damage for <dur> seconds, plus Stamina damage.	<dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.	강렬한 폭풍설을 일으켜 <dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
+Targets take <mag> points of frost damage for <dur> seconds.	<dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.	강렬한 폭풍설을 일으켜 <dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다.
+Targets take <mag> points of frost damage for <dur> seconds. Single use, then must be reacquired at the Wind Stone.	<dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다. 사용 후엔 바람의 바위의 축복을 다시 받아야 사용할 수 있습니다.	하루에 한 번 강렬한 폭풍설을 일으켜 <dur> 초 동안 매 초마다 <mag> 의 냉기 피해와 지구력 피해를 입힙니다. 사용 후엔 바람의 바위의 축복을 다시 받아야 사용할 수 있습니다.
 Targets that fail to resist take <mag> points of poison damage per second for <dur> seconds.	주변 표면에 맹독의 룬을 설치합니다. 적이 접근 시 폭발하여 저항에 실패한 목표에게 <dur> 초 동안 매 초마다 <mag> 의 독 피해를 입힙니다.	주변 표면에 맹독의 룬을 설치합니다. 적이 접근 시 폭발하여 <dur> 초 동안 매 초마다 <mag> 의 독 피해를 입힙니다.
 Targets up to level <20> that fail to resist are frenzied for <30> seconds.	주변 표면에 광란의 룬을 설치합니다. 적이 접근 시 폭발하여 저항에 실패한 레벨 <20> 이하인 목표가 <30> 초 동안 다른 이를 공격하게 합니다.	주변 표면에 광란의 룬을 설치합니다. 적이 접근 시 폭발하여 레벨 <20> 이하인 목표가 <30> 초 동안 다른 이를 공격하게 합니다.
 Tell me, what's it like being Boethiah's champion?	말해보시오, 보에디아의 챔피언이란 게 어떤 거지?	말해보시오, 보에디아의 챔피언이란게 어떤 거지?
@@ -242,7 +251,6 @@ The Empire can't afford to snub the Greybeards.	제국은 그 그레이비어드
 The Kagrumez Gauntlet	카그루메즈 시험	카그루메즈 장갑
 The selected storage device does not have sufficient space available.  New saves will not be created.	선택된 저장장치에 용량이 부족합니다. 새로운 저장 파일이 만들어지지 않습니다.	선택된 저장장치에 용량이 부족합니다. 새로운 저장파일이 만들어지지 않았습니다.
 The Third Era Timeline	제3시대 연표	제3세기 연표
-There wasn't a body in the grave. Just the heart stone.	무덤에 시체는 없고 하트스톤뿐이던데.	무덤에 시체는 없고 하트스톤 뿐이던데.
 There's a town nearby in that direction. Do you need help getting there?	이 방향으로 가면 근처에 마을이 있는데, 거기까지 가는 데 도움이 필요하시오?	이 방향으로 가면 근처에 마을이 있는데, 거기까지 가는데 도움이 필요하시오?
 There's no way you'll come peacefully?	순순히 따라올 생각은 없는 건가?	평화롭게 마무리할 방법은 없는건가?
 This is hardly proof of anything.	그런 건 아무런 증거가 되지 못하는데.	그런건 아무런 증거가 되지 못하는데.
@@ -259,6 +267,8 @@ Unenchanted Destruction Staff	마법부여되지 않은 파괴마법 지팡이	�
 Unenchanted Forsworn Staff	마법부여되지 않은 포스원 지팡이	포스원 지팡이
 Unenchanted Illusion Staff	마법부여되지 않은 환영마법 지팡이	환영마법 지팡이
 Unenchanted Restoration Staff	마법부여되지 않은 회복마법 지팡이	회복마법 지팡이
+Wait for me in the city...	도시에서 기다려...	도시에서 기다리기...
+Warehouse Bookshelves	창고 책장	창고 선반
 We may never return.	다시는 돌아오지 못할 수도 있소.	다시는 돌아오지 못 할 수도 있소.
 Weystone Source	웨이스톤 원천	웨이스톤 초점
 What are the Ancestral Tombs?	조상의 무덤들이란 게 뭐요?	조상의 무덤들이란게 뭐요?
@@ -289,7 +299,6 @@ What's this about a crystal?	크리스털이라니, 대체 무슨 얘기지?	이
 What's your problem with Faralda?	파랄다와 무슨 문제가 있는 겁니까?	파랄다와 무슨 문제가 있는겁니까?
 Whatever.	그러든가.	알았다.
 Where are we headed?	어디로 가는 겁니까?	어디로 가던 길입니까?
-Where did you live before you were here?	이곳에 오기 전에는 어디서 살았지?	이 곳에 오기 전에는 어디서 살았지?
 Who cares, we're the Thieves Guild.	알 게 뭐야, 우리는 도둑 길드인데.	알게 뭐야, 우리는 도둑 길드인데.
 Why all the hatred for the Empire?	왜 그렇게 제국을 증오하는 겁니까?	왜 다들 제국을 증오하는 겁니까?
 Why are they collecting these souls?	왜 그들은 영혼을 수집하고 있는 걸까?	왜 그들은 영혼을 수집하고 있는걸까?
