@@ -55,8 +55,14 @@ internal static class AgentMcpServer
             new[] { "project", "answer" }),
         new("lookup", "이름·용어의 기존 표기(용어집·게임 사전·한글패치 TM·이 모드에서 번역한 줄). 여러 낱말을 한 번에 찾는다.",
             new JsonObject { ["project"] = Project(), ["words"] = StrArray("찾을 영어 낱말들") }, new[] { "project", "words" }),
-        new("names", "새로 정한 이름 목록(용어집·TM·게임 사전·한국어판에 없어 번역하며 정한 이름 줄, 책·대사 본문에 나온 새 영어 이름 후보). 끝 보고에 넣는다.",
-            new JsonObject { ["project"] = Project() }, new[] { "project" }),
+        new("names", "새로 정한 이름 목록(용어집·TM·게임 사전·한국어판에 없어 번역하며 정한 이름 줄, 책·대사 본문에 나온 새 영어 이름 후보). 끝 보고에 넣는다. "
+                     + "사용자가 목록을 확인하고 넣으라고 하면 save로 프로젝트 용어집에 넣는다(ids: 그 줄만, except: 그 줄 빼고).",
+            new JsonObject
+            {
+                ["project"] = Project(), ["save"] = Bool("목록의 이름을 프로젝트 용어집에 넣는다(사용자가 확인한 뒤에만)"),
+                ["ids"] = Str("save할 줄 id만(예: 12,40)"), ["except"] = Str("save에서 뺄 줄 id(예: 12,40)"),
+            },
+            new[] { "project" }),
         new("voice", "바닐라 인물이 한글패치에서 하는 말(말투 참고).",
             new JsonObject { ["project"] = Project(), ["who"] = Str("영어 이름, 한국어 이름 또는 FormID") }, new[] { "project", "who" }),
         new("style", "화자별로 정한 말투 보기·정하기. speaker 없이 부르면 목록과 정하지 않은 화자를 보여 준다.",
@@ -607,9 +613,20 @@ internal static class AgentMcpServer
                 Option("--note", Text("note"));
                 if (Flag("undo")) args.Add("--undo");
                 break;
+            case "names":
+                // An empty list ("ids": [] or "") dropped the option, and the call saved every name.
+                if (Text("ids") is { } emptyIds && string.IsNullOrWhiteSpace(emptyIds) || Text("except") is { } emptyExcept && string.IsNullOrWhiteSpace(emptyExcept))
+                {
+                    return Content("ids·except에 줄 번호가 없습니다(예: \"12,40\"). 아무것도 저장하지 않았습니다.", isError: true);
+                }
+
+                args.AddRange(new[] { "names", project ?? "" });
+                if (Flag("save")) args.Add("--save");
+                Option("--id", Text("ids"));
+                Option("--except", Text("except"));
+                break;
             case "status":
             case "next":
-            case "names":
             case "export":
                 args.AddRange(new[] { name, project ?? "" });
                 break;
@@ -648,8 +665,8 @@ internal static class AgentMcpServer
         failed = exit != 0;
 
         // next and submit end with the next request: its text comes with the result, so no file needs reading. style,
-        // context, terms and hold make a waiting request again; without its text an agent answered from the one it had.
-        var remade = name is "style" or "context" or "terms" or "hold" && output.Contains("대기 중이던 요청을", StringComparison.Ordinal);
+        // context, terms, hold and names --save make a waiting request again; without its text an agent answered from the one it had.
+        var remade = name is "style" or "context" or "terms" or "hold" or "names" && output.Contains("대기 중이던 요청을", StringComparison.Ordinal);
         if (!failed && (name is "next" or "submit" && output.Contains("다음 요청:", StringComparison.Ordinal) || remade))
         {
             var session = AgentCommand.Parse(ServerOptions(server)).Session;

@@ -1767,6 +1767,85 @@ public sealed class AgentModeTests : IAsyncLifetime
     }
 
     /// <summary>
+    /// names --save puts the names the user looked over into the project glossary, as terms adds them, with a note the
+    /// GUI shows: only the lines --id names, or all but --except's. A list naming a line not on it, an option without
+    /// its list (PowerShell's "--id #12"), or one name written two ways saves nothing. A name after a category goes in
+    /// as the name; one the mod also writes as a plain word ("a note", "iron daggers") as a hint; one the user switched
+    /// off in the glossary is left alone.
+    /// </summary>
+    [Fact]
+    public async Task SavedNames_GoInTheGlossary_AsTheUserChose()
+    {
+        var project = await OpenAsync("Saved.esp", Header()
+            .Concat(Group(
+                Record("MISC", 0x4101, Sub("EDID", Z("aaEcho")), Sub("FULL", Z("Aetherial Echo"))),
+                Record("MISC", 0x4102, Sub("EDID", Z("aaLamp")), Sub("FULL", Z("Shadow Lantern"))),
+                Record("MISC", 0x4103, Sub("EDID", Z("aaNote")), Sub("FULL", Z("Note"))),
+                Record("MISC", 0x4104, Sub("EDID", Z("aaLearn")), Sub("FULL", Z("Learning - Kaiten"))),
+                Record("MISC", 0x4105, Sub("EDID", Z("aaKaiten")), Sub("FULL", Z("Kaiten"))),
+                Record("MISC", 0x4106, Sub("EDID", Z("aaKaiten2")), Sub("FULL", Z("Kaiten"))),
+                Record("WEAP", 0x4107, Sub("EDID", Z("aaDagger")), Sub("FULL", Z("Iron Dagger"))),
+                Record("BOOK", 0x4108, Sub("EDID", Z("aaBook")), Sub("FULL", Z("Old Letter")), Sub("DESC", Z("Keep this note close. Two iron daggers lie here.")))))
+            .ToArray());
+        await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, CancellationToken.None);
+        var rows = await db.GetAllStringsAsync(CancellationToken.None);
+        var kaiten = rows.Where(r => r.SourceText == "Kaiten").Select(r => r.Id).OrderBy(id => id).ToList();
+        var korean = new Dictionary<string, string>
+        {
+            ["Aetherial Echo"] = "에테르의 메아리", ["Shadow Lantern"] = "그림자 등불", ["Note"] = "쪽지", ["Old Letter"] = "오래된 편지",
+            ["Learning - Kaiten"] = "배우기 - 회천", ["Iron Dagger"] = "강철 단검",
+        };
+        var updates = rows.Where(r => korean.ContainsKey(r.SourceText)).Select(r => (r.Id, korean[r.SourceText], StringEntryStatus.Done, (string?)null)).ToList();
+        updates.Add((kaiten[0], "회천", StringEntryStatus.Done, null));
+        updates.Add((kaiten[1], "카이텐", StringEntryStatus.Done, null));
+        await db.UpdateStringTranslationsAsync(updates, CancellationToken.None);
+        rows = await db.GetAllStringsAsync(CancellationToken.None);
+        var names = await AgentSession.NewNamesAsync(db, rows, CancellationToken.None);
+        long Id(string source) => names.First(n => n.SourceText == source).Id;
+        // "Kaiten → 회천" is "Learning - Kaiten"'s name, listed once.
+        Assert.Equal(new[] { "Aetherial Echo", "Shadow Lantern", "Note", "Learning - Kaiten", "Kaiten", "Iron Dagger", "Old Letter" }, names.Select(n => n.SourceText));
+        Assert.Equal(kaiten[1], Id("Kaiten"));
+
+        var unknown = await Assert.ThrowsAsync<AgentModeException>(() => AgentCli.SaveNewNamesAsync(db, names, rows, $"{Id("Note")},99999", null, CancellationToken.None));
+        var both = await Assert.ThrowsAsync<AgentModeException>(() => AgentCli.SaveNewNamesAsync(db, names, rows, "1", "2", CancellationToken.None));
+        var split = await Assert.ThrowsAsync<AgentModeException>(() => AgentCli.SaveNewNamesAsync(db, names, rows, null, null, CancellationToken.None));
+        Assert.Contains("#99999", unknown.Message);
+        Assert.Contains("--except", both.Message);
+        Assert.Contains($"#{Id("Learning - Kaiten")}", split.Message);
+        Assert.Contains($"#{kaiten[1]}", split.Message);
+        string[] Cli(params string[] args) => args.Concat(new[] { "--work", Path.Combine(_root, "work"), "--projects", Path.Combine(_root, "projects"), "--global", Path.Combine(_root, "global") }).ToArray();
+        Assert.NotEqual(0, await AgentCli.RunAsync(Cli("names", project.Key, "--save", "--id"), argumentFiles: false));
+        Assert.Empty(await db.GetGlossaryAsync(CancellationToken.None));
+
+        // The command line: only the line --id names.
+        var code = await AgentCli.RunAsync(Cli("names", project.Key, "--save", "--id", Id("Shadow Lantern").ToString(System.Globalization.CultureInfo.InvariantCulture)), argumentFiles: false);
+        Assert.Equal(0, code);
+        var lantern = Assert.Single(await db.GetGlossaryAsync(CancellationToken.None));
+        Assert.Equal(("Shadow Lantern", "그림자 등불", XTranslatorAi.Core.Text.GlossaryForceMode.ForceToken, AgentCli.SavedNameNote),
+            (lantern.SourceTerm, lantern.TargetTerm, lantern.ForceMode, lantern.Note));
+
+        await db.BulkInsertGlossaryAsync(new[] { ((string?)null, "Old Letter", "옛 편지", false, 10, 0, 0, (string?)null) }, CancellationToken.None);
+        rows = await db.GetAllStringsAsync(CancellationToken.None);
+        names = await AgentSession.NewNamesAsync(db, rows, CancellationToken.None);
+        Assert.DoesNotContain(names, n => n.SourceText == "Shadow Lantern");
+        var (lines, changed) = await AgentCli.SaveNewNamesAsync(db, names, rows, null, kaiten[1].ToString(System.Globalization.CultureInfo.InvariantCulture), CancellationToken.None);
+
+        Assert.True(changed);
+        Assert.Contains("추가: Kaiten → 회천", lines);
+        Assert.Contains("추가: Note → 쪽지 (참고만)", lines);
+        Assert.Contains("추가: Iron Dagger → 강철 단검 (참고만)", lines);
+        Assert.Contains("추가: Aetherial Echo → 에테르의 메아리", lines);
+        Assert.Contains(lines, line => line.StartsWith("건너뜀: Old Letter", StringComparison.Ordinal));
+        Assert.Contains(lines, line => line.StartsWith("참고만으로 넣은 이름: Note, Iron Dagger", StringComparison.Ordinal));
+        var glossary = await db.GetGlossaryAsync(CancellationToken.None);
+        Assert.Equal(new[] { "Aetherial Echo", "Iron Dagger", "Kaiten", "Note", "Shadow Lantern" },
+            glossary.Where(g => g.Enabled).Select(g => g.SourceTerm).OrderBy(t => t, StringComparer.Ordinal));
+        Assert.Equal("옛 편지", Assert.Single(glossary, g => g.SourceTerm == "Old Letter").TargetTerm);
+        Assert.All(glossary.Where(g => g.Enabled), g => Assert.Equal(AgentCli.SavedNameNote, g.Note));
+        Assert.Equal(new[] { "Old Letter" }, (await AgentSession.NewNamesAsync(db, await db.GetAllStringsAsync(CancellationToken.None), CancellationToken.None)).Select(n => n.SourceText));
+    }
+
+    /// <summary>
     /// Names inside a text, as the LotD book test's bodies had them: runs of capitalized words joined by "of the",
     /// without the sentence's first word ("During the War of Betony"), a possessive or a lone word that only starts a
     /// sentence (Greetings, The Barber).

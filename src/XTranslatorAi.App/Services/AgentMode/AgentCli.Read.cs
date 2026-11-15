@@ -107,9 +107,16 @@ public static partial class AgentCli
         if (found.ModTotal > (found.Mod?.Count ?? 0)) Console.WriteLine($"(이 모드 {found.ModTotal}줄 중 짧은 {found.Mod!.Count}줄)");
     }
 
-    // The names the run decided itself, for the closing report: names <프로젝트> (read only).
+    // The names the run decided itself, for the closing report: names <프로젝트> (read only); with --save they go into the
+    // project glossary (AgentCli.Names.cs).
     private static async Task NamesAsync(AgentCommand c)
     {
+        if (c.Save || c.Ids != null || c.Except != null)
+        {
+            await SaveNamesAsync(c);
+            return;
+        }
+
         var project = c.Session.Find(c.Arg(0, "프로젝트"));
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, c.Ct);
         var rows = await c.RowsAsync(db);

@@ -41,6 +41,8 @@ internal sealed class AgentCommand
     public string? Find { get; private init; }
     public string? Rec { get; private init; }
     public string? Ids { get; private init; }
+    public string? Except { get; private init; }
+    public bool Save { get; private init; }
     public string? After { get; private init; }
     public string? Count { get; private init; }
     public bool All { get; private init; }
@@ -66,6 +68,7 @@ internal sealed class AgentCommand
         var find = c.Option("--find");
         var rec = c.Option("--rec");
         var ids = c.ListOption("--id");
+        var except = c.ListOption("--except");
         var after = c.Option("--after");
         var count = c.Option("--count");
         var all = rest.Remove("--all");
@@ -73,12 +76,13 @@ internal sealed class AgentCommand
         var to = c.Option("--to");
         var note = c.Option("--note");
         var clear = rest.Remove("--clear");
+        var save = rest.Remove("--save");
         var lane = AgentLane.Parse(c.Option("--lane"));
         return new AgentCommand(rest)
         {
             Help = help, Work = work, WorkGiven = givenWork != null, Settings = settings, GlobalDb = globalDb, GlobalRoot = globalRoot,
             GameStrings = gameStrings, ProjectsRoot = projectsRoot, Find = find, Rec = rec,
-            Ids = ids, After = after, Count = count, All = all, Undo = undo, To = to, Note = note, Clear = clear, Lane = lane,
+            Ids = ids, Except = except, Save = save, After = after, Count = count, All = all, Undo = undo, To = to, Note = note, Clear = clear, Lane = lane,
             Session = new AgentSession(work, globalDb, gameStrings, settings, projectsRoot, new BundledFranchiseTmSeedService(globalRoot)),
         };
     }

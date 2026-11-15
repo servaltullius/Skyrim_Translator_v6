@@ -169,6 +169,7 @@ public static partial class AgentCli
           tullius.cmd korean <프로젝트> <한국어판 경로> [--strings <폴더>] [--english <영어 원본>]  기존 한국어판을 연결하고 아직 번역 안 된 줄을 채움(검수 모드, 영어가 바뀐 줄은 번역)
           tullius.cmd lookup <프로젝트> <낱말>                                       이름·용어의 기존 표기(용어집·게임 사전·TM, 앱이 켜져 있어도 됨)
           tullius.cmd names <프로젝트>                                               새로 정한 이름(용어집·TM·게임 사전·한국어판에 없던 이름 줄, 끝 보고용)
+          tullius.cmd names <프로젝트> --save [--id 12,40 | --except 12,40]          사용자가 확인한 새 이름을 프로젝트 용어집에 넣음(모두·고른 줄만·뺄 줄 빼고)
           tullius.cmd voice <프로젝트> <이름|FormID>                                 바닐라 인물이 한글패치에서 하는 말(말투 참고, 앱이 켜져 있어도 됨)
           tullius.cmd style <프로젝트> [<화자> <말투> [--to <상대>] [--note <메모>] [--clear]]  화자별로 정한 말투 보기·정하기(요청과 품질검사가 따름)
           tullius.cmd context <프로젝트> [<문맥 파일> | --clear]                     프로젝트 문맥(모드 배경·인물 관계·말투) 보기·저장·지우기(모든 요청의 지시에 들어감)

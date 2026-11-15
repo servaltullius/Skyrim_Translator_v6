@@ -673,6 +673,12 @@ public sealed class GlossaryApplier
         return term[..^1];
     }
 
+    /// <summary>
+    /// The pattern a term finds text with, as translation applies it (whole words, with a plural; case ignored): the
+    /// agent's names --save asks with it whether a name is also a plain word of the mod's text.
+    /// </summary>
+    public static Regex? MatcherFor(GlossaryEntry entry) => CreateRegex(entry, SingularOf(entry));
+
     private static Regex? CreateRegex(GlossaryEntry entry, string? singular)
     {
         if (entry.ForceMode == GlossaryForceMode.PromptOnly)

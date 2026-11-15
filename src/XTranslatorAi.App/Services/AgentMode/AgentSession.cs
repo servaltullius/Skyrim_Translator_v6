@@ -450,8 +450,25 @@ public sealed partial class AgentSession
         return rows
             .Where(r => r.Status is StringEntryStatus.Done or StringEntryStatus.Edited && !string.IsNullOrWhiteSpace(r.DestText))
             .Where(r => TranslationRowRules.IsNameField(r.Rec))
-            .Where(r => !given.Contains(r.Id) && !terms.Contains(r.SourceText.Trim()) && seen.Add((Tail(r.SourceText), Tail(r.DestText))))
+            .Where(r => !given.Contains(r.Id) && !terms.Contains(r.SourceText.Trim()) && !terms.Contains(NamePart(r.SourceText, r.DestText!).Source)
+                        && seen.Add((Tail(r.SourceText), Tail(r.DestText))))
             .ToList();
+    }
+
+    /// <summary>
+    /// The name a name line gives the glossary: after a category written the same way in both ("Learning - Kaiten" →
+    /// "배우기 - 회천" gives Kaiten → 회천), else the whole line. Only " - " divides: "Dar-Ma" is one name.
+    /// </summary>
+    public static (string Source, string Target) NamePart(string source, string target)
+    {
+        const string divider = " - ";
+        var s = source.Trim();
+        var t = target.Trim();
+        var si = s.IndexOf(divider, StringComparison.Ordinal);
+        var ti = t.IndexOf(divider, StringComparison.Ordinal);
+        if (si <= 0 || ti <= 0) return (s, t);
+        var (ns, nt) = (s[(si + divider.Length)..].Trim(), t[(ti + divider.Length)..].Trim());
+        return ns.Length > 0 && nt.Length > 0 ? (ns, nt) : (s, t);
     }
 
     /// <summary>The lanes ("2/3") with a request waiting.</summary>
