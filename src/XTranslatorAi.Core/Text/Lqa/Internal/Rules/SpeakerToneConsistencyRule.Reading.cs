@@ -143,8 +143,17 @@ internal static partial class SpeakerToneConsistencyRule
         text = spoken;
 
         var parts = (text ?? "").Split(new[] { '.', '!', '?', '…', ',' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        var cries = Cries(parts);
-        var pieces = parts.Where(part => !cries.Contains(part)).Select(part => (Part: part, Register: SentenceLevel(part, keepShort: false))).ToList();
+        // Repeated cries and pieces in another language (Foreign) say nothing about the level; a line of the dragon tongue
+        // with only names in Korean says nothing at all.
+        var foreign = Foreign(parts);
+        if (IsDragonTongue(parts, foreign))
+        {
+            return (Register.Unknown, false);
+        }
+
+        var noLevel = Cries(parts);
+        noLevel.UnionWith(foreign);
+        var pieces = parts.Where(part => !noLevel.Contains(part)).Select(part => (Part: part, Register: SentenceLevel(part, keepShort: false))).ToList();
         // A 하오체 or 하게체 piece outweighs a weak sign of 존댓말 in the same line: "…좋소. 가져가시오. 여기 열쇠요."
         var styled = pieces.LastOrDefault(piece => piece.Register is Register.Hao or Register.Hage).Register;
         if (parts.Length > 1)
@@ -160,8 +169,10 @@ internal static partial class SpeakerToneConsistencyRule
             }
         }
 
-        // A short reply left by a stage direction ("*한숨* 좋아.") is a reply, not a lone name.
-        var level = SentenceLevel(text, keepShort: stripped);
+        // A short reply left by a stage direction ("*한숨* 좋아.") is a reply, not a lone name. A last piece in another
+        // language has no level of its own: the nearest piece before it decides, as for a clause that trails off.
+        var lastForeign = parts.Length > 0 && IsForeign(parts[^1]);
+        var level = lastForeign ? Register.Unknown : SentenceLevel(text, keepShort: stripped);
         var weak = level == Register.Polite && IsWeakPolite(text);
         if (weak && styled != Register.Unknown)
         {
@@ -173,7 +184,7 @@ internal static partial class SpeakerToneConsistencyRule
             // "누가 알겠어. 그 안에 뭔가 비싼 게 들어있을지.", "여기서 나가시오, 화를 내기 전에.": a last clause with no
             // level trails a sentence that has one, the nearest before it ("잘 있어, 엔써... 뭐라 감사의 말을 해야 할지...").
             var before = parts.Reverse().Skip(1)
-                .Where(part => !EndsInOpenClause(part) && !cries.Contains(part))
+                .Where(part => !EndsInOpenClause(part) && !noLevel.Contains(part))
                 .Select(part => (Part: part, Register: SentenceLevel(part, keepShort: false)))
                 .FirstOrDefault(found => found.Register != Register.Unknown);
             level = before.Register;
@@ -304,6 +315,34 @@ internal static partial class SpeakerToneConsistencyRule
             .Where(group => group.Count() > 1)
             .Select(group => group.Key)
             .ToHashSet(StringComparer.Ordinal);
+
+    /// <summary>
+    /// The pieces of a line in another language, more of whose words are in Latin letters than in Hangul: the dragon
+    /// tongue, which the Korean patch keeps in its own letters with only the names in Korean ("Meyz nu 이스미어,
+    /// Dovahsebrom. Dahmaan daar rok.", "…, naal suleyk do 쇼어, …"). Their last word is a name, and 이스미어 and 쇼어
+    /// ending in 어 read as 반말 among the Greybeards' 존댓말 lines. A Korean piece with a Latin word or tag in it
+    /// ("네 Thu'um에는 지배력이 있군", "<Alias=Player>, 거기서 기다려 봐") keeps its level.
+    /// </summary>
+    private static HashSet<string> Foreign(string[] parts)
+        => parts.Where(IsForeign).ToHashSet(StringComparer.Ordinal);
+
+    /// <summary>
+    /// A line of the dragon tongue with only names in Korean: every piece is in another language or a single word, and a
+    /// single Korean word there is a name ("Geh, 샬록니어, kaali mir.", "안기어. Rok los 도바킨, Strundu'ul. Rok fen
+    /// tinvaak 파써낙스."), not a reply in 반말. A line with a Korean sentence of its own keeps that sentence's level
+    /// ("Ni faas, 도바킨! 겁먹을 필요 없어."), and so does a one-word reply after a name left in Latin letters ("Sven!
+    /// 알았어."): the line needs a sentence of the other language, not only a word of it.
+    /// </summary>
+    private static bool IsDragonTongue(string[] parts, HashSet<string> foreign)
+        => foreign.Any(part => part.Any(char.IsWhiteSpace)) && parts.All(part => foreign.Contains(part) || !part.Any(char.IsWhiteSpace));
+
+    private static bool IsForeign(string part)
+    {
+        var words = LqaScanner.StripUiTokens(part).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+        var hangul = words.Count(word => word.Any(KoreanSyllables.IsHangulSyllable));
+        var latin = words.Count(word => !word.Any(KoreanSyllables.IsHangulSyllable) && word.Any(c => c is >= 'A' and <= 'Z' or >= 'a' and <= 'z'));
+        return latin > hangul;
+    }
 
     /// <summary>
     /// A two-syllable word in 요 that 해요체 makes: a stem fused with 아/어 (가요, 봐요, 줘요, 돼요, 해요, 서요), a pronoun
@@ -534,8 +573,15 @@ internal static partial class SpeakerToneConsistencyRule
     {
         var spoken = SpeechReading.OwnWords(text);
         var parts = spoken.Split(new[] { '.', '!', '?', '…', ',' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        var cries = Cries(parts);
-        return (spoken, parts.Where(part => !cries.Contains(part)).Select(part => (Clean(part), SentenceLevel(part, keepShort: false))).ToList());
+        var foreign = Foreign(parts);
+        if (IsDragonTongue(parts, foreign))
+        {
+            return (spoken, new List<(string, Register)>());
+        }
+
+        var noLevel = Cries(parts);
+        noLevel.UnionWith(foreign);
+        return (spoken, parts.Where(part => !noLevel.Contains(part)).Select(part => (Clean(part), SentenceLevel(part, keepShort: false))).ToList());
     }
 
     /// <summary>

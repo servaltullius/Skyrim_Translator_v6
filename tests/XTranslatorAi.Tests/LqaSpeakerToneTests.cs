@@ -1,6 +1,7 @@
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
 using XTranslatorAi.Core.Text;
+using XTranslatorAi.Core.Text.Lqa.Internal.Rules;
 using XTranslatorAi.Core.Translation;
 using Xunit;
 
@@ -34,6 +35,58 @@ public class LqaSpeakerToneTests
         var issue = Assert.Single(issues, i => i.Code == "speaker_tone_inconsistent");
         Assert.Equal(6, issue.Id);
         Assert.Contains("대부분 존댓말, 이 대사 반말", issue.Message);
+    }
+
+    /// <summary>
+    /// The dragon tongue is kept in its own letters with the names in Korean. "Meyz nu 이스미어" and "naal suleyk do 쇼어"
+    /// end in 어 and were read as 반말 among the Greybeards' 존댓말 lines; a piece mostly in Latin letters has no level,
+    /// nor has a lone Korean name in such a line ("Geh, 샬록니어, kaali mir."). A 반말 line with a Korean sentence after
+    /// the dragon tongue is still flagged.
+    /// </summary>
+    [Fact]
+    public async Task DragonTongue_WithAKoreanName_HasNoLevel()
+    {
+        var entries = new List<LqaScanEntry>
+        {
+            Line(1, "환영합니다. 우리는 그레이비어드입니다."),
+            Line(2, "그대의 목소리를 들었습니다."),
+            Line(3, "하이 흐로스가로 오십시오."),
+            Line(4, "준비가 되었습니까?"),
+            Line(5, "그대가 바로 드래곤본이군요."),
+            Line(6, "Meyz nu 이스미어, Dovahsebrom. Dahmaan daar rok."),
+            Line(7, "Naal Thu'umu, mu ofan nii nu, 도바킨, naal suleyk do Kaan, naal suleyk do 쇼어, ahrk naal suleyk do Atmorasewuth."),
+            Line(8, "Geh, 샬록니어, kaali mir."),
+            Line(9, "안기어. Rok los 도바킨, Strundu'ul. Rok fen tinvaak 파써낙스."),
+            Line(10, "Ni faas, 도바킨! 겁먹을 필요 없어."),
+        };
+
+        var issues = await LqaScanner.ScanAsync(entries, "ko", new List<GlossaryEntry>());
+
+        var issue = Assert.Single(issues, i => i.Code == "speaker_tone_inconsistent");
+        Assert.Equal(10, issue.Id);
+        Assert.False(SpeakerToneConsistencyRule.IsPlainCasual("Meyz nu 이스미어, Dovahsebrom. Dahmaan daar rok."));
+        Assert.False(SpeakerToneConsistencyRule.IsPlainCasual("Geh, 샬록니어, kaali mir."));
+        Assert.Null(SpeakerToneConsistencyRule.StrayFromDeclared("Meyz nu 이스미어, Dovahsebrom. Dahmaan daar rok.", "하오체"));
+        // A last piece in the dragon tongue: the Korean sentence before it decides.
+        Assert.True(SpeakerToneConsistencyRule.SameLevel("그대는 준비가 되었소.", "그대는 준비가 되었소. Meyz nu 이스미어."));
+        // A Korean sentence with a Latin word or a tag in it keeps its level, and so does a closing name in Latin letters.
+        Assert.True(SpeakerToneConsistencyRule.IsPlainCasual("네 Thu'um에는 지배력이 있어."));
+        Assert.True(SpeakerToneConsistencyRule.IsPlainCasual("<Alias=Player>, 거기서 기다려 봐."));
+        Assert.True(SpeakerToneConsistencyRule.HasOwnPolite("Thuri, 도바킨. 기꺼이 당신의 Thu'um에 따르겠습니다."));
+        Assert.True(SpeakerToneConsistencyRule.SameLevel("뭐라 할지 모르겠어.", "뭐라 할지 모르겠는데, Dovahkiin."));
+        // A name left in Latin letters is a word, not a sentence of the dragon tongue: the one-word reply keeps its level.
+        Assert.True(SpeakerToneConsistencyRule.IsPlainCasual("Sven! 알았어."));
+    }
+
+    /// <summary>
+    /// A line that only repeats a short word keeps the level that word reads at: leaving pieces in another language out
+    /// must not take repeated cries out of a line that has nothing else.
+    /// </summary>
+    [Fact]
+    public void RepeatedShortWord_KeepsItsLevel()
+    {
+        Assert.True(SpeakerToneConsistencyRule.SameLevel("좋소. 좋소.", "그렇소."));
+        Assert.True(SpeakerToneConsistencyRule.SameLevel("좋아. 좋아.", "알았어."));
     }
 
     /// <summary>합니다체 and 해요체 are both 존댓말: "~습니다" and "~군요" mix naturally in one speaker's polite lines.</summary>
