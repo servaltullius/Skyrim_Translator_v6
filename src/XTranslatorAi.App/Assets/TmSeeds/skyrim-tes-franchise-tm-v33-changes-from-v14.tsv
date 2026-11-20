@@ -30,10 +30,39 @@ Are you sure about this?	확실한 건가?	확실 한건가?
 Are you surrendering?	항복할 건가?	항복할건가?
 As dead as I can make him.	그는 이제 죽은 거나 다름없습니다.	그는 이제 죽은거나 다름 없습니다.
 Ash Spawn Immolator	화산재 스폰 소각자	화산재 스폰 학살자
-Azura is the daedric prince of dusk and dawn, and one of the few not considered to be inherently evil.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 본래부터 악하지는 않다고 여겨지는 프린스들 중 하나입니다.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 원래부터 악마는 아니라고 여겨지는 프린스들 중 하나입니다.
+Azura is the daedric prince of dusk and dawn, and one of the few not considered to be inherently evil.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 본래부터 악하다고 여겨지지 않는 몇 안 되는 프린스 중 하나입니다.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 원래부터 악마는 아니라고 여겨지는 프린스들 중 하나입니다.
 Briar Heart Storage	찔레 심장 보관함	찔레심장 보관함
-Bring a briarheart to Elynea	엘리니아에게 찔레 심장 하나를 가져다 주기	엘리니아에게 찔레심장 하나를 가져다 주기
+Bring 10 fire salts to Balimund (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개를 가져다주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개를 가져다 주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)
+Bring 10 Scathecraw to the Chief	스케이드 선인장 10개를 추장에게 가져다주기	스케이드 선인장 10개를 추장에게 가져다 주기
+Bring <Global=DLC2ThirskHilundSpearCount> Riekling Spears to Hilund	힐룬드에게 리클링 창 <Global=DLC2ThirskHilundSpearCount>개를 가져다주기	힐룬드에게 리클링 창 <Global=DLC2ThirskHilundSpearCount>개를 가져다 주기
+Bring a briarheart to Elynea	엘리니아에게 찔레 심장 하나를 가져다주기	엘리니아에게 찔레심장 하나를 가져다 주기
+Bring a daedra heart to Elynea	엘리니아에게 데이드라의 심장 하나를 가져다주기	엘리니아에게 데이드라의 심장 하나를 가져다 주기
+Bring a giant's toe to Elynea	엘리니아에게 거인의 발가락 하나를 가져다주기	엘리니아에게 거인의 발가락 하나를 가져다 주기
+Bring a hagraven's claw to Elynea	엘리니아에게 해그레이븐 발톱 하나를 가져다주기	엘리니아에게 해그레이븐 발톱 하나를 가져다 주기
+Bring Alessandra's Dagger to Andurs in Whiterun	알리산드라의 단검을 화이트런에 있는 앤더스에게 가져다주기	알리산드라의 단검을 화이트런에 있는 앤더스에게 가져다 주기
+Bring blood to Septimus	셉티무스에게 피를 가져다주기	셉티무스에게 피를 가져다 주기
 Bring both Elder Scrolls to Dexion	두 개의 엘더스크롤을 덱시온에게 가져가기	두개의 엘더스크롤을 덱시온에게 가져가기
+Bring Elmus some Juniper Berries	엘무스에게 향나무 열매를 몇 개 가져다주기	엘무스에게 향나무 열매를 몇 개 가져다 주기
+Bring Grisvar the Skooma	그리즈바에게 스쿠마를 가져다주기	그리즈바에게 스쿠마를 가져다 주기
+Bring one <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 '<Alias=QuestItem>' 가져다주기	<Alias.ShortName=QuestGiver>에게 '<Alias=QuestItem>' 가져다 주기
+Bring Reyda's Necklace to Narfi	나피에게 레이다의 목걸이를 가져다주기	나피에게 레이다의 목걸이를 가져다 주기
+Bring some vampire dust to Elynea	엘리니아에게 흡혈귀 가루를 몇 개 가져다주기	엘리니아에게 흡혈귀 가루를 몇 개 가져다 주기
+Bring some void salts to Elynea	엘리니아에게 공허 소금 몇 개를 가져다주기	엘리니아에게 공허 소금 몇 개를 가져다 주기
+Bring the <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 <Alias=QuestItem> 가져다주기	<Alias.ShortName=QuestGiver>에게 <Alias=QuestItem> 가져다 주기
+Bring the <Alias=QuestItem> to Olda	<Alias=QuestItem>을 올다에게 가져다주기	<Alias=QuestItem>을 올다에게 가져다 주기
+Bring the claw to Camilla	카밀라에게 발톱을 가져다주기	카밀라에게 발톱을 가져다 주기
+Bring the claw to Lucan	루칸에게 황금 발톱을 가져다주기	루칸에게 황금 발톱을 가져다 주기
+Bring the deathbell to Ingun Black-Briar	데스벨을 잉건에게 가져다주기	데스벨을 잉건에게 가져다 주기
+Bring the Dibella Statue to Lisbet	디벨라의 동상을 리즈벳에게 가져다주기	디벨라의 동상을 리즈벳에게 가져다 주기
+Bring the flawless sapphires to Madesi	완벽한 사파이어를 마데시에게 가져다주기	완벽한 사파이어를 마데시에게 가져다 주기
+Bring the gold ore to Madesi	금광석을 마데시에게 가져다주기	금광석을 마데시에게 가져다 주기
+Bring the Jazbay to Avrusa Sarethi	아브루사 사레시에게 재즈베이를 가져다주기	아브루사 사레시에게 재즈베이를 가져다 주기
+Bring The Last Scabbard of Akrash to Ghorza	기술 서적 '아크라쉬의 마지막 칼집'을 고르자에게 가져다주기	기술 서적 '아크라쉬의 마지막 칼집'을 고르자에게 가져다 주기
+Bring the mammoth tusks to Madesi	매머드 상아를 마데시에게 가져다주기	매머드 상아를 마데시에게 가져다 주기
+Bring the netch jelly to Milore Ienth	밀로리 아이엔스에게 네치 젤리를 가져다주기	밀로리 아이엔스에게 네치 젤리를 가져다 주기
+Bring the nightshade to Ingun Black-Briar	나이트쉐이드를 잉건에게 가져다주기	나이트쉐이드를 잉건에게 가져다 주기
+Bring the nirnroot to Ingun Black-Briar	넌루트를 잉건에게 가져다주기	넌루트를 잉건에게 가져다 주기
+Bring Wyndelius's Journal to Wilhelm	윌헴에게 윈델리우스의 일기를 가져다주기	윌헴에게 윈델리우스의 일기를 가져다 주기
 Carrying capacity increased by <mag>, and no movement penalty from armor.	무게 한계가 <mag> 증가하고, 방어구를 착용해도 이동 속도가 줄지 않습니다.	무게 한계가 <mag> 증가합니다. 장착한 방어구가 이동 속도를 감소시키지 않으며 무게 한계에 포함되지 않습니다.
 Centurion Fight 3	백부장 전투 3	백부장 전사 3
 Choose up to %d Trait	%d까지 퍽을 고르세요	%d 까지 퍽을 고르세요
@@ -46,6 +75,8 @@ Cyrodilic Spadetail	시로딜 스페이드테일	시로딜 변종어
 Dare I ask where all this meat comes from?	이 고기들을 어디서 구한 건지 물어봐도 되겠소?	이 고기들을 어디서 구한건지 물어봐도 되겠소?
 Dark elves, also known as Dunmer, are natives of Morrowind - a land many consider alien and inhospitable.	던머라고 알려진 다크 엘프들의 출신은 모로윈드인데 그곳은 대부분의 사람들이 이질적이고 살기 힘든 땅으로 여기는 지역입니다.	던머라고 알려진 다크 엘프들의 출신은 모로윈드인데 그곳은 대부분의 사람들이 이상한 생명체들로 가득하고 황폐한 땅으로 여기는 지역입니다.
 Delete this game?	이 저장 파일을 삭제하겠습니까?	이 저장파일을 삭제하겠습니까?
+Deliver Gharol's sword to Lash	가롤의 검을 라쉬에게 가져다주기	가롤의 검을 라쉬에게 가져다 주기
+Deliver the letter and amulet to Astrid	아스트리드에게 편지와 아뮬렛을 가져다주기	아스트리드에게 편지와 아뮬렛을 가져다 주기
 Delphine needs your help to stop the dragons. (Persuade)	드래곤들을 막기 위해 당신이 델핀을 도와줘야 합니다. (설득)	드래곤들을 막기위해 당신이 델핀을 도와줘야 합니다. (설득)
 Dibella is the goddess of beauty. She has a temple in Markarth that is devoted to women.	디벨라는 미의 여신입니다. 마르카스에는 여성들을 위한 그녀의 신전이 있습니다.	디벨라는 미의 여신입니다. 마르카스에 위치한 그녀의 신전에서는 많은 여성들이 경배를 드립니다.
 Did you just talk?	지금 말을 한 건가?	지금 말을 한건가?
@@ -78,6 +109,9 @@ Ever think of moving to Morrowind?	모로윈드로 이사 가는 걸 생각해 �
 Everything is fine. The shipment will be here soon.	모든 게 순조롭고, 수송품이 곧 이곳에 도착할 거라더군.	모든게 순조롭고, 수송품이 곧 이곳에 도착할 거라더군.
 Felsaad Tern Feathers	펠사드 제비갈매기 깃털	펠사드 제비갈매기 날개
 Filling Soul Gems	소울젬 충전하기	소울젬 보충하기
+Find 20 deathbell for Ingun Black-Briar (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 가져다줄 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 가져다 줄 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)
+Find 20 nightshade for Ingun Black-Briar (<Global=FFR04NightshadeCount>/<Global=FFR04NightshadeTotal>)	잉건에게 가져다줄 나이트쉐이드 20개를 찾기 (<Global=FFR04NightshadeCount>/<Global=FFR04NightshadeTotal>)	잉건에게 가져다 줄 나이트쉐이드 20개를 찾기 (<Global=FFR04NightshadeCount>/<Global=FFR04NightshadeTotal>)
+Find 20 nirnroot for Ingun Black-Briar (<Global=FFR04NirnCount>/<Global=FFR04NirnTotal>)	잉건에게 가져다줄 넌루트 20개를 찾기 (<Global=FFR04NirnCount>/<Global=FFR04NirnTotal>)	잉건에게 가져다 줄 넌루트 20개를 찾기 (<Global=FFR04NirnCount>/<Global=FFR04NirnTotal>)
 Find some Mammoth Tusk Powder	매머드 상아 가루를 찾기	매머드 상아 가루 몇 개를 찾기
 First time I ever set out to return something...	뭔가 돌려주기 위해서 가는 건 처음이군...	뭔가 돌려주기 위해서 가는건 처음이군...
 Follow me.	따라오게.	나를 따라오게.
@@ -116,6 +150,7 @@ How much to let me pass?	통과하는 데 얼마면 되겠소?	통과하는데 �
 How old is that stone bridge near the town?	마을 근처의 돌다리는 얼마나 오래된 거지?	마을 근처의 돌다리는 얼마나 오래 된 거지?
 I agree. Ulfric should turn over <Alias=SonsMinorHold2>.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을(를) 넘겨야 하오.	동의합니다. 울프릭은 <Alias=SonsMinorHold2>을(를) 넘겨야하오.
 I bet you get some interesting people through here.	이곳엔 흥미로운 사람들이 꽤 드나들 것 같은데.	당신은 이 지역에서 흥미로운 사람을 알고 있을 것 같은데.
+I can bring it for you.	내가 가져다주지.	내가 가져다 주지.
 I could use help with the crystals around here.	이 주변의 수정들을 상대하는 데 도움이 필요하오.	이 주변의 수정들을 상대하는데 도움이 필요하오.
 I don't need some bucket of scrap metal following me around...	내 주변에 쇳조각 한 덩어리가 어슬렁 거리는 것을 원하진 않아...	내 주변에 쇳조각 한덩어리가 어슬렁 거리는 것을 원하진 않아...
 I don't need some mutt following me around.	졸졸 따라다니는 개 따위는 필요 없어.	졸졸 따라다니는 개 따위는 필요없어.
@@ -155,6 +190,7 @@ I won't condemn an innocent man.	무고한 사람을 죄인으로 몰 수는 없
 I'd like a drink.	한잔하고 싶은데.	한잔 하고 싶은데.
 I'd rather not have company right now.	지금은 동행이 필요 없소.	지금은 동행이 필요없소.
 I'll just take the sap. Danica was very insistent on having it.	그냥 수액만 가져가겠습니다. 다니카가 원하던 겁니다.	나무의 수액이 필요한데. 다니카가 원하던 겁니다.
+I'll take the ring to Hircine.	내가 그 반지를 허씬에게 가져다주지.	내가 그 반지를 허씬에게 가져다 주지.
 I'm going alone?	나 혼자서 가야 하오?	나 혼자서 가야하오?
 I'm going to Maven unless I leave here with Frost. (Persuade)	프로스트를 데려갈 수 없다면, 메이븐에게 가야겠군. (설득)	프로스트를 데려 갈 수 없다면, 메이븐에게 가야겠군. (설득)
 I'm here to speak to Falk.	폴크와 대화를 하기 위해 왔습니다.	폴크와 대화를 하기위해 왔습니다.
@@ -173,6 +209,8 @@ I'm with the Guild. Is this enough to clear my bounty? (<Global=GuildCost> gold)
 I've brought you <Alias=QuestItem>.	<Alias=QuestItem>를 가져왔습니다.	<Alias=QuestItem>를 가져 왔습니다.
 I've got better things to do.	난 바쁜 사람이야.	난 바쁜 사람이오.
 I've heard you might know what Faleen likes.	팔린이 좋아하는 게 어떤 건지 당신이 알고 있다던데.	팔린이 좋아하는 게 어떤건지 당신이 알고 있다던데.
+If I find a copy, I'll bring it to you.	만약 사본을 찾으면 가져다주지.	만약 사본을 찾으면 가져다 주지.
+If I see it, I'll bring it to you.	그것을 찾으면 당신에게 가져다주지.	그것을 찾으면 당신에게 가져다 주지.
 If the Shout is lost, how can I defeat Alduin?	그 함성이 사라졌다면, 무슨 방법으로 알두인을 물리쳐야 합니까?	그 함성이 사라졌다면, 무슨 방법으로 알두인을 물리쳐야합니까?
 In 3E 389 Emperor Uriel VII was imprisoned by his Imperial Battlemage, Jagar Tharn, who then impersonated him for years.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄에 의해 갇히게 되었습니다. 그 후 수년 동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄에 의해 갇히게 되었습니다. 그 후 수 년 동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.
 In order to use the Add-Ons associated with this profile, you will need to restart.	이 프로필에 연계된 DLC를 이용하려면 게임을 다시 시작해야 합니다.	이 프로필에 연계된 DLC를 이용하려면 게임을 다시 시작해야합니다.
@@ -188,6 +226,7 @@ It's all right. Just tell me what I need to know. (Persuade)	괜찮아. 내가 �
 It's from Gorm, in Morthal.	모탈의 고엄이 보낸 건데.	모탈의 고엄이 보낸건데.
 Jeweled Amulet	보석장식 아뮬렛	목걸이 - 보석 아뮬렛
 Just call your name in Tamriel? That's it?	탐리엘에서 너의 이름을 부르기만 하면 되는 건가?	탐리엘에서 너의 이름을 부르기만 하면 되는건가?
+Lead on then.	앞장서시오.	앞장 서시오.
 Let me find him first. Dragons are bad for business. (Persuade)	그 사람 찾는 거부터 도와주시지. 드래곤은 당신 사업에도 좋지 않을 테니까. (설득)	그 사람 찾는 거 부터 도와 주시지. 드래곤은 당신 사업에도 좋지 않을 테니까. (설득)
 Let Ulfric have his way now. He'll have to give ground later.	울프릭이 맘대로 하게 놔둡시다. 나중에는 그쪽이 양보해야 할 테니까.	울프릭이 맘대로 하게 놔둡시다. 나중에 대가를 치르게 될 테니까.
 Leveled Cultist	광신도 (레벨 맞춤)	광신도
@@ -202,6 +241,7 @@ Mantled College Robes	마법 대학 망토 달린 로브	마법 대학 두건 �
 Many species of bear roam Skyrim's wilds. They are fearsome creatures, but will often avoid attacking unless provoked.	많은 종류의 곰들이 스카이림의 야생을 배회합니다. 그것들은 위험한 생물이지만 화나게 하지 않는다면 대개 먼저 공격해오지는 않습니다.	많은 종류의 곰들이 스카이림의 야생을 배회합니다. 그것들은 위험한 생물이지만 화나게 하지 않는다면 먼저 공격해오지는 않을 것입니다.
 Maybe so, but I plan to go down fighting. What about you?	그럴지도 모르지만 나는 끝까지 싸울 겁니다. 당신은 어떻습니까?	그럴지도 모르지만 나는 끝까지 싸울겁니다. 당신은 어떻습니까?
 Maybe this will help your memory. (<BribeCost> gold)	이게 기억해 내는 데 조금 도움이 되겠지. (<BribeCost> 골드)	이게 기억해 내는데 조금 도움이 되겠지. (<BribeCost> 골드)
+Mephala is the daedric prince of lies, secrets and plots... and thoroughly enjoys meddling in the affairs of mortals.	메팔라는 거짓과 비밀, 계략의 데이드릭 프린스이며... 인간들의 일에 간섭하는 것을 몹시 즐깁니다.	메팔라는 거짓과 비밀, 계략의 데이드릭 프린스이며... 인간들의 일에 간섭하는 것을 좋아합니다.
 Morvayn Manor Chambers	모베인 저택 내실	모베인 저택 회의실
 Muiri sent me. She is quite unhappy...	뮤이리가 날 보냈지. 그녀는 상당히 불쾌해하더군...	뮤이리가 날 보냈지. 그녀는 상당히 불쾌해 하더군...
 Necromantic Grimoire	강령술 마도서	강령술 마법
@@ -409,6 +449,7 @@ You don't sound very happy about it.	기뻐하시는 것처럼 들리지는 않�
 You have nothing to fear from me. (Persuade)	무서워할 필요는 없소. (설득)	무서워 할 필요는 없소. (설득)
 You killed Eltrys!	엘트리스를 죽인 건 너야!	엘트리스를 죽인건 너야!
 You let your aunt go in there by herself?	고모가 혼자 들어가게 내버려둔 건가?	고모가 혼자 들어가게 내버려둔건가?
+You mean me, don't you.	저 말이군요.	저 말이군요, 그렇습니까?
 You must first equip a weapon to poison it.	당신은 먼저 독을 바를 무기를 장비해야 합니다.	당신은 먼저 독을 바를 무기를 장비해야합니다.
 You must have a weapon drawn.	무기를 꺼내 들어야 합니다.	무기를 장착해야 합니다.
 You seemed upset about something.	기분 나쁜 일이 있나보군.	기분나쁜 일이 있나보군.

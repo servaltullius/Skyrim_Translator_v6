@@ -57,13 +57,42 @@ As dead as I can make him.	그는 이제 죽은 거나 다름없습니다.	그�
 Ash Spawn Immolator	화산재 스폰 소각자	화산재 스폰 학살자
 At least the Blades aren't keeping secrets from me.	적어도 블레이드는 나에게 비밀 같은 건 없습니다.	적어도 블레이드는 나에게 비밀같은 건 없습니다.
 Attacks can be blocked with either a shield or a weapon, but shields are much more effective.	상대방의 공격은 방패나 무기를 들고 있을 때 방어할 수 있습니다. 그러나 방패가 훨씬 더 효과적입니다.	상대방의 공격은 방패나 무기를 들고 있을때 방어할 수 있습니다. 그러나 방패가 훨씬 더 효과적입니다.
-Azura is the daedric prince of dusk and dawn, and one of the few not considered to be inherently evil.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 본래부터 악하지는 않다고 여겨지는 프린스들 중 하나입니다.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 원래부터 악마는 아니라고 여겨지는 프린스들 중 하나입니다.
+Azura is the daedric prince of dusk and dawn, and one of the few not considered to be inherently evil.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 본래부터 악하다고 여겨지지 않는 몇 안 되는 프린스 중 하나입니다.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 원래부터 악마는 아니라고 여겨지는 프린스들 중 하나입니다.
 Barter	거래	흥정
 Become Guild Master for the Thieves Guild	도둑 길드의 길드 마스터가 되기	도둑 길드의 지도자가 되기
 Break through the First Barricade	첫 번째 바리케이드를 파괴하기	첫 번째 바리케이드 파괴하기
 Briar Heart Storage	찔레 심장 보관함	찔레심장 보관함
-Bring a briarheart to Elynea	엘리니아에게 찔레 심장 하나를 가져다 주기	엘리니아에게 찔레심장 하나를 가져다 주기
+Bring 10 fire salts to Balimund (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개를 가져다주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개를 가져다 주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)
+Bring 10 Scathecraw to the Chief	스케이드 선인장 10개를 추장에게 가져다주기	스케이드 선인장 10개를 추장에게 가져다 주기
+Bring <Global=DLC2ThirskHilundSpearCount> Riekling Spears to Hilund	힐룬드에게 리클링 창 <Global=DLC2ThirskHilundSpearCount>개를 가져다주기	힐룬드에게 리클링 창 <Global=DLC2ThirskHilundSpearCount>개를 가져다 주기
+Bring a briarheart to Elynea	엘리니아에게 찔레 심장 하나를 가져다주기	엘리니아에게 찔레심장 하나를 가져다 주기
+Bring a daedra heart to Elynea	엘리니아에게 데이드라의 심장 하나를 가져다주기	엘리니아에게 데이드라의 심장 하나를 가져다 주기
+Bring a giant's toe to Elynea	엘리니아에게 거인의 발가락 하나를 가져다주기	엘리니아에게 거인의 발가락 하나를 가져다 주기
+Bring a hagraven's claw to Elynea	엘리니아에게 해그레이븐 발톱 하나를 가져다주기	엘리니아에게 해그레이븐 발톱 하나를 가져다 주기
+Bring Alessandra's Dagger to Andurs in Whiterun	알리산드라의 단검을 화이트런에 있는 앤더스에게 가져다주기	알리산드라의 단검을 화이트런에 있는 앤더스에게 가져다 주기
+Bring blood to Septimus	셉티무스에게 피를 가져다주기	셉티무스에게 피를 가져다 주기
 Bring both Elder Scrolls to Dexion	두 개의 엘더스크롤을 덱시온에게 가져가기	두개의 엘더스크롤을 덱시온에게 가져가기
+Bring Elmus some Juniper Berries	엘무스에게 향나무 열매를 몇 개 가져다주기	엘무스에게 향나무 열매를 몇 개 가져다 주기
+Bring Grisvar the Skooma	그리즈바에게 스쿠마를 가져다주기	그리즈바에게 스쿠마를 가져다 주기
+Bring one <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 '<Alias=QuestItem>' 가져다주기	<Alias.ShortName=QuestGiver>에게 '<Alias=QuestItem>' 가져다 주기
+Bring Reyda's Necklace to Narfi	나피에게 레이다의 목걸이를 가져다주기	나피에게 레이다의 목걸이를 가져다 주기
+Bring some vampire dust to Elynea	엘리니아에게 흡혈귀 가루를 몇 개 가져다주기	엘리니아에게 흡혈귀 가루를 몇 개 가져다 주기
+Bring some void salts to Elynea	엘리니아에게 공허 소금 몇 개를 가져다주기	엘리니아에게 공허 소금 몇 개를 가져다 주기
+Bring the <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 <Alias=QuestItem> 가져다주기	<Alias.ShortName=QuestGiver>에게 <Alias=QuestItem> 가져다 주기
+Bring the <Alias=QuestItem> to Olda	<Alias=QuestItem>을 올다에게 가져다주기	<Alias=QuestItem>을 올다에게 가져다 주기
+Bring the claw to Camilla	카밀라에게 발톱을 가져다주기	카밀라에게 발톱을 가져다 주기
+Bring the claw to Lucan	루칸에게 황금 발톱을 가져다주기	루칸에게 황금 발톱을 가져다 주기
+Bring the deathbell to Ingun Black-Briar	데스벨을 잉건에게 가져다주기	데스벨을 잉건에게 가져다 주기
+Bring the Dibella Statue to Lisbet	디벨라의 동상을 리즈벳에게 가져다주기	디벨라의 동상을 리즈벳에게 가져다 주기
+Bring the flawless sapphires to Madesi	완벽한 사파이어를 마데시에게 가져다주기	완벽한 사파이어를 마데시에게 가져다 주기
+Bring the gold ore to Madesi	금광석을 마데시에게 가져다주기	금광석을 마데시에게 가져다 주기
+Bring the Jazbay to Avrusa Sarethi	아브루사 사레시에게 재즈베이를 가져다주기	아브루사 사레시에게 재즈베이를 가져다 주기
+Bring The Last Scabbard of Akrash to Ghorza	기술 서적 '아크라쉬의 마지막 칼집'을 고르자에게 가져다주기	기술 서적 '아크라쉬의 마지막 칼집'을 고르자에게 가져다 주기
+Bring the mammoth tusks to Madesi	매머드 상아를 마데시에게 가져다주기	매머드 상아를 마데시에게 가져다 주기
+Bring the netch jelly to Milore Ienth	밀로리 아이엔스에게 네치 젤리를 가져다주기	밀로리 아이엔스에게 네치 젤리를 가져다 주기
+Bring the nightshade to Ingun Black-Briar	나이트쉐이드를 잉건에게 가져다주기	나이트쉐이드를 잉건에게 가져다 주기
+Bring the nirnroot to Ingun Black-Briar	넌루트를 잉건에게 가져다주기	넌루트를 잉건에게 가져다 주기
+Bring Wyndelius's Journal to Wilhelm	윌헴에게 윈델리우스의 일기를 가져다주기	윌헴에게 윈델리우스의 일기를 가져다 주기
 Call of the Wild	야생의 외침	아생의 외침
 Calm down. Just tell me what happened.	진정하고. 무슨 일인지 말해주시오.	진정하고. 무슨일인지 말해주시오.
 Calm down. Tell me what happened.	진정하고, 무슨 일인지 말해보시오.	진정하고, 무슨일인지 말해보시오.
@@ -93,6 +122,8 @@ Cyrodilic Spadetail	시로딜 스페이드테일	시로딜 변종어
 Dare I ask where all this meat comes from?	이 고기들을 어디서 구한 건지 물어봐도 되겠소?	이 고기들을 어디서 구한건지 물어봐도 되겠소?
 Dark elves, also known as Dunmer, are natives of Morrowind - a land many consider alien and inhospitable.	던머라고 알려진 다크 엘프들의 출신은 모로윈드인데 그곳은 대부분의 사람들이 이질적이고 살기 힘든 땅으로 여기는 지역입니다.	던머라고 알려진 다크 엘프들의 출신은 모로윈드인데 그곳은 대부분의 사람들이 이상한 생명체들로 가득하고 황폐한 땅으로 여기는 지역입니다.
 Delete this game?	이 저장 파일을 삭제하겠습니까?	이 저장파일을 삭제하겠습니까?
+Deliver Gharol's sword to Lash	가롤의 검을 라쉬에게 가져다주기	가롤의 검을 라쉬에게 가져다 주기
+Deliver the letter and amulet to Astrid	아스트리드에게 편지와 아뮬렛을 가져다주기	아스트리드에게 편지와 아뮬렛을 가져다 주기
 Delphine needs your help to stop the dragons. (Persuade)	드래곤들을 막기 위해 당신이 델핀을 도와줘야 합니다. (설득)	드래곤들을 막기위해 당신이 델핀을 도와줘야 합니다. (설득)
 Demonstrate your "Unrelenting Force" Shout	'거침없는 힘' 함성을 보여주기	"거침없는 힘" 함성을 보여주기
 Demonstrate your "Unrelenting Force" Shout (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	'거침없는 힘' 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)	"거침없는 힘" 함성을 보여주기 (<Global=MQ105TargetsHit>/<Global=MQ105TargetsTotal>)
@@ -162,6 +193,9 @@ Faendal wanted me to deliver this letter to Camilla, and say it was from you.	�
 Fast travel to %s?	%s까지 빠른 이동을 사용하겠습니까?	%s까지 빠른 이동을 사용할까요?
 Felsaad Tern Feathers	펠사드 제비갈매기 깃털	펠사드 제비갈매기 날개
 Filling Soul Gems	소울젬 충전하기	소울젬 보충하기
+Find 20 deathbell for Ingun Black-Briar (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 가져다줄 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 가져다 줄 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)
+Find 20 nightshade for Ingun Black-Briar (<Global=FFR04NightshadeCount>/<Global=FFR04NightshadeTotal>)	잉건에게 가져다줄 나이트쉐이드 20개를 찾기 (<Global=FFR04NightshadeCount>/<Global=FFR04NightshadeTotal>)	잉건에게 가져다 줄 나이트쉐이드 20개를 찾기 (<Global=FFR04NightshadeCount>/<Global=FFR04NightshadeTotal>)
+Find 20 nirnroot for Ingun Black-Briar (<Global=FFR04NirnCount>/<Global=FFR04NirnTotal>)	잉건에게 가져다줄 넌루트 20개를 찾기 (<Global=FFR04NirnCount>/<Global=FFR04NirnTotal>)	잉건에게 가져다 줄 넌루트 20개를 찾기 (<Global=FFR04NirnCount>/<Global=FFR04NirnTotal>)
 Find some Mammoth Tusk Powder	매머드 상아 가루를 찾기	매머드 상아 가루 몇 개를 찾기
 Find someone who can identify the Unusual Gem	특이한 보석에 관해 알고 있는 사람을 찾기	특이한 보석에 관해 알고있는 사람을 찾기
 Find the shrine of Boethiah	보에디아의 성소를 찾기	보에디아의 성지를 찾기
@@ -263,6 +297,7 @@ I almost got killed!	거의 죽을 뻔했어!	거의 죽을뻔 했어!
 I believe we've already met.	이전에 당신과 만난 적이 있는 것 같군.	이전에 당신과 만난적이 있는 것 같군.
 I bet you get some interesting people through here.	이곳엔 흥미로운 사람들이 꽤 드나들 것 같은데.	당신은 이 지역에서 흥미로운 사람을 알고 있을 것 같은데.
 I bring an offer from the Thieves Guild.	도둑 길드의 제안을 가져왔다.	도둑길드의 제안을 가져왔다.
+I can bring it for you.	내가 가져다주지.	내가 가져다 주지.
 I could use help with the crystals around here.	이 주변의 수정들을 상대하는 데 도움이 필요하오.	이 주변의 수정들을 상대하는데 도움이 필요하오.
 I couldn't have defeated Miraak without Storn's help.	스토언의 도움이 없었다면 미락을 물리칠 수 없었을 거요.	스토언의 도움이 없었다면 미락을 물리칠 수 없었을거요.
 I did what I thought was right.	옳다고 생각한 일을 했을 뿐입니다.	옳다고 생각한 일을 한 것 뿐이오.
@@ -374,6 +409,7 @@ I'll get rough with you if I have to. (Intimidate)	필요하다면 힘으로 알
 I'll just take the sap. Danica was very insistent on having it.	그냥 수액만 가져가겠습니다. 다니카가 원하던 겁니다.	나무의 수액이 필요한데. 다니카가 원하던 겁니다.
 I'll keep quiet about your scam, but you owe me.	네 놈이 사기친 건 입 다물어 주지, 대신 나한테 빚을 진 거야.	네 놈이 사기친 건 입 다물어 주지, 대신 나한테 빚을 진거야.
 I'll pay. Don't worry.  (<CrimeGold> gold)	지불할 테니 걱정마시오. (<CrimeGold> 골드)	지불할테니 걱정마시오. (<CrimeGold> 골드)
+I'll take the ring to Hircine.	내가 그 반지를 허씬에게 가져다주지.	내가 그 반지를 허씬에게 가져다 주지.
 I'm a traveler. I have questions.	여행자요. 궁금한 게 있소.	여행자요. 궁금한게 있소.
 I'm going alone?	나 혼자서 가야 하오?	나 혼자서 가야하오?
 I'm going in this way. Stand aside! (Intimidate)	난 이 길로 갈 거야. 비켜! (위협)	난 이 길로 갈거야. 비켜! (위협)
@@ -408,6 +444,8 @@ I've returned you home, as promised.	약속한 대로 당신의 집까지 호위
 I've run across these Alik'r before. I know where they're hiding.	전에 알리키어와 만난 적이 있어. 그들이 숨어있는 곳을 알고 있지.	전에 알리키어와 만난 적이 있어. 그들이 숨어있는 곳을 알고있지.
 I've saved her from your foolish plan.	당신의 바보 같은 계획에서 그녀를 구해냈소.	당신의 바보같은 계획에서 그녀를 구해냈소.
 If I didn't know better, I'd say you were trying to kill me.	자세하게 알지 못했다면, 당신이 날 죽이려 했다고 생각했을 거야.	자세하게 알지 못했다면, 당신이 날 죽이려 했다고 생각했을거야.
+If I find a copy, I'll bring it to you.	만약 사본을 찾으면 가져다주지.	만약 사본을 찾으면 가져다 주지.
+If I see it, I'll bring it to you.	그것을 찾으면 당신에게 가져다주지.	그것을 찾으면 당신에게 가져다 주지.
 If it's fixed, then it's mine.	이게 고쳐진 거라면 내가 가지지.	이게 고쳐진거라면 내가 가지지.
 If she made it there, we'll find her.	거기로 간 거라면, 가서 찾아야겠군.	거기로 간거라면, 가서 찾아야겠군.
 If the Shout is lost, how can I defeat Alduin?	그 함성이 사라졌다면, 무슨 방법으로 알두인을 물리쳐야 합니까?	그 함성이 사라졌다면, 무슨 방법으로 알두인을 물리쳐야합니까?
@@ -442,6 +480,7 @@ It's in everyone's best interest if you return the amulet. (Persuade)	그 아뮬
 Jeweled Amulet	보석장식 아뮬렛	목걸이 - 보석 아뮬렛
 Just call your name in Tamriel? That's it?	탐리엘에서 너의 이름을 부르기만 하면 되는 건가?	탐리엘에서 너의 이름을 부르기만 하면 되는건가?
 Know anything about the Thieves Guild?	도둑 길드에 대해 조금이라도 아는 게 있소?	도둑길드에 대해 조금이라도 아는게 있소?
+Lead on then.	앞장서시오.	앞장 서시오.
 Learn more about the Thieves Guild from Delvin	델빈에게 도둑 길드에 관하여 좀 더 알아보기	델빈에게 도둑길드에 관하여 좀 더 알아보기
 Learn more about the Thieves Guild from Vex	벡스에게 도둑 길드에 관해서 더 알아보기	벡스에게 도둑길드에 관해서 더 알아보기
 Learn the Word of Power from Borri	보리 사범에게 힘의 단어를 배우기	마스터 보리에게 힘의 단어를 배우기
@@ -476,6 +515,7 @@ Maybe you should leave me out of your speech.	연설에서 날 빼는 게 좋을
 Maybe you should speak to the authorities.	정부에 말해보는 게 좋을 것 같은데.	정부에 말해보는게 좋을 것 같은데.
 Maybe you'll see one yourself soon. Helgen isn't that far from here.	아마 곧 볼 수 있을 텐데. 헬겐은 가까우니까.	아마 곧 볼 수 있을텐데. 헬겐은 가까우니까.
 Meet Mercer Frey outside Snow Veil Sanctum	스노우 베일 성역 바깥에서 머서 프레이와 만나기	스노우 베일성역 바깥에서 머서 프레이와 만나기
+Mephala is the daedric prince of lies, secrets and plots... and thoroughly enjoys meddling in the affairs of mortals.	메팔라는 거짓과 비밀, 계략의 데이드릭 프린스이며... 인간들의 일에 간섭하는 것을 몹시 즐깁니다.	메팔라는 거짓과 비밀, 계략의 데이드릭 프린스이며... 인간들의 일에 간섭하는 것을 좋아합니다.
 Morthal is said to be named after the great Nord hero Morihaus, though none alive today are sure of the connection.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하우스의 이름을 따서 지어졌다고 합니다.	비록 확실한 관계를 아는 사람은 없지만, 모탈은 위대한 노드 영웅인 모리하스의 이름을 따서 지어졌다고 합니다.
 Morvayn Manor Chambers	모베인 저택 내실	모베인 저택 회의실
 Mudcrab Boss (Old Salty)	거대 진흙게 (올드 살티)	거대 진흙 게 (올드 살티)
@@ -515,8 +555,8 @@ No, didn't see anyone. (Lie)	아니, 아무도 본 적 없소. (거짓)	아니, 
 No, I didn't see them in there.	아니, 안에서는 못 봤는데.	아니, 안에서는 못봤는데.
 No, never mind.	신경 쓰지 마라.	신경쓰지 마라.
 No, sorry. I didn't see a dog.	아니, 미안. 개를 본 적은 없소.	아니, 미안. 개를 본적은 없소.
-Noble Clothes	야를의 기품 있는 의상	야를의 기품있는 의상
 Noble Clothes	야를의 기품 있는 의상	귀족의 의상
+Noble Clothes	야를의 기품 있는 의상	야를의 기품있는 의상
 Nords are 50% resistant to cold damage. They can use Battlecry to make their enemies flee, for a short time.	노드는 냉기에 대하여 50% 저항력을 가지고 있습니다. 그들은 전투의 함성을 사용하여 짧은 시간 동안 적들을 겁에 질리게 하여 도망치게 할 수 있습니다.	노드는 냉기에 대하여 50% 저항력을 가지고 있습니다. 그들은 전투의 함성을 사용하여 짧은 시간동안 적들을 겁에 질리게 하여 도망치게 할 수 있습니다.
 Not a chance.	절대 안 돼.	절대 안돼.
 Not interested.	흥미 없소.	흥미없소.
@@ -562,8 +602,8 @@ Redguards are 50% resistant to poison. They can use Adrenaline Rush to regenerat
 Refined Tunic	야를의 세련된 의상	세련된 의상
 Remind me... who are the Thalmor?	기억이 잘 안 나는군... 탈모어가 뭐하는 놈들이라고?	기억이 잘 안나는군... 탈모어가 뭐하는 놈들이라고?
 Remove the workbench from the small house.	작은 집에서 작업선반을 제거합니다.	집에서 작업선반을 제거합니다.
-Replace the beacon	등불을 제자리에 놓기	표식을 교체하기
 Replace the beacon	등불을 제자리에 놓기	등불을 교체하기
+Replace the beacon	등불을 제자리에 놓기	표식을 교체하기
 Rescue <Alias=Victim> from <Alias=Lair>	<Alias=Lair>에서 <Alias=Victim>을(를) 구출하기	<Alias=Lair>에서 <Alias=Victim>를 구출하기
 Research Thief	연구 도둑	도적 조사
 Retrieve the fragment	조각을 회수하기	파편조각을 회수하기
@@ -930,6 +970,7 @@ You know that dog on the road you asked me to get?	잡아달라고 했던, 길�
 You know what you have to do.	뭘 해야 하는지 알고 있을 텐데.	뭘 해야 하는지 알고 있을텐데.
 You let your aunt go in there by herself?	고모가 혼자 들어가게 내버려둔 건가?	고모가 혼자 들어가게 내버려둔건가?
 You live here?	여기에 살고 있나?	여기에 살고있나?
+You mean me, don't you.	저 말이군요.	저 말이군요, 그렇습니까?
 You must be crazy.	미친 게 분명하오.	미쳐버린 것 같은데.
 You must first equip a weapon to poison it.	당신은 먼저 독을 바를 무기를 장비해야 합니다.	당신은 먼저 독을 바를 무기를 장비해야합니다.
 You must have a weapon drawn.	무기를 꺼내 들어야 합니다.	무기를 장착해야 합니다.

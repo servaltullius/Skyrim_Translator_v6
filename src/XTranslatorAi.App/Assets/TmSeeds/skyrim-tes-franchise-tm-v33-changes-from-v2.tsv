@@ -164,7 +164,7 @@ Aversion to Fire	독 - 화염 약점 중급	독 - 화염 중급
 Aversion to Frost	독 - 냉기 약점 중급	독 - 냉기 중급
 Aversion to Magic	독 - 마법 약점 중급	독 - 마법 저항 중급
 Aversion to Shock	독 - 전격 약점 중급	독 - 전격 중급
-Azura is the daedric prince of dusk and dawn, and one of the few not considered to be inherently evil.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 본래부터 악하지는 않다고 여겨지는 프린스들 중 하나입니다.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 원래부터 악마는 아니라고 여겨지는 프린스들 중 하나입니다.
+Azura is the daedric prince of dusk and dawn, and one of the few not considered to be inherently evil.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 본래부터 악하다고 여겨지지 않는 몇 안 되는 프린스 중 하나입니다.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 원래부터 악마는 아니라고 여겨지는 프린스들 중 하나입니다.
 Backstab	백스탭	백스텝
 Balbus's Fork	발부스의 포크	발부스의 집게
 Baldor Iron-Shaper	발도어 아이언-셰이퍼	발도어
@@ -186,25 +186,46 @@ Break through the First Barricade	첫 번째 바리케이드를 파괴하기	첫
 Break through the Second Barricade	두 번째 바리케이드를 파괴하기	두 번째 바리케이트를 파괴하기
 Breath of Nchuak	느츄악의 숨결	느챠닥의 숨결
 Briar Heart Storage	찔레 심장 보관함	찔레심장 보관함
-Bring 10 fire salts to Balimund (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개를 가져다 주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개을 가져다 주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)
-Bring a briarheart to Elynea	엘리니아에게 찔레 심장 하나를 가져다 주기	엘리니아에게 찔레심장 하나를 가져다 주기
+Bring 10 fire salts to Balimund (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개를 가져다주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개을 가져다 주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)
+Bring 10 Scathecraw to the Chief	스케이드 선인장 10개를 추장에게 가져다주기	스케이드 선인장 10개를 추장에게 가져다 주기
+Bring <Global=DLC2ThirskHilundSpearCount> Riekling Spears to Hilund	힐룬드에게 리클링 창 <Global=DLC2ThirskHilundSpearCount>개를 가져다주기	힐룬드에게 리클링 창 <Global=DLC2ThirskHilundSpearCount>개를 가져다 주기
+Bring a briarheart to Elynea	엘리니아에게 찔레 심장 하나를 가져다주기	엘리니아에게 찔레심장 하나를 가져다 주기
+Bring a daedra heart to Elynea	엘리니아에게 데이드라의 심장 하나를 가져다주기	엘리니아에게 데이드라의 심장 하나를 가져다 주기
 Bring a filled Black Soul Gem to Morthal	충전된 검은 소울젬을 모탈로 가져가기	모탈로 충전된 검은 소울젬을 가져가기
-Bring a giant's toe to Elynea	엘리니아에게 거인의 발가락 하나를 가져다 주기	엘리니아에게 거인의 발톱 하나를 가져다 주기
-Bring a hagraven's claw to Elynea	엘리니아에게 해그레이븐 발톱 하나를 가져다 주기	엘리니아에게 헤그레이븐의 발톱을 몇개 가져다 주기
+Bring a giant's toe to Elynea	엘리니아에게 거인의 발가락 하나를 가져다주기	엘리니아에게 거인의 발톱 하나를 가져다 주기
+Bring a hagraven's claw to Elynea	엘리니아에게 해그레이븐 발톱 하나를 가져다주기	엘리니아에게 헤그레이븐의 발톱을 몇개 가져다 주기
+Bring Alessandra's Dagger to Andurs in Whiterun	알리산드라의 단검을 화이트런에 있는 앤더스에게 가져다주기	알리산드라의 단검을 화이트런에 있는 앤더스에게 가져다 주기
+Bring blood to Septimus	셉티무스에게 피를 가져다주기	셉티무스에게 피를 가져다 주기
 Bring both Elder Scrolls to Dexion	두 개의 엘더스크롤을 덱시온에게 가져가기	두개의 엘더스크롤을 덱시온에게 가져가기
 Bring Elmus some Ashfire Mead from Thirsk Mead Hall	터스크 연회장에서 잿불 벌꿀술을 몇 개 구해서 엘무스에게 주기	터스크 연회장에서 잿불 벌꿀술을 몇개 구해서 엘무스에게 주기
-Bring Elmus some Juniper Berries	엘무스에게 향나무 열매를 몇 개 가져다 주기	엘무스에게 향나무 열매를 몇개 가져다 주기
-Bring some vampire dust to Elynea	엘리니아에게 흡혈귀 가루를 몇 개 가져다 주기	엘리니아에게 흡혈귀 가루를 몇개 가져다 주기
-Bring some void salts to Elynea	엘리니아에게 공허 소금 몇 개를 가져다 주기	엘리니아에게 공허 소금 몇개를 가져다 주기
-Bring the <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 <Alias=QuestItem> 가져다 주기	<Alias.ShortName=Questgiver> 에게 <Alias=QuestItem> 가져다 주기
-Bring the <Alias=QuestItem> to Olda	<Alias=QuestItem>을 올다에게 가져다 주기	<Alias=QuestItem>를 올다에게 가져다 주기
+Bring Elmus some Juniper Berries	엘무스에게 향나무 열매를 몇 개 가져다주기	엘무스에게 향나무 열매를 몇개 가져다 주기
+Bring Grisvar the Skooma	그리즈바에게 스쿠마를 가져다주기	그리즈바에게 스쿠마를 가져다 주기
+Bring one <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 '<Alias=QuestItem>' 가져다주기	<Alias.ShortName=QuestGiver>에게 '<Alias=QuestItem>' 가져다 주기
+Bring Reyda's Necklace to Narfi	나피에게 레이다의 목걸이를 가져다주기	나피에게 레이다의 목걸이를 가져다 주기
+Bring some vampire dust to Elynea	엘리니아에게 흡혈귀 가루를 몇 개 가져다주기	엘리니아에게 흡혈귀 가루를 몇개 가져다 주기
+Bring some void salts to Elynea	엘리니아에게 공허 소금 몇 개를 가져다주기	엘리니아에게 공허 소금 몇개를 가져다 주기
+Bring the <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 <Alias=QuestItem> 가져다주기	<Alias.ShortName=Questgiver> 에게 <Alias=QuestItem> 가져다 주기
+Bring the <Alias=QuestItem> to Olda	<Alias=QuestItem>을 올다에게 가져다주기	<Alias=QuestItem>를 올다에게 가져다 주기
 Bring the Bonemold Formula to Glover Mallory	뼈다귀 물품 제조법을 글로버에게 전해주기	뼈다귀 물품 제작법을 글로버에게 전해주기
+Bring the claw to Camilla	카밀라에게 발톱을 가져다주기	카밀라에게 발톱을 가져다 주기
+Bring the claw to Lucan	루칸에게 황금 발톱을 가져다주기	루칸에게 황금 발톱을 가져다 주기
+Bring the deathbell to Ingun Black-Briar	데스벨을 잉건에게 가져다주기	데스벨을 잉건에게 가져다 주기
+Bring the Dibella Statue to Lisbet	디벨라의 동상을 리즈벳에게 가져다주기	디벨라의 동상을 리즈벳에게 가져다 주기
 Bring the documents to <Alias=FieldCO>	문서를 <Alias=FieldCO>에게 전달하기	문서를 <Alias=FieldCO> 에게 전달하기
+Bring the flawless sapphires to Madesi	완벽한 사파이어를 마데시에게 가져다주기	완벽한 사파이어를 마데시에게 가져다 주기
 Bring the forged documents to <Alias=EnemyFieldCO>	위조된 문서를 <Alias=EnemyFieldCO>에게 전달하기	위조된 문서를 <Alias=EnemyFieldCO> 에게 전달하기
 Bring the Forgemaster's Fingers to <Alias.ShortName=Chief>	포지마스터의 손가락을 <Alias.ShortName=Chief>에게 가져가기	포지마스터의 손가락을 <Alias.ShortName=Chief> 에게 가져가기
 Bring the Four Master Illusion texts to Drevis Neloren	드레비스 넬로렌에게 달인 환영마법 책 4권을 가져가기	드레비스 넬로렌에게 에게 달인 환영마법 책 4권을 가져가기
+Bring the gold ore to Madesi	금광석을 마데시에게 가져다주기	금광석을 마데시에게 가져다 주기
+Bring the Jazbay to Avrusa Sarethi	아브루사 사레시에게 재즈베이를 가져다주기	아브루사 사레시에게 재즈베이를 가져다 주기
+Bring The Last Scabbard of Akrash to Ghorza	기술 서적 '아크라쉬의 마지막 칼집'을 고르자에게 가져다주기	기술 서적 '아크라쉬의 마지막 칼집'을 고르자에게 가져다 주기
+Bring the mammoth tusks to Madesi	매머드 상아를 마데시에게 가져다주기	매머드 상아를 마데시에게 가져다 주기
+Bring the netch jelly to Milore Ienth	밀로리 아이엔스에게 네치 젤리를 가져다주기	밀로리 아이엔스에게 네치 젤리를 가져다 주기
+Bring the nightshade to Ingun Black-Briar	나이트쉐이드를 잉건에게 가져다주기	나이트쉐이드를 잉건에게 가져다 주기
+Bring the nirnroot to Ingun Black-Briar	넌루트를 잉건에게 가져다주기	넌루트를 잉건에게 가져다 주기
 Bring the note to a guard in Raven Rock	레이븐 락의 경비병에게 쪽지를 전달하기	레이븐 락의 경비병에게 노트를 전달하기
 Bring Troll Fat and a Daedra Heart to Atub	에이텁에게 트롤 지방과 데이드라 심장을 가져가기	에이텁에게 트롤지방과 데이드라 심장을 가져가기
+Bring Wyndelius's Journal to Wilhelm	윌헴에게 윈델리우스의 일기를 가져다주기	윌헴에게 윈델리우스의 일기를 가져다 주기
 Broken Iron Mace Head	부서진 철 철퇴 머리 부분	부서진 철 철퇴 머리부분
 Broken Iron War Axe Head	부서진 철 도끼 머리 부분	부서진 철 도끼 머리부분
 Broken Steel Battle Axe Head	부서진 강철 전투 도끼 머리 부분	부서진 강철 전투 도끼 머리부분
@@ -283,7 +304,9 @@ Defeat the Guardians of the Forge	대장간의 수호자를 물리치기	화로�
 Defend <Alias=Capital>	<Alias=Capital>을(를) 방어하기	<Alias=Capital> 을 방어하기
 Delete this game?	이 저장 파일을 삭제하겠습니까?	이 저장파일을 삭제하겠습니까?
 Deliver <Alias=QuestItem> to <Alias.ShortName=Target>	<Alias.ShortName=Target>에게 <Alias=QuestItem> 배달하기	<Alias.ShortName=Target> 에게 <Alias=QuestItem> 배달하기
+Deliver Gharol's sword to Lash	가롤의 검을 라쉬에게 가져다주기	가롤의 검을 라쉬에게 가져다 주기
 Deliver Mead to Wilhelm	윌헴에게 벌꿀술을 배달하기	윌헴에게 벌꿀주를 배달하기
+Deliver the letter and amulet to Astrid	아스트리드에게 편지와 아뮬렛을 가져다주기	아스트리드에게 편지와 아뮬렛을 가져다 주기
 Deliver the stone to Phinis	시질 스톤을 피니스에게 전달하기	시질스톤을 피니스에게 전달하기
 Deliver the sword to Proventus Avenicci	프로벤투스 아베니치에게 검을 배달하기	프로벤투스 아베니치 에게 검을 배달하기
 Delphine needs your help to stop the dragons. (Persuade)	드래곤들을 막기 위해 당신이 델핀을 도와줘야 합니다. (설득)	드래곤들을 막기위해 당신이 델핀을 도와줘야 합니다. (설득)
@@ -439,7 +462,9 @@ Fathom	페덤	파돔
 Fellow dovah? I am not a dragon.	도바 동료? 나는 드래곤이 아닌데.	Dovah 동료? 나는 드래곤이 아닌데.
 Felsaad Tern Feathers	펠사드 제비갈매기 깃털	펠사드 제비갈매기 날개
 Filling Soul Gems	소울젬 충전하기	소울젬 보충하기
-Find 20 deathbell for Ingun Black-Briar (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 가져다 줄 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)
+Find 20 deathbell for Ingun Black-Briar (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 가져다줄 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)
+Find 20 nightshade for Ingun Black-Briar (<Global=FFR04NightshadeCount>/<Global=FFR04NightshadeTotal>)	잉건에게 가져다줄 나이트쉐이드 20개를 찾기 (<Global=FFR04NightshadeCount>/<Global=FFR04NightshadeTotal>)	잉건에게 가져다 줄 나이트쉐이드 20개를 찾기 (<Global=FFR04NightshadeCount>/<Global=FFR04NightshadeTotal>)
+Find 20 nirnroot for Ingun Black-Briar (<Global=FFR04NirnCount>/<Global=FFR04NirnTotal>)	잉건에게 가져다줄 넌루트 20개를 찾기 (<Global=FFR04NirnCount>/<Global=FFR04NirnTotal>)	잉건에게 가져다 줄 넌루트 20개를 찾기 (<Global=FFR04NirnCount>/<Global=FFR04NirnTotal>)
 Find <Alias=QuestItem> for <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>을(를) 위해 <Alias=QuestItem> 찾기	<Alias.ShortName=QuestGiver>를 위해 <Alias=QuestItem> 찾기
 Find a Moth Priest's knife	나방 사제의 칼을 찾기	나방 사제의 나이프를 찾기
 Find pages from Saint Jiub's Opus (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaintTotal>)	성자 지웁의 작품에서 잃어버린 페이지를 찾기 (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaintTotal>)	지웁의 작품에서 잃어버린 페이지를 찾기 (<Global=DLC1VQSaintCount>/<Global=DLC1VQSaintTotal>)
@@ -649,6 +674,7 @@ I blackmailed <Alias=Steward> for the information.	정보를 얻기 위해 <Alia
 I bring an offer from the Thieves Guild.	도둑 길드의 제안을 가져왔다.	도둑길드의 제안을 가져왔다.
 I can break some of your bones if that's what it's going to take...	그래야 한다면 네 뼈 몇 개쯤 부러뜨려 줄 수도 있지...	만약 그럴 작정이라면 네 뼈를 부러뜨려주마.
 I can break some of your bones if that's what it's going to take... (Brawl)	그래야 한다면 네 뼈를 부러뜨려주마. (싸움)	만약 그럴 작정이라면 네 뼈를 부러뜨려주마. (싸움)
+I can bring it for you.	내가 가져다주지.	내가 가져다 주지.
 I can see this is going nowhere. Good luck with all that.	이 얘기는 아무 소득이 없겠군. 행운을 빌지.	도대체 뭔지 전혀 모르겠군. 행운을 빌지.
 I can't afford that.	그럴 돈은 없군.	그럴 수는 없군.
 I command you to travel to Castle Volkihar.	볼키하 성으로 떠날 것을 명한다.	볼키하 성으로 떠할 것을 명한다.
@@ -836,6 +862,7 @@ I'll pay for the hilt. (<BribeCost> gold)	그 칼자루 값을 치르지. (<Brib
 I'll pay you double your usual rate. (Give <Global=DLC2CostToSailx2> gold)	배삯을 평소의 두 배로 지불하지. (<Global=DLC2CostToSailx2> 골드 주기)	배삯을 평소의 두 배로 지불하지. ( <Global=DLC2CostToSailx2> 골드 주기)
 I'll pay. Don't worry.  (<CrimeGold> gold)	지불할 테니 걱정마시오. (<CrimeGold> 골드)	지불할테니 걱정마시오. (<CrimeGold> 골드)
 I'll see to it personally.	제가 직접 처리하겠습니다.	개인적으로 조사를 해보겠습니다.
+I'll take the ring to Hircine.	내가 그 반지를 허씬에게 가져다주지.	내가 그 반지를 허씬에게 가져다 주지.
 I'm a Thane? What does that mean?	내가 쎄인이라고? 그게 무슨 뜻이지?	쎄인이라는게 무슨 뜻이지?
 I'm a traveler. I have questions.	여행자요. 궁금한 게 있소.	여행자요. 궁금한게 있소.
 I'm Arch-Mage of the College of Winterhold.	난 윈터홀드 대학의 대마법사다.	난 윈터홀드 대학의 대 마법사다.
@@ -903,6 +930,8 @@ Ice Wolf	설원늑대	설원 늑대
 Identify the buyer and we'll forget what we know. (Persuade)	구매자가 누군지 알려 주면, 우리가 아는 건 다 잊어 주지. (설득)	그 구매자가 누군지 확인한 뒤에, 전부 잊어버리면 되지. (설득)
 Identify the Crystal Shard	크리스털 파편의 정체를 알아내기	크리스털 조각을 찾기
 If I didn't know better, I'd say you were trying to kill me.	자세하게 알지 못했다면, 당신이 날 죽이려 했다고 생각했을 거야.	자세하게 알지 못했다면, 당신이 날 죽이려 했다고 생각했을거야.
+If I find a copy, I'll bring it to you.	만약 사본을 찾으면 가져다주지.	만약 사본을 찾으면 가져다 주지.
+If I see it, I'll bring it to you.	그것을 찾으면 당신에게 가져다주지.	그것을 찾으면 당신에게 가져다 주지.
 If it's fixed, then it's mine.	이게 고쳐진 거라면 내가 가지지.	이게 고쳐진거라면 내가 가지지.
 If she made it there, we'll find her.	거기로 간 거라면, 가서 찾아야겠군.	거기로 간거라면, 가서 찾아야겠군.
 If the Shout is lost, how can I defeat Alduin?	그 함성이 사라졌다면, 무슨 방법으로 알두인을 물리쳐야 합니까?	그 함성이 사라졌다면, 무슨 방법으로 알두인을 물리쳐야합니까?
@@ -981,6 +1010,7 @@ Krag's Journal	크라그의 일기	크래그의 일기
 Kust	쿠스트	커스트
 Kvenel the Tongue	혀 크베넬	언어의 크베넬
 Lay off the old man. Now. (Intimidate)	그 노인을 내버려 둬. 당장. (위협)	그 노인를 내버려 둬. 당장. (위협)
+Lead on then.	앞장서시오.	앞장 서시오.
 Learn more about the Thieves Guild from Delvin	델빈에게 도둑 길드에 관하여 좀 더 알아보기	델빈에게 도둑길드에 관하여 좀 더 알아보기
 Learn more about the Thieves Guild from Vex	벡스에게 도둑 길드에 관해서 더 알아보기	벡스에게 도둑길드에 관해서 더 알아보기
 Learn the Word of Power from Borri	보리 사범에게 힘의 단어를 배우기	마스터 보리에게 힘의 단어를 배우기
@@ -1058,6 +1088,7 @@ Meet with <Alias=General>	<Alias=General>와(과) 만나기	<Alias=General>와 �
 Meet with the <Alias=General>	<Alias=General>와(과) 만나기	<Alias=General>와 만나기
 Meet with the <Alias=General> on the Front Line.	<Alias=General>와(과) 최전선에서 만나기	<Alias=General> 와 최전선에서 만나기
 Meet Yamarz at Fallowstone Cave	팔로우 스톤 동굴에서 야마즈를 만나기	팔로우 스톤의 동굴에서 야마즈를 만나기
+Mephala is the daedric prince of lies, secrets and plots... and thoroughly enjoys meddling in the affairs of mortals.	메팔라는 거짓과 비밀, 계략의 데이드릭 프린스이며... 인간들의 일에 간섭하는 것을 몹시 즐깁니다.	메팔라는 거짓과 비밀, 계략의 데이드릭 프린스이며... 인간들의 일에 간섭하는 것을 좋아합니다.
 Mercer wants me to discover Goldenglow's buyer.	머서는 골든글로우 농장의 구매자가 누군지 알아내길 원하는데.	머서는 골든글로우 지구의 구매자가 누군지 알아내길 원하는데.
 Message from General Tullius	툴리우스 장군의 메시지	툴리우스 장군의 메세지
 Molag Bal created the first vampire.	몰락 발이 첫 흡혈귀를 만들었소.	몰락-발이 첫 흡혈귀를 만들었소.
@@ -1981,6 +2012,7 @@ You know that dog on the road you asked me to get?	잡아달라고 했던, 길�
 You know what you have to do.	뭘 해야 하는지 알고 있을 텐데.	뭘 해야 하는지 알고 있을텐데.
 You let your aunt go in there by herself?	고모가 혼자 들어가게 내버려둔 건가?	고모가 혼자 들어가게 내버려둔건가?
 You live here?	여기에 살고 있나?	여기에 살고있나?
+You mean me, don't you.	저 말이군요.	저 말이군요, 그렇습니까?
 You mentioned trading caravans?	카짓 행상인들이라 했소?	캐러밴이라 했소?
 You must be crazy.	미친 게 분명하오.	미쳐버린 것 같은데.
 You must first equip a weapon to poison it.	당신은 먼저 독을 바를 무기를 장비해야 합니다.	당신은 먼저 독을 바를 무기를 장비해야합니다.

@@ -1392,7 +1392,7 @@ Azra's <BaseName>	아즈라의 <BaseName>
 Azra's Staffs	아즈라의 지팡이
 Azura	아주라
 Azura and the Box	아주라와 상자
-Azura is the daedric prince of dusk and dawn, and one of the few not considered to be inherently evil.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 그는 본래부터 악하지는 않다고 여겨지는 프린스들 중 하나입니다.
+Azura is the daedric prince of dusk and dawn, and one of the few not considered to be inherently evil.	아주라는 새벽과 황혼의 데이드릭 프린스입니다. 본래부터 악하다고 여겨지지 않는 몇 안 되는 프린스 중 하나입니다.
 Azura's Star	아주라의 별
 Azura's Star Interior	아주라의 별 내부
 Azzada	아자다
@@ -2074,74 +2074,74 @@ Brina's House	브리나의 집
 Brinehammer	브린해머 호
 Brinewater Grotto	브라인워터 암굴
 Brinewater Grotto Key	열쇠 - 브라인워터 암굴
-Bring 10 fire salts to Balimund (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개를 가져다 주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)
-Bring 10 Scathecraw to the Chief	스케이드 선인장 10개를 추장에게 가져다 주기
+Bring 10 fire salts to Balimund (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)	발리문드에게 화염 소금 10개를 가져다주기 (<Global=FFR10SaltCount>/<Global=FFR10SaltTotal>)
+Bring 10 Scathecraw to the Chief	스케이드 선인장 10개를 추장에게 가져다주기
 Bring <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 <Alias=QuestItem> 가져가기
-Bring <Global=DLC2ThirskHilundSpearCount> Riekling Spears to Hilund	힐룬드에게 리클링 창 <Global=DLC2ThirskHilundSpearCount>개를 가져다 주기
+Bring <Global=DLC2ThirskHilundSpearCount> Riekling Spears to Hilund	힐룬드에게 리클링 창 <Global=DLC2ThirskHilundSpearCount>개를 가져다주기
 Bring <Global=NN01Total> Crimson Nirnroot to Avrusa Sarethi	붉은 넌루트 <Global=NN01Total>개를 아브루사 사레시에게 가져가기
 Bring a <Alias=Item> to Calcelmo	칼셀모에게 <Alias=Item> 가져가기
-Bring a briarheart to Elynea	엘리니아에게 찔레 심장 하나를 가져다 주기
-Bring a daedra heart to Elynea	엘리니아에게 데이드라의 심장 하나를 가져다 주기
+Bring a briarheart to Elynea	엘리니아에게 찔레 심장 하나를 가져다주기
+Bring a daedra heart to Elynea	엘리니아에게 데이드라의 심장 하나를 가져다주기
 Bring a Daedra's Heart to Moth	모쓰에게 데이드라의 심장을 가져가기
 Bring a Dragon Scale and a Dragon Bone to Esbern	에스번에게 드래곤 비늘과 드래곤 뼈를 가져가기
 Bring a filled Black Soul Gem to Morthal	충전된 검은 소울젬을 모탈로 가져가기
 Bring a Filled Grand Soul Gem to Sergius Turrianus	서지우스 투리아누스에게 충전된 특급 소울젬을 가져가기
 Bring a follower to Delphine	델핀에게 동료 한 명을 데리고 가기
-Bring a giant's toe to Elynea	엘리니아에게 거인의 발가락 하나를 가져다 주기
-Bring a hagraven's claw to Elynea	엘리니아에게 해그레이븐 발톱 하나를 가져다 주기
+Bring a giant's toe to Elynea	엘리니아에게 거인의 발가락 하나를 가져다주기
+Bring a hagraven's claw to Elynea	엘리니아에게 해그레이븐 발톱 하나를 가져다주기
 Bring a Hide Helmet to <Alias=QuestGiver>	생가죽 투구를 <Alias=QuestGiver>에게 주기
 Bring a Tempered Hide Helmet to <Alias=QuestGiver>	강화된 생가죽 투구를 <Alias=QuestGiver>에게 주기
 Bring a Tempered Iron Dagger to <Alias=QuestGiver>	강화된 철 단검을 <Alias=QuestGiver>에게 주기
 Bring Aela her shield	에일라에게 방패를 전달하기
-Bring Alessandra's Dagger to Andurs in Whiterun	알리산드라의 단검을 화이트런에 있는 앤더스에게 가져다 주기
+Bring Alessandra's Dagger to Andurs in Whiterun	알리산드라의 단검을 화이트런에 있는 앤더스에게 가져다주기
 Bring an Iron Dagger to <Alias=QuestGiver>	철 단검을 <Alias=QuestGiver>에게 가져다주기
 Bring Ancient Falmer Tome to Urag-gro Shub	우라그에게 고대 팔머서적을 전해주기
 Bring Barrel of Mead to <Alias=TG03SPJarlAlias>	벌꿀술통을 <Alias=TG03SPJarlAlias>에게 전달하기
-Bring blood to Septimus	셉티무스에게 피를 가져다 주기
+Bring blood to Septimus	셉티무스에게 피를 가져다주기
 Bring both Elder Scrolls to Dexion	두 개의 엘더스크롤을 덱시온에게 가져가기
 Bring Dragon Heartscales to Tolfdir	드래곤 심장비늘을 톨프딜에게 전해주기
 Bring Elmus some Ashfire Mead from Thirsk Mead Hall	터스크 연회장에서 잿불 벌꿀술을 몇 개 구해서 엘무스에게 주기
-Bring Elmus some Juniper Berries	엘무스에게 향나무 열매를 몇 개 가져다 주기
+Bring Elmus some Juniper Berries	엘무스에게 향나무 열매를 몇 개 가져다주기
 Bring evidence to <Alias=Jarl>	<Alias=Jarl>에게 증거를 가져가기
 Bring Fenrig to Ruki	펜릭을 루키에게 데려다 주기
 Bring Fjotra to the Temple	피요트라를 신전으로 데려가기
 Bring Gleda the Goat back to Ennis in Rorikstead	염소 글레다를 로릭스테드에 있는 에니스에게 되돌려주기
 Bring gold to Vex  (<Global=TGBanGoldTotal>)	벡스에게 돈을 내기 (<Global=TGBanGoldTotal>)
-Bring Grisvar the Skooma	그리즈바에게 스쿠마를 가져다 주기
+Bring Grisvar the Skooma	그리즈바에게 스쿠마를 가져다주기
 Bring Hjalti's Sword to the Ghost of Old Hroldan	올드 흐롤단의 유령에게 히얄티의 검을 가져가기
 Bring It!	그걸 가져와!
 Bring me a Sigil Stone. Now.	시질 스톤을 가져오라. 당장.
 Bring Meridia's beacon to Mount Kilkreath	메리디아의 등불을 킬크리쓰 산으로 가져가기
 Bring Nettlebane to Danica	네틀베인을 다니카에게 가져가기
 Bring Ogmund's Amulet of Talos to Ondolemar	오그문드의 탈로스 아뮬렛을 온돌레마에게 전해주기
-Bring one <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 '<Alias=QuestItem>' 가져다 주기
-Bring Reyda's Necklace to Narfi	나피에게 레이다의 목걸이를 가져다 주기
+Bring one <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 '<Alias=QuestItem>' 가져다주기
+Bring Reyda's Necklace to Narfi	나피에게 레이다의 목걸이를 가져다주기
 Bring some Frost Salts to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 냉기 소금을 전해주기
-Bring some vampire dust to Elynea	엘리니아에게 흡혈귀 가루를 몇 개 가져다 주기
-Bring some void salts to Elynea	엘리니아에게 공허 소금 몇 개를 가져다 주기
-Bring the <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 <Alias=QuestItem> 가져다 주기
-Bring the <Alias=QuestItem> to Olda	<Alias=QuestItem>을 올다에게 가져다 주기
+Bring some vampire dust to Elynea	엘리니아에게 흡혈귀 가루를 몇 개 가져다주기
+Bring some void salts to Elynea	엘리니아에게 공허 소금 몇 개를 가져다주기
+Bring the <Alias=QuestItem> to <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>에게 <Alias=QuestItem> 가져다주기
+Bring the <Alias=QuestItem> to Olda	<Alias=QuestItem>을 올다에게 가져다주기
 Bring the blade shards to Silus	단검 칼날을 사일러스에게 가져가기
 Bring the Bonemold Formula to Glover Mallory	뼈다귀 물품 제조법을 글로버에게 전해주기
-Bring the claw to Camilla	카밀라에게 발톱을 가져다 주기
-Bring the claw to Lucan	루칸에게 황금 발톱을 가져다 주기
-Bring the deathbell to Ingun Black-Briar	데스벨을 잉건에게 가져다 주기
-Bring the Dibella Statue to Lisbet	디벨라의 동상을 리즈벳에게 가져다 주기
+Bring the claw to Camilla	카밀라에게 발톱을 가져다주기
+Bring the claw to Lucan	루칸에게 황금 발톱을 가져다주기
+Bring the deathbell to Ingun Black-Briar	데스벨을 잉건에게 가져다주기
+Bring the Dibella Statue to Lisbet	디벨라의 동상을 리즈벳에게 가져다주기
 Bring the documents to <Alias=FieldCO>	문서를 <Alias=FieldCO>에게 전달하기
 Bring the evidence to Adril Arano	아드릴 아라노에게 증거를 전달하기
-Bring the flawless sapphires to Madesi	완벽한 사파이어를 마데시에게 가져다 주기
+Bring the flawless sapphires to Madesi	완벽한 사파이어를 마데시에게 가져다주기
 Bring the forged documents to <Alias=EnemyFieldCO>	위조된 문서를 <Alias=EnemyFieldCO>에게 전달하기
 Bring the Forgemaster's Fingers to <Alias.ShortName=Chief>	포지마스터의 손가락을 <Alias.ShortName=Chief>에게 가져가기
 Bring the Four Master Illusion texts to Drevis Neloren	드레비스 넬로렌에게 달인 환영마법 책 4권을 가져가기
-Bring the gold ore to Madesi	금광석을 마데시에게 가져다 주기
+Bring the gold ore to Madesi	금광석을 마데시에게 가져다주기
 Bring the hilt to Silus	단검 손잡이 부분을 사일러스에게 가져가기
-Bring the Jazbay to Avrusa Sarethi	아브루사 사레시에게 재즈베이를 가져다 주기
-Bring The Last Scabbard of Akrash to Ghorza	기술 서적 '아크라쉬의 마지막 칼집'을 고르자에게 가져다 주기
+Bring the Jazbay to Avrusa Sarethi	아브루사 사레시에게 재즈베이를 가져다주기
+Bring The Last Scabbard of Akrash to Ghorza	기술 서적 '아크라쉬의 마지막 칼집'을 고르자에게 가져다주기
 Bring the Leather to <Alias=QuestGiver>	가죽을 <Alias=QuestGiver>에게 가져다주기
-Bring the mammoth tusks to Madesi	매머드 상아를 마데시에게 가져다 주기
-Bring the netch jelly to Milore Ienth	밀로리 아이엔스에게 네치 젤리를 가져다 주기
-Bring the nightshade to Ingun Black-Briar	나이트쉐이드를 잉건에게 가져다 주기
-Bring the nirnroot to Ingun Black-Briar	넌루트를 잉건에게 가져다 주기
+Bring the mammoth tusks to Madesi	매머드 상아를 마데시에게 가져다주기
+Bring the netch jelly to Milore Ienth	밀로리 아이엔스에게 네치 젤리를 가져다주기
+Bring the nightshade to Ingun Black-Briar	나이트쉐이드를 잉건에게 가져다주기
+Bring the nirnroot to Ingun Black-Briar	넌루트를 잉건에게 가져다주기
 Bring the note to a guard in Raven Rock	레이븐 락의 경비병에게 쪽지를 전달하기
 Bring the Phial to Nurelion	뉴렐리온에게 병을 전해주기
 Bring the pommel stone to Silus	단검 자루 끝부분을 사일러스에게 가져가기
@@ -2153,7 +2153,7 @@ Bring the supplies to High Hrothgar	보급품을 하이 흐로스가로 가져�
 Bring the Unusual Gem to an appraiser	감정사에게 특이한 보석을 가져가기
 Bring the Unusual Gem to Vex in the Thieves Guild	특이한 보석을 도둑 길드의 벡스에게 가져가기
 Bring Troll Fat and a Daedra Heart to Atub	에이텁에게 트롤 지방과 데이드라 심장을 가져가기
-Bring Wyndelius's Journal to Wilhelm	윌헴에게 윈델리우스의 일기를 가져다 주기
+Bring Wyndelius's Journal to Wilhelm	윌헴에게 윈델리우스의 일기를 가져다주기
 Bristleback	멧돼지
 Bristleback Cave	멧돼지 동굴
 Britte	브리트
@@ -3889,7 +3889,7 @@ Deliver axe to Jarl Ulfric	야를 울프릭에게 도끼를 전달하기
 Deliver axe to the Jarl of Whiterun	화이트런의 야를에게 도끼를 전달하기
 Deliver Faendal's letter to Camilla	카밀라에게 페인달의 편지를 전달하기
 Deliver Faleen's letter	팔린의 편지를 배달하기
-Deliver Gharol's sword to Lash	가롤의 검을 라쉬에게 가져다 주기
+Deliver Gharol's sword to Lash	가롤의 검을 라쉬에게 가져다주기
 Deliver Gorm's letter to Captain Aldis	고엄의 편지를 장교 알디스에게 배달하기
 Deliver Harrald's Sword	하랄드의 검을 전달하기
 Deliver Mead to Wilhelm	윌헴에게 벌꿀술을 배달하기
@@ -3907,7 +3907,7 @@ Deliver the crown to General Tullius	왕관을 툴리우스 장군에게 전해�
 Deliver the crown to Ulfric Stormcloak	왕관을 울프릭 스톰클록에게 전해주기
 Deliver the Dragonstone to Farengar	파렌가에게 드래곤의 석판을 주기
 Deliver the Ingredients	재료들을 배달하기
-Deliver the letter and amulet to Astrid	아스트리드에게 편지와 아뮬렛을 가져다 주기
+Deliver the letter and amulet to Astrid	아스트리드에게 편지와 아뮬렛을 가져다주기
 Deliver the package to Arniel	아니얼에게 물건꾸러미를 전해주기
 Deliver the purchase agreement to Kleppr in Markarth	마르카스의 클레퍼에게 구매계약서를 전달하기
 Deliver the ring to Calcelmo	반지를 칼셀모에게 전해주기
@@ -6639,10 +6639,10 @@ Filnjar's House	필른냐르의 집
 Final Lesson	마지막 수업
 Final warning. Leave Octieve alone.	마지막 경고다. 옥티브를 내버려 둬.
 Find 2 flawless sapphires for Madesi (<Global=FFR18GemCount>/<Global=FFR18GemTotal>)	마데시에게 줄 완벽한 사파이어 2개를 찾기 (<Global=FFR18GemCount>/<Global=FFR18GemTotal>)
-Find 20 deathbell for Ingun Black-Briar (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 가져다 줄 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)
+Find 20 deathbell for Ingun Black-Briar (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)	잉건 블랙-브라이어에게 가져다줄 데스벨 20개를 찾기 (<Global=FFR04DeathbellCount>/<Global=FFR04DeathbellTotal>)
 Find 20 Jazbay (<Global=FFSarethi01JazCount>/<Global=FFSarethi01JazTotal>)	재즈베이 20개를 찾기 (<Global=FFSarethi01JazCount>/<Global=FFSarethi01JazTotal>)
-Find 20 nightshade for Ingun Black-Briar (<Global=FFR04NightshadeCount>/<Global=FFR04NightshadeTotal>)	잉건에게 가져다 줄 나이트쉐이드 20개를 찾기 (<Global=FFR04NightshadeCount>/<Global=FFR04NightshadeTotal>)
-Find 20 nirnroot for Ingun Black-Briar (<Global=FFR04NirnCount>/<Global=FFR04NirnTotal>)	잉건에게 가져다 줄 넌루트 20개를 찾기 (<Global=FFR04NirnCount>/<Global=FFR04NirnTotal>)
+Find 20 nightshade for Ingun Black-Briar (<Global=FFR04NightshadeCount>/<Global=FFR04NightshadeTotal>)	잉건에게 가져다줄 나이트쉐이드 20개를 찾기 (<Global=FFR04NightshadeCount>/<Global=FFR04NightshadeTotal>)
+Find 20 nirnroot for Ingun Black-Briar (<Global=FFR04NirnCount>/<Global=FFR04NirnTotal>)	잉건에게 가져다줄 넌루트 20개를 찾기 (<Global=FFR04NirnCount>/<Global=FFR04NirnTotal>)
 Find 5 Ice Wraith Teeth for Marise (<Global=FFR07TeethCount>/<Global=FFR07TeethTotal>)	마리스에게 줄 얼음 망령 이빨 5개를 찾기 (<Global=FFR07TeethCount>/<Global=FFR07TeethTotal>)
 Find <Alias=QuestItem> for <Alias.ShortName=QuestGiver>	<Alias.ShortName=QuestGiver>을(를) 위해 <Alias=QuestItem> 찾기
 Find <Alias=QuestItem> inside <Alias=Dungeon>	<Alias=Dungeon>에서 <Alias=QuestItem> 찾기
@@ -9301,7 +9301,7 @@ I came at a bad time? What's wrong?	안 좋은 때라니? 무슨 문제가 있�
 I came here looking for the Synod.	시노드 사람들을 찾으러 왔는데.
 I can break some of your bones if that's what it's going to take...	그래야 한다면 네 뼈 몇 개쯤 부러뜨려 줄 수도 있지...
 I can break some of your bones if that's what it's going to take... (Brawl)	그래야 한다면 네 뼈를 부러뜨려주마. (싸움)
-I can bring it for you.	내가 가져다 주지.
+I can bring it for you.	내가 가져다주지.
 I can certainly help.	확실히 도와줄 수 있소.
 I can deliver that for you.	내가 배달해주지.
 I can destroy it for you.	내가 그걸 처리할 수 있는데.
@@ -10391,7 +10391,7 @@ I'll take my pay.	보수를 주시오.
 I'll take that claw for 50 gold.	그 발톱을 50골드에 사겠습니다.
 I'll take that dog off your hands. (<global=animalgold> gold)	내가 저 개를 사지. (<global=animalgold> 골드)
 I'll take that job.	내가 그 일을 맡지.
-I'll take the ring to Hircine.	내가 그 반지를 허씬에게 가져다 주지.
+I'll take the ring to Hircine.	내가 그 반지를 허씬에게 가져다주지.
 I'll take the tour. (2 gold)	안내를 부탁합니다. (2 골드)
 I'll take you to the monster you're hunting. (Persuade)	네가 사냥중인 괴물에게 데려가 주겠다. (설득)
 I'll take your test, then.	그렇다면, 시험을 받겠습니다.
@@ -10869,12 +10869,12 @@ If anyone falls, it will be you.	죽기로 결정된 건, 네놈이 될 거다.
 If he's betrayed us, I'll kill him.	놈이 배신한 거라면, 죽여야지.
 If I didn't know better, I'd say you were trying to kill me.	자세하게 알지 못했다면, 당신이 날 죽이려 했다고 생각했을 거야.
 If I do, will you tell me who set the fire?	내가 찾으면 누가 화재를 일으켰는지 말해 줄래?
-If I find a copy, I'll bring it to you.	만약 사본을 찾으면 가져다 주지.
+If I find a copy, I'll bring it to you.	만약 사본을 찾으면 가져다주지.
 If I find one, I'll bring it to you.	만약에 찾아낸다면, 당신에게 가져오지.
 If I find this crystal you're looking for. Will you help me?	만약에 내가 크리스털을 찾아낸다면, 나를 도와주겠소?
 If I get information from Gulum-Ei, what then?	걸럼-아이에게서 정보를 얻고 난 뒤에는?
 If I leave the Soul Cairn, can I safely return?	내가 밖으로 나갔다가, 소울 케언으로 무사히 돌아올 수도 있소?
-If I see it, I'll bring it to you.	그것을 찾으면 당신에게 가져다 주지.
+If I see it, I'll bring it to you.	그것을 찾으면 당신에게 가져다주지.
 If it will help the cause...	그게 도움이 된다면...
 If it's fixed, then it's mine.	이게 고쳐진 거라면 내가 가지지.
 If Maven already threw you in jail, why steal her horse?	메이븐이 벌써 당신을 감옥에 잡아넣었는데, 왜 말을 훔치려는 겁니까?
@@ -12390,7 +12390,7 @@ Lavender Dumpling	라벤더 경단
 Lay	놓기
 Lay off the old man. Now. (Brawl)	그 늙은이를 놓아줘. 당장. (싸움)
 Lay off the old man. Now. (Intimidate)	그 노인을 내버려 둬. 당장. (위협)
-Lead on then.	앞장 서시오.
+Lead on then.	앞장서시오.
 Lead Saadia to the Whiterun Stables	세이디아를 화이트런 마구간으로 데려가기
 Lead Serana to her home	세라나를 그녀의 집으로 인도하기
 Lead someone to become trapped by the shrine and slay them	제단에 갇힐 누군가를 데려오고 그 사람을 죽게 하기
@@ -13233,7 +13233,7 @@ Melaran	멜라란
 Melka	멜카
 Mena	메나
 Mephala	메팔라
-Mephala is the daedric prince of lies, secrets and plots... and thoroughly enjoys meddling in the affairs of mortals.	메팔라는 거짓과 비밀, 계략의 데이드릭 프린스이며... 인간들의 일에 간섭하는 것을 좋아합니다.
+Mephala is the daedric prince of lies, secrets and plots... and thoroughly enjoys meddling in the affairs of mortals.	메팔라는 거짓과 비밀, 계략의 데이드릭 프린스이며... 인간들의 일에 간섭하는 것을 몹시 즐깁니다.
 Mercenaries? Not Riften guards?	용병? 리프튼의 경비병이 아니라?
 Mercenary	용병
 Mercer doesn't have to know.	머서가 알 필요는 없지.
@@ -23511,7 +23511,7 @@ You may just have to give her time.	네 엄마한테도 시간을 좀 주렴.
 You mean Dragonsreach?	'드래곤스리치'를 말하는 겁니까?
 You mean he murders his marks.	그말은 그놈이 사냥감을 죽인다는 말이군.
 You mean I'm not the only Dragonborn?	제가 유일한 드래곤본이 아니라는 뜻입니까?
-You mean me, don't you.	저 말이군요, 그렇습니까?
+You mean me, don't you.	저 말이군요.
 You mean me, don't you?	저 말이군요, 그렇습니까?
 You mean the Betrayed.	배신당한 자들 말이군.
 You mean the Eye of Magnus?	매그너스의 눈 말인가?
