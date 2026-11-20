@@ -3,6 +3,10 @@
 판마다 무엇이 바뀌었는지 적은 기록입니다. 받는 곳과 자세한 릴리스 글은 [GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases)에 있습니다.
 최근 판이 위에 있습니다. 1.8보다 앞선 판은 [이전 작업 기록](plans/2026-09-28-translator-improvement.md)과 [유지보수 계획](plans/2026-09-29-maintenance.md)을 보세요.
 
+## 1.16.67
+
+1.16.67은 [한글패치 26.10.16 베타 35](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/kopatch-26.10.16-beta35)와 함께 낸 판입니다. 한글패치의 띄어쓰기("가져다주다"·"갖다주다"·"앞장서다")와 오역 고침(여성 인물·데이드릭 프린스의 남성 대명사 수정, 영어 원문과 의문문 여부가 다른 대사 및 파써낙스·메팔라 의미 수정, 본편·DLC 206줄)을 게임 번역 사전이 따르고, 내장 TM은 v33(같은 고침 43행)이 됩니다([기록](analysis/2026-10-16-kopatch-beta.md)). 내장 용어집과 그 밖의 번역기 기능은 1.16.66과 같습니다.
+
 ## 1.16.66
 
 1.16.66은 [한글패치 26.10.16 베타 34](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/kopatch-26.10.16-beta34)와 함께 낸 판입니다. 한글패치의 오역 고침(같은 레코드를 정의하는 본편·DLC 사본에서 갈렸던 글을 한 글로 맞춤, 영어에 없는 망토·눈보라 설명의 덧붙임을 뺌, 빠진 이름·장소를 되살림, 용언어 문장 속 이름을 한글로, 본편·DLC 304줄)을 게임 번역 사전이 따르고, 내장 TM은 v32(같은 고침 15행)가 됩니다([기록](analysis/2026-10-16-kopatch-beta.md)).
