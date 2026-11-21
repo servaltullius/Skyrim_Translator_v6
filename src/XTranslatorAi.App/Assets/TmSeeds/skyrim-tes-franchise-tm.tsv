@@ -17,7 +17,7 @@ Source	Target
 "Nothing changes in the city of stone...." -- Amanda Alleia, A Sellsword's Guide to Markarth	'돌의 도시 안에서는 그 어떤 것도 변하지 않았다...' - 아만다 알레이아, 마르카스의 용병 안내서 중에서
 "One of the Jarl's men"?	'야를의 부하'?
 "Seen my coming"? What do you mean?	'내가 오고 있는 것을 봤다'? 무슨 뜻이오?
-"The best techniques are passed on by the survivors." -- Gaiden Shinji, 1E 490	'가장 좋은 기술은 살아남은 자들을 통해 전수된다.' - 가이든 신지, 제 1시대 490년
+"The best techniques are passed on by the survivors." -- Gaiden Shinji, 1E 490	'가장 좋은 기술은 살아남은 자들을 통해 전수된다.' - 가이든 신지, 제1시대 490년
 "Upon my honor I do swear undying loyalty to the Emperor, Titus Mede II..."	'내 명예를 걸고 타이투스 메데 2세 폐하께 영원한 충성을 맹세하고...'
 "Upon my honor I do swear undying loyalty to the Emperor..."	'내 명예를 걸고 황제 폐하께 영원한 충성을 맹세하고...'
 "White-Gold Concordat"? What's that?	백금 조약? 그게 뭐지?
@@ -102,23 +102,23 @@ Source	Target
 +<mag>% resistance to fire and frost for <dur> seconds.	<dur> 초 동안 화염과 냉기 저항력이 <mag>% 증가합니다.
 10 Gold	10 골드
 10,000 gold. (Lie)	10,000 골드. (거짓)
-16 Accords of Madness, v. IX	광기의 16협약, 제 9권
-16 Accords of Madness, v. VI	광기의 16협약, 제 6권
-16 Accords of Madness, v. XII	광기의 16협약, 제 12권
+16 Accords of Madness, v. IX	광기의 16협약, 제9권
+16 Accords of Madness, v. VI	광기의 16협약, 제6권
+16 Accords of Madness, v. XII	광기의 16협약, 제12권
 20,000 gold.	20,000 골드.
 25 Gold	25 골드
-2920, Evening Star, v12	2920년도 12월, 제 12권
-2920, First Seed, v3	2920년도 3월, 제 3권
-2920, Frostfall, v10	2920년도 10월, 제 10권
-2920, Hearth Fire, v9	2920년도 9월, 제 9권
-2920, Last Seed, v8	2920년도 8월, 제 8권
-2920, MidYear, v6	2920년도 6월, 제 6권
-2920, Morning Star, v1	2920년도 1월, 제 1권
-2920, Rain's Hand, v4	2920년도 4월, 제 4권
-2920, Second Seed, v5	2920년도 5월, 제 5권
-2920, Sun's Dawn, v2	2920년도 2월, 제 2권
-2920, Sun's Dusk, v11	2920년도 11월, 제 11권
-2920, Sun's Height, v7	2920년도 7월, 제 7권
+2920, Evening Star, v12	2920년도 12월, 제12권
+2920, First Seed, v3	2920년도 3월, 제3권
+2920, Frostfall, v10	2920년도 10월, 제10권
+2920, Hearth Fire, v9	2920년도 9월, 제9권
+2920, Last Seed, v8	2920년도 8월, 제8권
+2920, MidYear, v6	2920년도 6월, 제6권
+2920, Morning Star, v1	2920년도 1월, 제1권
+2920, Rain's Hand, v4	2920년도 4월, 제4권
+2920, Second Seed, v5	2920년도 5월, 제5권
+2920, Sun's Dawn, v2	2920년도 2월, 제2권
+2920, Sun's Dusk, v11	2920년도 11월, 제11권
+2920, Sun's Height, v7	2920년도 7월, 제7권
 360 Controller	Xbox 360 컨트롤러
 5 Gold	5 골드
 5,000 gold. (Lie)	5,000 골드. (거짓)
@@ -199,13 +199,13 @@ A cyclone that does <mag> points of damage per second and flings victims into th
 A cyclone that does <mag> points of damage per second and may fling victims into the air.	사이클론이 매 초마다 <mag> 의 피해를 입히며 공중으로 날려버릴 수 있습니다.
 A Daedra's Best Friend	데이드라의 개
 A daedra?	데이드라?
-A Dance in Fire, v1	불의 춤, 제 1권
-A Dance in Fire, v2	불의 춤, 제 2권
-A Dance in Fire, v3	불의 춤, 제 3권
-A Dance in Fire, v4	불의 춤, 제 4권
-A Dance in Fire, v5	불의 춤, 제 5권
-A Dance in Fire, v6	불의 춤, 제 6권
-A Dance in Fire, v7	불의 춤, 제 7권
+A Dance in Fire, v1	불의 춤, 제1권
+A Dance in Fire, v2	불의 춤, 제2권
+A Dance in Fire, v3	불의 춤, 제3권
+A Dance in Fire, v4	불의 춤, 제4권
+A Dance in Fire, v5	불의 춤, 제5권
+A Dance in Fire, v6	불의 춤, 제6권
+A Dance in Fire, v7	불의 춤, 제7권
 A Dark Brotherhood assassin doesn't do... "favors."	다크 브라더후드의 암살자는 '호의'를 베풀어주진 않아.
 A dragon attacked Helgen and destroyed it. Hadvar and I escaped together.	드래곤이 헬겐을 공격해서 파괴했고, 나는 해드버와 함께 탈출했소.
 A dragon attacked Helgen and destroyed it. Ralof and I escaped together.	드래곤이 헬겐을 공격해서 파괴했고, 나는 레일로프와 함께 탈출했소.
@@ -1140,10 +1140,10 @@ Argi Farseer	아르기 파시어
 Argis	알기스
 Argis the Bulwark	방벽의 알기스
 Argonian	아르고니안
-Argonian Account, Book 1	아르고니안 이야기, 제 1권
-Argonian Account, Book 2	아르고니안 이야기, 제 2권
-Argonian Account, Book 3	아르고니안 이야기, 제 3권
-Argonian Account, Book 4	아르고니안 이야기, 제 4권
+Argonian Account, Book 1	아르고니안 이야기, 제1권
+Argonian Account, Book 2	아르고니안 이야기, 제2권
+Argonian Account, Book 3	아르고니안 이야기, 제3권
+Argonian Account, Book 4	아르고니안 이야기, 제4권
 Argonian Ale	술 - 아르고니안 맥주
 Argonian Assemblage	아르고니안 공동체
 Argonian Assemblage Key	열쇠 - 아르고니안 공동체
@@ -1626,9 +1626,9 @@ Bilegulch Mine	바일걸치 광산
 Bilegulch Mine Key	열쇠 - 바일걸치 광산
 Bilgemuck	빌그먹
 Bilgemuck is an animal of some kind? And you want it back?	빌그먹은 어떤 종류의 동물이지? 그리고 다시 찾아오기를 원하나?
-Biography of Barenziah, v1	바렌자이아 여왕 전기, 제 1권
-Biography of Barenziah, v2	바렌자이아 여왕 전기, 제 2권
-Biography of Barenziah, v3	바렌자이아 여왕 전기, 제 3권
+Biography of Barenziah, v1	바렌자이아 여왕 전기, 제1권
+Biography of Barenziah, v2	바렌자이아 여왕 전기, 제2권
+Biography of Barenziah, v3	바렌자이아 여왕 전기, 제3권
 Biography of the Wolf Queen	늑대 여왕 전기
 Birds' Nest	새 둥지
 Birna	비르나
@@ -1858,8 +1858,8 @@ Bone Hawk Ring	해골 독수리 반지
 Bone Hawk Skull	해골 독수리 두개골
 Bone Meal	뼛가루
 Bone Wolf	뼈 늑대
-Bone, Part I	뼈, 제 1권
-Bone, Part II	뼈, 제 2권
+Bone, Part I	뼈, 제1권
+Bone, Part II	뼈, 제2권
 Bonechill Passage	본칠 통로
 Boneless Limbs	촉수
 Boneman	해골병사
@@ -2061,10 +2061,10 @@ Briarheart Lifeforce	찔레심장 생명력
 Briarheart Necropsy	찔레심장 해부
 Bribe	뇌물
 Bribery	뇌물 수수
-Brief History of the Empire, v1	간략한 제국의 역사, 제 1권
-Brief History of the Empire, v2	간략한 제국의 역사, 제 2권
-Brief History of the Empire, v3	간략한 제국의 역사, 제 3권
-Brief History of the Empire, v4	간략한 제국의 역사, 제 4권
+Brief History of the Empire, v1	간략한 제국의 역사, 제1권
+Brief History of the Empire, v2	간략한 제국의 역사, 제2권
+Brief History of the Empire, v3	간략한 제국의 역사, 제3권
+Brief History of the Empire, v4	간략한 제국의 역사, 제4권
 Briehl	브리엘
 Brightness	밝기
 Brill	브릴
@@ -2567,16 +2567,16 @@ Change Pose	자세 바꾸기
 Change preset and lose your changes?	변경사항을 버리고 사전설정으로 바꾸겠습니까?
 Changed Ones	변화한 자들
 Chaos Damage	혼돈 피해
-Chapter I	제 I 편
-Chapter I Footnote	제 I 편 각주
-Chapter II	제 II 편
-Chapter III	제 III 편
-Chapter IV	제 IV 편
-Chapter IX	제 IX 편
-Chapter V	제 V 편
-Chapter VI	제 VI 편
-Chapter VII	제 VII 편
-Chapter VIII	제 VIII 편
+Chapter I	제I 편
+Chapter I Footnote	제I 편 각주
+Chapter II	제II 편
+Chapter III	제III 편
+Chapter IV	제IV 편
+Chapter IX	제IX 편
+Chapter V	제V 편
+Chapter VI	제VI 편
+Chapter VII	제VII 편
+Chapter VIII	제VIII 편
 Character menu is not available.	캐릭터 메뉴를 사용할 수 없습니다.
 Character menu not available to werewolves.	늑대인간은 캐릭터 메뉴를 사용할 수 없습니다.
 Charcoal	목탄
@@ -2587,10 +2587,10 @@ Charmed Vigilant	매혹당한 경계병
 Charred Skeever	검게 탄 스키버
 Charred Skeever Hide	그을린 스키버 가죽
 Charred Skeever Meat	불탄 스키버 고기
-Charwich-Koniinge Letters, v1	샤위치-코닌지의 편지들, 제 1권
-Charwich-Koniinge Letters, v3	샤위치-코닌지의 편지들, 제 3권
-Charwich-Koniinge Letters, v4	샤위치-코닌지의 편지들, 제 4권
-Charwich-Koniinge, v2	샤위치-코닌지의 편지들, 제 2권
+Charwich-Koniinge Letters, v1	샤위치-코닌지의 편지들, 제1권
+Charwich-Koniinge Letters, v3	샤위치-코닌지의 편지들, 제3권
+Charwich-Koniinge Letters, v4	샤위치-코닌지의 편지들, 제4권
+Charwich-Koniinge, v2	샤위치-코닌지의 편지들, 제2권
 Chasing Echoes	메아리를 쫓아서
 Chaurus	챠루스
 Chaurus Box	챠루스 상자
@@ -2782,11 +2782,11 @@ Cicero's Boots	시세로의 신발
 Cicero's Clothes	시세로의 의상
 Cicero's Gloves	시세로의 장갑
 Cicero's Hat	시세로의 모자
-Cicero's Journal - Final Volume	시세로의 일기, 제 5권
-Cicero's Journal - Volume 1	시세로의 일기, 제 1권
-Cicero's Journal - Volume 2	시세로의 일기, 제 2권
-Cicero's Journal - Volume 3	시세로의 일기, 제 3권
-Cicero's Journal - Volume 4	시세로의 일기, 제 4권
+Cicero's Journal - Final Volume	시세로의 일기, 제5권
+Cicero's Journal - Volume 1	시세로의 일기, 제1권
+Cicero's Journal - Volume 2	시세로의 일기, 제2권
+Cicero's Journal - Volume 3	시세로의 일기, 제3권
+Cicero's Journal - Volume 4	시세로의 일기, 제4권
 Cicero, did you want to be the Listener?	시세로, 너 리스너가 되고 싶었던 거야?
 Cidhna Mine	시드나 광산
 Cidhna Mine?	시드나 광산?
@@ -4062,10 +4062,10 @@ Discover the significance of Crimson Nirnroot	붉은 넌루트의 중요성을 �
 Discover the treasure of Angarvunde	앙가푼데의 보물을 발견하기
 discovered	발견
 Discovered effects	발견한 효과
-Discovering Ruunvald, Vol. I	룬발드를 찾아서 제 1권
-Discovering Ruunvald, Vol. II	룬발드를 찾아서 제 2권
-Discovering Ruunvald, Vol. III	룬발드를 찾아서 제 3권
-Discovering Ruunvald, Vol. IV	룬발드를 찾아서 제 4권
+Discovering Ruunvald, Vol. I	룬발드를 찾아서 제1권
+Discovering Ruunvald, Vol. II	룬발드를 찾아서 제2권
+Discovering Ruunvald, Vol. III	룬발드를 찾아서 제3권
+Discovering Ruunvald, Vol. IV	룬발드를 찾아서 제4권
 Discreetly kill <Alias=Target>	은밀하게 <Alias=Target> 죽이기
 Discuss	의논
 Disease	질병
@@ -5186,9 +5186,9 @@ Dwarven Warhammer of Torpor	드워프제 전투 망치 - 중급 지구력 피해
 Dwarven Warhammer of Weariness	드워프제 전투 망치 - 하급 지구력 피해
 Dwarven Warhammer of Winnowing	드워프제 전투 망치 - 상급 매지카 흡수
 Dwarves built this city?	드워프가 이 도시를 세웠다고?
-Dwarves, v1	드워프들, 제 1권
-Dwarves, v2	드워프들, 제 2권
-Dwarves, v3	드워프들, 제 3권
+Dwarves, v1	드워프들, 제1권
+Dwarves, v2	드워프들, 제2권
+Dwarves, v3	드워프들, 제3권
 Dwemer Bolt	볼트 - 드웨머
 Dwemer Bowl	드웨머 - 그릇
 Dwemer Cog	드웨머 - 톱니
@@ -5201,9 +5201,9 @@ Dwemer Exploding Shock Bolt Schematic	도면 - 전격 폭발성 드워프제 볼
 Dwemer Gear	드웨머 - 기어
 Dwemer Gyro	드웨머 - 회전바퀴
 Dwemer History and Culture	드웨머의 역사와 문화
-Dwemer Inquiries Vol I	드웨머 연구, 제 1권
-Dwemer Inquiries Vol II	드웨머 연구, 제 2권
-Dwemer Inquiries Vol III	드웨머 연구, 제 3권
+Dwemer Inquiries Vol I	드웨머 연구, 제1권
+Dwemer Inquiries Vol II	드웨머 연구, 제2권
+Dwemer Inquiries Vol III	드웨머 연구, 제3권
 Dwemer Lever	드웨머 - 막대
 Dwemer Lockbox	드웨머 금고
 Dwemer Mechanism	드웨머 장치
@@ -6172,16 +6172,16 @@ Embers and heated ash cause <mag> points per second.	화산재와 잿불이 매 
 Embershard	엠버샤드
 Embershard Mine	엠버샤드 광산
 Embershard Mine Key	열쇠 - 엠버샤드 광산
-Emblem I	제 1 표식
-Emblem II	제 2 표식
-Emblem III	제 3 표식
-Emblem IV	제 4 표식
-Emblem IX	제 9 표식
-Emblem V	제 5 표식
-Emblem VI	제 6 표식
-Emblem VII	제 7 표식
-Emblem VIII	제 8 표식
-Emblem X	제 10 표식
+Emblem I	제1 표식
+Emblem II	제2 표식
+Emblem III	제3 표식
+Emblem IV	제4 표식
+Emblem IX	제9 표식
+Emblem V	제5 표식
+Emblem VI	제6 표식
+Emblem VII	제7 표식
+Emblem VIII	제8 표식
+Emblem X	제10 표식
 Embrace of Shadows	그림자 동조
 Embrace the Night Mother	나이트 마더를 포옹하기
 Embroidered Garment	야를의 화려한 자수 의상
@@ -6616,9 +6616,9 @@ Fetch me that Book!	그 책을 가져오라!
 Fethis	페디스
 Fethis Alor	페디스 알로어
 Few and Far Between	가뭄에 콩 나듯
-Feyfolken I	페이폴켄, 제 1권
-Feyfolken II	페이폴켄, 제 2권
-Feyfolken III	페이폴켄, 제 3권
+Feyfolken I	페이폴켄, 제1권
+Feyfolken II	페이폴켄, 제2권
+Feyfolken III	페이폴켄, 제3권
 Fianna	피아나
 Fiery Soul Trap	화염 소울 트랩
 Fight! Fight!	싸워라! 싸워!
@@ -8733,9 +8733,9 @@ His dragon allies must know where this portal is...	그 녀석과 동맹을 맺�
 His life is in danger. (Persuade)	그의 목숨이 위험합니다. (설득)
 His paranoia is gone.	펠라지우스의 피해망상이 사라졌소.
 Histcarp	히스트 잉어
-History of Raven Rock, Vol. I	레이븐 락의 역사, 제 1권
-History of Raven Rock, Vol. II	레이븐 락의 역사, 제 2권
-History of Raven Rock, Vol. III	레이븐 락의 역사, 제 3권
+History of Raven Rock, Vol. I	레이븐 락의 역사, 제1권
+History of Raven Rock, Vol. II	레이븐 락의 역사, 제2권
+History of Raven Rock, Vol. III	레이븐 락의 역사, 제3권
 Histskin	히스트스킨
 Hit	명중
 Hits have a small chance to instantly kill.	낮은 확률로 즉사시킵니다.
@@ -10906,9 +10906,9 @@ Ilas-Tei's Ring	일라스-테이의 반지
 Ildari is dead.	일다리는 죽었소.
 Ildari Sarothril	일다리 사로딜
 Ildari's Journal	일다리의 일기
-Ildari's Journal, vol. I	일다리의 일기 제 1권
-Ildari's Journal, vol. II	일다리의 일기 제 2권
-Ildari's Journal, vol. III	일다리의 일기 제 3권
+Ildari's Journal, vol. I	일다리의 일기 제1권
+Ildari's Journal, vol. II	일다리의 일기 제2권
+Ildari's Journal, vol. III	일다리의 일기 제3권
 Ildari's Sarcophagus	일다리의 석관
 Ildari? What can you tell me about her?	일다리? 좀 더 알려줄 수 있나?
 Ildene	일딘
@@ -11141,7 +11141,7 @@ Improved Swindler's Voice	향상된 사기꾼의 목소리
 Improved Virulity	독성 강화
 Improvement	강화
 Improves the caster's armor rating by <mag> points for <dur> seconds.	시전자는 <dur> 초 동안 총 방어력이 <mag> 증가합니다.
-In 3E 389 Emperor Uriel VII was imprisoned by his Imperial Battlemage, Jagar Tharn, who then impersonated him for years.	제 3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄에 의해 갇히게 되었습니다. 그 후 수년 동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.
+In 3E 389 Emperor Uriel VII was imprisoned by his Imperial Battlemage, Jagar Tharn, who then impersonated him for years.	제3시대 389년 유리엘 7세는 그의 '제국전투마법사'인 제이거 탄에 의해 갇히게 되었습니다. 그 후 수년 동안 제이거 탄이 유리엘 7세의 모습으로 변장하고 지냈습니다.
 In Castle Volkihar?	볼키하 성은 어떻지?
 In My Time Of Need	긴급사태
 In order to use the Add-Ons associated with this profile, you will need to restart.	이 프로필에 연계된 DLC를 이용하려면 게임을 다시 시작해야 합니다.
@@ -13417,7 +13417,7 @@ Mossy Glen Cave	이끼 낀 협곡 동굴
 Most Nords of Skyrim assumed the dragons were only a legend. Until now.	대부분의 노드들은 드래곤을 단순한 전설이라고 생각했습니다. 지금까지는 말입니다.
 Most of the dogs in Skyrim are domesticated, and serve as faithful companions to their Nord masters.	스카이림에 있는 대부분의 개들은 길들여져 있습니다. 그리고 노드 주인을 따르는 충실한 동료이기도 합니다.
 Most of the shipping in Solitude is run by the Imperial-financed East Empire Company.	솔리튜드에서는 대부분의 물자유통을 제국의 자금지원을 받는 동제국 회사가 운영하고 있습니다.
-Most of Winterhold was lost to the sea in the Great Collapse of 4E 122, but the College was left mysteriously unharmed.	윈터홀드의 대부분은 제 4시대 122년의 대붕괴 때 바닷속으로 가라앉아 버렸지만, 불가사의하게도 대학만은 무사했습니다.
+Most of Winterhold was lost to the sea in the Great Collapse of 4E 122, but the College was left mysteriously unharmed.	윈터홀드의 대부분은 제4시대 122년의 대붕괴 때 바닷속으로 가라앉아 버렸지만, 불가사의하게도 대학만은 무사했습니다.
 Most shops are open from about 8am to 8pm. If a shop is closed, wait until morning... or pick the lock and break in.	대부분의 상점은 오전 8시부터 오후 8시까지 영업을 합니다. 만약 상점이 문을 닫았다면, 아침까지 기다리거나... 자물쇠를 따고 무단 침입하는 방법도 있습니다.
 Most snow elves?	대부분의 스노우 엘프들?
 Moth	모쓰
@@ -13508,11 +13508,11 @@ Mysterious Akavir	신비한 아카비르
 Mysterious Note	비밀 노트
 Mysterious Woman	신비한 여인
 Mysterium Xarxes	작시스의 신비
-Mystery of Talara, Part 4	탈라라의 미스터리, 제 4권
-Mystery of Talara, v 1	탈라라의 미스터리, 제 1권
-Mystery of Talara, v 2	탈라라의 미스터리, 제 2권
-Mystery of Talara, v3	탈라라의 미스터리, 제 3권
-Mystery of Talara, v5	탈라라의 미스터리, 제 5권
+Mystery of Talara, Part 4	탈라라의 미스터리, 제4권
+Mystery of Talara, v 1	탈라라의 미스터리, 제1권
+Mystery of Talara, v 2	탈라라의 미스터리, 제2권
+Mystery of Talara, v3	탈라라의 미스터리, 제3권
+Mystery of Talara, v5	탈라라의 미스터리, 제5권
 Mystic Axe	신비한 전투 도끼
 Mystic Binding	신비한 결속
 Mystic Bow	신비한 활
@@ -13521,10 +13521,10 @@ Mystic Focal Point	에너지 중심점
 Mystic Sword	신비한 검
 Mystic Tuning Gloves	신비한 조율 장갑
 Mythic Dawn Boots	미식 던 신발
-Mythic Dawn Commentaries 1	작시스의 신비 해설, 제 1권
-Mythic Dawn Commentaries 2	작시스의 신비 해설, 제 2권
-Mythic Dawn Commentaries 3	작시스의 신비 해설, 제 3권
-Mythic Dawn Commentaries 4	작시스의 신비 해설, 제 4권
+Mythic Dawn Commentaries 1	작시스의 신비 해설, 제1권
+Mythic Dawn Commentaries 2	작시스의 신비 해설, 제2권
+Mythic Dawn Commentaries 3	작시스의 신비 해설, 제3권
+Mythic Dawn Commentaries 4	작시스의 신비 해설, 제4권
 Mythic Dawn Gloves	미식 던 장갑
 Mythic Dawn Robes	미식 던 두건 달린 로브
 Mythic Dawn Tapestries	미식 던 벽걸이 융단
@@ -14435,7 +14435,7 @@ Note to Rhorlak	롤락에게 보내는 편지
 Note to Rodulf	로덜프에게
 Note to the Authorities	당국에 보내는 메모
 Note to Thomas	토마스에게 보내는 메모
-Notes on Dimhollow Crypt, Vol. 3	딤할로우 묘지에 대한 노트 제 3권
+Notes on Dimhollow Crypt, Vol. 3	딤할로우 묘지에 대한 노트 제3권
 Notes On The Lunar Forge	달빛 대장간에 대한 노트
 Notes on Yngol Barrow	잉골 고분에 대한 메모
 Nothing at all?	전혀 없다고?
@@ -15072,8 +15072,8 @@ Pale Hold Guard	페일 지역 경비병
 Pale Imperial Camp	페일 제국군 주둔지
 Pale Stormcloak Camp	페일 스톰클록 주둔지
 Palevius Lex	팔레비우스 렉스
-Palla, volume 1	팔라, 제 1권
-Palla, volume 2	팔라, 제 2권
+Palla, volume 1	팔라, 제1권
+Palla, volume 2	팔라, 제2권
 Pantea	판티아
 Pantea Ateia	판티아 에이티아
 Pantea's Flute	판티아의 플루트
@@ -16529,10 +16529,10 @@ Rirns	리른즈
 Rirns Llervu	리른즈 레부
 Rise in the East	동쪽에서 뜨다
 Rising at Dawn	새벽의 움직임
-Rising Threat, Vol. I	일어나는 위협, 제 1권
-Rising Threat, Vol. II	일어나는 위협, 제 2권
-Rising Threat, Vol. III	일어나는 위협, 제 3권
-Rising Threat, Vol. IV	일어나는 위협, 제 4권
+Rising Threat, Vol. I	일어나는 위협, 제1권
+Rising Threat, Vol. II	일어나는 위협, 제2권
+Rising Threat, Vol. III	일어나는 위협, 제3권
+Rising Threat, Vol. IV	일어나는 위협, 제4권
 Rislav The Righteous	의로운 리슬라브
 Rissing	리씽
 Ritual Master	소환의식 제사장
@@ -17830,11 +17830,11 @@ Song of the Alchemists	연금술사의 노래
 Song of the Askelde Men	아스켈드인의 노래
 Songs of Skyrim	스카이림의 노래
 Songs of Skyrim: Revised	스카이림의 노래: 개정판
-Songs of the Return, Vol 19	귀환의 노래, 제 19장
-Songs of the Return, Vol 2	귀환의 노래, 제 2장
-Songs of the Return, vol 24	귀환의 노래, 제 24장
-Songs of the Return, Vol 56	귀환의 노래, 제 56장
-Songs of the Return, Vol 7	귀환의 노래, 제 7장
+Songs of the Return, Vol 19	귀환의 노래, 제19장
+Songs of the Return, Vol 2	귀환의 노래, 제2장
+Songs of the Return, vol 24	귀환의 노래, 제24장
+Songs of the Return, Vol 56	귀환의 노래, 제56장
+Songs of the Return, Vol 7	귀환의 노래, 제7장
 Sonir	소니어
 Sons of Skyrim Military Camp	스카이림의 자손들 군영지
 Soon, the Emperor will die. Murdered, by the Gourmet.	곧, 황제는 죽을 거야. '미식가'에게 살해 당하는 거지.
@@ -20016,8 +20016,8 @@ The beginning of what?	무슨 시작?
 The best time to negotiate is from a position of strength.	유리한 위치에 있을 때 협상하기에 가장 좋습니다.
 The Betrayed	배신당한 자
 The Betrayed weren't to blame.	배신당한 자들 때문이 아니었소.
-The Black Arrow, v1	검은 화살, 제 1권
-The Black Arrow, v2	검은 화살, 제 2권
+The Black Arrow, v1	검은 화살, 제1권
+The Black Arrow, v2	검은 화살, 제2권
 The Black Arts On Trial	흑마술에 대한 논의
 The Black Books have something to do with Hermaeus Mora?	검은 책들이 헤르메우스 모라와 뭔가 관련이 있는 거요?
 The Black Star	검은 별
@@ -20144,7 +20144,7 @@ The Forsworn Conspiracy	포스원의 음모
 The Forsworn have a king?	포스원에게 왕이 있다고?
 The fort is yours.	요새는 당신 것이오.
 The Four Totems of Volskygge	볼스카이그 4개의 토템
-The Fourth Era began 200 years ago when Martin Septim sacrificed himself to save the world from the Oblivion Crisis.	200년 전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제 4시대가 시작되었습니다.
+The Fourth Era began 200 years ago when Martin Septim sacrificed himself to save the world from the Oblivion Crisis.	200년 전, 마틴 셉팀이 자신을 희생하여 오블리비언 대위기에서 세계를 구해냈을 때부터 제4시대가 시작되었습니다.
 The Frost Troll is the most fearsome of its kind found in Skyrim, and is at home in the province's most frozen regions.	설원 트롤은 스카이림에서 발견된 트롤들 중 가장 무시무시하며, 그 지역의 가장 얼음이 많은 곳에 집을 가지고 있습니다.
 The Frozen Hearth	프로즌 하스
 The Frozen Hearth Cellar	프로즌 하스 저장고
@@ -20257,8 +20257,8 @@ The Lover Stone	연인의 선돌
 The Lover Stone ability lets you learn all skills a little faster, but not as much as the Thief, Warrior or Mage Stones.	'연인의 선돌'은 모든 기술을 조금 빠르게 배울 수 있도록 해줍니다. 그러나 도적, 전사 또는 마법사의 선돌만큼 빠르지는 않습니다.
 The Lover's Requital	연인의 보답
 The Lunar Lorkhan	로칸의 달
-The Lusty Argonian Maid, v1	음란한 아르고니안 메이드, 제 1권
-The Lusty Argonian Maid, v2	음란한 아르고니안 메이드, 제 2권
+The Lusty Argonian Maid, v1	음란한 아르고니안 메이드, 제1권
+The Lusty Argonian Maid, v2	음란한 아르고니안 메이드, 제2권
 The Madness of Pelagius	펠라지우스의 광기
 The Mage Armor perks make defensive spells more effective for anyone wearing clothes instead of armor.	마법사의 방어구 퍽은 갑옷 대신 의류를 입는 사람들의 방어 마법을 향상시켜줍니다.
 The Mage Doomstone	마법사의 선돌
@@ -20288,8 +20288,8 @@ The Night Mother heard your pleas, Motierre.	나이트 마더가 너의 기도�
 The Night Mother spoke to me! She said "I am the one."	나이트 마더께서 말씀하셨어! 내가 바로 '선택받은 자'라고.
 The Night Mother's Truth	나이트 마더의 진실
 The night terrors and self loathing are gone.	악몽과 자기혐오는 이제 사라졌소.
-The Nightingales Vol. 1	나이팅게일, 제 1권
-The Nightingales Vol. 2	나이팅게일, 제 2권
+The Nightingales Vol. 1	나이팅게일, 제1권
+The Nightingales Vol. 2	나이팅게일, 제2권
 The Nirnoot Missive	넌루트에 관한 공문서
 The Nirnroot Missive	넌루트에 관한 공문서
 The Nords are dead.	노드들은 죽었다.
@@ -20313,13 +20313,13 @@ The Pickpocket skill is used to take things from an unsuspecting target's pocket
 The Pig Children	돼지의 아이들
 The pirate haven has been destroyed.	해적은 전멸했다.
 The Pit	투기장
-The Poison Song, Book I	독의 노래, 제 1권
-The Poison Song, Book II	독의 노래, 제 2권
-The Poison Song, Book III	독의 노래, 제 3권
-The Poison Song, Book IV	독의 노래, 제 4권
-The Poison Song, Book V	독의 노래, 제 5권
-The Poison Song, Book VI	독의 노래, 제 6권
-The Poison Song, Book VII	독의 노래, 제 7권
+The Poison Song, Book I	독의 노래, 제1권
+The Poison Song, Book II	독의 노래, 제2권
+The Poison Song, Book III	독의 노래, 제3권
+The Poison Song, Book IV	독의 노래, 제4권
+The Poison Song, Book V	독의 노래, 제5권
+The Poison Song, Book VI	독의 노래, 제6권
+The Poison Song, Book VII	독의 노래, 제7권
 The poor in Markarth live in the Warrens, and are almost exclusively natives of the Reach.	마르카스의 가난한 자들은 빈민굴에 살고 있으며, 대부분은 리치의 원주민들입니다.
 The Posting of the Hunt	사냥의 시작
 The power from the Lady's Stone lets you regenerate Health and Stamina much faster for a while.	'숙녀의 선돌'은 체력과 지구력을 잠깐 동안 더 빠르게 회복할 수 있는 능력을 추가합니다.
@@ -20335,17 +20335,17 @@ The Ratway	쥐소굴
 The Ratway Vaults	쥐소굴 저장고
 The Ratway Warrens	쥐소굴 빈민굴
 the Reach	리치
-The Real Barenziah, v1	진정한 바렌자이아, 제 1권
-The Real Barenziah, v2	진정한 바렌자이아, 제 2권
-The Real Barenziah, v3	진정한 바렌자이아, 제 3권
-The Real Barenziah, v4	진정한 바렌자이아, 제 4권
-The Real Barenziah, v5	진정한 바렌자이아, 제 5권
+The Real Barenziah, v1	진정한 바렌자이아, 제1권
+The Real Barenziah, v2	진정한 바렌자이아, 제2권
+The Real Barenziah, v3	진정한 바렌자이아, 제3권
+The Real Barenziah, v4	진정한 바렌자이아, 제4권
+The Real Barenziah, v5	진정한 바렌자이아, 제5권
 The Rear Guard	후위병
 The Reclamations	레클러메이션
 The Red Book of Riddles	수수께끼의 붉은 책
 The Red Kitchen Reader	붉은 주방 독본
-The Red Year, Vol. I	붉은 해, 제 1권
-The Red Year, Vol. II	붉은 해, 제 2권
+The Red Year, Vol. I	붉은 해, 제1권
+The Red Year, Vol. II	붉은 해, 제2권
 The Refugees	피난민
 The Retching Netch	레칭 네치
 the Rift	리프트
@@ -20380,14 +20380,14 @@ The Silver Hand	실버 핸드
 The smith said he'd teach me how to make Stalhrim weapons.	대장장이가 나에게 스탈림 무기를 만드는 법을 가르쳐 줄 수 있다고 했는데.
 The Sneak skill makes it more difficult to be detected, which in turn allows for deadly stealth attacks.	은신 기술은 적이 당신을 발견하기 어렵게 되어 치명적인 암습이 가능하게 됩니다.
 The soaked taproot is planted.	적셔둔 뿌리를 심었소.
-The Song of Pelinal, v1	펠리날의 노래, 제 1권
-The Song of Pelinal, v2	펠리날의 노래, 제 2권
-The Song of Pelinal, v3	펠리날의 노래, 제 3권
-The Song of Pelinal, v4	펠리날의 노래, 제 4권
-The Song of Pelinal, v5	펠리날의 노래, 제 5권
-The Song of Pelinal, v6	펠리날의 노래, 제 6권
-The Song of Pelinal, v7	펠리날의 노래, 제 7권
-The Song of Pelinal, v8	펠리날의 노래, 제 8권
+The Song of Pelinal, v1	펠리날의 노래, 제1권
+The Song of Pelinal, v2	펠리날의 노래, 제2권
+The Song of Pelinal, v3	펠리날의 노래, 제3권
+The Song of Pelinal, v4	펠리날의 노래, 제4권
+The Song of Pelinal, v5	펠리날의 노래, 제5권
+The Song of Pelinal, v6	펠리날의 노래, 제6권
+The Song of Pelinal, v7	펠리날의 노래, 제7권
+The Song of Pelinal, v8	펠리날의 노래, 제8권
 The Speech skill is used to get better prices from merchants and persuade, intimidate, or even bribe others.	화술은 상인과 거래할 때에 좀 더 좋은 가격을 제시하거나, 상대를 설득, 위협, 또는 뇌물을 주는 데에 영향을 끼칩니다.
 The Spiced Wine	향신료 든 포도주
 The Staff of Magnus	매그너스의 지팡이
@@ -20405,7 +20405,7 @@ The Stormcloaks say hello!	스톰클록군이 안부 전해 달라더군!
 The Stormcloaks were there ahead of us.	스톰클록군이 우리보다 먼저 가 있었습니다.
 The Straw that Broke	부서진 마지막 희망
 The Stumbling Sabrecat	휘청이는 검치호랑이
-The Sultry Argonian Bard, v1	관능적인 아르고니안 바드, 제 1권
+The Sultry Argonian Bard, v1	관능적인 아르고니안 바드, 제1권
 The Sweep Job	싹쓸이 작업
 The Tale of Dro'Zira	드로'지라 이야기
 The Talos Mistake	탈로스 실책
@@ -20464,17 +20464,17 @@ The Winking Skeever	윙크하는 스키버
 The Wispmother	위스프마더
 The witches should be hunted down for their trickery.	마녀들은 남을 속인 대가를 치러야 할 것입니다.
 The Wolf Queen Awakened	깨어난 늑대 여왕
-The Wolf Queen, v1	늑대 여왕, 제 1권
-The Wolf Queen, v2	늑대 여왕, 제 2권
-The Wolf Queen, v3	늑대 여왕, 제 3권
-The Wolf Queen, v4	늑대 여왕, 제 4권
-The Wolf Queen, v5	늑대 여왕, 제 5권
-The Wolf Queen, v6	늑대 여왕, 제 6권
-The Wolf Queen, v7	늑대 여왕, 제 7권
-The Wolf Queen, v8	늑대 여왕, 제 8권
+The Wolf Queen, v1	늑대 여왕, 제1권
+The Wolf Queen, v2	늑대 여왕, 제2권
+The Wolf Queen, v3	늑대 여왕, 제3권
+The Wolf Queen, v4	늑대 여왕, 제4권
+The Wolf Queen, v5	늑대 여왕, 제5권
+The Wolf Queen, v6	늑대 여왕, 제6권
+The Wolf Queen, v7	늑대 여왕, 제7권
+The Wolf Queen, v8	늑대 여왕, 제8권
 The wolves of Skyrim are feral, savage beasts, and hunt in packs to take down any prey available... be it animal or man.	스카이림의 늑대들은 흉폭하고 몹시 사나운 짐승이며, 어떤 먹이라도 무리 지어 사냥하여 해치울 수 있습니다... 동물이든 사람이든 말입니다.
 The woman was a vampire, and they wanted her back.	그 여성은 흡혈귀였고, 그녀를 돌려받길 원했소.
-The Woodcutter's Wife	나무꾼의 아내, 제 1권
+The Woodcutter's Wife	나무꾼의 아내, 제1권
 The wooden mask hums with an unfamiliar energy.	나무 가면에서 이상한 기운이 흘러넘치고 있습니다.
 The Woodsman's Friend	나무꾼의 친구
 The Words of Power	힘의 단어
@@ -20705,7 +20705,7 @@ Thrynn	쓰린
 Thug	폭력배
 Thunderbolt	낙뢰
 Tiber	타이버
-Tiber Septim brought peace to Tamriel in 2E 896, by conquering all of the known world. Thus began the Third Era.	타이버 셉팀은 제 2시대 896년에 그 당시 알려진 지역 모두를 정복하여 탐리엘 대륙에 평화를 가져왔습니다. 그것이 제 3 시대의 시작입니다.
+Tiber Septim brought peace to Tamriel in 2E 896, by conquering all of the known world. Thus began the Third Era.	타이버 셉팀은 제2시대 896년에 그 당시 알려진 지역 모두를 정복하여 탐리엘 대륙에 평화를 가져왔습니다. 그것이 제3 시대의 시작입니다.
 Tiber Septim's room?	타이버 셉팀의 방?
 Tilde	틸드
 Tilisu	텔레수
@@ -21055,10 +21055,10 @@ Ungrien	언그리엔
 Unh, my head.	아이고, 머리야.
 Unhindered	무방해
 Unknown	알 수 없음
-Unknown Book, Vol. I	알 수 없는 책, 제 1권
-Unknown Book, Vol. II	알 수 없는 책, 제 2권
-Unknown Book, Vol. III	알 수 없는 책, 제 3권
-Unknown Book, Vol. IV	알 수 없는 책, 제 4권
+Unknown Book, Vol. I	알 수 없는 책, 제1권
+Unknown Book, Vol. II	알 수 없는 책, 제2권
+Unknown Book, Vol. III	알 수 없는 책, 제3권
+Unknown Book, Vol. IV	알 수 없는 책, 제4권
 Unknown Location	알 수 없는 위치
 Unlock	해제
 Unlock the Sarcophagus in Ragnvald	라근발드에 있는 석관을 열기
@@ -21483,7 +21483,7 @@ Wake me up when we arrive.	도착하면 깨워주시오.
 Waking Nightmare	깨어있는 악몽
 Walk away. Right now. (Intimidate)	꺼져. 지금 당장! (위협)
 Walk on the surface of water for <dur> seconds.	<dur> 초 동안 수면을 걸을 수 있습니다.
-Walking the World, Vol XI	세계를 걷기, 제 11권
+Walking the World, Vol XI	세계를 걷기, 제11권
 Wall of Flames	불꽃의 벽
 Wall Of Frost	서리의 벽
 Wall of Storms	폭풍의 벽
@@ -21495,7 +21495,7 @@ Wall Shelves (3)	벽걸이 선반 (3)
 Wall Shelves (4)	벽걸이 선반 (4)
 Want me to take care of Madanach?	매더낙을 처리해 주길 바라는 건가?
 Want me to take care of them?	내가 처리하길 원하나?
-War of the First Council	제 1 평의회 전쟁
+War of the First Council	제1 평의회 전쟁
 War Paint	전투화장
 War Paint Color	전투화장 색상
 War Quarters	전쟁 구역

@@ -51,8 +51,9 @@ artifacts/tm-v28-20261110/tm-v28.py the 11 of the 다른 사람 / 저장 파일 
 artifacts/tm-v29-20261111/tm-v29.py the 1 of the second residual sample into v29,
 artifacts/tm-v30-20261112/tm-v30.py the 13 of the -기 위해 / -게 되- / 아무 말 spacing into v30,
 artifacts/tm-v31-20261112/tm-v31.py the 34 of the dependent noun / % particle / 잘하다 / compound spacing into v31,
-artifacts/tm-v32-20261115/tm-v32.py the 15 of the mistranslation sweeps (masters' copies, cloaks, names) into v32, and
-the 43 of 가져다주다·갖다주다, 앞장서다, female pronouns and question-mark/count sweeps into v33.)
+artifacts/tm-v32-20261115/tm-v32.py the 15 of the mistranslation sweeps (masters' copies, cloaks, names) into v32,
+the 43 of 가져다주다·갖다주다, 앞장서다, female pronouns and question-mark/count sweeps into v33, and
+the 153 of joining the ordinal prefix 제- to numbers into v34.)
 
 `apply` skips a change when the patch no longer holds the `current_ko` the reviewer saw, or when the new text loses
 the English's tags and placeholders. Read every suggestion before `--write`: reviews from a model can be wrong or
