@@ -2131,3 +2131,10 @@ choice-10·11(1,270쌍, dawnguard.esm 뒤쪽·dragonborn·hearthfires·update)�
   - 브린욜프의 리프트윌드 저택 설명: 'A gift from the Black-Briars after they kicked the previous family out' — '-고서'로 머서가 쫓아낸 것처럼 읽히던 것을 '블랙-브라이어 가문이 전에 살던 가족을 쫓아내고 준 선물이지'로, 다음 줄 'just pays for the upkeep' '유지비는 냈지' → '유지비만 내고 있지'.
   - 듀네비르 'until I was no more' '죽을 때까지' → '끝내 나는 사라지고 말 것이다', 아른가이르 'the least of its uses' '가장 낮은 방법' → '쓰임새 가운데 가장 하찮은 것'.
 - 반영: 새 경고 0, USSEP 4.2.5b 1필드(아른가이르 대사), 테스트 2,775 통과, TM 대기 7행 그대로.
+
+### 사용자 피드백 fb1 (2026-11-23)
+
+- 「올라프와 드래곤」(Skyrim DL `0000AF0F`·`00010908`): 'too evenly matched for either to gain an advantage' '양자 모두 우월을 논하기 어려운 대등한 싸움이었다' → '양자 모두 우열을 논하기 어려운 싸움이었다'(우월은 우열의 잘못, 대등한은 겹말). `0000AF0F` 판만 'blade and claw' '검과 손톱으로' → '검과 발톱으로'(다른 판과 맞춤).
+- 스톰클록 장교(Skyrim IL `000036EA`): 'At first they called us that to belittle our cause' — 부른 쪽이 빠져 스스로 깎아내린 것처럼 읽히던 것을 '처음엔 저들이 우리 대의를 깎아내리려고 그렇게 불렀지'로.
+- 반영: 새 경고 0, 테스트 2,775 통과. USSEP 네 판은 책 `000EB090` DESC가 따라가기로, `000403AF`(FavorAdonatoBook — USSEP가 저자 이름을 고쳐 자기 글로 분류돼 따라가기에서 빠짐) DESC는 검수 지적으로 `ussep-ownfix-fb1.py`로 같은 세 곳만 고침(판마다 2필드).
+- 남은 후보(검수): Dragonborn DL `00001571` 'claws of chained beasts' '야수들의 손톱' — 발톱, '사슬에 묶인' 빠짐.
