@@ -2121,3 +2121,13 @@ choice-10·11(1,270쌍, dawnguard.esm 뒤쪽·dragonborn·hearthfires·update)�
   - 맞춤법: '출입가능하오' → '출입 가능하오', CC 사이러스 '짐작컨데' → '짐작건대', 샤위치-코닌지 편지 제3권 머리말 제목줄 '제 3권' → '제3권'(일부러 틀린 본문은 그대로).
 - 고치지 않음: 'Hey, Longhammer' → '어이, 라드'(라드가 든 고유 무기 이름에서 온 별명, 같은 사람), 서비스 세력·마법 부여 이름(화면에 안 보임), 리카에게 하는 플레이어 하오체, 미궁 '주교실'(Tribune).
 - 반영: 덩이마다 새 경고 0(CC 사이러스 품질검사 포함 — 11-19 artifacts 삭제 뒤 되살린 `run-cc2.sh`의 첫 실행). USSEP 네 판 판마다 2·3·1필드. 테스트 2,775 통과. TM 대기 7행(펠라지아 열쇠 고침, 레칭 네치 행 새로 올림).
+
+### 방향·순서 뒤집힘 거름 hunt9 (2026-11-22)
+
+- `artifacts/mistranslation-hunt-20261103/hunt9-dir.py`: 영어에 늘림 낱말(increase·more·faster·bonus 등)만 있는데 한글엔 줄임 낱말(감소·줄·덜·느리 등)만 있는 줄과 그 반대, before ↔ 뒤·후, after ↔ 전·먼저가 뒤집힌 줄을 거른다(400자 이하). 57줄.
+- 판정: 방향·순서가 실제로 뒤집힌 오역은 0이었다(more slowly → 감소, After you → 먼저, until after → 전까지 같은 관용 표현). 검수 에이전트가 빈틈을 메운 변형 규칙으로 80줄을 더 읽었지만 오역은 없었다.
+- 고침 6문자열(`review-dir1.csv`·`-dir1b.csv`·`-dir1c.csv`):
+  - 대학 재료 모으기 'I need at least five more' '적어도 5개 이상이 필요하네' → '적어도 5개는 더 필요하네'(형제 대사 '3개를 더'와 같은 꼴), 드래곤본 'have less to eat' '먹을 것이 사라지고' → '먹을 것이 줄어'.
+  - 브린욜프의 리프트윌드 저택 설명: 'A gift from the Black-Briars after they kicked the previous family out' — '-고서'로 머서가 쫓아낸 것처럼 읽히던 것을 '블랙-브라이어 가문이 전에 살던 가족을 쫓아내고 준 선물이지'로, 다음 줄 'just pays for the upkeep' '유지비는 냈지' → '유지비만 내고 있지'.
+  - 듀네비르 'until I was no more' '죽을 때까지' → '끝내 나는 사라지고 말 것이다', 아른가이르 'the least of its uses' '가장 낮은 방법' → '쓰임새 가운데 가장 하찮은 것'.
+- 반영: 새 경고 0, USSEP 4.2.5b 1필드(아른가이르 대사), 테스트 2,775 통과, TM 대기 7행 그대로.
