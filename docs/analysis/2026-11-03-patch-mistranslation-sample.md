@@ -2155,3 +2155,9 @@ choice-10·11(1,270쌍, dawnguard.esm 뒤쪽·dragonborn·hearthfires·update)�
 - 패치 나머지가 inner sanctum·the Sanctum을 '지성소'로 쓰는데 남은 곳: 포렐호스트 쪽지(Skyrim DL `0000B0A9`) '성역을 지켜내야' → '지성소를 지켜내야', 메리디아(IL `0000D83D`) '가장 깊은 곳의 성역을 열고' → '지성소를 열고', 잊힌 골짜기(Dawnguard IL `0000172A`, 검수가 찾음) '성소를' → '지성소를'.
 - 잉빌드 아론딜 일지(Skyrim DL `0000243E`)는 종교 시설이 아니라 피험자를 쌓아 둘 곳이라 '지성소'를 쓰지 않고 '잉빌드 더 깊은 곳에서 가장 안쪽 방을 찾아냈으니 … 보관해둘 자리가 넉넉할 것이다'(sufficient room = 넉넉한 자리).
 - 반영: 덩이마다(sanct1·sanct1b) 새 경고 0, USSEP 네 판 판마다 2·1필드(포렐호스트 쪽지는 USSEP가 덮어쓰지 않음), 테스트 2,775 통과, TM 대기 7행 그대로. 검수: 본편·DLC·CC에 '안쪽/깊은 곳의 성역·성소'는 더 없음(Snow Veil Sanctum 같은 지명은 대상 아님).
+
+### Shadowfoot Sanctum 표기 shadow1 (2026-11-26)
+
+- 본편(HearthFires·Update)은 '섀도우풋 성역'인데 CC 해골 마을 집(cceejsse003-hollow) 7문자열만 '쉐도우풋'이라 '섀도우풋'으로 맞췄다(외래어 표기법도 shadow → 섀도). 검수가 CC BSA 영어 표·ESL로 7문자열이 모두 Shadowfoot Sanctum(장소·셀·열쇠·하수구 입구 메시지·HouseQuest)임을 확인.
+- USCCCP 한국어 4판의 같은 글도 따라 고침(5.22 4, 7.7·8.2·8.5 1씩, usccp-follow.py → apply). 반영: 새 경고 0, 테스트 2,775 통과, 저장소에 '쉐도우풋' 0.
+- 참고(고치지 않음): Dragonborn IL 00000669 '쉐도우메이지'(shadowmage) — 본편 관례는 섀도미어·섀도마크처럼 '섀도'.
