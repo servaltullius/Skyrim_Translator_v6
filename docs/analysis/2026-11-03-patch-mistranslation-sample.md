@@ -2149,3 +2149,9 @@ choice-10·11(1,270쌍, dawnguard.esm 뒤쪽·dragonborn·hearthfires·update)�
 - left1 검수가 남긴 후보. `artifacts/mistranslation-hunt-20261103/hunt10-da16.py`로 ESM에서 DA16 QUST·DIAL·INFO 글 362개를 모아 사원·신전·temple이 든 25줄을 봤다.
 - 고유 이름 'Nightcaller Temple'(장소·열쇠·목표·일지)은 모두 '나이트콜러 신전'인데, 같은 퀘스트 대사·일지에서 그냥 'the temple'을 '사원'으로 쓴 9곳을 '신전'으로 맞췄다(10문자열 — 일지 00002A33은 Dawnguard.esm이 DA16을 덮어써 두 표 모두; 사전에서는 한 줄로 합쳐져 F 9·T 1).
 - 반영: 새 경고 0, USSEP 네 판 판마다 4필드(INFO NAM1), 테스트 2,775 통과, TM 대기 7행 그대로. 검수: 퀘스트 밖에서 나이트콜러 신전을 가리키는 글(열쇠·셀·장소·메시지·동료 대화·Update 셀·베르미나 책)은 이미 '신전', 미락·레이븐 록 등 다른 장소의 temple은 범위 밖이라 그대로.
+
+### inner sanctum 남은 표기 sanct1 (2026-11-26)
+
+- 패치 나머지가 inner sanctum·the Sanctum을 '지성소'로 쓰는데 남은 곳: 포렐호스트 쪽지(Skyrim DL `0000B0A9`) '성역을 지켜내야' → '지성소를 지켜내야', 메리디아(IL `0000D83D`) '가장 깊은 곳의 성역을 열고' → '지성소를 열고', 잊힌 골짜기(Dawnguard IL `0000172A`, 검수가 찾음) '성소를' → '지성소를'.
+- 잉빌드 아론딜 일지(Skyrim DL `0000243E`)는 종교 시설이 아니라 피험자를 쌓아 둘 곳이라 '지성소'를 쓰지 않고 '잉빌드 더 깊은 곳에서 가장 안쪽 방을 찾아냈으니 … 보관해둘 자리가 넉넉할 것이다'(sufficient room = 넉넉한 자리).
+- 반영: 덩이마다(sanct1·sanct1b) 새 경고 0, USSEP 네 판 판마다 2·1필드(포렐호스트 쪽지는 USSEP가 덮어쓰지 않음), 테스트 2,775 통과, TM 대기 7행 그대로. 검수: 본편·DLC·CC에 '안쪽/깊은 곳의 성역·성소'는 더 없음(Snow Veil Sanctum 같은 지명은 대상 아님).
