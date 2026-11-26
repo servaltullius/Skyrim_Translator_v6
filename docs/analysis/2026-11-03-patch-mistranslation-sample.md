@@ -2143,3 +2143,9 @@ choice-10·11(1,270쌍, dawnguard.esm 뒤쪽·dragonborn·hearthfires·update)�
 
 - Dragonborn DL `00001571`(베이나라·테이·베스터가 숲을 지나는 책): 'Brambles and low hanging branches struck at them like the claws of chained beasts' '마치 야수들의 손톱처럼 그들에게 부딪쳐왔다' → '마치 사슬에 묶인 야수들의 발톱처럼 그들을 할퀴어 댔다'(짐승은 발톱, chained 빠짐, struck at은 검수 제안으로 할퀴어 댐).
 - 반영: 덩이마다(claw1·claw1b) 새 경고 0, USSEP 네 판 판마다 1필드(BOOK DESC, 옛 한패 글로 따라감), 테스트 2,775 통과, TM 대기 7행 그대로.
+
+### 나이트콜러 신전 표기 temple1 (2026-11-26)
+
+- left1 검수가 남긴 후보. `artifacts/mistranslation-hunt-20261103/hunt10-da16.py`로 ESM에서 DA16 QUST·DIAL·INFO 글 362개를 모아 사원·신전·temple이 든 25줄을 봤다.
+- 고유 이름 'Nightcaller Temple'(장소·열쇠·목표·일지)은 모두 '나이트콜러 신전'인데, 같은 퀘스트 대사·일지에서 그냥 'the temple'을 '사원'으로 쓴 9곳을 '신전'으로 맞췄다(10문자열 — 일지 00002A33은 Dawnguard.esm이 DA16을 덮어써 두 표 모두; 사전에서는 한 줄로 합쳐져 F 9·T 1).
+- 반영: 새 경고 0, USSEP 네 판 판마다 4필드(INFO NAM1), 테스트 2,775 통과, TM 대기 7행 그대로. 검수: 퀘스트 밖에서 나이트콜러 신전을 가리키는 글(열쇠·셀·장소·메시지·동료 대화·Update 셀·베르미나 책)은 이미 '신전', 미락·레이븐 록 등 다른 장소의 temple은 범위 밖이라 그대로.
