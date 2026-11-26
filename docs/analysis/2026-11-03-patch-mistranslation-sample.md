@@ -2138,3 +2138,8 @@ choice-10·11(1,270쌍, dawnguard.esm 뒤쪽·dragonborn·hearthfires·update)�
 - 스톰클록 장교(Skyrim IL `000036EA`): 'At first they called us that to belittle our cause' — 부른 쪽이 빠져 스스로 깎아내린 것처럼 읽히던 것을 '처음엔 저들이 우리 대의를 깎아내리려고 그렇게 불렀지'로.
 - 반영: 새 경고 0, 테스트 2,775 통과. USSEP 네 판은 책 `000EB090` DESC가 따라가기로, `000403AF`(FavorAdonatoBook — USSEP가 저자 이름을 고쳐 자기 글로 분류돼 따라가기에서 빠짐) DESC는 검수 지적으로 `ussep-ownfix-fb1.py`로 같은 세 곳만 고침(판마다 2필드).
 - 남은 후보(검수): Dragonborn DL `00001571` 'claws of chained beasts' '야수들의 손톱' — 발톱, '사슬에 묶인' 빠짐.
+
+### fb1 검수가 짚은 남은 후보 claw1 (2026-11-26)
+
+- Dragonborn DL `00001571`(베이나라·테이·베스터가 숲을 지나는 책): 'Brambles and low hanging branches struck at them like the claws of chained beasts' '마치 야수들의 손톱처럼 그들에게 부딪쳐왔다' → '마치 사슬에 묶인 야수들의 발톱처럼 그들을 할퀴어 댔다'(짐승은 발톱, chained 빠짐, struck at은 검수 제안으로 할퀴어 댐).
+- 반영: 덩이마다(claw1·claw1b) 새 경고 0, USSEP 네 판 판마다 1필드(BOOK DESC, 옛 한패 글로 따라감), 테스트 2,775 통과, TM 대기 7행 그대로.
