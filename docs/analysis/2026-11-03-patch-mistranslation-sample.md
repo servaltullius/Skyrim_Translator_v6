@@ -2161,3 +2161,10 @@ choice-10·11(1,270쌍, dawnguard.esm 뒤쪽·dragonborn·hearthfires·update)�
 - 본편(HearthFires·Update)은 '섀도우풋 성역'인데 CC 해골 마을 집(cceejsse003-hollow) 7문자열만 '쉐도우풋'이라 '섀도우풋'으로 맞췄다(외래어 표기법도 shadow → 섀도). 검수가 CC BSA 영어 표·ESL로 7문자열이 모두 Shadowfoot Sanctum(장소·셀·열쇠·하수구 입구 메시지·HouseQuest)임을 확인.
 - USCCCP 한국어 4판의 같은 글도 따라 고침(5.22 4, 7.7·8.2·8.5 1씩, usccp-follow.py → apply). 반영: 새 경고 0, 테스트 2,775 통과, 저장소에 '쉐도우풋' 0.
 - 참고(고치지 않음): Dragonborn IL 00000669 '쉐도우메이지'(shadowmage) — 본편 관례는 섀도미어·섀도마크처럼 '섀도'.
+
+### 뜻이 뒤집히기 쉬운 관용 표현 거름 hunt11 (2026-11-26)
+
+- `artifacts/mistranslation-hunt-20261103/hunt11-idiom.py`: 영어(태그 뺀 글 400자 이하)에 hardly·scarcely·barely, too X to, unless, no longer, can't help, nothing/anything/all but, no sooner·not until, a 없는 few/little이 든 줄 509개(hunt4 neg가 읽은 꼴은 뺌). 하위 에이전트 3개가 `hunt11-judge.md` 지침으로 170줄씩 판정.
+- 판정: 관용 표현 뜻이 뒤집힌 오역은 0. 경미 5(idiom1), 검수가 ok 줄 표본 60줄·거름 빈틈(no more 70·not … anymore 179·too X for 42 중 의심 줄, hunt4 제외 28줄)을 더 읽어 경미 3 + 다듬기 4(idiom1b).
+- 고침 12문자열: nothing but·all but(그 벽 안쪽에서는 사악한 일만, 거의 외면하다시피, 매일 똑같은 일뿐, 오로지 영광뿐, 연민만 느낄 뿐), barely·hardly(먹고 살 돈도 빠듯해요, 입에 풀칠하기도 빠듯해, 사원에 붙어 있는 일이 거의 없어요), no longer(이제 들으려 하질 않으니), unless(문이 열릴 거라는 확신이 없으면, 아니면 … 다시 생각해 보셨소?), 'Very few of them pleasant'의 them = 방법(그중 유쾌한 건 거의 없지만).
+- 반영: 덩이마다 새 경고 0, USSEP 네 판 판마다 4·0필드, 테스트 2,775 통과, TM 대기 7행 그대로.
