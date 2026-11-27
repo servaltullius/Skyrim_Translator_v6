@@ -571,7 +571,7 @@ internal static class TokenSanitizer
 
     /// <summary>
     /// Whether a duration token has its time expression: any unit right after it counts ("초인 경우", "초면", "주일
-    /// 동안"). Reading a unit strictly (<see cref="StartsWithTimeUnit"/>) is for numbers, which must not read as a
+    /// 동안"). Reading a unit strictly (<see cref="XTranslatorAi.Core.Text.KoreanTimeUnits.StartsWithTimeUnit"/>) is for numbers, which must not read as a
     /// time; applied here it sent correct durations back for repair.
     /// </summary>
     private static bool IsDurationInTimeContext(string text, string token)
@@ -595,7 +595,10 @@ internal static class TokenSanitizer
             if (afterToken < text.Length)
             {
                 var remaining = text.AsSpan(afterToken).TrimStart();
-                if (strictUnit ? StartsWithTimeUnit(remaining) : StartsWithAny(remaining, TimeUnitsAfterToken) && !StartsWithAny(remaining, WordsLikeTimeUnits))
+                // What reads as a unit strictly is one for a duration too: "<dur>일부터", "<dur>일정도" begin like the
+                // words 일부, 일정 and were sent back.
+                if (XTranslatorAi.Core.Text.KoreanTimeUnits.StartsWithTimeUnit(remaining)
+                    || (!strictUnit && StartsWithAny(remaining, XTranslatorAi.Core.Text.KoreanTimeUnits.TimeUnitsAfterToken) && !StartsWithAny(remaining, WordsLikeTimeUnits)))
                 {
                     return true;
                 }
@@ -631,10 +634,6 @@ internal static class TokenSanitizer
         return false;
     }
 
-    private static readonly string[] TimeUnitsAfterToken = ["초간", "초", "분", "시간", "일", "주", "개월", "년", "동안", "간"];
-
-    // Syllables that can follow a one-syllable unit and keep it a unit: particles, the copula and time words
-    // ("초간", "초 동안" without the space, "초마다", "일째", "분의", "초입니다").
     // Words a duration's unit check took for a unit ("<dur> 주고" is 주다, not a week): a duration followed by one has
     // no time expression. Any other unit start counts for a duration ("초인 경우", "초면", "주일 동안").
     private static readonly string[] WordsLikeTimeUnits =
@@ -642,47 +641,6 @@ internal static class TokenSanitizer
         "주고", "주며", "주는", "주어", "주면", "주지", "주기", "주게", "주었", "주던", "주도", "주시", "주세",
         "일격", "일으", "일어", "일부", "일정", "일반", "분노", "분명", "분량", "초래", "초과", "간격", "년도",
     ];
-
-    // Not 과: "<mag> 초과" is exceeding.
-    private const string TimeUnitFollowers = "간동마후뒤의가이을를에씩내까부도은는만째로보정와당입였쯤짜";
-
-    /// <summary>
-    /// "피해를 &lt;mag&gt; 주고", "&lt;mag&gt; 일격", "&lt;mag&gt; 분노": a one-syllable unit that runs on into another
-    /// syllable is a word (주다, 일격, 분노), not a unit, unless that syllable is in <see cref="TimeUnitFollowers"/>.
-    /// 주는/주도록 are 주다 too; a week count is "주 동안" or "주간".
-    /// </summary>
-    private static bool StartsWithTimeUnit(ReadOnlySpan<char> text)
-    {
-        foreach (var unit in TimeUnitsAfterToken)
-        {
-            if (!text.StartsWith(unit.AsSpan(), StringComparison.Ordinal))
-            {
-                continue;
-            }
-
-            if (unit.Length > 1 || text.Length == unit.Length || !IsHangulSyllable(text[1]))
-            {
-                return true;
-            }
-
-            var next = text[1];
-            // A 의 that goes on into a word ("<mag> 주의력") or makes a fraction ("<mag>분의 1") is no unit, read as the
-            // template fixer reads it.
-            if (XTranslatorAi.Core.Text.KoreanTimeUnits.OfMakesAWordOrFraction(text[1..]))
-            {
-                continue;
-            }
-
-            if (TimeUnitFollowers.Contains(next) && !(unit == "주" && next is '는' or '도'))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static bool IsHangulSyllable(char c) => c is >= '가' and <= '힣';
 
     private static bool IsTokenInAmountContext(string text, string token)
     {

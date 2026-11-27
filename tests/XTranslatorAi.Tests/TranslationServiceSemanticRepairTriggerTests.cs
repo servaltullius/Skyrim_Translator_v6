@@ -30,6 +30,12 @@ public sealed class TranslationServiceSemanticRepairTriggerTests
     [InlineData("받는 물 피해가 __XT_PH_MAG_0000__분의 1로 줄어듭니다.")]
     [InlineData("받는 물 피해가 __XT_PH_MAG_0000__ 분의 1로 줄어듭니다.")]
     [InlineData("받는 물 피해가 __XT_PH_MAG_0000__초의 1로 줄어듭니다.")]
+    [InlineData("__XT_PH_MAG_0000__ 년도 기록을 남깁니다.")]
+    [InlineData("__XT_PH_MAG_0000__ 간격으로 발사합니다.")]
+    [InlineData("피해의 __XT_PH_MAG_0000__ 일부를 흡수합니다.")]
+    [InlineData("__XT_PH_MAG_0000__ 일정 확률로 피해를 줍니다.")]
+    [InlineData("__XT_PH_MAG_0000__ 주로 화염 피해를 줍니다.")]
+    [InlineData("대상의 레벨이 __XT_PH_MAG_0000__일 경우 도망칩니다.")]
     public void NeedsPlaceholderSemanticRepair_DoesNotReadAWordAfterAMagnitudeAsATimeUnit(string output)
     {
         Assert.False(TokenSanitizer.NeedsPlaceholderSemanticRepair(
@@ -59,6 +65,9 @@ public sealed class TranslationServiceSemanticRepairTriggerTests
     [InlineData("__XT_PH_DUR_0000__초입니다.")]
     [InlineData("__XT_PH_DUR_0000__일째 불탑니다.")]
     [InlineData("__XT_PH_DUR_0000__분의 시간이 걸립니다.")]
+    // They begin like the words 일부, 일정, which a duration's looser reading takes for no unit.
+    [InlineData("__XT_PH_DUR_0000__일부터 불탑니다.")]
+    [InlineData("__XT_PH_DUR_0000__일정도 불탑니다.")]
     public void NeedsPlaceholderSemanticRepair_AcceptsADurationFollowedByAUnit(string output)
     {
         Assert.False(TokenSanitizer.NeedsPlaceholderSemanticRepair(

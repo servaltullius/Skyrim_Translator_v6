@@ -44,8 +44,45 @@ public sealed class MagDurPlaceholderFixerTests
     [InlineData("+<mag> Fury for <dur> seconds.", "<dur>초 동안 +<mag> 분노.")]
     [InlineData("+<mag> Focus for <dur> seconds.", "<dur>초 동안 +<mag> 주의력.")]
     [InlineData("Damage taken is cut to one <mag>th for <dur> seconds.", "<dur>초 동안 받는 피해가 <mag>분의 1로 줄어듭니다.")]
+    [InlineData("Triggers above <mag> points for <dur> seconds.", "<dur>초 동안 <mag> 초과일 때 발동합니다.")]
+    [InlineData("Records year <mag> for <dur> seconds.", "<dur>초 동안 <mag> 년도 기록을 남깁니다.")]
+    [InlineData("Fires at <mag> intervals for <dur> seconds.", "<dur>초 동안 <mag> 간격으로 발사합니다.")]
+    [InlineData("Deals <mag> per second for <dur> seconds.", "<dur>초 동안 <mag>초당 피해를 줍니다.")]
+    [InlineData("Deals <mag> per minute for <dur> seconds.", "<dur>초 동안 <mag> 분당 피해를 줍니다.")]
+    [InlineData("Has a <mag>% chance to deal damage for <dur> seconds.", "<dur>초 동안 <mag>% 일정 확률로 피해를 줍니다.")]
+    [InlineData("Absorbs <mag>% of the damage for <dur> seconds.", "<dur>초 동안 피해의 <mag>% 일부를 흡수합니다.")]
+    [InlineData("Deals <mag> mostly fire damage for <dur> seconds.", "<dur>초 동안 <mag> 주로 화염 피해를 줍니다.")]
+    // 일 as 이다: the fixer swapped the tags of these correct lines.
+    [InlineData("While Health is at <mag>% you are invulnerable for <dur> seconds.", "체력이 <mag>%일 때 <dur>초 동안 무적이 됩니다.")]
+    [InlineData("Targets of level <mag> flee for <dur> seconds.", "대상의 레벨이 <mag>일 경우 <dur>초 동안 도망칩니다.")]
     public void Fix_DoesNotReadAWordAfterMagAsATimeUnit(string source, string dest)
         => Assert.Equal(dest, MagDurPlaceholderFixer.Fix(source, dest, "korean"));
+
+    [Fact]
+    public void Fix_ReadsIljjaeAfterMagAsATimeUnit()
+    {
+        var fixedText = MagDurPlaceholderFixer.Fix("Causes <mag> points of fire damage for <dur> days.",
+            // No amount word after <dur>: only 일째 tells the swap.
+            "<mag>일째 <dur>의 화염 피해를 입습니다.", "korean");
+
+        Assert.Contains("<dur>일째", fixedText, StringComparison.Ordinal);
+        Assert.Contains("<mag>의 화염 피해", fixedText, StringComparison.Ordinal);
+    }
+
+    // A time read by its ending alone: with no amount word after <dur>, only the unit after <mag> tells the swap.
+    [Theory]
+    [InlineData("<mag>초면 <dur>의 피해를 줍니다.")]
+    [InlineData("<mag>초인 경우 <dur>의 피해를 줍니다.")]
+    [InlineData("<mag>초라도 <dur>의 피해를 줍니다.")]
+    [InlineData("<mag>초밖에 안 되지만 <dur>의 피해를 줍니다.")]
+    [InlineData("<mag>년차에 <dur>의 피해를 줍니다.")]
+    public void Fix_ReadsATimeUnitByItsEndingAfterMag(string dest)
+    {
+        var fixedText = MagDurPlaceholderFixer.Fix("Deals <mag> damage for <dur> seconds.", dest, "korean");
+
+        Assert.StartsWith("<dur>", fixedText, StringComparison.Ordinal);
+        Assert.Contains("<mag>의 피해", fixedText, StringComparison.Ordinal);
+    }
 
     // A 의 before a word of its own is still a time ("<mag>일의 기간"): the two tags are still swapped back.
     [Fact]
