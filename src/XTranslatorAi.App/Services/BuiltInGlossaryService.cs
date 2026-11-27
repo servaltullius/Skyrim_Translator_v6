@@ -24,10 +24,12 @@ public sealed class BuiltInGlossaryService
         "shout",
     };
 
-    /// <summary>A batch of entries added to the built-in glossary, and of built-in targets changed, after it first shipped.</summary>
+    /// <summary>A batch of entries added to, corrected in, or removed from the built-in glossary after it first shipped.</summary>
     /// <param name="Corrections">Built-in entries whose target changed: an entry still holding <c>OldTarget</c> gets the current one.</param>
+    /// <param name="Removals">Built-in entries removed from the list: an entry still holding <c>OldTarget</c> and no longer in the franchise's built-in list is deleted.</param>
     public sealed record LaterGlossaryBatch(string Version, IReadOnlyList<string> Sources,
-        IReadOnlyList<(string Source, string OldTarget)> Corrections);
+        IReadOnlyList<(string Source, string OldTarget)> Corrections,
+        IReadOnlyList<(string Source, string OldTarget)>? Removals = null);
 
     /// <summary>
     /// A global glossary is filled from the built-in list only when it is created, so that entries a user
@@ -77,6 +79,8 @@ public sealed class BuiltInGlossaryService
         // The game translation's names read in full against the English (2026-11-06): the Spriggan Matron is a stronger
         // spriggan that heals itself, not a healer of others, so the game text now names it 스프리건 대모.
         new("2026-11-06", Array.Empty<string>(), new[] { ("Spriggan Matron", "스프리건 치유사") }),
+        // "Flesh: 피부" forced ordinary uses of flesh (body/meat) into 피부; removed from the built-in list.
+        new("2026-11-21", Array.Empty<string>(), Array.Empty<(string, string)>(), new[] { ("Flesh", "피부") }),
     };
 
     /// <summary>
@@ -123,7 +127,39 @@ public sealed class BuiltInGlossaryService
             await db.BulkUpdateGlossaryAsync(corrections, cancellationToken);
         }
 
-        await File.WriteAllTextAsync(stampPath, $"added={rows.Count} corrected={corrections.Count}{Environment.NewLine}", cancellationToken);
+        var removed = 0;
+        if (batch.Removals is { Count: > 0 } removals)
+        {
+            foreach (var entry in existing.Where(e => e.Note?.StartsWith("Built-in default glossary", StringComparison.Ordinal) == true))
+            {
+                if (ShouldRemove(removals, builtIn, entry))
+                {
+                    await db.DeleteGlossaryEntryAsync(entry.Id, cancellationToken);
+                    removed++;
+                }
+            }
+        }
+
+        await File.WriteAllTextAsync(stampPath, $"added={rows.Count} corrected={corrections.Count} removed={removed}{Environment.NewLine}", cancellationToken);
+    }
+
+    private static bool ShouldRemove(
+        IReadOnlyList<(string Source, string OldTarget)> removals,
+        IReadOnlyList<(string? Category, string Source, string Target)> builtIn,
+        GlossaryEntry entry
+    )
+    {
+        var source = entry.SourceTerm.Trim();
+        var target = entry.TargetTerm.Trim();
+        var matchesRemoval = removals.Any(r => string.Equals(r.Source, source, StringComparison.OrdinalIgnoreCase)
+                                               && string.Equals(r.OldTarget, target, StringComparison.Ordinal));
+        if (!matchesRemoval)
+        {
+            return false;
+        }
+
+        return !builtIn.Any(b => string.Equals(b.Source.Trim(), source, StringComparison.OrdinalIgnoreCase)
+                                 && string.Equals(b.Target.Trim(), target, StringComparison.Ordinal));
     }
 
     private static string? CorrectedTarget(LaterGlossaryBatch batch, IReadOnlyList<(string? Category, string Source, string Target)> builtIn, GlossaryEntry entry)

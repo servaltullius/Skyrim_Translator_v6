@@ -282,6 +282,53 @@ public class BuiltInGlossaryLaterAdditionsTests : IAsyncLifetime
         Assert.Equal("초급", Assert.Single(await GlossaryAsync(), e => e.SourceTerm == "Fine").TargetTerm);
     }
 
+    [Fact]
+    public async Task NewGlossary_DoesNotIncludeFlesh()
+    {
+        await new BuiltInGlossaryService().EnsureBuiltInGlossaryAsync(_db, CancellationToken.None);
+
+        Assert.DoesNotContain(await GlossaryAsync(), e => e.SourceTerm.Equals("Flesh", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task RemovalBatch_DeletesUntouchedBuiltInFlesh_Once()
+    {
+        await _db.BulkInsertGlossaryAsync(new[]
+        {
+            ((string?)"마법 종류", "Flesh", "피부", true, 10, (int)GlossaryMatchMode.WordBoundary, (int)GlossaryForceMode.ForceToken, (string?)"Built-in default glossary"),
+        }, CancellationToken.None);
+
+        await new BuiltInGlossaryService().AddLaterEntriesOnceAsync(_db, StampPathFor("2026-11-21"), "2026-11-21",
+            BethesdaFranchise.ElderScrolls, CancellationToken.None);
+
+        Assert.DoesNotContain(await GlossaryAsync(), e => e.SourceTerm.Equals("Flesh", StringComparison.OrdinalIgnoreCase));
+
+        // Once stamped, a user re-adding Flesh is respected.
+        await _db.BulkInsertGlossaryAsync(new[]
+        {
+            ((string?)null, "Flesh", "피부", true, 10, (int)GlossaryMatchMode.WordBoundary, (int)GlossaryForceMode.ForceToken, (string?)"Built-in default glossary"),
+        }, CancellationToken.None);
+        await new BuiltInGlossaryService().AddLaterEntriesOnceAsync(_db, StampPathFor("2026-11-21"), "2026-11-21",
+            BethesdaFranchise.ElderScrolls, CancellationToken.None);
+
+        Assert.Contains(await GlossaryAsync(), e => e.SourceTerm == "Flesh");
+    }
+
+    [Fact]
+    public async Task RemovalBatch_KeepsUserEditedOrUserAddedFlesh()
+    {
+        await _db.BulkInsertGlossaryAsync(new[]
+        {
+            ((string?)"마법 종류", "Flesh", "육체", true, 10, (int)GlossaryMatchMode.WordBoundary, (int)GlossaryForceMode.ForceToken, (string?)"Built-in default glossary"),
+            ((string?)null, "Flesh", "피부", true, 10, (int)GlossaryMatchMode.WordBoundary, (int)GlossaryForceMode.ForceToken, (string?)"사용자 직접 추가"),
+        }, CancellationToken.None);
+
+        await new BuiltInGlossaryService().AddLaterEntriesOnceAsync(_db, StampPathFor("2026-11-21"), "2026-11-21",
+            BethesdaFranchise.ElderScrolls, CancellationToken.None);
+
+        Assert.Equal(2, (await GlossaryAsync()).Count(e => e.SourceTerm == "Flesh"));
+    }
+
     private async Task AddAllBatchesAsync()
     {
         foreach (var batch in BuiltInGlossaryService.LaterAdditions)
