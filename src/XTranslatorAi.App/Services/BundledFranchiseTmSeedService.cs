@@ -236,8 +236,12 @@ public sealed class BundledFranchiseTmSeedService
             // thoroughly enjoys meddling (몹시 즐깁니다), and You mean me, don't you. (저 말이군요.); 43 rows changed (1.16.67).
             // v34 takes the patch's joining of the ordinal prefix 제- to numbers (제 1권 → 제1권, 제 1시대 → 제1시대, 제 III 편 →
             // 제III 편, 제 2 의원 → 제2 의원); 153 rows changed (1.16.68).
-            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v34", "bundled-skyrim-tes-franchise-tm.tsv", 1529398, "abc93a677d74804f975897b4522997cc7e8416a18835b906e40485c76d5d11d0",
-                PreviousVersions: new[] { "v33", "v32", "v31", "v30", "v29", "v28", "v27", "v26", "v25", "v24", "v23", "v22", "v21", "v20", "v19", "v18", "v17", "v16", "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v34-changes.tsv"),
+            // v35 takes the patch's unification of Shock effects to 전격 (Resist Shock 전격 저항, Weakness to Shock 약점 - 전격),
+            // High Seeker (시커 군주 소환), the Dibella Inner Sanctum and Pelagius Farmhouse keys (열쇠 - 디벨라 지성소,
+            // 열쇠 - 펠라지아 농가), the player's report to Legate Rikke in 존댓말 (신고하라고 했습니다.), and the Retching
+            // Netch welcome (출입 가능하오.); 7 rows changed (1.16.69).
+            BethesdaFranchise.ElderScrolls => new BundledSeedMetadata(BethesdaFranchise.ElderScrolls, "v35", "bundled-skyrim-tes-franchise-tm.tsv", 1529398, "965191250f377774b26914f49f384687e656790c42a0b9b3fe98f166ee3ce977",
+                PreviousVersions: new[] { "v34", "v33", "v32", "v31", "v30", "v29", "v28", "v27", "v26", "v25", "v24", "v23", "v22", "v21", "v20", "v19", "v18", "v17", "v16", "v15", "v14", "v13", "v12", "v11", "v10", "v9", "v8", "v7", "v6", "v5", "v4", "v3", "v2", "v1" }, ChangesFileName: "bundled-skyrim-tes-franchise-tm-v35-changes.tsv"),
             BethesdaFranchise.Fallout => new BundledSeedMetadata(BethesdaFranchise.Fallout, "v1", "bundled-fallout4-franchise-tm.tsv", 76, "1a4c3068961a75f6245b2392b018c91a6debdc68eb09cb7708d21ac6a3f93c2e"),
             BethesdaFranchise.Starfield => new BundledSeedMetadata(BethesdaFranchise.Starfield, "v1", "bundled-starfield-franchise-tm.tsv", 18094989, "6e3335684e3cd169051820e14684cc7a1165c0ac6c0db9fae71e63a46ca7f47a"),
             _ => null,
