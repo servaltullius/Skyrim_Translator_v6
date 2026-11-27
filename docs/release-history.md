@@ -3,6 +3,10 @@
 판마다 무엇이 바뀌었는지 적은 기록입니다. 받는 곳과 자세한 릴리스 글은 [GitHub 릴리스](https://github.com/servaltullius/Skyrim_Translator_v6/releases)에 있습니다.
 최근 판이 위에 있습니다. 1.8보다 앞선 판은 [이전 작업 기록](plans/2026-09-28-translator-improvement.md)과 [유지보수 계획](plans/2026-09-29-maintenance.md)을 보세요.
 
+## 1.16.69
+
+1.16.69는 [한글패치 26.10.16 베타 37](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/kopatch-26.10.16-beta37)을 따르는 판입니다. 한글패치의 오역 고침(영어의 정도·순서가 덜 옮겨진 줄, "nothing but"·"barely"·"no longer" 같은 관용 표현이 흐려진 줄, 받은 제보)과 표기 맞춤(나이트콜러 신전·지성소·야생 사냥, 전격 효과 이름 "약점 - 번개"→"약점 - 전격" 등, 본편·DLC 73줄)을 게임 번역 사전이 모두 따르고, 내장 TM은 v35(7행)가 됩니다([기록](analysis/2026-10-16-kopatch-beta.md)). 내장 용어집과 그 밖의 번역기 기능은 1.16.68과 같습니다.
+
 ## 1.16.68
 
 1.16.68은 [한글패치 26.10.16 베타 36](https://github.com/servaltullius/Skyrim_Translator_v6/releases/tag/kopatch-26.10.16-beta36)과 함께 낸 판입니다. 한글패치의 접두사 "제-" 붙여쓰기("제 1권"→"제1권", "제 4시대"→"제4시대", "제 2 의원"→"제2 의원", "제 III 편"→"제III 편")와 잔여 맞춤법·오타 고침("촛점"→"초점", "댓가"→"대가", "맹세컨데"→"맹세컨대", "치룬"→"치른", "못 본 채"→"못 본 체" 등, 본편·DLC 427줄)을 게임 번역 사전이 따르고, 내장 TM은 v34(접두사 "제-" 153행)가 됩니다([기록](analysis/2026-10-16-kopatch-beta.md)). 내장 용어집과 그 밖의 번역기 기능은 1.16.67과 같습니다.
