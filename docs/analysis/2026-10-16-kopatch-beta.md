@@ -288,7 +288,7 @@ USSEP 한국어판은 플러그인을 통째로 바꾸므로 원본과 버전이
   - 덩이 고침을 따라간 것: 판마다 27~28.
   - 모드가 덮어쓰는 칸 찾기(`artifacts/patch-review-r3check-20261031/mods-override-scan.py`)에서 USSEP가 원래 한글패치 글을 그대로 지녀 고친 글이 안 보이던 칸(old): 4.3.8a 13(CC 「세인트 & 세듀서」 쪽지·책 9레코드 10칸, 낚시 CC 문서·일지 2, 도둑 길드 일지 1), 4.3.9c 6(`ussep-oldfix-ov2.py`). 4.3.8a BOOK 0820285D는 지금 한패가 종족 태그를 더 지녀 plugin-write 태그 검사가 막아 옛 글(뜻은 같음)로 둔다.
   - USSEP가 원래 한글패치 글을 조금 바꿔 지닌 칸에 바뀐 자리만 옮긴 것: 4.2.5b·4.2.9a 3, 4.3.8a·4.3.9c 7(`mods-variantfix-plan.py`·`ussep-variantfix.py`, 판정은 영어 USSEP 4.3.9c와 견줌). USSEP가 영어를 고친 줄("cross the White River", 이름 대신 "He")은 USSEP 글대로 두었다.
-- 메뉴 글(`translate_english.txt`)은 그대로다. 저장소의 게임 번역 사전(`game-strings-skyrim.gz`)은 덩이마다 다시 만들었지만, 번역기 새 판은 내지 않으므로 공개된 1.16.68의 사전과 내장 TM(v34)은 베타 36을 따른다. TM 대기 7행(`5748bce` 6, `e2ec0fa` 1)은 다음 번역기 판에 넣는다.
+- 메뉴 글(`translate_english.txt`)은 그대로다. 저장소의 게임 번역 사전(`game-strings-skyrim.gz`)은 덩이마다 다시 만들었지만, 번역기 새 판은 내지 않으므로 공개된 1.16.68의 사전과 내장 TM(v34)은 베타 36을 따른다. TM 대기 7행(`5748bce` 6, `e2ec0fa` 1)은 다음 번역기 판에 넣는다. 2026-11-27 번역기 1.16.69가 이 사전과 내장 TM v35(7행, `df29098`)를 싣는다.
 - fomod `info.xml`과 `읽어보기.txt`를 `26.10.16 베타 37`로 올렸다. 읽어보기에 베타 37 요약을 넣고, README 한국어 패치 절의 최신 베타 링크를 바꿨다(`artifacts/kopatch-26.10.16-beta37/label.py`).
 - zip은 베타 36과 같은 꼴(262개 파일)이다: `artifacts/kopatch-26.10.16-beta37/build-zip.py`.
 
