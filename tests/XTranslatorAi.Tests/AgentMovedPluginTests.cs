@@ -317,6 +317,12 @@ public sealed class AgentMovedPluginTests : IAsyncLifetime
         Assert.Contains("같은 이름으로 열려 있는 프로젝트:", output);
         Assert.Contains(newProject.Key, output);
         Assert.Contains(v2, output);
+        // A plain move, with the files' own times: the project reopened is the newer one, and the there-and-back
+        // hints (which tell the agent to stop and ask) stay off.
+        Assert.DoesNotContain("더 나중에 작업됐습니다", output);
+        var (statusCode, statusOutput) = await RunCliAsync("status", "Test.esp");
+        Assert.Equal(0, statusCode);
+        Assert.DoesNotContain("더 나중에 작업됐습니다", statusOutput);
     }
 
     // T4: Find by the missing old full path still resolves the old project rather than saying "없습니다", and write refuses.
