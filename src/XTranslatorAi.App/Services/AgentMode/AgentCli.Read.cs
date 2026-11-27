@@ -18,7 +18,7 @@ public static partial class AgentCli
     // Lines by id (the id requests and check use), filtered: show <프로젝트> [--find 글자] [--rec WEAP:FULL] [--id 12,40]
     private static async Task ShowAsync(AgentCommand c)
     {
-        var project = c.Session.Find(c.Arg(0, "프로젝트"));
+        var project = c.FindProject(c.Arg(0, "프로젝트"));
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, c.Ct);
         var rows = await c.RowsAsync(db);
         var ids = c.Ids?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
@@ -79,7 +79,7 @@ public static partial class AgentCli
     // How the translator already writes an English name or term: lookup <프로젝트> <낱말> (read only, the app may run).
     private static async Task LookupAsync(AgentCommand c)
     {
-        var project = c.Session.Find(c.Arg(0, "프로젝트"));
+        var project = c.FindProject(c.Arg(0, "프로젝트"));
         var word = string.Join(" ", c.Rest.Skip(1)).Trim();
         if (word.Length == 0) throw new AgentModeException("찾을 영어 낱말을 지정하세요. (tullius.cmd lookup <프로젝트> <낱말>)");
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, c.Ct);
@@ -117,7 +117,7 @@ public static partial class AgentCli
             return;
         }
 
-        var project = c.Session.Find(c.Arg(0, "프로젝트"));
+        var project = c.FindProject(c.Arg(0, "프로젝트"));
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, c.Ct);
         var rows = await c.RowsAsync(db);
         var names = await AgentSession.NewNamesAsync(db, rows, c.Ct);
@@ -149,7 +149,7 @@ public static partial class AgentCli
     // Teldryn trial's agent found Teldryn's 하오체 only by reading the lines the dictionary had filled.
     private static async Task VoiceAsync(AgentCommand c)
     {
-        var project = c.Session.Find(c.Arg(0, "프로젝트"));
+        var project = c.FindProject(c.Arg(0, "프로젝트"));
         var query = string.Join(" ", c.Rest.Skip(1)).Trim();
         if (query.Length == 0) throw new AgentModeException("찾을 인물을 지정하세요. (tullius.cmd voice <프로젝트> <이름 또는 FormID>)");
         var game = await c.GameStrings.TryLoadAsync(c.Ct);

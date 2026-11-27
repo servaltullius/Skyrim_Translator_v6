@@ -685,17 +685,8 @@ internal static class AgentMcpServer
     private static async Task<(string Output, int Exit)> RunAsync(AgentCommand server, List<string> args)
     {
         var captured = new StringWriter();
-        var previous = Console.Out;
-        Console.SetOut(captured);
-        try
-        {
-            var exit = await AgentCli.RunAsync(args.Concat(ServerOptions(server)).ToArray(), argumentFiles: false);
-            return (captured.ToString(), exit);
-        }
-        finally
-        {
-            Console.SetOut(previous);
-        }
+        var exit = await AgentCli.RunAsync(args.Concat(ServerOptions(server)).ToArray(), argumentFiles: false, captured);
+        return (captured.ToString(), exit);
     }
 
     private static List<string> ServerOptions(AgentCommand server)

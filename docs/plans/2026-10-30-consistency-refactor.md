@@ -36,7 +36,7 @@
 - L4: 문맥 스캔의 용어 후보 규칙 복사본이 대사를 빼지 않음(ProjectContextScanner.cs:40-49,413-424).
 - L5: 에이전트 open의 "번역할 줄"이 번역 중 줄을 빼고 셈(AgentSession.cs:174).
 - L6: 에이전트 check·lookup이 언어를 english/korean으로 고정함(AgentCli.Review.cs:52,60, AgentLookup.cs:46).
-- L7: `project.json`이 DB 경로를 들고 있어, GUI가 옮긴 경로로 이어 가면 에이전트는 다시 open할 때까지 옛 DB에 씀(AgentSession.cs:18-33,177-182). 런타임 미확인.
+- L7: `project.json`이 DB 경로를 들고 있어, GUI가 옮긴 경로로 이어 가면 에이전트는 다시 open할 때까지 옛 DB에 씀(AgentSession.cs:18-33,177-182). 처리함: 자동으로 따라가지 않고, 플러그인이 제자리에 없으면 DB를 열기 전에 쓰기를 멈춰 새 경로로 open하게 안내한다(읽기는 경고와 함께 허용, 이름 찾기는 제자리에 있는 프로젝트를 고름). A→B→A 왕복 이동은 알림만 붙였고 열기 동작 자체는 남음.
 
 ## 확인 방법 (모든 덩이 공통)
 

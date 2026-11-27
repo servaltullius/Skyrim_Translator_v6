@@ -155,6 +155,12 @@ public sealed partial class AgentSession
     public IReadOnlyList<PluginOpenNotes.Note> OpenNotes { get; private set; } = Array.Empty<PluginOpenNotes.Note>();
 
     /// <summary>
+    /// Set by <see cref="Find"/> when name lookup picked the one project in place while a missing project of the same
+    /// name has a newer DB (a round-trip move); null otherwise.
+    /// </summary>
+    public string? MovedProjectNote { get; private set; }
+
+    /// <summary>
     /// The bundled series TM, written and imported as the GUI does when it opens a project. Agent mode wrote it and never
     /// imported it, so the kit alone translated with an empty series TM. The global DB is opened first: creating it
     /// forgets the seed's stamps, which written before would be lost and the seed written again.
@@ -394,19 +400,93 @@ public sealed partial class AgentSession
     /// <summary>A project by its key, its plugin's file name or its plugin's path.</summary>
     public AgentProject Find(string nameOrKeyOrPath)
     {
+        MovedProjectNote = null;
         var all = Projects();
-        var full = File.Exists(nameOrKeyOrPath) ? Path.GetFullPath(nameOrKeyOrPath) : null;
+        var full = TryFullPath(nameOrKeyOrPath);
         var matches = all.Where(p => string.Equals(p.Key, nameOrKeyOrPath, StringComparison.OrdinalIgnoreCase)
                                      || string.Equals(Path.GetFileName(p.PluginPath), nameOrKeyOrPath, StringComparison.OrdinalIgnoreCase)
                                      || string.Equals(Path.GetFileNameWithoutExtension(p.PluginPath), nameOrKeyOrPath, StringComparison.OrdinalIgnoreCase)
                                      || (full != null && string.Equals(p.PluginPath, full, StringComparison.OrdinalIgnoreCase)))
             .ToList();
-        return matches.Count switch
+        if (matches.Count == 1) return matches[0];
+        if (matches.Count == 0)
         {
-            1 => matches[0],
-            0 => throw new AgentModeException($"'{nameOrKeyOrPath}' 프로젝트가 없습니다. 먼저 open으로 플러그인을 여세요(번역한 줄은 프로젝트 DB에 남아 있어, 전에 번역하던 플러그인도 다시 open하면 이어서 합니다)."),
-            _ => throw new AgentModeException($"'{nameOrKeyOrPath}'에 맞는 프로젝트가 여럿입니다: {string.Join(", ", matches.Select(m => m.Key))}. 키로 지정하세요."),
-        };
+            throw new AgentModeException($"'{nameOrKeyOrPath}' 프로젝트가 없습니다. 먼저 open으로 플러그인을 여세요(번역한 줄은 프로젝트 DB에 남아 있어, 전에 번역하던 플러그인도 다시 open하면 이어서 합니다).");
+        }
+
+        // Multiple matches: keep only projects whose plugin is still in place so reopening at a new path lets name
+        // lookup keep working without deleting the old project folder.
+        var withExists = matches.Select(p => (Project: p, Exists: File.Exists(p.PluginPath))).ToList();
+        var present = withExists.Where(x => x.Exists).ToList();
+        if (present.Count == 1)
+        {
+            // Only a name gets here: a key matches one project, and the projects of one path are all in place or all gone.
+            var chosen = present[0].Project;
+            MovedProjectNote = DescribeNewerMissingProject(chosen, withExists.Where(x => !x.Exists).Select(x => x.Project));
+            return chosen;
+        }
+
+        var lines = withExists
+            .OrderBy(x => x.Project.Key, StringComparer.OrdinalIgnoreCase)
+            .Select(x => $"{x.Project.Key}\t{x.Project.PluginPath}\t{x.Project.TargetEncoding}{(x.Exists ? "" : "\t(플러그인 없음)")}");
+        throw new AgentModeException($"'{nameOrKeyOrPath}'에 맞는 프로젝트가 여럿입니다. 키로 지정하세요:{Environment.NewLine}{string.Join(Environment.NewLine, lines)}");
+    }
+
+    // Compare full paths even when the file has been moved away; invalid path characters simply mean "not a path".
+    private static string? TryFullPath(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return null;
+        try
+        {
+            var looksLikePath = Path.IsPathRooted(value)
+                || value.Contains(Path.DirectorySeparatorChar)
+                || value.Contains(Path.AltDirectorySeparatorChar);
+            return looksLikePath ? Path.GetFullPath(value) : null;
+        }
+        catch (Exception ex) when (ex is ArgumentException or NotSupportedException or PathTooLongException)
+        {
+            return null;
+        }
+    }
+
+    private static string? DescribeNewerMissingProject(AgentProject chosen, IEnumerable<AgentProject> missing)
+    {
+        var chosenTime = DbLastWriteUtc(chosen.DbPath);
+        if (chosenTime == null) return null;
+
+        AgentProject? newest = null;
+        var newestTime = chosenTime.Value;
+        foreach (var candidate in missing)
+        {
+            if (DbLastWriteUtc(candidate.DbPath) is { } time && time > newestTime)
+            {
+                newest = candidate;
+                newestTime = time;
+            }
+        }
+
+        return newest == null
+            ? null
+            : $"참고: 같은 이름의 옮겨진 프로젝트 {newest.Key}('{newest.PluginPath}')가 더 나중에 작업됐습니다. 그때 번역한 줄은 이 프로젝트에 없을 수 있습니다.";
+    }
+
+    /// <summary>
+    /// When a project DB was last written: the later of the file and its -wal. An empty -wal is not a write: opening a
+    /// new plugin reads every project DB of the folder, which leaves one beside each, and an old project then read as
+    /// worked on after the one in use.
+    /// </summary>
+    internal static DateTime? DbLastWriteUtc(string dbPath)
+    {
+        DateTime? latest = null;
+        foreach (var path in new[] { dbPath, dbPath + "-wal" })
+        {
+            var file = new FileInfo(path);
+            if (!file.Exists || (path != dbPath && file.Length == 0)) continue;
+            var time = file.LastWriteTimeUtc;
+            if (latest == null || time > latest.Value) latest = time;
+        }
+
+        return latest;
     }
 
     public AgentRequest? Pending(AgentProject project)

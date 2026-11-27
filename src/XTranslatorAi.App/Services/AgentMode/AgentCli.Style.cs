@@ -20,7 +20,7 @@ public static partial class AgentCli
     // decided level next to the speaker, and check compares lines with it instead of with the speaker's other lines.
     private static async Task StyleAsync(AgentCommand c)
     {
-        var project = c.Session.Find(c.Arg(0, "프로젝트"));
+        var project = c.FindProject(c.Arg(0, "프로젝트"), write: c.Rest.Count > 1);
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, c.Ct);
         var values = await DialogueSpeakerNames.LoadFormIdsAsync(db, c.Ct);
         var game = await c.GameStrings.TryLoadAsync(c.Ct);
@@ -143,7 +143,6 @@ public static partial class AgentCli
             return;
         }
 
-        c.RefuseWhileAppRuns();
         var speaker = Resolve(c.Arg(1, "화자"), listener: false);
         var listenerKey = c.To == null ? SpeakerStyles.Player : Resolve(c.To, listener: true);
         var level = "";

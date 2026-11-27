@@ -10,7 +10,7 @@ public static partial class AgentCli
     // hold <프로젝트> lists the held lines; hold <프로젝트> --id 12,40 [--note 이유] holds them; with --undo they wait again.
     private static async Task HoldAsync(AgentCommand c)
     {
-        var project = c.Session.Find(c.Arg(0, "프로젝트")) with { Lane = c.Lane };
+        var project = c.FindProject(c.Arg(0, "프로젝트"), c.Lane, write: c.Ids != null);
         if (c.Ids == null)
         {
             // "hold <키> --note 이유" or "--undo" with the ids left out showed the list, as if it had done something.
@@ -27,7 +27,6 @@ public static partial class AgentCli
             return;
         }
 
-        c.RefuseWhileAppRuns();
         var ids = c.Ids.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             .Select(s => long.TryParse(s, out var v) ? v : throw new AgentModeException($"--id에 숫자가 아닌 값: {s}")).Distinct().ToList();
         if (ids.Count == 0) throw new AgentModeException("--id에 줄 번호가 없습니다. --id 12,40처럼 지정하세요.");

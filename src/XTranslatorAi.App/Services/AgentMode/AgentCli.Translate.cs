@@ -79,13 +79,14 @@ public static partial class AgentCli
         {
             var lanes = c.Session.LanesWaiting(p);
             Console.WriteLine($"{p.Key}\t{p.PluginPath}{(c.Session.Pending(p) != null ? "\t(요청 대기)" : "")}"
-                              + (lanes.Count > 0 ? $"\t(갈래 요청 대기: {string.Join(", ", lanes)})" : ""));
+                              + (lanes.Count > 0 ? $"\t(갈래 요청 대기: {string.Join(", ", lanes)})" : "")
+                              + (!File.Exists(p.PluginPath) ? "\t(플러그인 없음)" : ""));
         }
     }
 
     private static async Task StatusAsync(AgentCommand c)
     {
-        var project = c.Session.Find(c.Arg(0, "프로젝트")) with { Lane = c.Lane };
+        var project = c.FindProject(c.Arg(0, "프로젝트"), c.Lane);
         var (rows, pending, errors, edited) = await c.Session.StatusAsync(project, c.Ct);
         Console.WriteLine($"프로젝트: {project.Key} ({Path.GetFileName(project.PluginPath)})" + (c.Lane != null ? $", 갈래 {c.Lane}" : ""));
         Console.WriteLine($"줄: {rows}, 남은 줄: {pending} (오류 {errors}), 직접 수정: {edited}");
@@ -100,14 +101,13 @@ public static partial class AgentCli
 
     private static async Task NextAsync(AgentCommand c)
     {
-        c.RefuseWhileAppRuns();
-        await PrintAsync(c, await c.Session.NextAsync(c.Session.Find(c.Arg(0, "프로젝트")) with { Lane = c.Lane }, c.Ct));
+        var project = c.FindProject(c.Arg(0, "프로젝트"), c.Lane, write: true);
+        await PrintAsync(c, await c.Session.NextAsync(project, c.Ct));
     }
 
     private static async Task SubmitAsync(AgentCommand c)
     {
-        c.RefuseWhileAppRuns();
-        var project = c.Session.Find(c.Arg(0, "프로젝트")) with { Lane = c.Lane };
+        var project = c.FindProject(c.Arg(0, "프로젝트"), c.Lane, write: true);
         var file = c.Arg(1, "답 파일");
         if (!File.Exists(file)) throw new AgentModeException($"답 파일이 없습니다: {file}");
         await PrintAsync(c, await c.Session.SubmitAsync(project, await ReadAgentFileAsync(file, c.Ct), c.Ct));
@@ -156,11 +156,10 @@ public static partial class AgentCli
     // only the wrong lines (edit), and translates the rows the release lacks with next.
     private static async Task KoreanAsync(AgentCommand c)
     {
-        c.RefuseWhileAppRuns();
         // The options first: "korean <키> --english <영어판> <한국어판>" read --english as the release's path.
         var strings = c.Option("--strings");
         var english = c.Option("--english");
-        var project = c.Session.Find(c.Arg(0, "프로젝트"));
+        var project = c.FindProject(c.Arg(0, "프로젝트"), write: true);
         var link = await c.Session.LinkKoreanAsync(project, c.Arg(1, "한국어판 경로"), strings, c.Ct, english);
         var m = link.Match;
         Console.WriteLine($"한국어판 연결: {m.TextByFieldKey.Count}줄 (빠짐: 한국어판에 없음 {m.NotInPreviousRelease}, 레코드 구성이 바뀜 {m.ChangedRecord}, "

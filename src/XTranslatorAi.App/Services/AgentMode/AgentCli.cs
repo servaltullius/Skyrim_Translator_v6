@@ -45,12 +45,58 @@ public static partial class AgentCli
     }
 
 
+    private static readonly SemaphoreSlim ConsoleLock = new(1, 1);
+
     public static Task<int> RunAsync(string[] args) => RunAsync(args, argumentFiles: true);
 
     /// <param name="argumentFiles">Whether "@파일" stands for the arguments in that file. The MCP server passes its tool's
     /// values as they are: a speech style kept for an NPC whose master left is named "@Dawnguard.esm|01001234", and
     /// was taken for a file that does not exist, so it could not be cleared.</param>
-    internal static async Task<int> RunAsync(string[] args, bool argumentFiles)
+    internal static Task<int> RunAsync(string[] args, bool argumentFiles)
+        => RunAsync(args, argumentFiles, output: null);
+
+    /// <summary>Runs a CLI command, optionally redirecting console output under a shared lock for MCP and parallel tests.</summary>
+    internal static async Task<int> RunAsync(string[] args, bool argumentFiles, TextWriter? output)
+    {
+        // The MCP server stays running and runs a command per tool call under this lock, so it does not hold it itself.
+        if (output == null && IsMcpServer(args, argumentFiles))
+        {
+            return await RunCoreAsync(args, argumentFiles);
+        }
+
+        await ConsoleLock.WaitAsync();
+        var previous = output != null ? Console.Out : null;
+        if (output != null) Console.SetOut(output);
+        try
+        {
+            return await RunCoreAsync(args, argumentFiles);
+        }
+        finally
+        {
+            if (previous != null) Console.SetOut(previous);
+            ConsoleLock.Release();
+        }
+    }
+
+    /// <summary>
+    /// Whether the arguments start the MCP server, read after their argument files: "agent @args.txt" with mcp in the
+    /// file was taken for a command, held the lock, and the server's first tool call waited for it forever.
+    /// </summary>
+    internal static bool IsMcpServer(string[] args, bool argumentFiles)
+    {
+        try
+        {
+            var expanded = argumentFiles ? ExpandArgumentFiles(args) : args;
+            return expanded.Length > 0 && expanded[0].Equals("mcp", StringComparison.OrdinalIgnoreCase);
+        }
+        catch (AgentModeException)
+        {
+            // An argument file that cannot be read: the run itself says so.
+            return false;
+        }
+    }
+
+    private static async Task<int> RunCoreAsync(string[] args, bool argumentFiles)
     {
         try
         {

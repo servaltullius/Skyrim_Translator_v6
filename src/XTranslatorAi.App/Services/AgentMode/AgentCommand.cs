@@ -162,5 +162,61 @@ internal sealed class AgentCommand
         }
     }
 
+    /// <summary>
+    /// Single write gate for commands targeting an existing project: checks the running app first, then refuses if the
+    /// plugin is no longer at the project's path so agent mode stops before touching an old DB after a move.
+    /// </summary>
+    public void RefuseWrite(AgentProject project)
+    {
+        RefuseWhileAppRuns();
+        if (File.Exists(project.PluginPath)) return;
+
+        var message = $"플러그인이 '{project.PluginPath}'에 없습니다. 파일을 옮겼다면 open \"<새 경로>\"로 다시 연 뒤 이어서 하세요(이 프로젝트에는 더 쓰지 않습니다).";
+        if (project.Lane != null)
+        {
+            message += " 갈래를 맡은 하위 에이전트는 open하지 말고 이 내용을 부모에게 알리세요.";
+        }
+
+        var fileName = Path.GetFileName(project.PluginPath);
+        var replacements = Session.Projects()
+            .Where(other => !string.Equals(other.Key, project.Key, StringComparison.OrdinalIgnoreCase)
+                            && string.Equals(Path.GetFileName(other.PluginPath), fileName, StringComparison.OrdinalIgnoreCase)
+                            && File.Exists(other.PluginPath))
+            .OrderBy(other => other.Key, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        if (replacements.Count > 0)
+        {
+            message += " 같은 이름으로 열려 있는 프로젝트: " + string.Join(", ", replacements.Select(other => $"{other.Key} ({other.PluginPath})"));
+            // There and back (A -> B -> A): the project in place is the older one, and nothing else said so.
+            if (AgentSession.DbLastWriteUtc(project.DbPath) is { } written
+                && replacements.Any(other => AgentSession.DbLastWriteUtc(other.DbPath) is { } theirs && theirs < written))
+            {
+                message += " 다만 이 프로젝트가 더 나중에 작업됐습니다. 그쪽에는 여기서 번역한 줄이 없을 수 있으니, 이어서 하기 전에 사용자에게 알리세요.";
+            }
+        }
+
+        throw new AgentModeException(message);
+    }
+
+    /// <summary>
+    /// Resolves the project for a CLI command, applies <see cref="RefuseWrite"/> when writing, and emits the
+    /// missing-plugin read warning or round-trip move note through one place.
+    /// </summary>
+    public AgentProject FindProject(string nameOrKeyOrPath, AgentLane? lane = null, bool write = false)
+    {
+        var project = Session.Find(nameOrKeyOrPath) with { Lane = lane };
+        if (write)
+        {
+            RefuseWrite(project);
+        }
+        else if (!File.Exists(project.PluginPath))
+        {
+            Console.WriteLine($"경고: 플러그인이 '{project.PluginPath}'에 없습니다. 읽기만 됩니다. 파일을 옮겼다면 open \"<새 경로>\"로 다시 여세요.");
+        }
+
+        if (Session.MovedProjectNote is { } note) Console.WriteLine(note);
+        return project;
+    }
+
     public Task<List<StringEntry>> RowsAsync(ProjectDb db) => db.GetAllStringsAsync(Ct);
 }

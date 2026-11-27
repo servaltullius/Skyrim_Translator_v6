@@ -64,7 +64,7 @@ public static partial class AgentCli
 
     private static async Task CheckAsync(AgentCommand c)
     {
-        var project = c.Session.Find(c.Arg(0, "프로젝트"));
+        var project = c.FindProject(c.Arg(0, "프로젝트"));
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, c.Ct);
         var (issues, dest) = await ScanProjectAsync(c, db);
         // Results the user marked "확인함" (looked at and left as they are) are not listed again while the row's
@@ -98,8 +98,7 @@ public static partial class AgentCli
     // or with --undo takes the marks off. A mark holds while the row's translation stays as it is.
     private static async Task ReviewAsync(AgentCommand c)
     {
-        c.RefuseWhileAppRuns();
-        var project = c.Session.Find(c.Arg(0, "프로젝트"));
+        var project = c.FindProject(c.Arg(0, "프로젝트"), write: true);
         var ids = c.Ids?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             .Select(s => long.TryParse(s, out var v) ? v : throw new AgentModeException($"--id에 숫자가 아닌 값: {s}")).ToHashSet()
             ?? throw new AgentModeException("확인함으로 표시할 줄을 --id 12,40처럼 지정하세요.");
@@ -149,8 +148,7 @@ public static partial class AgentCli
     // row's 순번, as before), saved as the GUI saves a hand edit (직접 수정).
     private static async Task EditAsync(AgentCommand c)
     {
-        c.RefuseWhileAppRuns();
-        var project = c.Session.Find(c.Arg(0, "프로젝트"));
+        var project = c.FindProject(c.Arg(0, "프로젝트"), write: true);
         var file = c.Arg(1, "수정 파일");
         if (!File.Exists(file)) throw new AgentModeException($"수정 파일이 없습니다: {file}");
         List<EditLine>? edits;
@@ -213,8 +211,7 @@ public static partial class AgentCli
 
     private static async Task ExportAsync(AgentCommand c)
     {
-        c.RefuseWhileAppRuns();
-        var project = c.Session.Find(c.Arg(0, "프로젝트"));
+        var project = c.FindProject(c.Arg(0, "프로젝트"), write: true);
         string output;
         if (c.Rest.Count > 1)
         {

@@ -28,11 +28,13 @@ public static partial class AgentCli
     // removes it. Every request carries it at the head of its instructions.
     private static async Task ContextAsync(AgentCommand c)
     {
-        var project = c.Session.Find(c.Arg(0, "프로젝트"));
+        if (c.Clear && c.Rest.Count > 1) throw new AgentModeException("문맥 파일과 --clear는 함께 쓰지 않습니다. 저장하려면 파일만, 지우려면 --clear만 주세요.");
+        var writing = c.Rest.Count > 1 || c.Clear;
+        var project = c.FindProject(c.Arg(0, "프로젝트"), write: writing);
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, c.Ct);
         var saved = await db.TryGetProjectContextAsync(c.Ct);
         var current = saved?.ContextText.Trim() ?? "";
-        if (c.Rest.Count <= 1 && !c.Clear)
+        if (!writing)
         {
             if (current.Length == 0)
             {
@@ -46,8 +48,6 @@ public static partial class AgentCli
             return;
         }
 
-        if (c.Clear && c.Rest.Count > 1) throw new AgentModeException("문맥 파일과 --clear는 함께 쓰지 않습니다. 저장하려면 파일만, 지우려면 --clear만 주세요.");
-        c.RefuseWhileAppRuns();
         if (c.Clear)
         {
             if (current.Length == 0)
@@ -111,11 +111,12 @@ public static partial class AgentCli
     // file's terms ([{"source": "Fury", "target": "분노"}]); terms <프로젝트> <영어> --clear removes that source.
     private static async Task TermsAsync(AgentCommand c)
     {
-        var project = c.Session.Find(c.Arg(0, "프로젝트"));
+        var writing = c.Rest.Count > 1;
+        var project = c.FindProject(c.Arg(0, "프로젝트"), write: writing);
+        if (!writing && c.Clear) throw new AgentModeException($"지울 영어 용어를 쓰세요: terms {project.Key} <영어> --clear");
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, c.Ct);
-        if (c.Rest.Count <= 1)
+        if (!writing)
         {
-            if (c.Clear) throw new AgentModeException($"지울 영어 용어를 쓰세요: terms {project.Key} <영어> --clear");
             var all = await db.GetGlossaryAsync(c.Ct);
             var shown = all.Where(e => e.Enabled)
                 .Where(e => c.Find == null || e.SourceTerm.Contains(c.Find, StringComparison.OrdinalIgnoreCase) || e.TargetTerm.Contains(c.Find, StringComparison.Ordinal))
@@ -139,7 +140,6 @@ public static partial class AgentCli
         var terms = c.Clear
             ? new[] { new TermLine(string.Join(" ", c.Rest.Skip(1)), null, null, false, Remove: true) }
             : await ReadTermsFileAsync(c);
-        c.RefuseWhileAppRuns();
         var (lines, changed) = await SaveTermsAsync(db, terms, c.Ct);
         foreach (var line in lines) Console.WriteLine(line);
         if (changed) await RemakeWaitingAsync(c, project, "바뀐 용어집으로", "옛 용어집으로");

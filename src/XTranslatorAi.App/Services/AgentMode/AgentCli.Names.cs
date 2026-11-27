@@ -35,8 +35,7 @@ public static partial class AgentCli
             throw new AgentModeException($"알 수 없는 인자: {string.Join(" ", c.Rest.Skip(1))}. 번호는 # 없이 숫자만 쉼표로 붙여 쓰세요(--id 12,40). 아무것도 저장하지 않았습니다.");
         }
 
-        var project = c.Session.Find(c.Arg(0, "프로젝트"));
-        c.RefuseWhileAppRuns();
+        var project = c.FindProject(c.Arg(0, "프로젝트"), write: true);
         await using var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, c.Ct);
         var rows = await c.RowsAsync(db);
         var names = await AgentSession.NewNamesAsync(db, rows, c.Ct);
