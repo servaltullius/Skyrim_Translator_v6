@@ -32,6 +32,24 @@ public partial class StringEntryViewModel : ObservableObject
     private bool _sourceFixNeedsCheck;
 
     /// <summary>
+    /// Reason agent mode held this row (<c>agent_hold</c> note while <see cref="StringEntryStatus.Skipped"/>); null when
+    /// not held. Empty string means held without a note.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsAgentHeld))]
+    [NotifyPropertyChangedFor(nameof(StatusText))]
+    [NotifyPropertyChangedFor(nameof(UserFacingErrorMessage))]
+    [NotifyPropertyChangedFor(nameof(AgentHoldDisplayText))]
+    [NotifyPropertyChangedFor(nameof(RowToolTip))]
+    private string? _agentHoldReason;
+
+    public bool IsAgentHeld => Status == StringEntryStatus.Skipped && AgentHoldReason != null;
+
+    public string AgentHoldDisplayText => !IsAgentHeld ? ""
+        : string.IsNullOrWhiteSpace(AgentHoldReason) ? "에이전트 보류"
+        : $"에이전트 보류: {AgentHoldReason.Trim()}";
+
+    /// <summary>
     /// True while this is the selected row, whose text the editor shows. The strings grid keeps it visible even when
     /// its text or status stops matching the filter, and filters it again when this turns false.
     /// </summary>
@@ -46,12 +64,20 @@ public partial class StringEntryViewModel : ObservableObject
         OrderIndex = orderIndex;
     }
 
-    public string StatusText => StringEntryStatusLabels.ToLabel(Status);
+    public string StatusText => IsAgentHeld ? "건너뜀(보류)" : StringEntryStatusLabels.ToLabel(Status);
 
     partial void OnStatusChanged(StringEntryStatus value)
     {
+        // A hold lasts while the row is 건너뜀: the project drops the note on any other status (StringNotePolicy).
+        if (value != StringEntryStatus.Skipped)
+        {
+            AgentHoldReason = null;
+        }
+
+        OnPropertyChanged(nameof(IsAgentHeld));
         OnPropertyChanged(nameof(StatusText));
         OnPropertyChanged(nameof(UserFacingErrorMessage));
+        OnPropertyChanged(nameof(AgentHoldDisplayText));
         OnPropertyChanged(nameof(RowToolTip));
     }
 
@@ -59,6 +85,11 @@ public partial class StringEntryViewModel : ObservableObject
     {
         get
         {
+            if (IsAgentHeld)
+            {
+                return AgentHoldDisplayText;
+            }
+
             if (Status != StringEntryStatus.Error)
             {
                 return "";

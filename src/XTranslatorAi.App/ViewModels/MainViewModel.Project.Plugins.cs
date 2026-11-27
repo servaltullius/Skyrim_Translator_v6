@@ -85,6 +85,7 @@ public partial class MainViewModel
             var tmHitIds = await GetKnownTranslationIdsAsync(loaded.Db, CancellationToken.None);
             var sourceFixIds = await loaded.Db.GetSourceFixIdsForCheckAsync(CancellationToken.None);
             var sourceFixRecheck = await loaded.Db.GetStringNotesByKindAsync(TranslationConstants.SourceFixRecheckNoteKind, CancellationToken.None);
+            var holdNotes = await loaded.Db.GetHoldNotesAsync(CancellationToken.None);
             var entries = loaded.Entries.Select(row => new StringEntryViewModel(row.Id, row.OrderIndex)
             {
                 Edid = row.Edid, Rec = row.Rec, SourceText = row.SourceText, DestText = row.DestText,
@@ -93,6 +94,7 @@ public partial class MainViewModel
                 IsTranslationMemoryApplied = tmHitIds.Contains(row.Id),
                 IsSourceFix = sourceFixIds.Contains(row.Id),
                 SourceFixNeedsCheck = sourceFixRecheck.ContainsKey(row.Id),
+                AgentHoldReason = AgentHoldReasonOf(row, holdNotes),
             }).ToList();
             // The service's import commit is the point of no cancellation. Adopt its ready snapshot
             // before awaiting auxiliary work, so a late cancellation never leaves old rows over a new DB.

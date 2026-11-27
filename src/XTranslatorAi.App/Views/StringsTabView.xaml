@@ -113,10 +113,10 @@
             </DataGrid.RowStyle>
 	            <DataGrid.Columns>
 	                <DataGridTextColumn Header="#" Binding="{Binding OrderIndex}" Width="70" />
-	                <DataGridTextColumn Header="상태" Binding="{Binding StatusText}" Width="90" />
+	                <DataGridTextColumn Header="상태" Binding="{Binding StatusText}" Width="105" />
 	                <DataGridTextColumn Header="EDID" Binding="{Binding Edid}" Width="140" />
 	                <DataGridTextColumn Header="REC" Binding="{Binding Rec}" Width="140" />
-	                <DataGridTextColumn Header="오류" Binding="{Binding UserFacingErrorMessage}" Width="220" />
+	                <DataGridTextColumn Header="오류 / 보류" Binding="{Binding UserFacingErrorMessage}" Width="220" />
 	                <DataGridTextColumn Header="원문" Binding="{Binding SourcePreview}" Width="*" />
 	                <DataGridTextColumn Header="번역문" Binding="{Binding DestPreview}" Width="*" />
 	            </DataGrid.Columns>
@@ -162,6 +162,22 @@
                             <Style TargetType="TextBlock">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding SelectedEntry.PreviousTranslationText}" Value="">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedEntry}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock DockPanel.Dock="Top" Text="{Binding SelectedEntry.AgentHoldDisplayText}"
+                               TextWrapping="Wrap" Margin="0,0,0,6" Foreground="{StaticResource XT.MutedTextBrush}"
+                               ToolTip="에이전트 모드에서 번역할 수 없어 보류(건너뜀)한 행입니다. 직접 수정하거나 '선택 행 다시 번역'으로 풀 수 있습니다.">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedEntry.AgentHoldDisplayText}" Value="">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding SelectedEntry}" Value="{x:Null}">

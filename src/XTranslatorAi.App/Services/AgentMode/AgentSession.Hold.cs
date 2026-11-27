@@ -175,8 +175,9 @@ public sealed partial class AgentSession
 
     private static bool IsHeld(StringEntry row, IReadOnlyDictionary<long, string> holds) => ProjectDb.IsHeld(row.Status, row.Id, holds);
 
-    // A hold given no reason is saved as the mark itself (a note needs a message).
-    private static string Reason(string note) => note == HeldMark ? "" : note;
+    // A hold given no reason is saved as the mark itself (a note needs a message). The GUI reads a row's note with this
+    // too: it showed "에이전트 보류: 보류".
+    internal static string Reason(string note) => note == HeldMark ? "" : note;
 
     private static List<StringEntry> RowsById(IReadOnlyList<StringEntry> all, AgentProject project, IReadOnlySet<long>? lane, IReadOnlyCollection<long> ids)
     {

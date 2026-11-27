@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using XTranslatorAi.App.Services;
+using XTranslatorAi.App.Services.AgentMode;
 using XTranslatorAi.Core;
 using XTranslatorAi.Core.Data;
 using XTranslatorAi.Core.Models;
@@ -492,6 +493,11 @@ public partial class MainViewModel
         PendingCount = Entries.Count(row => row.Status.IsUnfinished());
     }
 
+    // A held row's reason for the grid: "" when the agent gave none (the note then holds its mark alone), null when
+    // the row is not held.
+    private static string? AgentHoldReasonOf(StringEntry row, IReadOnlyDictionary<long, string> holdNotes)
+        => ProjectDb.IsHeld(row.Status, row.Id, holdNotes) ? AgentSession.Reason(holdNotes[row.Id]) : null;
+
     private async Task LoadEntriesAsync()
     {
         var db = _projectState.Db;
@@ -506,6 +512,7 @@ public partial class MainViewModel
         var tmHitIds = await GetKnownTranslationIdsAsync(db, CancellationToken.None);
         var sourceFixIds = await db.GetSourceFixIdsForCheckAsync(CancellationToken.None);
         var sourceFixRecheck = await db.GetStringNotesByKindAsync(TranslationConstants.SourceFixRecheckNoteKind, CancellationToken.None);
+        var holdNotes = await db.GetHoldNotesAsync(CancellationToken.None);
 
         const int pageSize = 500;
         var loaded = new List<StringEntryViewModel>(capacity: total);
@@ -526,6 +533,7 @@ public partial class MainViewModel
                     IsTranslationMemoryApplied = tmHitIds.Contains(row.Id),
                     IsSourceFix = sourceFixIds.Contains(row.Id),
                     SourceFixNeedsCheck = sourceFixRecheck.ContainsKey(row.Id),
+                    AgentHoldReason = AgentHoldReasonOf(row, holdNotes),
                 };
 
                 loaded.Add(vm);

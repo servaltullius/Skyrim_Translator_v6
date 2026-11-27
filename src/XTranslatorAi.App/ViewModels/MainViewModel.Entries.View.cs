@@ -84,6 +84,7 @@ public partial class MainViewModel
         nameof(StringEntryViewModel.DestText),
         nameof(StringEntryViewModel.Status),
         nameof(StringEntryViewModel.ErrorMessage),
+        nameof(StringEntryViewModel.AgentHoldReason),
         nameof(StringEntryViewModel.IsOpenInEditor),
     };
 
@@ -265,7 +266,8 @@ public partial class MainViewModel
                || ContainsIgnoreCase(entry.Rec ?? "", q)
                || ContainsIgnoreCase(entry.SourceText, q)
                || ContainsIgnoreCase(entry.DestText, q)
-               || ContainsIgnoreCase(entry.ErrorMessage ?? "", q);
+               || ContainsIgnoreCase(entry.ErrorMessage ?? "", q)
+               || ContainsIgnoreCase(entry.AgentHoldDisplayText, q);
     }
 
     private static bool ContainsIgnoreCase(string haystack, string needle)

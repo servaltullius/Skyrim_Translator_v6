@@ -50,6 +50,7 @@ public sealed partial class ProjectDb
 
             await using var insert = CreateBulkInsertStringsCommand(_connection, tx, out var p);
             var now = DateTimeOffset.UtcNow.ToString("O");
+            var takenHolds = new HashSet<SavedTranslation>(ReferenceEqualityComparer.Instance);
             await foreach (var row in rows.WithCancellation(cancellationToken))
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -65,13 +66,7 @@ public sealed partial class ProjectDb
                 // A row still in the project keeps its current translation over one kept from an earlier file.
                 if (identity != null && (saved.TryGetValue(identity, out var candidates) || retired.TryGetValue(identity, out candidates)))
                 {
-                    // Rows sharing an identity have the same source, so after a shift any of them will do (a manual
-                    // edit first): matching by position alone dropped LotD's repeated objectives when a row was added.
-                    var old = candidates.Count == 1
-                        ? candidates[0]
-                        : candidates.Find(r => r.OrderIndex == row.OrderIndex)
-                          ?? candidates.Find(r => r.Status == StringEntryStatus.Edited)
-                          ?? candidates[0];
+                    var old = PickKeptTranslation(candidates, row.OrderIndex, takenHolds);
                     // Explicit manual edits, including an intentional empty translation, win.
                     // Otherwise an explicitly translated incoming XML wins over earlier generated text.
                     if (old != null && (old.Status == StringEntryStatus.Edited || row.Status == StringEntryStatus.Pending))
@@ -139,22 +134,57 @@ public sealed partial class ProjectDb
         }
     }
 
+    /// <summary>
+    /// The kept row an incoming row takes its translation from. Rows sharing an identity have the same source, so after
+    /// a shift any of them will do (a manual edit first): matching by position alone dropped LotD's repeated objectives
+    /// when a row was added. A held row is kept with no translation: a translation of the same line goes before it (in
+    /// its place, a twin row's translation or hand edit was gone when the file came back with fewer of them), and with
+    /// none it holds one row only, the one in its place first (a waiting twin was held with it on every reopening).
+    /// </summary>
+    private static SavedTranslation? PickKeptTranslation(List<SavedTranslation> candidates, int orderIndex, HashSet<SavedTranslation> takenHolds)
+    {
+        SavedTranslation? inPlace = null, edited = null, first = null;
+        foreach (var candidate in candidates)
+        {
+            if (IsHoldWithoutTranslation(candidate)) continue;
+            first ??= candidate;
+            if (candidate.OrderIndex == orderIndex) inPlace ??= candidate;
+            if (candidate.Status == StringEntryStatus.Edited) edited ??= candidate;
+        }
+
+        if (first != null) return inPlace ?? edited ?? first;
+
+        var hold = candidates.Find(r => r.OrderIndex == orderIndex && !takenHolds.Contains(r))
+                   ?? candidates.Find(r => !takenHolds.Contains(r));
+        if (hold != null) takenHolds.Add(hold);
+        return hold;
+    }
+
+    // Only a held row is kept as 건너뜀 with no text (ReadSavedTranslationsAsync).
+    private static bool IsHoldWithoutTranslation(SavedTranslation kept)
+        => kept.Status == StringEntryStatus.Skipped && string.IsNullOrWhiteSpace(kept.DestText);
+
     private async Task<Dictionary<string, List<SavedTranslation>>> ReadSavedTranslationsAsync(
         SqliteTransaction tx, CancellationToken cancellationToken)
     {
         var result = new Dictionary<string, List<SavedTranslation>>(StringComparer.Ordinal);
+        var agentKinds = StringNotePolicy.KindsOf(StringNotePolicy.NoteGroup.AgentState);
         await using var cmd = _connection.CreateCommand();
         cmd.Transaction = tx;
-        cmd.CommandText = "SELECT OrderIndex, DestText, Status, RawStringXml FROM StringEntry WHERE Status IN ($Done,$Edited,$Skipped);";
+        cmd.CommandText = "SELECT s.OrderIndex, s.DestText, s.Status, s.RawStringXml, "
+                          + $"EXISTS(SELECT 1 FROM StringNote n WHERE n.StringId=s.Id AND n.Kind IN ({string.Join(",", agentKinds.Select((_, i) => "$Agent" + i))})) "
+                          + "FROM StringEntry s WHERE s.Status IN ($Done,$Edited,$Skipped);";
         cmd.Parameters.AddWithValue("$Done", (int)StringEntryStatus.Done);
         cmd.Parameters.AddWithValue("$Edited", (int)StringEntryStatus.Edited);
         cmd.Parameters.AddWithValue("$Skipped", (int)StringEntryStatus.Skipped);
+        for (var i = 0; i < agentKinds.Count; i++) cmd.Parameters.AddWithValue("$Agent" + i, agentKinds[i]);
         await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
         while (await reader.ReadAsync(cancellationToken))
         {
             var status = (StringEntryStatus)reader.GetInt32(2);
             var dest = reader.GetString(1);
-            if (status != StringEntryStatus.Edited && string.IsNullOrWhiteSpace(dest)) continue;
+            var isAgentHeld = status == StringEntryStatus.Skipped && reader.GetBoolean(4);
+            if (status != StringEntryStatus.Edited && !isAgentHeld && string.IsNullOrWhiteSpace(dest)) continue;
             var key = GetImportIdentity(reader.GetString(3));
             if (!result.TryGetValue(key, out var entries)) result[key] = entries = new List<SavedTranslation>();
             entries.Add(new SavedTranslation(reader.GetInt32(0), dest, status));
