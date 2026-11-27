@@ -114,6 +114,12 @@ public partial class MainViewModel
             TargetLang = loaded.TargetLanguage;
             IsProjectLoaded = true;
             if (previousDb != null) await previousDb.DisposeAsync();
+            // The GUI itself may have held the earlier DB open during load; retry retirement now that it is closed.
+            if (loaded.EarlierProjectLeftAt is { } leftAt
+                && await Task.Run(() => ProjectWorkspaceService.TryRetireMovedProjectDb(leftAt)))
+            {
+                loaded = loaded with { EarlierProjectLeftAt = null };
+            }
             // A late cancel may skip auxiliary refresh only after the committed DB and rows are visible.
             cancellation.Token.ThrowIfCancellationRequested();
             await _bundledFranchiseTmSeedService.EnsureBundledSeedAsync(SelectedFranchise, CancellationToken.None);

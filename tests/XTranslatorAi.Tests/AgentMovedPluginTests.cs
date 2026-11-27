@@ -182,7 +182,6 @@ public sealed class AgentMovedPluginTests : IAsyncLifetime
         }
 
         var v2 = MovePlugin(v1, Path.Combine(_root, "v2", "Test.esp"));
-        await using (var guiOpened = (await OpenInGuiAsync(v2)).Db) { }
 
         var answerFile = Path.Combine(_root, "answer.txt");
         await File.WriteAllTextAsync(answerFile, JsonSerializer.Serialize(new { translations = new[] { new { id = rowId, text = "철검" } } }), new UTF8Encoding(false));
@@ -196,8 +195,6 @@ public sealed class AgentMovedPluginTests : IAsyncLifetime
         var exportDir = Path.Combine(_root, "export-out");
 
         var projectWorkDir = Path.Combine(_workRoot, project.Key);
-        var dbBefore = await SnapshotDbTablesAsync(project.DbPath);
-        var workBefore = SnapshotFolder(projectWorkDir);
 
         var writeCommands = new[]
         {
@@ -216,6 +213,10 @@ public sealed class AgentMovedPluginTests : IAsyncLifetime
             new[] { "korean", project.Key, koreanFile },
         };
 
+        // Nothing has opened the plugin in its new place yet, so the old DB is still there: each write is refused at
+        // its own command (one taken for a read would open the DB and write), and nothing changes.
+        var liveDbBefore = await SnapshotDbTablesAsync(project.DbPath);
+        var liveWorkBefore = SnapshotFolder(projectWorkDir);
         foreach (var args in writeCommands)
         {
             var (code, output) = await RunCliAsync(args);
@@ -223,6 +224,27 @@ public sealed class AgentMovedPluginTests : IAsyncLifetime
             // The refusal itself: the read warning says "플러그인이 '" too, and export and korean failed further on anyway.
             Assert.StartsWith("실패: 플러그인이 '", output);
             Assert.Contains(v1, output);
+        }
+
+        Assert.False(Directory.Exists(exportDir));
+        AssertSameTables(liveDbBefore, await SnapshotDbTablesAsync(project.DbPath));
+        AssertSameFolder(liveWorkBefore, SnapshotFolder(projectWorkDir));
+
+        // The GUI opens it there: the project goes with the file, and the old DB is kept aside.
+        await using (var guiOpened = (await OpenInGuiAsync(v2)).Db) { }
+        var archivedDbPath = project.DbPath + ".moved";
+        Assert.False(File.Exists(project.DbPath));
+        Assert.True(File.Exists(archivedDbPath));
+        var dbBefore = await SnapshotDbTablesAsync(archivedDbPath);
+        var workBefore = SnapshotFolder(projectWorkDir);
+
+        foreach (var args in writeCommands)
+        {
+            var (code, output) = await RunCliAsync(args);
+            Assert.True(code != 0, $"Expected failure for '{string.Join(' ', args)}', got exit {code}:\n{output}");
+            Assert.StartsWith("실패: 플러그인이 '", output);
+            Assert.Contains(v1, output);
+            Assert.False(File.Exists(project.DbPath));
         }
 
         Assert.False(Directory.Exists(exportDir));
@@ -241,26 +263,31 @@ public sealed class AgentMovedPluginTests : IAsyncLifetime
             new[] { "hold", project.Key },
         };
 
+        // Once the GUI opened v2 and retired v1's DB to .moved, reads against the old key also refuse without creating a DB.
         foreach (var args in readCommands)
         {
-            var (_, output) = await RunCliAsync(args);
-            Assert.StartsWith("경고: 플러그인이 '", output);
+            var (code, output) = await RunCliAsync(args);
+            Assert.True(code != 0, $"Expected failure for '{string.Join(' ', args)}', got exit {code}:\n{output}");
+            Assert.StartsWith("실패: 플러그인이 '", output);
+            Assert.Contains(v1, output);
+            Assert.False(File.Exists(project.DbPath));
         }
 
-        var dbAfter = await SnapshotDbTablesAsync(project.DbPath);
+        var dbAfter = await SnapshotDbTablesAsync(archivedDbPath);
         var workAfter = SnapshotFolder(projectWorkDir);
         AssertSameTables(dbBefore, dbAfter);
         AssertSameFolder(workBefore, workAfter);
     }
 
-    // T2: status, show and check succeed with a missing-plugin warning at the top, and projects marks it.
+    // T2: While a moved plugin has not yet been opened at its new location (so the old DB is still in place),
+    // status, show and check succeed with a missing-plugin warning, projects marks it, and MCP request still works.
+    // Once opened at the new location (retiring the old DB), reads on the old key fail cleanly without creating a DB.
     [Fact]
     public async Task T2_ReadCommands_SucceedWithMissingPluginWarning_AndProjectsMarksMissing()
     {
         var v1 = WritePlugin("v1");
         var (project, _, _, _) = await _session.OpenAsync(v1, new PluginReadOptions(), "korean", "utf-8", batchSize: 10, CancellationToken.None);
         var v2 = MovePlugin(v1, Path.Combine(_root, "v2", "Test.esp"));
-        await using (var guiOpened = (await OpenInGuiAsync(v2)).Db) { }
 
         foreach (var cmd in new[] { "status", "show", "check" })
         {
@@ -286,6 +313,18 @@ public sealed class AgentMovedPluginTests : IAsyncLifetime
         var reply = JsonDocument.Parse(mcpOut.ToString()).RootElement;
         Assert.False(reply.TryGetProperty("error", out _), mcpOut.ToString());
         Assert.Contains("대기 중인 요청이 없습니다", reply.GetProperty("result").GetProperty("content")[0].GetProperty("text").GetString());
+
+        // After GUI opens v2 and retires v1's DB, reads on the old key refuse rather than creating an empty DB.
+        await using (var guiOpened = (await OpenInGuiAsync(v2)).Db) { }
+        Assert.False(File.Exists(project.DbPath));
+        foreach (var cmd in new[] { "status", "show", "check" })
+        {
+            var (code, output) = await RunCliAsync(cmd, project.Key);
+            Assert.NotEqual(0, code);
+            Assert.StartsWith("실패: 플러그인이 '", output);
+            Assert.Contains(v1, output);
+            Assert.False(File.Exists(project.DbPath));
+        }
     }
 
     // T3: After reopening at the new path (both Repro A and Repro B), Find("Test.esp") and Find("Test") return the new
@@ -495,15 +534,18 @@ public sealed class AgentMovedPluginTests : IAsyncLifetime
         Assert.Contains("하위 에이전트는 open하지 말고", output);
     }
 
-    // T11: Round-trip move (A -> B -> work on B -> back to A) prints a note on name lookup while B's DB is newer,
-    // and clears it once A is reopened and newer.
+    // T11: Legacy already-split projects (both A and B DBs exist, B's plugin missing) print a note on name lookup
+    // while B's DB is newer, warn on writes to B, and clear the note once A is reopened and newer.
     [Fact]
     public async Task T11_RoundTripMove_NotifiesWhenMissingProjectsDbIsNewer_AndClearsAfterReopen()
     {
         var pathA = WritePlugin("A");
         var (projectA, _, _, _) = await _session.OpenAsync(pathA, new PluginReadOptions(), "korean", "utf-8", batchSize: 10, CancellationToken.None);
 
-        var pathB = MovePlugin(pathA, Path.Combine(_root, "B", "Test.esp"));
+        // Copy (not move) so both A's DB and B's DB remain present, then remove B to reproduce an already-split state.
+        var pathB = Path.Combine(_root, "B", "Test.esp");
+        Directory.CreateDirectory(Path.GetDirectoryName(pathB)!);
+        File.Copy(pathA, pathB);
         var (projectB, _, _, _) = await _session.OpenAsync(pathB, new PluginReadOptions(), "korean", "utf-8", batchSize: 10, CancellationToken.None);
         long rowIdB;
         await using (var dbB = await ProjectDb.OpenOrCreateAsync(projectB.DbPath, CancellationToken.None))
@@ -512,7 +554,7 @@ public sealed class AgentMovedPluginTests : IAsyncLifetime
         }
 
         await _session.HoldAsync(projectB, new[] { rowIdB }, "B에서 작업", CancellationToken.None);
-        MovePlugin(pathB, pathA);
+        File.Delete(pathB);
 
         var baseTime = new DateTime(2026, 11, 1, 12, 0, 0, DateTimeKind.Utc);
         SetDbWriteTimeUtc(projectA.DbPath, baseTime);
@@ -573,5 +615,135 @@ public sealed class AgentMovedPluginTests : IAsyncLifetime
         Assert.False(AgentCli.IsMcpServer(new[] { "status", "mcp" }, argumentFiles: true));
         Assert.False(AgentCli.IsMcpServer(new[] { "@" + argsFile + ".missing" }, argumentFiles: true));
         Assert.False(AgentCli.IsMcpServer(Array.Empty<string>(), argumentFiles: true));
+    }
+
+    // R2: Round-trip move in agent mode (open A -> move -> open B -> hold -> move back -> open A) preserves the hold
+    // and name-based status picks the returned project.
+    [Fact]
+    public async Task R2_RoundTripMove_AgentOpen_PreservesHoldAndNameStatus()
+    {
+        var pathA = WritePlugin("A");
+        var (openACode, _) = await RunCliAsync("open", pathA);
+        Assert.Equal(0, openACode);
+
+        var pathB = MovePlugin(pathA, Path.Combine(_root, "B", "Test.esp"));
+        var (openBCode, _) = await RunCliAsync("open", pathB);
+        Assert.Equal(0, openBCode);
+
+        var projectB = _session.Find(pathB);
+        long rowIdB;
+        await using (var dbB = await ProjectDb.OpenOrCreateAsync(projectB.DbPath, CancellationToken.None))
+        {
+            rowIdB = Assert.Single(await dbB.GetAllStringsAsync(CancellationToken.None)).Id;
+        }
+
+        var (holdCode, _) = await RunCliAsync("hold", projectB.Key, "--id", rowIdB.ToString(System.Globalization.CultureInfo.InvariantCulture), "--note", "B에서 보류");
+        Assert.Equal(0, holdCode);
+
+        MovePlugin(pathB, pathA);
+        var (reopenACode, reopenAOut) = await RunCliAsync("open", pathA);
+        Assert.Equal(0, reopenACode);
+        Assert.Contains(pathB, reopenAOut);
+
+        var projectA = _session.Find(pathA);
+        var held = await _session.HeldAsync(projectA, CancellationToken.None);
+        var heldLine = Assert.Single(held);
+        Assert.Equal("B에서 보류", heldLine.Reason);
+
+        var (statusCode, statusOut) = await RunCliAsync("status", "Test.esp");
+        Assert.Equal(0, statusCode);
+        Assert.Contains($"프로젝트: {projectA.Key}", statusOut);
+        Assert.Contains("보류", statusOut);
+    }
+
+    // R9: Agent commands other than open never create a missing project DB (both reads and writes fail cleanly).
+    [Fact]
+    public async Task R9_MissingDb_RefusesAllCommandsWithoutCreatingDb()
+    {
+        var v1 = WritePlugin("v1");
+        var (project, _, _, _) = await _session.OpenAsync(v1, new PluginReadOptions(), "korean", "utf-8", batchSize: 10, CancellationToken.None);
+        await _session.NextAsync(project, CancellationToken.None);
+
+        long rowId;
+        await using (var db = await ProjectDb.OpenOrCreateAsync(project.DbPath, CancellationToken.None))
+        {
+            rowId = Assert.Single(await db.GetAllStringsAsync(CancellationToken.None)).Id;
+        }
+
+        var answerFile = Path.Combine(_root, "answer.txt");
+        await File.WriteAllTextAsync(answerFile, JsonSerializer.Serialize(new { translations = new[] { new { id = rowId, text = "철검" } } }), new UTF8Encoding(false));
+        var editFile = Path.Combine(_root, "edit.json");
+        await File.WriteAllTextAsync(editFile, JsonSerializer.Serialize(new[] { new { id = rowId, text = "강철검" } }), new UTF8Encoding(false));
+        var contextFile = Path.Combine(_root, "context.txt");
+        await File.WriteAllTextAsync(contextFile, "스카이림 시대 배경", new UTF8Encoding(false));
+        var termsFile = Path.Combine(_root, "terms.json");
+        await File.WriteAllTextAsync(termsFile, """[{"source":"Iron Sword","target":"철검"}]""", new UTF8Encoding(false));
+        var koreanFile = WritePlugin("korean-release", "Test.esp", "철검");
+        var exportDir = Path.Combine(_root, "export-out");
+
+        ProjectDb.ReleasePool(project.DbPath);
+        foreach (var path in new[] { project.DbPath, project.DbPath + "-wal", project.DbPath + "-shm" })
+        {
+            if (File.Exists(path)) File.Delete(path);
+        }
+
+        Assert.False(File.Exists(project.DbPath));
+
+        var allCommands = new[]
+        {
+            // Write commands
+            new[] { "next", project.Key },
+            new[] { "submit", project.Key, answerFile },
+            new[] { "review", project.Key, "--id", rowId.ToString(System.Globalization.CultureInfo.InvariantCulture) },
+            new[] { "export", project.Key, exportDir },
+            new[] { "edit", project.Key, editFile },
+            new[] { "hold", project.Key, "--id", rowId.ToString(System.Globalization.CultureInfo.InvariantCulture), "--note", "사유" },
+            new[] { "names", project.Key, "--save" },
+            new[] { "style", project.Key, "player", "반말", "--to", "other" },
+            new[] { "context", project.Key, contextFile },
+            new[] { "context", project.Key, "--clear" },
+            new[] { "terms", project.Key, termsFile },
+            new[] { "terms", project.Key, "Iron Sword", "--clear" },
+            new[] { "korean", project.Key, koreanFile },
+            // Read commands
+            new[] { "status", project.Key },
+            new[] { "check", project.Key },
+            new[] { "show", project.Key },
+            new[] { "lookup", project.Key, "Iron" },
+            new[] { "names", project.Key },
+            new[] { "voice", project.Key, "Lydia" },
+            new[] { "style", project.Key },
+            new[] { "context", project.Key },
+            new[] { "terms", project.Key },
+            new[] { "hold", project.Key },
+        };
+
+        foreach (var args in allCommands)
+        {
+            var (code, output) = await RunCliAsync(args);
+            Assert.True(code != 0, $"Expected failure for '{string.Join(' ', args)}', got exit {code}:\n{output}");
+            Assert.Contains("이 프로젝트의 DB가 없습니다", output);
+            Assert.Contains(v1, output);
+            Assert.False(File.Exists(project.DbPath), $"Command '{string.Join(' ', args)}' created an empty DB.");
+        }
+
+        // Lane subagent gets the extra instruction not to call open.
+        var (laneCode, laneOut) = await RunCliAsync("status", project.Key, "--lane", "1/2");
+        Assert.NotEqual(0, laneCode);
+        Assert.Contains("이 프로젝트의 DB가 없습니다", laneOut);
+        Assert.Contains("하위 에이전트는 open하지 말고", laneOut);
+        Assert.False(File.Exists(project.DbPath));
+
+        // When the plugin is missing too, both read and write give the missing-plugin guidance and still create no DB.
+        File.Delete(v1);
+        foreach (var args in new[] { new[] { "status", project.Key }, new[] { "next", project.Key } })
+        {
+            var (code, output) = await RunCliAsync(args);
+            Assert.NotEqual(0, code);
+            Assert.StartsWith("실패: 플러그인이 '", output);
+            Assert.Contains(v1, output);
+            Assert.DoesNotContain("이 프로젝트의 DB가 없습니다", output);
+            Assert.False(File.Exists(project.DbPath));
+        }
     }
 }

@@ -170,7 +170,11 @@ internal sealed class AgentCommand
     {
         RefuseWhileAppRuns();
         if (File.Exists(project.PluginPath)) return;
+        throw new AgentModeException(MissingPluginMessage(project));
+    }
 
+    private string MissingPluginMessage(AgentProject project)
+    {
         var message = $"플러그인이 '{project.PluginPath}'에 없습니다. 파일을 옮겼다면 open \"<새 경로>\"로 다시 연 뒤 이어서 하세요(이 프로젝트에는 더 쓰지 않습니다).";
         if (project.Lane != null)
         {
@@ -188,19 +192,23 @@ internal sealed class AgentCommand
         {
             message += " 같은 이름으로 열려 있는 프로젝트: " + string.Join(", ", replacements.Select(other => $"{other.Key} ({other.PluginPath})"));
             // There and back (A -> B -> A): the project in place is the older one, and nothing else said so.
-            if (AgentSession.DbLastWriteUtc(project.DbPath) is { } written
-                && replacements.Any(other => AgentSession.DbLastWriteUtc(other.DbPath) is { } theirs && theirs < written))
+            if (ProjectWorkspaceService.DbLastWriteUtc(project.DbPath) is { } written
+                && replacements.Any(other => ProjectWorkspaceService.DbLastWriteUtc(other.DbPath) is { } theirs && theirs < written))
             {
                 message += " 다만 이 프로젝트가 더 나중에 작업됐습니다. 그쪽에는 여기서 번역한 줄이 없을 수 있으니, 이어서 하기 전에 사용자에게 알리세요.";
             }
         }
 
-        throw new AgentModeException(message);
+        return message;
     }
 
+    private static string MissingDbMessage(AgentProject project)
+        => $"이 프로젝트의 DB가 없습니다. 플러그인을 옮겼다가 되돌렸다면 open \"{project.PluginPath}\"로 다시 여세요(다른 위치에서 하던 번역을 이어서 엽니다)."
+           + (project.Lane != null ? " 갈래를 맡은 하위 에이전트는 open하지 말고 이 내용을 부모에게 알리세요." : "");
+
     /// <summary>
-    /// Resolves the project for a CLI command, applies <see cref="RefuseWrite"/> when writing, and emits the
-    /// missing-plugin read warning or round-trip move note through one place.
+    /// Resolves the project for a CLI command, applies <see cref="RefuseWrite"/> when writing, refuses commands whose
+    /// project DB does not exist (only open creates a DB), and emits the missing-plugin read warning or round-trip note.
     /// </summary>
     public AgentProject FindProject(string nameOrKeyOrPath, AgentLane? lane = null, bool write = false)
     {
@@ -209,7 +217,15 @@ internal sealed class AgentCommand
         {
             RefuseWrite(project);
         }
-        else if (!File.Exists(project.PluginPath))
+
+        if (!File.Exists(project.DbPath))
+        {
+            throw new AgentModeException(File.Exists(project.PluginPath)
+                ? MissingDbMessage(project)
+                : MissingPluginMessage(project));
+        }
+
+        if (!write && !File.Exists(project.PluginPath))
         {
             Console.WriteLine($"경고: 플러그인이 '{project.PluginPath}'에 없습니다. 읽기만 됩니다. 파일을 옮겼다면 open \"<새 경로>\"로 다시 여세요.");
         }

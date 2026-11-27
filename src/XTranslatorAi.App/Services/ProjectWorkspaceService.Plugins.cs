@@ -21,11 +21,14 @@ public sealed partial class ProjectWorkspaceService
     /// <param name="MovedFromPath">The plugin's earlier location when its project was continued after a move.</param>
     /// <param name="InheritedGlossary">Glossary entries a new project took from other projects of the same mod, and from which plugins.</param>
     /// <param name="ContinuedAfterReadSettingsChange">The plugin's project was continued after the Strings folder or metadata encoding changed.</param>
+    /// <param name="EarlierProjectLeftAt">The earlier project DB path when a moved project could not be retired because it was in use.</param>
+    /// <param name="LaterWorkElsewherePath">Another missing plugin path whose sibling project DB for the same file was written later.</param>
     public sealed record LoadFromPluginResult(ProjectDb Db, PluginDocument Document,
         string SourceLanguage, string TargetLanguage, string TargetEncoding,
         IReadOnlyList<StringEntry> Entries, string ProjectContext, string? MovedFromPath = null,
         (int Count, IReadOnlyList<string> FromPlugins) InheritedGlossary = default, int RetiredTranslations = 0,
-        string? ContinuedFromTargetEncoding = null, bool ContinuedAfterReadSettingsChange = false);
+        string? ContinuedFromTargetEncoding = null, bool ContinuedAfterReadSettingsChange = false,
+        string? EarlierProjectLeftAt = null, string? LaterWorkElsewherePath = null);
 
     /// <summary>Runs after a project DB is opened and before the import; lets tests fail an open there.</summary>
     internal Func<CancellationToken, Task>? BeforePluginImportForTests { get; set; }
@@ -42,11 +45,25 @@ public sealed partial class ProjectWorkspaceService
         // Parse and validate the complete input before opening or replacing any project DB.
         var document = await PluginReader.ReadAsync(request.InputPath, request.Options, cancellationToken);
         var fields = await ResolveMasterSpeakersAsync(document, cancellationToken);
-        var dbPath = ResolvePluginProjectDbPath(request, document);
+        var dbPath = ResolvePluginProjectDbPath(request, document, out var primaryPath);
+        // Only a project of a sibling source encoding is left at this path, while the plugin's own project went with
+        // the file to another folder and was worked on there since: this path continues that one (below), not the
+        // sibling. Until the plugin's own project left with the file, it stood first here. What it left behind (the
+        // retired file) tells the two apart: with none, the sibling is the project in use here, and a newer one
+        // elsewhere is only told of (it opened in the sibling's place without a word).
+        if (!string.Equals(dbPath, primaryPath, StringComparison.OrdinalIgnoreCase)
+            && File.Exists(primaryPath + RetiredDbSuffix)
+            && FindLaterWorkElsewhere(request, document, dbPath) != null)
+        {
+            dbPath = primaryPath;
+        }
+
         var isNewProject = !File.Exists(dbPath);
         ProjectDb? db = null;
         try
         {
+            // Check sibling DBs before opening/importing updates this DB's write timestamp.
+            var laterWorkElsewhere = !isNewProject ? FindLaterWorkElsewhere(request, document, dbPath) : null;
             var continued = isNewProject ? TryContinueMovedProject(request, document, dbPath) : null;
             // The same plugin opened with another output encoding continues that project rather than being "moved".
             var movedFrom = continued is { EarlierTargetEncoding: null, SamePlugin: false } ? continued.Value.InputPath : null;
@@ -73,9 +90,13 @@ public sealed partial class ProjectWorkspaceService
             var entries = await db.ReplaceImportedPluginStringsAsync(document.Info, fields, project,
                 request.TargetEncoding, cancellationToken);
             var retired = db.LastPluginImportRetiredCount;
+            // Retire the old DB only after the new project commits, so a failed or canceled first open never hides it.
+            var earlierLeftAt = continued?.RetireDbPath is { } retirePath && !TryRetireMovedProjectDb(retirePath)
+                ? retirePath
+                : null;
             return new LoadFromPluginResult(db, document, request.Options.SourceLanguage,
                 request.TargetLanguage, request.TargetEncoding, entries, context?.ContextText ?? "", movedFrom, inherited, retired,
-                continuedFromEncoding, continuedAfterSettings);
+                continuedFromEncoding, continuedAfterSettings, earlierLeftAt, laterWorkElsewhere);
         }
         catch
         {
@@ -155,7 +176,9 @@ public sealed partial class ProjectWorkspaceService
         return Read(earlier) && Read(read);
     }
 
-    private string ResolvePluginProjectDbPath(LoadFromPluginRequest request, PluginDocument document)
+    /// <param name="primaryPath">The project path of the encoding the plugin was read with; the result is another
+    /// path when only a project of a sibling source encoding exists.</param>
+    private string ResolvePluginProjectDbPath(LoadFromPluginRequest request, PluginDocument document, out string primaryPath)
     {
         var read = document.Info.Options;
         var setting = request.Options.SourceEncoding;
@@ -168,6 +191,7 @@ public sealed partial class ProjectWorkspaceService
             .Select(encoding => ProjectPaths.GetPluginProjectDbPath(request.InputPath, read with { SourceEncoding = encoding },
                 request.TargetLanguage, request.TargetEncoding, _projectsRootOverride))
             .ToArray();
+        primaryPath = paths[0];
         return paths.FirstOrDefault(File.Exists) ?? paths[0];
     }
 
@@ -193,29 +217,163 @@ public sealed partial class ProjectWorkspaceService
             Pooling = false,
         }.ToString();
 
-    private static (string InputPath, string? EarlierTargetEncoding, bool SamePlugin)? TryContinueMovedProject(LoadFromPluginRequest request, PluginDocument document, string newDbPath)
+    /// <summary>
+    /// When a project DB was last written: the later of the file and its -wal. An empty -wal is not a write: opening a
+    /// new plugin reads every project DB of the folder, which leaves one beside each, and an old project then read as
+    /// worked on after the one in use.
+    /// </summary>
+    internal static DateTime? DbLastWriteUtc(string dbPath)
     {
-        var directory = Path.GetDirectoryName(newDbPath);
-        var stem = Path.GetFileNameWithoutExtension(newDbPath);
+        DateTime? latest = null;
+        foreach (var path in new[] { dbPath, dbPath + "-wal" })
+        {
+            var file = new FileInfo(path);
+            if (!file.Exists || (path != dbPath && file.Length == 0)) continue;
+            var time = file.LastWriteTimeUtc;
+            if (latest == null || time > latest.Value) latest = time;
+        }
+
+        return latest;
+    }
+
+    /// <summary>
+    /// Archives a moved plugin's earlier project DB as <c>&lt;dbPath&gt;.moved</c> so returning the plugin to its
+    /// original path sees no stale DB and continues from the latest location. Returns false without renaming if any
+    /// step is blocked by another connection or lock, so an old -wal is never left behind for a future DB at that path.
+    /// </summary>
+    // After ".sqlite", so no search for project DBs ("*.sqlite") reads a retired one as a project.
+    private const string RetiredDbSuffix = ".moved";
+
+    public static bool TryRetireMovedProjectDb(string dbPath)
+    {
+        if (!File.Exists(dbPath))
+        {
+            return false;
+        }
+
+        try
+        {
+            ProjectDb.ReleasePool(dbPath);
+            var connString = new SqliteConnectionStringBuilder
+            {
+                DataSource = dbPath,
+                Mode = SqliteOpenMode.ReadWrite,
+                Pooling = false,
+            }.ToString();
+            using (var connection = new SqliteConnection(connString))
+            {
+                connection.Open();
+                using var command = connection.CreateCommand();
+                command.CommandTimeout = 1;
+                command.CommandText = "PRAGMA wal_checkpoint(TRUNCATE);";
+                using var reader = command.ExecuteReader();
+                if (!reader.Read() || reader.GetInt32(0) != 0)
+                {
+                    return false;
+                }
+            }
+
+            foreach (var sidecar in new[] { dbPath + "-wal", dbPath + "-shm" })
+            {
+                if (File.Exists(sidecar))
+                {
+                    File.Delete(sidecar);
+                }
+            }
+
+            File.Move(dbPath, dbPath + RetiredDbSuffix, overwrite: true);
+            return true;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or SqliteException)
+        {
+            return false;
+        }
+    }
+
+    private static IEnumerable<string> EnumerateSiblingProjectDbs(string dbPath)
+    {
+        var directory = Path.GetDirectoryName(dbPath);
+        var stem = Path.GetFileNameWithoutExtension(dbPath);
         var hashDot = stem.LastIndexOf('.');
         if (directory == null || hashDot <= 0 || !Directory.Exists(directory))
+        {
+            yield break;
+        }
+
+        foreach (var file in Directory.EnumerateFiles(directory, stem[..(hashDot + 1)] + "*.sqlite"))
+        {
+            var hash = Path.GetFileNameWithoutExtension(file)[(hashDot + 1)..];
+            if (hash.Length == 32 && hash.All(char.IsAsciiHexDigitLower)
+                && !string.Equals(file, dbPath, StringComparison.OrdinalIgnoreCase))
+            {
+                yield return file;
+            }
+        }
+    }
+
+    private static bool MatchesMovedProjectSettings(PluginSourceInfo info, string targetEncoding, string targetLanguage,
+        LoadFromPluginRequest request, PluginDocument document)
+        => string.Equals(Path.GetFileName(info.InputPath), Path.GetFileName(request.InputPath), StringComparison.OrdinalIgnoreCase)
+           && info.Options.Game == document.Info.Options.Game
+           && string.Equals(info.Options.SourceLanguage, request.Options.SourceLanguage, StringComparison.OrdinalIgnoreCase)
+           && SameSourceEncoding(info.Options.SourceEncoding, document.Info.Options.SourceEncoding, request.Options.SourceEncoding)
+           && string.Equals(targetEncoding, request.TargetEncoding, StringComparison.OrdinalIgnoreCase)
+           && string.Equals(targetLanguage, request.TargetLanguage, StringComparison.OrdinalIgnoreCase);
+
+    // Projects split before move-retirement existed (or when retirement was blocked) keep both DBs: opening the older
+    // one notifies the user of the newer missing sibling without altering either DB.
+    private static string? FindLaterWorkElsewhere(LoadFromPluginRequest request, PluginDocument document, string dbPath)
+    {
+        if (DbLastWriteUtc(dbPath) is not { } currentWritten)
         {
             return null;
         }
 
-        var candidates = new List<(string DbPath, string InputPath, bool SameFile, DateTime Written, string? Encoding, bool SamePlugin)>();
-        foreach (var file in Directory.EnumerateFiles(directory, stem[..(hashDot + 1)] + "*.sqlite"))
+        string? laterPath = null;
+        var newestWritten = currentWritten;
+        var fullInputPath = Path.GetFullPath(request.InputPath);
+        foreach (var file in EnumerateSiblingProjectDbs(dbPath))
         {
-            var hash = Path.GetFileNameWithoutExtension(file)[(hashDot + 1)..];
-            if (hash.Length != 32 || !hash.All(char.IsAsciiHexDigitLower)
-                || string.Equals(file, newDbPath, StringComparison.OrdinalIgnoreCase)
-                || TryReadPluginProject(file) is not { } earlier)
+            if (DbLastWriteUtc(file) is not { } written || written <= newestWritten)
+            {
+                continue;
+            }
+
+            if (TryReadPluginProject(file) is not { } sibling)
+            {
+                continue;
+            }
+
+            var info = sibling.Source;
+            var samePath = string.Equals(Path.GetFullPath(info.InputPath), fullInputPath, StringComparison.OrdinalIgnoreCase);
+            if (!samePath
+                && MatchesMovedProjectSettings(info, sibling.TargetEncoding, sibling.TargetLanguage, request, document)
+                && string.Equals(info.Sha256, document.Info.Sha256, StringComparison.OrdinalIgnoreCase)
+                && !File.Exists(info.InputPath))
+            {
+                laterPath = info.InputPath;
+                newestWritten = written;
+            }
+        }
+
+        return laterPath;
+    }
+
+    private static (string InputPath, string? EarlierTargetEncoding, bool SamePlugin, string? RetireDbPath)? TryContinueMovedProject(
+        LoadFromPluginRequest request, PluginDocument document, string newDbPath)
+    {
+        var candidates = new List<(string DbPath, string InputPath, bool SameFile, DateTime Written, string? Encoding, bool SamePlugin, bool ShouldRetire)>();
+        var fullInputPath = Path.GetFullPath(request.InputPath);
+        foreach (var file in EnumerateSiblingProjectDbs(newDbPath))
+        {
+            var written = DbLastWriteUtc(file) ?? File.GetLastWriteTimeUtc(file);
+            if (TryReadPluginProject(file) is not { } earlier)
             {
                 continue;
             }
 
             var info = earlier.Source;
-            var samePath = string.Equals(Path.GetFullPath(info.InputPath), Path.GetFullPath(request.InputPath), StringComparison.OrdinalIgnoreCase);
+            var samePath = string.Equals(Path.GetFullPath(info.InputPath), fullInputPath, StringComparison.OrdinalIgnoreCase);
             var otherEncoding = !string.Equals(earlier.TargetEncoding, request.TargetEncoding, StringComparison.OrdinalIgnoreCase);
             var sameOther = info.Options.Game == document.Info.Options.Game
                 && string.Equals(info.Options.SourceLanguage, request.Options.SourceLanguage, StringComparison.OrdinalIgnoreCase)
@@ -223,26 +381,26 @@ public sealed partial class ProjectWorkspaceService
                 && string.Equals(earlier.TargetLanguage, request.TargetLanguage, StringComparison.OrdinalIgnoreCase);
             if (samePath && sameOther)
             {
-                candidates.Add((file, info.InputPath, true, File.GetLastWriteTimeUtc(file), otherEncoding ? earlier.TargetEncoding : null, true));
+                candidates.Add((file, info.InputPath, true, written, otherEncoding ? earlier.TargetEncoding : null, true, false));
                 continue;
             }
 
-            var sameSettings = string.Equals(Path.GetFileName(info.InputPath), Path.GetFileName(request.InputPath), StringComparison.OrdinalIgnoreCase)
-                && !samePath
-                && info.Options.Game == document.Info.Options.Game
-                && string.Equals(info.Options.SourceLanguage, request.Options.SourceLanguage, StringComparison.OrdinalIgnoreCase)
-                && SameSourceEncoding(info.Options.SourceEncoding, document.Info.Options.SourceEncoding, request.Options.SourceEncoding)
-                && string.Equals(earlier.TargetEncoding, request.TargetEncoding, StringComparison.OrdinalIgnoreCase)
-                && string.Equals(earlier.TargetLanguage, request.TargetLanguage, StringComparison.OrdinalIgnoreCase);
+            var sameSettings = !samePath
+                && MatchesMovedProjectSettings(info, earlier.TargetEncoding, earlier.TargetLanguage, request, document);
             var sameFile = string.Equals(info.Sha256, document.Info.Sha256, StringComparison.OrdinalIgnoreCase);
-            if (sameSettings && (sameFile || !File.Exists(info.InputPath)))
+            var earlierMissing = !File.Exists(info.InputPath);
+            if (sameSettings && (sameFile || earlierMissing))
             {
-                candidates.Add((file, info.InputPath, sameFile, File.GetLastWriteTimeUtc(file), null, false));
+                candidates.Add((file, info.InputPath, sameFile, written, null, false, sameFile && earlierMissing));
             }
         }
 
-        // The same plugin under other settings first, then a moved copy of the same file, newest first.
-        var chosen = candidates.OrderByDescending(c => c.SamePlugin).ThenByDescending(c => c.SameFile)
+        // The plugin's own projects first, the newest of them: the one of this path under other settings, and the one
+        // that went with the file to another folder (ShouldRetire). The other-settings one alone went first, and a
+        // plugin moved back to a path that had one opened that older text, not what was done where it had been.
+        // Then a copy of the same file, newest first.
+        var chosen = candidates.OrderByDescending(c => c.SamePlugin || c.ShouldRetire)
+            .ThenByDescending(c => c.SamePlugin || c.ShouldRetire || c.SameFile)
             .ThenByDescending(c => c.Written).FirstOrDefault();
         if (chosen.DbPath == null)
         {
@@ -254,12 +412,24 @@ public sealed partial class ProjectWorkspaceService
         var partial = newDbPath + ".partial";
         try
         {
+            // A truncated .partial left by an interrupted copy makes SQLite's backup API fail.
+            DeleteUnimportedProject(partial);
             using (var source = new SqliteConnection(ConnectionString(chosen.DbPath, readOnly: true)))
             using (var target = new SqliteConnection(ConnectionString(partial, readOnly: false)))
             {
                 source.Open();
                 target.Open();
                 source.BackupDatabase(target);
+            }
+
+            // Clear any stray sidecars at the destination so an old -wal cannot attach to the moved DB.
+            ProjectDb.ReleasePool(newDbPath);
+            foreach (var sidecar in new[] { newDbPath + "-wal", newDbPath + "-shm" })
+            {
+                if (File.Exists(sidecar))
+                {
+                    File.Delete(sidecar);
+                }
             }
 
             File.Move(partial, newDbPath);
@@ -269,7 +439,7 @@ public sealed partial class ProjectWorkspaceService
             DeleteUnimportedProject(partial);
         }
 
-        return (chosen.InputPath, chosen.Encoding, chosen.SamePlugin);
+        return (chosen.InputPath, chosen.Encoding, chosen.SamePlugin, chosen.ShouldRetire ? chosen.DbPath : null);
     }
 
     /// <summary>

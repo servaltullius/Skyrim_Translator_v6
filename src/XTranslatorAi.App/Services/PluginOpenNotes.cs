@@ -18,6 +18,16 @@ public static class PluginOpenNotes
     {
         var notes = new List<Note>();
         if (loaded.MovedFromPath != null) notes.Add(new($"옮기기 전 위치({loaded.MovedFromPath})의 프로젝트를 이어서 엽니다"));
+        if (loaded.EarlierProjectLeftAt != null)
+        {
+            notes.Add(new("옮기기 전 위치의 프로젝트 파일을 다른 프로그램이 쓰고 있어 치우지 못했습니다. 그 위치로 플러그인을 되돌리면 옛 번역이 열릴 수 있습니다."));
+        }
+
+        if (loaded.LaterWorkElsewherePath != null)
+        {
+            notes.Add(new($"다른 위치({loaded.LaterWorkElsewherePath})에서 더 나중에 작업한 프로젝트가 따로 남아 있습니다. 그때 번역한 줄은 이 프로젝트에 없을 수 있습니다."));
+        }
+
         if (loaded.ContinuedFromTargetEncoding != null) notes.Add(new($"출력 인코딩 {loaded.ContinuedFromTargetEncoding}로 작업하던 프로젝트를 이어서 엽니다"));
         if (loaded.ContinuedAfterReadSettingsChange) notes.Add(new("Strings 폴더나 메타데이터 인코딩을 바꾸기 전의 프로젝트를 이어서 엽니다"));
         if (loaded.InheritedGlossary.Count > 0)

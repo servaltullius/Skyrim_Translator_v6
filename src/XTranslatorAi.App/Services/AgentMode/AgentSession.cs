@@ -451,14 +451,14 @@ public sealed partial class AgentSession
 
     private static string? DescribeNewerMissingProject(AgentProject chosen, IEnumerable<AgentProject> missing)
     {
-        var chosenTime = DbLastWriteUtc(chosen.DbPath);
+        var chosenTime = ProjectWorkspaceService.DbLastWriteUtc(chosen.DbPath);
         if (chosenTime == null) return null;
 
         AgentProject? newest = null;
         var newestTime = chosenTime.Value;
         foreach (var candidate in missing)
         {
-            if (DbLastWriteUtc(candidate.DbPath) is { } time && time > newestTime)
+            if (ProjectWorkspaceService.DbLastWriteUtc(candidate.DbPath) is { } time && time > newestTime)
             {
                 newest = candidate;
                 newestTime = time;
@@ -468,25 +468,6 @@ public sealed partial class AgentSession
         return newest == null
             ? null
             : $"참고: 같은 이름의 옮겨진 프로젝트 {newest.Key}('{newest.PluginPath}')가 더 나중에 작업됐습니다. 그때 번역한 줄은 이 프로젝트에 없을 수 있습니다.";
-    }
-
-    /// <summary>
-    /// When a project DB was last written: the later of the file and its -wal. An empty -wal is not a write: opening a
-    /// new plugin reads every project DB of the folder, which leaves one beside each, and an old project then read as
-    /// worked on after the one in use.
-    /// </summary>
-    internal static DateTime? DbLastWriteUtc(string dbPath)
-    {
-        DateTime? latest = null;
-        foreach (var path in new[] { dbPath, dbPath + "-wal" })
-        {
-            var file = new FileInfo(path);
-            if (!file.Exists || (path != dbPath && file.Length == 0)) continue;
-            var time = file.LastWriteTimeUtc;
-            if (latest == null || time > latest.Value) latest = time;
-        }
-
-        return latest;
     }
 
     public AgentRequest? Pending(AgentProject project)
